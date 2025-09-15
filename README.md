@@ -1,11 +1,96 @@
-# Câu Hỏi Frontend  - Từ Cơ Bản Đến Senior
+# 📚 Câu Hỏi Frontend Interview - Từ Cơ Bản Đến Senior
 
-## Mục Lục
-1. [Câu Hỏi Cơ Bản (Junior Level)](#câu-hỏi-cơ-bản-junior-level)
-2. [Câu Hỏi Trung Cấp (Mid-Level)](#câu-hỏi-trung-cấp-mid-level)
-3. [Câu Hỏi Nâng Cao (Senior Level)](#câu-hỏi-nâng-cao-senior-level)
-4. [Performance Optimization](#performance-optimization)
-5. [Security Best Practices](#security-best-practices)
+> **Tổng cộng: 28 câu hỏi kỹ thuật + 14 câu hỏi chuyên sâu + 9 câu hỏi kinh nghiệm = 51 câu hỏi**
+>
+> **Tất cả examples được viết bằng TypeScript với chú thích tiếng Việt**
+
+## 📋 Mục Lục Tổng Kết
+
+### 🟢 **Câu Hỏi Cơ Bản (Junior Level) - 16 câu**
+
+#### **JavaScript Core Fundamentals (12 câu)**
+- **Q1**: Primitive Values vs Reference Values trong JavaScript?
+- **Q2**: Sự khác biệt giữa `var`, `let`, và `const`?
+- **Q3**: ES5 vs ES6+ features và modern JavaScript?
+- **Q4**: Hoisting trong JavaScript - Cách hoạt động?
+- **Q5**: Event Loop hoạt động như thế nào? (Giải thích đơn giản)
+- **Q6**: Closure và Data Privacy trong JavaScript?
+- **Q7**: DOM và Event Handling chi tiết?
+- **Q8**: Falsy/Truthy, == vs ===, null vs undefined?
+- **Q10**: Arrow Functions vs Regular Functions và `this` binding?
+- **Q11**: Async/Await vs Promises vs Callbacks?
+- **Q12**: Cách remove property từ object và so sánh objects?
+- **Q14**: Loop Performance và Browser Rendering (Paint, Repaint, Reflow)?
+- **Q15**: Axios Interceptors và Advanced Error Handling?
+- **Q16**: Strict Mode và JavaScript Classes?
+
+#### **React Fundamentals (4 câu)**
+- **Q17**: React Hooks chi tiết - useState, useEffect, useRef?
+- **Q18**: Component Lifecycle và useEffect coverage?
+- **Q19**: PureComponent vs React.memo và optimization?
+- **Q20**: Virtual DOM và Key trong Lists?
+- **Q21**: useRef vs useState, state vs props?
+- **Q22**: useMemo vs useCallback chi tiết?
+- **Q23**: Parent re-renders thì child có re-render? Cách optimize?
+
+### 🟡 **Câu Hỏi Trung Cấp (Mid-Level) - 6 câu**
+- **Q4**: useState Hook hoạt động như thế nào?
+- **Q5**: useEffect Hook và lifecycle methods tương ứng?
+- **Q6**: Custom Hooks - Cách tạo và sử dụng?
+- **Q7**: Context API vs Redux - Khi nào nên sử dụng?
+- **Q8**: React.memo, useMemo, useCallback - Khi nào và cách sử dụng?
+- **Q9**: Code Splitting và Lazy Loading trong React?
+- **Q10**: Higher-Order Components (HOC) vs Render Props vs Custom Hooks?
+
+### 🔴 **Câu Hỏi Nâng Cao (Senior/Expert Level) - 7 câu**
+- **Q16**: Thiết kế kiến trúc Micro-frontend cho ứng dụng scale lớn?
+- **Q17**: Implement advanced caching strategies cho production apps?
+- **Q18**: Design Pattern cho large-scale React applications?
+- **Q19**: Memory leaks detection và optimization trong React apps?
+- **Q20**: Implement comprehensive security measures cho frontend apps?
+- **Q21**: Advanced debugging và production monitoring?
+
+### 🚀 **React Advanced Topics & Modern Features - 7 câu**
+- **Q22**: React Concurrent Mode và Suspense - Cách hoạt động và ứng dụng?
+- **Q23**: React 18 features và migration strategies?
+- **Q24**: SOLID principles áp dụng trong React components?
+- **Q25**: Code organization và folder structure cho large React apps?
+- **Q26**: Deep dive React performance optimization techniques?
+- **Q27**: Testing strategies cho React applications?
+- **Q28**: Accessibility (A11y) best practices trong React?
+
+## 🎯 **Phân loại theo chủ đề:**
+
+### **JavaScript Core (14 câu)**
+Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q10, Q11, Q12, Q14, Q15, Q16
+
+### **React Hooks & State Management (8 câu)**
+Q17, Q18, Q19, Q21, Q22, Q23, Q4-Mid, Q5-Mid, Q6-Mid, Q7-Mid, Q8-Mid
+
+### **React Performance & Optimization (6 câu)**
+Q19, Q20, Q22, Q23, Q26, Q19-Expert
+
+### **Architecture & Patterns (5 câu)**
+Q9-Mid, Q10-Mid, Q16-Expert, Q18-Expert, Q24, Q25
+
+### **Security & Testing (4 câu)**
+Q20-Expert, Q21-Expert, Q27, Q28
+
+### **Advanced React Features (5 câu)**
+Q22-Advanced, Q23-Advanced, Q26, Q27, Q28
+
+### 💼 **Câu Hỏi Kinh Nghiệm & Thực Tế (9 câu)**
+- **EXP1**: Mô tả dự án frontend phức tạp nhất bạn từng làm?
+- **EXP2**: Xử lý performance issue trong production như thế nào?
+- **EXP3**: Debugging và troubleshooting trong môi trường thực tế?
+- **EXP4**: Làm việc với team và code review process?
+- **EXP5**: Migration và upgrade project strategies?
+- **EXP6**: Xử lý legacy code và technical debt?
+- **EXP7**: Production deployment và monitoring experience?
+- **EXP8**: Những thách thức lớn nhất khi scale application?
+- **EXP9**: Trend và technologies mới bạn quan tâm?
+
+---
 
 ---
 
@@ -157,33 +242,37 @@ console.log(restProps); // { age: 30, city: "NYC" }
 - **`let`**: Block-scoped, có hoisting nhưng temporal dead zone, không thể redeclare
 - **`const`**: Block-scoped, phải khởi tạo giá trị, không thể reassign
 
-```javascript
-// var example
-function varExample() {
-  console.log(x); // undefined (hoisted)
-  var x = 1;
+```typescript
+// var example - Function-scoped và có hoisting
+function varExample(): void {
+  console.log(x); // undefined (biến đã được hoisted nhưng chưa assign giá trị)
+  var x: number = 1;
   if (true) {
     var x = 2; // same variable
   }
   console.log(x); // 2
 }
 
-// let example
-function letExample() {
+// let example - Block-scoped với temporal dead zone
+function letExample(): void {
   // console.log(y); // ReferenceError: Cannot access 'y' before initialization
-  let y = 1;
+  let y: number = 1;
   if (true) {
-    let y = 2; // different variable
+    let y: number = 2; // Biến khác (block scope khác nhau)
     console.log(y); // 2
   }
   console.log(y); // 1
 }
 
-// const example
-function constExample() {
-  const z = { name: 'John' };
-  // z = {}; // TypeError: Assignment to constant variable
-  z.name = 'Jane'; // OK - object mutation allowed
+// const example - Block-scoped và không thể reassign
+interface Person {
+  name: string;
+}
+
+function constExample(): void {
+  const z: Person = { name: 'John' };
+  // z = {}; // ❌ TypeError: Assignment to constant variable
+  z.name = 'Jane'; // ✅ OK - có thể thay đổi properties của object
   console.log(z); // { name: 'Jane' }
 }
 ```
@@ -192,7 +281,7 @@ function constExample() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // ES5 Features (2009)
 // 1. Array methods
 var numbers = [1, 2, 3, 4, 5];
@@ -374,7 +463,7 @@ const counter = new Counter();
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Variable Hoisting
 console.log(x); // undefined (not ReferenceError)
 var x = 5;
@@ -451,7 +540,7 @@ myFunc(); // "Expression" - function expression overwrites declaration
 **Trả lời:**
 Tưởng tượng Event Loop như một nhân viên văn phòng rất có tổ chức:
 
-```javascript
+```typescript
 // Event Loop giống như một nhân viên có 3 cái hộp:
 // 1. Call Stack (ngăn xếp công việc) - làm ngay lập tức
 // 2. Callback Queue (hàng đợi callback) - làm sau
@@ -538,7 +627,7 @@ demonstrateEventLoop();
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Closure cơ bản - Data Privacy
 function createCounter() {
   let count = 0; // Private variable
@@ -718,7 +807,7 @@ console.log(expensiveOperation(1000)); // Cache hit! result
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Event Bubbling vs Event Capturing
 /*
 Event flow: Capturing → Target → Bubbling
@@ -949,7 +1038,7 @@ document.addEventListener('todoCompleted', (event) => {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Falsy Values - chỉ có 8 giá trị falsy
 const falsyValues = [
   false,        // Boolean false
@@ -1104,7 +1193,7 @@ function isPrimitive(value) {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Regular Functions vs Arrow Functions
 // Regular function
 function regularFunction() {
@@ -1315,7 +1404,7 @@ const object = {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Callbacks (Old way)
 function fetchUserCallback(id, callback) {
   setTimeout(() => {
@@ -1584,7 +1673,7 @@ setTimeout(() => controller.abort(), 2000);
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Remove property từ object
 const user = {
   id: 1,
@@ -1855,7 +1944,7 @@ console.log(restored); // Original nested structure
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Loop Performance Comparison
 const data = Array.from({ length: 100000 }, (_, i) => i);
 
@@ -2137,7 +2226,7 @@ const virtualList = new VirtualList(document.getElementById('list'), items);
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Basic Axios Interceptors
 import axios from 'axios';
 
@@ -2559,7 +2648,7 @@ async function fetchUserData(userId) {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Strict Mode trong JavaScript
 'use strict'; // Global strict mode
 
@@ -3149,7 +3238,7 @@ function TextInput() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Class Component Lifecycle Complete
 class UserProfileClass extends React.Component {
   constructor(props) {
@@ -3394,7 +3483,7 @@ class ErrorBoundary extends React.Component {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. PureComponent - Class Component với shallow comparison
 import React, { PureComponent, Component, memo, useState, useCallback, useMemo } from 'react';
 
@@ -3996,7 +4085,7 @@ function KeyMistakesExample() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. useRef vs useState - Fundamental Differences
 import React, { useState, useRef, useEffect } from 'react';
 
@@ -4838,7 +4927,7 @@ useCallback Guidelines:
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Default Behavior - Child ALWAYS re-renders when parent re-renders
 import React, { useState, memo, useCallback, useMemo } from 'react';
 
@@ -5216,7 +5305,7 @@ Performance Guidelines:
 **Trả lời:**
 useState cho phép thêm state vào functional components.
 
-```javascript
+```typescript
 function Counter() {
   const [count, setCount] = useState(0);
   const [user, setUser] = useState({ name: '', email: '' });
@@ -5261,7 +5350,7 @@ function Counter() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 function ComponentLifecycle() {
   const [count, setCount] = useState(0);
   const [user, setUser] = useState(null);
@@ -5321,7 +5410,7 @@ function ComponentLifecycle() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // Custom Hook: useLocalStorage
 function useLocalStorage(key, initialValue) {
   const [storedValue, setStoredValue] = useState(() => {
@@ -5416,7 +5505,7 @@ function UserProfile({ userId }) {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // Context API - Tốt cho state ít thay đổi
 const ThemeContext = createContext();
 
@@ -5495,7 +5584,7 @@ const fetchUser = createAsyncThunk(
 
 **Trả lời:**
 
-```javascript
+```typescript
 // React.memo - Prevent unnecessary re-renders
 const ExpensiveComponent = React.memo(({ data, onUpdate }) => {
   console.log('ExpensiveComponent rendered');
@@ -5573,7 +5662,7 @@ function ParentComponent() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -5700,7 +5789,7 @@ function DynamicComponentLoader({ type, data }) {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Higher-Order Component (HOC)
 function withAuth(WrappedComponent) {
   return function WithAuthComponent(props) {
@@ -5861,7 +5950,7 @@ function ProtectedRoute({ children }) {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // Vấn đề với Direct DOM manipulation
 function updateListBadly(items) {
   const container = document.getElementById('list-container');
@@ -5935,7 +6024,7 @@ function VirtualizedList({ items, onItemClick }) {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // Bad: Import entire library
 import _ from 'lodash'; // Imports entire lodash (~70KB)
 import * as MUI from '@mui/material'; // Imports everything
@@ -6016,7 +6105,7 @@ module.exports = {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // React tự động escape JSX content, nhưng có exceptions:
 
 // Safe: React automatically escapes
@@ -6151,7 +6240,7 @@ function SecureForm() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // API service với security headers
 class SecureAPIService {
   constructor() {
@@ -6309,7 +6398,7 @@ function useCSP() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // Secure storage utility
 class SecureStorage {
   static encrypt(data, key) {
@@ -6560,7 +6649,7 @@ function SecureUserForm() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Module Federation với Webpack 5
 // Host Application (Shell)
 const ModuleFederationPlugin = require('@module-federation/webpack');
@@ -6787,7 +6876,7 @@ function useSharedState(storeId) {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Multi-layer caching system
 class AdvancedCacheManager {
   constructor() {
@@ -7152,7 +7241,7 @@ function useAdvancedQuery(key, fetcher, options = {}) {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Feature-Slice Design Architecture
 // features/user/model/store.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
@@ -7633,7 +7722,7 @@ function App() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Advanced Memory Leak Detection
 class MemoryLeakDetector {
   constructor() {
@@ -8020,7 +8109,7 @@ const OptimizedUserProfile = withPerformanceTracking(UserProfile, 'UserProfile')
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Advanced Security Headers Implementation
 class SecurityHeadersManager {
   constructor() {
@@ -8456,7 +8545,7 @@ class SecurityMonitor {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Advanced Error Tracking và Debugging
 class AdvancedErrorTracker {
   constructor() {
@@ -9050,7 +9139,7 @@ Mỗi câu hỏi đều có ví dụ code production-ready và giải thích chi
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. React Concurrent Mode - Time Slicing và Interruptible Rendering
 function App() {
   const [isPending, startTransition] = useTransition();
@@ -9265,7 +9354,7 @@ function InteractiveChart() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Migration từ React 17 to React 18
 // Before (React 17)
 import ReactDOM from 'react-dom';
@@ -9537,7 +9626,7 @@ function TabContent({ tab }) {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Single Responsibility Principle (SRP)
 // ❌ Bad: Component làm quá nhiều việc
 function BadUserProfile({ userId }) {
@@ -9935,7 +10024,7 @@ function App() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Feature-based Architecture
 /*
 src/
@@ -10369,7 +10458,7 @@ describe('UserCard', () => {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Advanced Memoization Strategies
 // ✅ Smart memoization với selective dependencies
 function ExpensiveCalculation({ data, filters, config }) {
@@ -10825,7 +10914,7 @@ function HighPerformanceApp() {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Unit Testing với React Testing Library
 // ✅ Component testing với best practices
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
@@ -11272,7 +11361,7 @@ module.exports = {
 
 **Trả lời:**
 
-```javascript
+```typescript
 // 1. Semantic HTML và ARIA Attributes
 // ✅ Proper semantic structure
 function AccessibleForm() {
@@ -12115,3 +12204,1245 @@ function NotificationSystem() {
 }
 */
 ```
+
+---
+
+## 💼 Câu Hỏi Kinh Nghiệm & Thực Tế
+
+*Phần này tập trung vào kinh nghiệm thực tế, cách xử lý vấn đề trong production và soft skills*
+
+### EXP1: Mô tả dự án frontend phức tạp nhất bạn từng làm?
+
+**Trả lời mẫu:**
+
+**Giải thích cách trả lời:**
+- Mô tả scope và complexity của dự án
+- Challenges gặp phải và cách giải quyết
+- Technologies sử dụng và lý do chọn
+- Kết quả đạt được và bài học rút ra
+
+```typescript
+// Ví dụ mô tả dự án e-commerce platform
+interface ProjectDescription {
+  name: string;
+  scope: string;
+  timeline: string;
+  teamSize: number;
+  technologies: string[];
+  challenges: Challenge[];
+  results: string[];
+}
+
+interface Challenge {
+  problem: string;
+  solution: string;
+  impact: string;
+}
+
+const complexProject: ProjectDescription = {
+  name: "Multi-vendor E-commerce Platform",
+  scope: "Full-stack e-commerce với real-time chat, payment integration, inventory management",
+  timeline: "8 tháng",
+  teamSize: 6,
+  technologies: [
+    "React 18", "TypeScript", "Next.js", "Redux Toolkit",
+    "React Query", "Socket.io", "Stripe API", "AWS S3"
+  ],
+  challenges: [
+    {
+      problem: "Performance issues với large product lists (10,000+ items)",
+      solution: "Implement virtual scrolling và server-side pagination với caching",
+      impact: "Giảm load time từ 8s xuống 1.2s"
+    },
+    {
+      problem: "Real-time inventory updates across multiple vendors",
+      solution: "WebSocket integration với optimistic updates và conflict resolution",
+      impact: "99.9% data consistency và instant updates"
+    },
+    {
+      problem: "Complex state management với nested forms và wizards",
+      solution: "Custom hooks với useReducer và context pattern",
+      impact: "Giảm bugs từ 15% xuống 3%"
+    }
+  ],
+  results: [
+    "Successfully launched với 50,000+ daily active users",
+    "Page load speed cải thiện 70%",
+    "Bug rate giảm 80% so với version cũ",
+    "Mobile conversion rate tăng 45%"
+  ]
+};
+
+// Cách present project trong interview
+function presentProject(): void {
+  console.log(`
+    📌 Project: ${complexProject.name}
+
+    🎯 Scope: ${complexProject.scope}
+    ⏱️ Timeline: ${complexProject.timeline}
+    👥 Team: ${complexProject.teamSize} developers
+
+    🛠️ Tech Stack:
+    ${complexProject.technologies.map(tech => `- ${tech}`).join('\n')}
+
+    🚧 Key Challenges & Solutions:
+    ${complexProject.challenges.map(challenge => `
+    Problem: ${challenge.problem}
+    Solution: ${challenge.solution}
+    Impact: ${challenge.impact}
+    `).join('\n')}
+
+    📊 Results:
+    ${complexProject.results.map(result => `- ${result}`).join('\n')}
+  `);
+}
+```
+
+### EXP2: Xử lý performance issue trong production như thế nào?
+
+**Trả lời mẫu:**
+
+**Quy trình xử lý performance issues:**
+
+```typescript
+interface PerformanceIssue {
+  type: 'loading' | 'runtime' | 'memory' | 'network';
+  symptoms: string[];
+  investigationSteps: string[];
+  solution: string;
+  prevention: string[];
+}
+
+class PerformanceTroubleshooter {
+  // Bước 1: Identify và measure the problem
+  identifyIssue(): PerformanceIssue[] {
+    return [
+      {
+        type: 'loading',
+        symptoms: [
+          "First Contentful Paint > 3s",
+          "Time to Interactive > 5s",
+          "Large bundle size (>1MB)"
+        ],
+        investigationSteps: [
+          "Sử dụng Lighthouse audit",
+          "Analyze webpack bundle với webpack-bundle-analyzer",
+          "Check Core Web Vitals trong Chrome DevTools"
+        ],
+        solution: `
+          - Code splitting: React.lazy() và dynamic imports
+          - Tree shaking để remove unused code
+          - Image optimization với next/image hoặc WebP format
+          - Preload critical resources
+        `,
+        prevention: [
+          "Set up performance budgets trong CI/CD",
+          "Regular bundle size monitoring",
+          "Performance testing trong staging"
+        ]
+      }
+    ];
+  }
+
+  // Bước 2: Real-world example - Slow loading issue
+  async optimizeLoadingPerformance(): Promise<void> {
+    // Before: All components loaded at once
+    // import AllComponents from './AllComponents';
+
+    // After: Code splitting và lazy loading
+    const HomePage = React.lazy(() => import('./pages/HomePage'));
+    const ProductPage = React.lazy(() => import('./pages/ProductPage'));
+    const CheckoutPage = React.lazy(() => import('./pages/CheckoutPage'));
+
+    // Preload critical data
+    const criticalData = await this.preloadCriticalData();
+
+    // Bundle splitting strategy
+    const optimization = {
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+          }
+        }
+      }
+    };
+  }
+
+  // Bước 3: Runtime performance optimization
+  optimizeRuntimePerformance(): void {
+    // Memory leak detection và fix
+    const memoryLeakSolutions = {
+      eventListeners: "Remove event listeners trong cleanup",
+      timers: "Clear intervals/timeouts trong useEffect cleanup",
+      subscriptions: "Unsubscribe observables và websockets",
+      domReferences: "Clear DOM references trong refs"
+    };
+
+    // Performance monitoring trong production
+    const monitoring = {
+      tools: ["New Relic", "Sentry Performance", "LogRocket"],
+      metrics: ["LCP", "FID", "CLS", "TTFB"],
+      alerts: "Set up alerts cho performance regressions"
+    };
+  }
+}
+
+// Real-world performance fix example
+const performanceFix: PerformanceIssue = {
+  type: 'runtime',
+  symptoms: [
+    "Trang product list lag khi scroll",
+    "Memory usage tăng liên tục",
+    "Browser freeze khi filter products"
+  ],
+  investigationSteps: [
+    "Profile với React DevTools Profiler",
+    "Memory tab trong Chrome DevTools",
+    "Performance tab để analyze main thread blocking"
+  ],
+  solution: `
+    1. Implement React.memo cho ProductCard components
+    2. Virtualization cho large lists với react-window
+    3. Debounce search input để giảm API calls
+    4. Optimize re-renders với useMemo cho expensive calculations
+    5. Replace inefficient lodash operations
+  `,
+  prevention: [
+    "Performance testing với Jest và @testing-library/react",
+    "Bundle size limits trong CI pipeline",
+    "Regular performance audits",
+    "User experience monitoring với RUM tools"
+  ]
+};
+```
+
+### EXP3: Debugging và troubleshooting trong môi trường thực tế?
+
+**Trả lời mẫu:**
+
+```typescript
+interface DebuggingStrategy {
+  environment: 'development' | 'staging' | 'production';
+  tools: string[];
+  approach: string[];
+  escalation: string[];
+}
+
+class ProductionDebugging {
+  // Debugging approach based on environment
+  getDebuggingStrategy(env: string): DebuggingStrategy {
+    const strategies: Record<string, DebuggingStrategy> = {
+      production: {
+        environment: 'production',
+        tools: [
+          "Sentry for error tracking",
+          "LogRocket for session replay",
+          "New Relic for performance monitoring",
+          "CloudWatch logs for server-side issues"
+        ],
+        approach: [
+          "Reproduce issue trong staging environment",
+          "Check error logs và user sessions",
+          "Analyze performance metrics",
+          "Use feature flags để isolate problems"
+        ],
+        escalation: [
+          "Hotfix deployment process",
+          "Rollback strategy",
+          "Communication với stakeholders",
+          "Post-mortem analysis"
+        ]
+      }
+    };
+
+    return strategies[env];
+  }
+
+  // Real debugging scenario
+  debugCriticalIssue(): void {
+    const scenario = {
+      issue: "Users không thể complete checkout process",
+      impact: "Revenue loss, customer complaints",
+
+      investigationProcess: [
+        "1. Check Sentry for JavaScript errors",
+        "2. Review payment gateway logs",
+        "3. Analyze user sessions với LogRocket",
+        "4. Test payment flow trong staging",
+        "5. Check recent deployments for correlation"
+      ],
+
+      rootCause: "Payment validation regex broke sau dependency update",
+
+      solution: [
+        "Immediate: Hotfix regex pattern",
+        "Short-term: Add comprehensive payment flow tests",
+        "Long-term: Implement payment flow monitoring"
+      ],
+
+      prevention: [
+        "End-to-end testing cho critical user flows",
+        "Dependency update testing protocol",
+        "Payment flow health checks",
+        "Staged deployment với canary releases"
+      ]
+    };
+  }
+
+  // Advanced debugging techniques
+  advancedDebuggingTechniques(): void {
+    // Source map debugging trong production
+    const sourceMapDebugging = {
+      setup: "Configure source maps cho production builds",
+      privacy: "Upload source maps to error tracking service only",
+      debugging: "Map error stack traces back to original code"
+    };
+
+    // Feature flag debugging
+    const featureFlagDebugging = {
+      isolation: "Use feature flags để isolate problematic features",
+      gradualRollout: "Gradually enable features để identify issues",
+      instantRollback: "Quick disable features nếu có problems"
+    };
+
+    // Performance debugging
+    const performanceDebugging = {
+      realUserMonitoring: "Track actual user performance metrics",
+      syntheticTesting: "Automated performance tests",
+      performanceBudgets: "Alert khi performance degrades"
+    };
+  }
+}
+```
+
+### EXP4: Làm việc với team và code review process?
+
+**Trả lời mẫu:**
+
+```typescript
+interface TeamCollaboration {
+  codeReviewProcess: CodeReviewProcess;
+  communicationTools: string[];
+  bestPractices: string[];
+  conflictResolution: string[];
+}
+
+interface CodeReviewProcess {
+  workflow: string[];
+  checklist: string[];
+  tools: string[];
+  standards: CodingStandards;
+}
+
+interface CodingStandards {
+  formatting: string;
+  naming: string[];
+  testing: string[];
+  documentation: string[];
+}
+
+class TeamWorkflow {
+  codeReviewProcess: CodeReviewProcess = {
+    workflow: [
+      "1. Create feature branch từ main/develop",
+      "2. Implement feature với unit tests",
+      "3. Self-review code trước khi create PR",
+      "4. Create Pull Request với clear description",
+      "5. Assign reviewers (ít nhất 2 người)",
+      "6. Address review comments",
+      "7. Get approval và merge"
+    ],
+
+    checklist: [
+      "✅ Code follows established patterns",
+      "✅ Tests cover new functionality",
+      "✅ No console.logs hoặc debugging code",
+      "✅ TypeScript types are properly defined",
+      "✅ Performance implications considered",
+      "✅ Accessibility requirements met",
+      "✅ Error handling implemented",
+      "✅ Documentation updated"
+    ],
+
+    tools: [
+      "GitHub/GitLab for PR reviews",
+      "ESLint + Prettier for code formatting",
+      "Husky for pre-commit hooks",
+      "SonarQube for code quality",
+      "Jest for testing coverage"
+    ],
+
+    standards: {
+      formatting: "Prettier với team config",
+      naming: [
+        "Components: PascalCase",
+        "Functions: camelCase",
+        "Constants: UPPER_SNAKE_CASE",
+        "Files: kebab-case for components"
+      ],
+      testing: [
+        "Unit tests cho all functions",
+        "Integration tests cho components",
+        "E2E tests cho critical flows",
+        "Minimum 80% code coverage"
+      ],
+      documentation: [
+        "JSDoc cho complex functions",
+        "README cho each module",
+        "API documentation với OpenAPI",
+        "Component stories trong Storybook"
+      ]
+    }
+  };
+
+  // Effective code review practices
+  conductCodeReview(): void {
+    const reviewGuidelines = {
+      positive: [
+        "Recognize good code và improvements",
+        "Suggest alternatives thay vì chỉ criticism",
+        "Ask questions để understand reasoning",
+        "Provide specific examples"
+      ],
+
+      constructive: [
+        "Focus on code, not person",
+        "Explain 'why' behind suggestions",
+        "Offer to pair program for complex issues",
+        "Link to documentation hoặc examples"
+      ],
+
+      efficient: [
+        "Review small PRs (< 400 lines)",
+        "Use async review cho non-urgent changes",
+        "Schedule sync discussion cho major changes",
+        "Use draft PRs để get early feedback"
+      ]
+    };
+  }
+
+  // Handling team conflicts
+  resolveTeamConflicts(): void {
+    const conflictScenarios = {
+      technicalDisagreements: {
+        approach: [
+          "Research pros/cons của each approach",
+          "Create small POCs để compare",
+          "Involve senior developer/architect",
+          "Document decision reasoning"
+        ]
+      },
+
+      codeStyleDisputes: {
+        approach: [
+          "Refer to established team guidelines",
+          "Update guidelines if needed",
+          "Use automated tooling to enforce",
+          "Focus on consistency over personal preference"
+        ]
+      },
+
+      priorityConflicts: {
+        approach: [
+          "Discuss với Product Manager/Tech Lead",
+          "Consider business impact vs technical debt",
+          "Negotiate timeline adjustments",
+          "Document tradeoffs made"
+        ]
+      }
+    };
+  }
+}
+```
+
+### EXP5: Migration và upgrade project strategies?
+
+**Trả lời mẫu:**
+
+```typescript
+interface MigrationStrategy {
+  type: 'framework' | 'library' | 'tooling' | 'architecture';
+  approach: 'bigBang' | 'incremental' | 'parallel';
+  phases: MigrationPhase[];
+  riskMitigation: string[];
+}
+
+interface MigrationPhase {
+  name: string;
+  duration: string;
+  deliverables: string[];
+  successCriteria: string[];
+}
+
+class ProjectMigration {
+  // Real-world migration example: React 16 to React 18
+  reactMigrationStrategy: MigrationStrategy = {
+    type: 'framework',
+    approach: 'incremental',
+    phases: [
+      {
+        name: "Phase 1: Assessment & Planning",
+        duration: "2 weeks",
+        deliverables: [
+          "Compatibility audit của dependencies",
+          "Breaking changes analysis",
+          "Migration timeline",
+          "Testing strategy"
+        ],
+        successCriteria: [
+          "All dependencies compatibility confirmed",
+          "Risk assessment completed",
+          "Team alignment on approach"
+        ]
+      },
+      {
+        name: "Phase 2: Core Dependencies Update",
+        duration: "3 weeks",
+        deliverables: [
+          "React 18 installation",
+          "Critical dependencies update",
+          "Build system adjustments",
+          "Basic functionality testing"
+        ],
+        successCriteria: [
+          "Application builds successfully",
+          "No runtime errors in development",
+          "Core features working"
+        ]
+      },
+      {
+        name: "Phase 3: Feature-by-Feature Migration",
+        duration: "6 weeks",
+        deliverables: [
+          "Migrate to new React 18 features",
+          "Update state management patterns",
+          "Performance optimizations",
+          "Comprehensive testing"
+        ],
+        successCriteria: [
+          "All features migrated successfully",
+          "Performance metrics maintained/improved",
+          "Full test coverage"
+        ]
+      }
+    ],
+    riskMitigation: [
+      "Feature flags cho gradual rollout",
+      "Comprehensive rollback plan",
+      "Parallel environment testing",
+      "User acceptance testing"
+    ]
+  };
+
+  // Legacy system modernization approach
+  modernizeLegacySystem(): void {
+    const modernizationStrategy = {
+      currentState: {
+        tech: "jQuery, vanilla JS, server-side rendering",
+        issues: [
+          "Poor maintainability",
+          "Slow development cycles",
+          "Limited mobile responsiveness",
+          "SEO và performance issues"
+        ]
+      },
+
+      targetState: {
+        tech: "React 18, TypeScript, Next.js, modern CSS",
+        benefits: [
+          "Component-based architecture",
+          "Better developer experience",
+          "Improved performance",
+          "Mobile-first responsive design"
+        ]
+      },
+
+      migrationApproach: {
+        strategy: "Strangler Fig Pattern",
+        steps: [
+          "1. Set up new React app alongside legacy",
+          "2. Migrate page by page",
+          "3. Share common components/assets",
+          "4. Gradually replace legacy routes",
+          "5. Retire legacy system"
+        ]
+      }
+    };
+  }
+
+  // Database migration coordination
+  coordinateWithBackend(): void {
+    const backendCoordination = {
+      challenges: [
+        "API contract changes",
+        "Data format modifications",
+        "Authentication updates",
+        "Performance impacts"
+      ],
+
+      solutions: [
+        "API versioning strategy",
+        "Backward compatibility period",
+        "Joint testing environments",
+        "Incremental data migration"
+      ],
+
+      communication: [
+        "Daily standups với backend team",
+        "Shared documentation",
+        "Integration testing schedule",
+        "Rollback coordination plan"
+      ]
+    };
+  }
+}
+```
+
+### EXP6: Xử lý legacy code và technical debt?
+
+**Trả lời mẫu:**
+
+```typescript
+interface TechnicalDebt {
+  type: 'code' | 'architecture' | 'tooling' | 'documentation';
+  priority: 'high' | 'medium' | 'low';
+  impact: string;
+  effort: string;
+  strategy: string;
+}
+
+class TechnicalDebtManagement {
+  // Assess và categorize technical debt
+  assessTechnicalDebt(): TechnicalDebt[] {
+    return [
+      {
+        type: 'code',
+        priority: 'high',
+        impact: "Blocking new feature development, causing bugs",
+        effort: "3 sprints",
+        strategy: "Refactor critical paths first, add comprehensive tests"
+      },
+      {
+        type: 'tooling',
+        priority: 'medium',
+        impact: "Slower development cycles, developer frustration",
+        effort: "1 sprint",
+        strategy: "Upgrade build tools, improve CI/CD pipeline"
+      }
+    ];
+  }
+
+  // Legacy code refactoring strategy
+  refactorLegacyCode(): void {
+    const refactoringApproach = {
+      // Phase 1: Understand và document
+      understanding: [
+        "Code archaeology - trace through complex functions",
+        "Document current behavior với tests",
+        "Identify code smells và anti-patterns",
+        "Map dependencies và side effects"
+      ],
+
+      // Phase 2: Safe refactoring
+      safeRefactoring: [
+        "Write characterization tests cho existing behavior",
+        "Extract methods để break down complex functions",
+        "Introduce TypeScript types gradually",
+        "Remove dead code carefully"
+      ],
+
+      // Phase 3: Architectural improvements
+      architecture: [
+        "Separate concerns (UI, business logic, data)",
+        "Introduce proper abstraction layers",
+        "Implement design patterns appropriately",
+        "Improve error handling và logging"
+      ]
+    };
+
+    // Example: Refactoring a complex legacy component
+    this.refactorComplexComponent();
+  }
+
+  refactorComplexComponent(): void {
+    // Before: 500-line component với mixed concerns
+    const legacyIssues = {
+      problems: [
+        "Mixing UI rendering với business logic",
+        "No TypeScript types",
+        "Inline styles và hardcoded values",
+        "No error boundaries",
+        "Difficult to test"
+      ],
+
+      refactoringSteps: [
+        "1. Add PropTypes/TypeScript interfaces",
+        "2. Extract business logic to custom hooks",
+        "3. Break down into smaller components",
+        "4. Move styles to CSS modules",
+        "5. Add proper error handling",
+        "6. Write comprehensive tests"
+      ]
+    };
+
+    // After: Clean, testable, maintainable code
+    const improvedArchitecture = {
+      structure: [
+        "Container component cho state management",
+        "Presentational components cho UI",
+        "Custom hooks cho business logic",
+        "Separate files cho constants và types",
+        "Comprehensive test coverage"
+      ]
+    };
+  }
+
+  // Managing technical debt backlog
+  manageTechnicalDebtBacklog(): void {
+    const debtManagement = {
+      prioritization: [
+        "Business impact assessment",
+        "Development velocity impact",
+        "Risk assessment (security, performance)",
+        "Effort estimation"
+      ],
+
+      communication: [
+        "Regular tech debt reviews với stakeholders",
+        "Include debt work trong sprint planning",
+        "Document ROI của debt reduction",
+        "Celebrate debt reduction wins"
+      ],
+
+      prevention: [
+        "Code review standards",
+        "Definition of Done includes quality criteria",
+        "Regular architecture reviews",
+        "Automated code quality checks"
+      ]
+    };
+  }
+}
+```
+
+### EXP7: Production deployment và monitoring experience?
+
+**Trả lời mẫu:**
+
+```typescript
+interface DeploymentStrategy {
+  type: 'blueGreen' | 'canary' | 'rollingUpdate' | 'feature';
+  tools: string[];
+  pipeline: DeploymentPipeline;
+  monitoring: MonitoringSetup;
+}
+
+interface DeploymentPipeline {
+  stages: string[];
+  gates: string[];
+  rollback: string[];
+}
+
+interface MonitoringSetup {
+  metrics: string[];
+  alerts: AlertConfig[];
+  tools: string[];
+}
+
+interface AlertConfig {
+  metric: string;
+  threshold: string;
+  action: string;
+}
+
+class ProductionOperations {
+  deploymentStrategy: DeploymentStrategy = {
+    type: 'canary',
+    tools: [
+      "GitHub Actions for CI/CD",
+      "Docker for containerization",
+      "AWS ECS/Kubernetes for orchestration",
+      "CloudFront for CDN",
+      "Route 53 for DNS management"
+    ],
+
+    pipeline: {
+      stages: [
+        "1. Code commit triggers build",
+        "2. Run automated tests (unit, integration, e2e)",
+        "3. Build và push Docker image",
+        "4. Deploy to staging environment",
+        "5. Run smoke tests",
+        "6. Deploy to production (canary)",
+        "7. Monitor metrics for 30 minutes",
+        "8. Full production rollout if healthy"
+      ],
+
+      gates: [
+        "All tests must pass (100%)",
+        "Code coverage > 80%",
+        "Security scan passes",
+        "Performance benchmarks met",
+        "Manual approval for production"
+      ],
+
+      rollback: [
+        "Automated rollback on critical errors",
+        "Database migration rollback strategy",
+        "DNS cutover for immediate traffic switch",
+        "Communication plan for incidents"
+      ]
+    },
+
+    monitoring: {
+      metrics: [
+        "Error rate (< 0.1%)",
+        "Response time (< 200ms p95)",
+        "CPU usage (< 70%)",
+        "Memory usage (< 80%)",
+        "Business metrics (conversion rate)"
+      ],
+
+      alerts: [
+        {
+          metric: "Error rate",
+          threshold: "> 1% for 5 minutes",
+          action: "Auto-rollback and page on-call engineer"
+        },
+        {
+          metric: "Response time",
+          threshold: "> 500ms p95 for 10 minutes",
+          action: "Alert development team"
+        }
+      ],
+
+      tools: [
+        "New Relic for application monitoring",
+        "CloudWatch for infrastructure metrics",
+        "PagerDuty for incident management",
+        "Grafana for custom dashboards"
+      ]
+    }
+  };
+
+  // Real deployment incident handling
+  handleDeploymentIncident(): void {
+    const incidentResponse = {
+      detection: [
+        "Automated alerting detected error spike",
+        "Customer support reported issues",
+        "Monitoring dashboard showed anomalies"
+      ],
+
+      response: [
+        "1. Immediate assessment - check recent deployments",
+        "2. Identify scope - which features affected",
+        "3. Rollback decision within 10 minutes",
+        "4. Execute rollback procedure",
+        "5. Verify system recovery",
+        "6. Internal communication",
+        "7. Customer communication if needed"
+      ],
+
+      postMortem: [
+        "Root cause analysis within 24 hours",
+        "Action items để prevent recurrence",
+        "Process improvements",
+        "Share learnings với team"
+      ]
+    };
+  }
+
+  // Advanced deployment techniques
+  advancedDeploymentTechniques(): void {
+    const techniques = {
+      featureFlags: {
+        purpose: "Decouple deployment từ feature release",
+        implementation: "LaunchDarkly hoặc custom solution",
+        benefits: [
+          "Safe production testing",
+          "Gradual user rollout",
+          "Instant feature disable",
+          "A/B testing capabilities"
+        ]
+      },
+
+      canaryDeployment: {
+        process: [
+          "Deploy to 5% of servers first",
+          "Monitor error rates và performance",
+          "Gradually increase traffic if healthy",
+          "Full rollout after validation"
+        ],
+        monitoring: [
+          "Error rate comparison",
+          "Performance metrics",
+          "User experience metrics",
+          "Business KPIs"
+        ]
+      },
+
+      blueGreenDeployment: {
+        setup: [
+          "Maintain two identical environments",
+          "Deploy to inactive environment",
+          "Switch traffic instantly",
+          "Keep old environment for quick rollback"
+        ],
+        advantages: [
+          "Zero downtime deployment",
+          "Instant rollback capability",
+          "Full testing in production environment"
+        ]
+      }
+    };
+  }
+}
+```
+
+### EXP8: Những thách thức lớn nhất khi scale application?
+
+**Trả lời mẫu:**
+
+```typescript
+interface ScalingChallenge {
+  category: 'performance' | 'architecture' | 'team' | 'data';
+  challenge: string;
+  impact: string;
+  solution: string;
+  metrics: string[];
+}
+
+class ApplicationScaling {
+  scalingChallenges: ScalingChallenge[] = [
+    {
+      category: 'performance',
+      challenge: "Frontend performance degradation với large datasets",
+      impact: "User experience drop, higher bounce rate, customer complaints",
+      solution: `
+        - Implement virtual scrolling cho large lists
+        - Data pagination và infinite scroll
+        - Aggressive caching strategy
+        - Code splitting và lazy loading
+        - CDN optimization cho static assets
+      `,
+      metrics: [
+        "Page load time: 8s → 2s",
+        "Time to Interactive: 12s → 3s",
+        "Bounce rate: 45% → 15%"
+      ]
+    },
+
+    {
+      category: 'architecture',
+      challenge: "Monolithic frontend becomes unmaintainable",
+      impact: "Slow development, frequent conflicts, difficult deployments",
+      solution: `
+        - Micro-frontend architecture
+        - Module federation với Webpack 5
+        - Independent team ownership
+        - Shared component library
+        - API contract standardization
+      `,
+      metrics: [
+        "Deploy frequency: weekly → daily",
+        "Lead time: 2 weeks → 3 days",
+        "Team productivity: 40% increase"
+      ]
+    }
+  ];
+
+  // Real-world scaling scenario
+  scaleEcommerceApplication(): void {
+    const scenario = {
+      initialState: {
+        users: "10,000 daily active users",
+        architecture: "Single React SPA",
+        performance: "Acceptable với small catalog",
+        team: "3 frontend developers"
+      },
+
+      growthChallenges: {
+        traffic: "100,000+ daily active users",
+        catalog: "50,000+ products với complex filtering",
+        features: "Multi-language, multi-currency, personalization",
+        team: "15+ developers across 4 teams"
+      },
+
+      scalingSolutions: {
+        performance: [
+          "Product catalog virtualization",
+          "Search results pagination",
+          "Image lazy loading và optimization",
+          "Service worker caching",
+          "GraphQL query optimization"
+        ],
+
+        architecture: [
+          "Micro-frontend split by domain",
+          "Shared design system",
+          "API gateway pattern",
+          "Event-driven communication",
+          "Independent deployment pipelines"
+        ],
+
+        team: [
+          "Domain-driven team structure",
+          "Clear API contracts",
+          "Automated testing suites",
+          "Documentation standards",
+          "Code ownership models"
+        ]
+      }
+    };
+  }
+
+  // Performance scaling strategies
+  performanceScalingStrategies(): void {
+    const strategies = {
+      clientSide: [
+        "Bundle splitting và lazy loading",
+        "Aggressive caching với service workers",
+        "Image optimization và WebP format",
+        "Critical CSS inlining",
+        "Prefetching critical resources"
+      ],
+
+      serverSide: [
+        "CDN deployment globally",
+        "Server-side rendering optimization",
+        "API response compression",
+        "Database query optimization",
+        "Caching layers (Redis, Memcached)"
+      ],
+
+      monitoring: [
+        "Real User Monitoring (RUM)",
+        "Synthetic performance testing",
+        "Core Web Vitals tracking",
+        "Business metrics correlation",
+        "A/B testing for optimizations"
+      ]
+    };
+  }
+
+  // Team scaling challenges
+  teamScalingChallenges(): void {
+    const challenges = {
+      communication: {
+        problem: "Information silos giữa teams",
+        solution: [
+          "Regular cross-team sync meetings",
+          "Shared documentation hub",
+          "Architecture decision records",
+          "Demo sessions cho knowledge sharing"
+        ]
+      },
+
+      codeConsistency: {
+        problem: "Different coding standards across teams",
+        solution: [
+          "Shared ESLint/Prettier configuration",
+          "Component library with guidelines",
+          "Code review cross-team participation",
+          "Automated quality gates"
+        ]
+      },
+
+      deployment: {
+        problem: "Deployment conflicts và dependencies",
+        solution: [
+          "Independent deployment pipelines",
+          "Feature flags cho safe releases",
+          "Automated dependency checking",
+          "Rollback automation"
+        ]
+      }
+    };
+  }
+}
+```
+
+### EXP9: Trend và technologies mới bạn quan tâm?
+
+**Trả lời mẫu:**
+
+```typescript
+interface TechnologyTrend {
+  name: string;
+  category: 'framework' | 'tooling' | 'methodology' | 'standard';
+  maturity: 'experimental' | 'emerging' | 'established';
+  impact: 'high' | 'medium' | 'low';
+  adoptionPlan: string;
+  learningResources: string[];
+}
+
+class TechnologyTrends {
+  currentTrends: TechnologyTrend[] = [
+    {
+      name: "React Server Components",
+      category: 'framework',
+      maturity: 'emerging',
+      impact: 'high',
+      adoptionPlan: `
+        - Experiment trong pet projects
+        - Evaluate với Next.js 13+ App Router
+        - Consider cho new projects với heavy server logic
+        - Gradual adoption strategy
+      `,
+      learningResources: [
+        "React docs về Server Components",
+        "Next.js App Router documentation",
+        "Dan Abramov's blog posts",
+        "Hands-on practice projects"
+      ]
+    },
+
+    {
+      name: "WebAssembly (WASM)",
+      category: 'standard',
+      maturity: 'established',
+      impact: 'high',
+      adoptionPlan: `
+        - Learn Rust/C++ for WASM compilation
+        - Identify performance-critical modules
+        - Prototype computation-heavy features
+        - Evaluate bundle size tradeoffs
+      `,
+      learningResources: [
+        "MDN WebAssembly documentation",
+        "Rust và WebPack integration",
+        "Performance benchmarking tools",
+        "WASM community projects"
+      ]
+    }
+  ];
+
+  // Why these trends matter
+  explainTrendRelevance(): void {
+    const trendAnalysis = {
+      serverComponents: {
+        benefits: [
+          "Better SEO và initial page load",
+          "Reduced client bundle size",
+          "Improved developer experience",
+          "Better data fetching patterns"
+        ],
+        concerns: [
+          "Learning curve for mental model shift",
+          "Tooling ecosystem still maturing",
+          "Complexity trong debugging",
+          "Limited browser compatibility for some features"
+        ],
+        useCase: "Perfect cho content-heavy applications như blogs, e-commerce"
+      },
+
+      webAssembly: {
+        benefits: [
+          "Near-native performance for CPU-intensive tasks",
+          "Language flexibility (Rust, C++, Go)",
+          "Better security model",
+          "Complementary to JavaScript"
+        ],
+        concerns: [
+          "Additional complexity trong build process",
+          "Limited DOM access",
+          "Bundle size considerations",
+          "Debugging challenges"
+        ],
+        useCase: "Image processing, games, scientific computing, cryptography"
+      }
+    };
+  }
+
+  // Learning và adoption strategy
+  technologyAdoptionStrategy(): void {
+    const strategy = {
+      evaluation: [
+        "Research community adoption và stability",
+        "Evaluate learning curve vs benefits",
+        "Consider team skillset và capacity",
+        "Assess project requirements fit"
+      ],
+
+      experimentation: [
+        "Start với personal projects",
+        "Create proofs of concept",
+        "Compare performance benchmarks",
+        "Document lessons learned"
+      ],
+
+      gradualAdoption: [
+        "Introduce trong low-risk features",
+        "Train team members gradually",
+        "Monitor production impact carefully",
+        "Build internal expertise"
+      ],
+
+      stayingCurrent: [
+        "Follow key developers trên Twitter",
+        "Subscribe to relevant newsletters",
+        "Attend conferences và meetups",
+        "Participate trong open source projects"
+      ]
+    };
+  }
+
+  // Industry trends observation
+  industryTrendsAnalysis(): void {
+    const trends = {
+      2024Predictions: [
+        "AI-assisted development tools maturation",
+        "Edge computing adoption for frontend",
+        "Progressive Web Apps renaissance",
+        "TypeScript continued dominance",
+        "Performance-first development culture"
+      ],
+
+      emergingPatterns: [
+        "Resumable frameworks (Qwik)",
+        "Islands architecture (Astro)",
+        "Edge-first SSR",
+        "Build-time optimizations",
+        "Developer experience focus"
+      ],
+
+      learningPriorities: [
+        "Core web fundamentals remain critical",
+        "Performance optimization skills",
+        "Accessibility expertise",
+        "Security best practices",
+        "Cross-platform development"
+      ]
+    };
+  }
+}
+```
+
+---
+
+## 🎯 Tổng Kết Câu Hỏi Kinh Nghiệm
+
+**Cách chuẩn bị cho các câu hỏi kinh nghiệm:**
+
+1. **Chuẩn bị STAR format**: Situation, Task, Action, Result
+2. **Quantify achievements**: Sử dụng số liệu cụ thể
+3. **Highlight problem-solving**: Tập trung vào cách giải quyết vấn đề
+4. **Show growth mindset**: Demonstrative learning từ failures
+5. **Technical depth**: Sẵn sàng deep dive vào technical details
+
+**Tips cho phỏng vấn:**
+- ✅ Chuẩn bị 2-3 dự án chi tiết để mô tả
+- ✅ Practice explaining complex technical concepts simply
+- ✅ Have specific examples của challenges và solutions
+- ✅ Show passion for continuous learning
+- ✅ Demonstrate collaboration và leadership skills
