@@ -1,6 +1,6 @@
-# 📚 Câu Hỏi 
+# 📚 Câu Hỏi Frontend Interview - Từ Cơ Bản Đến Senior
 
-> **Tổng cộng: 23 câu hỏi cơ bản/trung cấp + 6 câu nâng cao + 7 câu React advanced + 10 câu TypeScript + 9 câu kinh nghiệm = 55 câu hỏi**
+> **Tổng cộng: 23 câu hỏi cơ bản/trung cấp + 6 câu nâng cao + 7 câu React advanced + 10 câu TypeScript + 15 câu CSS/HTML + 9 câu kinh nghiệm = 70 câu hỏi**
 >
 > **Tất cả examples được viết bằng TypeScript với chú thích tiếng Việt**
 
@@ -11,6 +11,7 @@
 - 🔴 [Câu Hỏi Nâng Cao](#câu-hỏi-nâng-cao-senior-level)
 - 🚀 [React Advanced Topics](#🚀-react-advanced-topics--modern-features---7-câu)
 - 💙 [TypeScript Advanced](#💙-typescript-advanced-topics)
+- 🎨 [CSS & HTML Advanced](#🎨-css--html-advanced-topics)
 - 💼 [Câu Hỏi Kinh Nghiệm](#💼-câu-hỏi-kinh-nghiệm--thực-tế)
 
 ## 📋 Mục Lục Tổng Kết
@@ -82,6 +83,23 @@
 - **[TS9](#ts9-static-typing-typeof-keyof---advanced-type-operations)**: Static Typing, `typeof`, `keyof` - Advanced Type Operations?
 - **[TS10](#ts10-oop-trong-typescript---abstract-class-implement-extend)**: OOP trong TypeScript - Abstract Class, Implement, Extend?
 
+### 🎨 **CSS & HTML Advanced Topics - 15 câu**
+- **[CSS1](#css1-em-rem-vs-px---khi-nào-sử-dụng-cái-nào)**: `em` (parent) vs `rem` (root) vs `px` - Khi nào sử dụng cái nào?
+- **[CSS2](#css2-css-solutions---module-css-styled-components-inline-styles)**: CSS Solutions - Module CSS, Styled Components, Inline Styles?
+- **[CSS3](#css3-css-specificity---cách-tính-và-best-practices)**: CSS Specificity - Cách tính và best practices?
+- **[CSS4](#css4-position-absolute-vs-relative-vs-static-vs-fixed)**: Position: absolute vs relative vs static vs fixed?
+- **[CSS5](#css5-css-variables-vs-scss-vs-bem-methodology)**: CSS Variables vs SCSS vs BEM Methodology?
+- **[CSS6](#css6-div-vs-span---semantic-differences-và-use-cases)**: `div` vs `span` - Semantic differences và use cases?
+- **[CSS7](#css7-margin-vs-padding-và-box-model-concepts)**: Margin vs Padding và Box Model concepts?
+- **[CSS8](#css8-build-theme-system---css-variables-và-design-tokens)**: Build Theme System - CSS Variables và Design Tokens?
+- **[CSS9](#css9-css-reset-vs-normalize---tại-sao-cần-và-cách-sử-dụng)**: CSS Reset vs Normalize - Tại sao cần và cách sử dụng?
+- **[CSS10](#css10-pseudo-classes-và-pseudo-elements-trong-css)**: Pseudo-classes và Pseudo-elements trong CSS?
+- **[CSS11](#css11-display-none-vs-visibility-hidden---performance-impact)**: `display: none` vs `visibility: hidden` - Performance Impact?
+- **[CSS12](#css12-flexbox-vs-css-grid---khi-nào-sử-dụng-cái-nào)**: Flexbox vs CSS Grid - Khi nào sử dụng cái nào?
+- **[CSS13](#css13-css-frameworks---tailwind-vs-mui-vs-ant-design)**: CSS Frameworks - Tailwind vs MUI vs Ant Design?
+- **[CSS14](#css14-html5-semantic-elements---modern-web-standards)**: HTML5 Semantic Elements - Modern Web Standards?
+- **[CSS15](#css15-script-defer-vs-async---performance-optimization)**: Script `defer` vs `async` - Performance Optimization?
+
 ## 🎯 **Phân loại theo chủ đề:**
 
 ### **JavaScript Core (13 câu)**
@@ -115,6 +133,9 @@
 ### **TypeScript Advanced (10 câu)**
 [TS1](#ts1-utility-types-trong-typescript---cách-sử-dụng-và-ứng-dụng), [TS2](#ts2-as-const-vs-enum---khi-nào-sử-dụng-cái-nào), [TS3](#ts3-type-vs-interface---sự-khác-biệt-và-best-practices), [TS4](#ts4-browser-có-thể-chạy-typescript-không---tại-sao), [TS5](#ts5-type-narrowing-trong-typescript---cách-hoạt-động), [TS6](#ts6-unknown-vs-any---sự-khác-biệt-và-khi-nào-sử-dụng), [TS7](#ts7-decorator-trong-typescript---khái-niệm-và-ứng-dụng), [TS8](#ts8-generics-trong-typescript---concept-và-examples), [TS9](#ts9-static-typing-typeof-keyof---advanced-type-operations), [TS10](#ts10-oop-trong-typescript---abstract-class-implement-extend)
 
+### **CSS & HTML Advanced (15 câu)**
+[CSS1](#css1-em-rem-vs-px---khi-nào-sử-dụng-cái-nào), [CSS2](#css2-css-solutions---module-css-styled-components-inline-styles), [CSS3](#css3-css-specificity---cách-tính-và-best-practices), [CSS4](#css4-position-absolute-vs-relative-vs-static-vs-fixed), [CSS5](#css5-css-variables-vs-scss-vs-bem-methodology), [CSS6](#css6-div-vs-span---semantic-differences-và-use-cases), [CSS7](#css7-margin-vs-padding-và-box-model-concepts), [CSS8](#css8-build-theme-system---css-variables-và-design-tokens), [CSS9](#css9-css-reset-vs-normalize---tại-sao-cần-và-cách-sử-dụng), [CSS10](#css10-pseudo-classes-và-pseudo-elements-trong-css), [CSS11](#css11-display-none-vs-visibility-hidden---performance-impact), [CSS12](#css12-flexbox-vs-css-grid---khi-nào-sử-dụng-cái-nào), [CSS13](#css13-css-frameworks---tailwind-vs-mui-vs-ant-design), [CSS14](#css14-html5-semantic-elements---modern-web-standards), [CSS15](#css15-script-defer-vs-async---performance-optimization)
+
 ### **Experience & Practical (9 câu)**
 [EXP1](#exp1-mô-tả-dự-án-frontend-phức-tạp-nhất-bạn-từng-làm), [EXP2](#exp2-xử-lý-performance-issue-trong-production-như-thế-nào), [EXP3](#exp3-debugging-và-troubleshooting-trong-môi-trường-thực-tế), [EXP4](#exp4-làm-việc-với-team-và-code-review-process), [EXP5](#exp5-migration-và-upgrade-project-strategies), [EXP6](#exp6-xử-lý-legacy-code-và-technical-debt), [EXP7](#exp7-production-deployment-và-monitoring-experience), [EXP8](#exp8-những-thách-thức-lớn-nhất-khi-scale-application), [EXP9](#exp9-trend-và-technologies-mới-bạn-quan-tâm)
 
@@ -131,7 +152,15 @@
 - **[EXP8](#exp8-những-thách-thức-lớn-nhất-khi-scale-application)**: Những thách thức lớn nhất khi scale application?
 - **[EXP9](#exp9-trend-và-technologies-mới-bạn-quan-tâm)**: Trend và technologies mới bạn quan tâm?
 
----
+
+## Other
+NPM và các thư viện dùng cho frontend phổ biến và tin cậy, giới thiệu các nhiều các tốt
+JS: lodash,
+mã hoá: crtypro, bryppt,....
+drag: ...,
+image,...
+hook: ...
+Theme:,...
 
 ---
 
@@ -13456,6 +13485,10520 @@ Visit [typescriptlang.org/play](https://typescriptlang.org/play) để see compi
 Always emphasize rằng TypeScript **MUST BE COMPILED** to JavaScript trước khi browser có thể run. Đây là **fundamental difference** giữa development và production environments!
 
 **GHI NHỚ:** TypeScript in browser = **JavaScript with extra steps!** 🔄
+
+---
+
+### TS5: Type Narrowing trong TypeScript - Cách hoạt động?
+
+**Trả lời:**
+
+Type Narrowing là **CORE CONCEPT** trong TypeScript để **THU HẸP TYPE** từ union type thành specific type. Đây là **ADVANCED TECHNIQUE** giúp TypeScript hiểu chính xác type trong runtime.
+
+#### **🔥 FUNDAMENTAL CONCEPT:**
+
+**Type Narrowing = Từ WIDE TYPE → NARROW TYPE**
+
+```typescript
+// 🌐 WIDE TYPE (Union)
+type StringOrNumber = string | number;
+
+function processValue(value: StringOrNumber) {
+  // 🔍 NARROWING: Thu hẹp type để TypeScript hiểu rõ
+  if (typeof value === "string") {
+    // ✅ TypeScript biết: value is STRING
+    return value.toUpperCase(); // ✅ String methods available
+  } else {
+    // ✅ TypeScript biết: value is NUMBER
+    return value.toFixed(2); // ✅ Number methods available
+  }
+}
+```
+
+#### **🛠️ CÁC PHƯƠNG PHÁP TYPE NARROWING:**
+
+**1. typeof Guards:**
+```typescript
+function handleInput(input: string | number | boolean) {
+  if (typeof input === "string") {
+    console.log(`String: ${input.length} characters`); // ✅ string methods
+  } else if (typeof input === "number") {
+    console.log(`Number: ${input.toFixed(2)}`); // ✅ number methods
+  } else {
+    console.log(`Boolean: ${input ? "true" : "false"}`); // ✅ boolean context
+  }
+}
+
+// 📝 GHI NHỚ: typeof returns "string" | "number" | "boolean" | "object" | "undefined" | "function"
+```
+
+**2. instanceof Guards:**
+```typescript
+class Dog {
+  bark() { return "Woof!"; }
+}
+
+class Cat {
+  meow() { return "Meow!"; }
+}
+
+function makeSound(animal: Dog | Cat) {
+  if (animal instanceof Dog) {
+    return animal.bark(); // ✅ TypeScript knows it's Dog
+  } else {
+    return animal.meow(); // ✅ TypeScript knows it's Cat
+  }
+}
+
+// 📝 GHI NHỚ: instanceof kiểm tra prototype chain
+```
+
+**3. in Operator (Property Check):**
+```typescript
+interface Bird {
+  fly(): void;
+  feathers: number;
+}
+
+interface Fish {
+  swim(): void;
+  scales: number;
+}
+
+function move(animal: Bird | Fish) {
+  if ("fly" in animal) {
+    animal.fly(); // ✅ TypeScript knows it's Bird
+    console.log(`Bird has ${animal.feathers} feathers`);
+  } else {
+    animal.swim(); // ✅ TypeScript knows it's Fish
+    console.log(`Fish has ${animal.scales} scales`);
+  }
+}
+
+// 📝 GHI NHỚ: "property" in object kiểm tra property existence
+```
+
+**4. Literal Type Guards:**
+```typescript
+type Status = "loading" | "success" | "error";
+
+function handleStatus(status: Status) {
+  if (status === "loading") {
+    return "Đang tải..."; // ✅ Exact literal type
+  } else if (status === "success") {
+    return "Thành công!"; // ✅ Exact literal type
+  } else {
+    return "Có lỗi xảy ra!"; // ✅ TypeScript knows it's "error"
+  }
+}
+```
+
+**5. Custom Type Guards (Advanced):**
+```typescript
+// 🎯 CUSTOM TYPE PREDICATE FUNCTIONS
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+interface Admin {
+  id: number;
+  name: string;
+  permissions: string[];
+}
+
+// 🔧 Custom Type Guard Function
+function isAdmin(user: User | Admin): user is Admin {
+  return 'permissions' in user; // Return type: user is Admin
+}
+
+function handleUser(user: User | Admin) {
+  if (isAdmin(user)) {
+    // ✅ TypeScript knows user is Admin
+    console.log(`Admin ${user.name} has ${user.permissions.length} permissions`);
+  } else {
+    // ✅ TypeScript knows user is User
+    console.log(`User ${user.name} email: ${user.email}`);
+  }
+}
+
+// 📝 GHI NHỚ: "x is Type" syntax là Type Predicate
+```
+
+#### **⚡ ADVANCED NARROWING PATTERNS:**
+
+**1. Discriminated Unions:**
+```typescript
+// 🏷️ TAGGED UNION với common property
+interface LoadingState {
+  status: "loading"; // 🏷️ Discriminator property
+}
+
+interface SuccessState {
+  status: "success"; // 🏷️ Discriminator property
+  data: any[];
+}
+
+interface ErrorState {
+  status: "error"; // 🏷️ Discriminator property
+  message: string;
+}
+
+type AppState = LoadingState | SuccessState | ErrorState;
+
+function renderState(state: AppState) {
+  // 🎯 PERFECT NARROWING bằng discriminator
+  switch (state.status) {
+    case "loading":
+      return <div>Loading...</div>; // ✅ TypeScript knows LoadingState
+    case "success":
+      return <div>{state.data.length} items</div>; // ✅ data property available
+    case "error":
+      return <div>Error: {state.message}</div>; // ✅ message property available
+  }
+}
+
+// 📝 GHI NHỚ: Discriminated Union = Union + Common Property với literal types
+```
+
+**2. Exhaustiveness Checking:**
+```typescript
+type Theme = "light" | "dark" | "auto";
+
+function getThemeColor(theme: Theme): string {
+  switch (theme) {
+    case "light":
+      return "#ffffff";
+    case "dark":
+      return "#000000";
+    case "auto":
+      return "#f0f0f0";
+    default:
+      // 🚨 EXHAUSTIVENESS CHECK
+      const exhaustiveCheck: never = theme;
+      throw new Error(`Unhandled theme: ${exhaustiveCheck}`);
+  }
+}
+
+// 📝 GHI NHỚ: never type giúp catch missing cases khi thêm new literal types
+```
+
+**3. Nullish Narrowing:**
+```typescript
+function processName(name: string | null | undefined) {
+  // ❌ UNSAFE - might be null/undefined
+  // return name.toUpperCase();
+
+  // ✅ SAFE - narrowing first
+  if (name != null) { // Removes both null AND undefined
+    return name.toUpperCase(); // ✅ TypeScript knows name is string
+  }
+  return "Unknown";
+}
+
+// Alternative với Optional Chaining
+function processNameSafe(name: string | null | undefined) {
+  return name?.toUpperCase() ?? "Unknown";
+}
+
+// 📝 GHI NHỚ: name != null removes both null AND undefined
+// 📝 GHI NHỞ: name !== null chỉ removes null, NOT undefined
+```
+
+#### **🎯 PRACTICAL EXAMPLES:**
+
+**Real-world API Response Handling:**
+```typescript
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+function handleApiResponse<T>(response: ApiResponse<T>) {
+  if (response.success && response.data) {
+    // ✅ TypeScript knows data exists và success = true
+    return response.data; // ✅ Type T available
+  } else if (!response.success && response.error) {
+    // ✅ TypeScript knows error exists và success = false
+    throw new Error(response.error); // ✅ string methods available
+  } else {
+    throw new Error("Invalid API response format");
+  }
+}
+
+// 📝 GHI NHỞ: Multiple conditions for comprehensive narrowing
+```
+
+**React Props Narrowing:**
+```typescript
+interface ButtonProps {
+  variant: "primary" | "secondary";
+  size: "small" | "medium" | "large";
+  disabled?: boolean;
+  onClick?: () => void;
+}
+
+function Button({ variant, size, disabled, onClick }: ButtonProps) {
+  // 🎯 NARROWING cho conditional rendering
+  if (disabled) {
+    return (
+      <button className={`btn-${variant} btn-${size} btn-disabled`}>
+        {/* ✅ TypeScript knows disabled is true */}
+        Disabled Button
+      </button>
+    );
+  }
+
+  return (
+    <button
+      className={`btn-${variant} btn-${size}`}
+      onClick={onClick} // ✅ Safe to use
+    >
+      Active Button
+    </button>
+  );
+}
+```
+
+#### **💡 INTERVIEW INSIGHTS:**
+
+**🔹 KHI NÀO SỬ DỤNG:**
+- Union types cần specific handling
+- API responses với multiple states
+- Event handling với different event types
+- Form validation với conditional logic
+
+**🔹 COMMON MISTAKES:**
+```typescript
+// ❌ SAI: Không narrow type
+function badExample(value: string | number) {
+  return value.toUpperCase(); // 💥 Error: toUpperCase not exist on number
+}
+
+// ✅ ĐÚNG: Narrow type first
+function goodExample(value: string | number) {
+  if (typeof value === "string") {
+    return value.toUpperCase(); // ✅ Works
+  }
+  return value.toString().toUpperCase();
+}
+```
+
+**🔹 PERFORMANCE IMPACT:**
+- Type narrowing = **COMPILE TIME** only
+- **NO RUNTIME OVERHEAD**
+- Improves **DEVELOPMENT EXPERIENCE** và **TYPE SAFETY**
+
+#### **🚀 TYPE NARROWING WORKFLOW:**
+
+```
+🌐 Wide Union Type
+        ↓
+🔍 Runtime Check (typeof, instanceof, in, custom guard)
+        ↓
+🎯 Narrowed Specific Type
+        ↓
+✅ Safe Property/Method Access
+```
+
+**📝 GOLDEN RULES:**
+1. **Always narrow BEFORE access** union type properties
+2. **Use type guards** cho complex narrowing logic
+3. **Discriminated unions** cho state management
+4. **Custom type predicates** cho reusable logic
+5. **Exhaustiveness checking** với never type
+
+**GHI NHỞ:** Type Narrowing = **TypeScript's way of making UNSAFE code SAFE!** 🛡️
+
+---
+
+### TS6: `unknown` vs `any` - Sự khác biệt và khi nào sử dụng?
+
+**Trả lời:**
+
+Đây là **CRUCIAL DISTINCTION** trong TypeScript! `unknown` và `any` đều represent "anything", nhưng **SAFETY LEVEL** hoàn toàn khác nhau.
+
+#### **🔥 FUNDAMENTAL DIFFERENCE:**
+
+| Aspect | **`any`** | **`unknown`** |
+|--------|-----------|---------------|
+| **Type Safety** | ❌ **UNSAFE** | ✅ **SAFE** |
+| **Type Checking** | **DISABLED** | **ENABLED** |
+| **Direct Access** | ✅ **Allowed** | ❌ **Forbidden** |
+| **Need Type Guards** | ❌ **No** | ✅ **Required** |
+| **Best Practice** | 🚫 **Avoid** | ✅ **Preferred** |
+
+#### **🛠️ `any` - THE ESCAPE HATCH:**
+
+```typescript
+let value: any = 42;
+
+// ❌ DANGEROUS: No type checking whatsoever!
+value.foo.bar.baz; // 💥 Runtime error, TypeScript won't catch
+value(); // 💥 Runtime error if not a function
+value[0][1][2]; // 💥 Runtime error if not nested array
+value.toUpperCase(); // 💥 Runtime error if not string
+
+// 😱 TYPESCRIPT GIVES UP: No intellisense, no safety!
+```
+
+**ANY = "Trust me, I know what I'm doing" (but usually you don't!) 🚫**
+
+#### **🛡️ `unknown` - THE SAFE ALTERNATIVE:**
+
+```typescript
+let value: unknown = 42;
+
+// ✅ SAFE: TypeScript forces type checking!
+// value.foo; // ❌ Compile error: Object is of type 'unknown'
+// value(); // ❌ Compile error: Cannot invoke unknown type
+// value.toUpperCase(); // ❌ Compile error: Property doesn't exist
+
+// ✅ MUST USE TYPE GUARDS first:
+if (typeof value === "string") {
+  console.log(value.toUpperCase()); // ✅ Now it's safe!
+}
+
+if (typeof value === "number") {
+  console.log(value.toFixed(2)); // ✅ Number methods available
+}
+```
+
+**UNKNOWN = "I don't know what this is, let me check first!" ✅**
+
+#### **📊 DETAILED COMPARISON:**
+
+**1. Assignment TO them:**
+```typescript
+// ✅ BOTH accept anything
+let anyValue: any = "hello";
+let unknownValue: unknown = "hello";
+
+anyValue = 42; // ✅ OK
+unknownValue = 42; // ✅ OK
+
+anyValue = { name: "John" }; // ✅ OK
+unknownValue = { name: "John" }; // ✅ OK
+
+anyValue = [1, 2, 3]; // ✅ OK
+unknownValue = [1, 2, 3]; // ✅ OK
+```
+
+**2. Assignment FROM them:**
+```typescript
+let anyValue: any = "hello";
+let unknownValue: unknown = "hello";
+
+// ❌ ANY: Can assign to ANYTHING (dangerous!)
+let str1: string = anyValue; // ✅ No error (but dangerous!)
+let num1: number = anyValue; // ✅ No error (but dangerous!)
+let bool1: boolean = anyValue; // ✅ No error (but dangerous!)
+
+// ✅ UNKNOWN: Cannot assign without type checking
+// let str2: string = unknownValue; // ❌ Error: Type 'unknown' not assignable
+// let num2: number = unknownValue; // ❌ Error
+
+// ✅ MUST narrow type first
+if (typeof unknownValue === "string") {
+  let str2: string = unknownValue; // ✅ Now it's safe!
+}
+```
+
+**3. Property Access:**
+```typescript
+let anyValue: any = { name: "John", age: 30 };
+let unknownValue: unknown = { name: "John", age: 30 };
+
+// ❌ ANY: Direct access (unsafe)
+console.log(anyValue.name); // ✅ No error (but risky)
+console.log(anyValue.nonexistent); // ✅ No error (returns undefined)
+
+// ✅ UNKNOWN: Must check first
+// console.log(unknownValue.name); // ❌ Error
+
+// ✅ Safe way with type guards
+if (unknownValue && typeof unknownValue === "object" && "name" in unknownValue) {
+  console.log((unknownValue as { name: string }).name); // ✅ Safe
+}
+```
+
+#### **🎯 PRACTICAL USE CASES:**
+
+**1. API Responses (Best Practice with `unknown`):**
+```typescript
+// ❌ BAD: Using any
+async function fetchUserBad(): Promise<any> {
+  const response = await fetch('/api/user');
+  const data = await response.json(); // Returns any
+  return data; // ❌ No type safety
+}
+
+// ✅ GOOD: Using unknown
+async function fetchUserGood(): Promise<unknown> {
+  const response = await fetch('/api/user');
+  const data = await response.json(); // Returns any, but we convert to unknown
+  return data; // ✅ Forces type checking at usage
+}
+
+// Usage
+async function handleUser() {
+  const userData = await fetchUserGood();
+
+  // ✅ Must validate first
+  if (isUser(userData)) {
+    console.log(`User: ${userData.name}`); // ✅ Type-safe
+  }
+}
+
+// 🔧 Type guard function
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+function isUser(obj: unknown): obj is User {
+  return (
+    obj !== null &&
+    typeof obj === "object" &&
+    typeof (obj as User).id === "number" &&
+    typeof (obj as User).name === "string" &&
+    typeof (obj as User).email === "string"
+  );
+}
+```
+
+**2. Error Handling:**
+```typescript
+// ❌ BAD: Using any
+function handleErrorBad(error: any) {
+  console.log(error.message); // 💥 Might crash if error has no message
+  throw error; // ❌ No type safety
+}
+
+// ✅ GOOD: Using unknown
+function handleErrorGood(error: unknown) {
+  // ✅ Safe error handling
+  if (error instanceof Error) {
+    console.log(error.message); // ✅ TypeScript knows it's Error
+    console.log(error.stack);
+  } else if (typeof error === "string") {
+    console.log(error); // ✅ TypeScript knows it's string
+  } else {
+    console.log("Unknown error occurred"); // ✅ Fallback
+  }
+}
+
+// Better: Custom error type guard
+function isErrorWithMessage(error: unknown): error is { message: string } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof (error as { message: unknown }).message === "string"
+  );
+}
+
+function safeErrorHandler(error: unknown) {
+  if (isErrorWithMessage(error)) {
+    console.log(error.message); // ✅ Safe access
+  } else {
+    console.log("Error without message");
+  }
+}
+```
+
+**3. JSON Parsing:**
+```typescript
+// ❌ BAD: JSON.parse returns any
+function parseJsonBad(jsonString: string) {
+  const data = JSON.parse(jsonString); // any type
+  return data.user.name; // 💥 Might crash
+}
+
+// ✅ GOOD: Treat as unknown and validate
+function parseJsonGood(jsonString: string) {
+  const data: unknown = JSON.parse(jsonString);
+
+  // ✅ Validate structure first
+  if (isValidUserData(data)) {
+    return data.user.name; // ✅ Type-safe
+  }
+
+  throw new Error("Invalid JSON structure");
+}
+
+function isValidUserData(data: unknown): data is { user: { name: string } } {
+  return (
+    data !== null &&
+    typeof data === "object" &&
+    "user" in data &&
+    typeof (data as any).user === "object" &&
+    typeof (data as any).user.name === "string"
+  );
+}
+```
+
+**4. Library Migration:**
+```typescript
+// 🔄 MIGRATION STRATEGY: any → unknown
+// Step 1: Change return type from any to unknown
+function oldLibraryCall(): unknown { // Was: any
+  return legacyLibrary.getData();
+}
+
+// Step 2: Add type guards where needed
+function useLibraryData() {
+  const data = oldLibraryCall();
+
+  // Must add validation now
+  if (isExpectedFormat(data)) {
+    processData(data); // ✅ Type-safe
+  }
+}
+```
+
+#### **⚡ ADVANCED PATTERNS:**
+
+**1. Generic Functions with unknown:**
+```typescript
+// ✅ SAFE generic function
+function safeCast<T>(value: unknown, validator: (val: unknown) => val is T): T | null {
+  return validator(value) ? value : null;
+}
+
+// Usage
+const userData = safeCast(apiResponse, isUser);
+if (userData) {
+  console.log(userData.name); // ✅ Typed as User
+}
+```
+
+**2. Unknown in Union Types:**
+```typescript
+type SafeApiResponse =
+  | { success: true; data: unknown } // ✅ Unknown forces validation
+  | { success: false; error: string };
+
+function handleResponse(response: SafeApiResponse) {
+  if (response.success) {
+    // Must validate response.data before use
+    if (isUser(response.data)) {
+      console.log(response.data.name); // ✅ Safe
+    }
+  } else {
+    console.log(response.error); // ✅ Already typed as string
+  }
+}
+```
+
+#### **🚨 MIGRATION GUIDE: `any` → `unknown`:**
+
+```typescript
+// 🔄 STEP-BY-STEP MIGRATION
+
+// Before (unsafe):
+function processData(data: any) {
+  return data.items.map((item: any) => item.name.toUpperCase());
+}
+
+// After (safe):
+function processDataSafe(data: unknown) {
+  // Add validation
+  if (isDataWithItems(data)) {
+    return data.items
+      .filter(isItemWithName) // Filter valid items
+      .map(item => item.name.toUpperCase()); // ✅ Safe
+  }
+  throw new Error("Invalid data format");
+}
+
+// Type guards needed:
+function isDataWithItems(data: unknown): data is { items: unknown[] } {
+  return (
+    data !== null &&
+    typeof data === "object" &&
+    "items" in data &&
+    Array.isArray((data as any).items)
+  );
+}
+
+function isItemWithName(item: unknown): item is { name: string } {
+  return (
+    item !== null &&
+    typeof item === "object" &&
+    "name" in item &&
+    typeof (item as any).name === "string"
+  );
+}
+```
+
+#### **💡 INTERVIEW INSIGHTS:**
+
+**🔹 KHI NÀO SỬ DỤNG `any`:**
+- 😤 **NEVER** in new code! (nếu có thể)
+- 🔄 **Legacy code migration** (temporary)
+- 📦 **Third-party libraries** without types (use `@types` if available)
+- ⚡ **Rapid prototyping** (but refactor later!)
+
+**🔹 KHI NÀO SỬ DỤNG `unknown`:**
+- ✅ **API responses** chưa biết structure
+- ✅ **Error handling** generic errors
+- ✅ **JSON parsing** external data
+- ✅ **User input** validation
+- ✅ **Library functions** returning uncertain types
+
+**🔹 PERFORMANCE:**
+- Both `any` và `unknown` = **NO RUNTIME COST**
+- Difference = **COMPILE TIME** type checking only
+- `unknown` = **Better developer experience** + **Fewer runtime errors**
+
+#### **🎯 DECISION FRAMEWORK:**
+
+```
+❓ Do you know the exact type?
+   ├─ Yes → Use specific type
+   └─ No ↓
+
+❓ Can you validate the type?
+   ├─ Yes → Use unknown + type guards
+   └─ No ↓
+
+❓ Is this legacy/migration code?
+   ├─ Yes → Use any (temporarily)
+   └─ No → Refactor to use unknown
+```
+
+**📝 GOLDEN RULES:**
+1. **Default to `unknown`** when uncertain about types
+2. **Avoid `any`** unless absolutely necessary
+3. **Always validate `unknown`** before usage
+4. **Create type guards** for common validation patterns
+5. **Migrate `any` to `unknown`** in existing code
+
+**GHI NHỚ:**
+- `any` = **"I don't care about types"** 🚫
+- `unknown` = **"I care about types, let me check first"** ✅
+
+**INTERVIEW TIP:** Always emphasize rằng `unknown` is **TYPE-SAFE** alternative to `any`, và showcase your knowledge của proper type validation patterns! 🎯
+
+---
+
+### TS7: Decorator trong TypeScript - Khái niệm và ứng dụng?
+
+**Trả lời:**
+
+Decorators là **EXPERIMENTAL FEATURE** trong TypeScript cho phép **MODIFY BEHAVIOR** của classes, methods, properties, và parameters thông qua **METADATA và RUNTIME MANIPULATION**.
+
+#### **🔥 FUNDAMENTAL CONCEPT:**
+
+**Decorator = Function that MODIFIES another function/class**
+
+```typescript
+// 🏷️ BASIC DECORATOR SYNTAX
+@decoratorFunction
+class MyClass {
+  @propertyDecorator
+  property: string;
+
+  @methodDecorator
+  method() {}
+}
+
+// Equivalent to:
+MyClass = decoratorFunction(MyClass);
+```
+
+#### **⚙️ ENABLING DECORATORS:**
+
+**tsconfig.json:**
+```json
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,    // ✅ Enable legacy decorators
+    "emitDecoratorMetadata": true      // ✅ Emit metadata (cho reflection)
+  }
+}
+
+// 📝 GHI NHỚ: Decorators vẫn là EXPERIMENTAL feature!
+```
+
+#### **🛠️ TYPES OF DECORATORS:**
+
+**1. Class Decorators:**
+```typescript
+// 🎯 CLASS DECORATOR FUNCTION
+function Component(config: { selector: string; template: string }) {
+  return function<T extends { new(...args: any[]): {} }>(constructor: T) {
+    return class extends constructor {
+      selector = config.selector;
+      template = config.template;
+
+      // ✅ Add new functionality to class
+      render() {
+        console.log(`Rendering ${this.selector}: ${this.template}`);
+      }
+    };
+  };
+}
+
+// 🏷️ USAGE
+@Component({
+  selector: 'app-user',
+  template: '<div>User Component</div>'
+})
+class UserComponent {
+  name = 'John';
+}
+
+// Test
+const user = new UserComponent() as any;
+user.render(); // "Rendering app-user: <div>User Component</div>"
+
+// 📝 GHI NHỚ: Class decorator receives constructor function
+```
+
+**2. Method Decorators:**
+```typescript
+// 🎯 METHOD DECORATOR for performance tracking
+function benchmark(target: any, propertyName: string, descriptor: PropertyDescriptor) {
+  const method = descriptor.value;
+
+  descriptor.value = function (...args: any[]) {
+    console.time(`${propertyName} execution time`);
+    const result = method.apply(this, args);
+    console.timeEnd(`${propertyName} execution time`);
+    return result;
+  };
+}
+
+class DataProcessor {
+  @benchmark
+  processLargeDataset(data: any[]) {
+    // Simulate heavy computation
+    return data.map(item => item * 2);
+  }
+}
+
+// Usage
+const processor = new DataProcessor();
+processor.processLargeDataset([1, 2, 3]); // ⏱️ Logs execution time
+
+// 📝 GHI NHỚ: Method decorator receives target, propertyName, descriptor
+```
+
+**3. Property Decorators:**
+```typescript
+// 🎯 PROPERTY DECORATOR for validation
+function required(target: any, propertyName: string) {
+  // Store metadata về required fields
+  const requiredFields = Reflect.getMetadata('required', target) || [];
+  requiredFields.push(propertyName);
+  Reflect.defineMetadata('required', requiredFields, target);
+}
+
+function validate(target: any) {
+  const requiredFields: string[] = Reflect.getMetadata('required', target) || [];
+
+  for (const field of requiredFields) {
+    if (!target[field]) {
+      throw new Error(`Field ${field} is required`);
+    }
+  }
+}
+
+class User {
+  @required
+  name: string;
+
+  @required
+  email: string;
+
+  age?: number;
+
+  constructor(name: string, email: string, age?: number) {
+    this.name = name;
+    this.email = email;
+    this.age = age;
+
+    validate(this); // ✅ Validate required fields
+  }
+}
+
+// Usage
+const user1 = new User("John", "john@email.com"); // ✅ OK
+// const user2 = new User("", "john@email.com"); // ❌ Error: Field name is required
+
+// 📝 GHI NHỞ: Property decorator receives target và propertyName
+```
+
+**4. Parameter Decorators:**
+```typescript
+// 🎯 PARAMETER DECORATOR for dependency injection
+function inject(token: string) {
+  return function (target: any, propertyName: string | symbol, parameterIndex: number) {
+    // Store injection metadata
+    const existingTokens = Reflect.getMetadata('inject', target) || [];
+    existingTokens[parameterIndex] = token;
+    Reflect.defineMetadata('inject', existingTokens, target);
+  };
+}
+
+// Simple DI Container
+class Container {
+  private services = new Map<string, any>();
+
+  register(token: string, service: any) {
+    this.services.set(token, service);
+  }
+
+  resolve<T>(constructor: new (...args: any[]) => T): T {
+    const tokens: string[] = Reflect.getMetadata('inject', constructor) || [];
+    const dependencies = tokens.map(token => this.services.get(token));
+    return new constructor(...dependencies);
+  }
+}
+
+// Services
+class Logger {
+  log(message: string) {
+    console.log(`[LOG]: ${message}`);
+  }
+}
+
+class Database {
+  query(sql: string) {
+    console.log(`Executing: ${sql}`);
+  }
+}
+
+// Service with dependencies
+class UserService {
+  constructor(
+    @inject('logger') private logger: Logger,
+    @inject('database') private database: Database
+  ) {}
+
+  getUser(id: number) {
+    this.logger.log(`Getting user ${id}`);
+    this.database.query(`SELECT * FROM users WHERE id = ${id}`);
+  }
+}
+
+// Usage
+const container = new Container();
+container.register('logger', new Logger());
+container.register('database', new Database());
+
+const userService = container.resolve(UserService);
+userService.getUser(1);
+
+// 📝 GHI NHỚ: Parameter decorator receives target, propertyName, parameterIndex
+```
+
+#### **⚡ ADVANCED PATTERNS:**
+
+**1. Decorator Factory Pattern:**
+```typescript
+// 🎯 DECORATOR FACTORY - Function that returns decorator
+function cache(ttl: number = 5000) {
+  const cacheStore = new Map<string, { data: any; timestamp: number }>();
+
+  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
+
+    descriptor.value = function (...args: any[]) {
+      const key = `${propertyName}_${JSON.stringify(args)}`;
+      const cached = cacheStore.get(key);
+
+      // ✅ Return cached result if valid
+      if (cached && (Date.now() - cached.timestamp) < ttl) {
+        console.log(`Cache hit for ${propertyName}`);
+        return cached.data;
+      }
+
+      // ✅ Execute và cache result
+      const result = originalMethod.apply(this, args);
+      cacheStore.set(key, { data: result, timestamp: Date.now() });
+      console.log(`Cache miss for ${propertyName}`);
+      return result;
+    };
+  };
+}
+
+class ApiService {
+  @cache(3000) // Cache for 3 seconds
+  fetchUser(id: number) {
+    console.log(`Fetching user ${id} from API...`);
+    return { id, name: `User ${id}` };
+  }
+}
+
+// Test caching
+const api = new ApiService();
+api.fetchUser(1); // Cache miss
+api.fetchUser(1); // Cache hit (within 3s)
+```
+
+**2. Multiple Decorators (Composition):**
+```typescript
+// 🎯 MULTIPLE DECORATORS - Applied bottom to top
+function log(target: any, propertyName: string, descriptor: PropertyDescriptor) {
+  const method = descriptor.value;
+  descriptor.value = function (...args: any[]) {
+    console.log(`Calling ${propertyName} with args:`, args);
+    return method.apply(this, args);
+  };
+}
+
+function retry(attempts: number = 3) {
+  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
+    const method = descriptor.value;
+
+    descriptor.value = async function (...args: any[]) {
+      for (let i = 0; i < attempts; i++) {
+        try {
+          return await method.apply(this, args);
+        } catch (error) {
+          console.log(`Attempt ${i + 1} failed:`, error);
+          if (i === attempts - 1) throw error;
+        }
+      }
+    };
+  };
+}
+
+class NetworkService {
+  @log           // ✅ Applied second (outer)
+  @retry(3)      // ✅ Applied first (inner)
+  async fetchData(url: string) {
+    // Simulate random failure
+    if (Math.random() > 0.7) {
+      throw new Error('Network error');
+    }
+    return `Data from ${url}`;
+  }
+}
+
+// 📝 GHI NHỚ: Decorators execute BOTTOM to TOP (như function composition)
+```
+
+#### **🎯 REAL-WORLD EXAMPLES:**
+
+**1. Angular-style Component Decorator:**
+```typescript
+interface ComponentConfig {
+  selector: string;
+  template: string;
+  styles?: string[];
+}
+
+// 🎯 COMPONENT FRAMEWORK với decorators
+function Component(config: ComponentConfig) {
+  return function <T extends { new(...args: any[]): {} }>(constructor: T) {
+    // Add metadata to class
+    Reflect.defineMetadata('component', config, constructor);
+
+    return class extends constructor {
+      // ✅ Add framework functionality
+      private _selector = config.selector;
+      private _template = config.template;
+
+      render(container: HTMLElement) {
+        container.innerHTML = this._template;
+        console.log(`Component ${this._selector} rendered`);
+      }
+    };
+  };
+}
+
+@Component({
+  selector: 'user-profile',
+  template: '<div class="user">{{name}}</div>',
+  styles: ['div.user { color: blue; }']
+})
+class UserProfileComponent {
+  name: string = 'John Doe';
+}
+```
+
+**2. Express-style Route Decorators:**
+```typescript
+// 🎯 EXPRESS ROUTING với decorators
+const routes: Array<{
+  method: string;
+  path: string;
+  handler: string;
+  target: any;
+}> = [];
+
+function Get(path: string) {
+  return function (target: any, propertyName: string) {
+    routes.push({
+      method: 'GET',
+      path,
+      handler: propertyName,
+      target: target.constructor
+    });
+  };
+}
+
+function Post(path: string) {
+  return function (target: any, propertyName: string) {
+    routes.push({
+      method: 'POST',
+      path,
+      handler: propertyName,
+      target: target.constructor
+    });
+  };
+}
+
+class UserController {
+  @Get('/users')
+  getUsers() {
+    return [{ id: 1, name: 'John' }];
+  }
+
+  @Post('/users')
+  createUser() {
+    return { id: 2, name: 'Jane' };
+  }
+
+  @Get('/users/:id')
+  getUser() {
+    return { id: 1, name: 'John' };
+  }
+}
+
+// Framework integration
+function createRouter() {
+  console.log('Registered routes:');
+  routes.forEach(route => {
+    console.log(`${route.method} ${route.path} -> ${route.target.name}.${route.handler}`);
+  });
+}
+
+createRouter();
+// Output:
+// GET /users -> UserController.getUsers
+// POST /users -> UserController.createUser
+// GET /users/:id -> UserController.getUser
+```
+
+**3. Validation Decorators:**
+```typescript
+// 🎯 VALIDATION DECORATORS
+function IsEmail(target: any, propertyName: string) {
+  addValidator(target, propertyName, (value: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value) || `${propertyName} must be a valid email`;
+  });
+}
+
+function MinLength(length: number) {
+  return function (target: any, propertyName: string) {
+    addValidator(target, propertyName, (value: string) => {
+      return value.length >= length || `${propertyName} must be at least ${length} characters`;
+    });
+  };
+}
+
+function addValidator(target: any, propertyName: string, validator: (value: any) => boolean | string) {
+  const validators = Reflect.getMetadata('validators', target) || {};
+  validators[propertyName] = validators[propertyName] || [];
+  validators[propertyName].push(validator);
+  Reflect.defineMetadata('validators', validators, target);
+}
+
+function validate(obj: any): string[] {
+  const validators = Reflect.getMetadata('validators', obj) || {};
+  const errors: string[] = [];
+
+  for (const [property, validatorList] of Object.entries(validators)) {
+    const value = obj[property];
+    for (const validator of validatorList as Function[]) {
+      const result = validator(value);
+      if (result !== true) {
+        errors.push(result);
+      }
+    }
+  }
+
+  return errors;
+}
+
+class RegisterDto {
+  @IsEmail
+  email: string;
+
+  @MinLength(8)
+  password: string;
+
+  constructor(email: string, password: string) {
+    this.email = email;
+    this.password = password;
+  }
+}
+
+// Usage
+const dto1 = new RegisterDto("test@email.com", "password123");
+console.log(validate(dto1)); // []
+
+const dto2 = new RegisterDto("invalid-email", "123");
+console.log(validate(dto2)); // ["email must be a valid email", "password must be at least 8 characters"]
+```
+
+#### **💡 INTERVIEW INSIGHTS:**
+
+**🔹 DECORATOR EXECUTION ORDER:**
+```typescript
+@first
+@second
+@third
+class MyClass {}
+
+// Execution: third() → second() → first()
+// Like: first(second(third(MyClass)))
+```
+
+**🔹 PERFORMANCE CONSIDERATIONS:**
+- Decorators run at **CLASS DEFINITION TIME**, not instantiation
+- **NO RUNTIME OVERHEAD** for simple decorators
+- **METADATA STORAGE** can increase memory usage
+- **METHOD WRAPPING** có thể affect performance
+
+**🔹 BROWSER SUPPORT:**
+- Cần **POLYFILL** cho `reflect-metadata`
+- **BABEL/TSC** transforms decorators to regular JavaScript
+- Modern frameworks handle này automatically
+
+**🔹 ALTERNATIVES TO DECORATORS:**
+```typescript
+// Instead of decorators, you can use:
+
+// 1. Higher-Order Functions
+const withLogging = (fn: Function) => (...args: any[]) => {
+  console.log('Calling function');
+  return fn(...args);
+};
+
+// 2. Class Mixins
+function LoggingMixin<T extends Constructor>(Base: T) {
+  return class extends Base {
+    log(message: string) {
+      console.log(message);
+    }
+  };
+}
+
+// 3. Composition Pattern
+class Logger {
+  static wrap(method: Function) {
+    return (...args: any[]) => {
+      console.log('Method called');
+      return method(...args);
+    };
+  }
+}
+```
+
+#### **🚀 BEST PRACTICES:**
+
+**📝 DO's:**
+- ✅ Use for **CROSS-CUTTING CONCERNS** (logging, caching, validation)
+- ✅ Keep decorators **SIMPLE và FOCUSED**
+- ✅ **DOCUMENT** decorator behavior clearly
+- ✅ Consider **COMPOSITION** over complex inheritance
+
+**📝 DON'Ts:**
+- ❌ Don't use for **BUSINESS LOGIC**
+- ❌ Avoid **DEEPLY NESTED** decorator logic
+- ❌ Don't **OVERUSE** decorators (readability impact)
+- ❌ Avoid **SIDE EFFECTS** in decorator factories
+
+**GHI NHỚ:** Decorators = **METADATA + BEHAVIOR MODIFICATION** at compile/definition time! Perfect for **FRAMEWORK DEVELOPMENT** và **ASPECT-ORIENTED PROGRAMMING**! 🎯
+
+---
+
+### TS8: Generics trong TypeScript - Concept và Examples?
+
+**Trả lời:**
+
+Generics là **POWERFUL FEATURE** cho phép tạo **REUSABLE COMPONENTS** với **FLEXIBLE TYPES**. Thay vì hardcode specific types, generics cho phép **PARAMETERIZE TYPES**!
+
+#### **🔥 FUNDAMENTAL CONCEPT:**
+
+**Generics = PLACEHOLDER for TYPES**
+
+```typescript
+// ❌ WITHOUT GENERICS: Type-specific functions
+function getStringArray(): string[] {
+  return [];
+}
+
+function getNumberArray(): number[] {
+  return [];
+}
+
+function getBooleanArray(): boolean[] {
+  return [];
+}
+
+// ✅ WITH GENERICS: One function, any type!
+function getArray<T>(): T[] {
+  return [];
+}
+
+// Usage - TypeScript infers the type
+const strings = getArray<string>(); // string[]
+const numbers = getArray<number>(); // number[]
+const booleans = getArray<boolean>(); // boolean[]
+
+// 📝 GHI NHỚ: T = Type Parameter (có thể đặt tên gì cũng được: K, V, U, etc.)
+```
+
+#### **🛠️ BASIC GENERIC SYNTAX:**
+
+**1. Function Generics:**
+```typescript
+// 🎯 GENERIC FUNCTION với type parameter T
+function identity<T>(arg: T): T {
+  return arg; // Input type = Output type
+}
+
+// ✅ USAGE - Explicit type
+const result1 = identity<string>("hello"); // result1: string
+const result2 = identity<number>(42); // result2: number
+
+// ✅ USAGE - Type inference (TypeScript tự đoán)
+const result3 = identity("hello"); // result3: string (inferred)
+const result4 = identity(42); // result4: number (inferred)
+
+// 📝 GHI NHỚ: Type inference makes generics MORE CONVENIENT!
+```
+
+**2. Generic Arrays:**
+```typescript
+// 🎯 WORKING WITH GENERIC ARRAYS
+function getFirstElement<T>(array: T[]): T | undefined {
+  return array.length > 0 ? array[0] : undefined;
+}
+
+// Usage
+const firstString = getFirstElement(["a", "b", "c"]); // string | undefined
+const firstNumber = getFirstElement([1, 2, 3]); // number | undefined
+const firstUser = getFirstElement([
+  { id: 1, name: "John" },
+  { id: 2, name: "Jane" }
+]); // { id: number; name: string; } | undefined
+
+// 🎯 GENERIC ARRAY OPERATIONS
+function reverseArray<T>(array: T[]): T[] {
+  return array.slice().reverse(); // ✅ Preserve original array
+}
+
+const reversedStrings = reverseArray(["a", "b", "c"]); // string[]
+const reversedNumbers = reverseArray([1, 2, 3]); // number[]
+```
+
+#### **🏗️ GENERIC CLASSES:**
+
+```typescript
+// 🎯 GENERIC CLASS for data storage
+class Container<T> {
+  private items: T[] = [];
+
+  add(item: T): void {
+    this.items.push(item);
+  }
+
+  get(index: number): T | undefined {
+    return this.items[index];
+  }
+
+  getAll(): T[] {
+    return [...this.items]; // ✅ Return copy
+  }
+
+  size(): number {
+    return this.items.length;
+  }
+
+  // ✅ Generic method within generic class
+  filter(predicate: (item: T) => boolean): T[] {
+    return this.items.filter(predicate);
+  }
+}
+
+// Usage
+const stringContainer = new Container<string>();
+stringContainer.add("hello");
+stringContainer.add("world");
+console.log(stringContainer.getAll()); // ["hello", "world"]
+
+const numberContainer = new Container<number>();
+numberContainer.add(1);
+numberContainer.add(2);
+const evenNumbers = numberContainer.filter(n => n % 2 === 0); // number[]
+
+// 📝 GHI NHỚ: Generic classes create TYPE-SAFE containers!
+```
+
+#### **🔗 GENERIC INTERFACES:**
+
+```typescript
+// 🎯 GENERIC INTERFACE định nghĩa contract
+interface Repository<T> {
+  save(entity: T): T;
+  findById(id: string): T | null;
+  findAll(): T[];
+  delete(id: string): boolean;
+}
+
+// ✅ IMPLEMENTATION cho specific type
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+class UserRepository implements Repository<User> {
+  private users: User[] = [];
+
+  save(user: User): User {
+    const existingIndex = this.users.findIndex(u => u.id === user.id);
+    if (existingIndex >= 0) {
+      this.users[existingIndex] = user; // Update
+    } else {
+      this.users.push(user); // Create
+    }
+    return user;
+  }
+
+  findById(id: string): User | null {
+    return this.users.find(u => u.id === id) || null;
+  }
+
+  findAll(): User[] {
+    return [...this.users];
+  }
+
+  delete(id: string): boolean {
+    const index = this.users.findIndex(u => u.id === id);
+    if (index >= 0) {
+      this.users.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+}
+
+// Usage
+const userRepo = new UserRepository();
+const user = userRepo.save({ id: "1", name: "John", email: "john@email.com" });
+```
+
+#### **⚡ ADVANCED GENERIC PATTERNS:**
+
+**1. Multiple Type Parameters:**
+```typescript
+// 🎯 MULTIPLE GENERICS for key-value pairs
+class KeyValueStore<K, V> {
+  private items = new Map<K, V>();
+
+  set(key: K, value: V): void {
+    this.items.set(key, value);
+  }
+
+  get(key: K): V | undefined {
+    return this.items.get(key);
+  }
+
+  has(key: K): boolean {
+    return this.items.has(key);
+  }
+
+  entries(): [K, V][] {
+    return Array.from(this.items.entries());
+  }
+}
+
+// Usage
+const stringToNumberStore = new KeyValueStore<string, number>();
+stringToNumberStore.set("age", 25);
+stringToNumberStore.set("height", 175);
+
+const userToPermissionStore = new KeyValueStore<User, string[]>();
+userToPermissionStore.set(user, ["read", "write"]);
+
+// 📝 GHI NHỚ: Use multiple type parameters for RELATED but DIFFERENT types!
+```
+
+**2. Generic Constraints:**
+```typescript
+// 🎯 CONSTRAINTS limit generic types
+interface Lengthwise {
+  length: number;
+}
+
+// ✅ T must have length property
+function logLength<T extends Lengthwise>(arg: T): T {
+  console.log(`Length: ${arg.length}`);
+  return arg;
+}
+
+// Usage
+logLength("hello"); // ✅ string has length
+logLength([1, 2, 3]); // ✅ array has length
+logLength({ length: 10, value: "test" }); // ✅ object with length
+
+// logLength(123); // ❌ Error: number doesn't have length
+
+// 🎯 CONSTRAINT with keyof
+function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+  return obj[key]; // ✅ Type-safe property access
+}
+
+// Usage
+const person = { name: "John", age: 30, email: "john@email.com" };
+const name = getProperty(person, "name"); // string
+const age = getProperty(person, "age"); // number
+// const invalid = getProperty(person, "salary"); // ❌ Error: salary doesn't exist
+
+// 📝 GHI NHỚ: Constraints ensure generics meet MINIMUM REQUIREMENTS!
+```
+
+**3. Conditional Types:**
+```typescript
+// 🎯 CONDITIONAL TYPES với generics
+type ApiResponse<T> = T extends string
+  ? { message: T }
+  : T extends number
+    ? { count: T }
+    : { data: T };
+
+// Usage
+type StringResponse = ApiResponse<string>; // { message: string }
+type NumberResponse = ApiResponse<number>; // { count: number }
+type UserResponse = ApiResponse<User>; // { data: User }
+
+// 🎯 UTILITY TYPE với conditional generics
+type NonNullable<T> = T extends null | undefined ? never : T;
+
+type SafeString = NonNullable<string | null>; // string
+type SafeNumber = NonNullable<number | undefined>; // number
+```
+
+#### **🎯 REAL-WORLD EXAMPLES:**
+
+**1. Generic API Client:**
+```typescript
+// 🎯 TYPE-SAFE API CLIENT
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+}
+
+class ApiClient {
+  private baseUrl: string;
+
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+
+  // ✅ Generic GET method
+  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`);
+    const data = await response.json();
+
+    return {
+      data: data as T, // Type assertion (in real app, add validation)
+      status: response.status,
+      message: response.statusText
+    };
+  }
+
+  // ✅ Generic POST method
+  async post<TRequest, TResponse>(
+    endpoint: string,
+    body: TRequest
+  ): Promise<ApiResponse<TResponse>> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+    return {
+      data: data as TResponse,
+      status: response.status,
+      message: response.statusText
+    };
+  }
+}
+
+// Usage
+const apiClient = new ApiClient('https://api.example.com');
+
+// ✅ Type-safe API calls
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+interface CreateUserRequest {
+  name: string;
+  email: string;
+}
+
+// GET request
+const usersResponse = await apiClient.get<User[]>('/users');
+const users: User[] = usersResponse.data; // ✅ Typed as User[]
+
+// POST request
+const newUserResponse = await apiClient.post<CreateUserRequest, User>(
+  '/users',
+  { name: 'John', email: 'john@email.com' }
+);
+const newUser: User = newUserResponse.data; // ✅ Typed as User
+```
+
+**2. Generic Event Emitter:**
+```typescript
+// 🎯 TYPE-SAFE EVENT EMITTER
+type EventMap = Record<string, any>;
+
+class TypedEventEmitter<T extends EventMap> {
+  private listeners: {
+    [K in keyof T]?: Array<(data: T[K]) => void>;
+  } = {};
+
+  // ✅ Type-safe event registration
+  on<K extends keyof T>(event: K, listener: (data: T[K]) => void): void {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
+    this.listeners[event]!.push(listener);
+  }
+
+  // ✅ Type-safe event emission
+  emit<K extends keyof T>(event: K, data: T[K]): void {
+    const eventListeners = this.listeners[event];
+    if (eventListeners) {
+      eventListeners.forEach(listener => listener(data));
+    }
+  }
+
+  // ✅ Remove listener
+  off<K extends keyof T>(event: K, listener: (data: T[K]) => void): void {
+    const eventListeners = this.listeners[event];
+    if (eventListeners) {
+      const index = eventListeners.indexOf(listener);
+      if (index >= 0) {
+        eventListeners.splice(index, 1);
+      }
+    }
+  }
+}
+
+// Define event types
+interface UserEvents {
+  'user:created': { id: number; name: string };
+  'user:updated': { id: number; changes: Partial<User> };
+  'user:deleted': { id: number };
+}
+
+// Usage
+const userEventEmitter = new TypedEventEmitter<UserEvents>();
+
+// ✅ Type-safe listeners
+userEventEmitter.on('user:created', (data) => {
+  console.log(`User created: ${data.name} (${data.id})`); // ✅ data is typed
+});
+
+userEventEmitter.on('user:updated', (data) => {
+  console.log(`User ${data.id} updated:`, data.changes); // ✅ data is typed
+});
+
+// ✅ Type-safe emission
+userEventEmitter.emit('user:created', { id: 1, name: 'John' }); // ✅ Correct type
+// userEventEmitter.emit('user:created', { name: 'John' }); // ❌ Error: missing id
+
+// 📝 GHI NHỚ: Generic EventEmitter provides COMPILE-TIME safety for events!
+```
+
+**3. Generic State Management:**
+```typescript
+// 🎯 SIMPLE GENERIC STATE STORE
+class Store<T> {
+  private state: T;
+  private listeners: Array<(state: T) => void> = [];
+
+  constructor(initialState: T) {
+    this.state = initialState;
+  }
+
+  // ✅ Get current state
+  getState(): T {
+    return this.state;
+  }
+
+  // ✅ Update state với type safety
+  setState(updater: (currentState: T) => T): void {
+    this.state = updater(this.state);
+    this.notifyListeners();
+  }
+
+  // ✅ Subscribe to state changes
+  subscribe(listener: (state: T) => void): () => void {
+    this.listeners.push(listener);
+
+    // Return unsubscribe function
+    return () => {
+      const index = this.listeners.indexOf(listener);
+      if (index >= 0) {
+        this.listeners.splice(index, 1);
+      }
+    };
+  }
+
+  private notifyListeners(): void {
+    this.listeners.forEach(listener => listener(this.state));
+  }
+}
+
+// Define app state type
+interface AppState {
+  user: User | null;
+  theme: 'light' | 'dark';
+  notifications: string[];
+}
+
+// Usage
+const appStore = new Store<AppState>({
+  user: null,
+  theme: 'light',
+  notifications: []
+});
+
+// ✅ Type-safe state updates
+appStore.setState(state => ({
+  ...state,
+  user: { id: 1, name: 'John', email: 'john@email.com' }
+}));
+
+appStore.setState(state => ({
+  ...state,
+  theme: 'dark' // ✅ TypeScript ensures valid theme values
+}));
+
+// ✅ Type-safe subscriptions
+const unsubscribe = appStore.subscribe(state => {
+  console.log('Current user:', state.user?.name); // ✅ Optional chaining
+  console.log('Theme:', state.theme); // ✅ Typed as 'light' | 'dark'
+});
+
+// Cleanup
+unsubscribe();
+```
+
+#### **💡 INTERVIEW INSIGHTS:**
+
+**🔹 WHY USE GENERICS:**
+- ✅ **TYPE SAFETY** without sacrificing flexibility
+- ✅ **CODE REUSE** across different types
+- ✅ **BETTER IntelliSense** và autocomplete
+- ✅ **COMPILE-TIME ERROR DETECTION**
+- ✅ **SELF-DOCUMENTING CODE**
+
+**🔹 GENERIC NAMING CONVENTIONS:**
+```typescript
+// Common conventions:
+T = Type (most common)
+K = Key
+V = Value
+U = Second type
+E = Element
+R = Return type
+P = Props (React context)
+
+// Examples:
+Map<K, V>        // Key-Value mapping
+Array<T>         // Array of Type T
+Promise<T>       // Promise resolving to Type T
+Record<K, V>     // Record with Key K and Value V
+```
+
+**🔹 PERFORMANCE:**
+- Generics = **COMPILE TIME** feature only
+- **NO RUNTIME OVERHEAD** - types are erased
+- **Better OPTIMIZATION** due to type information
+
+**🔹 COMMON MISTAKES:**
+```typescript
+// ❌ OVER-CONSTRAINING
+function processItem<T extends object>(item: T): T {
+  // What if T could be primitive?
+}
+
+// ✅ BETTER
+function processItem<T>(item: T): T {
+  // More flexible
+}
+
+// ❌ UNNECESSARY GENERICS
+function addNumbers<T extends number>(a: T, b: T): T {
+  return (a + b) as T; // Type assertion needed - red flag!
+}
+
+// ✅ BETTER
+function addNumbers(a: number, b: number): number {
+  return a + b; // Simple và clear
+}
+```
+
+#### **🚀 BEST PRACTICES:**
+
+**📝 DO's:**
+- ✅ Use **MEANINGFUL NAMES** cho type parameters
+- ✅ Add **CONSTRAINTS** when needed
+- ✅ **LEVERAGE TYPE INFERENCE** when possible
+- ✅ Use generics for **REUSABLE COMPONENTS**
+
+**📝 DON'Ts:**
+- ❌ Don't **OVER-ENGINEER** với unnecessary generics
+- ❌ Avoid **TOO MANY** type parameters (max 3-4)
+- ❌ Don't use generics just for **TYPE ASSERTION**
+- ❌ Avoid **COMPLEX CONDITIONAL TYPES** without good reason
+
+**GHI NHỞ:** Generics = **FLEXIBLE TYPES** that maintain **TYPE SAFETY**! Perfect for building **REUSABLE và TYPE-SAFE** libraries và frameworks! 🎯
+
+---
+
+### TS9: Static Typing, `typeof`, `keyof` - Advanced Type Operations?
+
+**Trả lời:**
+
+Đây là **ADVANCED TYPE OPERATIONS** trong TypeScript giúp bạn tạo **DYNAMIC TYPES** và **TYPE-SAFE CODE** từ existing types và values. Đây là **NEXT LEVEL** type manipulation!
+
+#### **🔥 FUNDAMENTAL CONCEPTS:**
+
+**Static Typing + Runtime Reflection = POWERFUL TYPE SYSTEM**
+
+```typescript
+// 🎯 STATIC TYPING: Types known at compile time
+const user = {
+  id: 1,
+  name: "John",
+  email: "john@email.com",
+  age: 30
+};
+
+// ✅ TypeScript KNOWS the exact shape
+type UserType = typeof user;
+// Equivalent to: { id: number; name: string; email: string; age: number; }
+
+type UserKeys = keyof typeof user;
+// Equivalent to: "id" | "name" | "email" | "age"
+
+// 📝 GHI NHỚ: typeof = value to type, keyof = type to union of keys
+```
+
+#### **🛠️ `typeof` OPERATOR:**
+
+**1. Basic typeof Usage:**
+```typescript
+// 🎯 EXTRACT TYPE from values
+const config = {
+  apiUrl: "https://api.example.com",
+  timeout: 5000,
+  retries: 3,
+  enableLogging: true
+} as const; // ✅ as const for literal types
+
+// ✅ Extract type from value
+type Config = typeof config;
+// Result: {
+//   readonly apiUrl: "https://api.example.com";
+//   readonly timeout: 5000;
+//   readonly retries: 3;
+//   readonly enableLogging: true;
+// }
+
+// 🎯 FUNCTION TYPE extraction
+function calculateTotal(price: number, tax: number): number {
+  return price + (price * tax);
+}
+
+type CalculateFunction = typeof calculateTotal;
+// Result: (price: number, tax: number) => number
+
+// ✅ Use extracted function type
+const myCalculator: CalculateFunction = (p, t) => p * (1 + t);
+```
+
+**2. Advanced typeof Patterns:**
+```typescript
+// 🎯 COMPLEX OBJECT TYPES
+const apiEndpoints = {
+  users: {
+    list: "/api/users",
+    create: "/api/users",
+    update: (id: number) => `/api/users/${id}`,
+    delete: (id: number) => `/api/users/${id}`
+  },
+  posts: {
+    list: "/api/posts",
+    byUser: (userId: number) => `/api/posts?user=${userId}`
+  }
+} as const;
+
+type ApiEndpoints = typeof apiEndpoints;
+// Result: {
+//   readonly users: {
+//     readonly list: "/api/users";
+//     readonly create: "/api/users";
+//     readonly update: (id: number) => string;
+//     readonly delete: (id: number) => string;
+//   };
+//   readonly posts: {
+//     readonly list: "/api/posts";
+//     readonly byUser: (userId: number) => string;
+//   };
+// }
+
+// ✅ Extract specific nested types
+type UserEndpoints = typeof apiEndpoints.users;
+type UpdateFunction = typeof apiEndpoints.users.update;
+
+// 📝 GHI NHỚ: typeof preserves function signatures và nested structures
+```
+
+#### **🔑 `keyof` OPERATOR:**
+
+**1. Basic keyof Usage:**
+```typescript
+// 🎯 EXTRACT KEYS as union type
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  createdAt: Date;
+}
+
+type UserKeys = keyof User;
+// Result: "id" | "name" | "email" | "createdAt"
+
+// ✅ Type-safe property access
+function getUserProperty<K extends keyof User>(user: User, key: K): User[K] {
+  return user[key]; // ✅ TypeScript knows exact return type
+}
+
+const user: User = {
+  id: 1,
+  name: "John",
+  email: "john@email.com",
+  createdAt: new Date()
+};
+
+const userName = getUserProperty(user, "name"); // string
+const userId = getUserProperty(user, "id"); // number
+const userDate = getUserProperty(user, "createdAt"); // Date
+// const invalid = getUserProperty(user, "invalid"); // ❌ Error
+
+// 📝 GHI NHỚ: keyof creates LITERAL UNION TYPES from object keys
+```
+
+**2. Advanced keyof Patterns:**
+```typescript
+// 🎯 CONDITIONAL KEYOF
+type StringKeys<T> = {
+  [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T];
+
+type NumberKeys<T> = {
+  [K in keyof T]: T[K] extends number ? K : never;
+}[keyof T];
+
+interface MixedData {
+  id: number;
+  name: string;
+  age: number;
+  email: string;
+  isActive: boolean;
+}
+
+type StringProperties = StringKeys<MixedData>; // "name" | "email"
+type NumberProperties = NumberKeys<MixedData>; // "id" | "age"
+
+// ✅ Type-safe getters with filtering
+function getStringProperty<T, K extends StringKeys<T>>(
+  obj: T,
+  key: K
+): T[K] {
+  return obj[key];
+}
+
+const data: MixedData = {
+  id: 1,
+  name: "John",
+  age: 30,
+  email: "john@email.com",
+  isActive: true
+};
+
+const name = getStringProperty(data, "name"); // ✅ string
+const email = getStringProperty(data, "email"); // ✅ string
+// const age = getStringProperty(data, "age"); // ❌ Error: age is number
+```
+
+#### **⚡ ADVANCED COMBINATIONS:**
+
+**1. Dynamic Object Creation:**
+```typescript
+// 🎯 TYPE-SAFE OBJECT BUILDERS
+const formSchema = {
+  username: { type: "string", required: true, minLength: 3 },
+  email: { type: "email", required: true },
+  age: { type: "number", required: false, min: 0, max: 120 },
+  password: { type: "password", required: true, minLength: 8 }
+} as const;
+
+type FormSchema = typeof formSchema;
+type FormFields = keyof FormSchema;
+
+// ✅ Extract form data type from schema
+type FormData = {
+  [K in FormFields]: FormSchema[K]["required"] extends true
+    ? string
+    : string | undefined;
+};
+
+// Result: {
+//   username: string;
+//   email: string;
+//   age: string | undefined;
+//   password: string;
+// }
+
+// ✅ Type-safe form validation
+function validateField<K extends FormFields>(
+  field: K,
+  value: string
+): { valid: boolean; error?: string } {
+  const fieldSchema = formSchema[field];
+
+  if (fieldSchema.required && !value) {
+    return { valid: false, error: `${field} is required` };
+  }
+
+  if ("minLength" in fieldSchema && value.length < fieldSchema.minLength) {
+    return { valid: false, error: `${field} must be at least ${fieldSchema.minLength} characters` };
+  }
+
+  return { valid: true };
+}
+
+// Usage
+const usernameValidation = validateField("username", "jo");
+// { valid: false, error: "username must be at least 3 characters" }
+```
+
+**2. API Response Mapping:**
+```typescript
+// 🎯 TYPE-SAFE API RESPONSE HANDLING
+const apiRoutes = {
+  "/users": { method: "GET", response: [] as User[] },
+  "/users/:id": { method: "GET", response: {} as User },
+  "/posts": { method: "GET", response: [] as Post[] },
+  "/auth/login": { method: "POST", response: {} as { token: string; user: User } }
+} as const;
+
+type ApiRoutes = typeof apiRoutes;
+type ApiPaths = keyof ApiRoutes;
+
+// ✅ Extract response types from routes
+type ApiResponseMap = {
+  [K in ApiPaths]: ApiRoutes[K]["response"];
+};
+
+// Result: {
+//   "/users": User[];
+//   "/users/:id": User;
+//   "/posts": Post[];
+//   "/auth/login": { token: string; user: User };
+// }
+
+// ✅ Type-safe API client
+async function apiCall<P extends ApiPaths>(
+  path: P
+): Promise<ApiResponseMap[P]> {
+  const route = apiRoutes[path];
+
+  // Simulate API call
+  const response = await fetch(path as string);
+  const data = await response.json();
+
+  return data as ApiResponseMap[P]; // ✅ Correctly typed return
+}
+
+// Usage với perfect type inference
+const users = await apiCall("/users"); // User[]
+const user = await apiCall("/users/:id"); // User
+const loginResult = await apiCall("/auth/login"); // { token: string; user: User }
+```
+
+**3. State Management Type Safety:**
+```typescript
+// 🎯 REDUX-STYLE TYPE-SAFE ACTIONS
+const actionCreators = {
+  setUser: (user: User) => ({ type: "SET_USER" as const, payload: user }),
+  setLoading: (loading: boolean) => ({ type: "SET_LOADING" as const, payload: loading }),
+  addPost: (post: Post) => ({ type: "ADD_POST" as const, payload: post }),
+  removePost: (id: number) => ({ type: "REMOVE_POST" as const, payload: id })
+};
+
+type ActionCreators = typeof actionCreators;
+type ActionCreatorKeys = keyof ActionCreators;
+
+// ✅ Extract all possible action types
+type Actions = ReturnType<ActionCreators[ActionCreatorKeys]>;
+// Result: Union of all action types
+
+// ✅ Type-safe reducer
+function appReducer(state: AppState, action: Actions): AppState {
+  switch (action.type) {
+    case "SET_USER":
+      return { ...state, user: action.payload }; // ✅ payload is User
+    case "SET_LOADING":
+      return { ...state, loading: action.payload }; // ✅ payload is boolean
+    case "ADD_POST":
+      return { ...state, posts: [...state.posts, action.payload] }; // ✅ payload is Post
+    case "REMOVE_POST":
+      return {
+        ...state,
+        posts: state.posts.filter(p => p.id !== action.payload) // ✅ payload is number
+      };
+    default:
+      return state;
+  }
+}
+
+// ✅ Type-safe action dispatcher
+function createDispatcher<K extends ActionCreatorKeys>(
+  reducerDispatch: (action: Actions) => void
+) {
+  return {
+    [K in ActionCreatorKeys]: (...args: Parameters<ActionCreators[K]>) => {
+      const action = actionCreators[K](...args);
+      reducerDispatch(action);
+    }
+  } as {
+    [K in ActionCreatorKeys]: ActionCreators[K]
+  };
+}
+```
+
+#### **🎯 REAL-WORLD PATTERNS:**
+
+**1. Configuration Management:**
+```typescript
+// 🎯 ENVIRONMENT-AWARE CONFIG
+const baseConfig = {
+  app: {
+    name: "MyApp",
+    version: "1.0.0"
+  },
+  api: {
+    baseUrl: "https://api.example.com",
+    timeout: 5000
+  },
+  features: {
+    darkMode: true,
+    analytics: true,
+    notifications: false
+  }
+} as const;
+
+type BaseConfig = typeof baseConfig;
+type ConfigPaths = keyof BaseConfig;
+type FeatureFlags = keyof BaseConfig["features"];
+
+// ✅ Type-safe config updater
+function updateConfig<
+  TPath extends ConfigPaths,
+  TKey extends keyof BaseConfig[TPath]
+>(
+  path: TPath,
+  key: TKey,
+  value: BaseConfig[TPath][TKey]
+): void {
+  (baseConfig[path] as any)[key] = value; // Type-safe update
+}
+
+// Usage
+updateConfig("features", "darkMode", false); // ✅ boolean expected
+updateConfig("api", "timeout", 3000); // ✅ number expected
+// updateConfig("features", "darkMode", "invalid"); // ❌ Error: string not assignable to boolean
+
+// ✅ Feature flag checker
+function isFeatureEnabled<T extends FeatureFlags>(feature: T): boolean {
+  return baseConfig.features[feature];
+}
+
+if (isFeatureEnabled("analytics")) {
+  // Analytics code
+}
+```
+
+**2. Database Query Builder:**
+```typescript
+// 🎯 TYPE-SAFE QUERY BUILDER
+const tableSchemas = {
+  users: {
+    id: "number",
+    name: "string",
+    email: "string",
+    createdAt: "date"
+  },
+  posts: {
+    id: "number",
+    title: "string",
+    content: "string",
+    authorId: "number",
+    publishedAt: "date"
+  }
+} as const;
+
+type TableSchemas = typeof tableSchemas;
+type TableNames = keyof TableSchemas;
+
+// ✅ Type-safe column selector
+function select<
+  TTable extends TableNames,
+  TColumns extends (keyof TableSchemas[TTable])[]
+>(
+  table: TTable,
+  columns: TColumns
+): Pick<TableSchemas[TTable], TColumns[number]> {
+  // Query building logic here
+  return {} as Pick<TableSchemas[TTable], TColumns[number]>;
+}
+
+// Usage với perfect type inference
+const userQuery = select("users", ["id", "name", "email"]);
+// Type: Pick<{ id: "number"; name: "string"; email: "string"; createdAt: "date" }, "id" | "name" | "email">
+
+const postQuery = select("posts", ["title", "publishedAt"]);
+// Type: Pick<{ id: "number"; title: "string"; content: "string"; authorId: "number"; publishedAt: "date" }, "title" | "publishedAt">
+
+// ✅ Type-safe where clause builder
+function where<
+  TTable extends TableNames,
+  TColumn extends keyof TableSchemas[TTable]
+>(
+  table: TTable,
+  column: TColumn,
+  value: TableSchemas[TTable][TColumn]
+): void {
+  // WHERE clause logic
+}
+
+// Usage
+where("users", "id", 1); // ✅ number expected
+where("users", "name", "John"); // ✅ string expected
+// where("users", "id", "invalid"); // ❌ Error: string not assignable to number
+```
+
+#### **💡 INTERVIEW INSIGHTS:**
+
+**🔹 STATIC TYPING BENEFITS:**
+- ✅ **COMPILE-TIME** error detection
+- ✅ **INTELLISENSE** và autocomplete
+- ✅ **REFACTORING SAFETY** - renaming variables/properties
+- ✅ **SELF-DOCUMENTING** code
+- ✅ **PERFORMANCE** - no runtime type checking needed
+
+**🔹 TYPEOF vs KEYOF:**
+
+| Operator | **Input** | **Output** | **Use Case** |
+|----------|-----------|------------|-------------|
+| `typeof` | **Value** | **Type** | Extract type from runtime value |
+| `keyof` | **Type** | **Union of Keys** | Get property names as literal types |
+
+**🔹 COMMON PATTERNS:**
+```typescript
+// Pattern 1: typeof + keyof combination
+const obj = { a: 1, b: "hello" };
+type ObjKeys = keyof typeof obj; // "a" | "b"
+
+// Pattern 2: Generic type-safe property access
+function getProp<T, K extends keyof T>(obj: T, key: K): T[K] {
+  return obj[key];
+}
+
+// Pattern 3: Conditional type với keyof
+type StringKeys<T> = {
+  [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T];
+```
+
+**🔹 PERFORMANCE:**
+- **NO RUNTIME OVERHEAD** - all operations compile-time only
+- **Better OPTIMIZATION** - TypeScript compiler can optimize better
+- **TREE SHAKING** - unused properties can be eliminated
+
+#### **🚀 ADVANCED USE CASES:**
+
+**1. Type-Safe Event System:**
+```typescript
+// 🎯 EVENT SYSTEM với static typing
+const eventMap = {
+  "user:login": (data: { userId: number; timestamp: Date }) => {},
+  "user:logout": (data: { userId: number }) => {},
+  "post:created": (data: { postId: number; authorId: number }) => {},
+  "post:deleted": (data: { postId: number }) => {}
+} as const;
+
+type EventMap = typeof eventMap;
+type EventNames = keyof EventMap;
+
+class TypedEventEmitter {
+  private listeners: {
+    [K in EventNames]?: Array<Parameters<EventMap[K]>[0]>
+  } = {};
+
+  on<K extends EventNames>(
+    event: K,
+    callback: EventMap[K]
+  ): void {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
+    (this.listeners[event] as any[]).push(callback);
+  }
+
+  emit<K extends EventNames>(
+    event: K,
+    data: Parameters<EventMap[K]>[0]
+  ): void {
+    const callbacks = this.listeners[event];
+    if (callbacks) {
+      callbacks.forEach(callback => callback(data));
+    }
+  }
+}
+
+// Usage với full type safety
+const emitter = new TypedEventEmitter();
+
+emitter.on("user:login", (data) => {
+  console.log(`User ${data.userId} logged in at ${data.timestamp}`);
+  // ✅ data is correctly typed as { userId: number; timestamp: Date }
+});
+
+emitter.emit("user:login", { userId: 123, timestamp: new Date() }); // ✅ Correct
+// emitter.emit("user:login", { userId: "123" }); // ❌ Error: string not assignable to number
+```
+
+**2. Form Builder với Type Safety:**
+```typescript
+// 🎯 FORM BUILDER system
+const formFields = {
+  textInput: { type: "text", validation: (v: string) => v.length > 0 },
+  emailInput: { type: "email", validation: (v: string) => /\S+@\S+\.\S+/.test(v) },
+  numberInput: { type: "number", validation: (v: number) => !isNaN(v) },
+  selectInput: {
+    type: "select",
+    options: ["option1", "option2", "option3"] as const,
+    validation: (v: string) => v.length > 0
+  }
+} as const;
+
+type FormFields = typeof formFields;
+type FieldNames = keyof FormFields;
+
+// ✅ Dynamic form type generation
+type FormSchema<T extends Record<string, FieldNames>> = {
+  [K in keyof T]: T[K] extends FieldNames
+    ? FormFields[T[K]] extends { type: "number" }
+      ? number
+      : FormFields[T[K]] extends { type: "select", options: readonly any[] }
+        ? FormFields[T[K]]["options"][number]
+        : string
+    : never;
+};
+
+// Usage
+const myFormConfig = {
+  username: "textInput",
+  email: "emailInput",
+  age: "numberInput",
+  country: "selectInput"
+} as const;
+
+type MyFormData = FormSchema<typeof myFormConfig>;
+// Result: {
+//   username: string;
+//   email: string;
+//   age: number;
+//   country: "option1" | "option2" | "option3";
+// }
+
+// ✅ Type-safe form validator
+function validateForm<T extends Record<string, FieldNames>>(
+  config: T,
+  data: FormSchema<T>
+): { valid: boolean; errors: Partial<Record<keyof T, string>> } {
+  const errors: Partial<Record<keyof T, string>> = {};
+
+  for (const [fieldName, fieldType] of Object.entries(config)) {
+    const field = formFields[fieldType as FieldNames];
+    const value = data[fieldName as keyof T];
+
+    if (!field.validation(value as any)) {
+      errors[fieldName as keyof T] = `Invalid ${fieldName}`;
+    }
+  }
+
+  return {
+    valid: Object.keys(errors).length === 0,
+    errors
+  };
+}
+```
+
+#### **🎯 DECISION FRAMEWORK:**
+
+```
+❓ Need to extract type from existing value?
+   └─ Use `typeof`
+
+❓ Need to get keys of a type as union?
+   └─ Use `keyof`
+
+❓ Need both operations combined?
+   └─ Use `keyof typeof value`
+
+❓ Need conditional type based on properties?
+   └─ Use mapped types với `keyof`
+
+❓ Need type-safe property access?
+   └─ Use generics với `keyof` constraint
+```
+
+**📝 GOLDEN RULES:**
+1. **typeof** = convert runtime VALUES to compile-time TYPES
+2. **keyof** = extract KEYS from types as literal unions
+3. **Combine them** for maximum type safety
+4. **Use generics** với keyof constraints for reusable type-safe functions
+5. **as const** để preserve literal types when using typeof
+
+**GHI NHỚ:**
+- `typeof value` = **VALUE → TYPE**
+- `keyof Type` = **TYPE → KEY UNION**
+- `keyof typeof value` = **VALUE → KEY UNION**
+
+**INTERVIEW TIP:** Demonstrate knowledge của advanced type operations và how they enable **RUNTIME-SAFE** code với **COMPILE-TIME** guarantees! 🎯
+
+---
+
+### TS10: OOP trong TypeScript - Abstract Class, Implement, Extend?
+
+**Trả lời:**
+
+TypeScript mang **FULL OBJECT-ORIENTED PROGRAMMING** vào JavaScript với **STRONG TYPING**! Đây là **CORE CONCEPTS** mà mọi Senior Developer cần nắm vững.
+
+#### **🔥 FUNDAMENTAL OOP CONCEPTS:**
+
+**OOP in TypeScript = Classes + Inheritance + Polymorphism + Encapsulation + Abstraction**
+
+```typescript
+// 🎯 BASIC CLASS STRUCTURE
+class Animal {
+  // ✅ ENCAPSULATION: Private, Protected, Public
+  private id: number;           // ❌ Chỉ class này access được
+  protected name: string;       // ✅ Class này + subclasses
+  public species: string;       // ✅ Mọi nơi đều access được
+
+  constructor(id: number, name: string, species: string) {
+    this.id = id;
+    this.name = name;
+    this.species = species;
+  }
+
+  // ✅ PUBLIC METHOD
+  public makeSound(): string {
+    return "Some generic animal sound";
+  }
+
+  // ✅ PROTECTED METHOD (for subclasses)
+  protected getName(): string {
+    return this.name;
+  }
+
+  // ✅ PRIVATE METHOD (internal only)
+  private generateId(): number {
+    return Math.random() * 1000;
+  }
+}
+
+// 📝 GHI NHỚ:
+// private = chỉ class hiện tại
+// protected = class hiện tại + subclasses
+// public = mọi nơi (default)
+```
+
+#### **🏗️ INHERITANCE với EXTENDS:**
+
+```typescript
+// 🎯 EXTENDS: Class inheritance
+class Dog extends Animal {
+  private breed: string;
+
+  constructor(id: number, name: string, breed: string) {
+    super(id, name, "Canine"); // ✅ Call parent constructor
+    this.breed = breed;
+  }
+
+  // ✅ OVERRIDE parent method
+  public makeSound(): string {
+    return "Woof! Woof!";
+  }
+
+  // ✅ ACCESS protected member từ parent
+  public introduce(): string {
+    return `I'm ${this.getName()}, a ${this.breed} dog`; // ✅ getName() is protected
+  }
+
+  // ✅ NEW method specific to Dog
+  public fetch(item: string): string {
+    return `${this.getName()} is fetching ${item}`;
+  }
+
+  // ✅ GETTER/SETTER pattern
+  get breedInfo(): string {
+    return this.breed;
+  }
+
+  set breedInfo(newBreed: string) {
+    if (newBreed.length > 0) {
+      this.breed = newBreed;
+    }
+  }
+}
+
+// Usage
+const myDog = new Dog(1, "Buddy", "Golden Retriever");
+console.log(myDog.makeSound()); // "Woof! Woof!" (overridden)
+console.log(myDog.introduce()); // "I'm Buddy, a Golden Retriever dog"
+console.log(myDog.species); // "Canine" (public property)
+// console.log(myDog.name); // ❌ Error: protected property
+// console.log(myDog.id); // ❌ Error: private property
+
+// 📝 GHI NHỚ: extends creates IS-A relationship (Dog IS AN Animal)
+```
+
+#### **📋 INTERFACES với IMPLEMENTS:**
+
+```typescript
+// 🎯 INTERFACES: Define contracts
+interface Flyable {
+  maxAltitude: number;
+  fly(): string;
+  land(): string;
+}
+
+interface Swimmable {
+  maxDepth: number;
+  swim(): string;
+  dive(depth: number): string;
+}
+
+// ✅ SINGLE INTERFACE implementation
+class Bird extends Animal implements Flyable {
+  maxAltitude: number;
+
+  constructor(id: number, name: string, maxAltitude: number) {
+    super(id, name, "Avian");
+    this.maxAltitude = maxAltitude;
+  }
+
+  // ✅ MUST implement interface methods
+  fly(): string {
+    return `${this.getName()} is flying up to ${this.maxAltitude}m`;
+  }
+
+  land(): string {
+    return `${this.getName()} is landing safely`;
+  }
+
+  // ✅ Override parent method
+  makeSound(): string {
+    return "Tweet! Tweet!";
+  }
+}
+
+// ✅ MULTIPLE INTERFACES implementation
+class Duck extends Animal implements Flyable, Swimmable {
+  maxAltitude: number;
+  maxDepth: number;
+
+  constructor(id: number, name: string) {
+    super(id, name, "Waterfowl");
+    this.maxAltitude = 100; // Ducks don't fly very high
+    this.maxDepth = 5; // Shallow diving
+  }
+
+  // ✅ Implement Flyable
+  fly(): string {
+    return `${this.getName()} is flying low over water`;
+  }
+
+  land(): string {
+    return `${this.getName()} is landing on water`;
+  }
+
+  // ✅ Implement Swimmable
+  swim(): string {
+    return `${this.getName()} is swimming gracefully`;
+  }
+
+  dive(depth: number): string {
+    if (depth > this.maxDepth) {
+      return `${this.getName()} can't dive that deep!`;
+    }
+    return `${this.getName()} is diving to ${depth}m`;
+  }
+
+  makeSound(): string {
+    return "Quack! Quack!";
+  }
+}
+
+// Usage
+const eagle = new Bird(2, "Eagle", 3000);
+console.log(eagle.fly()); // "Eagle is flying up to 3000m"
+
+const duck = new Duck(3, "Donald");
+console.log(duck.fly()); // "Donald is flying low over water"
+console.log(duck.swim()); // "Donald is swimming gracefully"
+console.log(duck.dive(3)); // "Donald is diving to 3m"
+
+// 📝 GHI NHỚ: implements creates CAN-DO relationship (Duck CAN FLY and CAN SWIM)
+```
+
+#### **🏛️ ABSTRACT CLASSES:**
+
+```typescript
+// 🎯 ABSTRACT CLASS: Cannot be instantiated directly
+abstract class Vehicle {
+  protected brand: string;
+  protected model: string;
+  protected year: number;
+
+  constructor(brand: string, model: string, year: number) {
+    this.brand = brand;
+    this.model = model;
+    this.year = year;
+  }
+
+  // ✅ CONCRETE METHOD (có implementation)
+  getInfo(): string {
+    return `${this.year} ${this.brand} ${this.model}`;
+  }
+
+  // ✅ ABSTRACT METHOD (must be implemented by subclasses)
+  abstract start(): string;
+  abstract stop(): string;
+  abstract getMaxSpeed(): number;
+
+  // ✅ CONCRETE METHOD sử dụng abstract method
+  race(): string {
+    const startMsg = this.start();
+    const maxSpeed = this.getMaxSpeed();
+    return `${startMsg} - Racing at max speed: ${maxSpeed} km/h`;
+  }
+}
+
+// ✅ CONCRETE implementation của abstract class
+class Car extends Vehicle {
+  private engineType: string;
+
+  constructor(brand: string, model: string, year: number, engineType: string) {
+    super(brand, model, year);
+    this.engineType = engineType;
+  }
+
+  // ✅ MUST implement abstract methods
+  start(): string {
+    return `${this.getInfo()} engine started with ${this.engineType}`;
+  }
+
+  stop(): string {
+    return `${this.getInfo()} engine stopped`;
+  }
+
+  getMaxSpeed(): number {
+    return this.engineType === "electric" ? 200 : 180;
+  }
+
+  // ✅ Additional car-specific methods
+  openTrunk(): string {
+    return `${this.getInfo()} trunk opened`;
+  }
+}
+
+class Motorcycle extends Vehicle {
+  private hasWindshield: boolean;
+
+  constructor(brand: string, model: string, year: number, hasWindshield: boolean) {
+    super(brand, model, year);
+    this.hasWindshield = hasWindshield;
+  }
+
+  start(): string {
+    return `${this.getInfo()} motorcycle engine roared to life`;
+  }
+
+  stop(): string {
+    return `${this.getInfo()} motorcycle engine turned off`;
+  }
+
+  getMaxSpeed(): number {
+    return this.hasWindshield ? 250 : 200; // Windshield allows higher speed
+  }
+
+  wheelie(): string {
+    return `${this.getInfo()} doing a wheelie!`;
+  }
+}
+
+// Usage
+// const vehicle = new Vehicle("Generic", "Model", 2024); // ❌ Error: Cannot instantiate abstract class
+
+const car = new Car("Tesla", "Model 3", 2024, "electric");
+console.log(car.start()); // "2024 Tesla Model 3 engine started with electric"
+console.log(car.race()); // "2024 Tesla Model 3 engine started with electric - Racing at max speed: 200 km/h"
+
+const bike = new Motorcycle("Yamaha", "R1", 2024, true);
+console.log(bike.start()); // "2024 Yamaha R1 motorcycle engine roared to life"
+console.log(bike.wheelie()); // "2024 Yamaha R1 doing a wheelie!"
+
+// 📝 GHI NHỚ: Abstract class = PARTIAL implementation + ENFORCED contract
+```
+
+#### **⚡ ADVANCED OOP PATTERNS:**
+
+**1. Method Overloading:**
+```typescript
+// 🎯 METHOD OVERLOADING với different signatures
+class Calculator {
+  // ✅ OVERLOAD SIGNATURES
+  add(a: number, b: number): number;
+  add(a: string, b: string): string;
+  add(a: number[], b: number[]): number[];
+
+  // ✅ IMPLEMENTATION signature
+  add(a: any, b: any): any {
+    if (typeof a === "number" && typeof b === "number") {
+      return a + b;
+    }
+
+    if (typeof a === "string" && typeof b === "string") {
+      return a + b;
+    }
+
+    if (Array.isArray(a) && Array.isArray(b)) {
+      return [...a, ...b];
+    }
+
+    throw new Error("Unsupported types for add operation");
+  }
+}
+
+const calc = new Calculator();
+console.log(calc.add(1, 2)); // 3 (number)
+console.log(calc.add("Hello", " World")); // "Hello World" (string)
+console.log(calc.add([1, 2], [3, 4])); // [1, 2, 3, 4] (array)
+```
+
+**2. Static Members:**
+```typescript
+// 🎯 STATIC MEMBERS: Belong to class, not instance
+class MathUtils {
+  // ✅ STATIC PROPERTY
+  static readonly PI = 3.14159;
+  private static instanceCount = 0;
+
+  // ✅ INSTANCE PROPERTY
+  private id: number;
+
+  constructor() {
+    MathUtils.instanceCount++;
+    this.id = MathUtils.instanceCount;
+  }
+
+  // ✅ STATIC METHOD
+  static circleArea(radius: number): number {
+    return MathUtils.PI * radius * radius;
+  }
+
+  static getInstanceCount(): number {
+    return MathUtils.instanceCount;
+  }
+
+  // ✅ INSTANCE METHOD
+  getId(): number {
+    return this.id;
+  }
+}
+
+// Usage
+console.log(MathUtils.PI); // 3.14159 (no instance needed)
+console.log(MathUtils.circleArea(5)); // 78.53975 (static method)
+
+const math1 = new MathUtils();
+const math2 = new MathUtils();
+console.log(MathUtils.getInstanceCount()); // 2
+console.log(math1.getId()); // 1
+console.log(math2.getId()); // 2
+
+// 📝 GHI NHỚ: static = class-level, instance = object-level
+```
+
+**3. Abstract + Interface Combined:**
+```typescript
+// 🎯 COMBINING Abstract Class + Interface
+interface Saveable {
+  save(): Promise<boolean>;
+  load(): Promise<boolean>;
+}
+
+interface Validatable {
+  validate(): boolean;
+  getErrors(): string[];
+}
+
+// ✅ ABSTRACT BASE với common functionality
+abstract class Entity implements Saveable, Validatable {
+  protected id: string;
+  protected createdAt: Date;
+  protected updatedAt: Date;
+
+  constructor(id?: string) {
+    this.id = id || this.generateId();
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+  }
+
+  // ✅ CONCRETE implementation
+  private generateId(): string {
+    return Math.random().toString(36).substr(2, 9);
+  }
+
+  // ✅ CONCRETE method
+  protected touch(): void {
+    this.updatedAt = new Date();
+  }
+
+  // ✅ ABSTRACT methods (must implement)
+  abstract validate(): boolean;
+  abstract getErrors(): string[];
+
+  // ✅ DEFAULT implementation (có thể override)
+  async save(): Promise<boolean> {
+    if (!this.validate()) {
+      console.log("Validation failed:", this.getErrors());
+      return false;
+    }
+
+    this.touch();
+
+    // Simulate API call
+    return new Promise(resolve => {
+      setTimeout(() => {
+        console.log(`${this.constructor.name} saved with ID: ${this.id}`);
+        resolve(true);
+      }, 100);
+    });
+  }
+
+  async load(): Promise<boolean> {
+    // Simulate loading from database
+    return new Promise(resolve => {
+      setTimeout(() => {
+        console.log(`${this.constructor.name} loaded with ID: ${this.id}`);
+        resolve(true);
+      }, 100);
+    });
+  }
+}
+
+// ✅ CONCRETE implementation
+class User extends Entity {
+  private name: string;
+  private email: string;
+  private age: number;
+
+  constructor(name: string, email: string, age: number, id?: string) {
+    super(id);
+    this.name = name;
+    this.email = email;
+    this.age = age;
+  }
+
+  // ✅ IMPLEMENT abstract methods
+  validate(): boolean {
+    return this.getErrors().length === 0;
+  }
+
+  getErrors(): string[] {
+    const errors: string[] = [];
+
+    if (!this.name || this.name.trim().length === 0) {
+      errors.push("Name is required");
+    }
+
+    if (!this.email || !this.email.includes("@")) {
+      errors.push("Valid email is required");
+    }
+
+    if (this.age < 0 || this.age > 150) {
+      errors.push("Age must be between 0 and 150");
+    }
+
+    return errors;
+  }
+
+  // ✅ User-specific methods
+  getProfile(): string {
+    return `${this.name} (${this.email}) - Age: ${this.age}`;
+  }
+
+  // ✅ OVERRIDE save để add extra logic
+  async save(): Promise<boolean> {
+    console.log(`Saving user: ${this.getProfile()}`);
+    return super.save(); // Call parent implementation
+  }
+}
+
+// Usage
+const user = new User("John Doe", "john@email.com", 30);
+
+if (user.validate()) {
+  await user.save(); // "Saving user: John Doe (john@email.com) - Age: 30"
+} else {
+  console.log("User validation failed:", user.getErrors());
+}
+
+const invalidUser = new User("", "invalid-email", -5);
+console.log(invalidUser.getErrors());
+// ["Name is required", "Valid email is required", "Age must be between 0 and 150"]
+```
+
+#### **🎯 REAL-WORLD EXAMPLE: Game Engine:**
+
+```typescript
+// 🎯 COMPLEX OOP SYSTEM: Game Engine
+interface Drawable {
+  draw(context: CanvasRenderingContext2D): void;
+}
+
+interface Updatable {
+  update(deltaTime: number): void;
+}
+
+interface Collidable {
+  getBounds(): Rectangle;
+  onCollision(other: Collidable): void;
+}
+
+// ✅ UTILITY CLASSES
+class Vector2 {
+  constructor(public x: number = 0, public y: number = 0) {}
+
+  add(other: Vector2): Vector2 {
+    return new Vector2(this.x + other.x, this.y + other.y);
+  }
+
+  multiply(scalar: number): Vector2 {
+    return new Vector2(this.x * scalar, this.y * scalar);
+  }
+}
+
+class Rectangle {
+  constructor(
+    public x: number,
+    public y: number,
+    public width: number,
+    public height: number
+  ) {}
+
+  intersects(other: Rectangle): boolean {
+    return !(
+      this.x + this.width < other.x ||
+      other.x + other.width < this.x ||
+      this.y + this.height < other.y ||
+      other.y + other.height < this.y
+    );
+  }
+}
+
+// ✅ ABSTRACT BASE CLASS
+abstract class GameObject implements Drawable, Updatable {
+  protected position: Vector2;
+  protected velocity: Vector2;
+  protected size: Vector2;
+  protected health: number;
+
+  constructor(x: number, y: number, width: number, height: number) {
+    this.position = new Vector2(x, y);
+    this.velocity = new Vector2(0, 0);
+    this.size = new Vector2(width, height);
+    this.health = 100;
+  }
+
+  // ✅ CONCRETE methods
+  update(deltaTime: number): void {
+    // Update position based on velocity
+    this.position = this.position.add(this.velocity.multiply(deltaTime));
+
+    // Boundary checking
+    this.checkBounds();
+
+    // Call subclass-specific update
+    this.onUpdate(deltaTime);
+  }
+
+  protected checkBounds(): void {
+    // Simple boundary checking (screen edges)
+    if (this.position.x < 0) this.position.x = 0;
+    if (this.position.y < 0) this.position.y = 0;
+  }
+
+  takeDamage(amount: number): void {
+    this.health -= amount;
+    if (this.health <= 0) {
+      this.onDestroy();
+    }
+  }
+
+  // ✅ ABSTRACT methods (must implement)
+  abstract draw(context: CanvasRenderingContext2D): void;
+  abstract onUpdate(deltaTime: number): void;
+  abstract onDestroy(): void;
+}
+
+// ✅ CONCRETE IMPLEMENTATIONS
+class Player extends GameObject implements Collidable {
+  private score: number = 0;
+  private isInvulnerable: boolean = false;
+
+  constructor(x: number, y: number) {
+    super(x, y, 32, 32); // Player is 32x32 pixels
+  }
+
+  // ✅ Implement abstract methods
+  draw(context: CanvasRenderingContext2D): void {
+    context.fillStyle = this.isInvulnerable ? 'rgba(0, 255, 0, 0.5)' : 'green';
+    context.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+
+    // Draw health bar
+    context.fillStyle = 'red';
+    context.fillRect(this.position.x, this.position.y - 10, this.size.x, 4);
+    context.fillStyle = 'green';
+    context.fillRect(this.position.x, this.position.y - 10, (this.size.x * this.health) / 100, 4);
+  }
+
+  onUpdate(deltaTime: number): void {
+    // Handle input, special abilities, etc.
+    this.handleInput();
+  }
+
+  onDestroy(): void {
+    console.log(`Player destroyed! Final score: ${this.score}`);
+  }
+
+  // ✅ Implement Collidable
+  getBounds(): Rectangle {
+    return new Rectangle(this.position.x, this.position.y, this.size.x, this.size.y);
+  }
+
+  onCollision(other: Collidable): void {
+    if (other instanceof Enemy && !this.isInvulnerable) {
+      this.takeDamage(10);
+      this.becomeInvulnerable(1000); // 1 second invulnerability
+    } else if (other instanceof PowerUp) {
+      this.score += (other as PowerUp).getValue();
+    }
+  }
+
+  // ✅ Player-specific methods
+  private handleInput(): void {
+    // Keyboard input handling would go here
+    // For demo, just show the concept
+  }
+
+  private becomeInvulnerable(duration: number): void {
+    this.isInvulnerable = true;
+    setTimeout(() => {
+      this.isInvulnerable = false;
+    }, duration);
+  }
+
+  moveUp(): void { this.velocity.y = -100; }
+  moveDown(): void { this.velocity.y = 100; }
+  moveLeft(): void { this.velocity.x = -100; }
+  moveRight(): void { this.velocity.x = 100; }
+  stop(): void { this.velocity = new Vector2(0, 0); }
+}
+
+class Enemy extends GameObject implements Collidable {
+  private attackDamage: number;
+
+  constructor(x: number, y: number, attackDamage: number = 20) {
+    super(x, y, 24, 24); // Enemy is 24x24 pixels
+    this.attackDamage = attackDamage;
+    this.velocity = new Vector2(-50, 0); // Move left by default
+  }
+
+  draw(context: CanvasRenderingContext2D): void {
+    context.fillStyle = 'red';
+    context.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+  }
+
+  onUpdate(deltaTime: number): void {
+    // AI behavior - simple back and forth movement
+    if (this.position.x <= 0 || this.position.x >= 800 - this.size.x) {
+      this.velocity.x *= -1; // Reverse direction
+    }
+  }
+
+  onDestroy(): void {
+    console.log("Enemy destroyed!");
+  }
+
+  getBounds(): Rectangle {
+    return new Rectangle(this.position.x, this.position.y, this.size.x, this.size.y);
+  }
+
+  onCollision(other: Collidable): void {
+    if (other instanceof Player) {
+      // Enemy collision logic handled by Player
+    }
+  }
+
+  getAttackDamage(): number {
+    return this.attackDamage;
+  }
+}
+
+class PowerUp extends GameObject implements Collidable {
+  private value: number;
+  private rotationSpeed: number = 2;
+  private rotation: number = 0;
+
+  constructor(x: number, y: number, value: number = 50) {
+    super(x, y, 16, 16); // PowerUp is 16x16 pixels
+    this.value = value;
+  }
+
+  draw(context: CanvasRenderingContext2D): void {
+    context.save();
+    context.translate(
+      this.position.x + this.size.x / 2,
+      this.position.y + this.size.y / 2
+    );
+    context.rotate(this.rotation);
+    context.fillStyle = 'gold';
+    context.fillRect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y);
+    context.restore();
+  }
+
+  onUpdate(deltaTime: number): void {
+    this.rotation += this.rotationSpeed * deltaTime;
+  }
+
+  onDestroy(): void {
+    console.log(`PowerUp collected! Value: ${this.value}`);
+  }
+
+  getBounds(): Rectangle {
+    return new Rectangle(this.position.x, this.position.y, this.size.x, this.size.y);
+  }
+
+  onCollision(other: Collidable): void {
+    if (other instanceof Player) {
+      this.onDestroy(); // PowerUp gets consumed
+    }
+  }
+
+  getValue(): number {
+    return this.value;
+  }
+}
+
+// ✅ GAME MANAGER
+class Game {
+  private gameObjects: GameObject[] = [];
+  private collidableObjects: Collidable[] = [];
+  private canvas: HTMLCanvasElement;
+  private context: CanvasRenderingContext2D;
+  private lastTime: number = 0;
+
+  constructor(canvasId: string) {
+    this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    this.context = this.canvas.getContext('2d')!;
+
+    this.initializeGame();
+  }
+
+  private initializeGame(): void {
+    // Create game objects
+    const player = new Player(100, 100);
+    const enemy1 = new Enemy(300, 150);
+    const enemy2 = new Enemy(500, 200);
+    const powerUp = new PowerUp(400, 100);
+
+    this.gameObjects.push(player, enemy1, enemy2, powerUp);
+    this.collidableObjects.push(player, enemy1, enemy2, powerUp);
+  }
+
+  private gameLoop = (currentTime: number): void => {
+    const deltaTime = (currentTime - this.lastTime) / 1000; // Convert to seconds
+    this.lastTime = currentTime;
+
+    // Update all objects
+    this.gameObjects.forEach(obj => obj.update(deltaTime));
+
+    // Check collisions
+    this.checkCollisions();
+
+    // Render everything
+    this.render();
+
+    // Continue the loop
+    requestAnimationFrame(this.gameLoop);
+  }
+
+  private checkCollisions(): void {
+    for (let i = 0; i < this.collidableObjects.length; i++) {
+      for (let j = i + 1; j < this.collidableObjects.length; j++) {
+        const obj1 = this.collidableObjects[i];
+        const obj2 = this.collidableObjects[j];
+
+        if (obj1.getBounds().intersects(obj2.getBounds())) {
+          obj1.onCollision(obj2);
+          obj2.onCollision(obj1);
+        }
+      }
+    }
+  }
+
+  private render(): void {
+    // Clear canvas
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Draw all objects
+    this.gameObjects.forEach(obj => obj.draw(this.context));
+  }
+
+  start(): void {
+    requestAnimationFrame(this.gameLoop);
+  }
+}
+
+// Usage
+// const game = new Game('gameCanvas');
+// game.start();
+```
+
+#### **💡 INTERVIEW INSIGHTS:**
+
+**🔹 ABSTRACT CLASS vs INTERFACE:**
+
+| Aspect | **Abstract Class** | **Interface** |
+|--------|-------------------|---------------|
+| **Implementation** | ✅ **Can have** concrete methods | ❌ **Only** method signatures |
+| **Constructor** | ✅ **Can have** constructor | ❌ **Cannot** have constructor |
+| **Properties** | ✅ **Can have** instance properties | ✅ **Only** property declarations |
+| **Inheritance** | ❌ **Single** inheritance only | ✅ **Multiple** implementation |
+| **Access Modifiers** | ✅ **public, private, protected** | ❌ **All public** |
+| **When to Use** | **Shared code** + **enforced contract** | **Pure contract** definition |
+
+**🔹 PERFORMANCE CONSIDERATIONS:**
+- **Inheritance** = slight runtime overhead cho method calls
+- **Interfaces** = **NO runtime cost** (compile-time only)
+- **Abstract classes** = normal class performance
+- **Static members** = faster access (no instance needed)
+
+**🔹 COMMON MISTAKES:**
+```typescript
+// ❌ SAI: Deep inheritance hierarchies
+class A {}
+class B extends A {}
+class C extends B {}
+class D extends C {} // Too deep!
+
+// ✅ ĐÚNG: Favor composition over inheritance
+interface Feature1 {}
+interface Feature2 {}
+class MyClass implements Feature1, Feature2 {} // Flexible!
+
+// ❌ SAI: Using abstract class như interface
+abstract class BadBase {
+  abstract method1(): void;
+  abstract method2(): void;
+  // No shared code!
+}
+
+// ✅ ĐÚNG: Use interface for pure contracts
+interface GoodContract {
+  method1(): void;
+  method2(): void;
+}
+```
+
+#### **🚀 BEST PRACTICES:**
+
+**📝 DO's:**
+- ✅ **Favor composition** over inheritance
+- ✅ Use **interfaces** cho contracts
+- ✅ Use **abstract classes** cho shared behavior
+- ✅ Keep inheritance **SHALLOW** (max 3-4 levels)
+- ✅ Use **access modifiers** appropriately
+
+**📝 DON'Ts:**
+- ❌ Don't create **GOD CLASSES** (too many responsibilities)
+- ❌ Avoid **DEEP inheritance** chains
+- ❌ Don't **OVERUSE** abstract classes
+- ❌ Don't make everything **PUBLIC**
+
+**GHI NHỚ:**
+- **extends** = IS-A relationship (inheritance)
+- **implements** = CAN-DO relationship (contract)
+- **abstract** = PARTIAL implementation + ENFORCED contract
+
+**INTERVIEW TIP:** Always emphasize **SOLID principles** và how TypeScript's OOP features help implement clean, maintainable code architecture! 🎯
+
+---
+
+## 🎨 CSS & HTML Advanced Topics
+
+**📌 [⬆️ Back to Top](#📚-câu-hỏi-frontend-interview---từ-cơ-bản-đến-senior) | [📋 Mục Lục](#📋-mục-lục-tổng-kết)**
+
+### CSS1: `em` (parent) vs `rem` (root) vs `px` - Khi nào sử dụng cái nào?
+
+**Trả lời:**
+
+Đây là **FUNDAMENTAL QUESTION** về CSS units. Mỗi unit có **USE CASES riêng biệt** và ảnh hưởng khác nhau đến responsive design.
+
+#### **🔥 SO SÁNH CHI TIẾT:**
+
+| Unit | **Relative to** | **Use Case** | **Responsive** | **Accessibility** |
+|------|----------------|--------------|----------------|-------------------|
+| **`px`** | ❌ **Fixed** | ✅ **Borders, shadows** | ❌ **Không** | ❌ **Không scale** |
+| **`em`** | 🔄 **Parent element** | ✅ **Component spacing** | ✅ **Cascading** | ⚠️ **Compounding** |
+| **`rem`** | 🏠 **Root element** | ✅ **Typography, layout** | ✅ **Predictable** | ✅ **User preferences** |
+
+#### **🎯 `px` - Absolute Units:**
+
+```css
+/* ✅ Tốt cho: Fixed elements */
+.border {
+  border: 1px solid #ccc; /* Border luôn 1px */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Shadow cố định */
+}
+
+.icon {
+  width: 16px; /* Icon size cố định */
+  height: 16px;
+}
+
+/* ❌ Tránh cho: Typography và spacing */
+.bad-text {
+  font-size: 16px; /* Không respect user font preferences */
+  margin: 20px; /* Không scale với root font */
+}
+```
+
+**💡 Khi dùng `px`:**
+- Borders, box-shadows
+- Small icons (16px, 24px, 32px)
+- Fixed layouts (khi cần exact pixels)
+- Media query breakpoints
+
+#### **🔄 `em` - Relative to Parent:**
+
+```css
+/* ✅ Component scaling dựa trên parent */
+.card {
+  font-size: 18px; /* Parent font size */
+}
+
+.card-title {
+  font-size: 1.2em; /* = 18px * 1.2 = 21.6px */
+  margin-bottom: 0.5em; /* = 10.8px, scale theo title */
+}
+
+.card-content {
+  font-size: 0.9em; /* = 18px * 0.9 = 16.2px */
+  line-height: 1.4em; /* Scale theo content font */
+}
+
+/* 🎯 Button component tự scale */
+.button {
+  padding: 0.5em 1em; /* Scale theo parent font */
+  font-size: 1em; /* Inherit parent size */
+  border-radius: 0.25em; /* Proportional radius */
+}
+
+/* Sử dụng: */
+.small-button { font-size: 14px; } /* Button sẽ nhỏ hơn */
+.large-button { font-size: 20px; } /* Button sẽ lớn hơn */
+```
+
+**⚠️ Em Compounding Problem:**
+```css
+/* ❌ Compounding issue */
+.parent { font-size: 1.2em; } /* 1.2 * 16px = 19.2px */
+.child { font-size: 1.2em; }  /* 1.2 * 19.2px = 23.04px */
+.grandchild { font-size: 1.2em; } /* 1.2 * 23.04px = 27.65px */
+
+/* ✅ Better approach */
+.parent { font-size: 1.2rem; } /* Always 1.2 * root */
+.child { font-size: 1.2rem; }  /* Always 1.2 * root */
+```
+
+#### **🏠 `rem` - Relative to Root:**
+
+```css
+/* ✅ Typography system */
+:root {
+  font-size: 16px; /* Base font size */
+}
+
+.h1 { font-size: 2.5rem; }    /* 40px */
+.h2 { font-size: 2rem; }      /* 32px */
+.h3 { font-size: 1.5rem; }    /* 24px */
+.body { font-size: 1rem; }    /* 16px */
+.small { font-size: 0.875rem; } /* 14px */
+
+/* ✅ Spacing system */
+.margin-xs { margin: 0.5rem; }  /* 8px */
+.margin-sm { margin: 1rem; }    /* 16px */
+.margin-md { margin: 1.5rem; }  /* 24px */
+.margin-lg { margin: 2rem; }    /* 32px */
+
+/* ✅ Responsive layout */
+.container {
+  max-width: 75rem; /* 1200px */
+  padding: 2rem; /* 32px */
+}
+
+.grid-gap {
+  gap: 1.5rem; /* 24px - consistent spacing */
+}
+```
+
+#### **🚀 MODERN BEST PRACTICES:**
+
+**1. Typography Scale với `rem`:**
+```css
+/* Design system approach */
+:root {
+  --font-size-xs: 0.75rem;   /* 12px */
+  --font-size-sm: 0.875rem;  /* 14px */
+  --font-size-base: 1rem;    /* 16px */
+  --font-size-lg: 1.125rem;  /* 18px */
+  --font-size-xl: 1.25rem;   /* 20px */
+  --font-size-2xl: 1.5rem;   /* 24px */
+  --font-size-3xl: 2rem;     /* 32px */
+}
+
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-lg { font-size: var(--font-size-lg); }
+```
+
+**2. Component Approach với `em`:**
+```css
+/* Self-contained component */
+.badge {
+  font-size: 0.875rem; /* Set base size with rem */
+  padding: 0.25em 0.5em; /* Use em for internal spacing */
+  border-radius: 0.375em; /* Proportional border radius */
+  border: 1px solid currentColor; /* 1px border */
+}
+
+/* Variants scale automatically */
+.badge--large { font-size: 1rem; }
+.badge--small { font-size: 0.75rem; }
+```
+
+**3. Responsive Typography:**
+```css
+/* Fluid typography */
+:root {
+  font-size: clamp(14px, 2.5vw, 18px); /* Responsive root */
+}
+
+/* All rem units scale automatically! */
+.title { font-size: 2rem; } /* Scales with viewport */
+.body { font-size: 1rem; }  /* Scales with viewport */
+```
+
+#### **🎯 DECISION FRAMEWORK:**
+
+```
+📐 px: Fixed elements (borders, icons, breakpoints)
+📏 em: Component internal spacing, scale with parent
+📱 rem: Typography, layout spacing, predictable scaling
+```
+
+**✅ Recommended approach:**
+```css
+/* Layout & Typography: rem */
+.container { max-width: 75rem; padding: 2rem; }
+.heading { font-size: 2rem; margin-bottom: 1rem; }
+
+/* Component internals: em */
+.button { padding: 0.5em 1em; border-radius: 0.25em; }
+
+/* Fixed elements: px */
+.border { border: 1px solid #ccc; }
+.icon { width: 20px; height: 20px; }
+```
+
+**💡 GHI NHỚ:**
+- **`rem`** = **R**oot-based, **R**esponsive, **R**eliable 🏠
+- **`em`** = **E**lement-relative, **E**scalable components 📦
+- **`px`** = **P**ixel-**p**erfect, **P**redictable sizing 📐
+
+**Choose based on context: Layout (rem), Components (em), Fixed (px)!** 🎯
+
+---
+
+### CSS2: CSS Solutions - Module CSS, Styled Components, Inline Styles?
+
+**Trả lời:**
+
+Đây là câu hỏi về **CSS ARCHITECTURE** trong modern React apps. Mỗi approach có **trade-offs khác nhau** về maintainability, performance, và developer experience.
+
+#### **🔥 SO SÁNH TỔNG QUAN:**
+
+| Solution | **Scope** | **Performance** | **Bundle Size** | **TypeScript** | **Flexibility** |
+|----------|-----------|-----------------|-----------------|----------------|-----------------|
+| **CSS Modules** | ✅ **Scoped** | ✅ **Excellent** | ✅ **Small** | ⚠️ **Limited** | ⚠️ **Static** |
+| **Styled Components** | ✅ **Scoped** | ⚠️ **Runtime** | ❌ **Large** | ✅ **Full** | ✅ **Dynamic** |
+| **Inline Styles** | ✅ **Scoped** | ⚠️ **Inline** | ✅ **None** | ✅ **Native** | ❌ **Limited** |
+
+#### **📦 CSS Modules - Build-time Scoping:**
+
+```typescript
+// Button.module.css
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.secondary {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.size-sm { font-size: 0.875rem; }
+.size-lg { font-size: 1.125rem; }
+```
+
+```typescript
+// Button.tsx
+import React from 'react';
+import styles from './Button.module.css';
+
+interface ButtonProps {
+  variant?: 'primary' | 'secondary';
+  size?: 'sm' | 'lg';
+  children: React.ReactNode;
+}
+
+const Button: React.FC<ButtonProps> = ({
+  variant = 'primary',
+  size = 'sm',
+  children
+}) => {
+  // ✅ Type-safe class name composition
+  const buttonClasses = [
+    styles.button,
+    styles[variant],
+    styles[`size-${size}`]
+  ].join(' ');
+
+  return (
+    <button className={buttonClasses}>
+      {children}
+    </button>
+  );
+};
+
+// Generated output: button_abc123 primary_def456 size-sm_ghi789
+```
+
+**💡 CSS Modules Advantages:**
+```typescript
+// ✅ 1. Build-time optimization
+// CSS được extract thành separate files, cached efficiently
+
+// ✅ 2. Scoped styles - no conflicts
+.button {} // Becomes .button_abc123
+.card .button {} // Becomes .card_def456 .button_ghi789
+
+// ✅ 3. Small bundle size
+// Only used styles included in final CSS
+
+// ✅ 4. Works with any CSS preprocessor
+// .module.scss, .module.less supported
+```
+
+#### **💅 Styled Components - Runtime CSS-in-JS:**
+
+```typescript
+import styled, { css } from 'styled-components';
+
+// ✅ Base styled component với TypeScript
+const Button = styled.button<{
+  variant?: 'primary' | 'secondary';
+  size?: 'sm' | 'lg';
+  fullWidth?: boolean;
+}>`
+  /* Base styles */
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  /* Conditional styles với props */
+  ${({ variant }) => variant === 'primary' && css`
+    background-color: #3b82f6;
+    color: white;
+
+    &:hover {
+      background-color: #2563eb;
+    }
+  `}
+
+  ${({ variant }) => variant === 'secondary' && css`
+    background-color: #e5e7eb;
+    color: #374151;
+
+    &:hover {
+      background-color: #d1d5db;
+    }
+  `}
+
+  ${({ size }) => size === 'sm' && css`
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+  `}
+
+  ${({ size }) => size === 'lg' && css`
+    font-size: 1.125rem;
+    padding: 0.75rem 1.5rem;
+  `}
+
+  ${({ fullWidth }) => fullWidth && css`
+    width: 100%;
+  `}
+`;
+
+// ✅ Theme integration
+const theme = {
+  colors: {
+    primary: '#3b82f6',
+    secondary: '#e5e7eb',
+  },
+  spacing: {
+    sm: '0.5rem',
+    md: '1rem',
+  }
+};
+
+const ThemedButton = styled.button`
+  background-color: ${props => props.theme.colors.primary};
+  padding: ${props => props.theme.spacing.md};
+`;
+
+// ✅ Dynamic styles based on props
+const ProgressBar = styled.div<{ progress: number }>`
+  width: 100%;
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+
+  &::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: ${props => props.progress}%;
+    background-color: #3b82f6;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+`;
+
+// Usage
+<ProgressBar progress={75} /> // 75% filled
+```
+
+#### **📝 Inline Styles - JavaScript Objects:**
+
+```typescript
+import React, { CSSProperties } from 'react';
+
+interface ButtonProps {
+  variant?: 'primary' | 'secondary';
+  size?: 'sm' | 'lg';
+  disabled?: boolean;
+  children: React.ReactNode;
+}
+
+const Button: React.FC<ButtonProps> = ({
+  variant = 'primary',
+  size = 'sm',
+  disabled = false,
+  children
+}) => {
+  // ✅ Dynamic styles với TypeScript support
+  const getButtonStyles = (): CSSProperties => {
+    const baseStyles: CSSProperties = {
+      padding: size === 'sm' ? '0.375rem 0.75rem' : '0.75rem 1.5rem',
+      fontSize: size === 'sm' ? '0.875rem' : '1.125rem',
+      fontWeight: 500,
+      borderRadius: '0.375rem',
+      border: 'none',
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      transition: 'all 0.2s ease',
+      opacity: disabled ? 0.6 : 1,
+    };
+
+    const variantStyles: CSSProperties = variant === 'primary'
+      ? {
+          backgroundColor: '#3b82f6',
+          color: 'white',
+        }
+      : {
+          backgroundColor: '#e5e7eb',
+          color: '#374151',
+        };
+
+    return { ...baseStyles, ...variantStyles };
+  };
+
+  // ✅ Hover styles với event handlers
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const hoverStyles: CSSProperties = isHovered ? {
+    backgroundColor: variant === 'primary' ? '#2563eb' : '#d1d5db',
+    transform: 'translateY(-1px)',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.12)',
+  } : {};
+
+  return (
+    <button
+      style={{ ...getButtonStyles(), ...hoverStyles }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      disabled={disabled}
+    >
+      {children}
+    </button>
+  );
+};
+
+// ✅ CSS-in-JS với computed styles
+const DynamicCard: React.FC<{
+  bgColor: string;
+  borderRadius: number;
+}> = ({ bgColor, borderRadius, children }) => {
+  const cardStyles: CSSProperties = {
+    backgroundColor: bgColor,
+    borderRadius: `${borderRadius}px`,
+    padding: '1rem',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    margin: '1rem 0',
+  };
+
+  return <div style={cardStyles}>{children}</div>;
+};
+```
+
+#### **⚖️ WHEN TO USE WHAT:**
+
+**✅ CSS Modules - Best for:**
+```typescript
+// ✅ Static styling với good performance
+// ✅ Large applications với design system
+// ✅ SSR apps (Next.js default support)
+// ✅ Team muốn familiar CSS syntax
+
+const HomePage: React.FC = () => (
+  <div className={styles.container}>
+    <header className={styles.header}>
+      <h1 className={styles.title}>Welcome</h1>
+    </header>
+  </div>
+);
+```
+
+**✅ Styled Components - Best for:**
+```typescript
+// ✅ Component libraries (Chakra UI, Material-UI style)
+// ✅ Heavy theming requirements
+// ✅ Dynamic styling based on props
+// ✅ Complex animations và interactions
+
+const ThemeProvider = () => (
+  <ThemeProvider theme={customTheme}>
+    <DynamicButton animate={true} theme="dark" />
+  </ThemeProvider>
+);
+```
+
+**✅ Inline Styles - Best for:**
+```typescript
+// ✅ Dynamic styles từ API/user input
+// ✅ One-off styling
+// ✅ Simple components
+// ✅ No build step required
+
+const CustomWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => (
+  <div style={{
+    backgroundColor: config.bgColor, // Dynamic từ user
+    width: `${config.width}px`,     // Dynamic size
+    height: `${config.height}px`,
+  }}>
+    {config.content}
+  </div>
+);
+```
+
+#### **🚀 MODERN HYBRID APPROACH:**
+
+```typescript
+// ✅ Combine best of all worlds
+import styles from './Card.module.css'; // Static styles
+import styled from 'styled-components';   // Dynamic components
+
+// Base styling với CSS Modules
+const Card: React.FC<{
+  variant?: 'elevated' | 'outlined';
+  padding?: number; // Dynamic padding
+}> = ({ variant = 'elevated', padding = 16, children }) => {
+
+  // Dynamic styles inline
+  const dynamicStyles: CSSProperties = {
+    padding: `${padding}px`,
+  };
+
+  return (
+    <div
+      className={`${styles.card} ${styles[variant]}`}
+      style={dynamicStyles}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Styled component cho complex interactions
+const AnimatedCard = styled(Card)`
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+`;
+```
+
+**💡 GHI NHỚ:**
+- **CSS Modules** = **Static**, **Fast**, **Familiar** 📦
+- **Styled Components** = **Dynamic**, **Powerful**, **Runtime** 💅
+- **Inline Styles** = **Simple**, **Direct**, **Limited** 📝
+
+**Choose based on project needs: Performance (Modules), Flexibility (Styled), Simplicity (Inline)!** 🎯
+
+---
+
+### CSS3: CSS Specificity - Cách tính và best practices?
+
+**Trả lời:**
+
+CSS Specificity là **ALGORITHM** để determine style nào sẽ được apply khi có **CONFLICT**. Hiểu rõ specificity là **KEY** để viết maintainable CSS.
+
+#### **🔥 SPECIFICITY CALCULATION:**
+
+| Selector Type | **Value** | **Example** | **Specificity** |
+|---------------|-----------|-------------|-----------------|
+| **Inline styles** | **1000** | `style="color: red"` | **(1,0,0,0)** |
+| **IDs** | **100** | `#header` | **(0,1,0,0)** |
+| **Classes, attributes, pseudo-classes** | **10** | `.button`, `[type]`, `:hover` | **(0,0,1,0)** |
+| **Elements, pseudo-elements** | **1** | `div`, `::before` | **(0,0,0,1)** |
+
+#### **📊 SPECIFICITY EXAMPLES:**
+
+```css
+/* Specificity: (0,0,0,1) = 1 */
+div {
+  color: black;
+}
+
+/* Specificity: (0,0,1,0) = 10 */
+.button {
+  color: blue;
+}
+
+/* Specificity: (0,1,0,0) = 100 */
+#header {
+  color: red;
+}
+
+/* Specificity: (0,1,1,1) = 111 */
+#header .nav a {
+  color: green;
+}
+
+/* Specificity: (0,0,2,1) = 21 */
+.nav.primary a {
+  color: purple;
+}
+
+/* Specificity: (0,0,1,2) = 12 */
+.button:hover span {
+  color: orange;
+}
+```
+
+#### **🎯 COMPLEX SPECIFICITY CALCULATIONS:**
+
+```css
+/* (0,0,0,1) - Chỉ element */
+p { color: black; }
+
+/* (0,0,1,1) - Class + element */
+p.intro { color: blue; }
+
+/* (0,0,2,1) - 2 classes + element */
+p.intro.highlight { color: red; }
+
+/* (0,1,0,1) - ID + element */
+#content p { color: green; }
+
+/* (0,1,1,2) - ID + class + 2 elements */
+#sidebar .widget h3 { color: purple; }
+
+/* (0,0,3,0) - 3 classes (HIGHEST trong non-ID) */
+.nav.primary.active { color: yellow; }
+
+/* (0,2,0,0) - 2 IDs (RẤT KHUYÊN KHÔNG) */
+#header #nav { color: orange; }
+```
+
+#### **⚠️ COMMON SPECIFICITY MISTAKES:**
+
+```css
+/* ❌ BAD: Over-specific selectors */
+.header .nav .menu .item .link {
+  color: blue; /* Specificity: (0,0,5,0) = 50 */
+}
+
+/* ✅ GOOD: Simple, maintainable */
+.nav-link {
+  color: blue; /* Specificity: (0,0,1,0) = 10 */
+}
+
+/* ❌ BAD: Overusing IDs */
+#header #nav #menu {
+  display: flex; /* Specificity: (0,3,0,0) = 300 */
+}
+
+/* ✅ GOOD: Use classes instead */
+.header-nav {
+  display: flex; /* Specificity: (0,0,1,0) = 10 */
+}
+
+/* ❌ BAD: Fighting specificity với !important */
+.button {
+  background: blue !important; /* Nuclear option */
+}
+
+/* ✅ GOOD: Use more specific selector */
+.form .button {
+  background: blue; /* Specificity: (0,0,2,0) = 20 */
+}
+```
+
+#### **🚀 MODERN BEST PRACTICES:**
+
+**1. BEM Methodology cho consistent specificity:**
+```css
+/* All selectors have same specificity: (0,0,1,0) = 10 */
+.card { /* Block */ }
+.card__header { /* Element */ }
+.card__title { /* Element */ }
+.card--featured { /* Modifier */ }
+.card__header--large { /* Element + Modifier */ }
+
+/* Easy to override */
+.homepage .card--featured {
+  /* Specificity: (0,0,2,0) = 20 */
+}
+```
+
+**2. CSS Custom Properties cho dynamic values:**
+```css
+/* Low specificity base styles */
+.button {
+  background: var(--button-bg, #007bff);
+  color: var(--button-color, white);
+}
+
+/* Override with custom properties (same specificity) */
+.button.secondary {
+  --button-bg: #6c757d;
+  --button-color: white;
+}
+
+.dark-theme {
+  --button-bg: #0d6efd;
+}
+```
+
+**3. Utility-first approach (Tailwind style):**
+```css
+/* Utilities có same specificity */
+.text-blue { color: blue; }      /* (0,0,1,0) = 10 */
+.text-red { color: red; }        /* (0,0,1,0) = 10 */
+.text-green { color: green; }    /* (0,0,1,0) = 10 */
+
+/* Source order determines winner khi specificity bằng nhau */
+```
+
+#### **🛠️ DEBUGGING SPECIFICITY:**
+
+**Browser DevTools:**
+```css
+/* Chrome DevTools shows specificity */
+.element {
+  color: blue; /* (0,0,1,0) */
+}
+
+#container .element {
+  color: red; /* (0,1,1,0) - WINS */
+}
+```
+
+**Specificity Calculator Tools:**
+- [Specificity Calculator](https://specificity.keegan.st/)
+- [CSS Specificity Graph](https://jonassebastianohlsson.com/specificity-graph/)
+
+#### **⚖️ SPECIFICITY STRATEGIES:**
+
+**✅ Strategy 1: Keep Specificity Low**
+```css
+/* Low and consistent specificity */
+.nav-item { } /* 10 */
+.nav-item.active { } /* 20 */
+.nav-item:hover { } /* 20 */
+```
+
+**✅ Strategy 2: Logical Hierarchy**
+```css
+/* Natural progression */
+.button { } /* 10 - base */
+.button.primary { } /* 20 - variant */
+.form .button.primary { } /* 30 - context */
+```
+
+**✅ Strategy 3: Namespace Pattern**
+```css
+/* Consistent namespacing */
+.layout-header { } /* 10 */
+.layout-sidebar { } /* 10 */
+.component-card { } /* 10 */
+.utility-hidden { } /* 10 */
+```
+
+#### **🔧 SPECIFICITY OVERRIDE TECHNIQUES:**
+
+**1. Increase Specificity Safely:**
+```css
+/* Instead of !important */
+.button.button {
+  background: blue; /* Specificity: (0,0,2,0) = 20 */
+}
+
+/* Or duplicate class */
+.primary.primary {
+  color: white; /* Specificity: (0,0,2,0) = 20 */
+}
+```
+
+**2. CSS Layers (Modern Solution):**
+```css
+@layer base, components, utilities;
+
+@layer base {
+  button { background: gray; } /* Low priority */
+}
+
+@layer components {
+  .btn { background: blue; } /* Medium priority */
+}
+
+@layer utilities {
+  .bg-red { background: red !important; } /* High priority */
+}
+```
+
+**3. `:where()` for Zero Specificity:**
+```css
+/* Specificity: (0,0,0,0) = 0 */
+:where(.button) {
+  padding: 0.5rem;
+}
+
+/* Easy to override */
+.custom-button {
+  padding: 1rem; /* Specificity: (0,0,1,0) = 10 - WINS */
+}
+```
+
+#### **💡 INTERVIEW TIPS:**
+
+**Specificity Calculation Quiz:**
+```css
+/* What wins? */
+.nav .item.active { color: blue; }    /* (0,0,3,0) = 30 */
+#sidebar .item { color: red; }        /* (0,1,1,0) = 110 - WINS */
+.item:hover:focus { color: green; }   /* (0,0,3,0) = 30 */
+div.nav .item { color: purple; }      /* (0,0,2,1) = 21 */
+```
+
+**💡 GHI NHỚ:**
+- **Inline** = 1000 (tránh!)
+- **ID** = 100 (dùng ít)
+- **Class** = 10 (dùng nhiều)
+- **Element** = 1 (base styles)
+
+**Specificity Strategy: Start low, increase gradually, avoid !important!** 🎯
+
+---
+
+### CSS4: Position: absolute vs relative vs static vs fixed?
+
+**Trả lời:**
+
+CSS Position là **LAYOUT MECHANISM** fundamentally khác nhau. Hiểu rõ position là **CRITICAL** cho layout design và element positioning.
+
+#### **🔥 POSITION TYPES OVERVIEW:**
+
+| Position | **Document Flow** | **Positioning Context** | **Common Use** |
+|----------|-------------------|-------------------------|----------------|
+| **`static`** | ✅ **In flow** | ❌ **Cannot position** | **Default behavior** |
+| **`relative`** | ✅ **In flow** | 🎯 **Self-relative** | **Positioning context** |
+| **`absolute`** | ❌ **Out of flow** | 📍 **Nearest positioned parent** | **Overlays, tooltips** |
+| **`fixed`** | ❌ **Out of flow** | 🖥️ **Viewport** | **Headers, modals** |
+| **`sticky`** | 🔄 **Conditional** | 📜 **Scroll container** | **Sticky headers** |
+
+#### **📍 `static` - Default Positioning:**
+
+```css
+.element {
+  position: static; /* Default value */
+  /* top, right, bottom, left có NO EFFECT */
+  top: 50px; /* ❌ Ignored */
+  z-index: 10; /* ❌ Ignored */
+}
+```
+
+```html
+<!-- Normal document flow -->
+<div class="container">
+  <div class="box1">Box 1</div> <!-- Follows document flow -->
+  <div class="box2">Box 2</div> <!-- Below box1 -->
+  <div class="box3">Box 3</div> <!-- Below box2 -->
+</div>
+```
+
+#### **🎯 `relative` - Self-Relative Positioning:**
+
+```css
+.relative-box {
+  position: relative;
+  top: 20px;    /* Move down 20px from original position */
+  left: 30px;   /* Move right 30px from original position */
+  z-index: 1;   /* ✅ z-index works */
+}
+
+/* 🎯 Common use: Positioning context cho absolute children */
+.card {
+  position: relative; /* Tạo positioning context */
+}
+
+.card__badge {
+  position: absolute;
+  top: 10px;    /* 10px from card's top */
+  right: 10px;  /* 10px from card's right */
+}
+```
+
+**Key Points về `relative`:**
+- Element vẫn **chiếm space** trong document flow
+- Other elements **KHÔNG move** để fill space
+- Creates **positioning context** cho absolute children
+
+#### **📍 `absolute` - Positioned Parent Relative:**
+
+```css
+.parent {
+  position: relative; /* ✅ Positioning context */
+  width: 300px;
+  height: 200px;
+}
+
+.absolute-child {
+  position: absolute;
+  top: 0;      /* 0px from parent's top */
+  right: 0;    /* 0px from parent's right */
+  width: 50px;
+  height: 50px;
+  /* Element removed from document flow */
+}
+
+/* 🎯 Real-world examples */
+.tooltip {
+  position: absolute;
+  top: 100%;   /* Below the parent */
+  left: 50%;   /* Centered horizontally */
+  transform: translateX(-50%); /* Perfect center */
+  z-index: 1000;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;   /* Fill entire positioned parent */
+  background: rgba(0,0,0,0.5);
+}
+```
+
+**Positioning Context Hierarchy:**
+```html
+<div class="grandparent">
+  <div class="parent" style="position: relative;">
+    <div class="child" style="position: absolute; top: 0;">
+      <!-- Positioned relative to .parent (nearest positioned ancestor) -->
+    </div>
+  </div>
+</div>
+
+<div class="no-positioned-parent">
+  <div class="child" style="position: absolute; top: 0;">
+    <!-- Positioned relative to <body> (initial containing block) -->
+  </div>
+</div>
+```
+
+#### **🖥️ `fixed` - Viewport Relative:**
+
+```css
+/* Sticky header */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;    /* Full width */
+  height: 60px;
+  background: white;
+  z-index: 100; /* Above other content */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;  /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+  background: rgba(0,0,0,0.8);
+  z-index: 1000;
+}
+
+/* Floating action button */
+.fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  z-index: 50;
+}
+
+/* Mobile-first approach */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: -100%; /* Hidden off-screen */
+  width: 80%;
+  height: 100vh;
+  transition: left 0.3s ease;
+}
+
+.mobile-menu.open {
+  left: 0; /* Slide in */
+}
+```
+
+#### **📜 `sticky` - Scroll-Conditional:**
+
+```css
+/* Sticky table header */
+.table-header {
+  position: sticky;
+  top: 0; /* Stick when reaching top of viewport */
+  background: white;
+  z-index: 10;
+}
+
+/* Sticky sidebar */
+.sidebar {
+  position: sticky;
+  top: 80px; /* Stick 80px from top (below fixed header) */
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+/* Sticky section headers */
+.section-title {
+  position: sticky;
+  top: 60px; /* Below main header */
+  background: #f8f9fa;
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+```
+
+#### **🎯 PRACTICAL USE CASES:**
+
+**1. Card với Badge Overlay:**
+```html
+<div class="product-card"> <!-- position: relative -->
+  <img src="product.jpg" alt="Product">
+  <div class="sale-badge"> <!-- position: absolute -->
+    50% OFF
+  </div>
+  <div class="card-content">
+    <h3>Product Name</h3>
+  </div>
+</div>
+```
+
+```css
+.product-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.sale-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #e74c3c;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+```
+
+**2. Responsive Modal System:**
+```css
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  position: relative; /* For close button positioning */
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+```
+
+#### **⚠️ COMMON POSITION PITFALLS:**
+
+```css
+/* ❌ BAD: z-index without position */
+.element {
+  z-index: 999; /* NO EFFECT on static elements */
+}
+
+/* ✅ GOOD: Position + z-index */
+.element {
+  position: relative; /* or absolute/fixed */
+  z-index: 999;
+}
+
+/* ❌ BAD: Absolute without positioned parent */
+.child {
+  position: absolute;
+  top: 20px; /* Relative to <body>, not intended parent */
+}
+
+/* ✅ GOOD: Clear positioning context */
+.parent {
+  position: relative; /* Positioning context */
+}
+.child {
+  position: absolute;
+  top: 20px; /* Relative to .parent */
+}
+
+/* ❌ BAD: Fixed elements breaking mobile scroll */
+.mobile-header {
+  position: fixed;
+  height: 60px; /* But body doesn't account for this */
+}
+
+/* ✅ GOOD: Account for fixed element space */
+body {
+  padding-top: 60px; /* Space for fixed header */
+}
+```
+
+#### **📱 RESPONSIVE CONSIDERATIONS:**
+
+```css
+/* Mobile-first positioning */
+.sidebar {
+  /* Mobile: Full-width overlay */
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100vh;
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+}
+
+.sidebar.open {
+  transform: translateX(100%);
+}
+
+/* Desktop: Sticky sidebar */
+@media (min-width: 768px) {
+  .sidebar {
+    position: sticky;
+    top: 80px;
+    left: auto;
+    width: 250px;
+    height: calc(100vh - 80px);
+    transform: none;
+  }
+}
+```
+
+**💡 GHI NHỚ:**
+- **`static`** = Default, no positioning
+- **`relative`** = Self-offset, creates context
+- **`absolute`** = Parent-relative, out of flow
+- **`fixed`** = Viewport-relative, always visible
+- **`sticky`** = Scroll-conditional, responsive
+
+**Position Strategy: Context (relative) → Overlay (absolute) → Always visible (fixed) → Scroll-aware (sticky)!** 🎯
+
+---
+
+### CSS5: CSS Variables vs SCSS vs BEM Methodology?
+
+**Trả lời:**
+
+Đây là câu hỏi về **CSS ARCHITECTURE** và **METHODOLOGY**. Ba approaches này solve khác nhau problems trong CSS organization và maintainability.
+
+#### **🔥 OVERVIEW COMPARISON:**
+
+| Aspect | **CSS Variables** | **SCSS** | **BEM** |
+|--------|-------------------|----------|---------|
+| **Type** | **Runtime values** | **Build-time preprocessing** | **Naming convention** |
+| **Browser Support** | ✅ **Modern browsers** | ✅ **All (compiled)** | ✅ **All browsers** |
+| **Dynamic** | ✅ **Runtime changeable** | ❌ **Build-time only** | ❌ **Static classes** |
+| **Learning Curve** | ✅ **Easy** | ⚠️ **Medium** | ✅ **Easy** |
+
+#### **🎨 CSS Variables (Custom Properties):**
+
+```css
+/* ✅ Root level variables */
+:root {
+  /* Design tokens */
+  --primary-color: #3b82f6;
+  --secondary-color: #64748b;
+  --success-color: #10b981;
+  --error-color: #ef4444;
+
+  /* Typography */
+  --font-family-sans: 'Inter', sans-serif;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --line-height-base: 1.5;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 3rem;
+
+  /* Breakpoints (for consistent usage) */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+}
+
+/* ✅ Component-scoped variables */
+.card {
+  --card-bg: white;
+  --card-border: #e5e7eb;
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --card-radius: 0.5rem;
+
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  border-radius: var(--card-radius);
+  padding: var(--spacing-lg);
+}
+
+/* ✅ Dynamic theming */
+.dark-theme {
+  --primary-color: #60a5fa;
+  --card-bg: #1f2937;
+  --card-border: #374151;
+}
+
+.light-theme {
+  --primary-color: #3b82f6;
+  --card-bg: white;
+  --card-border: #e5e7eb;
+}
+
+/* ✅ Responsive variables */
+@media (min-width: 768px) {
+  :root {
+    --font-size-base: 1.125rem;
+    --spacing-lg: 2rem;
+  }
+}
+
+/* ✅ JavaScript integration */
+.progress-bar {
+  --progress: 0%; /* Controlled by JS */
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+}
+
+.progress-bar::after {
+  content: '';
+  display: block;
+  width: var(--progress);
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+```
+
+```typescript
+// ✅ Dynamic control với JavaScript
+const progressBar = document.querySelector('.progress-bar') as HTMLElement;
+const updateProgress = (percentage: number) => {
+  progressBar.style.setProperty('--progress', `${percentage}%`);
+};
+
+// Theme switching
+const setTheme = (theme: 'light' | 'dark') => {
+  document.body.className = `${theme}-theme`;
+};
+```
+
+#### **📦 SCSS (Sass) - CSS Preprocessor:**
+
+```scss
+// ✅ Variables (compile-time)
+$primary-color: #3b82f6;
+$secondary-color: #64748b;
+$font-family-sans: 'Inter', sans-serif;
+$spacing-unit: 0.25rem;
+
+// ✅ Maps for organized data
+$colors: (
+  primary: #3b82f6,
+  secondary: #64748b,
+  success: #10b981,
+  error: #ef4444
+);
+
+$spacing: (
+  xs: $spacing-unit,
+  sm: $spacing-unit * 2,
+  md: $spacing-unit * 4,
+  lg: $spacing-unit * 6,
+  xl: $spacing-unit * 12
+);
+
+$breakpoints: (
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px
+);
+
+// ✅ Functions
+@function color($name) {
+  @return map-get($colors, $name);
+}
+
+@function spacing($size) {
+  @return map-get($spacing, $size);
+}
+
+// ✅ Mixins for reusable patterns
+@mixin button-variant($bg-color, $text-color: white) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: none;
+  padding: spacing(sm) spacing(md);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: darken($bg-color, 10%);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@mixin respond-to($breakpoint) {
+  $bp: map-get($breakpoints, $breakpoint);
+  @media (min-width: $bp) {
+    @content;
+  }
+}
+
+// ✅ Usage
+.button {
+  @include button-variant(color(primary));
+
+  &--secondary {
+    @include button-variant(color(secondary));
+  }
+
+  &--success {
+    @include button-variant(color(success));
+  }
+}
+
+// ✅ Responsive mixins
+.container {
+  width: 100%;
+  padding: 0 spacing(md);
+
+  @include respond-to(md) {
+    max-width: 768px;
+    margin: 0 auto;
+  }
+
+  @include respond-to(lg) {
+    max-width: 1024px;
+  }
+}
+
+// ✅ Nested selectors
+.card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: spacing(lg);
+
+  &__header {
+    margin-bottom: spacing(md);
+    padding-bottom: spacing(sm);
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+
+  &__content {
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
+  &--featured {
+    border: 2px solid color(primary);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
+```
+
+#### **📚 BEM Methodology (Block Element Modifier):**
+
+```css
+/* ✅ Block - Standalone component */
+.menu {
+  display: flex;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Element - Part of block */
+.menu__item {
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: #374151;
+  transition: background-color 0.2s ease;
+}
+
+.menu__link {
+  display: block;
+  font-weight: 500;
+}
+
+.menu__icon {
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ✅ Modifier - Variation of block/element */
+.menu--vertical {
+  flex-direction: column;
+}
+
+.menu--dark {
+  background: #1f2937;
+}
+
+.menu__item--active {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.menu__item--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.menu__link--external::after {
+  content: ' ↗';
+  font-size: 0.875rem;
+}
+
+/* ✅ Complex BEM example */
+.product-card {
+  background: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.product-card__image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-card__content {
+  padding: 1rem;
+}
+
+.product-card__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.product-card__price {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #059669;
+}
+
+.product-card__badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background: #ef4444;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+/* Modifiers */
+.product-card--featured {
+  border: 2px solid #3b82f6;
+}
+
+.product-card--on-sale .product-card__price {
+  color: #ef4444;
+}
+
+.product-card__badge--new {
+  background: #10b981;
+}
+
+.product-card__badge--sale {
+  background: #f59e0b;
+}
+```
+
+#### **🚀 MODERN HYBRID APPROACH:**
+
+```scss
+// ✅ SCSS + CSS Variables + BEM
+:root {
+  // CSS Variables cho runtime control
+  --primary-hue: 220;
+  --primary-saturation: 90%;
+  --primary-lightness: 50%;
+}
+
+// SCSS variables cho build-time logic
+$primary-base: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
+
+// BEM + SCSS mixins
+@mixin block($name) {
+  .#{$name} {
+    @content;
+  }
+}
+
+@mixin element($parent, $name) {
+  .#{$parent}__#{$name} {
+    @content;
+  }
+}
+
+@mixin modifier($parent, $name) {
+  .#{$parent}--#{$name} {
+    @content;
+  }
+}
+
+// Usage
+@include block('button') {
+  // CSS Variables cho theming
+  --button-bg: #{$primary-base};
+  --button-color: white;
+
+  background: var(--button-bg);
+  color: var(--button-color);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    --button-bg: #{darken($primary-base, 10%)};
+  }
+}
+
+@include element('button', 'icon') {
+  margin-right: 0.5rem;
+}
+
+@include modifier('button', 'large') {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+}
+```
+
+#### **⚖️ WHEN TO USE WHAT:**
+
+**✅ CSS Variables - Best for:**
+```css
+/* Runtime theming */
+.theme-switcher {
+  --primary: #3b82f6; /* User can change */
+}
+
+/* Component customization */
+.progress-bar {
+  --progress: 75%; /* Dynamic from JS */
+}
+
+/* Responsive values */
+@media (min-width: 768px) {
+  :root { --spacing: 2rem; }
+}
+```
+
+**✅ SCSS - Best for:**
+```scss
+/* Complex calculations */
+$golden-ratio: 1.618;
+$base-size: 1rem;
+$scale: $base-size * $golden-ratio;
+
+/* Advanced mixins */
+@mixin triangle($size, $color, $direction) {
+  // Complex CSS generation
+}
+
+/* Build-time optimizations */
+@if $environment == 'production' {
+  // Production-specific styles
+}
+```
+
+**✅ BEM - Best for:**
+```css
+/* Large teams */
+.navigation__item--active { }
+
+/* Component libraries */
+.ui-button__icon--loading { }
+
+/* Clear naming patterns */
+.product-card__price--discounted { }
+```
+
+#### **💡 DECISION MATRIX:**
+
+```
+🎨 CSS Variables: Runtime values, theming, JS integration
+📦 SCSS: Build tools, complex logic, team workflows
+📚 BEM: Naming consistency, large teams, maintainability
+
+💥 HYBRID: Use all three together for maximum power!
+```
+
+**GHI NHỚ:** CSS Variables = **Runtime**, SCSS = **Build-time**, BEM = **Organization**! 🎯
+
+---
+
+### CSS6: `div` vs `span` - Semantic differences và use cases?
+
+**Trả lời:**
+
+Đây là **FUNDAMENTAL HTML** question về **SEMANTIC ELEMENTS**. `div` và `span` có **different display behaviors** và **semantic meanings**.
+
+#### **🔥 CORE DIFFERENCES:**
+
+| Aspect | **`<div>`** | **`<span>`** |
+|--------|-------------|--------------|
+| **Display** | **Block-level** | **Inline** |
+| **Content Model** | **Flow content** | **Phrasing content** |
+| **Default Width** | **100% parent** | **Content width** |
+| **Line Breaks** | ✅ **Creates breaks** | ❌ **No breaks** |
+| **Nesting** | ✅ **Can contain block + inline** | ⚠️ **Inline only** |
+| **Semantic Meaning** | ❌ **None (generic)** | ❌ **None (generic)** |
+
+#### **📦 `<div>` - Block-level Container:**
+
+```html
+<!-- ✅ Layout containers -->
+<div class="header">
+  <div class="logo">
+    <img src="logo.png" alt="Logo">
+  </div>
+  <div class="navigation">
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<!-- ✅ Content sections -->
+<div class="main-content">
+  <div class="article">
+    <h1>Article Title</h1>
+    <p>Article content...</p>
+  </div>
+  <div class="sidebar">
+    <div class="widget">
+      <h3>Widget Title</h3>
+      <ul>
+        <li>Widget item 1</li>
+        <li>Widget item 2</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Component wrappers -->
+<div class="card">
+  <div class="card-header">
+    <h2>Card Title</h2>
+  </div>
+  <div class="card-body">
+    <p>Card content goes here...</p>
+  </div>
+  <div class="card-footer">
+    <button>Action</button>
+  </div>
+</div>
+```
+
+**CSS behavior của `div`:**
+```css
+div {
+  /* Default browser styles */
+  display: block;      /* Full-width, new line */
+  margin: 0;          /* No default margin */
+  padding: 0;         /* No default padding */
+}
+
+/* ✅ Common div usage patterns */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+```
+
+#### **📝 `<span>` - Inline Container:**
+
+```html
+<!-- ✅ Text styling -->
+<p>
+  This is a paragraph with
+  <span class="highlight">highlighted text</span>
+  and <span class="bold">bold text</span>.
+</p>
+
+<!-- ✅ Small UI elements -->
+<button class="btn">
+  <span class="btn-icon">📧</span>
+  <span class="btn-text">Send Email</span>
+</button>
+
+<!-- ✅ Data formatting -->
+<div class="price">
+  <span class="currency">$</span>
+  <span class="amount">99</span>
+  <span class="cents">.99</span>
+</div>
+
+<!-- ✅ Status indicators -->
+<p class="user-status">
+  <span class="username">John Doe</span>
+  <span class="status online">● Online</span>
+</p>
+
+<!-- ✅ Form labels with styling -->
+<label for="email">
+  Email Address
+  <span class="required">*</span>
+</label>
+
+<!-- ✅ Badge/tag systems -->
+<div class="tags">
+  <span class="tag tag--primary">React</span>
+  <span class="tag tag--secondary">TypeScript</span>
+  <span class="tag tag--success">CSS</span>
+</div>
+```
+
+**CSS behavior của `span`:**
+```css
+span {
+  /* Default browser styles */
+  display: inline;     /* Inline flow, no line breaks */
+}
+
+/* ✅ Common span styling patterns */
+.highlight {
+  background-color: #fef3c7;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.badge {
+  display: inline-block; /* Allows padding/margin */
+  background: #3b82f6;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.required {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+/* ✅ Icon + text patterns */
+.btn-icon {
+  margin-right: 0.5rem;
+}
+
+.status.online {
+  color: #10b981;
+}
+
+.status.offline {
+  color: #6b7280;
+}
+```
+
+#### **🎯 PRACTICAL USAGE EXAMPLES:**
+
+**1. Card Component Structure:**
+```html
+<div class="product-card">           <!-- Block container -->
+  <div class="card-image">           <!-- Block for layout -->
+    <img src="product.jpg" alt="Product">
+    <span class="sale-badge">SALE</span>  <!-- Inline badge -->
+  </div>
+  <div class="card-content">         <!-- Block for content -->
+    <h3>Product Name</h3>
+    <p class="description">
+      Product description with
+      <span class="highlight">special features</span>
+    </p>
+    <div class="price-section">      <!-- Block for price layout -->
+      <span class="price-original">$99.99</span>  <!-- Inline price -->
+      <span class="price-sale">$79.99</span>      <!-- Inline price -->
+    </div>
+  </div>
+</div>
+```
+
+**2. Navigation with Status:**
+```html
+<div class="navigation">             <!-- Block container -->
+  <div class="nav-item">             <!-- Block item -->
+    <a href="/messages">Messages</a>
+    <span class="notification-count">3</span>  <!-- Inline count -->
+  </div>
+  <div class="nav-item">
+    <a href="/profile">Profile</a>
+    <span class="status-indicator online">●</span>  <!-- Inline status -->
+  </div>
+</div>
+```
+
+**3. Form with Validation:**
+```html
+<div class="form-group">             <!-- Block container -->
+  <label for="password">
+    Password
+    <span class="required">*</span>   <!-- Inline indicator -->
+  </label>
+  <input type="password" id="password">
+  <div class="validation-message">   <!-- Block for message -->
+    <span class="error-icon">⚠️</span>  <!-- Inline icon -->
+    <span class="error-text">Password too short</span>  <!-- Inline text -->
+  </div>
+</div>
+```
+
+#### **⚠️ COMMON MISTAKES:**
+
+```html
+<!-- ❌ BAD: Span containing block elements -->
+<span>
+  <div>This breaks HTML semantics</div>
+  <p>Block elements inside inline element</p>
+</span>
+
+<!-- ✅ GOOD: Div containing spans -->
+<div>
+  <span>Inline element 1</span>
+  <span>Inline element 2</span>
+</div>
+
+<!-- ❌ BAD: Using div for inline styling -->
+<p>
+  This text has <div class="highlight">highlighted section</div> in it.
+</p>
+<!-- Creates unwanted line breaks -->
+
+<!-- ✅ GOOD: Using span for inline styling -->
+<p>
+  This text has <span class="highlight">highlighted section</span> in it.
+</p>
+
+<!-- ❌ BAD: Unnecessary nesting -->
+<div>
+  <div>
+    <div>
+      <span>Over-nested content</span>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ GOOD: Minimal necessary structure -->
+<div class="content">
+  <span>Simple content</span>
+</div>
+```
+
+#### **🚀 MODERN ALTERNATIVES:**
+
+**Instead of generic `div`/`span`, use semantic HTML5:**
+
+```html
+<!-- ❌ Generic divs -->
+<div class="header">
+  <div class="navigation">
+    <div class="nav-item">Home</div>
+  </div>
+</div>
+<div class="main">
+  <div class="article">
+    <div class="article-header">Title</div>
+    <div class="article-content">Content</div>
+  </div>
+  <div class="sidebar">Sidebar</div>
+</div>
+
+<!-- ✅ Semantic HTML5 -->
+<header>
+  <nav>
+    <a href="/">Home</a>
+  </nav>
+</header>
+<main>
+  <article>
+    <header>
+      <h1>Title</h1>
+    </header>
+    <section>Content</section>
+  </article>
+  <aside>Sidebar</aside>
+</main>
+
+<!-- ✅ When semantic elements don't fit, use div/span -->
+<div class="card">              <!-- No semantic meaning needed -->
+  <div class="card-actions">    <!-- Pure layout container -->
+    <button>Action</button>
+  </div>
+</div>
+```
+
+#### **📱 RESPONSIVE CONSIDERATIONS:**
+
+```css
+/* ✅ Responsive div layouts */
+.container {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .container {
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+/* ✅ Responsive span behavior */
+.tag {
+  display: inline-block;
+  margin: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .tag {
+    display: block;      /* Stack on mobile */
+    margin: 0.25rem 0;
+  }
+}
+
+/* ✅ Hiding spans responsively */
+.desktop-only {
+  display: inline;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+}
+```
+
+#### **💡 DECISION FRAMEWORK:**
+
+```
+📦 Use <div> when:
+- Creating layout containers
+- Grouping block-level content
+- Building components/widgets
+- Need full-width elements
+
+📝 Use <span> when:
+- Styling part of text
+- Creating inline UI elements
+- Adding markers/indicators
+- Need inline flow behavior
+
+🎯 Use semantic HTML when:
+- Content has inherent meaning
+- Accessibility is important
+- SEO matters
+- Standard patterns exist
+```
+
+**GHI NHỚ:**
+- **`div`** = **Block** container, layout structure 📦
+- **`span`** = **Inline** wrapper, text styling 📝
+- **Semantic HTML** = Meaningful content structure 🎯
+
+**Choose based on display needs: Block layout (div) vs Inline styling (span)!** 💡
+
+---
+
+### CSS7: Margin vs Padding và Box Model concepts?
+
+**Trả lời:**
+
+CSS Box Model là **FUNDAMENTAL CONCEPT** của web layout. Hiểu rõ **margin vs padding** và **box-sizing** là **CRITICAL** cho precise layout control.
+
+#### **🔥 BOX MODEL ANATOMY:**
+
+```
+┌─────────────────────────────────────┐
+│              MARGIN                 │ ← Outside spacing
+│  ┌─────────────────────────────────┐ │
+│  │            BORDER               │ │ ← Element border
+│  │  ┌─────────────────────────────┐ │ │
+│  │  │          PADDING            │ │ │ ← Inside spacing
+│  │  │  ┌─────────────────────────┐ │ │ │
+│  │  │  │       CONTENT           │ │ │ │ ← Actual content
+│  │  │  │                         │ │ │ │
+│  │  │  └─────────────────────────┘ │ │ │
+│  │  └─────────────────────────────┘ │ │
+│  └─────────────────────────────────┘ │
+└─────────────────────────────────────┘
+```
+
+#### **📊 MARGIN vs PADDING COMPARISON:**
+
+| Aspect | **Margin** | **Padding** |
+|--------|------------|-------------|
+| **Position** | **Outside border** | **Inside border** |
+| **Background** | ❌ **Transparent** | ✅ **Inherits element background** |
+| **Clickable Area** | ❌ **Not clickable** | ✅ **Part of clickable area** |
+| **Collapsing** | ✅ **Margin collapse** | ❌ **No collapse** |
+| **Negative Values** | ✅ **Allowed** | ❌ **Not allowed** |
+| **Use Case** | **Spacing between elements** | **Space inside element** |
+
+#### **🎯 PRACTICAL EXAMPLES:**
+
+**1. Button Design - Padding cho internal spacing:**
+```css
+.button {
+  /* ✅ PADDING - Space inside button */
+  padding: 12px 24px;          /* Vertical: 12px, Horizontal: 24px */
+  padding-top: 12px;           /* Individual sides */
+  padding-right: 24px;
+  padding-bottom: 12px;
+  padding-left: 24px;
+
+  /* ✅ MARGIN - Space between buttons */
+  margin: 0 8px;               /* Horizontal spacing between buttons */
+  margin-bottom: 16px;         /* Space below button */
+
+  background: #3b82f6;
+  border: 2px solid #1d4ed8;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+/* Visual comparison */
+.button-no-padding {
+  padding: 0;                  /* Text touches border */
+  margin: 0 8px;
+}
+
+.button-no-margin {
+  padding: 12px 24px;
+  margin: 0;                   /* Buttons touch each other */
+}
+```
+
+**2. Card Layout - Combined margin + padding:**
+```css
+.card {
+  /* ✅ MARGIN - Space between cards */
+  margin: 20px;                /* Space around entire card */
+  margin-bottom: 24px;         /* Extra space below each card */
+
+  /* ✅ PADDING - Internal content spacing */
+  padding: 24px;               /* Space inside card */
+
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  /* ✅ PADDING - Content spacing */
+  padding-bottom: 16px;        /* Space below header */
+
+  /* ✅ MARGIN - Space between elements */
+  margin-bottom: 16px;         /* Space after header */
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.card-content {
+  /* ✅ No additional margin - uses card padding */
+  padding: 0;
+
+  /* ✅ MARGIN for content spacing */
+  margin-bottom: 16px;
+}
+
+.card-actions {
+  /* ✅ MARGIN to push to bottom */
+  margin-top: auto;            /* Push to bottom in flex container */
+
+  /* ✅ PADDING for button spacing */
+  padding-top: 16px;
+
+  border-top: 1px solid #e5e7eb;
+}
+```
+
+#### **⚡ BOX-SIZING BEHAVIOR:**
+
+**1. `content-box` (Default):**
+```css
+.content-box {
+  box-sizing: content-box;     /* Default browser behavior */
+  width: 300px;
+  padding: 20px;
+  border: 5px solid #3b82f6;
+  margin: 10px;
+}
+
+/*
+Total width calculation:
+- Content: 300px (width)
+- Padding: 20px × 2 = 40px
+- Border: 5px × 2 = 10px
+- TOTAL WIDTH: 300 + 40 + 10 = 350px
+- TOTAL HEIGHT: content + padding + border
+- Margin không tính vào total size
+*/
+```
+
+**2. `border-box` (Modern approach):**
+```css
+/* ✅ Modern CSS Reset */
+*, *::before, *::after {
+  box-sizing: border-box;      /* Include padding + border in width */
+}
+
+.border-box {
+  box-sizing: border-box;
+  width: 300px;                /* Total width including padding + border */
+  padding: 20px;
+  border: 5px solid #3b82f6;
+  margin: 10px;
+}
+
+/*
+Total width calculation:
+- TOTAL WIDTH: 300px (includes content + padding + border)
+- Content width: 300 - 40 (padding) - 10 (border) = 250px
+- Much easier to work with!
+*/
+```
+
+#### **🚀 RESPONSIVE BOX MODEL:**
+
+```css
+/* ✅ Mobile-first padding/margin */
+.container {
+  padding: 16px;               /* Small screens */
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 24px;             /* Medium screens */
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 32px;             /* Large screens */
+  }
+}
+
+/* ✅ Responsive card spacing */
+.card-grid {
+  display: grid;
+  gap: 16px;                   /* Modern way - replaces margin */
+  padding: 16px;
+}
+
+@media (min-width: 768px) {
+  .card-grid {
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .card {
+    padding: 32px;             /* Larger internal spacing */
+  }
+}
+```
+
+#### **⚠️ COMMON MARGIN/PADDING MISTAKES:**
+
+```css
+/* ❌ BAD: Margin collapse issues */
+.section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.section + .section {
+  /* Margins collapse - only 20px gap, not 40px! */
+}
+
+/* ✅ GOOD: Use padding or gap */
+.sections-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;                   /* Consistent spacing */
+}
+
+/* ❌ BAD: Mixing margin directions */
+.element {
+  margin: 10px 0 15px 0;       /* Inconsistent vertical margins */
+}
+
+/* ✅ GOOD: Consistent spacing system */
+.element {
+  margin-bottom: 16px;         /* Consistent bottom margin */
+}
+
+/* ❌ BAD: Padding on wrong element */
+.button-wrapper {
+  padding: 20px;               /* Padding outside button */
+}
+
+.button {
+  background: blue;            /* Background doesn't extend to padding */
+}
+
+/* ✅ GOOD: Padding on styled element */
+.button {
+  padding: 20px;               /* Padding extends background */
+  background: blue;
+}
+```
+
+#### **🎯 MARGIN COLLAPSE DEEP DIVE:**
+
+```css
+/* Margin collapse scenarios */
+
+/* 1. Adjacent siblings */
+.box1 {
+  margin-bottom: 20px;
+}
+
+.box2 {
+  margin-top: 30px;           /* Result: 30px gap (larger wins) */
+}
+
+/* 2. Parent and first/last child */
+.parent {
+  margin-top: 10px;
+}
+
+.first-child {
+  margin-top: 20px;           /* Result: 20px from parent top */
+}
+
+/* ✅ Prevent margin collapse */
+.parent {
+  padding-top: 1px;           /* or border-top, or overflow: hidden */
+}
+
+/* or use modern layout */
+.flex-parent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;                  /* No margin collapse */
+}
+```
+
+#### **🔧 ADVANCED BOX MODEL TECHNIQUES:**
+
+**1. Negative Margins for Overlap:**
+```css
+.overlap-card {
+  margin-top: -50px;          /* Overlap with element above */
+  position: relative;
+  z-index: 2;
+}
+
+.pullout-quote {
+  margin-left: -40px;         /* Extend beyond container */
+  margin-right: -40px;
+  padding: 0 40px;            /* Maintain content alignment */
+  background: #f8fafc;
+}
+```
+
+**2. Auto Margins for Centering:**
+```css
+.centered-block {
+  width: 300px;
+  margin: 0 auto;             /* Center horizontally */
+}
+
+.flex-item {
+  margin-left: auto;          /* Push to right in flex container */
+}
+
+.last-item {
+  margin-top: auto;           /* Push to bottom in flex column */
+}
+```
+
+**3. Logical Properties (Modern):**
+```css
+.modern-spacing {
+  /* Instead of margin-left/right */
+  margin-inline: 16px;        /* Horizontal (respects writing direction) */
+
+  /* Instead of margin-top/bottom */
+  margin-block: 24px;         /* Vertical */
+
+  /* Instead of padding-left/right */
+  padding-inline: 20px;
+
+  /* Instead of padding-top/bottom */
+  padding-block: 16px;
+}
+```
+
+#### **📱 MOBILE-FIRST BOX MODEL:**
+
+```css
+/* ✅ Mobile-first approach */
+.content {
+  /* Mobile: tight spacing */
+  padding: 16px;
+  margin: 8px;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .content {
+    padding: 24px;
+    margin: 16px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .content {
+    padding: 32px;
+    margin: 24px;
+  }
+}
+
+/* ✅ Container queries (modern) */
+.card {
+  container-type: inline-size;
+  padding: 16px;
+}
+
+@container (min-width: 300px) {
+  .card {
+    padding: 24px;
+  }
+}
+```
+
+#### **💡 BOX MODEL DEBUGGING:**
+
+```css
+/* ✅ Debug box model visually */
+* {
+  outline: 1px solid red;     /* Shows all element boundaries */
+}
+
+/* More specific debugging */
+.debug-margins {
+  outline: 2px solid blue;    /* Element boundary */
+}
+
+.debug-margins::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border: 1px dashed red;     /* Shows margin area */
+  pointer-events: none;
+}
+```
+
+**💡 GHI NHỚ:**
+- **Margin** = **Outside** spacing, transparent, collapses 📏
+- **Padding** = **Inside** spacing, inherits background, clickable 📦
+- **border-box** = Width includes padding + border 🎯
+- **Gap** = Modern spacing, no collapse 🚀
+
+**Box Model Strategy: Use `border-box`, prefer `gap`, consistent spacing system!** 🎯
+
+---
+
+### CSS8: Build Theme System - CSS Variables và Design Tokens?
+
+**Trả lời:**
+
+Building a **SCALABLE THEME SYSTEM** là essential cho modern applications. **CSS Variables + Design Tokens** tạo ra **CONSISTENT**, **MAINTAINABLE** và **ACCESSIBLE** design system.
+
+#### **🔥 DESIGN TOKENS HIERARCHY:**
+
+```
+🎨 DESIGN TOKENS STRUCTURE:
+
+Global Tokens     ←  Brand Colors, Typography Scale
+   ↓
+Semantic Tokens   ←  Primary, Secondary, Success, Error
+   ↓
+Component Tokens  ←  Button, Card, Input specific values
+   ↓
+CSS Variables     ←  Runtime implementation
+```
+
+#### **🎯 COMPREHENSIVE THEME FOUNDATION:**
+
+```css
+/* ✅ ROOT DESIGN TOKENS */
+:root {
+  /* 🎨 COLOR PALETTE - Global tokens */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;   /* Base blue */
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* 🎯 SEMANTIC TOKENS - Meaning-based */
+  --color-primary: var(--color-blue-500);
+  --color-primary-hover: var(--color-blue-600);
+  --color-primary-active: var(--color-blue-700);
+  --color-primary-disabled: var(--color-blue-300);
+
+  --color-secondary: var(--color-gray-500);
+  --color-secondary-hover: var(--color-gray-600);
+
+  --color-success: #10b981;
+  --color-success-hover: #059669;
+  --color-warning: #f59e0b;
+  --color-warning-hover: #d97706;
+  --color-error: #ef4444;
+  --color-error-hover: #dc2626;
+
+  /* 📝 TEXT COLORS */
+  --text-primary: var(--color-gray-900);
+  --text-secondary: var(--color-gray-600);
+  --text-muted: var(--color-gray-400);
+  --text-inverse: white;
+  --text-link: var(--color-primary);
+  --text-link-hover: var(--color-primary-hover);
+
+  /* 🏗️ SURFACE COLORS */
+  --surface-primary: white;
+  --surface-secondary: var(--color-gray-50);
+  --surface-tertiary: var(--color-gray-100);
+  --surface-overlay: rgba(0, 0, 0, 0.8);
+  --surface-elevated: white;
+
+  /* 🔲 BORDER COLORS */
+  --border-primary: var(--color-gray-200);
+  --border-secondary: var(--color-gray-300);
+  --border-focus: var(--color-primary);
+  --border-error: var(--color-error);
+
+  /* 📏 SPACING SYSTEM */
+  --spacing-xs: 0.25rem;      /* 4px */
+  --spacing-sm: 0.5rem;       /* 8px */
+  --spacing-md: 1rem;         /* 16px */
+  --spacing-lg: 1.5rem;       /* 24px */
+  --spacing-xl: 2rem;         /* 32px */
+  --spacing-2xl: 3rem;        /* 48px */
+  --spacing-3xl: 4rem;        /* 64px */
+
+  /* 📱 BREAKPOINTS */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* 🔤 TYPOGRAPHY SCALE */
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-mono: 'Fira Code', 'Courier New', monospace;
+
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* 🎭 SHADOWS */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+  /* 🎨 BORDER RADIUS */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;       /* 4px */
+  --radius-md: 0.5rem;        /* 8px */
+  --radius-lg: 0.75rem;       /* 12px */
+  --radius-xl: 1rem;          /* 16px */
+  --radius-full: 9999px;      /* Fully rounded */
+
+  /* ⏱️ TRANSITIONS */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* 🎛️ Z-INDEX SCALE */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+}
+```
+
+#### **🌙 DARK THEME IMPLEMENTATION:**
+
+```css
+/* ✅ DARK THEME OVERRIDE */
+[data-theme="dark"] {
+  /* 🎯 Semantic color overrides */
+  --color-primary: var(--color-blue-400);
+  --color-primary-hover: var(--color-blue-300);
+  --color-primary-active: var(--color-blue-500);
+
+  /* 📝 Text colors */
+  --text-primary: var(--color-gray-100);
+  --text-secondary: var(--color-gray-300);
+  --text-muted: var(--color-gray-500);
+
+  /* 🏗️ Surface colors */
+  --surface-primary: var(--color-gray-900);
+  --surface-secondary: var(--color-gray-800);
+  --surface-tertiary: var(--color-gray-700);
+  --surface-elevated: var(--color-gray-800);
+
+  /* 🔲 Border colors */
+  --border-primary: var(--color-gray-700);
+  --border-secondary: var(--color-gray-600);
+
+  /* 🎭 Shadows for dark theme */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* ✅ System preference detection */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Apply dark theme if no explicit theme set */
+  }
+}
+```
+
+#### **🎨 COMPONENT TOKENS:**
+
+```css
+/* ✅ BUTTON COMPONENT TOKENS */
+.button {
+  /* 🎯 Component-specific design tokens */
+  --button-height: 2.5rem;
+  --button-padding-x: var(--spacing-lg);
+  --button-padding-y: var(--spacing-sm);
+  --button-font-size: var(--font-size-sm);
+  --button-font-weight: var(--font-weight-medium);
+  --button-border-radius: var(--radius-md);
+  --button-transition: var(--transition-fast);
+
+  /* Primary variant */
+  --button-bg: var(--color-primary);
+  --button-bg-hover: var(--color-primary-hover);
+  --button-bg-active: var(--color-primary-active);
+  --button-bg-disabled: var(--color-primary-disabled);
+  --button-text: var(--text-inverse);
+  --button-border: var(--button-bg);
+
+  /* Implementation */
+  height: var(--button-height);
+  padding: var(--button-padding-y) var(--button-padding-x);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  border-radius: var(--button-border-radius);
+  transition: var(--button-transition);
+
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: 1px solid var(--button-border);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--button-bg-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.button:active {
+  background: var(--button-bg-active);
+  transform: translateY(0);
+}
+
+.button:disabled {
+  background: var(--button-bg-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ✅ Button variants using token overrides */
+.button--secondary {
+  --button-bg: transparent;
+  --button-bg-hover: var(--surface-secondary);
+  --button-bg-active: var(--surface-tertiary);
+  --button-text: var(--text-primary);
+  --button-border: var(--border-primary);
+}
+
+.button--danger {
+  --button-bg: var(--color-error);
+  --button-bg-hover: var(--color-error-hover);
+  --button-bg-active: var(--color-error);
+}
+
+.button--large {
+  --button-height: 3rem;
+  --button-padding-x: var(--spacing-xl);
+  --button-font-size: var(--font-size-base);
+}
+
+.button--small {
+  --button-height: 2rem;
+  --button-padding-x: var(--spacing-md);
+  --button-font-size: var(--font-size-xs);
+}
+```
+
+#### **🏗️ CARD COMPONENT SYSTEM:**
+
+```css
+/* ✅ CARD COMPONENT TOKENS */
+.card {
+  /* 🎯 Card-specific tokens */
+  --card-bg: var(--surface-elevated);
+  --card-border: var(--border-primary);
+  --card-border-radius: var(--radius-lg);
+  --card-padding: var(--spacing-lg);
+  --card-shadow: var(--shadow-sm);
+  --card-shadow-hover: var(--shadow-md);
+
+  /* Implementation */
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-border-radius);
+  padding: var(--card-padding);
+  box-shadow: var(--card-shadow);
+  transition: var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.card__header {
+  --card-header-border: var(--border-primary);
+
+  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--card-header-border);
+}
+
+.card__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.card__subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+```
+
+#### **🚀 TYPESCRIPT THEME INTEGRATION:**
+
+```typescript
+// ✅ Design tokens as TypeScript constants
+export const tokens = {
+  colors: {
+    primary: 'var(--color-primary)',
+    primaryHover: 'var(--color-primary-hover)',
+    secondary: 'var(--color-secondary)',
+    success: 'var(--color-success)',
+    error: 'var(--color-error)',
+    warning: 'var(--color-warning)',
+  },
+  spacing: {
+    xs: 'var(--spacing-xs)',
+    sm: 'var(--spacing-sm)',
+    md: 'var(--spacing-md)',
+    lg: 'var(--spacing-lg)',
+    xl: 'var(--spacing-xl)',
+  },
+  typography: {
+    fontSizes: {
+      xs: 'var(--font-size-xs)',
+      sm: 'var(--font-size-sm)',
+      base: 'var(--font-size-base)',
+      lg: 'var(--font-size-lg)',
+      xl: 'var(--font-size-xl)',
+    },
+    fontWeights: {
+      normal: 'var(--font-weight-normal)',
+      medium: 'var(--font-weight-medium)',
+      semibold: 'var(--font-weight-semibold)',
+      bold: 'var(--font-weight-bold)',
+    },
+  },
+  radius: {
+    sm: 'var(--radius-sm)',
+    md: 'var(--radius-md)',
+    lg: 'var(--radius-lg)',
+    full: 'var(--radius-full)',
+  },
+  shadows: {
+    sm: 'var(--shadow-sm)',
+    md: 'var(--shadow-md)',
+    lg: 'var(--shadow-lg)',
+  },
+} as const;
+
+// ✅ Theme context for React
+interface ThemeContextType {
+  theme: 'light' | 'dark' | 'auto';
+  setTheme: (theme: 'light' | 'dark' | 'auto') => void;
+  toggleTheme: () => void;
+}
+
+export const ThemeContext = createContext<ThemeContextType | null>(null);
+
+// ✅ Theme provider component
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children
+}) => {
+  const [theme, setTheme] = useState<'light' | 'dark' | 'auto'>('auto');
+
+  useEffect(() => {
+    // 🎯 Apply theme to document
+    const root = document.documentElement;
+
+    if (theme === 'auto') {
+      // Detect system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    } else {
+      root.setAttribute('data-theme', theme);
+    }
+
+    // 💾 Persist to localStorage
+    localStorage.setItem('theme-preference', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  }, []);
+
+  const value = useMemo(() => ({
+    theme,
+    setTheme,
+    toggleTheme,
+  }), [theme, toggleTheme]);
+
+  return (
+    <ThemeContext.Provider value={value}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+// ✅ Theme hook
+export const useTheme = (): ThemeContextType => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within ThemeProvider');
+  }
+  return context;
+};
+```
+
+#### **🎭 COMPONENT VARIANTS WITH TOKENS:**
+
+```css
+/* ✅ INPUT COMPONENT SYSTEM */
+.input {
+  /* 🎯 Input-specific tokens */
+  --input-height: 2.5rem;
+  --input-padding: var(--spacing-sm) var(--spacing-md);
+  --input-font-size: var(--font-size-sm);
+  --input-border-radius: var(--radius-md);
+  --input-border: var(--border-primary);
+  --input-border-focus: var(--border-focus);
+  --input-bg: var(--surface-primary);
+  --input-text: var(--text-primary);
+  --input-placeholder: var(--text-muted);
+
+  /* States */
+  --input-border-error: var(--border-error);
+  --input-bg-disabled: var(--surface-tertiary);
+
+  /* Implementation */
+  height: var(--input-height);
+  padding: var(--input-padding);
+  font-size: var(--input-font-size);
+  border-radius: var(--input-border-radius);
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--input-text);
+  transition: var(--transition-fast);
+  font-family: inherit;
+  width: 100%;
+}
+
+.input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input:disabled {
+  background: var(--input-bg-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input--error {
+  --input-border: var(--input-border-error);
+  --input-border-focus: var(--input-border-error);
+}
+
+.input--large {
+  --input-height: 3rem;
+  --input-font-size: var(--font-size-base);
+}
+```
+
+#### **📱 RESPONSIVE THEME TOKENS:**
+
+```css
+/* ✅ Responsive design tokens */
+:root {
+  /* Mobile-first spacing */
+  --container-padding: var(--spacing-md);
+  --section-spacing: var(--spacing-xl);
+  --card-padding: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --container-padding: var(--spacing-lg);
+    --section-spacing: var(--spacing-2xl);
+    --card-padding: var(--spacing-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --container-padding: var(--spacing-xl);
+    --section-spacing: var(--spacing-3xl);
+    --card-padding: var(--spacing-xl);
+  }
+}
+
+/* ✅ Component responsive behavior */
+.container {
+  padding: var(--container-padding);
+  max-width: var(--breakpoint-xl);
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: var(--section-spacing);
+}
+
+.card {
+  padding: var(--card-padding);
+}
+```
+
+#### **💡 THEME DEBUGGING TOOLS:**
+
+```css
+/* ✅ Development theme debugging */
+.debug-theme {
+  position: fixed;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-mono);
+  z-index: var(--z-tooltip);
+  box-shadow: var(--shadow-lg);
+}
+
+.debug-theme::before {
+  content: 'Theme: ' attr(data-theme);
+  display: block;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-xs);
+}
+```
+
+**💡 GHI NHỚ:**
+- **Global Tokens** = Brand foundation 🎨
+- **Semantic Tokens** = Meaning-based colors 🎯
+- **Component Tokens** = Component-specific values 🧩
+- **CSS Variables** = Runtime implementation ⚡
+
+**Theme Strategy: Global foundation → Semantic meaning → Component specifics → Runtime flexibility!** 🚀
+
+---
+
+### CSS9: CSS Reset vs Normalize - Tại sao cần và cách sử dụng?
+
+**Trả lời:**
+
+CSS Reset và Normalize là **FOUNDATION STRATEGIES** để handle **BROWSER INCONSISTENCIES**. Hiểu rõ differences và khi nào sử dụng là **CRUCIAL** cho consistent cross-browser design.
+
+#### **🔥 BROWSER DEFAULT STYLES PROBLEM:**
+
+```css
+/* 🚨 Browser defaults vary across browsers */
+
+/* Chrome default for <h1> */
+h1 {
+  display: block;
+  font-size: 2em;
+  margin: 0.67em 0;
+  font-weight: bold;
+}
+
+/* Firefox default for <h1> */
+h1 {
+  display: block;
+  font-size: 2em;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  font-weight: bold;
+}
+
+/* Safari default cho <p> */
+p {
+  display: block;
+  margin: 1em 0;
+}
+
+/* IE default cho <p> */
+p {
+  margin: 1em 0;
+  padding: 0;
+}
+```
+
+#### **📊 CSS RESET vs NORMALIZE COMPARISON:**
+
+| Aspect | **CSS Reset** | **Normalize.css** |
+|--------|---------------|-------------------|
+| **Philosophy** | **Remove ALL default styles** | **Preserve useful defaults** |
+| **Approach** | **Nuclear option** | **Surgical fixes** |
+| **File Size** | **Smaller (~2KB)** | **Larger (~8KB)** |
+| **Styling Start** | **From scratch** | **Enhanced defaults** |
+| **Use Case** | **Custom design systems** | **Standard web content** |
+| **Maintenance** | **Less frequent updates** | **Active development** |
+
+#### **🗑️ CSS RESET APPROACH:**
+
+```css
+/* ✅ MODERN CSS RESET (Minimal) */
+
+/* Reset margins and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Remove default list styles */
+ol, ul {
+  list-style: none;
+}
+
+/* Reset table styles */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Reset form elements */
+button, input, select, textarea {
+  font: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+/* Reset links */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Reset headings */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* ✅ COMPREHENSIVE CSS RESET (Eric Meyer style) */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+```
+
+#### **🔧 NORMALIZE.CSS APPROACH:**
+
+```css
+/* ✅ NORMALIZE.CSS EXCERPTS */
+
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+html {
+  line-height: 1.15; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+/**
+ * Remove the margin in all browsers.
+ */
+body {
+  margin: 0;
+}
+
+/**
+ * Render the `main` element consistently in IE.
+ */
+main {
+  display: block;
+}
+
+/**
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
+ */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+/**
+ * Add the correct box sizing in Firefox.
+ * Show the overflow in Edge and IE.
+ */
+hr {
+  box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+pre {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/**
+ * Remove the gray background on active links in IE 10.
+ */
+a {
+  background-color: transparent;
+}
+
+/**
+ * 1. Remove the bottom border in Chrome 57-
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+abbr[title] {
+  border-bottom: none; /* 1 */
+  text-decoration: underline; /* 2 */
+  text-decoration: underline dotted; /* 2 */
+}
+
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+b, strong {
+  font-weight: bolder;
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+code, kbd, samp {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+```
+
+#### **🚀 MODERN HYBRID APPROACH:**
+
+```css
+/* ✅ MODERN CSS FOUNDATION (Best of both worlds) */
+
+/* Box sizing reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margins */
+* {
+  margin: 0;
+}
+
+/* HTML & Body foundation */
+html {
+  /* Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Better mobile experience */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+
+  /* Consistent line height */
+  line-height: 1.5;
+
+  /* Enable font features */
+  font-variant-ligatures: common-ligatures;
+}
+
+body {
+  /* Remove default margin */
+  margin: 0;
+
+  /* Better font rendering */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               'Helvetica Neue', Arial, sans-serif;
+
+  /* Improve text rendering */
+  text-rendering: optimizeSpeed;
+
+  /* Better mobile scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Media elements */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Form elements */
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Remove button default styles */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Better focus styles */
+:focus {
+  outline: 2px solid #4A90E2;
+  outline-offset: 2px;
+}
+
+/* Skip focus for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* List styles */
+ul, ol {
+  padding-left: 0;
+  list-style: none;
+}
+
+/* Table styles */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Remove text decoration */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Better typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 0.5em;
+}
+
+p {
+  line-height: 1.6;
+  margin-bottom: 1em;
+}
+
+/* Address styling for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, main, menu, nav,
+section, summary {
+  display: block;
+}
+
+/* Hidden attribute */
+[hidden] {
+  display: none !important;
+}
+```
+
+#### **🛠️ FRAMEWORK-SPECIFIC RESETS:**
+
+**1. Tailwind CSS Reset:**
+```css
+/* ✅ Tailwind's Preflight (based on normalize.css) */
+*, ::before, ::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: theme('borderColor.DEFAULT', currentColor);
+}
+
+::before, ::after {
+  --tw-content: '';
+}
+
+html {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+  font-family: theme('fontFamily.sans', ui-sans-serif, system-ui);
+}
+
+body {
+  margin: 0;
+  line-height: inherit;
+}
+
+hr {
+  height: 0;
+  color: inherit;
+  border-top-width: 1px;
+}
+
+abbr:where([title]) {
+  text-decoration: underline dotted;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+button, input, optgroup, select, textarea {
+  font-family: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+```
+
+**2. Bootstrap Reboot:**
+```css
+/* ✅ Bootstrap's Reboot (normalize.css + additions) */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: sans-serif;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
+  display: block;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+  background-color: #fff;
+}
+
+[tabindex="-1"]:focus:not(:focus-visible) {
+  outline: 0 !important;
+}
+
+hr {
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
+}
+```
+
+#### **⚖️ DECISION FRAMEWORK:**
+
+**✅ Use CSS Reset when:**
+```css
+/* Custom design system */
+.design-system {
+  /* Start from zero, build everything custom */
+}
+
+/* Unique UI patterns */
+.creative-layout {
+  /* Need complete control over styling */
+}
+
+/* Component library */
+.ui-library {
+  /* Consistent base across different projects */
+}
+```
+
+**✅ Use Normalize.css when:**
+```css
+/* Content-heavy websites */
+.blog-content {
+  /* Want semantic HTML to look decent by default */
+}
+
+/* Rapid prototyping */
+.prototype {
+  /* Want basic styling without much custom CSS */
+}
+
+/* Legacy browser support */
+.enterprise-app {
+  /* Need documented fixes for browser quirks */
+}
+```
+
+**✅ Use Modern Hybrid when:**
+```css
+/* Modern web applications */
+.modern-app {
+  /* Want minimal reset + modern best practices */
+}
+
+/* Progressive web apps */
+.pwa {
+  /* Need mobile-optimized foundation */
+}
+
+/* Design systems */
+.design-tokens {
+  /* Want controlled foundation for token system */
+}
+```
+
+#### **🔧 IMPLEMENTATION STRATEGIES:**
+
+**1. NPM Package Integration:**
+```bash
+# Install normalize.css
+npm install normalize.css
+
+# Install modern-normalize
+npm install modern-normalize
+
+# Install sanitize.css (alternative)
+npm install sanitize.css
+```
+
+```typescript
+// ✅ Import in your main CSS/JS file
+import 'normalize.css';
+// or
+import 'modern-normalize';
+
+// ✅ Or in CSS
+@import 'normalize.css';
+@import url('https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css');
+```
+
+**2. Custom Reset with CSS Custom Properties:**
+```css
+/* ✅ Configurable reset using CSS variables */
+:root {
+  --reset-font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  --reset-line-height: 1.5;
+  --reset-focus-color: #4A90E2;
+  --reset-focus-offset: 2px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--reset-font-family);
+  line-height: var(--reset-line-height);
+}
+
+:focus-visible {
+  outline: 2px solid var(--reset-focus-color);
+  outline-offset: var(--reset-focus-offset);
+}
+```
+
+#### **📱 MOBILE-SPECIFIC CONSIDERATIONS:**
+
+```css
+/* ✅ Mobile-optimized reset additions */
+html {
+  /* Prevent zoom on orientation change */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+
+  /* Better mobile scrolling */
+  -webkit-overflow-scrolling: touch;
+
+  /* Disable pull-to-refresh */
+  overscroll-behavior-y: contain;
+}
+
+body {
+  /* Disable rubber band scrolling */
+  overscroll-behavior: contain;
+
+  /* Better mobile font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Touch-friendly tap targets */
+button, input, select, textarea, a {
+  /* Minimum 44px touch target */
+  min-height: 44px;
+
+  /* Remove tap highlights */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Disable user select on UI elements */
+button, .ui-element {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+```
+
+#### **🧪 TESTING CROSS-BROWSER CONSISTENCY:**
+
+```css
+/* ✅ Visual test for reset effectiveness */
+.reset-test {
+  /* All these should look identical across browsers */
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.reset-test h1 { font-size: 2em; }
+.reset-test h2 { font-size: 1.5em; }
+.reset-test p { margin: 1em 0; }
+.reset-test ul { margin: 1em 0; padding-left: 2em; }
+.reset-test button { padding: 0.5em 1em; }
+```
+
+**💡 GHI NHỚ:**
+- **CSS Reset** = **Nuclear** approach, start from zero 💥
+- **Normalize** = **Surgical** fixes, preserve useful defaults 🔧
+- **Modern Hybrid** = **Best of both**, optimized for modern web 🚀
+- **Always test** across target browsers 🧪
+
+**Reset Strategy: Choose based on project needs → Apply early → Test consistently → Document decisions!** 🎯
+
+---
+
+### CSS10: Pseudo-classes và Pseudo-elements trong CSS?
+
+**Trả lời:**
+
+**Pseudo-classes** và **Pseudo-elements** là **POWERFUL CSS SELECTORS** để target elements based on **STATE** hoặc **STRUCTURE**. Hiểu rõ differences và use cases là **ESSENTIAL** cho advanced CSS.
+
+#### **🔥 PSEUDO-CLASSES vs PSEUDO-ELEMENTS:**
+
+| Aspect | **Pseudo-classes (`:`)** | **Pseudo-elements (`::`)** |
+|--------|-------------------------|---------------------------|
+| **Syntax** | **Single colon `:hover`** | **Double colon `::before`** |
+| **Purpose** | **Target element STATES** | **Target element PARTS** |
+| **Examples** | `:hover`, `:focus`, `:nth-child` | `::before`, `::after`, `::first-line` |
+| **DOM Impact** | **No DOM manipulation** | **Creates virtual elements** |
+| **Styling** | **Styles existing elements** | **Styles generated content** |
+
+#### **🎯 COMMON PSEUDO-CLASSES:**
+
+**1. User Action Pseudo-classes:**
+```css
+/* ✅ HOVER STATES */
+.button {
+  background: #3b82f6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button:active {
+  background: #1d4ed8;
+  transform: translateY(0);
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* ✅ FOCUS MANAGEMENT */
+.input {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input:focus-visible {
+  /* Only show focus for keyboard users */
+  border-color: #3b82f6;
+}
+
+.input:focus:not(:focus-visible) {
+  /* Hide focus for mouse users */
+  box-shadow: none;
+}
+
+/* ✅ VISITED LINKS */
+.link {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.link:visited {
+  color: #7c3aed;  /* Purple for visited links */
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+```
+
+**2. Structural Pseudo-classes:**
+```css
+/* ✅ NTH-CHILD PATTERNS */
+.grid-item:nth-child(odd) {
+  background: #f9fafb;    /* Zebra striping */
+}
+
+.grid-item:nth-child(even) {
+  background: white;
+}
+
+.grid-item:nth-child(3n) {
+  /* Every 3rd item */
+  border-right: 3px solid #3b82f6;
+}
+
+.grid-item:nth-child(3n+1) {
+  /* 1st, 4th, 7th, etc. */
+  margin-left: 0;
+}
+
+/* ✅ FIRST/LAST CHILD */
+.card:first-child {
+  margin-top: 0;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.card:last-child {
+  margin-bottom: 0;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.card:only-child {
+  border-radius: 0.5rem;
+  margin: 0;
+}
+
+/* ✅ FIRST/LAST OF TYPE */
+.article h2:first-of-type {
+  margin-top: 0;
+  font-size: 2rem;
+}
+
+.article p:last-of-type {
+  margin-bottom: 0;
+}
+
+/* ✅ EMPTY/NOT SELECTORS */
+.message:empty {
+  display: none;
+}
+
+.message:not(:empty) {
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+}
+
+.input:not(:disabled):hover {
+  border-color: #9ca3af;
+}
+
+.button:not(.primary):not(.secondary) {
+  background: #6b7280;
+}
+```
+
+**3. Form Pseudo-classes:**
+```css
+/* ✅ FORM VALIDATION STATES */
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.input:valid {
+  border-color: #10b981;
+}
+
+.input:invalid:not(:focus):not(:placeholder-shown) {
+  border-color: #ef4444;
+}
+
+.input:required:invalid {
+  background-image: url('data:image/svg+xml;utf8,<svg>...</svg>');
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+}
+
+/* ✅ CHECKBOX/RADIO STYLING */
+.checkbox:checked + .label {
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+.checkbox:checked + .label::before {
+  background: #3b82f6;
+  content: '✓';
+  color: white;
+}
+
+.radio:checked + .label {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+/* ✅ DISABLED STATES */
+.input:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+```
+
+#### **🎨 PSEUDO-ELEMENTS:**
+
+**1. `::before` và `::after`:**
+```css
+/* ✅ DECORATIVE ELEMENTS */
+.quote {
+  position: relative;
+  padding: 1rem 2rem;
+  font-style: italic;
+  background: #f8fafc;
+  border-left: 4px solid #3b82f6;
+}
+
+.quote::before {
+  content: '"';
+  position: absolute;
+  top: -0.5rem;
+  left: 0.5rem;
+  font-size: 3rem;
+  color: #3b82f6;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.quote::after {
+  content: '"';
+  position: absolute;
+  bottom: -1rem;
+  right: 0.5rem;
+  font-size: 3rem;
+  color: #3b82f6;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* ✅ ICON ADDITIONS */
+.external-link::after {
+  content: ' ↗';
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.download-link::before {
+  content: '⬇ ';
+  color: #10b981;
+}
+
+.email-link::before {
+  content: '✉ ';
+  color: #3b82f6;
+}
+
+/* ✅ TOOLTIPS */
+.tooltip {
+  position: relative;
+  cursor: help;
+  border-bottom: 1px dotted #6b7280;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+}
+
+/* ✅ LOADING SPINNER */
+.loading::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+```
+
+**2. Typography Pseudo-elements:**
+```css
+/* ✅ FIRST LINE/LETTER STYLING */
+.article p::first-line {
+  font-weight: 600;
+  color: #374151;
+  font-size: 1.1em;
+}
+
+.chapter::first-letter {
+  float: left;
+  font-size: 4rem;
+  font-weight: bold;
+  line-height: 1;
+  margin: 0 0.5rem 0 0;
+  color: #3b82f6;
+  font-family: Georgia, serif;
+}
+
+/* ✅ SELECTION STYLING */
+::selection {
+  background: #3b82f6;
+  color: white;
+}
+
+::-moz-selection {
+  background: #3b82f6;
+  color: white;
+}
+
+/* ✅ PLACEHOLDER STYLING */
+.input::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+  font-style: italic;
+}
+
+.input::-webkit-input-placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}
+
+.input::-moz-placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}
+```
+
+#### **🚀 ADVANCED PSEUDO-CLASS COMBINATIONS:**
+
+```css
+/* ✅ COMPLEX SELECTORS */
+
+/* Target specific patterns */
+.nav-item:nth-child(3n+1):not(:last-child) {
+  /* 1st, 4th, 7th items (but not if they're the last) */
+  margin-right: auto;
+}
+
+/* Form validation combinations */
+.input:required:invalid:not(:focus):not(:placeholder-shown) {
+  /* Required field that's invalid, not focused, and has content */
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.input:valid:not(:placeholder-shown) {
+  /* Valid field with content */
+  border-color: #10b981;
+}
+
+/* Hover states with conditions */
+.card:hover:not(.disabled):not(.loading) {
+  /* Only hover if not disabled or loading */
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* State combinations */
+.button:focus:hover:not(:active) {
+  /* Focused and hovered but not being clicked */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3),
+              0 4px 8px rgba(0, 0, 0, 0.1);
+}
+```
+
+#### **🎯 PRACTICAL EXAMPLES:**
+
+**1. Card Component với Pseudo-classes:**
+```css
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card:active {
+  transform: translateY(0);
+}
+
+.card:focus-within {
+  /* Style card if any child element is focused */
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.card:target {
+  /* Style card when it's the target of a URL fragment */
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+```
+
+**2. Form với Advanced Pseudo-classes:**
+```css
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-input:user-invalid {
+  /* Only show error after user interaction */
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.form-input:user-valid {
+  /* Show success after user interaction */
+  border-color: #10b981;
+  background-color: #f0fdf4;
+}
+
+.form-input:placeholder-shown {
+  /* Style when placeholder is visible */
+  font-style: italic;
+}
+
+.form-input:in-range {
+  /* For number inputs within valid range */
+  border-color: #10b981;
+}
+
+.form-input:out-of-range {
+  /* For number inputs outside valid range */
+  border-color: #ef4444;
+}
+```
+
+**3. Navigation với Pseudo-elements:**
+```css
+.nav-link {
+  position: relative;
+  padding: 0.5rem 1rem;
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #3b82f6;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #3b82f6;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link.active {
+  color: #3b82f6;
+}
+
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Badge with counter */
+.nav-item {
+  position: relative;
+}
+
+.nav-item[data-count]::after {
+  content: attr(data-count);
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+```
+
+#### **📱 RESPONSIVE PSEUDO-CLASSES:**
+
+```css
+/* ✅ Media query pseudo-classes */
+@media (hover: hover) {
+  /* Only apply hover on devices that support it */
+  .button:hover {
+    background: #2563eb;
+  }
+}
+
+@media (hover: none) {
+  /* Mobile devices without hover */
+  .button:active {
+    background: #2563eb;
+  }
+}
+
+/* ✅ Container queries with pseudo-classes */
+.card-container {
+  container-type: inline-size;
+}
+
+@container (min-width: 300px) {
+  .card:nth-child(even) {
+    background: #f8fafc;
+  }
+}
+```
+
+**💡 GHI NHỚ:**
+- **Pseudo-classes (`:`)** = Element **STATES** 🎭
+- **Pseudo-elements (`::`)** = Element **PARTS** 🧩
+- **`:not()`** = Exclusion logic ❌
+- **`::before/::after`** = Generated content ✨
+
+**Pseudo Strategy: Use pseudo-classes for states → Use pseudo-elements for decoration → Combine for complex patterns!** 🎯
+
+---
+
+### CSS11: `display: none` vs `visibility: hidden` - Performance Impact?
+
+**Trả lời:**
+
+`display: none` và `visibility: hidden` đều **HIDE ELEMENTS** nhưng có **FUNDAMENTAL DIFFERENCES** về **DOM flow**, **performance**, và **browser rendering**. Hiểu rõ differences là **CRUCIAL** cho optimization.
+
+#### **🔥 CORE DIFFERENCES:**
+
+| Aspect | **`display: none`** | **`visibility: hidden`** |
+|--------|---------------------|--------------------------|
+| **DOM Flow** | ❌ **Removed from flow** | ✅ **Remains in flow** |
+| **Space Occupation** | ❌ **No space taken** | ✅ **Space preserved** |
+| **Child Elements** | **All children hidden** | **Children can override** |
+| **Event Handling** | ❌ **No events triggered** | ❌ **No events triggered** |
+| **Accessibility** | **Screen readers ignore** | **Screen readers ignore** |
+| **Performance** | **🔥 Triggers Reflow** | **⚡ Only Repaint** |
+
+#### **📊 PERFORMANCE COMPARISON:**
+
+```css
+/* 🔥 DISPLAY: NONE - Heavy Performance Impact */
+.element-display-none {
+  display: none;  /* Element completely removed from render tree */
+}
+
+/* PERFORMANCE IMPACT:
+ * 1. REFLOW: Layout recalculation required
+ * 2. REPAINT: Visual update needed
+ * 3. COMPOSITE: Layer updates if needed
+ * 4. JavaScript: offsetHeight, offsetWidth return 0
+ */
+
+/* ⚡ VISIBILITY: HIDDEN - Light Performance Impact */
+.element-visibility-hidden {
+  visibility: hidden;  /* Element invisible but space maintained */
+}
+
+/* PERFORMANCE IMPACT:
+ * 1. REPAINT: Only visual update (no layout change)
+ * 2. Layout: Preserved (no reflow needed)
+ * 3. JavaScript: offsetHeight, offsetWidth return actual values
+ */
+```
+
+#### **🎯 PRACTICAL PERFORMANCE EXAMPLES:**
+
+**1. Animation Performance Comparison:**
+```css
+/* ❌ BAD: Frequent display toggles cause layout thrashing */
+.modal-bad {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+
+.modal-bad.show {
+  display: block;  /* Triggers REFLOW on every show/hide */
+}
+
+/* ⚡ BETTER: Visibility preserves layout */
+.modal-better {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-better.show {
+  visibility: visible;
+  opacity: 1;      /* Only REPAINT, no REFLOW */
+}
+
+/* ✅ BEST: Transform-based approach (GPU accelerated) */
+.modal-best {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.modal-best.show {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;  /* Only COMPOSITE layer update */
+}
+```
+
+**2. List Item Performance:**
+```css
+/* 🔥 PERFORMANCE BOTTLENECK: display: none on large lists */
+.list-item {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+/* ❌ BAD: Each toggle causes layout recalculation */
+.list-item.hidden-bad {
+  display: none;  /* Entire list layout recalculated */
+}
+
+/* ⚡ BETTER: Visibility preserves list layout */
+.list-item.hidden-better {
+  visibility: hidden;  /* List layout preserved */
+}
+
+/* ✅ BEST: Virtual scrolling approach */
+.list-item.hidden-best {
+  height: 0;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  border: none;
+  transition: height 0.2s ease, padding 0.2s ease;
+}
+
+.list-item.visible-best {
+  height: auto;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+```
+
+#### **⚡ BROWSER RENDERING PIPELINE:**
+
+```css
+/* UNDERSTANDING THE RENDERING PIPELINE */
+
+/* 1. REFLOW (Layout) - Most Expensive */
+.trigger-reflow {
+  display: none;          /* ✓ Triggers */
+  width: 100px;          /* ✓ Triggers */
+  height: 100px;         /* ✓ Triggers */
+  padding: 10px;         /* ✓ Triggers */
+  margin: 10px;          /* ✓ Triggers */
+  border: 1px solid;     /* ✓ Triggers */
+  font-size: 14px;       /* ✓ Triggers */
+  position: absolute;    /* ✓ Triggers (sometimes) */
+}
+
+/* 2. REPAINT - Moderate Cost */
+.trigger-repaint {
+  visibility: hidden;    /* ✓ Triggers */
+  color: red;           /* ✓ Triggers */
+  background: blue;     /* ✓ Triggers */
+  box-shadow: 0 0 5px;  /* ✓ Triggers */
+  border-color: green;  /* ✓ Triggers */
+  outline: 2px solid;   /* ✓ Triggers */
+}
+
+/* 3. COMPOSITE - Least Expensive (GPU) */
+.trigger-composite {
+  transform: scale(0);   /* ✓ GPU accelerated */
+  opacity: 0;           /* ✓ GPU accelerated */
+  filter: blur(5px);    /* ✓ GPU accelerated */
+  will-change: transform; /* ✓ Force GPU layer */
+}
+```
+
+#### **🚀 MODERN PERFORMANCE TECHNIQUES:**
+
+**1. CSS Containment for Performance:**
+```css
+/* ✅ CSS Containment - Isolate layout calculations */
+.container {
+  contain: layout style paint;  /* Isolate expensive operations */
+}
+
+.container .item {
+  /* Changes here won't affect parent layout */
+  display: none;  /* Reflow contained within .container */
+}
+
+/* ✅ Container queries for responsive hiding */
+.responsive-container {
+  container-type: inline-size;
+}
+
+@container (max-width: 300px) {
+  .optional-content {
+    display: none;  /* Contextual hiding based on container size */
+  }
+}
+```
+
+**2. Performance-Optimized Toggle Patterns:**
+```typescript
+// ✅ PERFORMANCE-AWARE TOGGLE IMPLEMENTATION
+interface ElementToggleOptions {
+  method: 'display' | 'visibility' | 'transform' | 'clip-path';
+  duration?: number;
+  easing?: string;
+}
+
+class PerformantToggle {
+  private element: HTMLElement;
+  private isVisible: boolean = true;
+
+  constructor(element: HTMLElement) {
+    this.element = element;
+    this.setupGPULayer();
+  }
+
+  private setupGPULayer(): void {
+    // Force GPU layer for better performance
+    this.element.style.willChange = 'transform, opacity';
+    this.element.style.backfaceVisibility = 'hidden';
+  }
+
+  // ⚡ FAST: GPU-accelerated approach
+  toggleWithTransform(show: boolean): void {
+    if (show) {
+      this.element.style.transform = 'scale(1)';
+      this.element.style.opacity = '1';
+      this.element.style.pointerEvents = 'auto';
+    } else {
+      this.element.style.transform = 'scale(0)';
+      this.element.style.opacity = '0';
+      this.element.style.pointerEvents = 'none';
+    }
+    this.isVisible = show;
+  }
+
+  // 🔥 SLOW: Layout-affecting approach
+  toggleWithDisplay(show: boolean): void {
+    this.element.style.display = show ? 'block' : 'none';
+    this.isVisible = show;
+    // This will trigger reflow and affect performance
+  }
+
+  // ⚡ MEDIUM: Repaint-only approach
+  toggleWithVisibility(show: boolean): void {
+    this.element.style.visibility = show ? 'visible' : 'hidden';
+    this.element.style.opacity = show ? '1' : '0';
+    this.isVisible = show;
+  }
+
+  // ✅ BEST: Clip-path approach (modern browsers)
+  toggleWithClipPath(show: boolean): void {
+    if (show) {
+      this.element.style.clipPath = 'inset(0)';
+      this.element.style.opacity = '1';
+    } else {
+      this.element.style.clipPath = 'inset(100%)';
+      this.element.style.opacity = '0';
+    }
+    this.isVisible = show;
+  }
+
+  // 📊 Performance measurement
+  measureTogglePerformance(method: keyof PerformantToggle, iterations: number = 100): number {
+    const start = performance.now();
+
+    for (let i = 0; i < iterations; i++) {
+      (this[method] as Function)(i % 2 === 0);
+    }
+
+    const end = performance.now();
+    return end - start;
+  }
+}
+
+// ✅ Usage example
+const element = document.querySelector('.toggle-element') as HTMLElement;
+const toggle = new PerformantToggle(element);
+
+// Measure different approaches
+const displayTime = toggle.measureTogglePerformance('toggleWithDisplay');
+const visibilityTime = toggle.measureTogglePerformance('toggleWithVisibility');
+const transformTime = toggle.measureTogglePerformance('toggleWithTransform');
+
+console.log('Performance Results:');
+console.log(`Display toggle: ${displayTime}ms`);
+console.log(`Visibility toggle: ${visibilityTime}ms`);
+console.log(`Transform toggle: ${transformTime}ms`);
+```
+
+#### **🎯 USE CASE RECOMMENDATIONS:**
+
+**✅ Use `display: none` when:**
+```css
+/* 1. Complete removal needed */
+.modal {
+  display: none;  /* Modal completely removed when closed */
+}
+
+.modal.open {
+  display: flex;
+}
+
+/* 2. Responsive design (one-time layout change) */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;  /* Permanent hide on mobile */
+  }
+}
+
+/* 3. Content that affects layout significantly */
+.sidebar {
+  display: none;  /* Sidebar collapse affects main content width */
+}
+
+.sidebar.open {
+  display: block;
+}
+```
+
+**✅ Use `visibility: hidden` when:**
+```css
+/* 1. Maintain layout spacing */
+.placeholder {
+  visibility: hidden;  /* Keep space for content loading */
+}
+
+.placeholder.loaded {
+  visibility: visible;
+}
+
+/* 2. Animation sequences */
+.fade-sequence .item {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.fade-sequence .item.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 3. Print styles */
+@media print {
+  .no-print {
+    visibility: hidden;  /* Hide but maintain layout */
+  }
+}
+```
+
+**✅ Use modern alternatives when:**
+```css
+/* 1. Frequent toggling (animations) */
+.performance-critical {
+  transform: scale(1);
+  opacity: 1;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.performance-critical.hidden {
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 2. GPU acceleration needed */
+.gpu-optimized {
+  will-change: transform, opacity;
+  transform: translateZ(0);  /* Force GPU layer */
+}
+
+/* 3. Complex clip animations */
+.clip-reveal {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.5s ease;
+}
+
+.clip-reveal.hidden {
+  clip-path: inset(0 0 100% 0);
+}
+```
+
+#### **📱 MOBILE PERFORMANCE CONSIDERATIONS:**
+
+```css
+/* ✅ Mobile-optimized hiding strategies */
+
+/* 1. Reduce layout calculations on mobile */
+@media (max-width: 768px) {
+  .mobile-performance {
+    /* Prefer transform over display for mobile */
+    transform: scale(1);
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-performance.hidden {
+    transform: scale(0);
+    pointer-events: none;
+  }
+}
+
+/* 2. Intersection Observer approach */
+.lazy-content {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.lazy-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 3. Content priority for mobile */
+.mobile-secondary {
+  /* Use visibility for less important content */
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+@media (max-width: 480px) {
+  .mobile-secondary {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+```
+
+#### **🧪 PERFORMANCE TESTING:**
+
+```typescript
+// ✅ Performance testing utility
+class HideShowPerformanceTester {
+  private container: HTMLElement;
+  private items: HTMLElement[] = [];
+
+  constructor(containerSelector: string, itemCount: number = 1000) {
+    this.container = document.querySelector(containerSelector)!;
+    this.createTestItems(itemCount);
+  }
+
+  private createTestItems(count: number): void {
+    for (let i = 0; i < count; i++) {
+      const item = document.createElement('div');
+      item.className = 'test-item';
+      item.textContent = `Item ${i}`;
+      item.style.cssText = `
+        padding: 10px;
+        margin: 2px;
+        background: #f0f0f0;
+        border: 1px solid #ddd;
+      `;
+      this.container.appendChild(item);
+      this.items.push(item);
+    }
+  }
+
+  // Test display: none performance
+  testDisplayNone(iterations: number = 10): number {
+    const start = performance.now();
+
+    for (let i = 0; i < iterations; i++) {
+      this.items.forEach((item, index) => {
+        item.style.display = index % 2 === i % 2 ? 'none' : 'block';
+      });
+    }
+
+    return performance.now() - start;
+  }
+
+  // Test visibility: hidden performance
+  testVisibilityHidden(iterations: number = 10): number {
+    const start = performance.now();
+
+    for (let i = 0; i < iterations; i++) {
+      this.items.forEach((item, index) => {
+        item.style.visibility = index % 2 === i % 2 ? 'hidden' : 'visible';
+      });
+    }
+
+    return performance.now() - start;
+  }
+
+  // Test transform performance
+  testTransform(iterations: number = 10): number {
+    const start = performance.now();
+
+    for (let i = 0; i < iterations; i++) {
+      this.items.forEach((item, index) => {
+        item.style.transform = index % 2 === i % 2 ? 'scale(0)' : 'scale(1)';
+      });
+    }
+
+    return performance.now() - start;
+  }
+
+  // Run comprehensive test
+  runPerformanceTest(): void {
+    console.log('🧪 Running Hide/Show Performance Tests...\n');
+
+    const displayTime = this.testDisplayNone();
+    const visibilityTime = this.testVisibilityHidden();
+    const transformTime = this.testTransform();
+
+    console.log(`📊 Results for ${this.items.length} items:`);
+    console.log(`Display none: ${displayTime.toFixed(2)}ms`);
+    console.log(`Visibility hidden: ${visibilityTime.toFixed(2)}ms`);
+    console.log(`Transform scale: ${transformTime.toFixed(2)}ms`);
+
+    const fastest = Math.min(displayTime, visibilityTime, transformTime);
+    console.log(`\n⚡ Fastest method: ${fastest === displayTime ? 'display: none' :
+                                         fastest === visibilityTime ? 'visibility: hidden' :
+                                         'transform: scale'}`);
+  }
+}
+
+// Usage
+const tester = new HideShowPerformanceTester('#test-container', 1000);
+tester.runPerformanceTest();
+```
+
+**💡 GHI NHỚ:**
+- **`display: none`** = **Removes from flow**, triggers **REFLOW** 🔥
+- **`visibility: hidden`** = **Preserves space**, only **REPAINT** ⚡
+- **Transform/Opacity** = **GPU accelerated**, only **COMPOSITE** ✨
+- **Choose based on** = Layout impact vs Performance needs 🎯
+
+**Performance Strategy: GPU layers (transform) > Visibility (repaint) > Display (reflow)!** 🚀
+
+---
+
+### CSS12: Flexbox vs CSS Grid - Khi nào sử dụng cái nào?
+
+**Trả lời:**
+
+**Flexbox** và **CSS Grid** là hai **POWERFUL LAYOUT SYSTEMS** với **different strengths**. Hiểu rõ **when to use what** là **CRITICAL** cho optimal layout design và performance.
+
+#### **🔥 FUNDAMENTAL DIFFERENCES:**
+
+| Aspect | **Flexbox** | **CSS Grid** |
+|--------|-------------|--------------|
+| **Dimension** | **1D Layout** (row OR column) | **2D Layout** (rows AND columns) |
+| **Content** | **Content-driven** | **Container-driven** |
+| **Alignment** | **Excellent for centering** | **Excellent for positioning** |
+| **Use Case** | **Components, UI elements** | **Page layouts, complex grids** |
+| **Browser Support** | **Excellent (IE10+)** | **Good (IE11+ with prefixes)** |
+| **Learning Curve** | **Easier to learn** | **More complex but powerful** |
+
+#### **📊 FLEXBOX - 1D LAYOUT MASTER:**
+
+```css
+/* ✅ FLEXBOX FUNDAMENTALS */
+.flex-container {
+  display: flex;
+
+  /* Main axis control */
+  flex-direction: row;        /* row | column | row-reverse | column-reverse */
+  justify-content: center;    /* start | end | center | space-between | space-around | space-evenly */
+
+  /* Cross axis control */
+  align-items: center;        /* start | end | center | stretch | baseline */
+
+  /* Multi-line control */
+  flex-wrap: wrap;           /* nowrap | wrap | wrap-reverse */
+  align-content: center;     /* start | end | center | stretch | space-between | space-around */
+
+  /* Shorthand */
+  flex-flow: row wrap;       /* flex-direction + flex-wrap */
+  gap: 1rem;                 /* Modern spacing */
+}
+
+.flex-item {
+  /* Growth and shrink */
+  flex-grow: 1;              /* How much to grow */
+  flex-shrink: 1;            /* How much to shrink */
+  flex-basis: auto;          /* Initial size */
+
+  /* Shorthand */
+  flex: 1 1 auto;            /* grow shrink basis */
+
+  /* Individual alignment */
+  align-self: center;        /* Override container align-items */
+}
+```
+
+**Flexbox Perfect Use Cases:**
+```css
+/* ✅ 1. NAVIGATION BARS */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.navbar__logo {
+  flex-shrink: 0;           /* Don't shrink logo */
+}
+
+.navbar__menu {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.navbar__actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* ✅ 2. BUTTON GROUPS */
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.button-group .button {
+  flex: 1;                  /* Equal width buttons */
+  min-width: 0;            /* Allow shrinking */
+}
+
+.button-group .button.primary {
+  flex: 2;                  /* Primary button twice as wide */
+}
+
+/* ✅ 3. MEDIA OBJECTS */
+.media-object {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.media-object__image {
+  flex-shrink: 0;           /* Image doesn't shrink */
+  width: 64px;
+  height: 64px;
+}
+
+.media-object__content {
+  flex: 1;                  /* Content takes remaining space */
+  min-width: 0;            /* Allow text overflow */
+}
+
+/* ✅ 4. FORM LAYOUTS */
+.form-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.form-row .field {
+  flex: 1;                  /* Equal width fields */
+}
+
+.form-row .field.small {
+  flex: 0 0 100px;         /* Fixed width field */
+}
+
+.form-row .field.large {
+  flex: 2;                  /* Double width field */
+}
+
+/* ✅ 5. CENTERING (Flexbox specialty) */
+.perfect-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;        /* Full viewport height */
+}
+
+.card-center {
+  width: 400px;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+```
+
+#### **🏗️ CSS GRID - 2D LAYOUT POWERHOUSE:**
+
+```css
+/* ✅ CSS GRID FUNDAMENTALS */
+.grid-container {
+  display: grid;
+
+  /* Define columns */
+  grid-template-columns: 1fr 2fr 1fr;           /* Fractional units */
+  grid-template-columns: 200px auto 100px;     /* Mixed units */
+  grid-template-columns: repeat(3, 1fr);       /* Repeat pattern */
+  grid-template-columns: minmax(200px, 1fr) repeat(2, 200px);
+
+  /* Define rows */
+  grid-template-rows: 100px auto 50px;
+  grid-template-rows: repeat(3, minmax(100px, auto));
+
+  /* Named grid lines */
+  grid-template-columns: [sidebar-start] 250px [sidebar-end main-start] 1fr [main-end];
+
+  /* Grid areas */
+  grid-template-areas:
+    "header header header"
+    "sidebar main aside"
+    "footer footer footer";
+
+  /* Gaps */
+  gap: 1rem;                    /* row-gap + column-gap */
+  row-gap: 1rem;
+  column-gap: 2rem;
+
+  /* Alignment */
+  justify-items: center;        /* Align items horizontally */
+  align-items: center;          /* Align items vertically */
+  justify-content: center;      /* Align grid horizontally */
+  align-content: center;        /* Align grid vertically */
+}
+
+.grid-item {
+  /* Positioning */
+  grid-column: 1 / 3;          /* Span from line 1 to 3 */
+  grid-row: 2 / 4;             /* Span from line 2 to 4 */
+
+  /* Shorthand */
+  grid-area: 2 / 1 / 4 / 3;    /* row-start / col-start / row-end / col-end */
+
+  /* Named areas */
+  grid-area: header;
+
+  /* Individual alignment */
+  justify-self: stretch;        /* Override container justify-items */
+  align-self: start;           /* Override container align-items */
+}
+```
+
+**CSS Grid Perfect Use Cases:**
+```css
+/* ✅ 1. PAGE LAYOUTS */
+.page-layout {
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "sidebar main aside"
+    "footer footer footer";
+  grid-template-columns: 250px 1fr 200px;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main { grid-area: main; }
+.aside { grid-area: aside; }
+.footer { grid-area: footer; }
+
+/* ✅ 2. CARD GRIDS */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+}
+
+/* Auto-responsive without media queries! */
+.card-grid .card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ 3. COMPLEX LAYOUTS */
+.dashboard {
+  display: grid;
+  grid-template-areas:
+    "header header header header"
+    "sidebar stats stats actions"
+    "sidebar chart chart chart"
+    "sidebar recent recent recent";
+  grid-template-columns: 200px 1fr 1fr 200px;
+  grid-template-rows: 60px 100px 300px 1fr;
+  gap: 1rem;
+  height: 100vh;
+}
+
+.dashboard-header { grid-area: header; }
+.dashboard-sidebar { grid-area: sidebar; }
+.dashboard-stats { grid-area: stats; }
+.dashboard-actions { grid-area: actions; }
+.dashboard-chart { grid-area: chart; }
+.dashboard-recent { grid-area: recent; }
+
+/* ✅ 4. MASONRY-LIKE LAYOUTS */
+.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-auto-rows: 20px;        /* Small row height */
+  gap: 1rem;
+}
+
+.masonry-item {
+  grid-row-end: span var(--span);  /* Dynamic spanning */
+}
+
+/* ✅ 5. FORM GRIDS */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);  /* 12-column system */
+  gap: 1rem;
+}
+
+.form-grid .field-full {
+  grid-column: 1 / -1;         /* Full width */
+}
+
+.form-grid .field-half {
+  grid-column: span 6;         /* Half width */
+}
+
+.form-grid .field-third {
+  grid-column: span 4;         /* Third width */
+}
+
+.form-grid .field-quarter {
+  grid-column: span 3;         /* Quarter width */
+}
+```
+
+#### **🚀 MODERN RESPONSIVE PATTERNS:**
+
+**1. Flexbox for Component Layout:**
+```css
+/* ✅ Responsive navigation with Flexbox */
+.responsive-nav {
+  display: flex;
+  flex-direction: column;      /* Mobile: stack vertically */
+  gap: 1rem;
+}
+
+.responsive-nav__brand {
+  flex-shrink: 0;
+}
+
+.responsive-nav__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .responsive-nav {
+    flex-direction: row;       /* Desktop: horizontal */
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .responsive-nav__menu {
+    flex-direction: row;
+    gap: 2rem;
+  }
+}
+
+/* ✅ Flexible button groups */
+.action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.action-bar .button {
+  flex: 0 1 auto;             /* Don't grow, can shrink */
+  min-width: fit-content;
+}
+
+@media (max-width: 480px) {
+  .action-bar {
+    justify-content: stretch;
+  }
+
+  .action-bar .button {
+    flex: 1;                   /* Equal width on mobile */
+  }
+}
+```
+
+**2. Grid for Layout Structure:**
+```css
+/* ✅ Responsive grid layout */
+.responsive-layout {
+  display: grid;
+  grid-template-areas:
+    "header"
+    "main"
+    "sidebar"
+    "footer";
+  grid-template-rows: auto 1fr auto auto;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .responsive-layout {
+    grid-template-areas:
+      "header header"
+      "sidebar main"
+      "footer footer";
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-layout {
+    grid-template-areas:
+      "header header header"
+      "sidebar main aside"
+      "footer footer footer";
+    grid-template-columns: 200px 1fr 200px;
+  }
+}
+
+/* ✅ Auto-responsive content grid */
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 2rem;
+}
+```
+
+#### **⚖️ DECISION FRAMEWORK:**
+
+**Choose Flexbox for:**
+```css
+/* 1D layouts, content-driven sizing */
+.choose-flexbox {
+  /* ✅ Navigation bars */
+  /* ✅ Button groups */
+  /* ✅ Media objects */
+  /* ✅ Form controls */
+  /* ✅ Centering content */
+  /* ✅ Distributing space */
+  /* ✅ Component-level layout */
+}
+```
+
+**Choose Grid for:**
+```css
+/* 2D layouts, container-driven sizing */
+.choose-grid {
+  /* ✅ Page layouts */
+  /* ✅ Card grids */
+  /* ✅ Complex alignments */
+  /* ✅ Overlapping content */
+  /* ✅ Template-based designs */
+  /* ✅ Responsive without media queries */
+  /* ✅ Application-level layout */
+}
+```
+
+#### **🎯 HYBRID APPROACH (Best Practice):**
+
+```css
+/* ✅ COMBINING FLEXBOX + GRID */
+
+/* Grid for overall page structure */
+.app-layout {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+/* Flexbox for header components */
+.header {
+  grid-area: header;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.header__nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* Grid for main content area */
+.main-content {
+  grid-area: main;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+/* Flexbox for content sections */
+.content-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.content-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Grid for card layouts within sections */
+.section-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Flexbox for individual card content */
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card__content {
+  flex: 1;                    /* Grow to fill space */
+}
+
+.card__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+```
+
+#### **📱 MOBILE-FIRST RESPONSIVE STRATEGY:**
+
+```css
+/* ✅ Mobile-first with progressive enhancement */
+
+/* Mobile: Simple flexbox stack */
+.responsive-component {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Tablet: Introduce grid for more complex layout */
+@media (min-width: 768px) {
+  .responsive-component {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+/* Desktop: More sophisticated grid */
+@media (min-width: 1024px) {
+  .responsive-component {
+    grid-template-columns: 300px 1fr 200px;
+    gap: 3rem;
+  }
+}
+
+/* ✅ Container queries for true component responsiveness */
+.container-responsive {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .flexible-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+  }
+}
+
+@container (min-width: 600px) {
+  .flexible-card {
+    grid-template-columns: auto 1fr auto;
+  }
+}
+```
+
+**💡 GHI NHỚ:**
+- **Flexbox** = **1D**, **content-driven**, **perfect for components** 📏
+- **Grid** = **2D**, **container-driven**, **perfect for layouts** 🏗️
+- **Combine both** = Grid for structure, Flexbox for components 🔗
+- **Modern approach** = Container queries + Intrinsic sizing 🚀
+
+**Layout Strategy: Grid for structure → Flexbox for components → Container queries for true responsiveness!** 🎯
+
+---
+
+### CSS13: CSS Frameworks - Tailwind vs MUI vs Ant Design?
+
+**Trả lời:**
+
+**CSS Frameworks** solve different problems: **Utility-first** (Tailwind), **Component-based** (MUI), và **Enterprise-ready** (Ant Design). Chọn đúng framework là **CRITICAL** cho project success và developer productivity.
+
+#### **🔥 FRAMEWORK COMPARISON OVERVIEW:**
+
+| Aspect | **Tailwind CSS** | **Material-UI (MUI)** | **Ant Design** |
+|--------|------------------|----------------------|----------------|
+| **Philosophy** | **Utility-first** | **Design system** | **Enterprise components** |
+| **Approach** | **Low-level utilities** | **Pre-built components** | **Complete UI library** |
+| **Bundle Size** | **Small (purged)** | **Large (~300KB)** | **Very large (~500KB)** |
+| **Customization** | **Highly flexible** | **Theme-based** | **Less flexible** |
+| **Learning Curve** | **Steep initially** | **Medium** | **Easy** |
+| **Design Opinion** | **No opinion** | **Material Design** | **Ant Design Language** |
+
+#### **🎨 TAILWIND CSS - Utility-First Approach:**
+
+```typescript
+// ✅ TAILWIND FUNDAMENTALS
+interface TailwindProps {
+  className?: string;
+}
+
+// Basic utility classes
+const TailwindCard: React.FC<TailwindProps> = ({ className }) => {
+  return (
+    <div className={`
+      bg-white          /* Background color */
+      rounded-lg        /* Border radius */
+      shadow-md         /* Box shadow */
+      p-6              /* Padding */
+      border           /* Border */
+      border-gray-200  /* Border color */
+      hover:shadow-lg  /* Hover state */
+      transition-shadow /* Smooth transition */
+      duration-200     /* Animation duration */
+      ${className}     /* Additional classes */
+    `}>
+      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+        Card Title
+      </h3>
+      <p className="text-gray-600 leading-relaxed">
+        Card content with proper spacing and typography.
+      </p>
+      <button className="
+        mt-4 px-4 py-2
+        bg-blue-500 hover:bg-blue-600
+        text-white font-medium
+        rounded transition-colors
+        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+      ">
+        Action Button
+      </button>
+    </div>
+  );
+};
+
+// ✅ RESPONSIVE DESIGN WITH TAILWIND
+const ResponsiveTailwind: React.FC = () => {
+  return (
+    <div className="
+      grid gap-6
+      grid-cols-1          /* Mobile: 1 column */
+      md:grid-cols-2       /* Tablet: 2 columns */
+      lg:grid-cols-3       /* Desktop: 3 columns */
+      xl:grid-cols-4       /* Large: 4 columns */
+      p-4 md:p-6 lg:p-8   /* Responsive padding */
+    ">
+      {[1, 2, 3, 4].map((item) => (
+        <TailwindCard key={item} />
+      ))}
+    </div>
+  );
+};
+
+// ✅ CUSTOM COMPONENT WITH VARIANTS
+interface ButtonProps {
+  variant?: 'primary' | 'secondary' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  children: React.ReactNode;
+  onClick?: () => void;
+}
+
+const TailwindButton: React.FC<ButtonProps> = ({
+  variant = 'primary',
+  size = 'md',
+  children,
+  ...props
+}) => {
+  const baseClasses = "font-medium rounded transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
+
+  const variantClasses = {
+    primary: "bg-blue-500 hover:bg-blue-600 text-white focus:ring-blue-500",
+    secondary: "bg-gray-200 hover:bg-gray-300 text-gray-900 focus:ring-gray-500",
+    danger: "bg-red-500 hover:bg-red-600 text-white focus:ring-red-500"
+  };
+
+  const sizeClasses = {
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-4 py-2 text-base",
+    lg: "px-6 py-3 text-lg"
+  };
+
+  return (
+    <button
+      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+// ✅ TAILWIND CONFIG CUSTOMIZATION
+// tailwind.config.js
+export const tailwindConfig = {
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          50: '#eff6ff',
+          500: '#3b82f6',
+          900: '#1e3a8a',
+        }
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+      }
+    },
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ],
+};
+```
+
+#### **🎭 MATERIAL-UI (MUI) - Component System:**
+
+```typescript
+import {
+  ThemeProvider,
+  createTheme,
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Grid,
+  styled
+} from '@mui/material';
+
+// ✅ MUI THEME CUSTOMIZATION
+const muiTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+      light: '#42a5f5',
+      dark: '#1565c0',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+    background: {
+      default: '#f5f5f5',
+    },
+  },
+  typography: {
+    h4: {
+      fontWeight: 600,
+    },
+    body1: {
+      fontSize: '1rem',
+      lineHeight: 1.6,
+    },
+  },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          borderRadius: 8,
+        },
+      },
+    },
+  },
+});
+
+// ✅ MUI COMPONENT USAGE
+const MUICard: React.FC = () => {
+  return (
+    <Card elevation={2}>
+      <CardContent>
+        <Typography variant="h5" component="h2" gutterBottom>
+          Material-UI Card
+        </Typography>
+        <Typography variant="body2" color="text.secondary" paragraph>
+          This card uses Material Design principles with consistent spacing,
+          typography, and elevation.
+        </Typography>
+        <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+          <Button variant="contained" color="primary">
+            Primary Action
+          </Button>
+          <Button variant="outlined" color="secondary">
+            Secondary
+          </Button>
+        </Box>
+      </CardContent>
+    </Card>
+  );
+};
+
+// ✅ STYLED COMPONENTS WITH MUI
+const StyledCard = styled(Card)(({ theme }) => ({
+  borderRadius: theme.spacing(2),
+  padding: theme.spacing(3),
+  background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+  color: theme.palette.primary.contrastText,
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    transition: 'transform 0.2s ease-in-out',
+  },
+}));
+
+// ✅ RESPONSIVE GRID WITH MUI
+const MUIResponsiveGrid: React.FC = () => {
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <Box sx={{ flexGrow: 1, p: 3 }}>
+        <Grid container spacing={3}>
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={item}>
+              <MUICard />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </ThemeProvider>
+  );
+};
+
+// ✅ CUSTOM MUI COMPONENT
+interface CustomButtonProps {
+  variant?: 'gradient' | 'glassmorphism';
+  children: React.ReactNode;
+}
+
+const CustomMUIButton = styled(Button)<CustomButtonProps>(({ theme, variant }) => ({
+  ...(variant === 'gradient' && {
+    background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
+    color: 'white',
+    '&:hover': {
+      background: `linear-gradient(45deg, ${theme.palette.primary.dark} 30%, ${theme.palette.secondary.dark} 90%)`,
+    },
+  }),
+  ...(variant === 'glassmorphism' && {
+    background: 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    color: theme.palette.text.primary,
+  }),
+}));
+```
+
+#### **🏢 ANT DESIGN - Enterprise UI Library:**
+
+```typescript
+import {
+  Card,
+  Button,
+  Row,
+  Col,
+  Typography,
+  Space,
+  ConfigProvider,
+  theme as antTheme,
+  Table,
+  Form,
+  Input,
+  DatePicker,
+  Select,
+} from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+
+const { Title, Paragraph } = Typography;
+
+// ✅ ANT DESIGN THEME CUSTOMIZATION
+const antDesignTheme = {
+  algorithm: antTheme.darkAlgorithm, // or antTheme.defaultAlgorithm
+  token: {
+    colorPrimary: '#1677ff',
+    colorInfo: '#1677ff',
+    colorSuccess: '#52c41a',
+    colorWarning: '#faad14',
+    colorError: '#ff4d4f',
+    fontSize: 14,
+    borderRadius: 8,
+  },
+  components: {
+    Card: {
+      borderRadius: 12,
+      headerBg: '#fafafa',
+    },
+    Button: {
+      borderRadius: 8,
+    },
+  },
+};
+
+// ✅ ANT DESIGN COMPONENT USAGE
+const AntCard: React.FC = () => {
+  return (
+    <Card
+      title="Ant Design Card"
+      extra={<Button type="link">More</Button>}
+      actions={[
+        <Button key="action1" type="primary">
+          Primary
+        </Button>,
+        <Button key="action2">Secondary</Button>,
+      ]}
+    >
+      <Paragraph>
+        Ant Design provides enterprise-ready components with consistent
+        design language and comprehensive functionality.
+      </Paragraph>
+      <Space>
+        <Button type="primary" size="large">
+          Large Primary
+        </Button>
+        <Button type="dashed" size="middle">
+          Middle Dashed
+        </Button>
+        <Button type="text" size="small">
+          Small Text
+        </Button>
+      </Space>
+    </Card>
+  );
+};
+
+// ✅ COMPLEX ANT DESIGN TABLE
+interface DataType {
+  key: string;
+  name: string;
+  age: number;
+  address: string;
+  status: 'active' | 'inactive';
+}
+
+const AntTable: React.FC = () => {
+  const columns: ColumnsType<DataType> = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      sorter: (a, b) => a.name.localeCompare(b.name),
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Search name"
+            value={selectedKeys[0]}
+            onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => confirm()}
+            style={{ width: 188, marginBottom: 8, display: 'block' }}
+          />
+        </div>
+      ),
+    },
+    {
+      title: 'Age',
+      dataIndex: 'age',
+      key: 'age',
+      sorter: (a, b) => a.age - b.age,
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: string) => (
+        <Button
+          type={status === 'active' ? 'primary' : 'default'}
+          size="small"
+        >
+          {status}
+        </Button>
+      ),
+    },
+  ];
+
+  const data: DataType[] = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+      status: 'active',
+    },
+    // ... more data
+  ];
+
+  return (
+    <Table
+      columns={columns}
+      dataSource={data}
+      pagination={{
+        pageSize: 10,
+        showSizeChanger: true,
+        showQuickJumper: true,
+      }}
+      scroll={{ x: 800 }}
+    />
+  );
+};
+
+// ✅ ANT DESIGN FORM
+const AntForm: React.FC = () => {
+  const [form] = Form.useForm();
+
+  const onFinish = (values: any) => {
+    console.log('Form values:', values);
+  };
+
+  return (
+    <ConfigProvider theme={antDesignTheme}>
+      <Card title="Enterprise Form">
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          autoComplete="off"
+        >
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Full Name"
+                name="fullName"
+                rules={[{ required: true, message: 'Please input your name!' }]}
+              >
+                <Input placeholder="Enter your full name" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[
+                  { required: true, message: 'Please input your email!' },
+                  { type: 'email', message: 'Please enter a valid email!' }
+                ]}
+              >
+                <Input placeholder="Enter your email" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item
+                label="Department"
+                name="department"
+                rules={[{ required: true, message: 'Please select department!' }]}
+              >
+                <Select placeholder="Select department">
+                  <Select.Option value="engineering">Engineering</Select.Option>
+                  <Select.Option value="marketing">Marketing</Select.Option>
+                  <Select.Option value="sales">Sales</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label="Start Date"
+                name="startDate"
+                rules={[{ required: true, message: 'Please select start date!' }]}
+              >
+                <DatePicker style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label=" ">
+                <Button type="primary" htmlType="submit" block>
+                  Submit Form
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
+    </ConfigProvider>
+  );
+};
+```
+
+#### **⚖️ DECISION FRAMEWORK:**
+
+**✅ Choose Tailwind CSS when:**
+```typescript
+// 1. Custom design system
+interface CustomDesignProps {
+  /* ✅ Unique brand identity needed */
+  /* ✅ Full design control required */
+  /* ✅ Small bundle size critical */
+  /* ✅ Team comfortable with utility classes */
+  /* ✅ Long-term maintainability important */
+}
+
+// 2. Performance-critical applications
+const PerformanceCriticalApp: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Optimized bundle size with tree shaking */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Custom components with utilities */}
+        </nav>
+      </header>
+    </div>
+  );
+};
+```
+
+**✅ Choose Material-UI when:**
+```typescript
+// 1. Material Design adoption
+interface MaterialAppProps {
+  /* ✅ Google's design system fits brand */
+  /* ✅ Rich component ecosystem needed */
+  /* ✅ Accessibility out-of-the-box */
+  /* ✅ Strong TypeScript support required */
+  /* ✅ Theming flexibility important */
+}
+
+// 2. React-focused applications
+const MaterialApp: React.FC = () => {
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <CssBaseline />
+      <Container>
+        {/* Rich component ecosystem */}
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6">Material App</Typography>
+          </Toolbar>
+        </AppBar>
+      </Container>
+    </ThemeProvider>
+  );
+};
+```
+
+**✅ Choose Ant Design when:**
+```typescript
+// 1. Enterprise applications
+interface EnterpriseAppProps {
+  /* ✅ Admin dashboards and tools */
+  /* ✅ Data-heavy applications */
+  /* ✅ Complex forms and tables */
+  /* ✅ Fast development timeline */
+  /* ✅ Consistent enterprise UX */
+}
+
+// 2. B2B applications
+const EnterpriseApp: React.FC = () => {
+  return (
+    <ConfigProvider theme={antDesignTheme}>
+      <Layout>
+        <Layout.Sider>
+          {/* Rich navigation components */}
+        </Layout.Sider>
+        <Layout.Content>
+          {/* Complex data components */}
+          <Table dataSource={data} columns={columns} />
+        </Layout.Content>
+      </Layout>
+    </ConfigProvider>
+  );
+};
+```
+
+#### **🚀 MODERN HYBRID APPROACHES:**
+
+**1. Tailwind + Headless UI:**
+```typescript
+import { Dialog, Transition } from '@headlessui/react';
+
+const ModernModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
+  isOpen,
+  onClose
+}) => {
+  return (
+    <Transition appear show={isOpen} as={React.Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={onClose}>
+        <Transition.Child
+          as={React.Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <Transition.Child
+              as={React.Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Title className="text-lg font-medium leading-6 text-gray-900">
+                  Modern Modal
+                </Dialog.Title>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500">
+                    Combining Tailwind utilities with Headless UI logic.
+                  </p>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
+  );
+};
+```
+
+**2. CSS-in-JS + Design Tokens:**
+```typescript
+import styled from 'styled-components';
+
+// Design tokens approach
+const tokens = {
+  colors: {
+    primary: '#3b82f6',
+    secondary: '#64748b',
+    success: '#10b981',
+    error: '#ef4444',
+  },
+  spacing: {
+    xs: '0.25rem',
+    sm: '0.5rem',
+    md: '1rem',
+    lg: '1.5rem',
+    xl: '3rem',
+  },
+  breakpoints: {
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+  },
+};
+
+const ModernCard = styled.div`
+  background: white;
+  border-radius: 0.75rem;
+  padding: ${tokens.spacing.lg};
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (min-width: ${tokens.breakpoints.md}) {
+    padding: ${tokens.spacing.xl};
+  }
+`;
+```
+
+#### **📊 PERFORMANCE & BUNDLE SIZE:**
+
+```typescript
+// ✅ Bundle size optimization strategies
+
+// 1. Tailwind CSS with PurgeCSS
+const tailwindBundleSize = {
+  development: '3.2MB', // Full utility set
+  production: '8-50KB', // Only used utilities
+  treeshaking: 'Excellent',
+  customization: 'Unlimited',
+};
+
+// 2. Material-UI with tree shaking
+import { Button } from '@mui/material/Button'; // ❌ Imports entire module
+import Button from '@mui/material/Button';     // ✅ Tree-shakeable import
+
+const muiBundleSize = {
+  minimal: '80KB', // Button only
+  typical: '300KB', // Common components
+  full: '1MB+', // All components
+  treeshaking: 'Good with proper imports',
+  customization: 'Theme-based',
+};
+
+// 3. Ant Design with babel plugin
+const antBundleSize = {
+  minimal: '150KB', // Button only
+  typical: '500KB', // Common components
+  full: '2MB+', // All components
+  treeshaking: 'Requires babel plugin',
+  customization: 'Limited theme options',
+};
+```
+
+**💡 GHI NHỚ:**
+- **Tailwind** = **Utility-first**, **small bundles**, **full control** 🎨
+- **MUI** = **Component-rich**, **Material Design**, **React-focused** 🎭
+- **Ant Design** = **Enterprise-ready**, **complete toolkit**, **fast development** 🏢
+- **Choose based on** = Project type, team skills, design requirements 🎯
+
+**Framework Strategy: Start with requirements → Consider team expertise → Evaluate long-term maintenance → Choose accordingly!** 🚀
+
+---
+
+### CSS14: HTML5 Semantic Elements - Modern Web Standards?
+
+**Trả lời:**
+
+**HTML5 Semantic Elements** provide **MEANINGFUL STRUCTURE** và **ACCESSIBILITY** cho modern web applications. Using semantic HTML là **FOUNDATION** cho SEO, accessibility, và maintainable code.
+
+#### **🔥 SEMANTIC ELEMENTS OVERVIEW:**
+
+| Element | **Purpose** | **When to Use** | **SEO Impact** |
+|---------|-------------|-----------------|----------------|
+| **`<header>`** | **Page/section header** | **Top of page/section** | **High** - Contains main headings |
+| **`<nav>`** | **Navigation links** | **Main/secondary navigation** | **High** - Defines site structure |
+| **`<main>`** | **Primary content** | **Once per page** | **Critical** - Main content identifier |
+| **`<article>`** | **Independent content** | **Blog posts, news articles** | **High** - Standalone content |
+| **`<section>`** | **Content sections** | **Thematic grouping** | **Medium** - Content organization |
+| **`<aside>`** | **Supplementary content** | **Sidebars, related content** | **Low** - Supporting information |
+| **`<footer>`** | **Page/section footer** | **Bottom of page/section** | **Medium** - Contact/copyright info |
+
+#### **🏗️ SEMANTIC HTML STRUCTURE:**
+
+```html
+<!-- ✅ PROPER SEMANTIC STRUCTURE -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Semantic Website</title>
+
+  <!-- SEO and Social Meta -->
+  <meta name="description" content="Learn about HTML5 semantic elements for better accessibility and SEO">
+  <meta property="og:title" content="HTML5 Semantic Elements Guide">
+  <meta property="og:description" content="Comprehensive guide to modern HTML5 semantic elements">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "HTML5 Semantic Elements Guide",
+    "author": {
+      "@type": "Person",
+      "name": "Frontend Developer"
+    },
+    "datePublished": "2024-01-15"
+  }
+  </script>
+</head>
+<body>
+  <!-- ✅ PAGE HEADER -->
+  <header role="banner" class="site-header">
+    <div class="container">
+      <!-- Logo/Brand -->
+      <div class="brand">
+        <a href="/" aria-label="Home">
+          <img src="/logo.svg" alt="Company Logo" width="120" height="40">
+        </a>
+      </div>
+
+      <!-- Primary Navigation -->
+      <nav role="navigation" aria-label="Main navigation">
+        <ul class="nav-menu">
+          <li><a href="/" aria-current="page">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/services">Services</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Mobile Menu Toggle -->
+      <button
+        class="mobile-menu-toggle"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Toggle mobile menu"
+      >
+        <span class="hamburger"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ✅ MAIN CONTENT AREA -->
+  <main role="main" class="main-content">
+    <!-- Hero Section -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <h1 id="hero-title">HTML5 Semantic Elements</h1>
+        <p class="hero-subtitle">
+          Building accessible and SEO-friendly web applications
+        </p>
+        <a href="#content" class="cta-button">
+          Learn More
+          <span class="sr-only">(about HTML5 semantic elements)</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Article Content -->
+    <article id="content" class="article" role="article">
+      <header class="article-header">
+        <h1>Understanding HTML5 Semantic Elements</h1>
+        <div class="article-meta">
+          <time datetime="2024-01-15T10:00:00Z" pubdate>
+            January 15, 2024
+          </time>
+          <address class="author">
+            By <a rel="author" href="/author/john-doe">John Doe</a>
+          </address>
+          <span class="reading-time">5 min read</span>
+        </div>
+      </header>
+
+      <!-- Article Sections -->
+      <section aria-labelledby="intro-heading">
+        <h2 id="intro-heading">Introduction</h2>
+        <p>
+          HTML5 introduced semantic elements that provide meaning
+          to the structure of web content...
+        </p>
+      </section>
+
+      <section aria-labelledby="benefits-heading">
+        <h2 id="benefits-heading">Benefits of Semantic HTML</h2>
+        <ul>
+          <li><strong>Accessibility:</strong> Screen readers understand content structure</li>
+          <li><strong>SEO:</strong> Search engines better understand content hierarchy</li>
+          <li><strong>Maintainability:</strong> Code is self-documenting</li>
+        </ul>
+      </section>
+
+      <!-- Code Example Section -->
+      <section aria-labelledby="examples-heading">
+        <h2 id="examples-heading">Practical Examples</h2>
+        <pre><code>
+&lt;article&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Article Title&lt;/h1&gt;
+  &lt;/header&gt;
+  &lt;p&gt;Article content...&lt;/p&gt;
+&lt;/article&gt;
+        </code></pre>
+      </section>
+    </article>
+
+    <!-- Related Content -->
+    <aside class="sidebar" role="complementary" aria-labelledby="sidebar-title">
+      <h2 id="sidebar-title">Related Topics</h2>
+
+      <!-- Related Articles -->
+      <section aria-labelledby="related-heading">
+        <h3 id="related-heading">You Might Also Like</h3>
+        <nav aria-label="Related articles">
+          <ul>
+            <li>
+              <article class="related-article">
+                <h4>
+                  <a href="/css-accessibility">CSS for Accessibility</a>
+                </h4>
+                <p>Learn how to write accessible CSS...</p>
+              </article>
+            </li>
+            <li>
+              <article class="related-article">
+                <h4>
+                  <a href="/aria-attributes">ARIA Attributes Guide</a>
+                </h4>
+                <p>Understanding ARIA for better accessibility...</p>
+              </article>
+            </li>
+          </ul>
+        </nav>
+      </section>
+
+      <!-- Newsletter Signup -->
+      <section aria-labelledby="newsletter-heading">
+        <h3 id="newsletter-heading">Stay Updated</h3>
+        <form class="newsletter-form" novalidate>
+          <label for="email-input">Email Address</label>
+          <input
+            type="email"
+            id="email-input"
+            name="email"
+            required
+            aria-describedby="email-error"
+            placeholder="Enter your email"
+          >
+          <div id="email-error" class="error-message" aria-live="polite"></div>
+          <button type="submit">Subscribe</button>
+        </form>
+      </section>
+    </aside>
+  </main>
+
+  <!-- ✅ SITE FOOTER -->
+  <footer role="contentinfo" class="site-footer">
+    <div class="container">
+      <!-- Footer Navigation -->
+      <nav aria-label="Footer navigation">
+        <div class="footer-section">
+          <h3>Company</h3>
+          <ul>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/careers">Careers</a></li>
+            <li><a href="/press">Press</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>Support</h3>
+          <ul>
+            <li><a href="/help">Help Center</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Contact Information -->
+      <address class="contact-info">
+        <h3>Contact Information</h3>
+        <p>
+          <strong>Email:</strong>
+          <a href="mailto:info@example.com">info@example.com</a>
+        </p>
+        <p>
+          <strong>Phone:</strong>
+          <a href="tel:+1234567890">+1 (234) 567-890</a>
+        </p>
+      </address>
+
+      <!-- Copyright -->
+      <div class="copyright">
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+        <small>
+          Built with HTML5 semantic elements for better accessibility.
+        </small>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+```
+
+#### **🎯 SEMANTIC ELEMENT DETAILS:**
+
+**1. `<header>` Element:**
+```html
+<!-- ✅ PAGE HEADER -->
+<header class="site-header">
+  <h1>Site Title</h1>
+  <nav>...</nav>
+</header>
+
+<!-- ✅ ARTICLE HEADER -->
+<article>
+  <header class="article-header">
+    <h1>Article Title</h1>
+    <time datetime="2024-01-15">January 15, 2024</time>
+    <address>By Author Name</address>
+  </header>
+  <p>Article content...</p>
+</article>
+
+<!-- ✅ SECTION HEADER -->
+<section>
+  <header>
+    <h2>Section Title</h2>
+    <p class="section-intro">Section introduction...</p>
+  </header>
+  <div class="section-content">...</div>
+</section>
+```
+
+**2. `<nav>` Element:**
+```html
+<!-- ✅ PRIMARY NAVIGATION -->
+<nav role="navigation" aria-label="Main navigation">
+  <ul>
+    <li><a href="/" aria-current="page">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/services">Services</a></li>
+  </ul>
+</nav>
+
+<!-- ✅ BREADCRUMB NAVIGATION -->
+<nav aria-label="Breadcrumb">
+  <ol class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li><a href="/category">Category</a></li>
+    <li aria-current="page">Current Page</li>
+  </ol>
+</nav>
+
+<!-- ✅ PAGINATION NAVIGATION -->
+<nav aria-label="Pagination">
+  <ul class="pagination">
+    <li>
+      <a href="/page/1" rel="prev" aria-label="Previous page">
+        ← Previous
+      </a>
+    </li>
+    <li><a href="/page/2" aria-current="page">2</a></li>
+    <li><a href="/page/3">3</a></li>
+    <li>
+      <a href="/page/3" rel="next" aria-label="Next page">
+        Next →
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<!-- ✅ TABLE OF CONTENTS -->
+<nav aria-labelledby="toc-heading">
+  <h2 id="toc-heading">Table of Contents</h2>
+  <ol>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#methodology">Methodology</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ol>
+</nav>
+```
+
+**3. `<main>` Element:**
+```html
+<!-- ✅ MAIN CONTENT WRAPPER -->
+<main role="main" class="main-content">
+  <!-- Skip link target -->
+  <a id="main-content" tabindex="-1"></a>
+
+  <!-- Primary content -->
+  <h1>Page Title</h1>
+  <p>Main page content...</p>
+
+  <!-- Content sections -->
+  <section>...</section>
+  <article>...</article>
+</main>
+
+<!-- ❌ MULTIPLE MAIN ELEMENTS (Invalid) -->
+<main>First main content</main>
+<main>Second main content</main> <!-- Invalid! -->
+
+<!-- ✅ CONDITIONAL MAIN WITH SPA -->
+<div id="app">
+  <header>...</header>
+  <main v-if="currentRoute === 'home'">
+    Home content
+  </main>
+  <main v-if="currentRoute === 'about'">
+    About content
+  </main>
+  <footer>...</footer>
+</div>
+```
+
+**4. `<article>` Element:**
+```html
+<!-- ✅ BLOG POST -->
+<article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">How to Write Semantic HTML</h1>
+    <time itemprop="datePublished" datetime="2024-01-15">
+      January 15, 2024
+    </time>
+    <address itemprop="author" itemscope itemtype="https://schema.org/Person">
+      By <span itemprop="name">John Doe</span>
+    </address>
+  </header>
+
+  <div itemprop="articleBody">
+    <p>Article content goes here...</p>
+  </div>
+
+  <footer>
+    <p>Tags: <a href="/tag/html">HTML</a>, <a href="/tag/accessibility">Accessibility</a></p>
+  </footer>
+</article>
+
+<!-- ✅ NEWS ARTICLE -->
+<article class="news-article" itemscope itemtype="https://schema.org/NewsArticle">
+  <header>
+    <h2 itemprop="headline">Breaking News Title</h2>
+    <time itemprop="datePublished" datetime="2024-01-15T14:30:00Z">
+      Today at 2:30 PM
+    </time>
+  </header>
+  <p itemprop="articleBody">News content...</p>
+</article>
+
+<!-- ✅ PRODUCT REVIEW -->
+<article class="product-review" itemscope itemtype="https://schema.org/Review">
+  <header>
+    <h3 itemprop="name">Great Product!</h3>
+    <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+      <span itemprop="ratingValue">5</span> out of
+      <span itemprop="bestRating">5</span> stars
+    </div>
+  </header>
+  <div itemprop="reviewBody">
+    <p>This product exceeded my expectations...</p>
+  </div>
+  <footer>
+    <address itemprop="author">By Reviewer Name</address>
+  </footer>
+</article>
+```
+
+**5. `<section>` Element:**
+```html
+<!-- ✅ THEMATIC CONTENT SECTIONS -->
+<section aria-labelledby="features-heading">
+  <h2 id="features-heading">Key Features</h2>
+  <div class="features-grid">
+    <div class="feature">
+      <h3>Fast Performance</h3>
+      <p>Optimized for speed...</p>
+    </div>
+    <div class="feature">
+      <h3>Secure</h3>
+      <p>Built with security in mind...</p>
+    </div>
+  </div>
+</section>
+
+<!-- ✅ CONTENT CHAPTERS -->
+<section aria-labelledby="chapter1">
+  <h2 id="chapter1">Chapter 1: Introduction</h2>
+  <p>Chapter content...</p>
+</section>
+
+<section aria-labelledby="chapter2">
+  <h2 id="chapter2">Chapter 2: Getting Started</h2>
+  <p>Chapter content...</p>
+</section>
+
+<!-- ✅ FORM SECTIONS -->
+<form>
+  <section aria-labelledby="personal-info">
+    <h2 id="personal-info">Personal Information</h2>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name">
+  </section>
+
+  <section aria-labelledby="contact-info">
+    <h2 id="contact-info">Contact Information</h2>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email">
+  </section>
+</form>
+```
+
+#### **🚀 MODERN SEMANTIC PATTERNS:**
+
+**1. Component-Based Semantic Structure:**
+```typescript
+// ✅ React Semantic Components
+interface SemanticCardProps {
+  title: string;
+  content: string;
+  author?: string;
+  publishDate?: string;
+  isArticle?: boolean;
+}
+
+const SemanticCard: React.FC<SemanticCardProps> = ({
+  title,
+  content,
+  author,
+  publishDate,
+  isArticle = false
+}) => {
+  const CardElement = isArticle ? 'article' : 'div';
+
+  return (
+    <CardElement
+      className="semantic-card"
+      {...(isArticle && {
+        itemScope: true,
+        itemType: 'https://schema.org/Article'
+      })}
+    >
+      <header className="card-header">
+        <h3 {...(isArticle && { itemProp: 'headline' })}>
+          {title}
+        </h3>
+        {publishDate && (
+          <time
+            dateTime={publishDate}
+            {...(isArticle && { itemProp: 'datePublished' })}
+          >
+            {new Date(publishDate).toLocaleDateString()}
+          </time>
+        )}
+        {author && (
+          <address {...(isArticle && { itemProp: 'author' })}>
+            By {author}
+          </address>
+        )}
+      </header>
+
+      <div
+        className="card-content"
+        {...(isArticle && { itemProp: 'articleBody' })}
+      >
+        {content}
+      </div>
+    </CardElement>
+  );
+};
+
+// ✅ Semantic Navigation Component
+interface NavItem {
+  label: string;
+  href: string;
+  isCurrent?: boolean;
+}
+
+const SemanticNav: React.FC<{
+  items: NavItem[];
+  ariaLabel: string;
+}> = ({ items, ariaLabel }) => {
+  return (
+    <nav role="navigation" aria-label={ariaLabel}>
+      <ul className="nav-list">
+        {items.map((item, index) => (
+          <li key={index}>
+            <a
+              href={item.href}
+              {...(item.isCurrent && { 'aria-current': 'page' })}
+              className={item.isCurrent ? 'current' : ''}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+};
+```
+
+**2. SEO-Optimized Semantic Structure:**
+```html
+<!-- ✅ RICH SEMANTIC MARKUP -->
+<article
+  itemscope
+  itemtype="https://schema.org/BlogPosting"
+  class="blog-post"
+>
+  <header class="post-header">
+    <h1 itemprop="headline">
+      Complete Guide to HTML5 Semantic Elements
+    </h1>
+
+    <div class="post-meta">
+      <time
+        itemprop="datePublished"
+        datetime="2024-01-15T10:00:00+00:00"
+        class="published-date"
+      >
+        January 15, 2024
+      </time>
+
+      <time
+        itemprop="dateModified"
+        datetime="2024-01-16T14:30:00+00:00"
+        class="modified-date"
+      >
+        Updated: January 16, 2024
+      </time>
+
+      <address
+        itemprop="author"
+        itemscope
+        itemtype="https://schema.org/Person"
+        class="author"
+      >
+        <span itemprop="name">John Doe</span>
+        <meta itemprop="email" content="john@example.com">
+        <meta itemprop="url" content="https://johndoe.com">
+      </address>
+
+      <div
+        itemprop="publisher"
+        itemscope
+        itemtype="https://schema.org/Organization"
+        style="display: none;"
+      >
+        <span itemprop="name">Tech Blog</span>
+        <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+          <meta itemprop="url" content="https://example.com/logo.png">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div itemprop="articleBody" class="post-content">
+    <section aria-labelledby="introduction">
+      <h2 id="introduction">Introduction</h2>
+      <p>Semantic HTML provides structure and meaning...</p>
+    </section>
+
+    <section aria-labelledby="benefits">
+      <h2 id="benefits">Benefits</h2>
+      <ul>
+        <li>Improved accessibility</li>
+        <li>Better SEO performance</li>
+        <li>Enhanced code maintainability</li>
+      </ul>
+    </section>
+  </div>
+
+  <footer class="post-footer">
+    <div itemprop="keywords" class="tags">
+      <span class="tag">HTML5</span>
+      <span class="tag">Semantic Elements</span>
+      <span class="tag">Accessibility</span>
+      <span class="tag">SEO</span>
+    </div>
+
+    <div class="sharing">
+      <h3>Share this article</h3>
+      <a href="#" aria-label="Share on Twitter">Twitter</a>
+      <a href="#" aria-label="Share on Facebook">Facebook</a>
+    </div>
+  </footer>
+</article>
+```
+
+**💡 GHI NHỚ:**
+- **`<header>`** = **Page/section header** 📄
+- **`<nav>`** = **Navigation links** 🧭
+- **`<main>`** = **Primary content** (once per page) 🎯
+- **`<article>`** = **Independent content** 📰
+- **`<section>`** = **Thematic grouping** 📚
+- **`<aside>`** = **Supplementary content** 📋
+- **`<footer>`** = **Page/section footer** 📜
+
+**Semantic Strategy: Meaningful structure → Better accessibility → Improved SEO → Maintainable code!** 🚀
+
+---
+
+### CSS15: Script `defer` vs `async` - Performance Optimization?
+
+**Trả lời:**
+
+`defer` và `async` attributes control **SCRIPT LOADING BEHAVIOR** và **EXECUTION TIMING**. Understanding these attributes là **CRITICAL** cho **page performance** và **proper script execution order**.
+
+#### **🔥 SCRIPT LOADING BEHAVIOR:**
+
+| Attribute | **Download** | **Execution** | **DOM Blocking** | **Order** |
+|-----------|--------------|---------------|------------------|-----------|
+| **None** | **Blocks parsing** | **Immediate** | ✅ **Blocks** | **Sequential** |
+| **`async`** | **Parallel** | **When ready** | ❌ **Non-blocking** | **Random** |
+| **`defer`** | **Parallel** | **After DOM** | ❌ **Non-blocking** | **Sequential** |
+
+#### **📊 VISUAL EXECUTION TIMELINE:**
+
+```
+🔄 NORMAL SCRIPT (blocking):
+HTML Parsing: ████████░░░░░░░░░░░░░░░░░░░░
+Script Download:     ████░░░░░░░░░░░░░░░░░░░░
+Script Execution:        ██░░░░░░░░░░░░░░░░░░
+HTML Parsing:              ████████░░░░░░░░░░
+                           ↑ Parsing resumes
+
+⚡ ASYNC SCRIPT (non-blocking):
+HTML Parsing: ████████████████████████████
+Script Download:     ████░░░░░░░░░░░░░░░░░░░░
+Script Execution:        ██░░░░░░░░░░░░░░░░░░
+                           ↑ Executes when ready
+
+⏳ DEFER SCRIPT (ordered):
+HTML Parsing: ████████████████████████████
+Script Download:     ████░░░░░░░░░░░░░░░░░░░░
+Script Execution:                         ██
+                                           ↑ After DOM ready
+```
+
+#### **🎯 PRACTICAL IMPLEMENTATIONS:**
+
+**1. Normal Script Loading (Blocking):**
+```html
+<!-- ❌ BLOCKING: Stops HTML parsing -->
+<html>
+<head>
+  <title>Page Title</title>
+  <!-- This blocks HTML parsing until loaded and executed -->
+  <script src="large-library.js"></script>
+</head>
+<body>
+  <h1>Page Content</h1>
+  <!-- Content appears after script execution -->
+</body>
+</html>
+```
+
+**2. Async Script Loading:**
+```html
+<!-- ⚡ ASYNC: Downloads in parallel, executes when ready -->
+<html>
+<head>
+  <title>Page Title</title>
+  <!-- ✅ Good for independent scripts -->
+  <script async src="analytics.js"></script>
+  <script async src="ad-tracker.js"></script>
+  <script async src="social-widgets.js"></script>
+</head>
+<body>
+  <h1>Page Content</h1>
+  <!-- Content appears immediately, scripts execute when ready -->
+
+  <!-- ⚠️ WARNING: Order not guaranteed -->
+  <script async src="library.js"></script>
+  <script async src="app.js"></script> <!-- May execute before library.js! -->
+</body>
+</html>
+```
+
+**3. Defer Script Loading:**
+```html
+<!-- ⏳ DEFER: Downloads in parallel, executes after DOM -->
+<html>
+<head>
+  <title>Page Title</title>
+  <!-- ✅ Good for DOM-dependent scripts -->
+  <script defer src="library.js"></script>
+  <script defer src="app.js"></script> <!-- Executes after library.js -->
+  <script defer src="init.js"></script> <!-- Executes last -->
+</head>
+<body>
+  <h1>Page Content</h1>
+  <!-- Content appears immediately, scripts execute in order after DOM ready -->
+</body>
+</html>
+```
+
+#### **🚀 TYPESCRIPT EXAMPLES:**
+
+**1. Performance-Optimized Loading:**
+```typescript
+// ✅ Script loading utility
+class ScriptLoader {
+  private static loadedScripts = new Set<string>();
+
+  // Load script with async
+  static async loadAsync(src: string): Promise<void> {
+    if (this.loadedScripts.has(src)) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+
+      script.onload = () => {
+        this.loadedScripts.add(src);
+        resolve();
+      };
+
+      script.onerror = () => {
+        reject(new Error(`Failed to load script: ${src}`));
+      };
+
+      document.head.appendChild(script);
+    });
+  }
+
+  // Load script with defer-like behavior
+  static async loadDeferred(src: string): Promise<void> {
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      await new Promise(resolve => {
+        document.addEventListener('DOMContentLoaded', resolve, { once: true });
+      });
+    }
+
+    return this.loadAsync(src);
+  }
+
+  // Load multiple scripts in order
+  static async loadSequential(scripts: string[]): Promise<void> {
+    for (const script of scripts) {
+      await this.loadAsync(script);
+    }
+  }
+
+  // Load multiple scripts in parallel
+  static async loadParallel(scripts: string[]): Promise<void[]> {
+    return Promise.all(scripts.map(script => this.loadAsync(script)));
+  }
+}
+
+// ✅ Usage examples
+const setupApplication = async () => {
+  try {
+    // Load critical dependencies first
+    await ScriptLoader.loadSequential([
+      '/js/polyfills.js',
+      '/js/core-library.js',
+      '/js/app-init.js'
+    ]);
+
+    // Load non-critical scripts in parallel
+    await ScriptLoader.loadParallel([
+      '/js/analytics.js',
+      '/js/social-widgets.js',
+      '/js/ads.js'
+    ]);
+
+    console.log('All scripts loaded successfully');
+  } catch (error) {
+    console.error('Script loading failed:', error);
+  }
+};
+
+// Wait for DOM then load application
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupApplication);
+} else {
+  setupApplication();
+}
+```
+
+**2. Modern Module Loading:**
+```html
+<!-- ✅ MODERN ES MODULES -->
+<script type="module">
+  // Modern browsers: ES modules with automatic defer behavior
+  import { initApp } from './js/app.js';
+  import { analytics } from './js/analytics.js';
+
+  // Modules are automatically deferred
+  document.addEventListener('DOMContentLoaded', () => {
+    initApp();
+    analytics.track('page_view');
+  });
+</script>
+
+<!-- ✅ FALLBACK FOR OLDER BROWSERS -->
+<script nomodule defer src="/js/app-legacy.js"></script>
+
+<!-- ✅ DYNAMIC IMPORTS FOR CODE SPLITTING -->
+<script type="module">
+  // Load components on demand
+  const loadComponent = async (componentName) => {
+    const { default: Component } = await import(`./components/${componentName}.js`);
+    return Component;
+  };
+
+  // Load when needed
+  document.querySelector('#load-chart').addEventListener('click', async () => {
+    const ChartComponent = await loadComponent('chart');
+    const chart = new ChartComponent('#chart-container');
+    chart.render();
+  });
+</script>
+```
+
+#### **⚖️ USE CASE RECOMMENDATIONS:**
+
+**✅ Use `async` for:**
+```html
+<!-- 1. Analytics and tracking -->
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<script async src="https://connect.facebook.net/en_US/fbevents.js"></script>
+
+<!-- 2. Advertisement scripts -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<!-- 3. Social media widgets -->
+<script async src="https://platform.twitter.com/widgets.js"></script>
+<script async src="https://apis.google.com/js/platform.js"></script>
+
+<!-- 4. Independent utilities (order doesn't matter) -->
+<script async src="/js/error-reporter.js"></script>
+<script async src="/js/performance-monitor.js"></script>
+
+<!-- 5. Third-party embeds -->
+<script async src="https://embeds.example.com/widget.js"></script>
+```
+
+**✅ Use `defer` for:**
+```html
+<!-- 1. Application dependencies (order matters) -->
+<script defer src="/js/polyfills.js"></script>
+<script defer src="/js/vendor.js"></script>
+<script defer src="/js/app.js"></script>
+
+<!-- 2. DOM-dependent scripts -->
+<script defer src="/js/form-handlers.js"></script>
+<script defer src="/js/interactive-elements.js"></script>
+
+<!-- 3. Application initialization -->
+<script defer src="/js/app-init.js"></script>
+<script defer src="/js/page-specific.js"></script>
+
+<!-- 4. UI component libraries -->
+<script defer src="/js/ui-components.js"></script>
+<script defer src="/js/component-init.js"></script>
+```
+
+**✅ Use normal loading for:**
+```html
+<!-- 1. Critical polyfills needed immediately -->
+<script src="/js/critical-polyfills.js"></script>
+
+<!-- 2. Document.write dependencies (legacy) -->
+<script src="/js/legacy-document-write.js"></script>
+
+<!-- 3. Inline configuration needed by other scripts -->
+<script>
+  window.CONFIG = {
+    apiUrl: 'https://api.example.com',
+    version: '1.2.3'
+  };
+</script>
+<script defer src="/js/app.js"></script>
+```
+
+#### **🧪 PERFORMANCE TESTING:**
+
+```typescript
+// ✅ Performance measurement utility
+class ScriptPerformanceMonitor {
+  private static measurements = new Map<string, PerformanceMeasure>();
+
+  // Measure script loading performance
+  static measureScriptLoad(scriptSrc: string): void {
+    const startMark = `script-start-${scriptSrc}`;
+    const endMark = `script-end-${scriptSrc}`;
+    const measureName = `script-load-${scriptSrc}`;
+
+    performance.mark(startMark);
+
+    const script = document.createElement('script');
+    script.src = scriptSrc;
+
+    script.onload = () => {
+      performance.mark(endMark);
+      const measure = performance.measure(measureName, startMark, endMark);
+      this.measurements.set(scriptSrc, measure);
+
+      console.log(`Script ${scriptSrc} loaded in ${measure.duration.toFixed(2)}ms`);
+    };
+
+    document.head.appendChild(script);
+  }
+
+  // Compare async vs defer performance
+  static async compareLoadingStrategies(): Promise<void> {
+    const testScripts = [
+      '/js/test-1.js',
+      '/js/test-2.js',
+      '/js/test-3.js'
+    ];
+
+    // Test async loading
+    const asyncStart = performance.now();
+    await Promise.all(testScripts.map(src => this.loadAsync(src)));
+    const asyncTime = performance.now() - asyncStart;
+
+    // Test defer-like loading (sequential)
+    const deferStart = performance.now();
+    for (const script of testScripts) {
+      await this.loadAsync(script);
+    }
+    const deferTime = performance.now() - deferStart;
+
+    console.log('Loading Strategy Comparison:');
+    console.log(`Async (parallel): ${asyncTime.toFixed(2)}ms`);
+    console.log(`Defer (sequential): ${deferTime.toFixed(2)}ms`);
+  }
+
+  private static loadAsync(src: string): Promise<void> {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.onload = () => resolve();
+      document.head.appendChild(script);
+    });
+  }
+
+  // Monitor Core Web Vitals impact
+  static monitorWebVitals(): void {
+    // First Contentful Paint
+    new PerformanceObserver((list) => {
+      const entries = list.getEntries();
+      entries.forEach((entry) => {
+        if (entry.name === 'first-contentful-paint') {
+          console.log(`FCP: ${entry.startTime.toFixed(2)}ms`);
+        }
+      });
+    }).observe({ entryTypes: ['paint'] });
+
+    // Largest Contentful Paint
+    new PerformanceObserver((list) => {
+      const entries = list.getEntries();
+      const lastEntry = entries[entries.length - 1];
+      console.log(`LCP: ${lastEntry.startTime.toFixed(2)}ms`);
+    }).observe({ entryTypes: ['largest-contentful-paint'] });
+
+    // Cumulative Layout Shift
+    let clsValue = 0;
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (!entry.hadRecentInput) {
+          clsValue += entry.value;
+        }
+      }
+      console.log(`CLS: ${clsValue.toFixed(4)}`);
+    }).observe({ entryTypes: ['layout-shift'] });
+  }
+}
+
+// Usage
+ScriptPerformanceMonitor.monitorWebVitals();
+ScriptPerformanceMonitor.compareLoadingStrategies();
+```
+
+#### **📱 MOBILE OPTIMIZATION:**
+
+```html
+<!-- ✅ MOBILE-OPTIMIZED SCRIPT LOADING -->
+<html>
+<head>
+  <!-- Critical inline styles -->
+  <style>
+    /* Critical CSS inlined for fast rendering */
+    .hero { background: #007bff; color: white; padding: 2rem; }
+    .content { max-width: 800px; margin: 0 auto; }
+  </style>
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/js/critical.js" as="script">
+  <link rel="preload" href="/fonts/main.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- DNS prefetch for external resources -->
+  <link rel="dns-prefetch" href="//www.google-analytics.com">
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+
+  <!-- Critical scripts (minimal) -->
+  <script>
+    // Inline critical JavaScript
+    window.performance && performance.mark('script-start');
+  </script>
+</head>
+<body>
+  <!-- Page content -->
+  <header class="hero">
+    <h1>Fast Loading Page</h1>
+  </header>
+
+  <main class="content">
+    <p>Content loads immediately while scripts load in background.</p>
+  </main>
+
+  <!-- Non-critical scripts -->
+  <script defer src="/js/app.js"></script>
+  <script defer src="/js/components.js"></script>
+
+  <!-- Third-party scripts -->
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
+
+  <!-- Load additional resources after initial paint -->
+  <script>
+    // Load non-critical CSS
+    const loadCSS = (href) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      document.head.appendChild(link);
+    };
+
+    // Load after FCP
+    addEventListener('load', () => {
+      loadCSS('/css/non-critical.css');
+
+      // Load additional scripts on interaction
+      let loaded = false;
+      const loadInteractiveScripts = () => {
+        if (loaded) return;
+        loaded = true;
+
+        const script = document.createElement('script');
+        script.src = '/js/interactive.js';
+        script.async = true;
+        document.head.appendChild(script);
+      };
+
+      // Load on first user interaction
+      ['mousedown', 'touchstart', 'keydown'].forEach(event => {
+        document.addEventListener(event, loadInteractiveScripts, { once: true });
+      });
+    });
+  </script>
+</body>
+</html>
+```
+
+**💡 GHI NHỚ:**
+- **`async`** = **Download parallel**, **execute when ready**, **no order** ⚡
+- **`defer`** = **Download parallel**, **execute after DOM**, **ordered** ⏳
+- **Normal** = **Blocks parsing**, **immediate execution**, **ordered** 🔄
+- **Choose based on** = Script dependencies và performance needs 🎯
+
+**Script Strategy: Critical (normal) → Dependencies (defer) → Independent (async) → Lazy load (on interaction)!** 🚀
 
 ---
 
