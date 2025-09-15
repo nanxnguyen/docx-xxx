@@ -1,6 +1,6 @@
-# 📚 Câu Hỏi
+# 📚 Câu Hỏi 
 
-> **Tổng cộng: 23 câu hỏi cơ bản/trung cấp + 6 câu nâng cao + 7 câu advanced + 9 câu kinh nghiệm = 45 câu hỏi**
+> **Tổng cộng: 23 câu hỏi cơ bản/trung cấp + 6 câu nâng cao + 7 câu React advanced + 10 câu TypeScript + 9 câu kinh nghiệm = 55 câu hỏi**
 >
 > **Tất cả examples được viết bằng TypeScript với chú thích tiếng Việt**
 
@@ -10,6 +10,7 @@
 - 🟡 [Câu Hỏi Trung Cấp](#câu-hỏi-trung-cấp-mid-level)
 - 🔴 [Câu Hỏi Nâng Cao](#câu-hỏi-nâng-cao-senior-level)
 - 🚀 [React Advanced Topics](#🚀-react-advanced-topics--modern-features---7-câu)
+- 💙 [TypeScript Advanced](#💙-typescript-advanced-topics)
 - 💼 [Câu Hỏi Kinh Nghiệm](#💼-câu-hỏi-kinh-nghiệm--thực-tế)
 
 ## 📋 Mục Lục Tổng Kết
@@ -69,6 +70,18 @@
 - **[Q29](#q29-testing-strategies-cho-react-applications)**: Testing strategies cho React applications?
 - **[Q30](#q30-accessibility-a11y-best-practices-trong-react)**: Accessibility (A11y) best practices trong React?
 
+### 💙 **TypeScript Advanced Topics - 10 câu**
+- **[TS1](#ts1-utility-types-trong-typescript---cách-sử-dụng-và-ứng-dụng)**: Utility Types trong TypeScript - Cách sử dụng và ứng dụng?
+- **[TS2](#ts2-as-const-vs-enum---khi-nào-sử-dụng-cái-nào)**: `as const` vs `enum` - Khi nào sử dụng cái nào?
+- **[TS3](#ts3-type-vs-interface---sự-khác-biệt-và-best-practices)**: `type` vs `interface` - Sự khác biệt và best practices?
+- **[TS4](#ts4-browser-có-thể-chạy-typescript-không---tại-sao)**: Browser có thể chạy TypeScript không? Tại sao?
+- **[TS5](#ts5-type-narrowing-trong-typescript---cách-hoạt-động)**: Type Narrowing trong TypeScript - Cách hoạt động?
+- **[TS6](#ts6-unknown-vs-any---sự-khác-biệt-và-khi-nào-sử-dụng)**: `unknown` vs `any` - Sự khác biệt và khi nào sử dụng?
+- **[TS7](#ts7-decorator-trong-typescript---khái-niệm-và-ứng-dụng)**: Decorator trong TypeScript - Khái niệm và ứng dụng?
+- **[TS8](#ts8-generics-trong-typescript---concept-và-examples)**: Generics trong TypeScript - Concept và Examples?
+- **[TS9](#ts9-static-typing-typeof-keyof---advanced-type-operations)**: Static Typing, `typeof`, `keyof` - Advanced Type Operations?
+- **[TS10](#ts10-oop-trong-typescript---abstract-class-implement-extend)**: OOP trong TypeScript - Abstract Class, Implement, Extend?
+
 ## 🎯 **Phân loại theo chủ đề:**
 
 ### **JavaScript Core (13 câu)**
@@ -96,8 +109,11 @@
 
 **Advanced:** [Q29](#q29-testing-strategies-cho-react-applications), [Q30](#q30-accessibility-a11y-best-practices-trong-react)
 
-### **Advanced React Features (5 câu)**
-[Q24](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng), [Q25](#q25-react-18-features-và-migration-strategies), [Q28](#q28-deep-dive-react-performance-optimization-techniques), [Q29](#q29-testing-strategies-cho-react-applications), [Q30](#q30-accessibility-a11y-best-practices-trong-react)
+### **Advanced React Features (7 câu)**
+[Q24](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng), [Q25](#q25-react-18-features-và-migration-strategies), [Q26](#q26-solid-principles-áp-dụng-trong-react-components), [Q27](#q27-code-organization-và-folder-structure-cho-large-react-apps), [Q28](#q28-deep-dive-react-performance-optimization-techniques), [Q29](#q29-testing-strategies-cho-react-applications), [Q30](#q30-accessibility-a11y-best-practices-trong-react)
+
+### **TypeScript Advanced (10 câu)**
+[TS1](#ts1-utility-types-trong-typescript---cách-sử-dụng-và-ứng-dụng), [TS2](#ts2-as-const-vs-enum---khi-nào-sử-dụng-cái-nào), [TS3](#ts3-type-vs-interface---sự-khác-biệt-và-best-practices), [TS4](#ts4-browser-có-thể-chạy-typescript-không---tại-sao), [TS5](#ts5-type-narrowing-trong-typescript---cách-hoạt-động), [TS6](#ts6-unknown-vs-any---sự-khác-biệt-và-khi-nào-sử-dụng), [TS7](#ts7-decorator-trong-typescript---khái-niệm-và-ứng-dụng), [TS8](#ts8-generics-trong-typescript---concept-và-examples), [TS9](#ts9-static-typing-typeof-keyof---advanced-type-operations), [TS10](#ts10-oop-trong-typescript---abstract-class-implement-extend)
 
 ### **Experience & Practical (9 câu)**
 [EXP1](#exp1-mô-tả-dự-án-frontend-phức-tạp-nhất-bạn-từng-làm), [EXP2](#exp2-xử-lý-performance-issue-trong-production-như-thế-nào), [EXP3](#exp3-debugging-và-troubleshooting-trong-môi-trường-thực-tế), [EXP4](#exp4-làm-việc-với-team-và-code-review-process), [EXP5](#exp5-migration-và-upgrade-project-strategies), [EXP6](#exp6-xử-lý-legacy-code-và-technical-debt), [EXP7](#exp7-production-deployment-và-monitoring-experience), [EXP8](#exp8-những-thách-thức-lớn-nhất-khi-scale-application), [EXP9](#exp9-trend-và-technologies-mới-bạn-quan-tâm)
@@ -12473,6 +12489,976 @@ function NotificationSystem() {
 
 ---
 
+## 💙 TypeScript Advanced Topics
+
+**📌 [⬆️ Back to Top](#📚-câu-hỏi-frontend-interview---từ-cơ-bản-đến-senior) | [📋 Mục Lục](#📋-mục-lục-tổng-kết)**
+
+### TS1: Utility Types trong TypeScript - Cách sử dụng và ứng dụng?
+
+**Trả lời:**
+
+Utility Types là những **BUILT-IN type helpers** mạnh mẽ trong TypeScript để transform existing types.
+
+#### **🔥 Top Utility Types PHẢI BIẾT:**
+
+**1. `Partial<T>` - Làm tất cả properties OPTIONAL:**
+```typescript
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+}
+
+// ✅ Partial<User> = tất cả fields đều optional
+type PartialUser = Partial<User>;
+// = { id?: number; name?: string; email?: string; age?: number; }
+
+// 🎯 USE CASE: Update functions
+function updateUser(id: number, updates: Partial<User>): User {
+  // Chỉ cần pass những fields muốn update
+  return { ...existingUser, ...updates };
+}
+
+updateUser(1, { name: "New Name" }); // ✅ Chỉ update name
+updateUser(1, { age: 25, email: "new@email.com" }); // ✅ Update nhiều fields
+```
+
+**2. `Required<T>` - Làm tất cả properties REQUIRED:**
+```typescript
+interface Config {
+  host?: string;
+  port?: number;
+  ssl?: boolean;
+}
+
+// ✅ Required<Config> = tất cả fields đều required
+type RequiredConfig = Required<Config>;
+// = { host: string; port: number; ssl: boolean; }
+
+// 🎯 USE CASE: Validation functions
+function validateConfig(config: Required<Config>): boolean {
+  // Guarantee tất cả fields đều có value
+  return config.host.length > 0 && config.port > 0;
+}
+```
+
+**3. `Pick<T, K>` - Chọn SPECIFIC properties:**
+```typescript
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  category: string;
+  inStock: boolean;
+}
+
+// ✅ Pick chỉ những fields cần thiết
+type ProductSummary = Pick<Product, 'id' | 'name' | 'price'>;
+// = { id: number; name: string; price: number; }
+
+// 🎯 USE CASE: API responses với limited data
+function getProductSummaries(): ProductSummary[] {
+  return products.map(p => ({ id: p.id, name: p.name, price: p.price }));
+}
+```
+
+**4. `Omit<T, K>` - Loại bỏ SPECIFIC properties:**
+```typescript
+// ✅ Omit để remove fields không cần
+type CreateProduct = Omit<Product, 'id' | 'inStock'>;
+// = { name: string; price: number; description: string; category: string; }
+
+// 🎯 USE CASE: Create functions (auto-generate id)
+function createProduct(data: CreateProduct): Product {
+  return {
+    id: generateId(), // Auto-generate
+    inStock: true,    // Default value
+    ...data
+  };
+}
+```
+
+**5. `Record<K, T>` - Tạo object type với specific keys:**
+```typescript
+// ✅ Record cho mapping objects
+type UserRoles = Record<string, string[]>;
+// = { [key: string]: string[] }
+
+type StatusColors = Record<'success' | 'error' | 'warning', string>;
+// = { success: string; error: string; warning: string; }
+
+const statusColors: StatusColors = {
+  success: '#00ff00',
+  error: '#ff0000',
+  warning: '#ffaa00'
+};
+
+// 🎯 USE CASE: Configuration objects
+type ApiEndpoints = Record<'users' | 'products' | 'orders', string>;
+const endpoints: ApiEndpoints = {
+  users: '/api/users',
+  products: '/api/products',
+  orders: '/api/orders'
+};
+```
+
+#### **🚀 Advanced Utility Types:**
+
+**6. `ReturnType<T>` - Lấy return type của function:**
+```typescript
+function getUserData(id: number) {
+  return {
+    id,
+    name: 'John',
+    email: 'john@example.com',
+    lastLogin: new Date()
+  };
+}
+
+// ✅ Tự động infer return type
+type UserData = ReturnType<typeof getUserData>;
+// = { id: number; name: string; email: string; lastLogin: Date; }
+
+// 🎯 USE CASE: Type safety cho API responses
+async function fetchUser(id: number): Promise<UserData> {
+  const response = await api.get(`/users/${id}`);
+  return response.data; // TypeScript sẽ check type match
+}
+```
+
+**7. `Parameters<T>` - Lấy parameters type của function:**
+```typescript
+function createUser(name: string, email: string, age: number) {
+  return { name, email, age };
+}
+
+// ✅ Extract parameter types
+type CreateUserParams = Parameters<typeof createUser>;
+// = [name: string, email: string, age: number]
+
+// 🎯 USE CASE: Wrapper functions
+function logAndCreateUser(...args: CreateUserParams) {
+  console.log('Creating user with:', args);
+  return createUser(...args);
+}
+```
+
+#### **💡 PRACTICAL COMBINATIONS:**
+
+```typescript
+// 🔥 Combining multiple utilities
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+}
+
+// Combine Pick + Partial cho flexible updates
+type UpdateableUser = Partial<Pick<User, 'name' | 'email' | 'age'>>;
+
+// Combine Omit + Required cho create operations
+type CreateUserData = Required<Omit<User, 'id'>>;
+
+// 🎯 REAL-WORLD EXAMPLE: Form handling
+interface UserForm {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+// Remove confirmPassword khi submit
+type UserSubmitData = Omit<UserForm, 'confirmPassword'>;
+
+// Optional fields cho edit form
+type UserEditForm = Partial<Pick<UserForm, 'name' | 'email'>> &
+                   Required<Pick<UserForm, 'password'>>;
+```
+
+#### **🎯 KHI NÀO SỬ DỤNG UTILITY TYPES:**
+
+```
+✅ Partial<T>: Update operations, optional configurations
+✅ Required<T>: Validation, ensuring complete data
+✅ Pick<T, K>: API responses, component props subset
+✅ Omit<T, K>: Create operations, removing sensitive data
+✅ Record<K, T>: Configuration objects, mappings
+✅ ReturnType<T>: Type inference, API response types
+✅ Parameters<T>: Wrapper functions, middleware
+```
+
+**💡 GHI NHỚ:** Utility Types = **Type transformation tools** để reuse và modify existing types một cách type-safe! 🔥
+
+---
+
+### TS2: `as const` vs `enum` - Khi nào sử dụng cái nào?
+
+**Trả lời:**
+
+Đây là một **DESIGN CHOICE quan trọng** trong TypeScript. Cả hai đều tạo **CONSTANT VALUES** nhưng có trade-offs khác nhau.
+
+#### **🔥 `as const` - Literal Type Assertion:**
+
+**Cách hoạt động:**
+```typescript
+// ✅ as const tạo READONLY literal types
+const STATUS = {
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected'
+} as const;
+
+// TypeScript infer type:
+// type STATUS = {
+//   readonly PENDING: "pending";
+//   readonly APPROVED: "approved";
+//   readonly REJECTED: "rejected";
+// }
+
+// 🎯 Truy cập values
+type StatusType = typeof STATUS[keyof typeof STATUS];
+// = "pending" | "approved" | "rejected"
+```
+
+**💡 Advantages của `as const`:**
+```typescript
+// ✅ 1. ZERO JavaScript runtime overhead
+const COLORS = ['red', 'green', 'blue'] as const;
+// Compiled JS: const COLORS = ['red', 'green', 'blue'];
+
+// ✅ 2. Perfect type inference
+const CONFIG = {
+  API_URL: 'https://api.example.com',
+  TIMEOUT: 5000,
+  RETRIES: 3
+} as const;
+
+type ConfigKey = keyof typeof CONFIG; // "API_URL" | "TIMEOUT" | "RETRIES"
+type ConfigValue = typeof CONFIG[ConfigKey]; // string | number
+
+// ✅ 3. Flexible với complex structures
+const ROUTES = {
+  home: '/',
+  users: {
+    list: '/users',
+    detail: (id: number) => `/users/${id}`,
+    create: '/users/new'
+  },
+  admin: '/admin'
+} as const;
+
+// TypeScript hiểu structure hoàn toàn!
+```
+
+#### **🔥 `enum` - Enumerated Types:**
+
+**Numeric Enums:**
+```typescript
+// ✅ Auto-incrementing numbers
+enum UserRole {
+  GUEST,     // = 0
+  USER,      // = 1
+  ADMIN,     // = 2
+  SUPER_ADMIN // = 3
+}
+
+// ✅ Custom values
+enum HttpStatus {
+  OK = 200,
+  NOT_FOUND = 404,
+  SERVER_ERROR = 500
+}
+
+console.log(UserRole.ADMIN); // 2
+console.log(UserRole[2]);    // "ADMIN" (reverse mapping!)
+```
+
+**String Enums:**
+```typescript
+// ✅ String enums cho better debugging
+enum Theme {
+  LIGHT = 'light',
+  DARK = 'dark',
+  AUTO = 'auto'
+}
+
+// 🎯 Sử dụng trong code
+function setTheme(theme: Theme) {
+  document.body.className = theme; // "light", "dark", hoặc "auto"
+}
+
+setTheme(Theme.DARK); // ✅ Type safe
+// setTheme('dark'); // ❌ Error nếu không cast
+```
+
+**💡 Advantages của `enum`:**
+```typescript
+// ✅ 1. Reverse mapping (chỉ numeric enums)
+enum Status { PENDING, APPROVED, REJECTED }
+console.log(Status[0]); // "PENDING"
+console.log(Status.PENDING); // 0
+
+// ✅ 2. Better IDE support và autocomplete
+enum ApiEndpoints {
+  USERS = '/api/users',
+  PRODUCTS = '/api/products'
+}
+// IDE sẽ suggest ApiEndpoints.USERS
+
+// ✅ 3. Clear intent - đây là ENUM type
+function handleStatus(status: Status) {
+  // Clear rằng parameter này là enum
+}
+```
+
+#### **⚖️ SO SÁNH CHI TIẾT:**
+
+| Feature | `as const` | `enum` |
+|---------|------------|--------|
+| **Runtime JS** | ✅ **No overhead** | ❌ **Generates JS object** |
+| **Type Safety** | ✅ **Full type safety** | ✅ **Full type safety** |
+| **Reverse Mapping** | ❌ **Manual** | ✅ **Auto (numeric)** |
+| **Tree Shaking** | ✅ **Perfect** | ❌ **Difficult** |
+| **Flexibility** | ✅ **Any structure** | ❌ **Simple key-value** |
+| **Bundle Size** | ✅ **Smaller** | ❌ **Larger** |
+
+#### **🎯 KHI NÀO SỬ DỤNG:**
+
+**✅ Sử dụng `as const` khi:**
+```typescript
+// 1. Performance critical (zero runtime cost)
+const EVENT_TYPES = ['click', 'hover', 'focus'] as const;
+
+// 2. Complex nested structures
+const API_CONFIG = {
+  endpoints: {
+    users: '/users',
+    posts: '/posts'
+  },
+  timeout: 5000,
+  retries: 3
+} as const;
+
+// 3. Bundle size matters
+const THEME_COLORS = {
+  primary: '#007bff',
+  secondary: '#6c757d',
+  success: '#28a745'
+} as const;
+
+// 4. Modern apps với good bundler
+const ROUTES = ['/home', '/about', '/contact'] as const;
+```
+
+**✅ Sử dụng `enum` khi:**
+```typescript
+// 1. Need numeric values với meaning
+enum Priority {
+  LOW = 1,
+  MEDIUM = 2,
+  HIGH = 3,
+  CRITICAL = 4
+}
+
+// So sánh numeric values
+if (task.priority >= Priority.HIGH) {
+  // Handle high priority
+}
+
+// 2. API integration với numeric codes
+enum ApiResponseCode {
+  SUCCESS = 200,
+  NOT_FOUND = 404,
+  SERVER_ERROR = 500
+}
+
+// 3. Bit flags operations
+enum Permission {
+  READ = 1,
+  WRITE = 2,
+  DELETE = 4,
+  ADMIN = 8
+}
+
+const userPermissions = Permission.READ | Permission.WRITE; // Bitwise OR
+
+// 4. Legacy codebase đã sử dụng enums
+```
+
+#### **🔥 BEST PRACTICES:**
+
+```typescript
+// 🎯 HYBRID APPROACH - Use both!
+
+// as const cho simple constants
+const APP_CONFIG = {
+  NAME: 'MyApp',
+  VERSION: '1.0.0'
+} as const;
+
+// enum cho business logic values
+enum OrderStatus {
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  SHIPPED = 'shipped',
+  DELIVERED = 'delivered'
+}
+
+// ✅ Combine trong type definitions
+type OrderUpdate = {
+  status: OrderStatus;
+  config: typeof APP_CONFIG;
+};
+```
+
+**💡 GHI NHỚ:**
+- **`as const`** = Zero cost, maximum flexibility 🚀
+- **`enum`** = Runtime features, clear intent 📋
+
+Choose based on **performance needs** và **use case complexity**! 🎯
+
+---
+
+### TS3: `type` vs `interface` - Sự khác biệt và best practices?
+
+**Trả lời:**
+
+Đây là **MỘT TRONG NHỮNG câu hỏi phổ biến nhất** về TypeScript. Cả hai đều define object shapes nhưng có những **KHÁC BIỆT QUAN TRỌNG**.
+
+#### **🔥 SYNTAX & BASIC USAGE:**
+
+**Interface:**
+```typescript
+// ✅ Interface - OOP style declaration
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+// ✅ Extending interfaces
+interface AdminUser extends User {
+  permissions: string[];
+  lastLogin: Date;
+}
+```
+
+**Type:**
+```typescript
+// ✅ Type alias - functional style
+type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+// ✅ Intersection types
+type AdminUser = User & {
+  permissions: string[];
+  lastLogin: Date;
+};
+```
+
+#### **⚖️ DETAILED COMPARISON:**
+
+| Feature | `interface` | `type` |
+|---------|-------------|--------|
+| **Declaration Merging** | ✅ **CÓ** | ❌ **KHÔNG** |
+| **Extending** | ✅ `extends` | ✅ `&` intersection |
+| **Union Types** | ❌ **KHÔNG** | ✅ **CÓ** |
+| **Computed Properties** | ❌ **Limited** | ✅ **Full support** |
+| **Primitive Types** | ❌ **Object only** | ✅ **Any type** |
+| **Performance** | ✅ **Faster** | ⚠️ **Slightly slower** |
+
+#### **🔥 KEY DIFFERENCES:**
+
+**1. Declaration Merging (Interface ONLY):**
+```typescript
+// ✅ Interface - CÓ THỂ merge multiple declarations
+interface Window {
+  title: string;
+}
+
+interface Window {
+  version: string;
+}
+
+// TypeScript tự động merge thành:
+// interface Window {
+//   title: string;
+//   version: string;
+// }
+
+// ❌ Type - KHÔNG THỂ redeclare
+type Window = { title: string; };
+// type Window = { version: string; }; // Error: Duplicate identifier
+```
+
+**2. Union Types (Type ONLY):**
+```typescript
+// ✅ Type - Có thể define union types
+type Status = 'loading' | 'success' | 'error';
+type StringOrNumber = string | number;
+type ApiResponse = SuccessResponse | ErrorResponse;
+
+// ❌ Interface - Không thể define unions trực tiếp
+// interface Status = 'loading' | 'success' | 'error'; // Syntax error
+```
+
+**3. Computed Properties (Type BETTER):**
+```typescript
+// ✅ Type - Full support cho computed properties
+type EventMap = {
+  [K in 'click' | 'hover' | 'focus']: (event: Event) => void;
+};
+
+type DynamicObject<T> = {
+  [K in keyof T]: T[K][];
+};
+
+// ⚠️ Interface - Limited support
+interface EventMap {
+  // Phải viết manual
+  click: (event: Event) => void;
+  hover: (event: Event) => void;
+  focus: (event: Event) => void;
+}
+```
+
+**4. Extending vs Intersection:**
+```typescript
+// ✅ Interface extending
+interface Animal {
+  name: string;
+}
+
+interface Dog extends Animal {
+  breed: string;
+}
+
+// ✅ Type intersection
+type Animal = {
+  name: string;
+};
+
+type Dog = Animal & {
+  breed: string;
+};
+
+// 🎯 Cả hai đều work tương tự cho simple cases
+```
+
+#### **🚀 ADVANCED USE CASES:**
+
+**Interface cho OOP patterns:**
+```typescript
+// ✅ Interface - Perfect cho classes và inheritance
+interface Drawable {
+  draw(): void;
+}
+
+interface Resizable {
+  resize(width: number, height: number): void;
+}
+
+// Multiple interface implementation
+class Shape implements Drawable, Resizable {
+  draw() { /* implementation */ }
+  resize(width: number, height: number) { /* implementation */ }
+}
+
+// ✅ Declaration merging cho library augmentation
+declare global {
+  interface Array<T> {
+    myCustomMethod(): T[];
+  }
+}
+```
+
+**Type cho functional programming:**
+```typescript
+// ✅ Type - Perfect cho utility types và transformations
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
+
+type ApiEndpoint<T> = {
+  url: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  body?: T;
+  response: Promise<T>;
+};
+
+// Conditional types
+type NonNullable<T> = T extends null | undefined ? never : T;
+
+// Complex mappings
+type EventHandlers<T> = {
+  [K in keyof T as `on${Capitalize<string & K>}`]: (value: T[K]) => void;
+};
+```
+
+#### **🎯 BEST PRACTICES - KHI NÀO DÙNG GÌ:**
+
+**✅ Sử dụng `interface` khi:**
+```typescript
+// 1. Define object shapes cho classes
+interface UserService {
+  getUser(id: number): Promise<User>;
+  updateUser(id: number, data: Partial<User>): Promise<User>;
+}
+
+class ApiUserService implements UserService {
+  // Implementation
+}
+
+// 2. Public API definitions (libraries)
+interface ComponentProps {
+  children?: React.ReactNode;
+  className?: string;
+}
+
+// 3. Có thể cần extend sau này
+interface BaseConfig {
+  apiUrl: string;
+}
+
+interface ProductionConfig extends BaseConfig {
+  ssl: true;
+}
+
+// 4. Library augmentation
+declare module 'react' {
+  interface CSSProperties {
+    '--custom-property'?: string;
+  }
+}
+```
+
+**✅ Sử dụng `type` khi:**
+```typescript
+// 1. Union types
+type Theme = 'light' | 'dark' | 'auto';
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+
+// 2. Complex type transformations
+type EventMap<T> = {
+  [K in keyof T]: (data: T[K]) => void;
+};
+
+// 3. Computed property names
+type ApiRoutes = {
+  [K in 'users' | 'posts' | 'comments' as `api/${K}`]: string;
+};
+
+// 4. Conditional logic
+type NonEmptyArray<T> = [T, ...T[]];
+
+// 5. Primitive type aliases
+type ID = string | number;
+type Timestamp = number;
+```
+
+#### **🔥 MODERN RECOMMENDATIONS:**
+
+```typescript
+// 🎯 HYBRID APPROACH - Use both strategically!
+
+// ✅ interface cho object shapes
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+// ✅ type cho unions và utilities
+type UserStatus = 'active' | 'inactive' | 'banned';
+type UserWithStatus = User & { status: UserStatus };
+
+// ✅ interface cho component props
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+// ✅ type cho complex derived types
+type ButtonEvents = {
+  [K in keyof ButtonProps as K extends `on${string}` ? K : never]: ButtonProps[K];
+};
+```
+
+**💡 GHI NHỚ:**
+- **`interface`** = OOP style, extensible, declaration merging 🏗️
+- **`type`** = Functional style, unions, computed properties 🎯
+
+**Choose based on your use case, team style, và TypeScript version!** 🚀
+
+---
+
+### TS4: Browser có thể chạy TypeScript không? Tại sao?
+
+**Trả lời:**
+
+**❌ KHÔNG!** Browser **KHÔNG THỂ** chạy TypeScript trực tiếp. Đây là một **FUNDAMENTAL CONCEPT** cần hiểu rõ.
+
+#### **🔥 TẠI SAO Browser KHÔNG chạy được TypeScript:**
+
+**1. TypeScript IS NOT JavaScript:**
+```typescript
+// ❌ Code này browser KHÔNG hiểu
+interface User {
+  id: number;
+  name: string;
+}
+
+function greetUser(user: User): string {
+  return `Hello, ${user.name}!`;
+}
+
+// Browser sẽ throw: SyntaxError: Unexpected token ':'
+```
+
+**2. Browsers chỉ hiểu JavaScript (ES5/ES6+):**
+```javascript
+// ✅ Code này browser HIỂU được
+function greetUser(user) {
+  return `Hello, ${user.name}!`;
+}
+```
+
+#### **🔄 QUY TRÌNH COMPILATION:**
+
+```
+📝 TypeScript (.ts)
+        ↓
+    🔧 TypeScript Compiler (tsc)
+        ↓
+📦 JavaScript (.js)
+        ↓
+    🌐 Browser Engine
+        ↓
+    🚀 Execution
+```
+
+#### **🛠️ CÁC CÁCH TRANSFORM TypeScript:**
+
+**1. TypeScript Compiler (tsc):**
+```bash
+# Cài đặt TypeScript compiler
+npm install -g typescript
+
+# Compile single file
+tsc app.ts
+
+# Compile entire project
+tsc --project tsconfig.json
+```
+
+**Example compilation:**
+```typescript
+// Input: app.ts
+interface User {
+  id: number;
+  name: string;
+}
+
+const user: User = {
+  id: 1,
+  name: 'John'
+};
+
+function greetUser(user: User): string {
+  return `Hello, ${user.name}!`;
+}
+```
+
+```javascript
+// Output: app.js (compiled)
+"use strict";
+
+const user = {
+  id: 1,
+  name: 'John'
+};
+
+function greetUser(user) {
+  return `Hello, ${user.name}!`;
+}
+```
+
+**2. Build Tools Integration:**
+
+**Webpack với TypeScript:**
+```javascript
+// webpack.config.js
+module.exports = {
+  entry: './src/index.ts',
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }
+    ]
+  },
+  resolve: {
+    extensions: ['.ts', '.js']
+  }
+};
+```
+
+**Vite với TypeScript (Modern):**
+```javascript
+// vite.config.ts - ZERO CONFIG!
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  // Vite tự động handle .ts files
+});
+```
+
+**3. Real-time Development:**
+
+**Babel-TypeScript:**
+```json
+// .babelrc
+{
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-typescript"
+  ]
+}
+```
+
+**ts-node (Development only):**
+```bash
+# Chạy TypeScript trực tiếp (development)
+npx ts-node src/app.ts
+
+# Nhưng vẫn cần compile cho production!
+```
+
+#### **🚀 MODERN WORKFLOW:**
+
+**Development:**
+```typescript
+// 📝 Write TypeScript
+const users: User[] = await fetchUsers();
+
+// 🔄 Hot reload với type checking
+// Tools: Vite, Webpack Dev Server, ts-node
+```
+
+**Production Build:**
+```bash
+# 🔧 Build process
+npm run build
+
+# Output: Optimized JavaScript bundles
+# dist/
+#   ├── index.js (compiled + minified)
+#   ├── vendor.js (dependencies)
+#   └── style.css
+```
+
+#### **⚡ WHAT HAPPENS TO TypeScript FEATURES:**
+
+**Type Annotations → REMOVED:**
+```typescript
+// TypeScript
+function calculate(a: number, b: number): number {
+  return a + b;
+}
+
+// Compiled JavaScript
+function calculate(a, b) {
+  return a + b;
+}
+```
+
+**Interfaces → DISAPPEAR:**
+```typescript
+// TypeScript
+interface Config {
+  apiUrl: string;
+  timeout: number;
+}
+
+// Compiled JavaScript
+// (interfaces hoàn toàn biến mất!)
+```
+
+**Enums → BECOME Objects:**
+```typescript
+// TypeScript
+enum Status {
+  PENDING = 'pending',
+  APPROVED = 'approved'
+}
+
+// Compiled JavaScript
+var Status;
+(function (Status) {
+  Status["PENDING"] = "pending";
+  Status["APPROVED"] = "approved";
+})(Status || (Status = {}));
+```
+
+**Generics → ERASED:**
+```typescript
+// TypeScript
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+// Compiled JavaScript
+function identity(arg) {
+  return arg;
+}
+```
+
+#### **🔍 HOW TO VERIFY:**
+
+**1. Browser DevTools:**
+```javascript
+// Open browser console và thử:
+const user: User = { id: 1, name: 'John' };
+// SyntaxError: Unexpected token ':'
+```
+
+**2. HTML Script Tag:**
+```html
+<!-- ❌ Điều này SẼ LỖI -->
+<script src="app.ts"></script>
+
+<!-- ✅ Điều này WORK -->
+<script src="app.js"></script>
+```
+
+**3. Online TypeScript Playground:**
+Visit [typescriptlang.org/play](https://typescriptlang.org/play) để see compilation process!
+
+#### **💡 KEY TAKEAWAYS:**
+
+```
+🔹 TypeScript = DEVELOPMENT TIME tool
+🔹 JavaScript = RUNTIME language
+🔹 Compilation = MANDATORY step
+🔹 Type safety = COMPILE TIME only
+🔹 Browser = JavaScript ONLY environment
+```
+
+**🎯 INTERVIEW TIP:**
+Always emphasize rằng TypeScript **MUST BE COMPILED** to JavaScript trước khi browser có thể run. Đây là **fundamental difference** giữa development và production environments!
+
+**GHI NHỚ:** TypeScript in browser = **JavaScript with extra steps!** 🔄
+
+---
+
 ## 💼 Câu Hỏi Kinh Nghiệm & Thực Tế
 
 **📌 [⬆️ Back to Top](#📚-câu-hỏi-frontend-interview---từ-cơ-bản-đến-senior) | [📋 Mục Lục](#📋-mục-lục-tổng-kết)**
@@ -13773,6 +14759,17 @@ class TechnologyTrends {
 🔑 Performance Testing: Lighthouse, Web Vitals
 ```
 
+#### **💙 TypeScript Essentials:**
+```
+🔑 Utility Types: Partial<T>, Pick<T,K>, Omit<T,K>, Record<K,T>
+🔑 as const vs enum: Zero cost vs Runtime features
+🔑 type vs interface: Functional vs OOP style, Union vs Declaration merging
+🔑 Type Narrowing: Guards, discriminated unions, conditional types
+🔑 unknown vs any: Type-safe vs Escape hatch
+🔑 Browser Support: TypeScript MUST BE COMPILED to JavaScript
+🔑 Advanced Types: Generics, typeof keyof, conditional types
+```
+
 ---
 
 ### 💡 **Quick Mental Models - Cách tư duy nhanh**
@@ -13801,6 +14798,16 @@ class TechnologyTrends {
 📚 "Code Splitting = Send postcards, not whole photo album 📮"
 📚 "Memoization = Cache expensive calculations 💰"
 📚 "Virtualization = Show only visible photos in gallery 📸"
+```
+
+#### **💙 TypeScript Mental Models:**
+```
+📚 "TypeScript = JavaScript with Type Bodyguard 🛡️"
+📚 "Utility Types = Swiss Army Knife for types 🔧"
+📚 "as const = Lock the value box 🔒"
+📚 "enum = Named number/string catalog 📋"
+📚 "type vs interface = Function vs Class style 🎭"
+📚 "Generics = Template for multiple types 📄"
 ```
 
 ---
@@ -13934,6 +14941,7 @@ class TechnologyTrends {
 - [🟡 Câu Hỏi Trung Cấp](#q4-usestate-hook-hoạt-động-như-thế-nào)
 - [🔴 Câu Hỏi Nâng Cao](#q16-thiết-kế-kiến-trúc-micro-frontend-cho-ứng-dụng-scale-lớn)
 - [🚀 React Advanced](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng)
+- [💙 TypeScript Advanced](#💙-typescript-advanced-topics)
 - [💼 Experience Questions](#💼-câu-hỏi-kinh-nghiệm--thực-tế)
 - [🎯 Tổng Kết Summary](#🎯-tổng-kết-summary)
 
@@ -13944,6 +14952,8 @@ class TechnologyTrends {
 - [useMemo vs useCallback](#q22-usememo-vs-usecallback-chi-tiết)
 - [React Concurrent Mode](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng)
 - [Performance Optimization](#q28-deep-dive-react-performance-optimization-techniques)
+- [Utility Types](#ts1-utility-types-trong-typescript---cách-sử-dụng-và-ứng-dụng)
+- [type vs interface](#ts3-type-vs-interface---sự-khác-biệt-và-best-practices)
 
 **⚡ Quick Reference:**
 - [📝 Key Concepts Cheat Sheet](#📝-key-concepts-cheat-sheet---những-kiến-thức-phải-nhớ)
