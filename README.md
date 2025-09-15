@@ -1,6 +1,6 @@
 # 📚 Câu Hỏi Frontend Interview - Từ Cơ Bản Đến Senior
 
-> **Tổng cộng: 28 câu hỏi kỹ thuật + 14 câu hỏi chuyên sâu + 9 câu hỏi kinh nghiệm = 51 câu hỏi**
+> **Tổng cộng: 23 câu hỏi cơ bản/trung cấp + 6 câu nâng cao + 7 câu advanced + 9 câu kinh nghiệm = 45 câu hỏi**
 >
 > **Tất cả examples được viết bằng TypeScript với chú thích tiếng Việt**
 
@@ -9,6 +9,7 @@
 - 🟢 [Câu Hỏi Cơ Bản](#câu-hỏi-cơ-bản-junior-level)
 - 🟡 [Câu Hỏi Trung Cấp](#câu-hỏi-trung-cấp-mid-level)
 - 🔴 [Câu Hỏi Nâng Cao](#câu-hỏi-nâng-cao-senior-level)
+- 🚀 [React Advanced Topics](#🚀-react-advanced-topics--modern-features---7-câu)
 - 💼 [Câu Hỏi Kinh Nghiệm](#💼-câu-hỏi-kinh-nghiệm--thực-tế)
 
 ## 📋 Mục Lục Tổng Kết
@@ -42,53 +43,68 @@
 - **[Q22](#q22-usememo-vs-usecallback-chi-tiết)**: useMemo vs useCallback chi tiết?
 - **[Q23](#q23-parent-re-renders-thì-child-có-re-render-cách-optimize)**: Parent re-renders thì child có re-render? Cách optimize?
 
-### 🟡 **Câu Hỏi Trung Cấp (Mid-Level) - 6 câu**
-- **Q4**: useState Hook hoạt động như thế nào?
-- **Q5**: useEffect Hook và lifecycle methods tương ứng?
-- **Q6**: Custom Hooks - Cách tạo và sử dụng?
-- **Q7**: Context API vs Redux - Khi nào nên sử dụng?
-- **Q8**: React.memo, useMemo, useCallback - Khi nào và cách sử dụng?
-- **Q9**: Code Splitting và Lazy Loading trong React?
-- **Q10**: Higher-Order Components (HOC) vs Render Props vs Custom Hooks?
+### 🟡 **Câu Hỏi Trung Cấp (Mid-Level) - 7 câu**
+- **[Q4](#q4-usestate-hook-hoạt-động-như-thế-nào)**: useState Hook hoạt động như thế nào?
+- **[Q5](#q5-useeffect-hook-và-lifecycle-methods-tương-ứng)**: useEffect Hook và lifecycle methods tương ứng?
+- **[Q6](#q6-custom-hooks---cách-tạo-và-sử-dụng)**: Custom Hooks - Cách tạo và sử dụng?
+- **[Q7](#q7-context-api-vs-redux---khi-nào-nên-sử-dụng)**: Context API vs Redux - Khi nào nên sử dụng?
+- **[Q8](#q8-reactmemo-usememo-usecallback---khi-nào-và-cách-sử-dụng)**: React.memo, useMemo, useCallback - Khi nào và cách sử dụng?
+- **[Q9](#q9-code-splitting-và-lazy-loading-trong-react)**: Code Splitting và Lazy Loading trong React?
+- **[Q10](#q10-higher-order-components-hoc-vs-render-props-vs-custom-hooks)**: Higher-Order Components (HOC) vs Render Props vs Custom Hooks?
 
-### 🔴 **Câu Hỏi Nâng Cao (Senior/Expert Level) - 7 câu**
-- **Q16**: Thiết kế kiến trúc Micro-frontend cho ứng dụng scale lớn?
-- **Q17**: Implement advanced caching strategies cho production apps?
-- **Q18**: Design Pattern cho large-scale React applications?
-- **Q19**: Memory leaks detection và optimization trong React apps?
-- **Q20**: Implement comprehensive security measures cho frontend apps?
-- **Q21**: Advanced debugging và production monitoring?
+### 🔴 **Câu Hỏi Nâng Cao (Senior/Expert Level) - 6 câu**
+- **[Q16](#q16-thiết-kế-kiến-trúc-micro-frontend-cho-ứng-dụng-scale-lớn)**: Thiết kế kiến trúc Micro-frontend cho ứng dụng scale lớn?
+- **[Q17](#q17-implement-advanced-caching-strategies-cho-production-apps)**: Implement advanced caching strategies cho production apps?
+- **[Q18](#q18-design-pattern-cho-large-scale-react-applications)**: Design Pattern cho large-scale React applications?
+- **[Q19](#q19-memory-leaks-detection-và-optimization-trong-react-apps)**: Memory leaks detection và optimization trong React apps?
+- **[Q20](#q20-implement-comprehensive-security-measures-cho-frontend-apps)**: Implement comprehensive security measures cho frontend apps?
+- **[Q21](#q21-advanced-debugging-và-production-monitoring)**: Advanced debugging và production monitoring?
 
 ### 🚀 **React Advanced Topics & Modern Features - 7 câu**
-- **Q22**: React Concurrent Mode và Suspense - Cách hoạt động và ứng dụng?
-- **Q23**: React 18 features và migration strategies?
-- **Q24**: SOLID principles áp dụng trong React components?
-- **Q25**: Code organization và folder structure cho large React apps?
-- **Q26**: Deep dive React performance optimization techniques?
-- **Q27**: Testing strategies cho React applications?
-- **Q28**: Accessibility (A11y) best practices trong React?
+- **[Q24](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng)**: React Concurrent Mode và Suspense - Cách hoạt động và ứng dụng?
+- **[Q25](#q25-react-18-features-và-migration-strategies)**: React 18 features và migration strategies?
+- **[Q26](#q26-solid-principles-áp-dụng-trong-react-components)**: SOLID principles áp dụng trong React components?
+- **[Q27](#q27-code-organization-và-folder-structure-cho-large-react-apps)**: Code organization và folder structure cho large React apps?
+- **[Q28](#q28-deep-dive-react-performance-optimization-techniques)**: Deep dive React performance optimization techniques?
+- **[Q29](#q29-testing-strategies-cho-react-applications)**: Testing strategies cho React applications?
+- **[Q30](#q30-accessibility-a11y-best-practices-trong-react)**: Accessibility (A11y) best practices trong React?
 
 ## 🎯 **Phân loại theo chủ đề:**
 
-### **JavaScript Core (14 câu)**
-Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q10, Q11, Q12, Q14, Q15, Q16
+### **JavaScript Core (13 câu)**
+[Q1](#q1-primitive-values-vs-reference-values-trong-javascript), [Q2](#q2-sự-khác-biệt-giữa-var-let-và-const), [Q3](#q3-es5-vs-es6-features-và-modern-javascript), [Q4](#q4-hoisting-trong-javascript---cách-hoạt-động), [Q5](#q5-event-loop-hoạt-động-như-thế-nào-giải-thích-đơn-giản), [Q6](#q6-closure-và-data-privacy-trong-javascript), [Q7](#q7-dom-và-event-handling-chi-tiết), [Q8](#q8-falsytruthy--vs--null-vs-undefined), [Q10](#q10-arrow-functions-vs-regular-functions-và-this-binding), [Q11](#q11-asyncawait-vs-promises-vs-callbacks), [Q12](#q12-cách-remove-property-từ-object-và-so-sánh-objects), [Q14](#q14-loop-performance-và-browser-rendering-paint-repaint-reflow), [Q15](#q15-axios-interceptors-và-advanced-error-handling), [Q16](#q16-strict-mode-và-javascript-classes)
 
-### **React Hooks & State Management (8 câu)**
-Q17, Q18, Q19, Q21, Q22, Q23, Q4-Mid, Q5-Mid, Q6-Mid, Q7-Mid, Q8-Mid
+### **React Hooks & State Management (11 câu)**
+**Junior Level:** [Q17](#q17-react-hooks-chi-tiết---usestate-useeffect-useref), [Q18](#q18-component-lifecycle-và-useeffect-coverage), [Q19](#q19-purecomponent-vs-reactmemo-và-optimization), [Q21](#q21-useref-vs-usestate-state-vs-props), [Q22](#q22-usememo-vs-usecallback-chi-tiết), [Q23](#q23-parent-re-renders-thì-child-có-re-render-cách-optimize)
+
+**Mid Level:** [Q4-Mid](#q4-usestate-hook-hoạt-động-như-thế-nào), [Q5-Mid](#q5-useeffect-hook-và-lifecycle-methods-tương-ứng), [Q6-Mid](#q6-custom-hooks---cách-tạo-và-sử-dụng), [Q7-Mid](#q7-context-api-vs-redux---khi-nào-nên-sử-dụng), [Q8-Mid](#q8-reactmemo-usememo-usecallback---khi-nào-và-cách-sử-dụng)
 
 ### **React Performance & Optimization (6 câu)**
-Q19, Q20, Q22, Q23, Q26, Q19-Expert
+**Junior:** [Q19](#q19-purecomponent-vs-reactmemo-và-optimization), [Q20](#q20-virtual-dom-và-key-trong-lists), [Q22](#q22-usememo-vs-usecallback-chi-tiết), [Q23](#q23-parent-re-renders-thì-child-có-re-render-cách-optimize)
 
-### **Architecture & Patterns (5 câu)**
-Q9-Mid, Q10-Mid, Q16-Expert, Q18-Expert, Q24, Q25
+**Expert:** [Q19-Expert](#q19-memory-leaks-detection-và-optimization-trong-react-apps), [Q28](#q28-deep-dive-react-performance-optimization-techniques)
+
+### **Architecture & Patterns (7 câu)**
+**Mid Level:** [Q9-Mid](#q9-code-splitting-và-lazy-loading-trong-react), [Q10-Mid](#q10-higher-order-components-hoc-vs-render-props-vs-custom-hooks)
+
+**Senior/Expert:** [Q16-Expert](#q16-thiết-kế-kiến-trúc-micro-frontend-cho-ứng-dụng-scale-lớn), [Q18-Expert](#q18-design-pattern-cho-large-scale-react-applications)
+
+**Advanced:** [Q24](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng), [Q26](#q26-solid-principles-áp-dụng-trong-react-components), [Q27](#q27-code-organization-và-folder-structure-cho-large-react-apps)
 
 ### **Security & Testing (4 câu)**
-Q20-Expert, Q21-Expert, Q27, Q28
+**Expert:** [Q20-Expert](#q20-implement-comprehensive-security-measures-cho-frontend-apps), [Q21-Expert](#q21-advanced-debugging-và-production-monitoring)
+
+**Advanced:** [Q29](#q29-testing-strategies-cho-react-applications), [Q30](#q30-accessibility-a11y-best-practices-trong-react)
 
 ### **Advanced React Features (5 câu)**
-Q22-Advanced, Q23-Advanced, Q26, Q27, Q28
+[Q24](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng), [Q25](#q25-react-18-features-và-migration-strategies), [Q28](#q28-deep-dive-react-performance-optimization-techniques), [Q29](#q29-testing-strategies-cho-react-applications), [Q30](#q30-accessibility-a11y-best-practices-trong-react)
 
-### 💼 **Câu Hỏi Kinh Nghiệm & Thực Tế (9 câu)**
+### **Experience & Practical (9 câu)**
+[EXP1](#exp1-mô-tả-dự-án-frontend-phức-tạp-nhất-bạn-từng-làm), [EXP2](#exp2-xử-lý-performance-issue-trong-production-như-thế-nào), [EXP3](#exp3-debugging-và-troubleshooting-trong-môi-trường-thực-tế), [EXP4](#exp4-làm-việc-với-team-và-code-review-process), [EXP5](#exp5-migration-và-upgrade-project-strategies), [EXP6](#exp6-xử-lý-legacy-code-và-technical-debt), [EXP7](#exp7-production-deployment-và-monitoring-experience), [EXP8](#exp8-những-thách-thức-lớn-nhất-khi-scale-application), [EXP9](#exp9-trend-và-technologies-mới-bạn-quan-tâm)
+
+---
+
+## 💼 **Câu Hỏi Kinh Nghiệm & Thực Tế (9 câu)**
 - **[EXP1](#exp1-mô-tả-dự-án-frontend-phức-tạp-nhất-bạn-từng-làm)**: Mô tả dự án frontend phức tạp nhất bạn từng làm?
 - **[EXP2](#exp2-xử-lý-performance-issue-trong-production-như-thế-nào)**: Xử lý performance issue trong production như thế nào?
 - **[EXP3](#exp3-debugging-và-troubleshooting-trong-môi-trường-thực-tế)**: Debugging và troubleshooting trong môi trường thực tế?
@@ -13693,7 +13709,177 @@ class TechnologyTrends {
 
 ---
 
-## 🎯 Tổng Kết Câu Hỏi Kinh Nghiệm
+## 🎯 Tổng Kết Summary
+
+### 📝 **Key Concepts Cheat Sheet - Những kiến thức PHẢI NHỚ**
+
+#### **🟢 JavaScript Core Essentials:**
+```
+🔑 Primitive vs Reference: Stack vs Heap, Copy VALUE vs Copy ADDRESS
+🔑 var/let/const: Function vs Block scope, Hoisting vs TDZ
+🔑 Event Loop: Call Stack → Web API → Callback Queue → Microtask Queue
+🔑 Closure: Inner function + Outer variables = PRIVATE data
+🔑 this binding: Arrow = Lexical, Regular = Dynamic context
+🔑 Async: Callbacks → Promises → Async/Await (từ Hell đến Heaven)
+🔑 Falsy: false, 0, "", null, undefined, NaN (nhớ: "FO"NUN")
+🔑 == vs ===: Loose equality vs Strict equality (type coercion!)
+```
+
+#### **⚡ React Core Essentials:**
+```
+🔑 Virtual DOM: Lightweight copy, Diffing algorithm, Reconciliation
+🔑 Keys in Lists: NEVER use index, use stable unique IDs
+🔑 useState: Functional updates, Lazy initial state, Immutable updates
+🔑 useEffect: Dependencies array, Cleanup function, Lifecycle coverage
+🔑 useMemo vs useCallback: Cache VALUE vs Cache FUNCTION
+🔑 React.memo: Shallow comparison, Prevent unnecessary re-renders
+🔑 Parent re-render → Child re-render (unless optimized with memo)
+```
+
+#### **🚀 Performance Optimization:**
+```
+🔑 Code Splitting: React.lazy() + Suspense + dynamic imports
+🔑 Memoization: React.memo, useMemo, useCallback (đúng chỗ, đúng lúc)
+🔑 Bundle Optimization: Tree shaking, Dead code elimination
+🔑 Virtualization: Chỉ render items visible (react-window/react-virtualized)
+🔑 Memory Leaks: Event listeners, Timers, Subscriptions cleanup
+🔑 Web Vitals: LCP, FID, CLS - measure what users feel
+```
+
+#### **🛡️ Security Must-Know:**
+```
+🔑 XSS Prevention: Sanitize inputs, Content Security Policy
+🔑 CSRF Protection: CSRF tokens, SameSite cookies
+🔑 Input Validation: Client + Server side validation
+🔑 Secure Headers: HTTPS, HSTS, X-Frame-Options
+🔑 Authentication: JWT properly, Secure storage practices
+```
+
+#### **🏗️ Architecture Patterns:**
+```
+🔑 SOLID Principles: SRP, OCP, LSP, ISP, DIP
+🔑 Component Patterns: HOC, Render Props, Compound Components
+🔑 State Management: Context API vs Redux vs Zustand
+🔑 Code Organization: Feature-based folder structure
+🔑 Micro-frontends: Module Federation, Independent deployments
+```
+
+#### **🧪 Testing Strategy:**
+```
+🔑 Testing Pyramid: Unit → Integration → E2E
+🔑 React Testing: @testing-library/react, userEvent
+🔑 Mocking: jest.mock(), MSW for API mocking
+🔑 Accessibility Testing: jest-axe, screen readers
+🔑 Performance Testing: Lighthouse, Web Vitals
+```
+
+---
+
+### 💡 **Quick Mental Models - Cách tư duy nhanh**
+
+#### **🎯 JavaScript Mental Models:**
+```
+📚 "Primitive = Copy the VALUE 📄→📄"
+📚 "Reference = Copy the ADDRESS 📮→📮"
+📚 "Event Loop = Restaurant with 1 Chef, Many Orders"
+📚 "Closure = Function with Memory Bag 🎒"
+📚 "this = Who called me? 👤"
+```
+
+#### **⚛️ React Mental Models:**
+```
+📚 "Virtual DOM = Blueprint, Real DOM = House 🏠"
+📚 "useState = State Box with Setter 📦"
+📚 "useEffect = Side Effect Manager 🎭"
+📚 "Props = Mail sent 📬, State = Private diary 📓"
+📚 "Re-render = Redraw the UI Canvas 🎨"
+```
+
+#### **⚡ Performance Mental Models:**
+```
+📚 "Bundle = Suitcase, Tree Shaking = Remove unused clothes 👕"
+📚 "Code Splitting = Send postcards, not whole photo album 📮"
+📚 "Memoization = Cache expensive calculations 💰"
+📚 "Virtualization = Show only visible photos in gallery 📸"
+```
+
+---
+
+### ⚠️ **Common Interview Mistakes - Tránh những lỗi này!**
+
+#### **❌ JavaScript Mistakes:**
+```
+🚫 Confusing var hoisting với let/const TDZ
+🚫 Không hiểu this context trong arrow functions
+🚫 Mixing up == với === (type coercion trap!)
+🚫 Forgetting event loop order: Microtasks trước Macrotasks
+🚫 Mutating objects/arrays trực tiếp (not immutable)
+🚫 Không cleanup event listeners → Memory leaks
+```
+
+#### **❌ React Mistakes:**
+```
+🚫 Using array index as key in dynamic lists
+🚫 Calling hooks inside loops/conditions
+🚫 Forgetting dependency array trong useEffect
+🚫 Overusing useMemo/useCallback (premature optimization)
+🚫 Mutating state directly: state.push() ❌, setState([...state, newItem]) ✅
+🚫 Not understanding when components re-render
+```
+
+#### **❌ Performance Mistakes:**
+```
+🚫 Bundle toàn bộ libraries khi chỉ cần 1 function
+🚫 Not lazy loading routes/components
+🚫 Unnecessary re-renders do object/function props
+🚫 Loading all data at once thay vì pagination
+🚫 Không optimize images (WebP, lazy loading)
+🚫 Blocking main thread với heavy computations
+```
+
+---
+
+### 🔥 **Last-Minute Quick Review - 5 phút trước phỏng vấn**
+
+#### **⚡ 30-Second JavaScript Rapid Fire:**
+```
+🔹 Event Loop: Call Stack → Web API → Callback → Microtask
+🔹 Closure: Function + Lexical Environment
+🔹 this: Arrow=lexical, Regular=caller
+🔹 Async: Callback Hell → Promise Chain → Async/Await
+🔹 Hoisting: var=undefined, let/const=TDZ
+```
+
+#### **⚡ 30-Second React Rapid Fire:**
+```
+🔹 Virtual DOM: Diffing + Reconciliation
+🔹 useState: Functional updates, immutable
+🔹 useEffect: Dependencies + Cleanup
+🔹 Keys: Stable unique IDs, NEVER index
+🔹 Memoization: React.memo, useMemo, useCallback
+```
+
+#### **⚡ 30-Second Performance Rapid Fire:**
+```
+🔹 Code Splitting: React.lazy + Suspense
+🔹 Bundle: Webpack/Vite, Tree shaking
+🔹 Memory: Cleanup listeners/timers/subscriptions
+🔹 Rendering: Virtualization for large lists
+🔹 Network: Caching, compression, CDN
+```
+
+#### **💡 Golden Interview Rules:**
+```
+✨ EXPLAIN your THINKING PROCESS
+✨ ASK CLARIFYING questions
+✨ CODE first, then OPTIMIZE
+✨ ADMIT when you DON'T KNOW something
+✨ CONNECT technical concepts to BUSINESS VALUE
+```
+
+---
+
+### 🎯 **Interview Success Formula**
 
 **Cách chuẩn bị cho các câu hỏi kinh nghiệm:**
 
@@ -13745,13 +13931,25 @@ class TechnologyTrends {
 - [📋 Mục Lục](#📋-mục-lục-tổng-kết)
 - [🟢 JavaScript Core](#1-javascript-core-fundamentals)
 - [🟢 React Fundamentals](#2-react-fundamentals)
+- [🟡 Câu Hỏi Trung Cấp](#q4-usestate-hook-hoạt-động-như-thế-nào)
+- [🔴 Câu Hỏi Nâng Cao](#q16-thiết-kế-kiến-trúc-micro-frontend-cho-ứng-dụng-scale-lớn)
+- [🚀 React Advanced](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng)
 - [💼 Experience Questions](#💼-câu-hỏi-kinh-nghiệm--thực-tế)
+- [🎯 Tổng Kết Summary](#🎯-tổng-kết-summary)
 
 **🔥 Popular Questions:**
 - [Event Loop](#q5-event-loop-hoạt-động-như-thế-nào-giải-thích-đơn-giản)
 - [Closure](#q6-closure-và-data-privacy-trong-javascript)
 - [Virtual DOM](#q20-virtual-dom-và-key-trong-lists)
 - [useMemo vs useCallback](#q22-usememo-vs-usecallback-chi-tiết)
+- [React Concurrent Mode](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng)
+- [Performance Optimization](#q28-deep-dive-react-performance-optimization-techniques)
+
+**⚡ Quick Reference:**
+- [📝 Key Concepts Cheat Sheet](#📝-key-concepts-cheat-sheet---những-kiến-thức-phải-nhớ)
+- [💡 Mental Models](#💡-quick-mental-models---cách-tư-duy-nhanh)
+- [⚠️ Common Mistakes](#⚠️-common-interview-mistakes---tránh-những-lỗi-này)
+- [🔥 Last-Minute Review](#🔥-last-minute-quick-review---5-phút-trước-phỏng-vấn)
 
 **📌 [⬆️ Back to Top](#📚-câu-hỏi-frontend-interview---từ-cơ-bản-đến-senior)**
 
