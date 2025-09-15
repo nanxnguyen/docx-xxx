@@ -1,4 +1,4 @@
-# 📚 Câu Hỏi Frontend Interview - Từ Cơ Bản Đến Senior
+# 📚 Câu Hỏi
 
 > **Tổng cộng: 23 câu hỏi cơ bản/trung cấp + 6 câu nâng cao + 7 câu advanced + 9 câu kinh nghiệm = 45 câu hỏi**
 >
