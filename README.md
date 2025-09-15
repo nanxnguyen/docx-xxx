@@ -1,4 +1,4 @@
-# Câu Hỏi Phỏng Vấn Frontend JavaScript React - Từ Cơ Bản Đến Senior
+# Câu Hỏi Frontend  - Từ Cơ Bản Đến Senior
 
 ## Mục Lục
 1. [Câu Hỏi Cơ Bản (Junior Level)](#câu-hỏi-cơ-bản-junior-level)
@@ -2982,7 +2982,7 @@ interface User {
 function Counter(): JSX.Element {
   // useState với kiểu number
   const [count, setCount] = useState<number>(0);
-  
+
   // useState với kiểu object - cần interface
   const [user, setUser] = useState<User>({ name: '', age: 0 });
 
@@ -3051,7 +3051,7 @@ function UserProfile({ userId }: UserProfileProps): JSX.Element {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const userData: UserData = await response.json();
 
         // Kiểm tra component còn được mount không (tránh memory leak)
