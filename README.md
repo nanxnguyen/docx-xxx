@@ -538,27 +538,43 @@ myFunc(); // "Expression" - function expression overwrites declaration
 #### Q5: Event Loop hoạt động như thế nào? (Giải thích đơn giản)
 
 **Trả lời:**
-Tưởng tượng Event Loop như một nhân viên văn phòng rất có tổ chức:
+
+**🏢 Giải thích Event Loop như một văn phòng:**
+- **📚 Call Stack**: Bàn làm việc chính (làm từng việc một, theo thứ tự)
+- **🌐 Web APIs**: Phòng máy móc (timer, DOM events, HTTP requests)
+- **📋 Callback Queue**: Hàng đợi công việc thường
+- **⚡ Microtask Queue**: Hàng đợi VIP (Promise, async/await)
 
 ```typescript
-// Event Loop giống như một nhân viên có 3 cái hộp:
-// 1. Call Stack (ngăn xếp công việc) - làm ngay lập tức
-// 2. Callback Queue (hàng đợi callback) - làm sau
-// 3. Microtask Queue (hàng đợi ưu tiên) - làm trước callback
+// 🎯 Event Loop - CƠ CHẾ HOẠT ĐỘNG CỦA JAVASCRIPT (Single-threaded)
 
-console.log('1. Bắt đầu'); // Call Stack - làm ngay
+console.log('1️⃣ Bắt đầu');
+// ⬆️ 🔥 THỰC THI NGAY: Vào Call Stack, in ra màn hình
 
 setTimeout(() => {
-  console.log('3. Timeout'); // Callback Queue - đợi
+  console.log('4️⃣ Timeout');
+  // ⬆️ 📋 VÀO CALLBACK QUEUE: Timer 0ms → Web API → Callback Queue → đợi
 }, 0);
 
 Promise.resolve().then(() => {
-  console.log('2. Promise'); // Microtask Queue - ưu tiên cao
+  console.log('3️⃣ Promise');
+  // ⬆️ ⚡ VÀO MICROTASK QUEUE: Promise resolve → Microtask Queue (ưu tiên)
 });
 
-console.log('1. Kết thúc'); // Call Stack - làm ngay
+console.log('2️⃣ Kết thúc');
+// ⬆️ 🔥 THỰC THI NGAY: Vào Call Stack, in ra màn hình
 
-// Output: "1. Bắt đầu" → "1. Kết thúc" → "2. Promise" → "3. Timeout"
+// 📊 OUTPUT THỰC TẾ: "1️⃣ Bắt đầu" → "2️⃣ Kết thúc" → "3️⃣ Promise" → "4️⃣ Timeout"
+
+/*
+🔍 QUY TRÌNH TỪNG BƯỚC:
+1. 📚 Call Stack xử lý: console.log('1️⃣') ✅ IN RA NGAY
+2. ⏰ setTimeout → 🌐 Web API (timer 0ms) → 📋 Callback Queue (đợi)
+3. 🤝 Promise.resolve() → ⚡ Microtask Queue (chờ)
+4. 📚 Call Stack xử lý: console.log('2️⃣') ✅ IN RA NGAY
+5. 📚 Call Stack trống → Event Loop kiểm tra ⚡ Microtask Queue trước → ✅ IN '3️⃣'
+6. ⚡ Microtask Queue trống → Event Loop kiểm tra 📋 Callback Queue → ✅ IN '4️⃣'
+*/
 
 // Quy trình làm việc của Event Loop:
 // 1. Làm hết việc trong Call Stack trước
@@ -566,29 +582,39 @@ console.log('1. Kết thúc'); // Call Stack - làm ngay
 // 3. Mới đến Callback Queue
 // 4. Lặp lại
 
-// Ví dụ phức tạp hơn:
-console.log('Start');
+// 🧩 VÍ DỤ PHỨC TẠP HỞN - THỨ TỰ THỰC THI:
+console.log('🏁 Start');
+// ⬆️ BƯỚC 1: Call Stack → IN NGAY
 
-setTimeout(() => console.log('Timeout 1'), 0);
+setTimeout(() => console.log('⏰ Timeout 1'), 0);
+// ⬆️ BƯỚC 2: Web API → Callback Queue (vị trí thứ 1)
 
 Promise.resolve()
   .then(() => {
-    console.log('Promise 1');
+    console.log('✅ Promise 1');
+    // ⬆️ BƯỚC 5: Microtask Queue → thực thi → tạo Promise mới
     return Promise.resolve();
   })
-  .then(() => console.log('Promise 2'));
+  .then(() => console.log('✅ Promise 2'));
+// ⬆️ BƯỚC 3: Microtask Queue (chain promise)
 
-setTimeout(() => console.log('Timeout 2'), 0);
+setTimeout(() => console.log('⏰ Timeout 2'), 0);
+// ⬆️ BƯỚC 4: Web API → Callback Queue (vị trí thứ 2)
 
-console.log('End');
+console.log('🏁 End');
+// ⬆️ BƯỚC 6: Call Stack → IN NGAY
 
-// Output:
-// "Start"
-// "End"
-// "Promise 1"
-// "Promise 2"
-// "Timeout 1"
-// "Timeout 2"
+/*
+📊 OUTPUT THỰC TẾ:
+🏁 Start          → 📚 Call Stack (ngay lập tức)
+🏁 End            → 📚 Call Stack (ngay lập tức)
+✅ Promise 1      → ⚡ Microtask Queue (ưu tiên cao)
+✅ Promise 2      → ⚡ Microtask Queue (promise chain)
+⏰ Timeout 1      → 📋 Callback Queue (sau cùng)
+⏰ Timeout 2      → 📋 Callback Queue (sau cùng)
+
+💡 GHI NHỚ: MICROTASK QUEUE LUÔN ĐƯỢC XỬ LÝ TRƯỚC CALLBACK QUEUE!
+*/
 
 // Web APIs trong Browser:
 // - setTimeout/setInterval → Callback Queue
@@ -627,32 +653,52 @@ demonstrateEventLoop();
 
 **Trả lời:**
 
-```typescript
-// 1. Closure cơ bản - Data Privacy
-function createCounter() {
-  let count = 0; // Private variable
+**🔐 Closure là gì?**
+- **Closure = Function + Lexical Environment** (môi trường từ vựng)
+- **Function có thể "nhớ" và truy cập biến từ scope bên ngoài**
+- **Tạo ra Data Privacy** - biến private không thể truy cập từ bên ngoài
 
+```typescript
+// 🏭 1. CLOSURE FACTORY PATTERN - Tạo ra Data Privacy
+function createCounter(): {
+  increment(): number;
+  decrement(): number;
+  getCount(): number;
+} {
+  // 🔒 PRIVATE VARIABLE - chỉ có thể truy cập từ bên trong
+  let count: number = 0;
+
+  // 🏠 RETURN OBJECT với các method có Closure
   return {
-    increment() {
-      count++;
+    increment(): number {
+      count++; // 🎯 CLOSURE: truy cập biến count từ outer scope
       return count;
     },
-    decrement() {
-      count--;
+    decrement(): number {
+      count--; // 🎯 CLOSURE: truy cập biến count từ outer scope
       return count;
     },
-    getCount() {
-      return count;
+    getCount(): number {
+      return count; // 🎯 CLOSURE: đọc biến count từ outer scope
     }
-    // count không thể access trực tiếp từ bên ngoài
+    // ❌ count KHÔNG THỂ truy cập trực tiếp từ bên ngoài - TRUE PRIVACY!
   };
 }
 
 const counter = createCounter();
-console.log(counter.increment()); // 1
-console.log(counter.increment()); // 2
-console.log(counter.getCount()); // 2
-// console.log(counter.count); // undefined - private!
+console.log(counter.increment()); // ✅ 1
+console.log(counter.increment()); // ✅ 2
+console.log(counter.getCount());  // ✅ 2
+console.log(counter.count);       // ❌ undefined - PRIVATE!
+
+/*
+🧠 TẠI SAO CLOSURE HOẠT ĐỘNG?
+1. createCounter() tạo ra một execution context với biến count
+2. Các inner functions (increment, decrement, getCount) được tạo trong context này
+3. Khi createCounter() return object, các function vẫn "nhớ" biến count
+4. Biến count vẫn "sống" trong memory vì các function vẫn reference đến nó
+5. Đây chính là CLOSURE - function + environment của nó được preserve
+*/
 
 // 2. Module Pattern với IIFE
 const CalculatorModule = (function() {
@@ -3059,46 +3105,54 @@ processor.process(['data1', 'data2', 'data3']).then(results => {
 - **useRef**: Tham chiếu DOM elements hoặc lưu giá trị mutable
 
 ```typescript
-// 1. useState - Quản lý state trong functional component
+// 🎯 1. useState - QUẢN LÝ STATE TRONG FUNCTIONAL COMPONENT
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 
-// Interface định nghĩa kiểu dữ liệu cho user
+// 📋 Interface định nghĩa kiểu dữ liệu cho user
 interface User {
   name: string;
   age: number;
 }
 
 function Counter(): JSX.Element {
-  // useState với kiểu number
+  // 🔢 useState với PRIMITIVE TYPE
   const [count, setCount] = useState<number>(0);
+  // ⬆️ Syntax: [currentValue, setterFunction] = useState(initialValue)
 
-  // useState với kiểu object - cần interface
+  // 📦 useState với OBJECT TYPE - cần interface cho TypeScript
   const [user, setUser] = useState<User>({ name: '', age: 0 });
 
-  // ❌ Cách sai - thay đổi state trực tiếp (mutate)
+  // ❌❌❌ CÁCH SAI - MUTATE STATE TRỰC TIẾP (Đừng bao giờ làm!)
   const handleWrongUpdate = (): void => {
-    user.name = 'John'; // ĐỪNG LÀM NHƯ VẦY - thay đổi trực tiếp object
-    setUser(user); // React sẽ không detect được sự thay đổi
+    user.name = 'John'; // 🚨 NGUY HIỂM: thay đổi trực tiếp object gốc
+    setUser(user); // 🚨 React KHÔNG DETECT được thay đổi vì reference không đổi!
+    // Result: Component sẽ KHÔNG re-render!
   };
 
-  // ✅ Cách đúng - cập nhật immutable (không thay đổi object gốc)
+  // ✅✅✅ CÁCH ĐÚNG - IMMUTABLE UPDATE (Luôn làm như này!)
   const handleCorrectUpdate = (): void => {
     setUser(prev => ({
-      ...prev, // Sao chép tất cả properties cũ
-      name: 'John' // Chỉ thay đổi property cần thiết
+      ...prev, // 📄 SPREAD: Sao chép tất cả properties cũ
+      name: 'John' // 🎯 UPDATE: Chỉ thay đổi property cần thiết
     }));
+    // Result: React detect thay đổi → Component re-render!
   };
 
-  // Functional updates - tốt hơn cho performance
+  // 🚀 FUNCTIONAL UPDATES - Tối ưu cho performance
   const increment = useCallback((): void => {
-    setCount(prev => prev + 1); // Tốt hơn setCount(count + 1) vì tránh stale closure
+    setCount(prev => prev + 1);
+    // ⬆️ 💡 WHY BETTER: Tránh stale closure, luôn dùng giá trị mới nhất
+    // ❌ Thay vì: setCount(count + 1) - có thể dùng giá trị cũ
   }, []);
 
-  // Lazy initial state - chỉ chạy 1 lần khi component mount
+  // ⚡ LAZY INITIAL STATE - Tối ưu cho expensive calculations
   const [expensiveValue] = useState<number>(() => {
-    console.log('Chỉ chạy 1 lần khi component được tạo');
+    console.log('🏃‍♂️ CHỈ CHẠY 1 LẦN khi component mount');
+    // 💰 Expensive calculation chỉ chạy lần đầu, không chạy lại mỗi re-render
     return Array.from({ length: 1000 }, (_, i) => i).reduce((a, b) => a + b, 0);
   });
+  // ⬆️ 💡 Nếu không dùng arrow function: useState(expensiveCalculation())
+  //     thì calculation sẽ chạy EVERY RENDER!
 
   return (
     <div>
@@ -3741,21 +3795,36 @@ function PerformanceExample() {
 - **Tại sao không dùng index**: Index có thể thay đổi khi thêm/xóa item, gây ra bugs
 
 ```typescript
-// 1. Virtual DOM Concept (Khái niệm Virtual DOM)
+// 🎭 1. VIRTUAL DOM CONCEPT - Tại sao React nhanh?
+
 /*
-Real DOM vs Virtual DOM:
+🏠 REAL DOM vs 🎭 VIRTUAL DOM COMPARISON:
 
-Real DOM:
-- Browser's native API
-- Heavy operations
-- Triggers layout/paint on changes
-- Expensive to manipulate
+🏠 REAL DOM (Browser's Native):
+❌ HEAVY: Mỗi element = complex object với 100+ properties
+❌ SLOW: Mỗi thay đổi → immediate browser re-render
+❌ EXPENSIVE: Update 1 element → có thể trigger reflow/repaint whole page
+❌ SYNCHRONOUS: Block UI thread khi update
+❌ INEFFICIENT: Không có optimization cho multiple updates
 
-Virtual DOM:
-- JavaScript representation of Real DOM
-- Lightweight objects
-- Fast comparisons (diffing)
-- Batch updates to Real DOM
+🎭 VIRTUAL DOM (React's JavaScript Objects):
+✅ LIGHTWEIGHT: Chỉ là plain JavaScript objects với vài properties
+✅ FAST: So sánh objects trong memory (microseconds)
+✅ SMART: Batch multiple updates → 1 DOM operation cuối cùng
+✅ ASYNCHRONOUS: Không block UI thread
+✅ OPTIMIZED: Diffing algorithm tìm minimal changes
+
+🔄 DIFFING ALGORITHM WORKFLOW:
+1. 📝 State thay đổi → React tạo Virtual DOM tree mới
+2. 🔍 So sánh (Diff) Virtual DOM cũ vs Virtual DOM mới
+3. 🎯 Tìm ra MINIMAL changes cần thiết (chỉ những gì thực sự khác)
+4. 📦 Batch tất cả updates lại → 1 DOM operation duy nhất
+5. 🚀 Browser chỉ re-render/repaint những gì thay đổi
+
+💡 PERFORMANCE EXAMPLE:
+- List 1000 items, thay đổi 1 item:
+  - Không Virtual DOM: Re-render cả 1000 items ❌
+  - Có Virtual DOM: Chỉ update 1 item đó ✅ (99.9% faster!)
 */
 
 // 2. Tại sao Keys quan trọng trong Lists
@@ -3789,34 +3858,53 @@ function BadListExample(): JSX.Element {
     <div>
       <button onClick={addUser}>Add User</button>
 
-      {/* ❌ BAD: Using index as key */}
-      <h3>Bad Example (index as key):</h3>
+      {/* ❌❌❌ BAD EXAMPLE - Using index as key */}
+      <h3>🚨 Bad Example (index as key):</h3>
       {users.map((user, index) => (
         <UserRow
-          key={index} // ❌ WRONG: index changes when items are added/removed
+          key={index} // 🚨 NGUY HIỂM: index thay đổi khi add/remove items
           user={user}
           onRemove={removeUser}
         />
       ))}
+      {/*
+      🐛 VẤN ĐỀ KHI DÙNG INDEX:
+      - Thêm user ở đầu → tất cả index thay đổi → React nghĩ tất cả items đều thay đổi
+      - Xóa user ở giữa → các index sau bị shift → React re-render không cần thiết
+      - State của component có thể bị mix-up (input values, focus, etc.)
+      */}
 
-      {/* ❌ BAD: No key at all */}
-      <h3>Worse Example (no key):</h3>
+      {/* ❌❌ WORSE EXAMPLE - No key at all */}
+      <h3>💀 Worse Example (no key):</h3>
       {users.map((user) => (
-        <UserRow // ❌ WRONG: React will warn about missing key
+        <UserRow // 💀 TỆ NHẤT: React sẽ dùng index internally + warning
           user={user}
           onRemove={removeUser}
         />
       ))}
+      {/*
+      💀 KẾT QUẢ KHI KHÔNG CÓ KEY:
+      - React warning trong console: "Each child should have unique key prop"
+      - Performance tệ nhất có thể
+      - Bugs không thể predict được với component state
+      */}
 
-      {/* ✅ GOOD: Using stable unique ID as key */}
-      <h3>Good Example (stable ID as key):</h3>
+      {/* ✅✅✅ GOOD EXAMPLE - Using stable unique ID */}
+      <h3>✨ Good Example (stable ID as key):</h3>
       {users.map((user) => (
         <UserRow
-          key={user.id} // ✅ CORRECT: stable, unique identifier
+          key={user.id} // ✅ PERFECT: stable, unique, không thay đổi theo thời gian
           user={user}
           onRemove={removeUser}
         />
       ))}
+      {/*
+      🎯 TẠI SAO user.id LÀ KEY TỐT NHẤT:
+      - user.id không bao giờ thay đổi → React biết chính xác item nào là item nào
+      - Thêm/xóa items → React chỉ update đúng những item cần thiết
+      - Component state được preserve correctly (input focus, scroll position, etc.)
+      - Performance optimization tối đa với O(1) lookup
+      */}
     </div>
   );
 }
@@ -4460,24 +4548,45 @@ function MemoVsCallback(): JSX.Element {
   const [items, setItems] = useState<string[]>(['apple', 'banana', 'cherry']);
   const [multiplier, setMultiplier] = useState<number>(2);
 
-  // ✅ useMemo - cache KẾT QUẢ của một phép tính
+  // ✅✅✅ useMemo - CACHE KẾT QUẢ của một phép tính
   const expensiveValue = useMemo<number>(() => {
     console.log('🔢 Đang tính toán giá trị đắt...');
-    // Phép tính phức tạp - chỉ chạy lại khi dependencies thay đổi
+    // 💰 EXPENSIVE CALCULATION - chỉ chạy lại khi dependencies thay đổi
     return items.reduce((sum, item) => sum + item.length, 0) * multiplier;
-  }, [items, multiplier]); // Chỉ tính lại khi items hoặc multiplier thay đổi
+  }, [items, multiplier]);
+  // ⬆️ 🎯 CHỈ TÍNH LẠI khi items hoặc multiplier thay đổi
+  // ⬆️ 🚀 SKIP CALCULATION nếu dependencies không đổi
 
-  // ✅ useCallback - cache một FUNCTION
+  // ✅✅✅ useCallback - CACHE một FUNCTION
   const addItem = useCallback((): void => {
     console.log('🔧 Tạo function addItem...');
     setItems(prev => [...prev, `item-${Date.now()}`]);
-  }, []); // Function reference không đổi qua các lần re-render
+  }, []); // 🔒 DEPENDENCIES EMPTY = function reference KHÔNG BAO GIỜ thay đổi
+  // ⬆️ 🎯 SAME FUNCTION REFERENCE qua tất cả re-renders
 
-  // ❌ CÁCH SAI: Tạo function mới mỗi lần render
+  // ❌❌❌ CÁCH SAI - Tạo function mới mỗi lần render
   const badAddItem = (): void => {
     console.log('❌ Tạo function mới mỗi lần render');
     setItems(prev => [...prev, `item-${Date.now()}`]);
   };
+  // ⬆️ 🚨 NEW FUNCTION REFERENCE mỗi re-render
+  // ⬆️ 💸 Làm child components re-render không cần thiết nếu pass function này làm prop
+
+  /*
+  🧠 KHI NÀO DÙNG useMemo vs useCallback?
+
+  📊 useMemo - Dùng khi:
+  ✅ Có expensive calculation (sort, filter, reduce large arrays)
+  ✅ Tạo object/array mới để pass xuống child components
+  ✅ Derived state từ props/state
+  ❌ KHÔNG dùng cho simple calculations (a + b, string concatenation)
+
+  🎯 useCallback - Dùng khi:
+  ✅ Pass function xuống memoized child components
+  ✅ Function là dependency của useEffect/useMemo khác
+  ✅ Function được tạo trong expensive component
+  ❌ KHÔNG dùng nếu child component không được memoized
+  */
 
   console.log('🔄 Component rendered');
 
