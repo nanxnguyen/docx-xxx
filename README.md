@@ -1,8 +1,11 @@
-# 📚 Câu Hỏi Frontend Interview - Từ Cơ Bản Đến Senior
-
-> **Tổng cộng: 23 câu hỏi cơ bản/trung cấp + 6 câu nâng cao + 7 câu React advanced + 10 câu TypeScript + 15 câu CSS/HTML + 9 câu kinh nghiệm = 70 câu hỏi**
+# 📚 Câu Hỏi Frontend
+> **Tổng cộng: 23 câu hỏi cơ bản/trung cấp + 25 câu nâng cao + 7 câu React advanced + 10 câu TypeScript + 15 câu CSS/HTML + 9 câu kinh nghiệm = 89 câu hỏi**
 >
-> **Tất cả examples được viết bằng TypeScript với chú thích tiếng Việt**
+> **Tất cả examples được viết bằng TypeScript với chú thích tiếng Việt chi tiết**
+> Highlight các nội dung quan trọng để dễ hiểu và nhớ lâu
+> Nội dung cảu mỗi câu phải đảm bảo: phần trả lời thì trả lời chi tiết đến phần code hỗ trợ cho phần trả lời kèm chú thiích => rồi đến ví dụ dễ hiểu,....
+
+
 
 ## 🚀 **Quick Navigation**
 - 📋 [Mục Lục Tổng Kết](#📋-mục-lục-tổng-kết)
@@ -54,13 +57,48 @@
 - **[Q9](#q9-code-splitting-và-lazy-loading-trong-react)**: Code Splitting và Lazy Loading trong React?
 - **[Q10](#q10-higher-order-components-hoc-vs-render-props-vs-custom-hooks)**: Higher-Order Components (HOC) vs Render Props vs Custom Hooks?
 
-### 🔴 **Câu Hỏi Nâng Cao (Senior/Expert Level) - 6 câu**
+### 🔴 **Câu Hỏi Nâng Cao (Senior/Expert Level) - 25 câu**
+
+#### **Architecture & Design Patterns (4 câu)**
 - **[Q16](#q16-thiết-kế-kiến-trúc-micro-frontend-cho-ứng-dụng-scale-lớn)**: Thiết kế kiến trúc Micro-frontend cho ứng dụng scale lớn?
-- **[Q17](#q17-implement-advanced-caching-strategies-cho-production-apps)**: Implement advanced caching strategies cho production apps?
 - **[Q18](#q18-design-pattern-cho-large-scale-react-applications)**: Design Pattern cho large-scale React applications?
+- **[Q44](#q44-microfrontend-vs-monorepo-architecture)**: Microfrontend vs Monorepo architecture?
+- **[Q54](#q54-nx-monorepo-architecture-và-scalability)**: NX Monorepo architecture và scalability?
+
+#### **Module Systems & Build Tools (4 câu)**
+- **[Q22](#q22-esmodule-vs-commonjs---sự-khác-biệt-và-migration-strategies)**: ESModule vs CommonJS - Sự khác biệt và migration strategies?
+- **[Q23](#q23-compiler-vs-transpiler-vs-bundler---babel-webpack-vite)**: Compiler vs Transpiler vs Bundler - Babel, Webpack, Vite?
+- **[Q24](#q24-webpack-vs-vite---performance-và-developer-experience)**: Webpack vs Vite - Performance và Developer Experience?
+- **[Q25](#q25-babel-configuration-và-plugin-ecosystem)**: Babel configuration và plugin ecosystem?
+
+#### **Performance & Optimization (4 câu)**
 - **[Q19](#q19-memory-leaks-detection-và-optimization-trong-react-apps)**: Memory leaks detection và optimization trong React apps?
+- **[Q28](#q28-web-vitals-metrics---measuring-website-performance)**: Web Vitals Metrics - Measuring website performance?
+- **[Q29](#q29-performance-optimization-strategies-cho-production)**: Performance optimization strategies cho production?
+- **[Q30](#q30-caching-strategies---browser-cdn-service-worker)**: Caching strategies - Browser, CDN, Service Worker?
+
+#### **Security & Storage (3 câu)**
 - **[Q20](#q20-implement-comprehensive-security-measures-cho-frontend-apps)**: Implement comprehensive security measures cho frontend apps?
+- **[Q35](#q35-browser-storage-comparison---cookie-localstorage-sessionstorage-indexeddb)**: Browser storage comparison - Cookie, LocalStorage, SessionStorage, IndexedDB?
+- **[Q36](#q36-authentication-strategies---jwt-oauth-refresh-token)**: Authentication strategies - JWT, OAuth, Refresh Token?
+
+#### **Development Workflow & Quality (4 câu)**
 - **[Q21](#q21-advanced-debugging-và-production-monitoring)**: Advanced debugging và production monitoring?
+- **[Q32](#q32-git-branching-strategies---rebase-vs-merge-vs-feature-flags)**: Git branching strategies - Rebase vs Merge vs Feature Flags?
+- **[Q33](#q33-frontend-project-structure-và-scalability-design)**: Frontend project structure và scalability design?
+- **[Q34](#q34-code-quality-tools---eslint-prettier-husky-setup)**: Code quality tools - ESLint, Prettier, Husky setup?
+
+#### **Testing & Code Quality (2 câu)**
+- **[Q39](#q39-writing-testable-code---best-practices-và-patterns)**: Writing testable code - Best practices và patterns?
+- **[Q40](#q40-external-library-vs-self-implementation-trade-offs)**: External library vs Self-implementation trade-offs?
+
+#### **Communication & Real-time (3 câu)**
+- **[Q42](#q42-frontend-backend-communication-strategies)**: Frontend-Backend communication strategies?
+- **[Q43](#q43-websocket-vs-polling-vs-server-sent-events)**: WebSocket vs Polling vs Server-Sent Events?
+- **[Q45](#q45-file-upload-download-optimization-strategies)**: File Upload/Download optimization strategies?
+
+#### **Advanced Concepts (1 câu)**
+- **[Q31](#q31-what-happens-when-you-type-url-in-browser)**: What happens when you type a URL in the browser?
 
 ### 🚀 **React Advanced Topics & Modern Features - 7 câu**
 - **[Q24](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng)**: React Concurrent Mode và Suspense - Cách hoạt động và ứng dụng?
@@ -154,7 +192,7 @@
 
 
 ## Other
-NPM và các thư viện dùng cho frontend phổ biến và tin cậy, giới thiệu các nhiều các tốt
+NPM và các thư viện dùng cho frontend phổ biến và tin cậy, giới thiệu các nhiều các tốt phụ thuộc vào kiến thức và kinh nghiệm của bạn
 JS: lodash,
 mã hoá: crtypro, bryppt,....
 drag: ...,
@@ -245,14 +283,14 @@ const shallowCopy1: UserProfile = { ...original }; // Spread operator
 const shallowCopy2: UserProfile = Object.assign({}, original);
 
 shallowCopy1.name = "Jane"; // ✅ OK - không ảnh hưởng original
-shallowCopy1.address.city = "LA"; // ❌ Vấn đề - ảnh hưởng original
+shallowCopy1.address.city = "LA"; // ❌ Vấn đề - ảnh hưởng original, thay đổi đối tượng copy vấn ảnh hương đến đôi tượng gốc
 console.log(original.address.city); // "LA" - đã bị thay đổi vì address là reference
 
 // Deep Copy methods (Sao chép sâu)
 // Method 1: JSON (hạn chế - không hoạt động với functions, dates, undefined...)
 const deepCopy1: UserProfile = JSON.parse(JSON.stringify(original));
 
-// Method 2: Custom recursive function
+// Method 2: Custom recursive function, tụ viết function
 function deepCopy<T>(obj: T): T {
   if (obj === null || typeof obj !== "object") return obj;
 
@@ -273,7 +311,7 @@ const deepCopy2 = deepCopy(original);
 // Method 3: Using Lodash
 // const deepCopy3 = _.cloneDeep(original);
 
-// Method 4: Using structuredClone (modern browsers)
+// Method 4: Using structuredClone (modern browsers) thuộc JS
 const deepCopy4 = structuredClone(original);
 
 // Test deep copy
@@ -289,6 +327,7 @@ const combined = [...arr1, ...arr2]; // [1,2,3,4,5,6]
 // Object spreading
 const obj1 = { a: 1, b: 2 };
 const obj2 = { c: 3, d: 4 };
+// gộp đối tương lại => combile object
 const combined = { ...obj1, ...obj2 }; // {a:1, b:2, c:3, d:4}
 
 // Function arguments
@@ -315,6 +354,8 @@ console.log(others); // [3, 4, 5]
 
 const { name, ...restProps } = { name: "John", age: 30, city: "NYC" };
 console.log(restProps); // { age: 30, city: "NYC" }
+
+// destructuring + fallback
 ```
 
 #### Q2: Sự khác biệt giữa `var`, `let`, và `const`?
@@ -5614,38 +5655,149 @@ Performance Guidelines:
 #### Q4: useState Hook hoạt động như thế nào?
 
 **Trả lời:**
-useState cho phép thêm state vào functional components.
+
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **useState** là **foundation** của React Hooks
+- Hiểu cách hoạt động giúp **tránh bugs** và **optimize performance**
+- Essential cho **state management** trong functional components
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **useState** cho phép thêm **state** vào functional components
+- **Returns array** với 2 elements: `[currentValue, setterFunction]`
+- **Re-render** component khi state thay đổi
+- **Preserves state** giữa các renders
+
+**🧠 GHI NHỚ:**
+- **useState** = **U**pdate **S**tate **E**asily
+- **Always use functional updates** để tránh stale closure
+- **Immutable updates** cho objects và arrays
 
 ```typescript
-function Counter() {
-  const [count, setCount] = useState(0);
-  const [user, setUser] = useState({ name: '', email: '' });
+// 🎯 1. useState CƠ BẢN - PRIMITIVE TYPES
+import React, { useState, useCallback } from 'react';
 
-  // Cập nhật đơn giản
-  const increment = () => setCount(count + 1);
+// 📋 Interface định nghĩa kiểu dữ liệu cho User
+interface User {
+  name: string;
+  email: string;
+  age?: number; // Optional property
+}
 
-  // Cập nhật với function (tránh stale closure)
-  const incrementCorrect = () => setCount(prevCount => prevCount + 1);
+function Counter(): JSX.Element {
+  // 🔢 useState với NUMBER - primitive type
+  const [count, setCount] = useState<number>(0);
+  // ⬆️ Syntax: [currentValue, setterFunction] = useState<Type>(initialValue)
 
-  // Cập nhật object state
-  const updateUser = (field, value) => {
+  // 📦 useState với OBJECT - cần interface cho TypeScript
+  const [user, setUser] = useState<User>({
+    name: '',
+    email: ''
+  });
+
+  // ❌❌❌ CÁCH SAI - STALE CLOSURE (Đừng bao giờ làm!)
+  const increment = (): void => {
+    setCount(count + 1); // 🚨 NGUY HIỂM: có thể dùng giá trị cũ
+    // Nếu user click nhanh → có thể miss updates!
+  };
+
+  // ✅✅✅ CÁCH ĐÚNG - FUNCTIONAL UPDATE (Luôn làm như này!)
+  const incrementCorrect = useCallback((): void => {
+    setCount(prevCount => prevCount + 1);
+    // ⬆️ 💡 WHY BETTER: Luôn dùng giá trị mới nhất, tránh stale closure
+  }, []); // Empty dependency array vì setCount stable
+
+  // 🎯 OBJECT STATE UPDATE - Immutable pattern
+  const updateUser = useCallback((field: keyof User, value: string | number): void => {
     setUser(prevUser => ({
-      ...prevUser,
+      ...prevUser, // 📄 SPREAD: Sao chép tất cả properties cũ
+      [field]: value // 🎯 UPDATE: Chỉ thay đổi property cần thiết
+    }));
+    // ⬆️ 💡 WHY SPREAD: Tạo object mới → React detect thay đổi → re-render
+  }, []);
+
+  // 🚀 LAZY INITIAL STATE - Tối ưu cho expensive calculations
+  const [expensiveValue] = useState<number>(() => {
+    console.log('🏃‍♂️ CHỈ CHẠY 1 LẦN khi component mount');
+    // 💰 Expensive calculation chỉ chạy lần đầu
+    return Array.from({ length: 1000 }, (_, i) => i).reduce((a, b) => a + b, 0);
+  });
+
+  // 📊 COMPLEX STATE với multiple values
+  const [formData, setFormData] = useState<{
+    username: string;
+    password: string;
+    rememberMe: boolean;
+  }>({
+    username: '',
+    password: '',
+    rememberMe: false
+  });
+
+  // 🎯 UPDATE COMPLEX STATE
+  const updateFormField = useCallback((field: string, value: string | boolean): void => {
+    setFormData(prev => ({
+      ...prev,
       [field]: value
     }));
-  };
+  }, []);
 
   return (
     <div>
-      <p>Count: {count}</p>
-      <button onClick={increment}>Increment</button>
-      <button onClick={incrementCorrect}>Increment Correct</button>
+      {/* 🔢 Counter Display */}
+      <div>
+        <p>Count: {count}</p>
+        <p>Expensive Value: {expensiveValue}</p>
+        <button onClick={increment}>❌ Increment (Wrong)</button>
+        <button onClick={incrementCorrect}>✅ Increment (Correct)</button>
+      </div>
 
-      <input
-        value={user.name}
-        onChange={(e) => updateUser('name', e.target.value)}
-        placeholder="Name"
-      />
+      {/* 👤 User Form */}
+      <div>
+        <h3>User Information</h3>
+        <input
+          type="text"
+          value={user.name}
+          onChange={(e) => updateUser('name', e.target.value)}
+          placeholder="Tên người dùng"
+        />
+        <input
+          type="email"
+          value={user.email}
+          onChange={(e) => updateUser('email', e.target.value)}
+          placeholder="Email"
+        />
+        <input
+          type="number"
+          value={user.age || ''}
+          onChange={(e) => updateUser('age', parseInt(e.target.value) || 0)}
+          placeholder="Tuổi"
+        />
+      </div>
+
+      {/* 📝 Complex Form */}
+      <div>
+        <h3>Login Form</h3>
+        <input
+          type="text"
+          value={formData.username}
+          onChange={(e) => updateFormField('username', e.target.value)}
+          placeholder="Username"
+        />
+        <input
+          type="password"
+          value={formData.password}
+          onChange={(e) => updateFormField('password', e.target.value)}
+          placeholder="Password"
+        />
+        <label>
+          <input
+            type="checkbox"
+            checked={formData.rememberMe}
+            onChange={(e) => updateFormField('rememberMe', e.target.checked)}
+          />
+          Remember me
+        </label>
+      </div>
     </div>
   );
 }
@@ -5661,158 +5813,1019 @@ function Counter() {
 
 **Trả lời:**
 
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **useEffect** thay thế **lifecycle methods** trong functional components
+- Hiểu **dependency array** giúp tránh **infinite loops** và **memory leaks**
+- Essential cho **side effects** như API calls, subscriptions, timers
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **useEffect** = **U**se **E**ffects **E**asily
+- **Runs after render** (khác với useLayoutEffect)
+- **Cleanup function** để tránh memory leaks
+- **Dependency array** control khi nào effect chạy
+
+**🧠 GHI NHỚ:**
+- **No dependencies** `[]` = componentDidMount
+- **With dependencies** `[dep1, dep2]` = componentDidUpdate
+- **Cleanup function** = componentWillUnmount
+- **Always cleanup** subscriptions và timers
+
 ```typescript
-function ComponentLifecycle() {
-  const [count, setCount] = useState(0);
-  const [user, setUser] = useState(null);
+// 🎯 1. useEffect CƠ BẢN - LIFECYCLE MAPPING
+import React, { useState, useEffect, useRef } from 'react';
 
-  // componentDidMount
+// 📋 Interface cho API response
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+  avatar?: string;
+}
+
+interface UserProfileProps {
+  userId: number;
+}
+
+function UserProfile({ userId }: UserProfileProps): JSX.Element {
+  // 🔢 State management
+  const [user, setUser] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 🎯 1. componentDidMount - Chạy 1 lần khi component mount
   useEffect(() => {
-    console.log('Component mounted');
-    fetchUser();
-  }, []); // Empty dependency array
+    console.log('🏃‍♂️ componentDidMount: Component đã mount');
 
-  // componentDidUpdate cho count
-  useEffect(() => {
-    console.log('Count updated:', count);
-    document.title = `Count: ${count}`;
-  }, [count]); // Dependency array với count
+    // 🚀 Fetch user data khi component mount
+    fetchUserData(userId);
 
-  // componentWillUnmount
-  useEffect(() => {
-    const timer = setInterval(() => {
-      console.log('Timer tick');
-    }, 1000);
-
+    // 🧹 Cleanup function (componentWillUnmount)
     return () => {
-      console.log('Cleanup timer');
-      clearInterval(timer);
+      console.log('🧹 componentWillUnmount: Component sẽ unmount');
+      // Cancel any pending requests
     };
-  }, []);
+  }, []); // ⬆️ Empty dependency array = chỉ chạy 1 lần
 
-  // Combination của multiple effects
+  // 🎯 2. componentDidUpdate - Chạy khi userId thay đổi
   useEffect(() => {
-    if (user) {
-      const subscription = subscribeToUserUpdates(user.id);
-      return () => subscription.unsubscribe();
-    }
-  }, [user]);
+    console.log('🔄 componentDidUpdate: userId đã thay đổi');
 
-  const fetchUser = async () => {
+    // 🚀 Fetch new user data khi userId thay đổi
+    if (userId) {
+      fetchUserData(userId);
+    }
+  }, [userId]); // ⬆️ Dependency array = chạy khi userId thay đổi
+
+  // 🎯 3. componentDidMount + componentDidUpdate - Chạy mỗi render
+  useEffect(() => {
+    console.log('🔄 Mỗi render: Component đã render');
+
+    // 📊 Update document title
+    document.title = user ? `${user.name} - Profile` : 'Loading...';
+  }); // ⬆️ No dependency array = chạy mỗi render
+
+  // 🚀 API call function
+  const fetchUserData = async (id: number): Promise<void> => {
     try {
-      const userData = await api.getUser();
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch(`/api/users/${id}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const userData: UserData = await response.json();
       setUser(userData);
-    } catch (error) {
-      console.error('Failed to fetch user:', error);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) return <div>🔄 Loading...</div>;
+  if (error) return <div>❌ Error: {error}</div>;
+  if (!user) return <div>👤 User not found</div>;
 
   return (
     <div>
-      <p>Count: {count}</p>
-      <button onClick={() => setCount(c => c + 1)}>Increment</button>
-      {user && <p>User: {user.name}</p>}
+      <h2>👤 User Profile</h2>
+      <p>Name: {user.name}</p>
+      <p>Email: {user.email}</p>
+      {user.avatar && <img src={user.avatar} alt={user.name} />}
     </div>
   );
 }
-```
 
-#### Q6: Custom Hooks - Cách tạo và sử dụng?
+// 🎯 2. useEffect với CLEANUP - Tránh memory leaks
+function TimerComponent(): JSX.Element {
+  const [count, setCount] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-**Trả lời:**
+  // 🕐 Timer effect với cleanup
+  useEffect(() => {
+    if (isRunning) {
+      console.log('⏰ Starting timer');
 
-```typescript
-// Custom Hook: useLocalStorage
-function useLocalStorage(key, initialValue) {
-  const [storedValue, setStoredValue] = useState(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error('Error reading localStorage:', error);
-      return initialValue;
+      // 🚀 Start interval
+      intervalRef.current = setInterval(() => {
+        setCount(prev => prev + 1);
+      }, 1000);
+    } else {
+      console.log('⏹️ Stopping timer');
+
+      // 🧹 Clear interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     }
-  });
 
-  const setValue = (value) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.error('Error setting localStorage:', error);
-    }
-  };
+    // 🧹 Cleanup function - QUAN TRỌNG để tránh memory leaks
+    return () => {
+      console.log('🧹 Cleanup: Clearing timer');
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isRunning]); // ⬆️ Chạy khi isRunning thay đổi
 
-  return [storedValue, setValue];
+  // 🎯 Event listener với cleanup
+  useEffect(() => {
+    const handleResize = (): void => {
+      console.log('📏 Window resized:', window.innerWidth, window.innerHeight);
+    };
+
+    // 🚀 Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // 🧹 Cleanup function
+    return () => {
+      console.log('🧹 Cleanup: Removing resize listener');
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []); // ⬆️ Chỉ chạy 1 lần khi mount
+
+  return (
+    <div>
+      <h3>⏰ Timer: {count}</h3>
+      <button onClick={() => setIsRunning(!isRunning)}>
+        {isRunning ? '⏹️ Stop' : '▶️ Start'}
+      </button>
+    </div>
+  );
 }
 
-// Custom Hook: useFetch
-function useFetch(url) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// 🎯 3. useEffect với COMPLEX DEPENDENCIES
+function SearchComponent(): JSX.Element {
+  const [query, setQuery] = useState<string>('');
+  const [results, setResults] = useState<string[]>([]);
+  const [debouncedQuery, setDebouncedQuery] = useState<string>('');
+
+  // 🎯 Debounce search query
+  useEffect(() => {
+    console.log('⏱️ Debouncing query:', query);
+
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 500); // 500ms delay
+
+    // 🧹 Cleanup previous timer
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [query]); // ⬆️ Chạy khi query thay đổi
+
+  // 🎯 Search effect với debounced query
+  useEffect(() => {
+    if (!debouncedQuery.trim()) {
+      setResults([]);
+      return;
+    }
+
+    console.log('🔍 Searching for:', debouncedQuery);
+
+    // 🚀 Simulate API call
+    const searchResults = [
+      `Result 1 for "${debouncedQuery}"`,
+      `Result 2 for "${debouncedQuery}"`,
+      `Result 3 for "${debouncedQuery}"`
+    ];
+
+    setResults(searchResults);
+  }, [debouncedQuery]); // ⬆️ Chạy khi debouncedQuery thay đổi
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Tìm kiếm..."
+      />
+      <div>
+        {results.map((result, index) => (
+          <div key={index}>{result}</div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// 🎯 4. useEffect với CUSTOM HOOK
+function useDocumentTitle(title: string): void {
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = title;
+
+    // 🧹 Restore previous title khi component unmount
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [title]); // ⬆️ Chạy khi title thay đổi
+}
+
+// 🎯 5. useEffect với ASYNC FUNCTIONS
+function AsyncDataComponent(): JSX.Element {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const abortController = new AbortController();
+    let cancelled = false; // Flag để tránh race conditions
 
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
+      setLoading(true);
+
       try {
-        setLoading(true);
-        const response = await fetch(url, {
-          signal: abortController.signal
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
+        const response = await fetch('/api/data');
         const result = await response.json();
-        setData(result);
-        setError(null);
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          setError(err.message);
+
+        // 🚨 Check if component still mounted
+        if (!cancelled) {
+          setData(result);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error('Error fetching data:', error);
         }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
 
-    return () => abortController.abort();
-  }, [url]);
+    // 🧹 Cleanup function
+    return () => {
+      cancelled = true; // Cancel request nếu component unmount
+    };
+  }, []); // ⬆️ Chỉ chạy 1 lần
 
-  return { data, loading, error };
+  if (loading) return <div>🔄 Loading...</div>;
+  if (!data) return <div>📭 No data</div>;
+
+  return <div>📊 Data: {JSON.stringify(data)}</div>;
+}
+```
+
+### **3. Cải thiện Q6: Custom Hooks**
+
+**Trả lời:**
+
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **Custom Hooks** giúp **tái sử dụng logic** giữa các components
+- **Separation of concerns** - tách logic khỏi UI
+- **Testing** dễ dàng hơn với isolated logic
+- **Code organization** tốt hơn cho large applications
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **Custom Hook** = function bắt đầu với "use"
+- **Can call other hooks** (useState, useEffect, etc.)
+- **Returns** state, functions, hoặc values
+- **Reusable** across multiple components
+
+**🧠 GHI NHỚ:**
+- **use** prefix = Custom Hook
+- **Extract logic** từ components
+- **Return** what components need
+- **Test** hooks independently
+
+```typescript
+// 🎯 1. CUSTOM HOOK CƠ BẢN - useCounter
+import { useState, useCallback } from 'react';
+
+// 📋 Interface cho counter options
+interface UseCounterOptions {
+  initialValue?: number;
+  min?: number;
+  max?: number;
+  step?: number;
 }
 
-// Sử dụng Custom Hooks
-function UserProfile({ userId }) {
-  const [preferences, setPreferences] = useLocalStorage('userPreferences', {});
-  const { data: user, loading, error } = useFetch(`/api/users/${userId}`);
+// 🎯 Custom Hook: useCounter
+function useCounter(options: UseCounterOptions = {}) {
+  const {
+    initialValue = 0,
+    min = -Infinity,
+    max = Infinity,
+    step = 1
+  } = options;
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  // 🔢 State management
+  const [count, setCount] = useState<number>(initialValue);
+
+  // 🚀 Increment function
+  const increment = useCallback((): void => {
+    setCount(prev => Math.min(prev + step, max));
+  }, [step, max]);
+
+  // 🚀 Decrement function
+  const decrement = useCallback((): void => {
+    setCount(prev => Math.max(prev - step, min));
+  }, [step, min]);
+
+  // 🚀 Reset function
+  const reset = useCallback((): void => {
+    setCount(initialValue);
+  }, [initialValue]);
+
+  // 🚀 Set specific value
+  const setValue = useCallback((value: number): void => {
+    setCount(Math.max(min, Math.min(value, max)));
+  }, [min, max]);
+
+  // 📊 Return object với functions và state
+  return {
+    count,
+    increment,
+    decrement,
+    reset,
+    setValue,
+    isAtMin: count <= min,
+    isAtMax: count >= max
+  };
+}
+
+// 🎯 2. CUSTOM HOOK - useLocalStorage
+function useLocalStorage<T>(key: string, initialValue: T) {
+  // 🔢 State với lazy initialization
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      // 🚀 Get từ localStorage
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(`Error reading localStorage key "${key}":`, error);
+      return initialValue;
+    }
+  });
+
+  // 🚀 Setter function
+  const setValue = useCallback((value: T | ((val: T) => T)): void => {
+    try {
+      // 🎯 Allow value to be a function để update based on previous value
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+
+      // 💾 Save state
+      setStoredValue(valueToStore);
+
+      // 💾 Save to localStorage
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(`Error setting localStorage key "${key}":`, error);
+    }
+  }, [key, storedValue]);
+
+  // 🧹 Remove function
+  const removeValue = useCallback((): void => {
+    try {
+      window.localStorage.removeItem(key);
+      setStoredValue(initialValue);
+    } catch (error) {
+      console.error(`Error removing localStorage key "${key}":`, error);
+    }
+  }, [key, initialValue]);
+
+  return [storedValue, setValue, removeValue] as const;
+}
+
+// 🎯 3. CUSTOM HOOK - useFetch
+interface UseFetchOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  headers?: Record<string, string>;
+  body?: any;
+}
+
+interface UseFetchReturn<T> {
+  data: T | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+}
+
+function useFetch<T>(url: string, options: UseFetchOptions = {}): UseFetchReturn<T> {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // 🚀 Fetch function
+  const fetchData = useCallback(async (): Promise<void> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(url, {
+        method: options.method || 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers
+        },
+        body: options.body ? JSON.stringify(options.body) : undefined
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result: T = await response.json();
+      setData(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  }, [url, options.method, options.headers, options.body]);
+
+  // 🚀 Auto-fetch khi URL thay đổi
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return {
+    data,
+    loading,
+    error,
+    refetch: fetchData
+  };
+}
+
+// 🎯 4. CUSTOM HOOK - useDebounce
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    // 🕐 Set debounced value sau delay
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    // 🧹 Cleanup timeout
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+// 🎯 5. CUSTOM HOOK - useWindowSize
+interface WindowSize {
+  width: number;
+  height: number;
+}
+
+function useWindowSize(): WindowSize {
+  const [windowSize, setWindowSize] = useState<WindowSize>({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
+
+  useEffect(() => {
+    // 🚀 Handler function
+    const handleResize = (): void => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+
+    // 🚀 Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // 🧹 Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return windowSize;
+}
+
+// 🎯 6. CUSTOM HOOK - useToggle
+function useToggle(initialValue: boolean = false) {
+  const [value, setValue] = useState<boolean>(initialValue);
+
+  // 🚀 Toggle function
+  const toggle = useCallback((): void => {
+    setValue(prev => !prev);
+  }, []);
+
+  // 🚀 Set true
+  const setTrue = useCallback((): void => {
+    setValue(true);
+  }, []);
+
+  // 🚀 Set false
+  const setFalse = useCallback((): void => {
+    setValue(false);
+  }, []);
+
+  return [value, { toggle, setTrue, setFalse }] as const;
+}
+
+// 🎯 7. USAGE EXAMPLES
+function CounterComponent(): JSX.Element {
+  // 🎯 Sử dụng useCounter hook
+  const { count, increment, decrement, reset, isAtMin, isAtMax } = useCounter({
+    initialValue: 0,
+    min: 0,
+    max: 10,
+    step: 1
+  });
 
   return (
     <div>
-      <h1>{user.name}</h1>
-      <p>Theme: {preferences.theme || 'light'}</p>
-      <button
-        onClick={() => setPreferences(prev => ({
-          ...prev,
-          theme: prev.theme === 'light' ? 'dark' : 'light'
-        }))}
-      >
-        Toggle Theme
+      <h3>🔢 Counter: {count}</h3>
+      <button onClick={decrement} disabled={isAtMin}>
+        ➖ Decrement
       </button>
+      <button onClick={increment} disabled={isAtMax}>
+        ➕ Increment
+      </button>
+      <button onClick={reset}>
+        🔄 Reset
+      </button>
+    </div>
+  );
+}
+
+function UserProfileComponent(): JSX.Element {
+  // 🎯 Sử dụng useLocalStorage hook
+  const [user, setUser, removeUser] = useLocalStorage('user', { name: '', email: '' });
+
+  // 🎯 Sử dụng useFetch hook
+  const { data: userData, loading, error, refetch } = useFetch<UserData>('/api/user');
+
+  // 🎯 Sử dụng useToggle hook
+  const [isEditing, { toggle: toggleEditing }] = useToggle(false);
+
+  return (
+    <div>
+      <h3>👤 User Profile</h3>
+      {loading && <p>🔄 Loading...</p>}
+      {error && <p>❌ Error: {error}</p>}
+      {userData && (
+        <div>
+          <p>Name: {userData.name}</p>
+          <p>Email: {userData.email}</p>
+          <button onClick={refetch}>🔄 Refresh</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SearchComponent(): JSX.Element {
+  const [query, setQuery] = useState<string>('');
+
+  // 🎯 Sử dụng useDebounce hook
+  const debouncedQuery = useDebounce(query, 500);
+
+  // 🎯 Sử dụng useFetch với debounced query
+  const { data: results, loading } = useFetch<SearchResult[]>(
+    `/api/search?q=${debouncedQuery}`,
+    { method: 'GET' }
+  );
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Tìm kiếm..."
+      />
+      {loading && <p>🔄 Searching...</p>}
+      {results && (
+        <ul>
+          {results.map((result, index) => (
+            <li key={index}>{result.title}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
 ```
 
-#### Q7: Context API vs Redux - Khi nào nên sử dụng?
+### **4. Cải thiện Q7: Context API vs Redux**
+
+**Trả lời:**
+
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **State management** là core của React applications
+- **Context API** vs **Redux** là 2 approaches phổ biến nhất
+- Hiểu **trade-offs** giúp chọn đúng tool cho project
+- **Performance implications** và **complexity** khác nhau
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **Context API**: Built-in React solution cho global state
+- **Redux**: External library với predictable state management
+- **Both** solve prop drilling problem
+- **Different** complexity levels và use cases
+
+**🧠 GHI NHỚ:**
+- **Context API** = Simple, built-in, good for small-medium apps
+- **Redux** = Complex, powerful, good for large apps
+- **Choose based on** app size, team experience, requirements
+
+```typescript
+// 🎯 1. CONTEXT API IMPLEMENTATION
+import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+
+// 📋 Types cho Context
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'user' | 'guest';
+}
+
+interface AppState {
+  user: User | null;
+  theme: 'light' | 'dark';
+  notifications: Notification[];
+  loading: boolean;
+}
+
+interface AppContextType {
+  state: AppState;
+  dispatch: React.Dispatch<AppAction>;
+  // 🚀 Action creators
+  login: (user: User) => void;
+  logout: () => void;
+  toggleTheme: () => void;
+  addNotification: (message: string) => void;
+  removeNotification: (id: string) => void;
+}
+
+// 📋 Action types
+type AppAction =
+  | { type: 'LOGIN'; payload: User }
+  | { type: 'LOGOUT' }
+  | { type: 'TOGGLE_THEME' }
+  | { type: 'ADD_NOTIFICATION'; payload: Notification }
+  | { type: 'REMOVE_NOTIFICATION'; payload: string }
+  | { type: 'SET_LOADING'; payload: boolean };
+
+// 🎯 Reducer function
+function appReducer(state: AppState, action: AppAction): AppState {
+  switch (action.type) {
+    case 'LOGIN':
+      return {
+        ...state,
+        user: action.payload,
+        loading: false
+      };
+
+    case 'LOGOUT':
+      return {
+        ...state,
+        user: null,
+        notifications: []
+      };
+
+    case 'TOGGLE_THEME':
+      return {
+        ...state,
+        theme: state.theme === 'light' ? 'dark' : 'light'
+      };
+
+    case 'ADD_NOTIFICATION':
+      return {
+        ...state,
+        notifications: [...state.notifications, action.payload]
+      };
+
+    case 'REMOVE_NOTIFICATION':
+      return {
+        ...state,
+        notifications: state.notifications.filter(n => n.id !== action.payload)
+      };
+
+    case 'SET_LOADING':
+      return {
+        ...state,
+        loading: action.payload
+      };
+
+    default:
+      return state;
+  }
+}
+
+// 🎯 Create Context
+const AppContext = createContext<AppContextType | undefined>(undefined);
+
+// 🎯 Provider Component
+interface AppProviderProps {
+  children: ReactNode;
+}
+
+function AppProvider({ children }: AppProviderProps): JSX.Element {
+  // 🔢 Initial state
+  const initialState: AppState = {
+    user: null,
+    theme: 'light',
+    notifications: [],
+    loading: false
+  };
+
+  // 🚀 useReducer hook
+  const [state, dispatch] = useReducer(appReducer, initialState);
+
+  // 🚀 Action creators
+  const login = (user: User): void => {
+    dispatch({ type: 'LOGIN', payload: user });
+  };
+
+  const logout = (): void => {
+    dispatch({ type: 'LOGOUT' });
+  };
+
+  const toggleTheme = (): void => {
+    dispatch({ type: 'TOGGLE_THEME' });
+  };
+
+  const addNotification = (message: string): void => {
+    const notification: Notification = {
+      id: Date.now().toString(),
+      message,
+      timestamp: new Date()
+    };
+    dispatch({ type: 'ADD_NOTIFICATION', payload: notification });
+  };
+
+  const removeNotification = (id: string): void => {
+    dispatch({ type: 'REMOVE_NOTIFICATION', payload: id });
+  };
+
+  // 📊 Context value
+  const value: AppContextType = {
+    state,
+    dispatch,
+    login,
+    logout,
+    toggleTheme,
+    addNotification,
+    removeNotification
+  };
+
+  return (
+    <AppContext.Provider value={value}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+// 🎯 Custom Hook để sử dụng Context
+function useAppContext(): AppContextType {
+  const context = useContext(AppContext);
+  if (context === undefined) {
+    throw new Error('useAppContext must be used within AppProvider');
+  }
+  return context;
+}
+
+// 🎯 2. REDUX IMPLEMENTATION
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { useSelector, useDispatch, Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+
+// 📋 Redux State Types
+interface ReduxState {
+  user: UserState;
+  theme: ThemeState;
+  notifications: NotificationState;
+}
+
+interface UserState {
+  currentUser: User | null;
+  loading: boolean;
+  error: string | null;
+}
+
+interface ThemeState {
+  mode: 'light' | 'dark';
+}
+
+interface NotificationState {
+  items: Notification[];
+}
+
+// 🎯 Redux Actions
+const USER_ACTIONS = {
+  LOGIN_REQUEST: 'USER/LOGIN_REQUEST',
+  LOGIN_SUCCESS: 'USER/LOGIN_SUCCESS',
+  LOGIN_FAILURE: 'USER/LOGIN_FAILURE',
+  LOGOUT: 'USER/LOGOUT'
+} as const;
+
+const THEME_ACTIONS = {
+  TOGGLE_THEME: 'THEME/TOGGLE_THEME'
+} as const;
+
+const NOTIFICATION_ACTIONS = {
+  ADD_NOTIFICATION: 'NOTIFICATION/ADD_NOTIFICATION',
+  REMOVE_NOTIFICATION: 'NOTIFICATION/REMOVE_NOTIFICATION'
+} as const;
+
+// 🎯 Action Creators
+const userActions = {
+  loginRequest: () => ({ type: USER_ACTIONS.LOGIN_REQUEST }),
+  loginSuccess: (user: User) => ({ type: USER_ACTIONS.LOGIN_SUCCESS, payload: user }),
+  loginFailure: (error: string) => ({ type: USER_ACTIONS.LOGIN_FAILURE, payload: error }),
+  logout: () => ({ type: USER_ACTIONS.LOGOUT })
+};
+
+const themeActions = {
+  toggleTheme: () => ({ type: THEME_ACTIONS.TOGGLE_THEME })
+};
+
+const notificationActions = {
+  addNotification: (notification: Notification) => ({
+    type: NOTIFICATION_ACTIONS.ADD_NOTIFICATION,
+    payload: notification
+  }),
+  removeNotification: (id: string) => ({
+    type: NOTIFICATION_ACTIONS.REMOVE_NOTIFICATION,
+    payload: id
+  })
+};
+
+// 🎯 Reducers
+function userReducer(state: UserState = { currentUser: null, loading: false, error: null }, action: any): UserState {
+  switch (action.type) {
+    case USER_ACTIONS.LOGIN_REQUEST:
+      return { ...state, loading: true, error: null };
+    case USER_ACTIONS.LOGIN_SUCCESS:
+      return { ...state, currentUser: action.payload, loading: false, error: null };
+    case USER_ACTIONS.LOGIN_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+    case USER_ACTIONS.LOGOUT:
+      return { ...state, currentUser: null, error: null };
+    default:
+      return state;
+  }
+}
+
+function themeReducer(state: ThemeState = { mode: 'light' }, action: any): ThemeState {
+  switch (action.type) {
+    case THEME_ACTIONS.TOGGLE_THEME:
+      return { ...state, mode: state.mode === 'light' ? 'dark' : 'light' };
+    default:
+      return state;
+  }
+}
+
+function notificationReducer(state: NotificationState = { items: [] }, action: any): NotificationState {
+  switch (action.type) {
+    case NOTIFICATION_ACTIONS.ADD_NOTIFICATION:
+      return { ...state, items: [...state.items, action.payload] };
+    case NOTIFICATION_ACTIONS.REMOVE_NOTIFICATION:
+      return { ...state, items: state.items.filter(n => n.id !== action.payload) };
+    default:
+      return state;
+  }
+}
+
+// 🎯 Root Reducer
+const rootReducer = combineReducers({
+  user: userReducer,
+  theme: themeReducer,
+  notifications: notificationReducer
+});
+
+// 🎯 Create Store
+const store = createStore(rootReducer, applyMiddleware(thunk));
+
+// 🎯 3. USAGE COMPARISON
+// Context API Usage
+function ContextUserProfile(): JSX.Element {
+  const { state, login, logout, toggleTheme } = useAppContext();
+
+  return (
+    <div>
+      <h3>👤 User Profile (Context API)</h3>
+      {state.user ? (
+        <div>
+          <p>Name: {state.user.name}</p>
+          <p>Email: {state.user.email}</p>
+          <p>Role: {state.user.role}</p>
+          <button onClick={logout}>🚪 Logout</button>
+        </div>
+      ) : (
+        <button onClick={() => login({ id: 1, name: 'John', email: 'john@example.com', role: 'user' })}>
+          🔑 Login
+        </button>
+      )}
+      <button onClick={toggleTheme}>
+        🎨 Theme: {state.theme}
+      </button>
+    </div>
+  );
+}
+
+// Redux Usage
+function ReduxUserProfile(): JSX.Element {
+  const dispatch = useDispatch();
+  const { currentUser, loading } = useSelector((state: ReduxState) => state.user);
+  const { mode } = useSelector((state: ReduxState) => state.theme);
+
+  const handleLogin = (): void => {
+    dispatch(userActions.loginRequest());
+    // Simulate API call
+    setTimeout(() => {
+      dispatch(userActions.loginSuccess({ id: 1, name: 'John', email: 'john@example.com', role: 'user' }));
+    }, 1000);
+  };
+
+  return (
+    <div>
+      <h3>👤 User Profile (Redux)</h3>
+      {loading && <p>🔄 Loading...</p>}
+      {currentUser ? (
+        <div>
+          <p>Name: {currentUser.name}</p>
+          <p>Email: {currentUser.email}</p>
+          <p>Role: {currentUser.role}</p>
+          <button onClick={() => dispatch(userActions.logout())}>🚪 Logout</button>
+        </div>
+      ) : (
+        <button onClick={handleLogin}>🔑 Login</button>
+      )}
+      <button onClick={() => dispatch(themeActions.toggleTheme())}>
+        🎨 Theme: {mode}
+      </button>
+    </div>
+  );
+}
+
+// 🎯 4. COMPARISON TABLE
+/*
+| Aspect | Context API | Redux |
+|--------|-------------|-------|
+| **Setup** | ✅ Simple | ❌ Complex |
+| **Boilerplate** | ✅ Minimal | ❌ Lots |
+| **Learning Curve** | ✅ Easy | ❌ Steep |
+| **DevTools** | ❌ Limited | ✅ Excellent |
+| **Performance** | ⚠️ Can cause re-renders | ✅ Optimized |
+| **Middleware** | ❌ No | ✅ Rich ecosystem |
+| **Time Travel** | ❌ No | ✅ Yes |
+| **Bundle Size** | ✅ Small | ❌ Larger |
+| **Best For** | Small-medium apps | Large apps |
+*/
+
+// 🎯 5. WHEN TO USE WHICH?
+function StateManagementDecision(): JSX.Element {
+  return (
+    <div>
+      <h3>🎯 Khi nào dùng Context API?</h3>
+      <ul>
+        <li>✅ Small to medium applications</li>
+        <li>✅ Simple state structure</li>
+        <li>✅ Team mới với React</li>
+        <li>✅ Ít state updates</li>
+        <li>✅ Không cần time travel debugging</li>
+      </ul>
+
+      <h3>🎯 Khi nào dùng Redux?</h3>
+      <ul>
+        <li>✅ Large applications</li>
+        <li>✅ Complex state logic</li>
+        <li>✅ Team có kinh nghiệm</li>
+        <li>✅ Frequent state updates</li>
+        <li>✅ Cần advanced debugging</li>
+        <li>✅ Cần middleware (thunk, saga)</li>
+      </ul>
+    </div>
+  );
+}
+```
 
 **Trả lời:**
 
@@ -9443,6 +10456,7654 @@ if (typeof window !== 'undefined') {
 - Visual regression với Storybook
 
 Mỗi câu hỏi đều có ví dụ code production-ready và giải thích chi tiết về architectural decisions, performance implications, và best practices cho enterprise applications.
+
+---
+
+#### Q22: ESModule vs CommonJS - Sự khác biệt và migration strategies?
+
+**Trả lời:**
+
+**💡 Khái niệm cốt lõi:**
+
+**🔄 Module Systems Comparison:**
+
+```typescript
+// 1. CommonJS (Node.js traditional)
+// ✅ Synchronous loading
+// ✅ Dynamic imports
+// ❌ Static analysis khó khăn
+// ❌ Bundle size lớn hơn
+
+// Export trong CommonJS
+// math.js
+function add(a, b) {
+  return a + b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+// Single export
+module.exports = add;
+
+// Multiple exports
+module.exports = {
+  add,
+  multiply
+};
+
+// Named exports
+exports.add = add;
+exports.multiply = multiply;
+
+// Import trong CommonJS
+const math = require('./math'); // Import toàn bộ
+const { add, multiply } = require('./math'); // Destructuring
+const add = require('./math').add; // Specific import
+
+// Dynamic import
+if (condition) {
+  const dynamicModule = require('./dynamic-module');
+}
+
+// 2. ES Modules (ESM) - Modern standard
+// ✅ Static analysis tốt
+// ✅ Tree shaking hiệu quả
+// ✅ Asynchronous loading
+// ✅ Better performance
+// ❌ Browser support cần thiết
+
+// Export trong ES Modules
+// math.js
+export function add(a: number, b: number): number {
+  return a + b;
+}
+
+export function multiply(a: number, b: number): number {
+  return a * b;
+}
+
+// Default export
+export default function calculate(a: number, b: number): number {
+  return a + b;
+}
+
+// Mixed exports
+export { add as addition, multiply };
+export default calculate;
+
+// Re-exports
+export { someFunction } from './other-module';
+export * from './utilities';
+
+// Import trong ES Modules
+import calculate from './math'; // Default import
+import { add, multiply } from './math'; // Named imports
+import calculate, { add } from './math'; // Mixed import
+import * as math from './math'; // Namespace import
+import { add as addition } from './math'; // Alias import
+
+// Dynamic import (ES2020)
+async function loadModule() {
+  const module = await import('./math');
+  return module.add(1, 2);
+}
+
+// Conditional import
+if (condition) {
+  const { add } = await import('./math');
+}
+
+// 3. Interoperability - Mixing systems
+// CommonJS trong ES Module
+import createRequire from 'module';
+const require = createRequire(import.meta.url);
+const commonjsModule = require('./commonjs-module');
+
+// ES Module trong CommonJS (Node.js)
+async function importESModule() {
+  const esModule = await import('./es-module.mjs');
+  return esModule.default;
+}
+
+// 4. Package.json configuration
+interface PackageJson {
+  // Hybrid package support
+  main: string;           // CommonJS entry point
+  module: string;         // ES Module entry point
+  type: "module" | "commonjs"; // Default module system
+  exports: {
+    ".": {
+      import: string;     // ES Module export
+      require: string;    // CommonJS export
+      types: string;      // TypeScript types
+    };
+    "./package.json": "./package.json";
+  };
+}
+
+// Example package.json
+{
+  "name": "my-library",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}
+
+// 5. Build tools configuration
+// Webpack
+const webpackConfig = {
+  output: {
+    library: {
+      type: 'module', // ESM output
+    },
+  },
+  experiments: {
+    outputModule: true,
+  },
+};
+
+// Rollup (ESM first)
+export default {
+  input: 'src/index.js',
+  output: [
+    {
+      file: 'dist/bundle.cjs.js',
+      format: 'cjs' // CommonJS
+    },
+    {
+      file: 'dist/bundle.esm.js',
+      format: 'esm' // ES Module
+    }
+  ]
+};
+
+// Vite (Native ESM)
+export default {
+  build: {
+    lib: {
+      entry: 'src/index.ts',
+      formats: ['es', 'cjs', 'umd']
+    }
+  }
+};
+```
+
+**🚀 Migration Strategies:**
+
+```typescript
+// 1. Gradual Migration Approach
+// Step 1: Update package.json
+{
+  "type": "module",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
+
+// Step 2: Rename files
+// .js → .mjs (ES Modules)
+// .js → .cjs (CommonJS)
+
+// Step 3: Update imports/exports
+// Before (CommonJS)
+const express = require('express');
+module.exports = app;
+
+// After (ESM)
+import express from 'express';
+export default app;
+
+// 2. Conditional Exports Strategy
+// package.json
+{
+  "exports": {
+    ".": {
+      "import": "./esm/index.js",
+      "require": "./cjs/index.js"
+    }
+  }
+}
+
+// 3. TypeScript Configuration
+// tsconfig.json
+{
+  "compilerOptions": {
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  }
+}
+
+// 4. Node.js ESM Best Practices
+// Use file extensions
+import { utils } from './utils.js'; // ✅
+import { utils } from './utils'; // ❌
+
+// Import assertions (JSON, CSS)
+import data from './data.json' assert { type: 'json' };
+import styles from './styles.css' assert { type: 'css' };
+
+// import.meta.url for file paths
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+```
+
+**⚡ Performance Benefits:**
+
+| Feature | CommonJS | ES Modules |
+|---------|----------|------------|
+| **Static Analysis** | ❌ Runtime | ✅ Build time |
+| **Tree Shaking** | ❌ Limited | ✅ Excellent |
+| **Bundle Size** | 📦 Larger | 📦 Smaller |
+| **Loading** | 🔄 Synchronous | ⚡ Asynchronous |
+| **Browser Support** | ❌ Bundler needed | ✅ Native |
+
+---
+
+#### Q23: Compiler vs Transpiler vs Bundler - Babel, Webpack, Vite?
+
+**Trả lời:**
+
+**💡 Khái niệm cốt lõi:**
+
+```typescript
+// 1. COMPILER
+// 🎯 Purpose: Chuyển đổi high-level language → machine code/lower-level
+// 📝 Examples: TypeScript Compiler (tsc), Rust compiler
+
+// TypeScript Compiler (tsc)
+// Input: TypeScript (.ts)
+// Output: JavaScript (.js)
+
+// Before compilation (TypeScript)
+interface User {
+  name: string;
+  age: number;
+}
+
+const user: User = {
+  name: "John",
+  age: 30
+};
+
+function greet(user: User): string {
+  return `Hello, ${user.name}!`;
+}
+
+// After compilation (JavaScript)
+const user = {
+  name: "John",
+  age: 30
+};
+
+function greet(user) {
+  return `Hello, ${user.name}!`;
+}
+
+// 2. TRANSPILER
+// 🎯 Purpose: Chuyển đổi source-to-source (cùng level language)
+// 📝 Examples: Babel, SWC, esbuild
+
+// Babel Example
+// Input: Modern JavaScript (ES2022)
+const users = [
+  { name: "John", age: 30 },
+  { name: "Jane", age: 25 }
+];
+
+// ES2022 features
+const youngUsers = users.filter(user => user.age < 30);
+const names = users.map(user => user.name);
+const hasYoungUser = users.some(user => user.age < 30);
+
+// Optional chaining & Nullish coalescing
+const userName = user?.profile?.name ?? 'Anonymous';
+
+// Private class fields
+class UserService {
+  #apiKey = 'secret';
+
+  async #fetchData() {
+    // Private method
+  }
+}
+
+// Output: ES5 compatible JavaScript
+var users = [
+  { name: "John", age: 30 },
+  { name: "Jane", age: 25 }
+];
+
+var youngUsers = users.filter(function(user) {
+  return user.age < 30;
+});
+
+var names = users.map(function(user) {
+  return user.name;
+});
+
+var userName = user != null && user.profile != null ?
+  user.profile.name : 'Anonymous';
+
+// 3. BUNDLER
+// 🎯 Purpose: Combine multiple files → single/few output files
+// 📝 Examples: Webpack, Rollup, Parcel, Vite
+
+// Webpack Bundle Process
+// Input: Multiple modules
+// main.js
+import { utils } from './utils.js';
+import { api } from './api.js';
+import './styles.css';
+
+// utils.js
+export const utils = {
+  formatDate: (date) => date.toISOString(),
+  validateEmail: (email) => /\S+@\S+\.\S+/.test(email)
+};
+
+// api.js
+export const api = {
+  fetchUsers: () => fetch('/api/users'),
+  createUser: (data) => fetch('/api/users', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
+};
+
+// Output: Bundled file (simplified)
+(function() {
+  // Module system
+  const modules = {
+    './utils.js': function(exports) {
+      exports.utils = {
+        formatDate: (date) => date.toISOString(),
+        validateEmail: (email) => /\S+@\S+\.\S+/.test(email)
+      };
+    },
+    './api.js': function(exports) {
+      exports.api = {
+        fetchUsers: () => fetch('/api/users'),
+        createUser: (data) => fetch('/api/users', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        })
+      };
+    }
+  };
+
+  // Bundle execution
+  // ... bundler runtime code
+})();
+```
+
+**🔧 Tool Deep Dive:**
+
+```typescript
+// BABEL CONFIGURATION
+// 1. Babel Core Concepts
+interface BabelConfig {
+  presets: string[]; // Pre-configured plugin collections
+  plugins: string[]; // Individual transformations
+  targets: string | object; // Browser/Node support
+}
+
+// .babelrc.json
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": ["> 1%", "last 2 versions"],
+          "node": "14"
+        },
+        "useBuiltIns": "usage",
+        "corejs": 3
+      }
+    ],
+    "@babel/preset-react",
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-optional-chaining",
+    ["@babel/plugin-transform-runtime", {
+      "regenerator": true
+    }]
+  ]
+}
+
+// 2. Popular Babel Plugins
+const babelPlugins = {
+  // Syntax transformations
+  '@babel/plugin-proposal-class-properties': {
+    // Enable class properties
+    before: `
+      class MyClass {
+        myProperty = 'value';
+
+        myMethod = () => {
+          console.log(this.myProperty);
+        }
+      }
+    `,
+    after: `
+      class MyClass {
+        constructor() {
+          this.myProperty = 'value';
+          this.myMethod = () => {
+            console.log(this.myProperty);
+          }
+        }
+      }
+    `
+  },
+
+  '@babel/plugin-proposal-optional-chaining': {
+    before: 'user?.profile?.name',
+    after: 'user != null && user.profile != null ? user.profile.name : undefined'
+  }
+};
+
+// WEBPACK CONFIGURATION
+const webpackConfig = {
+  entry: './src/index.js',
+
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].[contenthash].js',
+    clean: true
+  },
+
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.jsx?$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react']
+          }
+        },
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader']
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        type: 'asset/resource'
+      }
+    ]
+  },
+
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './public/index.html'
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css'
+    })
+  ],
+
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    }
+  }
+};
+
+// VITE CONFIGURATION
+// vite.config.ts
+export default defineConfig({
+  plugins: [
+    react(),
+    typescript()
+  ],
+
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          utils: ['lodash', 'date-fns']
+        }
+      }
+    },
+
+    // Code splitting
+    lib: {
+      entry: 'src/index.ts',
+      name: 'MyLib',
+      formats: ['es', 'cjs', 'umd']
+    }
+  },
+
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
+    exclude: ['@my-scope/package']
+  }
+});
+```
+
+**⚡ Performance Comparison:**
+
+| Tool | Build Speed | Bundle Size | Dev Experience | Use Case |
+|------|-------------|-------------|----------------|----------|
+| **Babel** | 🐌 Slow | 📦 Depends | 🔧 Configurable | Transpiling only |
+| **Webpack** | 🐌 Slow | 📦 Large | 🎛️ Complex | Full bundling |
+| **Vite** | ⚡ Fast | 📦 Small | 🚀 Excellent | Modern dev |
+| **esbuild** | ⚡ Fastest | 📦 Small | ⚡ Simple | Speed critical |
+
+---
+
+#### Q24: Webpack vs Vite - Performance và Developer Experience?
+
+**Trả lời:**
+
+**💡 Architecture Differences:**
+
+```typescript
+// 1. WEBPACK ARCHITECTURE
+// 🔄 Bundle-based development
+// 📦 All files bundled during dev
+// 🐌 Slower cold start
+// 🔧 Mature ecosystem
+
+// Webpack Dev Process
+const webpackDevProcess = {
+  startup: [
+    '1. Parse entry points',
+    '2. Build dependency graph',
+    '3. Apply loaders & plugins',
+    '4. Bundle ALL modules',
+    '5. Serve bundled files'
+  ],
+
+  hmr: [
+    '1. File change detected',
+    '2. Rebuild affected chunks',
+    '3. Send update to browser',
+    '4. Apply hot update'
+  ]
+};
+
+// Example webpack.config.js
+const webpackConfig = {
+  entry: './src/index.js',
+
+  mode: 'development',
+
+  devServer: {
+    contentBase: './dist',
+    hot: true,
+    port: 3000
+  },
+
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader' // Slower TypeScript compilation
+      },
+      {
+        test: /\.jsx?$/,
+        use: {
+          loader: 'babel-loader', // Additional transpilation step
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react']
+          }
+        }
+      }
+    ]
+  },
+
+  plugins: [
+    new HtmlWebpackPlugin(),
+    new webpack.HotModuleReplacementPlugin()
+  ]
+};
+
+// 2. VITE ARCHITECTURE
+// ⚡ ESM-based development
+// 📄 Files served individually
+// 🚀 Instant cold start
+// 🎯 Optimized for modern development
+
+// Vite Dev Process
+const viteDevProcess = {
+  startup: [
+    '1. Start dev server instantly',
+    '2. Serve index.html',
+    '3. Transform files on-demand',
+    '4. Cache transformed files'
+  ],
+
+  hmr: [
+    '1. File change detected',
+    '2. Transform only changed file',
+    '3. Send precise update',
+    '4. Browser applies change'
+  ]
+};
+
+// Example vite.config.ts
+export default defineConfig({
+  plugins: [
+    react(),
+    typescript() // Faster esbuild-based compilation
+  ],
+
+  server: {
+    port: 3000,
+    hmr: true,
+    open: true
+  },
+
+  build: {
+    rollupOptions: { // Production uses Rollup
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom']
+        }
+      }
+    }
+  },
+
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
+    force: true // Re-optimize deps
+  }
+});
+
+// 3. PERFORMANCE COMPARISON
+interface PerformanceMetrics {
+  tool: string;
+  coldStart: string;
+  hmrSpeed: string;
+  buildSize: string;
+  buildTime: string;
+}
+
+const performanceComparison: PerformanceMetrics[] = [
+  {
+    tool: 'Webpack',
+    coldStart: '15-30s (large projects)',
+    hmrSpeed: '1-3s',
+    buildSize: 'Larger (more runtime)',
+    buildTime: '2-5 minutes'
+  },
+  {
+    tool: 'Vite',
+    coldStart: '1-2s',
+    hmrSpeed: '< 100ms',
+    buildSize: 'Smaller (optimized)',
+    buildTime: '30s - 2 minutes'
+  }
+];
+
+// 4. REAL-WORLD PERFORMANCE EXAMPLES
+// Large React Application Comparison
+
+// Webpack Performance
+const webpackMetrics = {
+  projectSize: '500+ components',
+  initialBuild: '45 seconds',
+  hmrUpdate: '2-4 seconds',
+  memoryUsage: '800MB - 1.2GB',
+  cpuUsage: 'High during builds'
+};
+
+// Vite Performance
+const viteMetrics = {
+  projectSize: '500+ components',
+  initialBuild: '3-5 seconds',
+  hmrUpdate: '50-200ms',
+  memoryUsage: '200-400MB',
+  cpuUsage: 'Low during development'
+};
+
+// 5. DEVELOPER EXPERIENCE FEATURES
+const developerExperience = {
+  webpack: {
+    pros: [
+      '🎯 Mature ecosystem',
+      '🔧 Highly configurable',
+      '📚 Extensive documentation',
+      '🔌 Rich plugin system',
+      '🏢 Enterprise support'
+    ],
+    cons: [
+      '🐌 Slow development builds',
+      '⚙️ Complex configuration',
+      '📦 Large bundle overhead',
+      '🔄 Full rebuilds needed',
+      '💾 High memory usage'
+    ]
+  },
+
+  vite: {
+    pros: [
+      '⚡ Lightning fast HMR',
+      '🚀 Instant server start',
+      '📄 ESM native support',
+      '⚙️ Minimal configuration',
+      '🎯 Optimized for modern development'
+    ],
+    cons: [
+      '🆕 Newer ecosystem',
+      '🔗 CommonJS compatibility issues',
+      '📦 Production uses different bundler',
+      '🔧 Less plugin variety',
+      '⚠️ Beta features in some areas'
+    ]
+  }
+};
+
+// 6. CONFIGURATION COMPLEXITY
+// Webpack - Complex but powerful
+const webpackComplexConfig = {
+  entry: {
+    main: './src/index.js',
+    vendor: './src/vendor.js'
+  },
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          chunks: 'initial',
+          name: 'vendor',
+          test: /[\\/]node_modules[\\/]/,
+          enforce: true
+        }
+      }
+    },
+    runtimeChunk: {
+      name: 'runtime'
+    }
+  },
+
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          process.env.NODE_ENV === 'production'
+            ? MiniCssExtractPlugin.loader
+            : 'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: '[name]__[local]--[hash:base64:5]'
+              }
+            }
+          },
+          'postcss-loader'
+        ]
+      }
+    ]
+  }
+};
+
+// Vite - Simple and intuitive
+const viteSimpleConfig = defineConfig({
+  plugins: [react()],
+  css: {
+    modules: {
+      localsConvention: 'camelCase'
+    }
+  },
+  build: {
+    cssCodeSplit: true
+  }
+});
+
+// 7. MIGRATION STRATEGY
+interface MigrationStep {
+  step: number;
+  action: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  timeEstimate: string;
+}
+
+const webpackToViteMigration: MigrationStep[] = [
+  {
+    step: 1,
+    action: 'Install Vite and plugins',
+    difficulty: 'Easy',
+    timeEstimate: '30 minutes'
+  },
+  {
+    step: 2,
+    action: 'Create basic vite.config.js',
+    difficulty: 'Easy',
+    timeEstimate: '1 hour'
+  },
+  {
+    step: 3,
+    action: 'Update import paths (add file extensions)',
+    difficulty: 'Medium',
+    timeEstimate: '2-4 hours'
+  },
+  {
+    step: 4,
+    action: 'Handle CommonJS dependencies',
+    difficulty: 'Hard',
+    timeEstimate: '1-2 days'
+  },
+  {
+    step: 5,
+    action: 'Migrate custom webpack loaders',
+    difficulty: 'Hard',
+    timeEstimate: '2-5 days'
+  }
+];
+
+// Migration example
+// Before (Webpack)
+import logo from '../assets/logo.png'; // ❌ May not work in Vite
+const Component = require('./Component'); // ❌ CommonJS
+
+// After (Vite)
+import logo from '../assets/logo.png?url'; // ✅ Explicit asset import
+import Component from './Component.js'; // ✅ Explicit file extension
+```
+
+**🎯 When to Choose:**
+
+| Scenario | Choose Webpack | Choose Vite |
+|----------|----------------|-------------|
+| **New Projects** | ❌ Legacy support needed | ✅ Modern development |
+| **Large Teams** | ✅ Mature tooling | ⚠️ Consider team experience |
+| **Legacy Code** | ✅ Better compatibility | ❌ Migration complexity |
+| **Development Speed** | ❌ Slower feedback | ✅ Instant feedback |
+| **Production Stability** | ✅ Battle-tested | ✅ Rollup is mature |
+| **Learning Curve** | ❌ Steep | ✅ Gentle |
+
+---
+
+#### Q25: Babel configuration và plugin ecosystem?
+
+**Trả lời:**
+
+**💡 Babel Core Architecture:**
+
+```typescript
+// 1. BABEL TRANSFORMATION PIPELINE
+// 📝 Code → AST → Transform → Generate → Output
+
+interface BabelPipeline {
+  parse: string;      // Source code → AST
+  transform: object;  // AST → Modified AST
+  generate: string;   // Modified AST → Output code
+}
+
+// Example transformation flow
+const babelFlow = {
+  input: `
+    const greeting = (name) => {
+      return \`Hello, \${name}!\`;
+    };
+  `,
+
+  ast: {
+    type: 'Program',
+    body: [{
+      type: 'VariableDeclaration',
+      declarations: [{
+        type: 'VariableDeclarator',
+        id: { type: 'Identifier', name: 'greeting' },
+        init: {
+          type: 'ArrowFunctionExpression',
+          params: [{ type: 'Identifier', name: 'name' }],
+          body: {
+            type: 'BlockStatement',
+            body: [{
+              type: 'ReturnStatement',
+              argument: {
+                type: 'TemplateLiteral',
+                quasis: [/* template parts */],
+                expressions: [/* expressions */]
+              }
+            }]
+          }
+        }
+      }]
+    }]
+  },
+
+  output: `
+    var greeting = function greeting(name) {
+      return "Hello, " + name + "!";
+    };
+  `
+};
+
+// 2. COMPREHENSIVE BABEL CONFIGURATION
+// babel.config.js (Project-wide config)
+module.exports = function(api) {
+  // Cache configuration based on NODE_ENV
+  api.cache.using(() => process.env.NODE_ENV);
+
+  const presets = [
+    [
+      '@babel/preset-env',
+      {
+        // 🎯 Target specific browsers/Node versions
+        targets: {
+          browsers: [
+            '> 1%',
+            'last 2 versions',
+            'not ie <= 11'
+          ],
+          node: '14.0.0'
+        },
+
+        // 📦 Polyfill strategy
+        useBuiltIns: 'usage', // 'entry', 'usage', false
+        corejs: {
+          version: 3,
+          proposals: true // Include stage-3 proposals
+        },
+
+        // 🔄 Module transformation
+        modules: false, // Keep ES modules for tree shaking
+
+        // 🐛 Debug information
+        debug: process.env.NODE_ENV === 'development',
+
+        // ⚡ Loose transformations for performance
+        loose: true,
+
+        // 📊 Include specific features
+        include: [
+          '@babel/plugin-proposal-optional-chaining'
+        ],
+
+        // ❌ Exclude features
+        exclude: [
+          '@babel/plugin-transform-regenerator'
+        ]
+      }
+    ],
+
+    // React preset with optimization
+    [
+      '@babel/preset-react',
+      {
+        runtime: 'automatic', // New JSX transform
+        development: process.env.NODE_ENV === 'development',
+        importSource: '@emotion/react' // For emotion CSS-in-JS
+      }
+    ],
+
+    // TypeScript preset
+    [
+      '@babel/preset-typescript',
+      {
+        isTSX: true,
+        allExtensions: true,
+        allowNamespaces: true
+      }
+    ]
+  ];
+
+  const plugins = [
+    // 🏗️ Syntax and language features
+    '@babel/plugin-proposal-class-properties',
+    '@babel/plugin-proposal-private-methods',
+    '@babel/plugin-proposal-optional-chaining',
+    '@babel/plugin-proposal-nullish-coalescing-operator',
+
+    // ⚡ Performance optimizations
+    [
+      '@babel/plugin-transform-runtime',
+      {
+        corejs: 3,
+        helpers: true,
+        regenerator: true,
+        useESModules: true
+      }
+    ],
+
+    // 🎨 Styled-components optimization
+    [
+      'babel-plugin-styled-components',
+      {
+        displayName: process.env.NODE_ENV === 'development',
+        ssr: true,
+        minify: process.env.NODE_ENV === 'production'
+      }
+    ],
+
+    // 📦 Import optimizations
+    [
+      'babel-plugin-import',
+      {
+        libraryName: 'antd',
+        libraryDirectory: 'es',
+        style: 'css'
+      },
+      'antd'
+    ],
+
+    // Development-only plugins
+    ...(process.env.NODE_ENV === 'development' ? [
+      'react-refresh/babel' // React Fast Refresh
+    ] : []),
+
+    // Production-only plugins
+    ...(process.env.NODE_ENV === 'production' ? [
+      'babel-plugin-transform-remove-console',
+      '@babel/plugin-transform-react-constant-elements',
+      '@babel/plugin-transform-react-inline-elements'
+    ] : [])
+  ];
+
+  return {
+    presets,
+    plugins,
+
+    // Environment-specific overrides
+    env: {
+      test: {
+        presets: [
+          ['@babel/preset-env', { targets: { node: 'current' } }]
+        ],
+        plugins: [
+          'babel-plugin-dynamic-import-node'
+        ]
+      },
+
+      production: {
+        plugins: [
+          '@babel/plugin-transform-react-remove-prop-types'
+        ]
+      }
+    }
+  };
+};
+
+// 3. CUSTOM BABEL PLUGIN DEVELOPMENT
+// Creating a custom plugin
+function customPlugin({ types: t }) {
+  return {
+    name: 'custom-transform',
+    visitor: {
+      // Transform console.log calls in production
+      CallExpression(path) {
+        if (
+          t.isMemberExpression(path.node.callee) &&
+          t.isIdentifier(path.node.callee.object, { name: 'console' }) &&
+          t.isIdentifier(path.node.callee.property, { name: 'log' }) &&
+          process.env.NODE_ENV === 'production'
+        ) {
+          path.remove(); // Remove console.log in production
+        }
+      },
+
+      // Add displayName to React components
+      VariableDeclarator(path) {
+        if (
+          t.isArrowFunctionExpression(path.node.init) &&
+          t.isJSXElement(path.node.init.body)
+        ) {
+          const componentName = path.node.id.name;
+          path.node.init.body.openingElement.attributes.push(
+            t.jsxAttribute(
+              t.jsxIdentifier('displayName'),
+              t.stringLiteral(componentName)
+            )
+          );
+        }
+      }
+    }
+  };
+}
+
+// 4. POPULAR BABEL PLUGINS ECOSYSTEM
+const popularPlugins = {
+  // Language Features
+  syntax: [
+    '@babel/plugin-syntax-dynamic-import',
+    '@babel/plugin-syntax-import-meta',
+    '@babel/plugin-syntax-optional-chaining',
+    '@babel/plugin-syntax-nullish-coalescing-operator'
+  ],
+
+  // Transformations
+  transforms: [
+    '@babel/plugin-transform-async-to-generator',
+    '@babel/plugin-transform-classes',
+    '@babel/plugin-transform-destructuring',
+    '@babel/plugin-transform-spread',
+    '@babel/plugin-transform-template-literals'
+  ],
+
+  // Proposals (Stage 0-3)
+  proposals: [
+    '@babel/plugin-proposal-decorators',
+    '@babel/plugin-proposal-class-properties',
+    '@babel/plugin-proposal-private-methods',
+    '@babel/plugin-proposal-pipeline-operator'
+  ],
+
+  // Framework-specific
+  react: [
+    '@babel/plugin-transform-react-jsx',
+    '@babel/plugin-transform-react-display-name',
+    'babel-plugin-styled-components',
+    'babel-plugin-emotion'
+  ],
+
+  // Optimization
+  optimization: [
+    'babel-plugin-transform-remove-console',
+    'babel-plugin-lodash',
+    'babel-plugin-import',
+    '@babel/plugin-transform-react-constant-elements'
+  ]
+};
+
+// 5. PRACTICAL EXAMPLES
+// Before transformation (Modern JS)
+class UserComponent extends React.Component {
+  // Class properties
+  state = {
+    users: [],
+    loading: false
+  };
+
+  // Private method
+  #validateUser = (user) => {
+    return user?.name && user?.email;
+  };
+
+  // Async method with optional chaining
+  loadUsers = async () => {
+    this.setState({ loading: true });
+
+    try {
+      const response = await fetch('/api/users');
+      const users = await response.json();
+
+      // Nullish coalescing
+      const validUsers = users?.filter(this.#validateUser) ?? [];
+
+      this.setState({
+        users: validUsers,
+        loading: false
+      });
+    } catch (error) {
+      console.error('Failed to load users:', error);
+      this.setState({ loading: false });
+    }
+  };
+
+  render() {
+    const { users, loading } = this.state;
+
+    return (
+      <div>
+        {loading && <div>Loading...</div>}
+        {users.map(user => (
+          <UserCard key={user.id} user={user} />
+        ))}
+      </div>
+    );
+  }
+}
+
+// After Babel transformation (ES5 compatible)
+var UserComponent = /*#__PURE__*/function (_React$Component) {
+  function UserComponent() {
+    var _this;
+
+    _this = _React$Component.call(this) || this;
+
+    // Transformed class properties
+    _this.state = {
+      users: [],
+      loading: false
+    };
+
+    // Private method becomes closure
+    _this._validateUser = function (user) {
+      return user != null && user.name && user != null && user.email;
+    };
+
+    _this.loadUsers = /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator(/*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var response, users, validUsers;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _this.setState({ loading: true });
+
+                _context.prev = 1;
+                _context.next = 4;
+                return fetch('/api/users');
+
+              case 4:
+                response = _context.sent;
+                _context.next = 7;
+                return response.json();
+
+              case 7:
+                users = _context.sent;
+                validUsers = (users != null ? users.filter(_this._validateUser) : undefined) != null ? (users != null ? users.filter(_this._validateUser) : undefined) : [];
+
+                _this.setState({
+                  users: validUsers,
+                  loading: false
+                });
+
+                _context.next = 15;
+                break;
+
+              case 12:
+                _context.prev = 12;
+                _context.t0 = _context['catch'](1);
+                _this.setState({ loading: false });
+
+              case 15:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[1, 12]]);
+      }));
+
+      return function loadUsers() {
+        return _ref.apply(this, arguments);
+      };
+    }();
+
+    return _this;
+  }
+
+  _inherits(UserComponent, _React$Component);
+
+  var _proto = UserComponent.prototype;
+
+  _proto.render = function render() {
+    var _this$state = this.state,
+        users = _this$state.users,
+        loading = _this$state.loading;
+
+    return React.createElement('div', null,
+      loading && React.createElement('div', null, 'Loading...'),
+      users.map(function (user) {
+        return React.createElement(UserCard, {
+          key: user.id,
+          user: user
+        });
+      })
+    );
+  };
+
+  return UserComponent;
+}(React.Component);
+```
+
+**🔧 Performance Optimization:**
+
+```typescript
+// 6. BABEL OPTIMIZATION STRATEGIES
+const optimizationConfig = {
+  // Bundle size optimization
+  bundleOptimization: {
+    // Tree shaking friendly
+    modules: false,
+
+    // Remove unused imports
+    plugins: [
+      ['babel-plugin-import', {
+        libraryName: 'lodash',
+        libraryDirectory: '',
+        camel2DashComponentName: false
+      }]
+    ]
+  },
+
+  // Runtime optimization
+  runtimeOptimization: {
+    plugins: [
+      // Reduce bundle size by externalizing helpers
+      ['@babel/plugin-transform-runtime', {
+        helpers: true,
+        corejs: 3,
+        regenerator: true,
+        useESModules: true
+      }],
+
+      // React optimizations
+      '@babel/plugin-transform-react-constant-elements',
+      '@babel/plugin-transform-react-inline-elements'
+    ]
+  }
+};
+
+// 7. MONOREPO BABEL CONFIGURATION
+// Root babel.config.js
+module.exports = {
+  presets: [
+    ['@babel/preset-env', { targets: { node: 'current' } }]
+  ],
+
+  overrides: [
+    {
+      test: './packages/web/',
+      presets: [
+        ['@babel/preset-env', { targets: { browsers: '> 1%' } }],
+        '@babel/preset-react'
+      ]
+    },
+
+    {
+      test: './packages/mobile/',
+      presets: [
+        ['@babel/preset-env', { targets: { node: 'current' } }],
+        'metro-react-native-babel-preset'
+      ]
+    },
+
+    {
+      test: './packages/server/',
+      presets: [
+        ['@babel/preset-env', { targets: { node: '14' } }],
+        '@babel/preset-typescript'
+      ]
+    }
+  ]
+};
+```
+
+---
+
+#### Q26: Tree shaking và code optimization techniques?
+
+**Trả lời:**
+
+**💡 Tree Shaking Fundamentals:**
+
+```typescript
+// 1. TREE SHAKING CONCEPT
+// 🌳 Remove dead/unused code from bundles
+// 📦 Reduce bundle size significantly
+// ⚡ Improve loading performance
+
+// ❌ Bad: Side-effect imports (prevents tree shaking)
+import * as utils from 'lodash'; // Imports entire library
+import 'polyfills'; // Side effect import
+
+// ✅ Good: Named imports (enables tree shaking)
+import { debounce, throttle } from 'lodash'; // Only imports used functions
+import { format } from 'date-fns/format'; // Direct function import
+
+// 2. CREATING TREE-SHAKEABLE LIBRARIES
+// utils/math.js - Tree-shakeable exports
+export const add = (a: number, b: number): number => a + b;
+export const subtract = (a: number, b: number): number => a - b;
+export const multiply = (a: number, b: number): number => a * b;
+export const divide = (a: number, b: number): number => a / b;
+
+// ❌ Don't export default objects (prevents tree shaking)
+export default {
+  add,
+  subtract,
+  multiply,
+  divide
+};
+
+// ✅ Export individual functions
+export { add, subtract, multiply, divide };
+
+// utils/index.js - Barrel exports (be careful!)
+// ❌ This can prevent tree shaking in some bundlers
+export * from './math';
+export * from './string';
+export * from './array';
+
+// ✅ Better: Explicit re-exports
+export { add, subtract } from './math';
+export { capitalize, truncate } from './string';
+export { chunk, flatten } from './array';
+
+// 3. WEBPACK TREE SHAKING CONFIGURATION
+const webpackConfig = {
+  mode: 'production', // Enables tree shaking
+
+  optimization: {
+    usedExports: true, // Mark unused exports
+    sideEffects: false, // Tell webpack no side effects
+
+    // Or specify files with side effects
+    // sideEffects: ['*.css', '*.scss', './src/polyfills.js']
+  },
+
+  resolve: {
+    // Use ES modules when available
+    mainFields: ['module', 'main']
+  }
+};
+
+// package.json configuration
+{
+  "name": "my-library",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js", // ES module entry point
+  "sideEffects": false, // No side effects
+
+  // Or specify files with side effects
+  "sideEffects": [
+    "*.css",
+    "*.scss",
+    "./src/polyfills.js"
+  ]
+}
+
+// 4. ROLLUP TREE SHAKING (Most effective)
+// rollup.config.js
+export default {
+  input: 'src/index.js',
+
+  output: {
+    file: 'dist/bundle.js',
+    format: 'esm'
+  },
+
+  external: ['react', 'react-dom'], // Don't bundle externals
+
+  plugins: [
+    resolve({
+      preferBuiltins: false
+    }),
+
+    // Terser for additional dead code elimination
+    terser({
+      mangle: true,
+      compress: {
+        dead_code: true,
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log']
+      }
+    })
+  ]
+};
+
+// 5. ADVANCED OPTIMIZATION TECHNIQUES
+// Code splitting for better tree shaking
+const dynamicImports = {
+  // ✅ Dynamic imports with specific functions
+  loadMathUtils: async () => {
+    const { add, multiply } = await import('./utils/math');
+    return { add, multiply };
+  },
+
+  // ✅ Component-level code splitting
+  LazyComponent: React.lazy(() =>
+    import('./components/HeavyComponent').then(module => ({
+      default: module.HeavyComponent
+    }))
+  ),
+
+  // ✅ Conditional loading
+  loadPolyfill: async () => {
+    if (!window.IntersectionObserver) {
+      await import('intersection-observer');
+    }
+  }
+};
+
+// 6. PRACTICAL TREE SHAKING EXAMPLES
+// Before optimization (large bundle)
+interface UserService {
+  getUsers(): Promise<User[]>;
+  createUser(user: User): Promise<User>;
+  updateUser(id: string, user: Partial<User>): Promise<User>;
+  deleteUser(id: string): Promise<void>;
+}
+
+// ❌ Importing entire service (unused methods included)
+import { UserService } from './services/UserService';
+
+class UserComponent extends React.Component {
+  service = new UserService();
+
+  async loadUsers() {
+    // Only using getUsers, but entire service is bundled
+    return await this.service.getUsers();
+  }
+}
+
+// ✅ After optimization (tree-shakeable)
+// services/userService.js - Individual exports
+export const getUsers = async (): Promise<User[]> => {
+  const response = await fetch('/api/users');
+  return response.json();
+};
+
+export const createUser = async (user: User): Promise<User> => {
+  const response = await fetch('/api/users', {
+    method: 'POST',
+    body: JSON.stringify(user)
+  });
+  return response.json();
+};
+
+export const updateUser = async (id: string, user: Partial<User>): Promise<User> => {
+  const response = await fetch(`/api/users/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(user)
+  });
+  return response.json();
+};
+
+// Component only imports what it needs
+import { getUsers } from './services/userService';
+
+class UserComponent extends React.Component {
+  async loadUsers() {
+    // Only getUsers function is bundled
+    return await getUsers();
+  }
+}
+
+// 7. THIRD-PARTY LIBRARY OPTIMIZATION
+// ❌ Bad: Full library imports
+import _ from 'lodash'; // 70KB+
+import moment from 'moment'; // 67KB+
+import * as icons from '@mui/icons-material'; // 2MB+
+
+// ✅ Good: Selective imports
+import debounce from 'lodash/debounce'; // ~2KB
+import { format } from 'date-fns'; // ~5KB
+import { Home, Settings } from '@mui/icons-material'; // ~1KB each
+
+// Babel plugin for automatic optimization
+// babel-plugin-import configuration
+{
+  "plugins": [
+    ["import", {
+      "libraryName": "lodash",
+      "libraryDirectory": "",
+      "camel2DashComponentName": false
+    }, "lodash"],
+
+    ["import", {
+      "libraryName": "@mui/material",
+      "libraryDirectory": "",
+      "camel2DashComponentName": false
+    }, "mui-core"],
+
+    ["import", {
+      "libraryName": "@mui/icons-material",
+      "libraryDirectory": "",
+      "camel2DashComponentName": false
+    }, "mui-icons"]
+  ]
+}
+
+// 8. MEASURING TREE SHAKING EFFECTIVENESS
+// Bundle analyzer tools
+const bundleAnalysis = {
+  webpack: [
+    'webpack-bundle-analyzer',
+    'source-map-explorer'
+  ],
+
+  rollup: [
+    'rollup-plugin-visualizer'
+  ],
+
+  vite: [
+    'rollup-plugin-visualizer' // Built-in
+  ]
+};
+
+// webpack-bundle-analyzer usage
+const webpackBundleAnalyzer = require('webpack-bundle-analyzer');
+
+module.exports = {
+  plugins: [
+    new webpackBundleAnalyzer.BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      reportFilename: 'bundle-report.html'
+    })
+  ]
+};
+
+// 9. COMMON TREE SHAKING GOTCHAS
+const treeShakingGotchas = {
+  // ❌ Class methods can't be tree-shaken
+  classWithMethods: `
+    class Utils {
+      static add(a, b) { return a + b; }
+      static unused(a, b) { return a - b; } // Still bundled!
+    }
+
+    export default Utils;
+    import Utils from './utils';
+    Utils.add(1, 2); // unused method still in bundle
+  `,
+
+  // ✅ Individual function exports
+  individualFunctions: `
+    export const add = (a, b) => a + b;
+    export const unused = (a, b) => a - b; // Won't be bundled
+
+    import { add } from './utils';
+    add(1, 2); // Only add function in bundle
+  `,
+
+  // ❌ Side effects prevent tree shaking
+  sideEffects: `
+    // polyfill.js
+    if (!Array.prototype.includes) {
+      Array.prototype.includes = function() { /* polyfill */ };
+    }
+
+    export const someFunction = () => {};
+
+    // Even if someFunction is unused, polyfill code runs
+  `,
+
+  // ✅ Pure modules enable tree shaking
+  pureModules: `
+    // No side effects, just exports
+    export const someFunction = () => {};
+    export const anotherFunction = () => {};
+  `
+};
+
+// 10. ADVANCED OPTIMIZATION WITH PURGE
+// CSS tree shaking with PurgeCSS
+module.exports = {
+  content: [
+    './src/**/*.{js,jsx,ts,tsx}',
+    './public/index.html'
+  ],
+
+  css: ['./src/**/*.css'],
+
+  // Safelist classes that might be added dynamically
+  safelist: [
+    'active',
+    'disabled',
+    /^toast-/,
+    {
+      pattern: /^btn-(primary|secondary)$/,
+      variants: ['hover', 'focus']
+    }
+  ],
+
+  // Remove unused CSS
+  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+};
+```
+
+**📊 Tree Shaking Results:**
+
+| Library | Before | After | Savings |
+|---------|--------|-------|---------|
+| **Lodash** | 70KB | 2-5KB | 93%+ |
+| **Moment.js** | 67KB | 5KB (date-fns) | 92% |
+| **Material-UI** | 2MB | 50-100KB | 95%+ |
+| **React Router** | 45KB | 15KB | 67% |
+
+---
+
+#### Q27: Build Library và Design System Architecture?
+
+**Trả lời:**
+
+**💡 Library Architecture Fundamentals:**
+
+```typescript
+// 1. LIBRARY PROJECT STRUCTURE
+my-design-system/
+├── src/
+│   ├── components/           # React components
+│   │   ├── Button/
+│   │   │   ├── Button.tsx
+│   │   │   ├── Button.test.tsx
+│   │   │   ├── Button.stories.tsx
+│   │   │   ├── Button.module.scss
+│   │   │   └── index.ts
+│   │   ├── Input/
+│   │   └── index.ts         # Component exports
+│   ├── tokens/              # Design tokens
+│   │   ├── colors.ts
+│   │   ├── typography.ts
+│   │   ├── spacing.ts
+│   │   └── index.ts
+│   ├── hooks/               # Reusable hooks
+│   ├── utils/               # Utility functions
+│   ├── types/               # TypeScript definitions
+│   └── index.ts             # Main entry point
+├── dist/                    # Built files
+├── docs/                    # Documentation
+├── storybook/              # Storybook config
+├── tests/                  # Test configuration
+├── rollup.config.js        # Build configuration
+├── package.json
+└── tsconfig.json
+
+// 2. DESIGN TOKENS ARCHITECTURE
+// tokens/colors.ts
+export const colors = {
+  // Primary palette
+  primary: {
+    50: '#f0f9ff',
+    100: '#e0f2fe',
+    200: '#bae6fd',
+    300: '#7dd3fc',
+    400: '#38bdf8',
+    500: '#0ea5e9', // Base color
+    600: '#0284c7',
+    700: '#0369a1',
+    800: '#075985',
+    900: '#0c4a6e'
+  },
+
+  // Semantic colors
+  semantic: {
+    success: '#10b981',
+    warning: '#f59e0b',
+    error: '#ef4444',
+    info: '#3b82f6'
+  },
+
+  // Neutral palette
+  neutral: {
+    white: '#ffffff',
+    black: '#000000',
+    gray: {
+      50: '#f9fafb',
+      100: '#f3f4f6',
+      200: '#e5e7eb',
+      300: '#d1d5db',
+      400: '#9ca3af',
+      500: '#6b7280',
+      600: '#4b5563',
+      700: '#374151',
+      800: '#1f2937',
+      900: '#111827'
+    }
+  }
+} as const;
+
+// tokens/typography.ts
+export const typography = {
+  fontFamily: {
+    sans: ['Inter', 'system-ui', 'sans-serif'],
+    mono: ['Fira Code', 'monospace']
+  },
+
+  fontSize: {
+    xs: '0.75rem',     // 12px
+    sm: '0.875rem',    // 14px
+    base: '1rem',      // 16px
+    lg: '1.125rem',    // 18px
+    xl: '1.25rem',     // 20px
+    '2xl': '1.5rem',   // 24px
+    '3xl': '1.875rem', // 30px
+    '4xl': '2.25rem',  // 36px
+    '5xl': '3rem'      // 48px
+  },
+
+  fontWeight: {
+    light: 300,
+    normal: 400,
+    medium: 500,
+    semibold: 600,
+    bold: 700,
+    extrabold: 800
+  },
+
+  lineHeight: {
+    tight: 1.25,
+    snug: 1.375,
+    normal: 1.5,
+    relaxed: 1.625,
+    loose: 2
+  }
+} as const;
+
+// tokens/spacing.ts
+export const spacing = {
+  0: '0',
+  1: '0.25rem',  // 4px
+  2: '0.5rem',   // 8px
+  3: '0.75rem',  // 12px
+  4: '1rem',     // 16px
+  5: '1.25rem',  // 20px
+  6: '1.5rem',   // 24px
+  8: '2rem',     // 32px
+  10: '2.5rem',  // 40px
+  12: '3rem',    // 48px
+  16: '4rem',    // 64px
+  20: '5rem',    // 80px
+  24: '6rem',    // 96px
+  32: '8rem',    // 128px
+  40: '10rem',   // 160px
+  48: '12rem',   // 192px
+  56: '14rem',   // 224px
+  64: '16rem'    // 256px
+} as const;
+
+// 3. COMPONENT ARCHITECTURE WITH COMPOUND PATTERNS
+// components/Button/Button.tsx
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  isLoading?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  fullWidth?: boolean;
+}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({
+    variant = 'primary',
+    size = 'md',
+    isLoading = false,
+    leftIcon,
+    rightIcon,
+    fullWidth = false,
+    children,
+    className,
+    disabled,
+    ...props
+  }, ref) => {
+    const buttonClasses = cn(
+      // Base styles
+      'inline-flex items-center justify-center font-medium rounded-md',
+      'transition-colors duration-200 focus:outline-none focus:ring-2',
+      'disabled:opacity-50 disabled:cursor-not-allowed',
+
+      // Variant styles
+      {
+        'bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-200':
+          variant === 'primary',
+        'bg-transparent border border-primary-500 text-primary-500 hover:bg-primary-50':
+          variant === 'secondary',
+        'bg-transparent text-primary-500 hover:bg-primary-50':
+          variant === 'ghost',
+        'bg-red-500 text-white hover:bg-red-600 focus:ring-red-200':
+          variant === 'danger'
+      },
+
+      // Size styles
+      {
+        'px-3 py-1.5 text-sm': size === 'sm',
+        'px-4 py-2 text-base': size === 'md',
+        'px-6 py-3 text-lg': size === 'lg'
+      },
+
+      // Full width
+      { 'w-full': fullWidth },
+
+      className
+    );
+
+    return (
+      <button
+        ref={ref}
+        className={buttonClasses}
+        disabled={disabled || isLoading}
+        {...props}
+      >
+        {isLoading && (
+          <LoadingSpinner className="mr-2" size={size === 'sm' ? 14 : 16} />
+        )}
+
+        {!isLoading && leftIcon && (
+          <span className="mr-2">{leftIcon}</span>
+        )}
+
+        {children}
+
+        {!isLoading && rightIcon && (
+          <span className="ml-2">{rightIcon}</span>
+        )}
+      </button>
+    );
+  }
+);
+
+Button.displayName = 'Button';
+
+// 4. COMPOUND COMPONENT PATTERN
+// components/Card/Card.tsx
+interface CardContextValue {
+  size: 'sm' | 'md' | 'lg';
+}
+
+const CardContext = React.createContext<CardContextValue | null>(null);
+
+interface CardProps {
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+  children: React.ReactNode;
+}
+
+// Main Card component
+export const Card: React.FC<CardProps> & {
+  Header: typeof CardHeader;
+  Body: typeof CardBody;
+  Footer: typeof CardFooter;
+} = ({ size = 'md', className, children }) => {
+  const contextValue = { size };
+
+  return (
+    <CardContext.Provider value={contextValue}>
+      <div
+        className={cn(
+          'bg-white rounded-lg shadow-sm border border-gray-200',
+          className
+        )}
+      >
+        {children}
+      </div>
+    </CardContext.Provider>
+  );
+};
+
+// Card sub-components
+const CardHeader: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className
+}) => {
+  const context = React.useContext(CardContext);
+
+  return (
+    <div
+      className={cn(
+        'border-b border-gray-200',
+        {
+          'px-4 py-3': context?.size === 'sm',
+          'px-6 py-4': context?.size === 'md',
+          'px-8 py-6': context?.size === 'lg'
+        },
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+
+const CardBody: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className
+}) => {
+  const context = React.useContext(CardContext);
+
+  return (
+    <div
+      className={cn(
+        {
+          'px-4 py-3': context?.size === 'sm',
+          'px-6 py-4': context?.size === 'md',
+          'px-8 py-6': context?.size === 'lg'
+        },
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+
+const CardFooter: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className
+}) => {
+  const context = React.useContext(CardContext);
+
+  return (
+    <div
+      className={cn(
+        'border-t border-gray-200',
+        {
+          'px-4 py-3': context?.size === 'sm',
+          'px-6 py-4': context?.size === 'md',
+          'px-8 py-6': context?.size === 'lg'
+        },
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Attach sub-components
+Card.Header = CardHeader;
+Card.Body = CardBody;
+Card.Footer = CardFooter;
+
+// Usage example
+const CardExample = () => (
+  <Card size="lg">
+    <Card.Header>
+      <h3 className="text-lg font-semibold">Card Title</h3>
+    </Card.Header>
+    <Card.Body>
+      <p>Card content goes here...</p>
+    </Card.Body>
+    <Card.Footer>
+      <Button variant="primary">Action</Button>
+    </Card.Footer>
+  </Card>
+);
+
+// 5. BUILD CONFIGURATION
+// rollup.config.js
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import postcss from 'rollup-plugin-postcss';
+import { terser } from 'rollup-plugin-terser';
+
+export default [
+  // ES Modules build
+  {
+    input: 'src/index.ts',
+    output: {
+      file: 'dist/index.esm.js',
+      format: 'esm',
+      sourcemap: true
+    },
+    plugins: [
+      peerDepsExternal(),
+      resolve({
+        browser: true
+      }),
+      commonjs(),
+      typescript({
+        tsconfig: './tsconfig.build.json'
+      }),
+      postcss({
+        extract: true,
+        minimize: true
+      })
+    ],
+    external: ['react', 'react-dom']
+  },
+
+  // CommonJS build
+  {
+    input: 'src/index.ts',
+    output: {
+      file: 'dist/index.cjs.js',
+      format: 'cjs',
+      sourcemap: true
+    },
+    plugins: [
+      peerDepsExternal(),
+      resolve(),
+      commonjs(),
+      typescript({
+        tsconfig: './tsconfig.build.json'
+      }),
+      postcss({
+        extract: false,
+        inject: true
+      })
+    ],
+    external: ['react', 'react-dom']
+  },
+
+  // UMD build (for CDN)
+  {
+    input: 'src/index.ts',
+    output: {
+      file: 'dist/index.umd.js',
+      format: 'umd',
+      name: 'MyDesignSystem',
+      globals: {
+        react: 'React',
+        'react-dom': 'ReactDOM'
+      },
+      sourcemap: true
+    },
+    plugins: [
+      peerDepsExternal(),
+      resolve({
+        browser: true
+      }),
+      commonjs(),
+      typescript({
+        tsconfig: './tsconfig.build.json'
+      }),
+      postcss({
+        extract: false,
+        inject: true
+      }),
+      terser() // Minify UMD build
+    ],
+    external: ['react', 'react-dom']
+  }
+];
+
+// package.json configuration
+{
+  "name": "@company/design-system",
+  "version": "1.0.0",
+  "description": "Company Design System",
+
+  // Multiple entry points
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.umd.js",
+
+  // Exports field for modern bundlers
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles": "./dist/styles.css",
+    "./tokens": {
+      "import": "./dist/tokens.esm.js",
+      "require": "./dist/tokens.cjs.js"
+    }
+  },
+
+  // Tree shaking
+  "sideEffects": ["*.css", "*.scss"],
+
+  // Peer dependencies
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^4.8.0"
+  },
+
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}
+
+// 6. SINGLETON PATTERN FOR THEME PROVIDER
+// providers/ThemeProvider.tsx
+interface ThemeContextValue {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+}
+
+class ThemeManager {
+  private static instance: ThemeManager;
+  private theme: Theme;
+  private listeners: Set<(theme: Theme) => void> = new Set();
+
+  private constructor() {
+    this.theme = this.getInitialTheme();
+  }
+
+  static getInstance(): ThemeManager {
+    if (!ThemeManager.instance) {
+      ThemeManager.instance = new ThemeManager();
+    }
+    return ThemeManager.instance;
+  }
+
+  getTheme(): Theme {
+    return this.theme;
+  }
+
+  setTheme(theme: Theme): void {
+    this.theme = theme;
+    this.persistTheme(theme);
+    this.notifyListeners();
+  }
+
+  subscribe(listener: (theme: Theme) => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notifyListeners(): void {
+    this.listeners.forEach(listener => listener(this.theme));
+  }
+
+  private getInitialTheme(): Theme {
+    const stored = localStorage.getItem('theme');
+    if (stored) {
+      return JSON.parse(stored);
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? themes.dark
+      : themes.light;
+  }
+
+  private persistTheme(theme: Theme): void {
+    localStorage.setItem('theme', JSON.stringify(theme));
+    document.documentElement.setAttribute('data-theme', theme.name);
+  }
+}
+
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children
+}) => {
+  const themeManager = ThemeManager.getInstance();
+  const [theme, setTheme] = React.useState(themeManager.getTheme());
+
+  React.useEffect(() => {
+    return themeManager.subscribe(setTheme);
+  }, [themeManager]);
+
+  const handleThemeChange = React.useCallback((newTheme: Theme) => {
+    themeManager.setTheme(newTheme);
+  }, [themeManager]);
+
+  const contextValue = React.useMemo(() => ({
+    theme,
+    setTheme: handleThemeChange
+  }), [theme, handleThemeChange]);
+
+  return (
+    <ThemeContext.Provider value={contextValue}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+// 7. PEER DEPENDENCIES MANAGEMENT
+// Handling peer dependency warnings
+const peerDependencyCheck = {
+  // Check if peer dependencies are installed
+  checkPeerDeps: () => {
+    try {
+      require('react');
+      require('react-dom');
+    } catch (error) {
+      console.warn(
+        'Missing peer dependencies. Please install react and react-dom.'
+      );
+    }
+  },
+
+  // Provide default implementations for optional peers
+  checkOptionalPeers: () => {
+    let styled;
+    try {
+      styled = require('styled-components');
+    } catch {
+      // Provide fallback or warn user
+      console.warn('styled-components not found. Some features may be limited.');
+    }
+    return styled;
+  }
+};
+```
+
+**🔧 Advanced Library Features:**
+
+```typescript
+// 8. PLUGIN ARCHITECTURE
+// Plugin system for extensibility
+interface Plugin {
+  name: string;
+  install: (designSystem: DesignSystem) => void;
+}
+
+class DesignSystem {
+  private plugins: Map<string, Plugin> = new Map();
+  private components: Map<string, React.ComponentType> = new Map();
+
+  use(plugin: Plugin): this {
+    if (this.plugins.has(plugin.name)) {
+      console.warn(`Plugin ${plugin.name} is already installed`);
+      return this;
+    }
+
+    this.plugins.set(plugin.name, plugin);
+    plugin.install(this);
+    return this;
+  }
+
+  addComponent(name: string, component: React.ComponentType): void {
+    this.components.set(name, component);
+  }
+
+  getComponent(name: string): React.ComponentType | undefined {
+    return this.components.get(name);
+  }
+}
+
+// Example plugin
+const IconPlugin: Plugin = {
+  name: 'IconPlugin',
+  install: (ds: DesignSystem) => {
+    // Add icon components
+    ds.addComponent('HomeIcon', HomeIcon);
+    ds.addComponent('UserIcon', UserIcon);
+
+    // Extend existing components
+    const Button = ds.getComponent('Button');
+    if (Button) {
+      // Enhance Button with icon support
+    }
+  }
+};
+
+// Usage
+const ds = new DesignSystem()
+  .use(IconPlugin)
+  .use(AnimationPlugin);
+
+// 9. VERSION COMPATIBILITY
+// Handling breaking changes gracefully
+interface ComponentVersion {
+  version: string;
+  component: React.ComponentType;
+  deprecated?: boolean;
+  migration?: string;
+}
+
+class ComponentRegistry {
+  private versions: Map<string, ComponentVersion[]> = new Map();
+
+  register(name: string, version: ComponentVersion): void {
+    const existing = this.versions.get(name) || [];
+    existing.push(version);
+    this.versions.set(name, existing.sort((a, b) =>
+      semver.compare(a.version, b.version)
+    ));
+  }
+
+  get(name: string, version?: string): React.ComponentType {
+    const versions = this.versions.get(name) || [];
+
+    if (!version) {
+      // Return latest version
+      return versions[versions.length - 1]?.component;
+    }
+
+    const specificVersion = versions.find(v => v.version === version);
+    if (specificVersion?.deprecated) {
+      console.warn(
+        `Component ${name}@${version} is deprecated. ${specificVersion.migration}`
+      );
+    }
+
+    return specificVersion?.component;
+  }
+}
+
+// 10. TESTING INFRASTRUCTURE
+// Component testing utilities
+export const createTestWrapper = (props = {}) => {
+  return ({ children }: { children: React.ReactNode }) => (
+    <ThemeProvider theme={testTheme}>
+      <div data-testid="test-wrapper" {...props}>
+        {children}
+      </div>
+    </ThemeProvider>
+  );
+};
+
+export const renderWithTheme = (
+  component: React.ReactElement,
+  options: RenderOptions = {}
+) => {
+  return render(component, {
+    wrapper: createTestWrapper(),
+    ...options
+  });
+};
+
+// Visual regression testing setup
+export const visualTest = (name: string, component: React.ReactElement) => {
+  return test(`${name} visual regression`, async () => {
+    const { container } = renderWithTheme(component);
+    expect(container.firstChild).toMatchSnapshot();
+  });
+};
+```
+
+---
+
+#### Q28: Web Vitals Metrics - Measuring website performance?
+
+**Trả lời:**
+
+**💡 Web Vitals Core Concepts:**
+
+```typescript
+// 1. CORE WEB VITALS - Google's Essential Metrics
+interface CoreWebVitals {
+  // Largest Contentful Paint (LCP) - Loading Performance
+  lcp: {
+    good: number;      // ≤ 2.5s
+    needsWork: number; // 2.5s - 4.0s
+    poor: number;      // > 4.0s
+  };
+
+  // First Input Delay (FID) - Interactivity
+  fid: {
+    good: number;      // ≤ 100ms
+    needsWork: number; // 100ms - 300ms
+    poor: number;      // > 300ms
+  };
+
+  // Cumulative Layout Shift (CLS) - Visual Stability
+  cls: {
+    good: number;      // ≤ 0.1
+    needsWork: number; // 0.1 - 0.25
+    poor: number;      // > 0.25
+  };
+}
+
+// 2. MEASURING WEB VITALS
+// Native Web APIs
+class WebVitalsTracker {
+  private metrics: Map<string, number> = new Map();
+  private observers: PerformanceObserver[] = [];
+
+  constructor() {
+    this.initializeLCPObserver();
+    this.initializeFIDObserver();
+    this.initializeCLSObserver();
+  }
+
+  // Largest Contentful Paint
+  private initializeLCPObserver(): void {
+    if ('PerformanceObserver' in window) {
+      const observer = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        const lastEntry = entries[entries.length - 1];
+
+        if (lastEntry) {
+          const lcp = lastEntry.startTime;
+          this.metrics.set('lcp', lcp);
+          this.reportMetric('LCP', lcp);
+        }
+      });
+
+      observer.observe({ type: 'largest-contentful-paint', buffered: true });
+      this.observers.push(observer);
+    }
+  }
+
+  // First Input Delay
+  private initializeFIDObserver(): void {
+    if ('PerformanceObserver' in window) {
+      const observer = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        entries.forEach((entry) => {
+          const fid = entry.processingStart - entry.startTime;
+          this.metrics.set('fid', fid);
+          this.reportMetric('FID', fid);
+        });
+      });
+
+      observer.observe({ type: 'first-input', buffered: true });
+      this.observers.push(observer);
+    }
+  }
+
+  // Cumulative Layout Shift
+  private initializeCLSObserver(): void {
+    if ('PerformanceObserver' in window) {
+      let clsValue = 0;
+      let clsEntries: LayoutShift[] = [];
+      let sessionValue = 0;
+      let sessionEntries: LayoutShift[] = [];
+
+      const observer = new PerformanceObserver((list) => {
+        const entries = list.getEntries() as LayoutShift[];
+
+        entries.forEach((entry) => {
+          // Only count layout shifts without recent user input
+          if (!entry.hadRecentInput) {
+            const firstSessionEntry = sessionEntries[0];
+            const lastSessionEntry = sessionEntries[sessionEntries.length - 1];
+
+            // If the entry occurred less than 1 second after the previous entry
+            // and less than 5 seconds after the first entry in the session,
+            // include the entry in the current session
+            if (sessionValue &&
+                entry.startTime - lastSessionEntry.startTime < 1000 &&
+                entry.startTime - firstSessionEntry.startTime < 5000) {
+              sessionValue += entry.value;
+              sessionEntries.push(entry);
+            } else {
+              sessionValue = entry.value;
+              sessionEntries = [entry];
+            }
+
+            // If the current session value is larger than the current CLS value,
+            // update CLS and the entries contributing to it
+            if (sessionValue > clsValue) {
+              clsValue = sessionValue;
+              clsEntries = [...sessionEntries];
+            }
+          }
+        });
+
+        this.metrics.set('cls', clsValue);
+        this.reportMetric('CLS', clsValue);
+      });
+
+      observer.observe({ type: 'layout-shift', buffered: true });
+      this.observers.push(observer);
+    }
+  }
+
+  // Additional Performance Metrics
+  measureCustomMetrics(): void {
+    // Time to First Byte (TTFB)
+    const ttfb = performance.timing.responseStart - performance.timing.requestStart;
+    this.metrics.set('ttfb', ttfb);
+
+    // First Contentful Paint (FCP)
+    if ('PerformanceObserver' in window) {
+      const observer = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        entries.forEach((entry) => {
+          if (entry.name === 'first-contentful-paint') {
+            this.metrics.set('fcp', entry.startTime);
+            this.reportMetric('FCP', entry.startTime);
+          }
+        });
+      });
+
+      observer.observe({ type: 'paint', buffered: true });
+    }
+
+    // Total Blocking Time (TBT)
+    this.measureTBT();
+  }
+
+  private measureTBT(): void {
+    if ('PerformanceObserver' in window) {
+      let tbt = 0;
+
+      const observer = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        entries.forEach((entry) => {
+          // Tasks longer than 50ms contribute to TBT
+          if (entry.duration > 50) {
+            tbt += entry.duration - 50;
+          }
+        });
+
+        this.metrics.set('tbt', tbt);
+        this.reportMetric('TBT', tbt);
+      });
+
+      observer.observe({ type: 'longtask', buffered: true });
+    }
+  }
+
+  private reportMetric(name: string, value: number): void {
+    // Send to analytics
+    this.sendToAnalytics(name, value);
+
+    // Console logging for development
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`${name}: ${value.toFixed(2)}${this.getUnit(name)}`);
+    }
+  }
+
+  private getUnit(metric: string): string {
+    const units = {
+      'LCP': 'ms',
+      'FID': 'ms',
+      'FCP': 'ms',
+      'TTFB': 'ms',
+      'TBT': 'ms',
+      'CLS': ''
+    };
+    return units[metric] || 'ms';
+  }
+
+  private sendToAnalytics(name: string, value: number): void {
+    // Google Analytics 4
+    if (typeof gtag !== 'undefined') {
+      gtag('event', name, {
+        event_category: 'Web Vitals',
+        value: Math.round(value),
+        non_interaction: true
+      });
+    }
+
+    // Custom analytics endpoint
+    fetch('/api/analytics/web-vitals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        metric: name,
+        value: value,
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: Date.now()
+      })
+    });
+  }
+
+  getMetrics(): Map<string, number> {
+    return new Map(this.metrics);
+  }
+
+  dispose(): void {
+    this.observers.forEach(observer => observer.disconnect());
+    this.observers = [];
+  }
+}
+
+// 3. REACT HOOK FOR WEB VITALS
+function useWebVitals() {
+  const [metrics, setMetrics] = React.useState<Map<string, number>>(new Map());
+  const [tracker, setTracker] = React.useState<WebVitalsTracker | null>(null);
+
+  React.useEffect(() => {
+    const vitalsTracker = new WebVitalsTracker();
+    vitalsTracker.measureCustomMetrics();
+    setTracker(vitalsTracker);
+
+    // Update metrics periodically
+    const interval = setInterval(() => {
+      setMetrics(new Map(vitalsTracker.getMetrics()));
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      vitalsTracker.dispose();
+    };
+  }, []);
+
+  return { metrics, tracker };
+}
+
+// 4. PERFORMANCE MONITORING COMPONENT
+interface PerformanceMonitorProps {
+  onMetricsUpdate?: (metrics: Map<string, number>) => void;
+  showDebugInfo?: boolean;
+}
+
+const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
+  onMetricsUpdate,
+  showDebugInfo = false
+}) => {
+  const { metrics } = useWebVitals();
+
+  React.useEffect(() => {
+    if (onMetricsUpdate) {
+      onMetricsUpdate(metrics);
+    }
+  }, [metrics, onMetricsUpdate]);
+
+  if (!showDebugInfo) {
+    return null;
+  }
+
+  return (
+    <div className="performance-monitor">
+      <h3>Web Vitals</h3>
+      <div className="metrics-grid">
+        {Array.from(metrics.entries()).map(([name, value]) => (
+          <div key={name} className="metric-card">
+            <span className="metric-name">{name}</span>
+            <span className="metric-value">
+              {value.toFixed(2)}
+              {name === 'CLS' ? '' : 'ms'}
+            </span>
+            <span className={`metric-status ${getMetricStatus(name, value)}`}>
+              {getMetricStatus(name, value)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+function getMetricStatus(metric: string, value: number): string {
+  const thresholds = {
+    LCP: { good: 2500, needsWork: 4000 },
+    FID: { good: 100, needsWork: 300 },
+    FCP: { good: 1800, needsWork: 3000 },
+    CLS: { good: 0.1, needsWork: 0.25 },
+    TBT: { good: 200, needsWork: 600 },
+    TTFB: { good: 800, needsWork: 1800 }
+  };
+
+  const threshold = thresholds[metric];
+  if (!threshold) return 'unknown';
+
+  if (value <= threshold.good) return 'good';
+  if (value <= threshold.needsWork) return 'needs-work';
+  return 'poor';
+}
+
+// 5. THIRD-PARTY LIBRARIES INTEGRATION
+// Using web-vitals library
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
+
+class WebVitalsReporter {
+  private analytics: any;
+
+  constructor(analyticsInstance: any) {
+    this.analytics = analyticsInstance;
+    this.initializeTracking();
+  }
+
+  private initializeTracking(): void {
+    // Track all core web vitals
+    getCLS(this.sendToAnalytics.bind(this));
+    getFID(this.sendToAnalytics.bind(this));
+    getFCP(this.sendToAnalytics.bind(this));
+    getLCP(this.sendToAnalytics.bind(this));
+    getTTFB(this.sendToAnalytics.bind(this));
+  }
+
+  private sendToAnalytics(metric: any): void {
+    const { name, value, id } = metric;
+
+    // Send to Google Analytics
+    this.analytics.event('web_vitals', {
+      event_category: 'Web Vitals',
+      event_label: id,
+      value: Math.round(value),
+      custom_parameter_name: name
+    });
+
+    // Send to performance monitoring service
+    this.sendToPerformanceService(metric);
+  }
+
+  private sendToPerformanceService(metric: any): void {
+    // DataDog RUM
+    if (typeof DD_RUM !== 'undefined') {
+      DD_RUM.addUserAction(metric.name, {
+        value: metric.value,
+        metric_id: metric.id
+      });
+    }
+
+    // New Relic
+    if (typeof newrelic !== 'undefined') {
+      newrelic.addPageAction('WebVital', {
+        name: metric.name,
+        value: metric.value,
+        id: metric.id
+      });
+    }
+
+    // Sentry Performance Monitoring
+    if (typeof Sentry !== 'undefined') {
+      Sentry.addBreadcrumb({
+        category: 'web-vital',
+        message: `${metric.name}: ${metric.value}`,
+        level: 'info',
+        data: metric
+      });
+    }
+  }
+}
+
+// 6. PERFORMANCE BUDGETS
+interface PerformanceBudget {
+  lcp: number;
+  fid: number;
+  cls: number;
+  fcp: number;
+  tbt: number;
+}
+
+class PerformanceBudgetMonitor {
+  private budget: PerformanceBudget;
+  private violations: string[] = [];
+
+  constructor(budget: PerformanceBudget) {
+    this.budget = budget;
+  }
+
+  checkBudget(metrics: Map<string, number>): void {
+    this.violations = [];
+
+    metrics.forEach((value, metric) => {
+      const budgetValue = this.budget[metric as keyof PerformanceBudget];
+      if (budgetValue && value > budgetValue) {
+        this.violations.push(`${metric.toUpperCase()}: ${value}ms exceeds budget of ${budgetValue}ms`);
+      }
+    });
+
+    if (this.violations.length > 0) {
+      this.reportViolations();
+    }
+  }
+
+  private reportViolations(): void {
+    console.warn('Performance Budget Violations:', this.violations);
+
+    // Send alerts to monitoring system
+    this.violations.forEach(violation => {
+      // Send to error tracking
+      if (typeof Sentry !== 'undefined') {
+        Sentry.captureMessage(`Performance Budget Violation: ${violation}`, 'warning');
+      }
+
+      // Send to Slack webhook
+      this.sendSlackAlert(violation);
+    });
+  }
+
+  private async sendSlackAlert(violation: string): Promise<void> {
+    const webhookUrl = process.env.SLACK_PERFORMANCE_WEBHOOK;
+    if (webhookUrl) {
+      await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: `🚨 Performance Budget Violation: ${violation}`,
+          channel: '#performance',
+          username: 'Performance Bot'
+        })
+      });
+    }
+  }
+
+  getViolations(): string[] {
+    return [...this.violations];
+  }
+}
+
+// 7. LIGHTHOUSE INTEGRATION
+class LighthouseRunner {
+  private apiKey: string;
+
+  constructor(apiKey: string) {
+    this.apiKey = apiKey;
+  }
+
+  async runAudit(url: string): Promise<any> {
+    const response = await fetch(
+      `https://www.googleapis.com/pagespeedinsiights/v5/runPagespeed?url=${encodeURIComponent(url)}&key=${this.apiKey}&category=performance&category=accessibility&category=best-practices&category=seo`
+    );
+
+    const result = await response.json();
+    return this.parseResults(result);
+  }
+
+  private parseResults(result: any): any {
+    const lighthouse = result.lighthouseResult;
+    const categories = lighthouse.categories;
+    const audits = lighthouse.audits;
+
+    return {
+      scores: {
+        performance: Math.round(categories.performance.score * 100),
+        accessibility: Math.round(categories.accessibility.score * 100),
+        bestPractices: Math.round(categories['best-practices'].score * 100),
+        seo: Math.round(categories.seo.score * 100)
+      },
+
+      metrics: {
+        firstContentfulPaint: audits['first-contentful-paint'].numericValue,
+        largestContentfulPaint: audits['largest-contentful-paint'].numericValue,
+        firstInputDelay: audits['max-potential-fid'].numericValue,
+        cumulativeLayoutShift: audits['cumulative-layout-shift'].numericValue,
+        speedIndex: audits['speed-index'].numericValue,
+        totalBlockingTime: audits['total-blocking-time'].numericValue
+      },
+
+      opportunities: audits['diagnostics'] || [],
+      diagnostics: audits['opportunities'] || []
+    };
+  }
+}
+```
+
+**📊 Performance Thresholds:**
+
+| Metric | Good | Needs Improvement | Poor |
+|--------|------|-------------------|------|
+| **LCP** | ≤ 2.5s | 2.5s - 4.0s | > 4.0s |
+| **FID** | ≤ 100ms | 100ms - 300ms | > 300ms |
+| **CLS** | ≤ 0.1 | 0.1 - 0.25 | > 0.25 |
+| **FCP** | ≤ 1.8s | 1.8s - 3.0s | > 3.0s |
+| **TTFB** | ≤ 800ms | 800ms - 1.8s | > 1.8s |
+
+---
+
+#### Q29: Performance optimization strategies cho production?
+
+**Trả lời:**
+
+**💡 Comprehensive Performance Strategy:**
+
+```typescript
+// 1. CODE SPLITTING & LAZY LOADING
+// Route-based code splitting
+const HomePage = React.lazy(() => import('./pages/HomePage'));
+const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
+const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
+
+// Component-based splitting
+const HeavyChart = React.lazy(() =>
+  import('./components/HeavyChart').then(module => ({
+    default: module.HeavyChart
+  }))
+);
+
+// Dynamic imports with error handling
+const loadModule = async (moduleName: string) => {
+  try {
+    const module = await import(`./modules/${moduleName}`);
+    return module.default;
+  } catch (error) {
+    console.error(`Failed to load module: ${moduleName}`, error);
+    // Fallback component
+    return () => <div>Failed to load component</div>;
+  }
+};
+
+// Advanced code splitting with webpack magic comments
+const AdminPanel = React.lazy(() =>
+  import(
+    /* webpackChunkName: "admin-panel" */
+    /* webpackPreload: true */
+    './components/AdminPanel'
+  )
+);
+
+// 2. MEMOIZATION STRATEGIES
+// React.memo with custom comparison
+const ExpensiveUserCard = React.memo<UserCardProps>(({ user, onEdit }) => {
+  return (
+    <div className="user-card">
+      <img src={user.avatar} alt={user.name} />
+      <h3>{user.name}</h3>
+      <p>{user.email}</p>
+      <button onClick={() => onEdit(user.id)}>Edit</button>
+    </div>
+  );
+}, (prevProps, nextProps) => {
+  // Custom shallow comparison
+  return (
+    prevProps.user.id === nextProps.user.id &&
+    prevProps.user.name === nextProps.user.name &&
+    prevProps.user.email === nextProps.user.email &&
+    prevProps.user.avatar === nextProps.user.avatar
+  );
+});
+
+// useMemo for expensive calculations
+const useExpensiveCalculation = (data: number[]) => {
+  return React.useMemo(() => {
+    // Simulate expensive calculation
+    console.log('Calculating...');
+    return data.reduce((acc, val) => {
+      // Complex mathematical operations
+      return acc + Math.pow(val, 2) * Math.sin(val);
+    }, 0);
+  }, [data]);
+};
+
+// useCallback for stable function references
+const useOptimizedHandlers = (items: Item[]) => {
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
+
+  // Stable function references
+  const handleSelect = React.useCallback((id: string) => {
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  }, []);
+
+  const handleSelectAll = React.useCallback(() => {
+    setSelectedIds(new Set(items.map(item => item.id)));
+  }, [items]);
+
+  const handleClearSelection = React.useCallback(() => {
+    setSelectedIds(new Set());
+  }, []);
+
+  return { selectedIds, handleSelect, handleSelectAll, handleClearSelection };
+};
+
+// 3. VIRTUAL SCROLLING FOR LARGE LISTS
+interface VirtualizedListProps {
+  items: any[];
+  itemHeight: number;
+  containerHeight: number;
+  renderItem: (item: any, index: number) => React.ReactNode;
+}
+
+const VirtualizedList: React.FC<VirtualizedListProps> = ({
+  items,
+  itemHeight,
+  containerHeight,
+  renderItem
+}) => {
+  const [scrollTop, setScrollTop] = React.useState(0);
+
+  const visibleStart = Math.floor(scrollTop / itemHeight);
+  const visibleEnd = Math.min(
+    visibleStart + Math.ceil(containerHeight / itemHeight) + 1,
+    items.length
+  );
+
+  const visibleItems = items.slice(visibleStart, visibleEnd);
+
+  const handleScroll = React.useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    setScrollTop(e.currentTarget.scrollTop);
+  }, []);
+
+  return (
+    <div
+      style={{ height: containerHeight, overflow: 'auto' }}
+      onScroll={handleScroll}
+    >
+      <div style={{ height: items.length * itemHeight, position: 'relative' }}>
+        <div style={{ transform: `translateY(${visibleStart * itemHeight}px)` }}>
+          {visibleItems.map((item, index) => (
+            <div key={visibleStart + index} style={{ height: itemHeight }}>
+              {renderItem(item, visibleStart + index)}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 4. IMAGE OPTIMIZATION
+interface OptimizedImageProps {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  className?: string;
+}
+
+const OptimizedImage: React.FC<OptimizedImageProps> = ({
+  src,
+  alt,
+  width,
+  height,
+  loading = 'lazy',
+  className
+}) => {
+  const [imageSrc, setImageSrc] = React.useState<string>('');
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
+
+  React.useEffect(() => {
+    // Generate responsive image URLs
+    const generateSrcSet = (baseSrc: string) => {
+      const sizes = [320, 640, 768, 1024, 1280];
+      return sizes.map(size =>
+        `${baseSrc}?w=${size}&q=75 ${size}w`
+      ).join(', ');
+    };
+
+    // Use WebP format if supported
+    const supportsWebP = () => {
+      const canvas = document.createElement('canvas');
+      return canvas.toDataURL('image/webp').indexOf('webp') > -1;
+    };
+
+    const optimizedSrc = supportsWebP()
+      ? src.replace(/\.(jpg|jpeg|png)$/i, '.webp')
+      : src;
+
+    setImageSrc(optimizedSrc);
+  }, [src]);
+
+  const handleLoad = React.useCallback(() => {
+    setIsLoaded(true);
+  }, []);
+
+  const handleError = React.useCallback(() => {
+    setIsError(true);
+    // Fallback to original format
+    setImageSrc(src);
+  }, [src]);
+
+  if (isError && imageSrc === src) {
+    return <div className="image-placeholder">Failed to load image</div>;
+  }
+
+  return (
+    <div className={`image-container ${className}`}>
+      {!isLoaded && <div className="image-skeleton" />}
+      <img
+        src={imageSrc}
+        alt={alt}
+        width={width}
+        height={height}
+        loading={loading}
+        onLoad={handleLoad}
+        onError={handleError}
+        style={{ opacity: isLoaded ? 1 : 0 }}
+      />
+    </div>
+  );
+};
+
+// 5. BUNDLE OPTIMIZATION
+// Webpack configuration for production
+const productionConfig = {
+  mode: 'production',
+
+  optimization: {
+    // Split chunks strategy
+    splitChunks: {
+      cacheGroups: {
+        // Vendor chunk for third-party libraries
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+          priority: 10
+        },
+
+        // Common chunk for shared code
+        common: {
+          name: 'common',
+          minChunks: 2,
+          chunks: 'all',
+          priority: 5,
+          reuseExistingChunk: true
+        },
+
+        // Async chunks
+        async: {
+          chunks: 'async',
+          minSize: 20000,
+          maxSize: 244000
+        }
+      }
+    },
+
+    // Minimize bundle size
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true, // Remove console.logs
+            drop_debugger: true, // Remove debugger statements
+            pure_funcs: ['console.log', 'console.info'] // Remove specific functions
+          },
+          mangle: {
+            safari10: true // Fix Safari 10 issues
+          }
+        }
+      }),
+
+      new CssMinimizerPlugin({
+        minimizerOptions: {
+          preset: ['default', {
+            discardComments: { removeAll: true }
+          }]
+        }
+      })
+    ]
+  },
+
+  // Performance budgets
+  performance: {
+    maxEntrypointSize: 512000, // 500 KiB
+    maxAssetSize: 512000, // 500 KiB
+    hints: 'warning'
+  }
+};
+
+// 6. CACHING STRATEGIES
+// Service Worker for caching
+class CacheManager {
+  private static instance: CacheManager;
+  private cacheName = 'app-cache-v1';
+  private strategies = new Map<string, CacheStrategy>();
+
+  static getInstance(): CacheManager {
+    if (!CacheManager.instance) {
+      CacheManager.instance = new CacheManager();
+    }
+    return CacheManager.instance;
+  }
+
+  // Cache First strategy (for static assets)
+  async cacheFirst(request: Request): Promise<Response> {
+    const cache = await caches.open(this.cacheName);
+    const cachedResponse = await cache.match(request);
+
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+
+    const networkResponse = await fetch(request);
+    cache.put(request, networkResponse.clone());
+    return networkResponse;
+  }
+
+  // Network First strategy (for API calls)
+  async networkFirst(request: Request): Promise<Response> {
+    const cache = await caches.open(this.cacheName);
+
+    try {
+      const networkResponse = await fetch(request);
+      cache.put(request, networkResponse.clone());
+      return networkResponse;
+    } catch (error) {
+      const cachedResponse = await cache.match(request);
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      throw error;
+    }
+  }
+
+  // Stale While Revalidate
+  async staleWhileRevalidate(request: Request): Promise<Response> {
+    const cache = await caches.open(this.cacheName);
+    const cachedResponse = await cache.match(request);
+
+    const fetchPromise = fetch(request).then((networkResponse) => {
+      cache.put(request, networkResponse.clone());
+      return networkResponse;
+    });
+
+    return cachedResponse || fetchPromise;
+  }
+}
+
+// 7. PERFORMANCE MONITORING
+class PerformanceProfiler {
+  private measurements: Map<string, number> = new Map();
+
+  // Measure function execution time
+  profile<T>(name: string, fn: () => T): T {
+    const start = performance.now();
+    const result = fn();
+    const end = performance.now();
+
+    this.measurements.set(name, end - start);
+    console.log(`${name}: ${(end - start).toFixed(2)}ms`);
+
+    return result;
+  }
+
+  // Measure async function execution time
+  async profileAsync<T>(name: string, fn: () => Promise<T>): Promise<T> {
+    const start = performance.now();
+    const result = await fn();
+    const end = performance.now();
+
+    this.measurements.set(name, end - start);
+    console.log(`${name}: ${(end - start).toFixed(2)}ms`);
+
+    return result;
+  }
+
+  // Mark performance milestones
+  mark(name: string): void {
+    performance.mark(name);
+  }
+
+  // Measure between marks
+  measure(name: string, startMark: string, endMark: string): void {
+    performance.measure(name, startMark, endMark);
+
+    const entries = performance.getEntriesByName(name, 'measure');
+    if (entries.length > 0) {
+      console.log(`${name}: ${entries[0].duration.toFixed(2)}ms`);
+    }
+  }
+
+  // Get all measurements
+  getReport(): Record<string, number> {
+    return Object.fromEntries(this.measurements);
+  }
+}
+
+// React hook for performance profiling
+function usePerformanceProfiler() {
+  const profiler = React.useRef(new PerformanceProfiler());
+
+  const profileRender = React.useCallback((componentName: string) => {
+    return {
+      onRenderStart: () => profiler.current.mark(`${componentName}-start`),
+      onRenderEnd: () => {
+        profiler.current.mark(`${componentName}-end`);
+        profiler.current.measure(
+          `${componentName}-render`,
+          `${componentName}-start`,
+          `${componentName}-end`
+        );
+      }
+    };
+  }, []);
+
+  return { profiler: profiler.current, profileRender };
+}
+
+// 8. RESOURCE PRELOADING
+class ResourcePreloader {
+  private preloadedResources = new Set<string>();
+
+  // Preload critical resources
+  preloadCriticalResources(): void {
+    const criticalResources = [
+      { href: '/fonts/primary-font.woff2', as: 'font', type: 'font/woff2' },
+      { href: '/css/critical.css', as: 'style' },
+      { href: '/images/hero-image.webp', as: 'image' }
+    ];
+
+    criticalResources.forEach(resource => {
+      this.preloadResource(resource.href, resource.as, resource.type);
+    });
+  }
+
+  // Preload specific resource
+  preloadResource(href: string, as: string, type?: string): void {
+    if (this.preloadedResources.has(href)) return;
+
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.href = href;
+    link.as = as;
+    if (type) link.type = type;
+
+    document.head.appendChild(link);
+    this.preloadedResources.add(href);
+  }
+
+  // Prefetch next page resources
+  prefetchRoute(route: string): void {
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = route;
+
+    document.head.appendChild(link);
+  }
+
+  // DNS prefetch for external domains
+  dnsPrefetch(domain: string): void {
+    const link = document.createElement('link');
+    link.rel = 'dns-prefetch';
+    link.href = domain;
+
+    document.head.appendChild(link);
+  }
+}
+```
+
+**⚡ Performance Optimization Checklist:**
+
+| Category | Optimization | Impact | Difficulty |
+|----------|-------------|--------|------------|
+| **Loading** | Code splitting | High | Medium |
+| **Loading** | Image optimization | High | Easy |
+| **Loading** | Resource preloading | Medium | Easy |
+| **Rendering** | Virtual scrolling | High | Hard |
+| **Rendering** | React.memo | Medium | Easy |
+| **Interactivity** | Debouncing | Medium | Easy |
+| **Interactivity** | Event delegation | Low | Medium |
+| **Bundle Size** | Tree shaking | High | Medium |
+| **Bundle Size** | Compression | Medium | Easy |
+
+---
+
+#### Q30: Caching strategies - Browser, CDN, Service Worker?
+
+**Trả lời:**
+
+**💡 Tổng quan về Caching Strategies:**
+
+Caching là **kỹ thuật lưu trữ dữ liệu tạm thời** để giảm thời gian truy cập và tăng hiệu suất ứng dụng. Có nhiều cấp độ caching khác nhau.
+
+```typescript
+// 1. BROWSER CACHING - Cache ở trình duyệt
+// 🎯 Mục đích: Lưu tài nguyên tĩnh để tránh tải lại
+
+// HTTP Cache Headers
+interface CacheHeaders {
+  // Cache-Control - Điều khiển cách cache hoạt động
+  'Cache-Control': string;
+  // ETag - Định danh phiên bản file
+  'ETag': string;
+  // Last-Modified - Thời gian sửa đổi cuối
+  'Last-Modified': string;
+  // Expires - Thời gian hết hạn
+  'Expires': string;
+}
+
+// Ví dụ cache headers cho static assets
+const staticAssetHeaders: CacheHeaders = {
+  // Cache 1 năm cho static assets (JS, CSS, images)
+  'Cache-Control': 'public, max-age=31536000, immutable',
+  'ETag': '"abc123"',
+  'Last-Modified': 'Wed, 21 Oct 2023 07:28:00 GMT',
+  'Expires': 'Thu, 21 Oct 2024 07:28:00 GMT'
+};
+
+// Cache strategy cho HTML files
+const htmlCacheHeaders: CacheHeaders = {
+  // Không cache HTML, luôn kiểm tra server
+  'Cache-Control': 'no-cache, must-revalidate',
+  'ETag': '"html456"',
+  'Last-Modified': 'Wed, 21 Oct 2023 07:28:00 GMT',
+  'Expires': '0'
+};
+
+// 2. SERVICE WORKER CACHING - Cache programmatic
+// 🎯 Mục đích: Kiểm soát hoàn toàn cache logic
+
+class AdvancedCacheManager {
+  private cacheName = 'app-v1.0.0';
+  private cacheStrategies = new Map();
+
+  constructor() {
+    this.setupCacheStrategies();
+  }
+
+  private setupCacheStrategies(): void {
+    // 🔥 Cache First - Ưu tiên cache (cho static assets)
+    this.cacheStrategies.set('static', this.cacheFirst.bind(this));
+
+    // 🌐 Network First - Ưu tiên network (cho API data)
+    this.cacheStrategies.set('api', this.networkFirst.bind(this));
+
+    // ♻️ Stale While Revalidate - Cache cũ + update background
+    this.cacheStrategies.set('content', this.staleWhileRevalidate.bind(this));
+
+    // 🚀 Network Only - Không cache (cho sensitive data)
+    this.cacheStrategies.set('sensitive', this.networkOnly.bind(this));
+  }
+
+  // 🔥 CACHE FIRST Strategy
+  async cacheFirst(request: Request): Promise<Response> {
+    console.log('🔥 Sử dụng Cache First strategy');
+
+    try {
+      const cache = await caches.open(this.cacheName);
+      const cachedResponse = await cache.match(request);
+
+      if (cachedResponse) {
+        console.log('✅ Tìm thấy trong cache:', request.url);
+        return cachedResponse;
+      }
+
+      // Không có trong cache, fetch từ network
+      console.log('📡 Fetch từ network:', request.url);
+      const networkResponse = await fetch(request);
+
+      // Lưu vào cache cho lần sau
+      if (networkResponse.status === 200) {
+        cache.put(request, networkResponse.clone());
+        console.log('💾 Đã lưu vào cache:', request.url);
+      }
+
+      return networkResponse;
+    } catch (error) {
+      console.error('❌ Cache First failed:', error);
+      throw error;
+    }
+  }
+
+  // 🌐 NETWORK FIRST Strategy
+  async networkFirst(request: Request): Promise<Response> {
+    console.log('🌐 Sử dụng Network First strategy');
+
+    try {
+      // Thử fetch từ network trước
+      console.log('📡 Fetch từ network:', request.url);
+      const networkResponse = await fetch(request);
+
+      // Cache response nếu thành công
+      if (networkResponse.status === 200) {
+        const cache = await caches.open(this.cacheName);
+        cache.put(request, networkResponse.clone());
+        console.log('💾 Đã update cache:', request.url);
+      }
+
+      return networkResponse;
+    } catch (error) {
+      // Network fail, fallback về cache
+      console.log('⚠️ Network failed, dùng cache fallback');
+      const cache = await caches.open(this.cacheName);
+      const cachedResponse = await cache.match(request);
+
+      if (cachedResponse) {
+        console.log('✅ Dùng cache làm fallback:', request.url);
+        return cachedResponse;
+      }
+
+      console.error('❌ Không có cache fallback');
+      throw error;
+    }
+  }
+
+  // ♻️ STALE WHILE REVALIDATE Strategy
+  async staleWhileRevalidate(request: Request): Promise<Response> {
+    console.log('♻️ Sử dụng Stale While Revalidate strategy');
+
+    const cache = await caches.open(this.cacheName);
+    const cachedResponse = await cache.match(request);
+
+    // Fetch mới trong background (không chờ)
+    const fetchPromise = fetch(request).then(response => {
+      if (response.status === 200) {
+        console.log('🔄 Background update cache:', request.url);
+        cache.put(request, response.clone());
+      }
+      return response;
+    }).catch(error => {
+      console.warn('⚠️ Background fetch failed:', error);
+    });
+
+    // Trả về cache ngay nếu có, không thì chờ fetch
+    if (cachedResponse) {
+      console.log('⚡ Trả về stale cache:', request.url);
+      return cachedResponse;
+    } else {
+      console.log('⏳ Chờ fresh data:', request.url);
+      return await fetchPromise;
+    }
+  }
+
+  // 🚀 NETWORK ONLY Strategy
+  async networkOnly(request: Request): Promise<Response> {
+    console.log('🚀 Sử dụng Network Only strategy');
+    console.log('📡 Luôn fetch từ network:', request.url);
+    return fetch(request);
+  }
+
+  // 🎯 Smart routing dựa trên request
+  async handleRequest(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+
+    // Phân loại request và chọn strategy phù hợp
+    if (pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|woff2?)$/)) {
+      console.log('📁 Static asset detected');
+      return this.cacheFirst(request);
+    }
+
+    if (pathname.startsWith('/api/')) {
+      if (pathname.includes('/sensitive')) {
+        console.log('🔒 Sensitive API detected');
+        return this.networkOnly(request);
+      } else {
+        console.log('🔄 Regular API detected');
+        return this.networkFirst(request);
+      }
+    }
+
+    if (pathname.match(/\.(html|json)$/)) {
+      console.log('📄 Content file detected');
+      return this.staleWhileRevalidate(request);
+    }
+
+    // Default strategy
+    console.log('🎯 Default strategy');
+    return this.networkFirst(request);
+  }
+}
+
+// Service Worker implementation
+self.addEventListener('fetch', (event: FetchEvent) => {
+  const cacheManager = new AdvancedCacheManager();
+
+  event.respondWith(
+    cacheManager.handleRequest(event.request)
+  );
+});
+
+// 3. CDN CACHING - Cache ở Content Delivery Network
+// 🎯 Mục đích: Cache toàn cầu, giảm latency
+
+interface CDNCacheConfig {
+  // TTL cho từng loại content
+  ttl: {
+    static: number;    // Static assets: 1 năm
+    api: number;       // API response: 5 phút
+    html: number;      // HTML pages: 1 giờ
+    images: number;    // Images: 1 tháng
+  };
+
+  // Cache invalidation rules
+  invalidation: {
+    patterns: string[];  // URL patterns cần invalidate
+    triggers: string[];  // Events trigger invalidation
+  };
+}
+
+const cdnConfig: CDNCacheConfig = {
+  ttl: {
+    static: 31536000,    // 1 năm
+    api: 300,           // 5 phút
+    html: 3600,         // 1 giờ
+    images: 2592000     // 1 tháng
+  },
+
+  invalidation: {
+    patterns: [
+      '/api/*',
+      '/assets/js/*',
+      '*.html'
+    ],
+    triggers: [
+      'deployment',
+      'content_update',
+      'cache_bust'
+    ]
+  }
+};
+
+// CloudFlare cache configuration example
+const cloudflareHeaders = {
+  // Cache everything for 1 hour, browser cache for 5 minutes
+  'Cache-Control': 'public, max-age=300, s-maxage=3600',
+
+  // Custom CloudFlare headers
+  'CF-Cache-Status': 'HIT',  // HIT, MISS, EXPIRED, etc.
+  'CF-RAY': 'abc123-SIN',    // Request tracking
+
+  // Cache tags for selective purging
+  'Cache-Tag': 'static,js,v1.0.0'
+};
+
+// 4. APPLICATION-LEVEL CACHING - Cache trong app
+// 🎯 Mục đích: Cache data và computed values
+
+class ApplicationCache {
+  private memoryCache = new Map<string, CacheEntry>();
+  private localStoragePrefix = 'app_cache_';
+  private maxMemoryEntries = 100;
+
+  interface CacheEntry {
+    data: any;
+    timestamp: number;
+    ttl: number;
+    accessCount: number;
+    tags: string[];
+  }
+
+  // 💾 Set cache với multiple options
+  set(key: string, data: any, options: CacheOptions = {}): void {
+    const {
+      ttl = 300000,      // 5 phút default
+      persist = false,   // Có lưu localStorage không
+      tags = [],         // Tags để group invalidation
+      compress = false   // Có nén data không
+    } = options;
+
+    const entry: CacheEntry = {
+      data: compress ? this.compress(data) : data,
+      timestamp: Date.now(),
+      ttl,
+      accessCount: 0,
+      tags
+    };
+
+    // Memory cache
+    this.setMemoryCache(key, entry);
+
+    // Persistent cache nếu cần
+    if (persist) {
+      this.setPersistentCache(key, entry);
+    }
+
+    console.log(`💾 Cached "${key}" with TTL ${ttl}ms`);
+  }
+
+  // 📖 Get cache với validation
+  get(key: string): any | null {
+    // Thử memory cache trước
+    let entry = this.memoryCache.get(key);
+
+    // Không có trong memory, thử localStorage
+    if (!entry) {
+      entry = this.getPersistentCache(key);
+      if (entry) {
+        // Load lại vào memory
+        this.setMemoryCache(key, entry);
+      }
+    }
+
+    if (!entry) {
+      console.log(`❌ Cache miss: "${key}"`);
+      return null;
+    }
+
+    // Kiểm tra expiration
+    if (this.isExpired(entry)) {
+      console.log(`⏰ Cache expired: "${key}"`);
+      this.delete(key);
+      return null;
+    }
+
+    // Update access stats
+    entry.accessCount++;
+    entry.timestamp = Date.now();
+
+    console.log(`✅ Cache hit: "${key}" (accessed ${entry.accessCount} times)`);
+    return entry.data;
+  }
+
+  // 🗑️ Delete cache
+  delete(key: string): void {
+    this.memoryCache.delete(key);
+    localStorage.removeItem(this.localStoragePrefix + key);
+    console.log(`🗑️ Deleted cache: "${key}"`);
+  }
+
+  // 🏷️ Invalidate by tags
+  invalidateByTag(tag: string): void {
+    console.log(`🏷️ Invalidating caches with tag: "${tag}"`);
+
+    const keysToDelete: string[] = [];
+
+    this.memoryCache.forEach((entry, key) => {
+      if (entry.tags.includes(tag)) {
+        keysToDelete.push(key);
+      }
+    });
+
+    keysToDelete.forEach(key => this.delete(key));
+    console.log(`🗑️ Invalidated ${keysToDelete.length} cache entries`);
+  }
+
+  // 🧹 Cleanup expired entries
+  cleanup(): void {
+    console.log('🧹 Running cache cleanup...');
+
+    const beforeCount = this.memoryCache.size;
+    const keysToDelete: string[] = [];
+
+    this.memoryCache.forEach((entry, key) => {
+      if (this.isExpired(entry)) {
+        keysToDelete.push(key);
+      }
+    });
+
+    keysToDelete.forEach(key => this.delete(key));
+
+    console.log(`🧹 Cleanup completed: ${keysToDelete.length}/${beforeCount} entries removed`);
+  }
+
+  // 📊 Cache statistics
+  getStats(): CacheStats {
+    const memoryEntries = this.memoryCache.size;
+    const totalAccess = Array.from(this.memoryCache.values())
+      .reduce((sum, entry) => sum + entry.accessCount, 0);
+
+    return {
+      memoryEntries,
+      totalAccess,
+      hitRate: this.calculateHitRate(),
+      oldestEntry: this.getOldestEntry(),
+      memoryUsage: this.estimateMemoryUsage()
+    };
+  }
+
+  private setMemoryCache(key: string, entry: CacheEntry): void {
+    // LRU eviction nếu đầy
+    if (this.memoryCache.size >= this.maxMemoryEntries) {
+      this.evictLRU();
+    }
+
+    this.memoryCache.set(key, entry);
+  }
+
+  private setPersistentCache(key: string, entry: CacheEntry): void {
+    try {
+      localStorage.setItem(
+        this.localStoragePrefix + key,
+        JSON.stringify(entry)
+      );
+    } catch (error) {
+      console.warn('⚠️ localStorage cache failed:', error);
+    }
+  }
+
+  private getPersistentCache(key: string): CacheEntry | null {
+    try {
+      const stored = localStorage.getItem(this.localStoragePrefix + key);
+      return stored ? JSON.parse(stored) : null;
+    } catch (error) {
+      console.warn('⚠️ localStorage read failed:', error);
+      return null;
+    }
+  }
+
+  private isExpired(entry: CacheEntry): boolean {
+    return Date.now() - entry.timestamp > entry.ttl;
+  }
+
+  private evictLRU(): void {
+    let oldestKey = '';
+    let oldestTime = Date.now();
+
+    this.memoryCache.forEach((entry, key) => {
+      if (entry.timestamp < oldestTime) {
+        oldestTime = entry.timestamp;
+        oldestKey = key;
+      }
+    });
+
+    if (oldestKey) {
+      this.delete(oldestKey);
+      console.log(`🔄 LRU evicted: "${oldestKey}"`);
+    }
+  }
+}
+
+// 5. REACT CACHING PATTERNS
+// 🎯 Mục đích: Cache trong React components
+
+// Hook để cache API calls
+function useApiCache<T>(
+  key: string,
+  fetchFn: () => Promise<T>,
+  options: { ttl?: number; tags?: string[] } = {}
+) {
+  const [data, setData] = React.useState<T | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<Error | null>(null);
+  const cache = React.useRef(new ApplicationCache());
+
+  const fetchData = React.useCallback(async () => {
+    // Thử cache trước
+    const cached = cache.current.get(key);
+    if (cached) {
+      console.log('🎯 Sử dụng cached data');
+      setData(cached);
+      return;
+    }
+
+    // Không có cache, fetch mới
+    setLoading(true);
+    setError(null);
+
+    try {
+      console.log('📡 Fetching fresh data...');
+      const result = await fetchFn();
+
+      // Cache result
+      cache.current.set(key, result, {
+        ttl: options.ttl || 300000, // 5 phút
+        tags: options.tags || [],
+        persist: true
+      });
+
+      setData(result);
+      console.log('✅ Data fetched và cached');
+    } catch (err) {
+      setError(err as Error);
+      console.error('❌ Fetch failed:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [key, fetchFn, options.ttl, options.tags]);
+
+  // Auto fetch on mount
+  React.useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Force refresh function
+  const refresh = React.useCallback(() => {
+    cache.current.delete(key);
+    fetchData();
+  }, [key, fetchData]);
+
+  // Invalidate by tags
+  const invalidateTag = React.useCallback((tag: string) => {
+    cache.current.invalidateByTag(tag);
+    if (options.tags?.includes(tag)) {
+      fetchData();
+    }
+  }, [options.tags, fetchData]);
+
+  return {
+    data,
+    loading,
+    error,
+    refresh,
+    invalidateTag
+  };
+}
+
+// Sử dụng hook
+const UserProfileComponent = () => {
+  const { data: user, loading, error, refresh, invalidateTag } = useApiCache(
+    'user-profile',
+    () => fetch('/api/user/profile').then(res => res.json()),
+    {
+      ttl: 600000, // 10 phút
+      tags: ['user', 'profile']
+    }
+  );
+
+  const handleUpdateProfile = async () => {
+    // Update profile logic...
+
+    // Invalidate related caches
+    invalidateTag('user');
+    invalidateTag('profile');
+  };
+
+  if (loading) return <div>🔄 Đang tải...</div>;
+  if (error) return <div>❌ Lỗi: {error.message}</div>;
+
+  return (
+    <div>
+      <h1>👤 Profile: {user?.name}</h1>
+      <button onClick={refresh}>🔄 Refresh</button>
+      <button onClick={handleUpdateProfile}>✏️ Update</button>
+    </div>
+  );
+};
+```
+
+**📊 So sánh Cache Strategies:**
+
+| Strategy | Use Case | Pros | Cons |
+|----------|----------|------|------|
+| **Cache First** | Static assets | ⚡ Nhanh nhất | 📅 Có thể cũ |
+| **Network First** | Dynamic data | 🔄 Luôn fresh | 🐌 Chậm khi offline |
+| **Stale While Revalidate** | Content pages | ⚡ Nhanh + Fresh | 🔄 Phức tạp |
+| **Network Only** | Sensitive data | 🔒 Luôn mới | 📡 Cần network |
+
+---
+
+#### Q31: What happens when you type a URL in the browser?
+
+**Trả lời:**
+
+**💡 Quy trình chi tiết khi gõ URL trong trình duyệt:**
+
+Đây là một **quy trình phức tạp** gồm nhiều bước từ khi bạn gõ URL cho đến khi trang web hiển thị.
+
+```typescript
+// 🌐 QUY TRÌNH COMPLETE: URL → Webpage
+// Mô phỏng từng bước chi tiết
+
+interface BrowserNavigationStep {
+  step: number;
+  name: string;
+  description: string;
+  timeEstimate: string;
+  subSteps: string[];
+}
+
+const browserNavigationProcess: BrowserNavigationStep[] = [
+  {
+    step: 1,
+    name: "URL Parsing & Validation",
+    description: "Phân tích và chuẩn hóa URL",
+    timeEstimate: "< 1ms",
+    subSteps: [
+      "🔍 Parse URL components (protocol, domain, path, query)",
+      "✅ Validate URL format",
+      "🔄 Auto-complete từ browser history/bookmarks",
+      "🛡️ Check URL blacklist/security filters",
+      "📝 Add to browser history"
+    ]
+  },
+
+  {
+    step: 2,
+    name: "DNS Resolution",
+    description: "Chuyển đổi domain name thành IP address",
+    timeEstimate: "1-100ms",
+    subSteps: [
+      "🏠 Check browser DNS cache",
+      "💻 Check OS DNS cache",
+      "🌐 Check router DNS cache",
+      "☁️ Query ISP DNS server",
+      "🌍 Query root DNS servers nếu cần",
+      "💾 Cache DNS result"
+    ]
+  },
+
+  {
+    step: 3,
+    name: "TCP Connection",
+    description: "Thiết lập kết nối với server",
+    timeEstimate: "10-100ms",
+    subSteps: [
+      "🤝 TCP 3-way handshake (SYN, SYN-ACK, ACK)",
+      "🔒 TLS handshake nếu HTTPS",
+      "📜 Certificate validation",
+      "🔑 Key exchange và encryption setup",
+      "✅ Connection established"
+    ]
+  },
+
+  {
+    step: 4,
+    name: "HTTP Request",
+    description: "Gửi HTTP request đến server",
+    timeEstimate: "1-10ms",
+    subSteps: [
+      "📨 Construct HTTP request headers",
+      "🍪 Add cookies từ browser storage",
+      "🔐 Add authentication headers",
+      "📤 Send request qua established connection",
+      "⏳ Wait for server response"
+    ]
+  },
+
+  {
+    step: 5,
+    name: "Server Processing",
+    description: "Server xử lý request và trả response",
+    timeEstimate: "10-1000ms",
+    subSteps: [
+      "🎯 Route request đến correct handler",
+      "🔐 Authentication & authorization check",
+      "💾 Database queries nếu cần",
+      "⚙️ Business logic processing",
+      "📄 Generate HTML response",
+      "📤 Send response về browser"
+    ]
+  },
+
+  {
+    step: 6,
+    name: "HTTP Response",
+    description: "Nhận và xử lý response từ server",
+    timeEstimate: "1-50ms",
+    subSteps: [
+      "📥 Receive response headers",
+      "✅ Check status code (200, 404, 500, etc)",
+      "🔄 Handle redirects nếu có",
+      "💾 Cache response nếu có cache headers",
+      "📄 Start receiving response body"
+    ]
+  },
+
+  {
+    step: 7,
+    name: "HTML Parsing",
+    description: "Parse HTML và build DOM tree",
+    timeEstimate: "10-100ms",
+    subSteps: [
+      "📖 Tokenize HTML content",
+      "🌳 Build DOM tree từ tokens",
+      "🔍 Discover external resources (CSS, JS, images)",
+      "⚡ Start preloading critical resources",
+      "🚀 Fire DOMContentLoaded event"
+    ]
+  },
+
+  {
+    step: 8,
+    name: "CSS Processing",
+    description: "Tải và xử lý CSS styles",
+    timeEstimate: "10-200ms",
+    subSteps: [
+      "📡 Download CSS files",
+      "📖 Parse CSS rules",
+      "🌳 Build CSSOM (CSS Object Model)",
+      "🎨 Calculate computed styles",
+      "🔄 Handle CSS imports và fonts"
+    ]
+  },
+
+  {
+    step: 9,
+    name: "JavaScript Loading",
+    description: "Tải và thực thi JavaScript",
+    timeEstimate: "50-500ms",
+    subSteps: [
+      "📡 Download JavaScript files",
+      "⚙️ Parse và compile JS code",
+      "🏃 Execute synchronous scripts",
+      "⚡ Execute DOMContentLoaded handlers",
+      "🔄 Load async/defer scripts"
+    ]
+  },
+
+  {
+    step: 10,
+    name: "Render Tree Construction",
+    description: "Kết hợp DOM và CSSOM",
+    timeEstimate: "5-50ms",
+    subSteps: [
+      "🔀 Combine DOM tree với CSSOM",
+      "🙈 Skip elements với display:none",
+      "📐 Calculate element positions",
+      "🎨 Determine final styles",
+      "🌳 Create render tree"
+    ]
+  },
+
+  {
+    step: 11,
+    name: "Layout/Reflow",
+    description: "Tính toán vị trí và kích thước elements",
+    timeEstimate: "10-100ms",
+    subSteps: [
+      "📏 Calculate element dimensions",
+      "📍 Calculate element positions",
+      "🔄 Handle responsive layout",
+      "📱 Apply media queries",
+      "⚖️ Resolve layout conflicts"
+    ]
+  },
+
+  {
+    step: 12,
+    name: "Paint/Rasterization",
+    description: "Vẽ pixels lên screen",
+    timeEstimate: "10-100ms",
+    subSteps: [
+      "🎨 Paint background colors/images",
+      "✏️ Paint text content",
+      "🖼️ Paint images và media",
+      "🔲 Paint borders và shadows",
+      "⚡ Use GPU acceleration nếu có"
+    ]
+  },
+
+  {
+    step: 13,
+    name: "Composite",
+    description: "Kết hợp các layers thành final image",
+    timeEstimate: "1-10ms",
+    subSteps: [
+      "📚 Combine paint layers",
+      "🔄 Apply transforms và opacity",
+      "🖥️ Send final image đến screen",
+      "✨ Display webpage to user",
+      "🎉 Page load complete!"
+    ]
+  }
+];
+
+// Detailed example với timing
+class BrowserNavigationSimulator {
+  private performanceTimings: PerformanceTiming;
+  private navigationEntries: PerformanceNavigationTiming[];
+
+  constructor() {
+    this.performanceTimings = performance.timing;
+    this.navigationEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
+  }
+
+  // 📊 Phân tích chi tiết timing của page load
+  analyzePageLoad(): PageLoadAnalysis {
+    const navigation = this.navigationEntries[0];
+    const timing = this.performanceTimings;
+
+    return {
+      // 🌐 DNS Resolution
+      dnsLookup: {
+        duration: timing.domainLookupEnd - timing.domainLookupStart,
+        description: "Thời gian resolve domain name thành IP",
+        details: this.getDnsDetails()
+      },
+
+      // 🤝 TCP Connection
+      tcpConnection: {
+        duration: timing.connectEnd - timing.connectStart,
+        description: "Thời gian thiết lập TCP connection",
+        details: this.getTcpDetails()
+      },
+
+      // 🔒 SSL Handshake (nếu HTTPS)
+      sslHandshake: {
+        duration: timing.connectEnd - timing.secureConnectionStart,
+        description: "Thời gian TLS/SSL handshake",
+        details: this.getSslDetails()
+      },
+
+      // 📤 Request/Response
+      requestResponse: {
+        duration: timing.responseStart - timing.requestStart,
+        description: "Thời gian server xử lý request",
+        details: this.getRequestDetails()
+      },
+
+      // 📄 Content Download
+      contentDownload: {
+        duration: timing.responseEnd - timing.responseStart,
+        description: "Thời gian download HTML content",
+        details: this.getDownloadDetails()
+      },
+
+      // 🌳 DOM Processing
+      domProcessing: {
+        duration: timing.domComplete - timing.domLoading,
+        description: "Thời gian parse HTML và build DOM",
+        details: this.getDomDetails()
+      },
+
+      // 🎨 Page Rendering
+      pageRender: {
+        duration: timing.loadEventEnd - timing.domComplete,
+        description: "Thời gian render page và load resources",
+        details: this.getRenderDetails()
+      },
+
+      // 📊 Overall metrics
+      totalLoadTime: timing.loadEventEnd - timing.navigationStart,
+      firstContentfulPaint: this.getFirstContentfulPaint(),
+      largestContentfulPaint: this.getLargestContentfulPaint(),
+      firstInputDelay: this.getFirstInputDelay()
+    };
+  }
+
+  private getDnsDetails(): DnsDetails {
+    return {
+      cacheStatus: this.checkDnsCache(),
+      resolverUsed: this.getDnsResolver(),
+      ipAddress: this.getResolvedIp(),
+      recordType: 'A', // A, AAAA, CNAME, etc.
+    };
+  }
+
+  private getTcpDetails(): TcpDetails {
+    return {
+      handshakeSteps: [
+        '📤 Client gửi SYN packet',
+        '📥 Server gửi SYN-ACK packet',
+        '📤 Client gửi ACK packet',
+        '✅ Connection established'
+      ],
+      connectionReused: this.isConnectionReused(),
+      rttEstimate: this.estimateRTT()
+    };
+  }
+
+  private getSslDetails(): SslDetails {
+    return {
+      protocol: 'TLS 1.3',
+      cipherSuite: 'TLS_AES_128_GCM_SHA256',
+      certificateValidation: this.getCertificateInfo(),
+      handshakeSteps: [
+        '🤝 Client Hello',
+        '👋 Server Hello + Certificate',
+        '🔑 Key Exchange',
+        '✅ Handshake Finished'
+      ]
+    };
+  }
+
+  // 🎯 Real-time monitoring
+  startNavigationMonitoring(): void {
+    console.log('🚀 Bắt đầu monitor page navigation...');
+
+    // Monitor DNS timing
+    const dnsStart = performance.now();
+    console.log(`⏰ ${dnsStart.toFixed(2)}ms: DNS lookup started`);
+
+    // Monitor TCP connection
+    const observer = new PerformanceObserver((list) => {
+      list.getEntries().forEach((entry) => {
+        if (entry.entryType === 'navigation') {
+          const nav = entry as PerformanceNavigationTiming;
+          this.logNavigationTimings(nav);
+        }
+      });
+    });
+
+    observer.observe({ entryTypes: ['navigation'] });
+
+    // Monitor resource loading
+    const resourceObserver = new PerformanceObserver((list) => {
+      list.getEntries().forEach((entry) => {
+        if (entry.entryType === 'resource') {
+          this.logResourceTiming(entry as PerformanceResourceTiming);
+        }
+      });
+    });
+
+    resourceObserver.observe({ entryTypes: ['resource'] });
+  }
+
+  private logNavigationTimings(navigation: PerformanceNavigationTiming): void {
+    console.group('🌐 Navigation Timings');
+
+    // DNS Lookup
+    const dnsTime = navigation.domainLookupEnd - navigation.domainLookupStart;
+    console.log(`🔍 DNS Lookup: ${dnsTime.toFixed(2)}ms`);
+
+    // TCP Connection
+    const tcpTime = navigation.connectEnd - navigation.connectStart;
+    console.log(`🤝 TCP Connection: ${tcpTime.toFixed(2)}ms`);
+
+    // SSL Handshake
+    const sslTime = navigation.connectEnd - navigation.secureConnectionStart;
+    if (sslTime > 0) {
+      console.log(`🔒 SSL Handshake: ${sslTime.toFixed(2)}ms`);
+    }
+
+    // Request/Response
+    const requestTime = navigation.responseStart - navigation.requestStart;
+    console.log(`📤 Request/Response: ${requestTime.toFixed(2)}ms`);
+
+    // Content Download
+    const downloadTime = navigation.responseEnd - navigation.responseStart;
+    console.log(`📥 Content Download: ${downloadTime.toFixed(2)}ms`);
+
+    // DOM Processing
+    const domTime = navigation.domComplete - navigation.domLoading;
+    console.log(`🌳 DOM Processing: ${domTime.toFixed(2)}ms`);
+
+    // Total Load Time
+    const totalTime = navigation.loadEventEnd - navigation.navigationStart;
+    console.log(`⏰ Total Load Time: ${totalTime.toFixed(2)}ms`);
+
+    console.groupEnd();
+  }
+
+  private logResourceTiming(resource: PerformanceResourceTiming): void {
+    const resourceType = this.getResourceType(resource.name);
+    const loadTime = resource.responseEnd - resource.startTime;
+
+    console.log(`📦 ${resourceType}: ${resource.name} - ${loadTime.toFixed(2)}ms`);
+
+    // Chi tiết timing cho resource quan trọng
+    if (resourceType === 'CSS' || resourceType === 'JS') {
+      console.group(`📋 Chi tiết ${resourceType}`);
+      console.log(`  🔍 DNS: ${(resource.domainLookupEnd - resource.domainLookupStart).toFixed(2)}ms`);
+      console.log(`  🤝 Connect: ${(resource.connectEnd - resource.connectStart).toFixed(2)}ms`);
+      console.log(`  📤 Request: ${(resource.responseStart - resource.requestStart).toFixed(2)}ms`);
+      console.log(`  📥 Download: ${(resource.responseEnd - resource.responseStart).toFixed(2)}ms`);
+      console.groupEnd();
+    }
+  }
+
+  private getResourceType(url: string): string {
+    if (url.match(/\.css(\?|$)/)) return 'CSS';
+    if (url.match(/\.js(\?|$)/)) return 'JS';
+    if (url.match(/\.(png|jpg|jpeg|gif|svg|webp)(\?|$)/)) return 'Image';
+    if (url.match(/\.(woff|woff2|ttf|eot)(\?|$)/)) return 'Font';
+    if (url.match(/\/api\//)) return 'API';
+    return 'Other';
+  }
+}
+
+// 🎯 React Component để visualize page load
+const PageLoadVisualizer: React.FC = () => {
+  const [currentStep, setCurrentStep] = React.useState(0);
+  const [timings, setTimings] = React.useState<PageLoadAnalysis | null>(null);
+  const simulator = React.useRef(new BrowserNavigationSimulator());
+
+  React.useEffect(() => {
+    // Simulate page load steps
+    const timer = setInterval(() => {
+      setCurrentStep(prev => {
+        if (prev < browserNavigationProcess.length - 1) {
+          return prev + 1;
+        } else {
+          clearInterval(timer);
+          return prev;
+        }
+      });
+    }, 500);
+
+    // Analyze real page load
+    const analysis = simulator.current.analyzePageLoad();
+    setTimings(analysis);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="page-load-visualizer">
+      <h2>🌐 Page Load Process Visualization</h2>
+
+      {/* Progress bar */}
+      <div className="progress-bar">
+        <div
+          className="progress"
+          style={{
+            width: `${((currentStep + 1) / browserNavigationProcess.length) * 100}%`
+          }}
+        />
+      </div>
+
+      {/* Current step */}
+      <div className="current-step">
+        <h3>
+          {browserNavigationProcess[currentStep]?.name}
+          <span className="step-number">
+            ({currentStep + 1}/{browserNavigationProcess.length})
+          </span>
+        </h3>
+        <p>{browserNavigationProcess[currentStep]?.description}</p>
+        <div className="sub-steps">
+          {browserNavigationProcess[currentStep]?.subSteps.map((subStep, index) => (
+            <div key={index} className="sub-step">
+              {subStep}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Timing analysis */}
+      {timings && (
+        <div className="timing-analysis">
+          <h3>📊 Real Page Load Timings</h3>
+          <div className="timing-grid">
+            <div className="timing-item">
+              <span>🔍 DNS Lookup:</span>
+              <span>{timings.dnsLookup.duration.toFixed(2)}ms</span>
+            </div>
+            <div className="timing-item">
+              <span>🤝 TCP Connection:</span>
+              <span>{timings.tcpConnection.duration.toFixed(2)}ms</span>
+            </div>
+            <div className="timing-item">
+              <span>📤 Request/Response:</span>
+              <span>{timings.requestResponse.duration.toFixed(2)}ms</span>
+            </div>
+            <div className="timing-item">
+              <span>🌳 DOM Processing:</span>
+              <span>{timings.domProcessing.duration.toFixed(2)}ms</span>
+            </div>
+            <div className="timing-total">
+              <span>⏰ Total Load Time:</span>
+              <span>{timings.totalLoadTime.toFixed(2)}ms</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+**⚡ Performance Insights:**
+
+| Giai đoạn | Thời gian thường | Tối ưu hóa |
+|-----------|------------------|------------|
+| **DNS Lookup** | 1-100ms | 💾 DNS caching, CDN |
+| **TCP Connection** | 10-100ms | 🔄 Keep-alive, HTTP/2 |
+| **SSL Handshake** | 50-200ms | 📜 Certificate caching |
+| **Server Response** | 100-1000ms | ⚡ Server optimization |
+| **Content Download** | 100-2000ms | 🗜️ Compression, CDN |
+| **DOM/Render** | 100-1000ms | 🎯 Critical CSS, defer JS |
+
+---
+
+#### Q32: Git branching strategies - Rebase vs Merge vs Feature Flags?
+
+**Trả lời:**
+
+**💡 Tổng quan về Git Branching Strategies:**
+
+Git branching strategies là **các phương pháp tổ chức và quản lý code** trong team development để đảm bảo code quality và collaboration hiệu quả.
+
+```typescript
+// 🌳 GIT BRANCHING MODELS
+
+// 1. GIT FLOW - Traditional branching model
+interface GitFlowBranches {
+  // Main branches (luôn tồn tại)
+  main: {
+    purpose: "Production-ready code";
+    mergeFrom: ["release", "hotfix"];
+    directCommits: false;
+  };
+
+  develop: {
+    purpose: "Integration branch cho features";
+    mergeFrom: ["feature", "release", "hotfix"];
+    directCommits: boolean; // Tùy team
+  };
+
+  // Supporting branches (tạm thời)
+  feature: {
+    purpose: "Phát triển tính năng mới";
+    branchFrom: "develop";
+    mergeInto: "develop";
+    namingConvention: "feature/JIRA-123-user-authentication";
+  };
+
+  release: {
+    purpose: "Chuẩn bị cho production release";
+    branchFrom: "develop";
+    mergeInto: ["main", "develop"];
+    namingConvention: "release/v1.2.0";
+  };
+
+  hotfix: {
+    purpose: "Sửa bug critical trên production";
+    branchFrom: "main";
+    mergeInto: ["main", "develop"];
+    namingConvention: "hotfix/v1.2.1-critical-security-fix";
+  };
+}
+
+// Ví dụ Git Flow workflow
+class GitFlowWorkflow {
+  // 🚀 Bắt đầu feature mới
+  startFeature(featureName: string): void {
+    console.log('🚀 Bắt đầu feature mới...');
+
+    // Checkout develop và pull latest
+    this.executeCommand('git checkout develop');
+    this.executeCommand('git pull origin develop');
+
+    // Tạo feature branch
+    const branchName = `feature/${featureName}`;
+    this.executeCommand(`git checkout -b ${branchName}`);
+
+    console.log(`✅ Đã tạo feature branch: ${branchName}`);
+  }
+
+  // 🔄 Finish feature
+  finishFeature(featureName: string): void {
+    console.log('🔄 Hoàn thành feature...');
+
+    const branchName = `feature/${featureName}`;
+
+    // Checkout develop và merge feature
+    this.executeCommand('git checkout develop');
+    this.executeCommand('git pull origin develop');
+    this.executeCommand(`git merge --no-ff ${branchName}`);
+
+    // Xóa feature branch
+    this.executeCommand(`git branch -d ${branchName}`);
+    this.executeCommand(`git push origin --delete ${branchName}`);
+
+    console.log(`✅ Feature ${featureName} đã hoàn thành và merge vào develop`);
+  }
+
+  // 📦 Tạo release
+  createRelease(version: string): void {
+    console.log('📦 Tạo release...');
+
+    // Checkout develop và tạo release branch
+    this.executeCommand('git checkout develop');
+    this.executeCommand('git pull origin develop');
+
+    const releaseBranch = `release/v${version}`;
+    this.executeCommand(`git checkout -b ${releaseBranch}`);
+
+    // Update version trong package.json
+    this.updateVersion(version);
+    this.executeCommand(`git commit -am "Bump version to ${version}"`);
+
+    console.log(`✅ Đã tạo release branch: ${releaseBranch}`);
+  }
+
+  // 🚨 Hotfix cho production
+  createHotfix(version: string, description: string): void {
+    console.log('🚨 Tạo hotfix...');
+
+    // Checkout main và tạo hotfix branch
+    this.executeCommand('git checkout main');
+    this.executeCommand('git pull origin main');
+
+    const hotfixBranch = `hotfix/v${version}-${description}`;
+    this.executeCommand(`git checkout -b ${hotfixBranch}`);
+
+    console.log(`✅ Đã tạo hotfix branch: ${hotfixBranch}`);
+  }
+
+  private executeCommand(command: string): void {
+    console.log(`🔧 Executing: ${command}`);
+    // Thực tế sẽ dùng child_process.exec() trong Node.js
+  }
+}
+
+// 2. GITHUB FLOW - Simplified model
+interface GitHubFlowModel {
+  branches: {
+    main: {
+      purpose: "Luôn deployable";
+      protection: ["required_reviews", "status_checks"];
+      directCommits: false;
+    };
+
+    feature: {
+      purpose: "Mọi thay đổi (feature, bugfix, etc.)";
+      branchFrom: "main";
+      mergeStrategy: "pull_request";
+      namingConvention: string;
+    };
+  };
+
+  workflow: string[];
+}
+
+const githubFlow: GitHubFlowModel = {
+  branches: {
+    main: {
+      purpose: "Luôn deployable",
+      protection: ["required_reviews", "status_checks"],
+      directCommits: false
+    },
+
+    feature: {
+      purpose: "Mọi thay đổi (feature, bugfix, etc.)",
+      branchFrom: "main",
+      mergeStrategy: "pull_request",
+      namingConvention: "descriptive-feature-name"
+    }
+  },
+
+  workflow: [
+    "1. 🌟 Tạo branch từ main",
+    "2. 💻 Code changes",
+    "3. 📤 Push và tạo Pull Request",
+    "4. 👥 Code review và discussion",
+    "5. ✅ Deploy để test (optional)",
+    "6. 🔄 Merge vào main",
+    "7. 🚀 Deploy production"
+  ]
+};
+
+// 3. REBASE vs MERGE - Chi tiết comparison
+interface RebaseVsMerge {
+  rebase: {
+    description: string;
+    advantages: string[];
+    disadvantages: string[];
+    useCase: string;
+  };
+
+  merge: {
+    description: string;
+    advantages: string[];
+    disadvantages: string[];
+    useCase: string;
+  };
+}
+
+const rebaseVsMerge: RebaseVsMerge = {
+  rebase: {
+    description: "Áp dụng lại commits lên đầu branch khác",
+    advantages: [
+      "🧹 Linear history - dễ đọc",
+      "📜 Không tạo merge commits",
+      "🔍 Dễ trace bugs với git bisect",
+      "📊 Clean project timeline"
+    ],
+    disadvantages: [
+      "⚠️ Rewrites commit history",
+      "🚫 Không nên dùng cho shared branches",
+      "🔄 Có thể gây conflicts phức tạp",
+      "📚 Mất context về merge timing"
+    ],
+    useCase: "Feature branches trước khi merge"
+  },
+
+  merge: {
+    description: "Kết hợp changes từ branch khác",
+    advantages: [
+      "🛡️ Preserve commit history",
+      "📅 Giữ nguyên timing context",
+      "👥 An toàn cho shared branches",
+      "🔄 Easy rollback"
+    ],
+    disadvantages: [
+      "🌳 Complex history graph",
+      "📈 Nhiều merge commits",
+      "🔍 Khó trace linear history",
+      "📚 Noisy git log"
+    ],
+    useCase: "Merge feature vào main branch"
+  }
+};
+
+// Practical examples
+class GitWorkflowExamples {
+  // 🔄 Interactive Rebase - Cleanup commits
+  performInteractiveRebase(): void {
+    console.log('🔄 Thực hiện Interactive Rebase...');
+
+    const rebaseCommands = [
+      // Rebase last 3 commits
+      'git rebase -i HEAD~3',
+
+      // Trong editor, có thể:
+      'pick abc123 Add user authentication',
+      'squash def456 Fix typo in auth',        // Gộp với commit trước
+      'reword ghi789 Add password validation', // Sửa commit message
+
+      // Kết quả: 2 commits thay vì 3
+    ];
+
+    console.log('📝 Interactive rebase options:');
+    console.log('• pick: Giữ nguyên commit');
+    console.log('• reword: Sửa commit message');
+    console.log('• edit: Sửa commit content');
+    console.log('• squash: Gộp với commit trước');
+    console.log('• drop: Xóa commit');
+  }
+
+  // 🔀 Merge strategies
+  demonstrateMergeStrategies(): void {
+    console.log('🔀 Các loại merge strategies...');
+
+    const strategies = {
+      // Fast-forward merge (mặc định khi có thể)
+      fastForward: {
+        command: 'git merge feature-branch',
+        description: 'Đơn giản di chuyển pointer, không tạo merge commit',
+        when: 'Khi main chưa có commits mới sau khi tạo feature branch'
+      },
+
+      // No fast-forward merge
+      noFastForward: {
+        command: 'git merge --no-ff feature-branch',
+        description: 'Luôn tạo merge commit để giữ context',
+        when: 'Muốn giữ history về việc merge feature'
+      },
+
+      // Squash merge
+      squashMerge: {
+        command: 'git merge --squash feature-branch',
+        description: 'Gộp tất cả commits thành 1 commit mới',
+        when: 'Feature có nhiều small commits không cần thiết'
+      }
+    };
+
+    Object.entries(strategies).forEach(([type, info]) => {
+      console.log(`\n📌 ${type}:`);
+      console.log(`   Command: ${info.command}`);
+      console.log(`   Mô tả: ${info.description}`);
+      console.log(`   Khi nào: ${info.when}`);
+    });
+  }
+
+  // 🚩 Feature Flags implementation
+  implementFeatureFlags(): void {
+    console.log('🚩 Implementing Feature Flags...');
+
+    // Feature flag configuration
+    const featureFlags = {
+      NEW_DASHBOARD: {
+        enabled: false,
+        rolloutPercentage: 0,
+        targetUsers: ['beta_testers'],
+        environments: ['staging']
+      },
+
+      DARK_MODE: {
+        enabled: true,
+        rolloutPercentage: 100,
+        targetUsers: ['all'],
+        environments: ['production', 'staging']
+      },
+
+      PAYMENT_V2: {
+        enabled: true,
+        rolloutPercentage: 25, // Gradual rollout
+        targetUsers: ['premium_users'],
+        environments: ['production']
+      }
+    };
+
+    console.log('🎛️ Feature flag benefits:');
+    console.log('• 🚀 Deploy code without activating features');
+    console.log('• 🧪 A/B testing capabilities');
+    console.log('• 🔄 Quick rollback without deployment');
+    console.log('• 👥 Target specific user groups');
+    console.log('• 📊 Gradual feature rollout');
+  }
+}
+
+// React Hook cho feature flags
+function useFeatureFlag(flagName: string) {
+  const [isEnabled, setIsEnabled] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // Fetch feature flag từ service
+    const fetchFeatureFlag = async () => {
+      try {
+        const response = await fetch(`/api/feature-flags/${flagName}`);
+        const data = await response.json();
+
+        // Check user eligibility, environment, rollout percentage
+        const userEligible = checkUserEligibility(data);
+        const environmentMatch = data.environments.includes(process.env.NODE_ENV);
+        const rolloutMatch = Math.random() * 100 < data.rolloutPercentage;
+
+        setIsEnabled(data.enabled && userEligible && environmentMatch && rolloutMatch);
+      } catch (error) {
+        console.error('❌ Feature flag fetch failed:', error);
+        setIsEnabled(false); // Fail safe
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeatureFlag();
+  }, [flagName]);
+
+  return { isEnabled, loading };
+}
+
+// Sử dụng feature flag trong component
+const DashboardComponent = () => {
+  const { isEnabled: newDashboard, loading } = useFeatureFlag('NEW_DASHBOARD');
+
+  if (loading) {
+    return <div>🔄 Loading...</div>;
+  }
+
+  return (
+    <div>
+      {newDashboard ? (
+        <NewDashboard />
+      ) : (
+        <OldDashboard />
+      )}
+    </div>
+  );
+};
+
+// 4. BRANCH PROTECTION & AUTOMATION
+interface BranchProtectionRules {
+  requiredReviews: {
+    count: number;
+    dismissStaleReviews: boolean;
+    requireCodeOwnerReviews: boolean;
+    restrictPushes: boolean;
+  };
+
+  statusChecks: {
+    strict: boolean; // Require branches to be up to date
+    contexts: string[]; // CI checks required
+  };
+
+  enforceAdmins: boolean;
+  allowDeletions: boolean;
+  allowForcePushes: boolean;
+}
+
+const productionBranchProtection: BranchProtectionRules = {
+  requiredReviews: {
+    count: 2, // Ít nhất 2 reviews
+    dismissStaleReviews: true, // Dismiss khi có thay đổi mới
+    requireCodeOwnerReviews: true, // Code owners phải review
+    restrictPushes: true // Chỉ allow qua PR
+  },
+
+  statusChecks: {
+    strict: true, // Branch phải up-to-date
+    contexts: [
+      'ci/tests',
+      'ci/lint',
+      'ci/security-scan',
+      'ci/build'
+    ]
+  },
+
+  enforceAdmins: true, // Rules áp dụng cho admins
+  allowDeletions: false,
+  allowForcePushes: false
+};
+
+// 5. AUTOMATION WITH GITHUB ACTIONS
+const gitWorkflowAutomation = `
+name: 🚀 Feature Branch Workflow
+
+on:
+  push:
+    branches: [ feature/*, develop, main ]
+  pull_request:
+    branches: [ develop, main ]
+
+jobs:
+  # 🧪 Tests và Quality Checks
+  quality-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🧹 Lint
+        run: npm run lint
+
+      - name: 🧪 Tests
+        run: npm run test:coverage
+
+      - name: 🔍 Type Check
+        run: npm run type-check
+
+      - name: 🛡️ Security Audit
+        run: npm audit --audit-level=moderate
+
+  # 🚀 Auto-deploy preview for feature branches
+  preview-deploy:
+    if: startsWith(github.ref, 'refs/heads/feature/')
+    needs: quality-checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🌐 Deploy Preview
+        run: |
+          echo "🚀 Deploying preview for ${{ github.ref_name }}"
+          # Deploy to preview environment
+
+      - name: 💬 Comment PR với preview link
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🌐 Preview deployed: https://preview-${{ github.ref_name }}.app.com'
+            })
+`;
+```
+
+**📊 So sánh Branching Strategies:**
+
+| Strategy | Complexity | Team Size | Release Cycle | Best For |
+|----------|------------|-----------|---------------|----------|
+| **Git Flow** | 🔴 High | Large (10+) | Long (weeks/months) | 🏢 Enterprise |
+| **GitHub Flow** | 🟢 Low | Small-Medium | Short (days) | 🚀 Startups |
+| **GitLab Flow** | 🟡 Medium | Medium | Medium | 🔄 Continuous |
+| **Feature Flags** | 🟡 Medium | Any | Continuous | 🎯 A/B Testing |
+
+**🎯 Best Practices:**
+
+```typescript
+// Branch naming conventions
+const branchNamingBestPractices = {
+  feature: 'feature/JIRA-123-user-authentication',
+  bugfix: 'bugfix/JIRA-456-login-error',
+  hotfix: 'hotfix/JIRA-789-security-patch',
+  release: 'release/v1.2.0',
+
+  // Bad examples ❌
+  badExamples: [
+    'my-feature',           // Không descriptive
+    'feature/bug-fix',      // Confusing type
+    'test',                 // Vague
+    'feature/JIRA-123'      // Thiếu description
+  ]
+};
+
+// Commit message conventions
+const commitMessageBestPractices = {
+  conventional: [
+    'feat: add user authentication system',
+    'fix: resolve login redirect issue',
+    'docs: update API documentation',
+    'style: format code with prettier',
+    'refactor: extract auth utility functions',
+    'test: add unit tests for auth service',
+    'chore: update dependencies'
+  ],
+
+  structure: {
+    format: '<type>(<scope>): <subject>',
+    example: 'feat(auth): add OAuth2 integration',
+    maxLength: 50,
+    bodyWrap: 72
+  }
+};
+```
+
+---
+
+#### Q33: Frontend project structure và scalability design?
+
+**Trả lời:**
+
+**💡 Tổng quan về Frontend Project Structure:**
+
+Cấu trúc project tốt là **nền tảng quan trọng** để ứng dụng có thể mở rộng, bảo trì và phát triển bởi nhiều developers.
+
+```typescript
+// 🏗️ SCALABLE PROJECT STRUCTURE
+
+// 1. ATOMIC DESIGN PATTERN
+interface AtomicDesignStructure {
+  // Atoms - Smallest components (không thể chia nhỏ hơn)
+  atoms: {
+    purpose: "Basic HTML elements styled";
+    examples: ["Button", "Input", "Label", "Icon"];
+    characteristics: ["Reusable", "No business logic", "Style-focused"];
+  };
+
+  // Molecules - Groups of atoms
+  molecules: {
+    purpose: "Combination of atoms with specific function";
+    examples: ["SearchBox", "FormField", "Navigation"];
+    characteristics: ["Single responsibility", "Reusable", "Simple logic"];
+  };
+
+  // Organisms - Complex UI sections
+  organisms: {
+    purpose: "Distinct sections of interface";
+    examples: ["Header", "ProductList", "UserProfile"];
+    characteristics: ["Business logic", "Data management", "Complex"];
+  };
+
+  // Templates - Page-level layout
+  templates: {
+    purpose: "Page structure without content";
+    examples: ["HomeTemplate", "DashboardTemplate"];
+    characteristics: ["Layout focus", "Responsive", "Flexible"];
+  };
+
+  // Pages - Specific instances with real content
+  pages: {
+    purpose: "Actual pages with data";
+    examples: ["HomePage", "ProductPage", "UserDashboard"];
+    characteristics: ["Data fetching", "Route handling", "SEO"];
+  };
+}
+
+// Cấu trúc thư mục Atomic Design
+const atomicProjectStructure = `
+src/
+├── components/
+│   ├── atoms/                    # 🔬 Atoms
+│   │   ├── Button/
+│   │   │   ├── Button.tsx
+│   │   │   ├── Button.test.tsx
+│   │   │   ├── Button.stories.tsx
+│   │   │   ├── Button.module.scss
+│   │   │   └── index.ts
+│   │   ├── Input/
+│   │   ├── Icon/
+│   │   └── index.ts              # Export all atoms
+│   │
+│   ├── molecules/                # 🧬 Molecules
+│   │   ├── SearchBox/
+│   │   │   ├── SearchBox.tsx
+│   │   │   ├── SearchBox.test.tsx
+│   │   │   └── index.ts
+│   │   ├── FormField/
+│   │   └── index.ts
+│   │
+│   ├── organisms/                # 🦠 Organisms
+│   │   ├── Header/
+│   │   ├── ProductList/
+│   │   ├── UserProfile/
+│   │   └── index.ts
+│   │
+│   ├── templates/                # 📄 Templates
+│   │   ├── HomeTemplate/
+│   │   ├── DashboardTemplate/
+│   │   └── index.ts
+│   │
+│   └── pages/                    # 📱 Pages
+│       ├── HomePage/
+│       ├── ProductPage/
+│       └── index.ts
+├── hooks/                        # 🎣 Custom Hooks
+├── services/                     # 🔧 API & Business Logic
+├── utils/                        # 🛠️ Utility Functions
+├── types/                        # 📝 TypeScript Types
+├── constants/                    # 📊 Constants
+└── styles/                       # 🎨 Global Styles
+`;
+
+// 2. FEATURE-BASED STRUCTURE (Recommended for large apps)
+const featureBasedStructure = `
+src/
+├── shared/                       # 🌐 Shared across features
+│   ├── components/               # Common UI components
+│   │   ├── ui/                   # Basic UI elements
+│   │   │   ├── Button/
+│   │   │   ├── Modal/
+│   │   │   └── DataTable/
+│   │   └── layout/               # Layout components
+│   │       ├── Header/
+│   │       ├── Sidebar/
+│   │       └── Footer/
+│   ├── hooks/                    # Reusable hooks
+│   ├── services/                 # Common services
+│   ├── utils/                    # Utility functions
+│   ├── types/                    # Global types
+│   └── constants/                # Global constants
+│
+├── features/                     # 🎯 Feature modules
+│   ├── authentication/          # 🔐 Auth feature
+│   │   ├── components/          # Feature-specific components
+│   │   │   ├── LoginForm/
+│   │   │   ├── SignupForm/
+│   │   │   └── ForgotPassword/
+│   │   ├── hooks/               # Auth-specific hooks
+│   │   │   ├── useAuth.ts
+│   │   │   └── useLogin.ts
+│   │   ├── services/            # Auth API calls
+│   │   │   ├── authApi.ts
+│   │   │   └── tokenService.ts
+│   │   ├── types/               # Auth types
+│   │   ├── pages/               # Auth pages
+│   │   │   ├── LoginPage/
+│   │   │   └── SignupPage/
+│   │   └── index.ts             # Feature exports
+│   │
+│   ├── dashboard/               # 📊 Dashboard feature
+│   ├── products/                # 🛍️ Products feature
+│   ├── orders/                  # 📦 Orders feature
+│   └── users/                   # 👥 Users feature
+│
+├── app/                         # 🏠 App-level configuration
+│   ├── store/                   # Global state management
+│   ├── router/                  # Routing configuration
+│   ├── providers/               # Context providers
+│   └── App.tsx                  # Root component
+│
+└── pages/                       # 📄 Next.js pages (if using Next.js)
+    ├── api/                     # API routes
+    ├── auth/                    # Auth pages
+    └── dashboard/               # Dashboard pages
+`;
+
+// 3. DETAILED COMPONENT STRUCTURE
+interface ComponentStructure {
+  name: string;
+  files: ComponentFile[];
+  bestPractices: string[];
+}
+
+interface ComponentFile {
+  name: string;
+  purpose: string;
+  required: boolean;
+}
+
+const componentStructureExample: ComponentStructure = {
+  name: "UserProfile",
+  files: [
+    {
+      name: "UserProfile.tsx",
+      purpose: "Main component implementation",
+      required: true
+    },
+    {
+      name: "UserProfile.test.tsx",
+      purpose: "Unit tests",
+      required: true
+    },
+    {
+      name: "UserProfile.stories.tsx",
+      purpose: "Storybook stories for documentation",
+      required: true
+    },
+    {
+      name: "UserProfile.module.scss",
+      purpose: "Component-specific styles",
+      required: false
+    },
+    {
+      name: "UserProfile.types.ts",
+      purpose: "Component-specific TypeScript types",
+      required: false
+    },
+    {
+      name: "hooks/",
+      purpose: "Component-specific custom hooks",
+      required: false
+    },
+    {
+      name: "utils/",
+      purpose: "Component-specific utility functions",
+      required: false
+    },
+    {
+      name: "index.ts",
+      purpose: "Clean exports cho component",
+      required: true
+    }
+  ],
+
+  bestPractices: [
+    "🎯 Single Responsibility - một component một mục đích",
+    "📝 Proper naming - tên rõ ràng, descriptive",
+    "🔧 Reusability - thiết kế để tái sử dụng",
+    "📊 Props interface - định nghĩa rõ ràng props",
+    "🧪 Test coverage - ít nhất 80% coverage",
+    "📚 Documentation - Storybook stories và comments",
+    "🎨 Consistent styling - follow design system",
+    "⚡ Performance - memo, callbacks, lazy loading"
+  ]
+};
+
+// Component implementation example
+interface UserProfileProps {
+  userId: string;
+  showEditButton?: boolean;
+  onEdit?: (userId: string) => void;
+  className?: string;
+}
+
+// UserProfile/UserProfile.tsx
+const UserProfile: React.FC<UserProfileProps> = React.memo(({
+  userId,
+  showEditButton = true,
+  onEdit,
+  className
+}) => {
+  // Custom hook cho data fetching
+  const { user, loading, error, updateUser } = useUser(userId);
+
+  // Local state management
+  const [isEditing, setIsEditing] = React.useState(false);
+
+  // Stable callback references
+  const handleEdit = React.useCallback(() => {
+    setIsEditing(true);
+    onEdit?.(userId);
+  }, [userId, onEdit]);
+
+  const handleSave = React.useCallback(async (userData: UserData) => {
+    await updateUser(userData);
+    setIsEditing(false);
+  }, [updateUser]);
+
+  // Early returns for loading/error states
+  if (loading) return <UserProfileSkeleton />;
+  if (error) return <ErrorMessage error={error} />;
+  if (!user) return <UserNotFound />;
+
+  return (
+    <div className={cn(styles.userProfile, className)}>
+      <UserAvatar
+        src={user.avatar}
+        alt={user.name}
+        size="large"
+      />
+
+      <UserInfo user={user} />
+
+      {showEditButton && (
+        <Button
+          variant="secondary"
+          onClick={handleEdit}
+          icon={<EditIcon />}
+        >
+          Edit Profile
+        </Button>
+      )}
+
+      {isEditing && (
+        <UserEditModal
+          user={user}
+          onSave={handleSave}
+          onCancel={() => setIsEditing(false)}
+        />
+      )}
+    </div>
+  );
+});
+
+UserProfile.displayName = 'UserProfile';
+
+// UserProfile/index.ts - Clean exports
+export { UserProfile } from './UserProfile';
+export type { UserProfileProps } from './UserProfile';
+
+// 4. STATE MANAGEMENT STRUCTURE
+interface StateManagementStructure {
+  global: {
+    store: string;
+    slices: string[];
+    middleware: string[];
+  };
+
+  local: {
+    useState: string[];
+    useReducer: string[];
+    customHooks: string[];
+  };
+
+  server: {
+    reactQuery: string[];
+    swr: string[];
+    apollo: string[];
+  };
+}
+
+const stateManagementExample = `
+src/app/store/
+├── index.ts                      # Store configuration
+├── rootReducer.ts               # Combine all reducers
+├── middleware.ts                # Custom middleware
+├── slices/                      # Feature slices
+│   ├── authSlice.ts            # Authentication state
+│   ├── uiSlice.ts              # UI state (modals, notifications)
+│   ├── userSlice.ts            # User data
+│   └── themeSlice.ts           # Theme/settings
+├── selectors/                   # Reusable selectors
+│   ├── authSelectors.ts
+│   └── userSelectors.ts
+└── types/                       # Store types
+    └── index.ts
+`;
+
+// Redux Toolkit slice example
+const authSliceExample = `
+// store/slices/authSlice.ts
+interface AuthState {
+  user: User | null;
+  accessToken: string | null;
+  refreshToken: string | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
+const initialState: AuthState = {
+  user: null,
+  accessToken: localStorage.getItem('accessToken'),
+  refreshToken: localStorage.getItem('refreshToken'),
+  isLoading: false,
+  error: null
+};
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState,
+  reducers: {
+    // Synchronous actions
+    loginStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+
+    loginSuccess: (state, action: PayloadAction<LoginResponse>) => {
+      state.isLoading = false;
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+
+      // Persist tokens
+      localStorage.setItem('accessToken', action.payload.accessToken);
+      localStorage.setItem('refreshToken', action.payload.refreshToken);
+    },
+
+    loginFailure: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
+    logout: (state) => {
+      state.user = null;
+      state.accessToken = null;
+      state.refreshToken = null;
+
+      // Clear storage
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    }
+  },
+
+  // Async thunks
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginAsync.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(loginAsync.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.user;
+        state.accessToken = action.payload.accessToken;
+      })
+      .addCase(loginAsync.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || 'Login failed';
+      });
+  }
+});
+
+export const { loginStart, loginSuccess, loginFailure, logout } = authSlice.actions;
+export default authSlice.reducer;
+`;
+
+// 5. ROUTING STRUCTURE
+const routingStructureExample = `
+src/app/router/
+├── index.ts                     # Router configuration
+├── routes.ts                    # Route definitions
+├── guards/                      # Route guards
+│   ├── AuthGuard.tsx           # Authentication guard
+│   ├── RoleGuard.tsx           # Role-based guard
+│   └── index.ts
+├── layouts/                     # Route layouts
+│   ├── PublicLayout.tsx        # For public pages
+│   ├── AuthenticatedLayout.tsx # For protected pages
+│   └── AdminLayout.tsx         # For admin pages
+└── types.ts                     # Router types
+
+// Route configuration with guards
+const routes: RouteConfig[] = [
+  {
+    path: '/',
+    component: PublicLayout,
+    children: [
+      { path: '', component: HomePage },
+      { path: 'about', component: AboutPage },
+      { path: 'contact', component: ContactPage }
+    ]
+  },
+
+  {
+    path: '/auth',
+    component: PublicLayout,
+    guard: GuestGuard, // Only allow unauthenticated users
+    children: [
+      { path: 'login', component: LoginPage },
+      { path: 'signup', component: SignupPage },
+      { path: 'forgot-password', component: ForgotPasswordPage }
+    ]
+  },
+
+  {
+    path: '/dashboard',
+    component: AuthenticatedLayout,
+    guard: AuthGuard, // Require authentication
+    children: [
+      { path: '', component: DashboardPage },
+      { path: 'profile', component: ProfilePage },
+      { path: 'settings', component: SettingsPage }
+    ]
+  },
+
+  {
+    path: '/admin',
+    component: AdminLayout,
+    guard: [AuthGuard, RoleGuard('admin')], // Multiple guards
+    children: [
+      { path: '', component: AdminDashboard },
+      { path: 'users', component: UserManagement },
+      { path: 'reports', component: Reports }
+    ]
+  }
+];
+`;
+
+// 6. PERFORMANCE OPTIMIZATION STRUCTURE
+const performanceOptimizationStructure = `
+src/
+├── components/
+│   ├── lazy/                    # Lazy-loaded components
+│   │   ├── LazyDashboard.tsx
+│   │   └── LazyAdminPanel.tsx
+│   └── virtual/                 # Virtualized components
+│       ├── VirtualList.tsx
+│       └── VirtualTable.tsx
+│
+├── hooks/
+│   ├── performance/             # Performance hooks
+│   │   ├── useDebounce.ts
+│   │   ├── useThrottle.ts
+│   │   ├── useVirtualScroll.ts
+│   │   └── useIntersectionObserver.ts
+│   └── optimization/
+│       ├── useMemoized.ts
+│       └── useCallback.ts
+│
+├── services/
+│   ├── cache/                   # Caching services
+│   │   ├── QueryCache.ts
+│   │   └── LocalStorageCache.ts
+│   └── workers/                 # Web Workers
+│       ├── dataProcessor.worker.ts
+│       └── imageCompression.worker.ts
+│
+└── utils/
+    ├── performance/             # Performance utilities
+    │   ├── bundleAnalyzer.ts
+    │   ├── performanceProfiler.ts
+    │   └── webVitals.ts
+    └── optimization/
+        ├── imageOptimizer.ts
+        └── codeModuleSplitter.ts
+`;
+```
+
+**📊 Project Structure Comparison:**
+
+| Structure Type | Team Size | App Complexity | Maintainability | Learning Curve |
+|---------------|-----------|----------------|-----------------|----------------|
+| **Atomic Design** | Small-Medium | Simple-Medium | 🟡 Medium | 🟢 Easy |
+| **Feature-Based** | Medium-Large | Medium-Complex | 🟢 High | 🟡 Medium |
+| **Layered** | Large | Complex | 🟡 Medium | 🔴 Hard |
+| **Modular** | Any | Any | 🟢 High | 🟡 Medium |
+
+**🎯 Scalability Best Practices:**
+
+```typescript
+// Code organization principles
+const scalabilityPrinciples = {
+  separation: {
+    concerns: "Tách biệt UI, business logic, và data",
+    responsibilities: "Mỗi module có trách nhiệm riêng biệt",
+    environments: "Dev, staging, production configs"
+  },
+
+  modularity: {
+    components: "Component nhỏ, tái sử dụng được",
+    features: "Feature modules độc lập",
+    services: "API services tách biệt"
+  },
+
+  consistency: {
+    naming: "Consistent naming conventions",
+    structure: "Uniform folder structure",
+    patterns: "Consistent code patterns"
+  },
+
+  performance: {
+    bundling: "Optimal code splitting",
+    loading: "Lazy loading strategies",
+    caching: "Effective caching layers"
+  }
+};
+```
+
+---
+
+#### Q34: Code quality tools - ESLint, Prettier, Husky setup?
+
+**Trả lời:**
+
+**💡 Tổng quan về Code Quality Tools:**
+
+Code quality tools giúp **đảm bảo code consistency, catch bugs sớm, và maintain standards** trong team development.
+
+```typescript
+// 🛠️ CODE QUALITY TOOLS ECOSYSTEM
+
+// 1. ESLINT CONFIGURATION - Linting & Code Analysis
+interface ESLintConfiguration {
+  extends: string[];          // Base configurations
+  plugins: string[];          // Additional plugins
+  rules: Record<string, any>; // Custom rules
+  env: Record<string, boolean>; // Environment settings
+  parserOptions: object;      // Parser configuration
+}
+
+// Comprehensive ESLint configuration
+const eslintConfig: ESLintConfiguration = {
+  // Base configurations - thứ tự quan trọng!
+  extends: [
+    'eslint:recommended',                    // ESLint basics
+    '@typescript-eslint/recommended',       // TypeScript rules
+    'plugin:react/recommended',             // React-specific rules
+    'plugin:react-hooks/recommended',       // React Hooks rules
+    'plugin:jsx-a11y/recommended',         // Accessibility rules
+    'plugin:import/recommended',            // Import/export rules
+    'plugin:import/typescript',             // TypeScript imports
+    'prettier'                              // Prettier integration (MUST be last!)
+  ],
+
+  plugins: [
+    '@typescript-eslint',
+    'react',
+    'react-hooks',
+    'jsx-a11y',
+    'import',
+    'testing-library',
+    'jest-dom'
+  ],
+
+  // Custom rules
+  rules: {
+    // 🚨 Error level rules
+    'no-console': 'error',                  // No console.log in production
+    'no-debugger': 'error',                 // No debugger statements
+    'no-unused-vars': 'off',                // Handled by TypeScript
+    '@typescript-eslint/no-unused-vars': ['error', {
+      argsIgnorePattern: '^_',              // Allow unused args starting with _
+      varsIgnorePattern: '^_'               // Allow unused vars starting with _
+    }],
+
+    // ⚠️ Warning level rules
+    'prefer-const': 'warn',                 // Prefer const over let
+    'no-var': 'warn',                       // No var declarations
+
+    // 🔧 Auto-fixable rules
+    'import/order': ['error', {
+      groups: [
+        'builtin',          // Node built-ins
+        'external',         // npm packages
+        'internal',         // Internal modules
+        'parent',           // Parent directory imports
+        'sibling',          // Sibling imports
+        'index'             // Index imports
+      ],
+      'newlines-between': 'always',
+      alphabetize: {
+        order: 'asc',
+        caseInsensitive: true
+      }
+    }],
+
+    // React-specific rules
+    'react/prop-types': 'off',              // Not needed with TypeScript
+    'react/react-in-jsx-scope': 'off',      // Not needed in React 17+
+    'react-hooks/rules-of-hooks': 'error',  // Hooks rules
+    'react-hooks/exhaustive-deps': 'warn',  // Dependency array warnings
+
+    // Accessibility rules
+    'jsx-a11y/anchor-is-valid': 'warn',
+    'jsx-a11y/img-redundant-alt': 'warn',
+
+    // TypeScript rules
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/prefer-nullish-coalescing': 'error',
+    '@typescript-eslint/prefer-optional-chain': 'error'
+  },
+
+  env: {
+    browser: true,     // Browser globals
+    es2022: true,      // ES2022 features
+    node: true,        // Node.js globals
+    jest: true         // Jest globals
+  },
+
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true
+    },
+    project: './tsconfig.json' // For TypeScript rules
+  },
+
+  settings: {
+    react: {
+      version: 'detect'  // Auto-detect React version
+    },
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+        project: './tsconfig.json'
+      }
+    }
+  }
+};
+
+// 2. PRETTIER CONFIGURATION - Code Formatting
+interface PrettierConfiguration {
+  semi: boolean;              // Semicolons
+  trailingComma: string;      // Trailing commas
+  singleQuote: boolean;       // Quote style
+  printWidth: number;         // Line length
+  tabWidth: number;           // Indentation
+  useTabs: boolean;           // Tabs vs spaces
+  bracketSpacing: boolean;    // Spaces in brackets
+  arrowParens: string;        // Arrow function parentheses
+  endOfLine: string;          // Line endings
+}
+
+const prettierConfig: PrettierConfiguration = {
+  // 🎨 Formatting preferences
+  semi: true,                    // Always use semicolons
+  trailingComma: 'es5',         // Trailing commas where valid in ES5
+  singleQuote: true,            // Single quotes over double
+  printWidth: 100,              // 100 characters per line
+  tabWidth: 2,                  // 2 spaces indentation
+  useTabs: false,               // Spaces over tabs
+  bracketSpacing: true,         // { foo: bar } not {foo: bar}
+  arrowParens: 'avoid',         // x => x not (x) => x
+  endOfLine: 'lf',              // Unix line endings
+
+  // File-specific overrides
+  overrides: [
+    {
+      files: '*.md',
+      options: {
+        printWidth: 80,         // Narrower for markdown
+        proseWrap: 'always'     // Wrap prose
+      }
+    },
+    {
+      files: '*.json',
+      options: {
+        printWidth: 200         // Wider for JSON
+      }
+    }
+  ]
+};
+
+// 3. HUSKY SETUP - Git Hooks Automation
+interface HuskyConfiguration {
+  hooks: Record<string, string[]>;
+  skipCI: boolean;
+}
+
+// Package.json scripts for Husky
+const packageJsonScripts = {
+  scripts: {
+    // 🧹 Linting và formatting
+    'lint': 'eslint src --ext .ts,.tsx,.js,.jsx',
+    'lint:fix': 'eslint src --ext .ts,.tsx,.js,.jsx --fix',
+    'format': 'prettier --write "src/**/*.{ts,tsx,js,jsx,json,css,md}"',
+    'format:check': 'prettier --check "src/**/*.{ts,tsx,js,jsx,json,css,md}"',
+
+    // 🧪 Testing
+    'test': 'jest',
+    'test:watch': 'jest --watch',
+    'test:coverage': 'jest --coverage',
+
+    // 🔍 Type checking
+    'type-check': 'tsc --noEmit',
+    'type-check:watch': 'tsc --noEmit --watch',
+
+    // 🛡️ Security và quality
+    'audit': 'npm audit --audit-level=moderate',
+    'audit:fix': 'npm audit fix',
+
+    // 🚀 Build
+    'build': 'vite build',
+    'build:analyze': 'vite-bundle-analyzer',
+
+    // 🎯 Combined quality checks
+    'quality:check': 'npm run type-check && npm run lint && npm run format:check && npm run test',
+    'quality:fix': 'npm run type-check && npm run lint:fix && npm run format'
+  }
+};
+
+// Husky hooks configuration
+const huskyHooks = `
+# .husky/pre-commit
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Prevent commits to main/develop directly
+branch=$(git symbolic-ref HEAD | sed -e 's,.*/\\(.*\\),\\1,')
+if [ "$branch" = "main" ] || [ "$branch" = "develop" ]; then
+  echo "❌ Direct commits to $branch are not allowed!"
+  echo "💡 Please create a feature branch and use Pull Request"
+  exit 1
+fi
+
+# Run lint-staged for staged files only
+npx lint-staged
+
+# Type check
+echo "🔍 Running TypeScript type check..."
+npm run type-check
+
+echo "✅ Pre-commit checks passed!"
+
+# .husky/commit-msg
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Validating commit message..."
+
+# Validate conventional commit format
+npx commitlint --edit $1
+
+echo "✅ Commit message is valid!"
+
+# .husky/pre-push
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-push checks..."
+
+# Full test suite
+echo "🧪 Running tests..."
+npm run test
+
+# Build check
+echo "🏗️ Testing build..."
+npm run build
+
+# Security audit
+echo "🛡️ Running security audit..."
+npm audit --audit-level=moderate
+
+echo "✅ Pre-push checks passed!"
+`;
+
+// 4. LINT-STAGED CONFIGURATION - Only lint changed files
+interface LintStagedConfig {
+  [pattern: string]: string | string[];
+}
+
+const lintStagedConfig: LintStagedConfig = {
+  // TypeScript/JavaScript files
+  '*.{ts,tsx,js,jsx}': [
+    'eslint --fix',           // Fix linting issues
+    'prettier --write',       // Format code
+    'git add'                 // Add fixed files back to staging
+  ],
+
+  // Style files
+  '*.{css,scss,less}': [
+    'prettier --write',
+    'git add'
+  ],
+
+  // Markdown and JSON
+  '*.{md,json}': [
+    'prettier --write',
+    'git add'
+  ],
+
+  // Package.json - sort dependencies
+  'package.json': [
+    'sort-package-json',      // Sort package.json fields
+    'git add'
+  ]
+};
+
+// 5. COMMITLINT CONFIGURATION - Commit Message Standards
+interface CommitlintConfig {
+  extends: string[];
+  rules: Record<string, [number, string, any?]>;
+}
+
+const commitlintConfig: CommitlintConfig = {
+  extends: ['@commitlint/config-conventional'],
+
+  rules: {
+    // Type enumeration
+    'type-enum': [
+      2, // Error level
+      'always',
+      [
+        'feat',     // ✨ New feature
+        'fix',      // 🐛 Bug fix
+        'docs',     // 📚 Documentation
+        'style',    // 💄 Code style (formatting, missing semi-colons, etc)
+        'refactor', // ♻️ Code refactoring
+        'perf',     // ⚡ Performance improvements
+        'test',     // ✅ Tests
+        'chore',    // 🔧 Maintenance
+        'ci',       // 👷 CI/CD
+        'build',    // 🏗️ Build system
+        'revert'    // ⏪ Revert changes
+      ]
+    ],
+
+    // Subject rules
+    'subject-max-length': [2, 'always', 50],    // Max 50 characters
+    'subject-case': [2, 'always', 'lower-case'], // Lowercase
+    'subject-empty': [2, 'never'],               // Cannot be empty
+    'subject-full-stop': [2, 'never', '.'],      // No period at end
+
+    // Body rules
+    'body-max-line-length': [2, 'always', 72],   // Max 72 chars per line
+    'body-leading-blank': [2, 'always'],         // Blank line before body
+
+    // Footer rules
+    'footer-leading-blank': [2, 'always'],       // Blank line before footer
+
+    // Scope rules (optional)
+    'scope-case': [2, 'always', 'lower-case']    // Lowercase scope
+  }
+};
+
+// Good commit examples
+const goodCommitExamples = [
+  'feat: add user authentication system',
+  'fix: resolve login redirect issue',
+  'docs: update API documentation',
+  'style: format code with prettier',
+  'refactor: extract auth utility functions',
+  'test: add unit tests for auth service',
+  'chore: update dependencies to latest versions',
+  'ci: add GitHub Actions workflow for testing',
+  'perf: optimize image loading with lazy loading'
+];
+
+// 6. VSCODE INTEGRATION - Editor Configuration
+const vscodeSettings = {
+  // .vscode/settings.json
+  settings: {
+    // ESLint integration
+    'eslint.enable': true,
+    'eslint.autoFixOnSave': true,
+    'eslint.validate': [
+      'javascript',
+      'javascriptreact',
+      'typescript',
+      'typescriptreact'
+    ],
+
+    // Prettier integration
+    'editor.defaultFormatter': 'esbenp.prettier-vscode',
+    'editor.formatOnSave': true,
+    'editor.formatOnPaste': true,
+    'editor.codeActionsOnSave': {
+      'source.fixAll.eslint': true,
+      'source.organizeImports': true
+    },
+
+    // TypeScript settings
+    'typescript.preferences.importModuleSpecifier': 'relative',
+    'typescript.suggest.autoImports': true,
+    'typescript.updateImportsOnFileMove.enabled': 'always',
+
+    // File associations
+    'files.associations': {
+      '*.css': 'css',
+      '*.scss': 'scss'
+    },
+
+    // Workspace-specific settings
+    'editor.rulers': [80, 100],     // Visual guides
+    'editor.tabSize': 2,            // 2 spaces
+    'editor.insertSpaces': true,    // Spaces over tabs
+    'files.trimTrailingWhitespace': true,
+    'files.insertFinalNewline': true
+  },
+
+  // .vscode/extensions.json - Recommended extensions
+  recommendations: [
+    'esbenp.prettier-vscode',        // Prettier
+    'dbaeumer.vscode-eslint',        // ESLint
+    'bradlc.vscode-tailwindcss',     // Tailwind CSS
+    'ms-vscode.vscode-typescript-next', // TypeScript
+    'formulahendry.auto-rename-tag', // Auto rename tags
+    'christian-kohler.path-intellisense', // Path autocomplete
+    'ms-vscode.vscode-json',         // JSON support
+    'redhat.vscode-yaml'             // YAML support
+  ]
+};
+
+// 7. AUTOMATED SETUP SCRIPT
+const setupScript = `
+#!/bin/bash
+# setup-code-quality.sh
+
+echo "🚀 Setting up code quality tools..."
+
+# Install dependencies
+echo "📦 Installing dependencies..."
+npm install -D \\
+  eslint \\
+  @typescript-eslint/eslint-plugin \\
+  @typescript-eslint/parser \\
+  eslint-plugin-react \\
+  eslint-plugin-react-hooks \\
+  eslint-plugin-jsx-a11y \\
+  eslint-plugin-import \\
+  eslint-config-prettier \\
+  prettier \\
+  husky \\
+  lint-staged \\
+  @commitlint/cli \\
+  @commitlint/config-conventional \\
+  sort-package-json
+
+# Initialize Husky
+echo "🐕 Setting up Husky..."
+npx husky-init
+npm install
+
+# Create Husky hooks
+echo "🪝 Creating git hooks..."
+npx husky add .husky/pre-commit "npx lint-staged"
+npx husky add .husky/commit-msg "npx commitlint --edit $1"
+npx husky add .husky/pre-push "npm run test && npm run build"
+
+# Create configuration files
+echo "⚙️ Creating configuration files..."
+
+# .eslintrc.js
+cat > .eslintrc.js << 'EOF'
+module.exports = {
+  extends: [
+    'eslint:recommended',
+    '@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'prettier'
+  ],
+  plugins: ['@typescript-eslint', 'react', 'react-hooks'],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    ecmaFeatures: { jsx: true }
+  },
+  env: {
+    browser: true,
+    es2022: true,
+    node: true
+  },
+  settings: {
+    react: { version: 'detect' }
+  }
+};
+EOF
+
+# .prettierrc
+cat > .prettierrc << 'EOF'
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false
+}
+EOF
+
+# commitlint.config.js
+cat > commitlint.config.js << 'EOF'
+module.exports = {
+  extends: ['@commitlint/config-conventional']
+};
+EOF
+
+echo "✅ Code quality tools setup complete!"
+echo "💡 Run 'npm run quality:check' to verify everything works"
+`;
+
+// 8. CONTINUOUS INTEGRATION INTEGRATION
+const ciConfiguration = `
+# .github/workflows/code-quality.yml
+name: 🔍 Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-checks:
+    name: 🧪 Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🔍 TypeScript check
+        run: npm run type-check
+
+      - name: 🧹 ESLint check
+        run: npm run lint
+
+      - name: 🎨 Prettier check
+        run: npm run format:check
+
+      - name: 🧪 Run tests
+        run: npm run test:coverage
+
+      - name: 🛡️ Security audit
+        run: npm audit --audit-level=moderate
+
+      - name: 🏗️ Build check
+        run: npm run build
+
+      - name: 📊 Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+`;
+```
+
+**📊 Tools Comparison:**
+
+| Tool | Purpose | Auto-fix | Performance | Learning Curve |
+|------|---------|----------|-------------|----------------|
+| **ESLint** | Code quality & bugs | ✅ Partial | 🟡 Medium | 🟡 Medium |
+| **Prettier** | Code formatting | ✅ Complete | 🟢 Fast | 🟢 Easy |
+| **Husky** | Git hooks automation | ❌ No | 🟢 Fast | 🟢 Easy |
+| **Lint-staged** | Staged files only | ✅ Yes | 🟢 Fast | 🟢 Easy |
+| **Commitlint** | Commit messages | ❌ No | 🟢 Fast | 🟡 Medium |
+
+**🎯 Best Practices Summary:**
+
+```typescript
+const codeQualityBestPractices = {
+  setup: [
+    "🏗️ Set up tools early trong project",
+    "📋 Document rules và conventions",
+    "🎯 Start strict, relax gradually",
+    "👥 Get team consensus on rules"
+  ],
+
+  maintenance: [
+    "🔄 Regular updates của tools",
+    "📊 Monitor metrics và violations",
+    "🧹 Periodic rule review",
+    "📚 Train team on new rules"
+  ],
+
+  integration: [
+    "🔗 IDE integration cho instant feedback",
+    "🚀 CI/CD integration cho enforcement",
+    "📝 Pre-commit hooks cho prevention",
+    "📊 Reporting và metrics tracking"
+  ]
+};
+```
+
+---
+
+#### Q35: Browser Storage - Cookie, localStorage, sessionStorage, IndexedDB?
+
+**Trả lời:**
+
+**💡 Tổng quan về Browser Storage:**
+
+Browser storage cung cấp **nhiều cách khác nhau để lưu trữ data trên client-side**, mỗi loại có ưu và nhược điểm riêng.
+
+```typescript
+// 🗄️ BROWSER STORAGE TYPES
+
+// 1. COOKIES - Traditional approach
+interface CookieManager {
+  set(name: string, value: string, options?: CookieOptions): void;
+  get(name: string): string | null;
+  remove(name: string): void;
+  getAll(): Record<string, string>;
+}
+
+interface CookieOptions {
+  expires?: Date | number;
+  maxAge?: number;        // seconds
+  domain?: string;
+  path?: string;
+  secure?: boolean;       // HTTPS only
+  httpOnly?: boolean;     // Server-side only
+  sameSite?: 'strict' | 'lax' | 'none';
+}
+
+class CookieManager implements CookieManager {
+  set(name: string, value: string, options: CookieOptions = {}): void {
+    let cookieString = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`;
+
+    // Set expiration
+    if (options.expires) {
+      const expires = options.expires instanceof Date
+        ? options.expires
+        : new Date(Date.now() + options.expires * 24 * 60 * 60 * 1000);
+      cookieString += `; expires=${expires.toUTCString()}`;
+    }
+
+    if (options.maxAge) {
+      cookieString += `; max-age=${options.maxAge}`;
+    }
+
+    if (options.domain) {
+      cookieString += `; domain=${options.domain}`;
+    }
+
+    if (options.path) {
+      cookieString += `; path=${options.path}`;
+    }
+
+    if (options.secure) {
+      cookieString += '; secure';
+    }
+
+    if (options.httpOnly) {
+      cookieString += '; httponly';
+    }
+
+    if (options.sameSite) {
+      cookieString += `; samesite=${options.sameSite}`;
+    }
+
+    document.cookie = cookieString;
+  }
+
+  get(name: string): string | null {
+    const cookies = document.cookie.split(';');
+
+    for (let cookie of cookies) {
+      const [cookieName, cookieValue] = cookie.trim().split('=');
+      if (decodeURIComponent(cookieName) === name) {
+        return decodeURIComponent(cookieValue);
+      }
+    }
+
+    return null;
+  }
+
+  remove(name: string): void {
+    this.set(name, '', { expires: new Date(0) });
+  }
+
+  getAll(): Record<string, string> {
+    const cookies: Record<string, string> = {};
+    const cookieArray = document.cookie.split(';');
+
+    for (let cookie of cookieArray) {
+      const [name, value] = cookie.trim().split('=');
+      if (name && value) {
+        cookies[decodeURIComponent(name)] = decodeURIComponent(value);
+      }
+    }
+
+    return cookies;
+  }
+}
+
+// 2. LOCAL STORAGE - Persistent storage
+class LocalStorageManager {
+  private prefix: string;
+
+  constructor(prefix: string = 'app_') {
+    this.prefix = prefix;
+  }
+
+  // Basic operations
+  set<T>(key: string, value: T): void {
+    try {
+      const serialized = JSON.stringify({
+        value,
+        timestamp: Date.now(),
+        type: typeof value
+      });
+
+      localStorage.setItem(this.prefix + key, serialized);
+    } catch (error) {
+      console.error('❌ localStorage.setItem failed:', error);
+      this.handleQuotaExceeded();
+    }
+  }
+
+  get<T>(key: string): T | null {
+    try {
+      const item = localStorage.getItem(this.prefix + key);
+      if (!item) return null;
+
+      const parsed = JSON.parse(item);
+      return parsed.value;
+    } catch (error) {
+      console.error('❌ localStorage.getItem failed:', error);
+      return null;
+    }
+  }
+
+  remove(key: string): void {
+    localStorage.removeItem(this.prefix + key);
+  }
+
+  clear(): void {
+    // Only clear items with our prefix
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+      if (key.startsWith(this.prefix)) {
+        localStorage.removeItem(key);
+      }
+    });
+  }
+
+  // Advanced operations
+  setWithExpiry<T>(key: string, value: T, ttlMs: number): void {
+    const item = {
+      value,
+      timestamp: Date.now(),
+      ttl: ttlMs
+    };
+
+    try {
+      localStorage.setItem(this.prefix + key, JSON.stringify(item));
+    } catch (error) {
+      console.error('❌ localStorage setWithExpiry failed:', error);
+      this.handleQuotaExceeded();
+    }
+  }
+
+  getWithExpiry<T>(key: string): T | null {
+    try {
+      const item = localStorage.getItem(this.prefix + key);
+      if (!item) return null;
+
+      const parsed = JSON.parse(item);
+      const now = Date.now();
+
+      // Check if expired
+      if (parsed.ttl && (now - parsed.timestamp) > parsed.ttl) {
+        this.remove(key);
+        return null;
+      }
+
+      return parsed.value;
+    } catch (error) {
+      console.error('❌ localStorage getWithExpiry failed:', error);
+      return null;
+    }
+  }
+
+  // Storage management
+  getStorageInfo(): {
+    used: number;
+    available: number;
+    total: number;
+    items: number;
+  } {
+    let used = 0;
+    let items = 0;
+
+    for (let key in localStorage) {
+      if (key.startsWith(this.prefix)) {
+        used += localStorage[key].length;
+        items++;
+      }
+    }
+
+    // Try to estimate available space
+    const total = this.estimateStorageQuota();
+
+    return {
+      used,
+      available: total - used,
+      total,
+      items
+    };
+  }
+
+  private estimateStorageQuota(): number {
+    // Most browsers have ~5-10MB for localStorage
+    return 5 * 1024 * 1024; // 5MB estimate
+  }
+
+  private handleQuotaExceeded(): void {
+    console.warn('🚨 localStorage quota exceeded, clearing old items...');
+
+    // Get all items with timestamps
+    const items: Array<{key: string, timestamp: number}> = [];
+
+    for (let key in localStorage) {
+      if (key.startsWith(this.prefix)) {
+        try {
+          const parsed = JSON.parse(localStorage[key]);
+          items.push({
+            key: key.substring(this.prefix.length),
+            timestamp: parsed.timestamp || 0
+          });
+        } catch (error) {
+          // Invalid JSON, remove it
+          localStorage.removeItem(key);
+        }
+      }
+    }
+
+    // Sort by timestamp (oldest first)
+    items.sort((a, b) => a.timestamp - b.timestamp);
+
+    // Remove oldest 25% of items
+    const toRemove = Math.floor(items.length * 0.25);
+    for (let i = 0; i < toRemove; i++) {
+      this.remove(items[i].key);
+    }
+  }
+}
+
+// 3. SESSION STORAGE - Tab-scoped storage
+class SessionStorageManager extends LocalStorageManager {
+  constructor(prefix: string = 'session_') {
+    super(prefix);
+  }
+
+  set<T>(key: string, value: T): void {
+    try {
+      const serialized = JSON.stringify({
+        value,
+        timestamp: Date.now()
+      });
+
+      sessionStorage.setItem(this.prefix + key, serialized);
+    } catch (error) {
+      console.error('❌ sessionStorage.setItem failed:', error);
+    }
+  }
+
+  get<T>(key: string): T | null {
+    try {
+      const item = sessionStorage.getItem(this.prefix + key);
+      if (!item) return null;
+
+      const parsed = JSON.parse(item);
+      return parsed.value;
+    } catch (error) {
+      console.error('❌ sessionStorage.getItem failed:', error);
+      return null;
+    }
+  }
+
+  remove(key: string): void {
+    sessionStorage.removeItem(this.prefix + key);
+  }
+
+  clear(): void {
+    const keys = Object.keys(sessionStorage);
+    keys.forEach(key => {
+      if (key.startsWith(this.prefix)) {
+        sessionStorage.removeItem(key);
+      }
+    });
+  }
+}
+
+// 4. INDEXEDDB - Complex data storage
+interface IndexedDBConfig {
+  dbName: string;
+  version: number;
+  stores: StoreConfig[];
+}
+
+interface StoreConfig {
+  name: string;
+  keyPath?: string;
+  autoIncrement?: boolean;
+  indexes?: IndexConfig[];
+}
+
+interface IndexConfig {
+  name: string;
+  keyPath: string;
+  unique?: boolean;
+  multiEntry?: boolean;
+}
+
+class IndexedDBManager {
+  private config: IndexedDBConfig;
+  private db: IDBDatabase | null = null;
+
+  constructor(config: IndexedDBConfig) {
+    this.config = config;
+  }
+
+  async init(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.config.dbName, this.config.version);
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        this.db = request.result;
+        resolve();
+      };
+
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+
+        // Create object stores
+        this.config.stores.forEach(storeConfig => {
+          if (!db.objectStoreNames.contains(storeConfig.name)) {
+            const store = db.createObjectStore(storeConfig.name, {
+              keyPath: storeConfig.keyPath,
+              autoIncrement: storeConfig.autoIncrement || false
+            });
+
+            // Create indexes
+            storeConfig.indexes?.forEach(indexConfig => {
+              store.createIndex(indexConfig.name, indexConfig.keyPath, {
+                unique: indexConfig.unique || false,
+                multiEntry: indexConfig.multiEntry || false
+              });
+            });
+          }
+        });
+      };
+    });
+  }
+
+  async set<T>(storeName: string, key: string, value: T): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([storeName], 'readwrite');
+      const store = transaction.objectStore(storeName);
+
+      const request = store.put({ id: key, data: value, timestamp: Date.now() });
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async get<T>(storeName: string, key: string): Promise<T | null> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([storeName], 'readonly');
+      const store = transaction.objectStore(storeName);
+
+      const request = store.get(key);
+
+      request.onsuccess = () => {
+        const result = request.result;
+        resolve(result ? result.data : null);
+      };
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async getAll<T>(storeName: string): Promise<T[]> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([storeName], 'readonly');
+      const store = transaction.objectStore(storeName);
+
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        const results = request.result.map((item: any) => item.data);
+        resolve(results);
+      };
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async delete(storeName: string, key: string): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([storeName], 'readwrite');
+      const store = transaction.objectStore(storeName);
+
+      const request = store.delete(key);
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async clear(storeName: string): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([storeName], 'readwrite');
+      const store = transaction.objectStore(storeName);
+
+      const request = store.clear();
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async queryByIndex<T>(
+    storeName: string,
+    indexName: string,
+    value: any
+  ): Promise<T[]> {
+    if (!this.db) throw new Error('Database not initialized');
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([storeName], 'readonly');
+      const store = transaction.objectStore(storeName);
+      const index = store.index(indexName);
+
+      const request = index.getAll(value);
+
+      request.onsuccess = () => {
+        const results = request.result.map((item: any) => item.data);
+        resolve(results);
+      };
+      request.onerror = () => reject(request.error);
+    });
+  }
+}
+
+// 5. UNIFIED STORAGE MANAGER
+interface StorageStrategy {
+  name: string;
+  maxSize: number;
+  persistent: boolean;
+  crossTab: boolean;
+  serverSent: boolean;
+}
+
+const STORAGE_STRATEGIES: Record<string, StorageStrategy> = {
+  cookie: {
+    name: 'Cookie',
+    maxSize: 4096,        // 4KB
+    persistent: true,     // Can persist across sessions
+    crossTab: true,       // Shared across tabs
+    serverSent: true      // Sent with HTTP requests
+  },
+
+  localStorage: {
+    name: 'localStorage',
+    maxSize: 5242880,     // ~5MB
+    persistent: true,
+    crossTab: true,
+    serverSent: false
+  },
+
+  sessionStorage: {
+    name: 'sessionStorage',
+    maxSize: 5242880,     // ~5MB
+    persistent: false,    // Tab session only
+    crossTab: false,
+    serverSent: false
+  },
+
+  indexedDB: {
+    name: 'IndexedDB',
+    maxSize: 104857600,   // ~100MB+
+    persistent: true,
+    crossTab: true,
+    serverSent: false
+  }
+};
+
+class UnifiedStorageManager {
+  private cookieManager = new CookieManager();
+  private localStorage = new LocalStorageManager();
+  private sessionStorage = new SessionStorageManager();
+  private indexedDB: IndexedDBManager;
+
+  constructor() {
+    // Initialize IndexedDB
+    this.indexedDB = new IndexedDBManager({
+      dbName: 'AppDatabase',
+      version: 1,
+      stores: [
+        {
+          name: 'cache',
+          keyPath: 'id',
+          indexes: [
+            { name: 'timestamp', keyPath: 'timestamp' },
+            { name: 'category', keyPath: 'category' }
+          ]
+        },
+        {
+          name: 'userPreferences',
+          keyPath: 'id'
+        }
+      ]
+    });
+
+    this.indexedDB.init().catch(console.error);
+  }
+
+  // Smart storage selection
+  async set<T>(
+    key: string,
+    value: T,
+    options: {
+      strategy?: 'auto' | 'cookie' | 'localStorage' | 'sessionStorage' | 'indexedDB';
+      ttl?: number;
+      persistent?: boolean;
+      crossTab?: boolean;
+      serverAccess?: boolean;
+    } = {}
+  ): Promise<void> {
+    const strategy = options.strategy || this.selectOptimalStrategy(value, options);
+
+    switch (strategy) {
+      case 'cookie':
+        this.cookieManager.set(key, JSON.stringify(value), {
+          maxAge: options.ttl ? Math.floor(options.ttl / 1000) : undefined
+        });
+        break;
+
+      case 'localStorage':
+        if (options.ttl) {
+          this.localStorage.setWithExpiry(key, value, options.ttl);
+        } else {
+          this.localStorage.set(key, value);
+        }
+        break;
+
+      case 'sessionStorage':
+        this.sessionStorage.set(key, value);
+        break;
+
+      case 'indexedDB':
+        await this.indexedDB.set('cache', key, value);
+        break;
+
+      default:
+        throw new Error(`Unknown storage strategy: ${strategy}`);
+    }
+  }
+
+  async get<T>(key: string): Promise<T | null> {
+    // Try each storage in order of speed
+
+    // 1. Try sessionStorage first (fastest)
+    let value = this.sessionStorage.get<T>(key);
+    if (value !== null) return value;
+
+    // 2. Try localStorage
+    value = this.localStorage.get<T>(key);
+    if (value !== null) return value;
+
+    // 3. Try cookies
+    const cookieValue = this.cookieManager.get(key);
+    if (cookieValue) {
+      try {
+        return JSON.parse(cookieValue);
+      } catch {
+        return cookieValue as T;
+      }
+    }
+
+    // 4. Try IndexedDB (slowest)
+    try {
+      return await this.indexedDB.get<T>('cache', key);
+    } catch {
+      return null;
+    }
+  }
+
+  private selectOptimalStrategy<T>(
+    value: T,
+    options: {
+      persistent?: boolean;
+      crossTab?: boolean;
+      serverAccess?: boolean;
+    }
+  ): string {
+    const size = JSON.stringify(value).length;
+
+    // Need server access? Use cookies
+    if (options.serverAccess) {
+      if (size <= STORAGE_STRATEGIES.cookie.maxSize) {
+        return 'cookie';
+      }
+      throw new Error('Value too large for cookie storage');
+    }
+
+    // Large data? Use IndexedDB
+    if (size > STORAGE_STRATEGIES.localStorage.maxSize) {
+      return 'indexedDB';
+    }
+
+    // Session only? Use sessionStorage
+    if (!options.persistent) {
+      return 'sessionStorage';
+    }
+
+    // Default to localStorage for persistent data
+    return 'localStorage';
+  }
+
+  // Storage analysis
+  async getStorageUsage(): Promise<{
+    [key: string]: {
+      used: number;
+      available: number;
+      percentage: number;
+    }
+  }> {
+    const usage: any = {};
+
+    // localStorage usage
+    const localInfo = this.localStorage.getStorageInfo();
+    usage.localStorage = {
+      used: localInfo.used,
+      available: localInfo.available,
+      percentage: (localInfo.used / localInfo.total) * 100
+    };
+
+    // Cookie usage
+    const cookieSize = document.cookie.length;
+    usage.cookies = {
+      used: cookieSize,
+      available: 4096 - cookieSize,
+      percentage: (cookieSize / 4096) * 100
+    };
+
+    // Check for storage quota API
+    if ('storage' in navigator && 'estimate' in navigator.storage) {
+      try {
+        const estimate = await navigator.storage.estimate();
+        usage.total = {
+          used: estimate.usage || 0,
+          available: (estimate.quota || 0) - (estimate.usage || 0),
+          percentage: estimate.usage && estimate.quota
+            ? (estimate.usage / estimate.quota) * 100
+            : 0
+        };
+      } catch (error) {
+        console.warn('Storage estimate API not available');
+      }
+    }
+
+    return usage;
+  }
+}
+
+// 6. TOKEN MANAGEMENT SYSTEM
+interface TokenData {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
+  tokenType: string;
+}
+
+class TokenManager {
+  private storage: UnifiedStorageManager;
+  private refreshPromise: Promise<TokenData> | null = null;
+
+  constructor() {
+    this.storage = new UnifiedStorageManager();
+  }
+
+  async setTokens(tokenData: TokenData): Promise<void> {
+    // Store access token in memory/sessionStorage (short-lived)
+    await this.storage.set('accessToken', tokenData.accessToken, {
+      strategy: 'sessionStorage'
+    });
+
+    // Store refresh token in localStorage (persistent, secure)
+    await this.storage.set('refreshToken', tokenData.refreshToken, {
+      strategy: 'localStorage'
+    });
+
+    // Store expiration info
+    await this.storage.set('tokenExpiry', tokenData.expiresAt, {
+      strategy: 'localStorage'
+    });
+  }
+
+  async getAccessToken(): Promise<string | null> {
+    const token = await this.storage.get<string>('accessToken');
+    const expiry = await this.storage.get<number>('tokenExpiry');
+
+    // Check if token is expired
+    if (expiry && Date.now() > expiry) {
+      return await this.refreshAccessToken();
+    }
+
+    return token;
+  }
+
+  async getRefreshToken(): Promise<string | null> {
+    return await this.storage.get<string>('refreshToken');
+  }
+
+  private async refreshAccessToken(): Promise<string | null> {
+    // Prevent multiple concurrent refresh attempts
+    if (this.refreshPromise) {
+      const tokenData = await this.refreshPromise;
+      return tokenData.accessToken;
+    }
+
+    this.refreshPromise = this.performTokenRefresh();
+
+    try {
+      const tokenData = await this.refreshPromise;
+      await this.setTokens(tokenData);
+      return tokenData.accessToken;
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      await this.clearTokens();
+      return null;
+    } finally {
+      this.refreshPromise = null;
+    }
+  }
+
+  private async performTokenRefresh(): Promise<TokenData> {
+    const refreshToken = await this.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    const response = await fetch('/api/auth/refresh', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refreshToken })
+    });
+
+    if (!response.ok) {
+      throw new Error('Token refresh failed');
+    }
+
+    return response.json();
+  }
+
+  async clearTokens(): Promise<void> {
+    await Promise.all([
+      this.storage.set('accessToken', null),
+      this.storage.set('refreshToken', null),
+      this.storage.set('tokenExpiry', null)
+    ]);
+  }
+
+  async isAuthenticated(): Promise<boolean> {
+    const accessToken = await this.getAccessToken();
+    return !!accessToken;
+  }
+}
+```
+
+**📊 Storage Comparison:**
+
+| Storage Type | Size Limit | Persistence | Cross-Tab | Server Access | Use Case |
+|--------------|------------|-------------|-----------|---------------|----------|
+| **Cookies** | 4KB | ✅ Yes | ✅ Yes | ✅ Yes | 🔐 Auth tokens |
+| **localStorage** | ~5MB | ✅ Yes | ✅ Yes | ❌ No | 💾 User preferences |
+| **sessionStorage** | ~5MB | ❌ Session | ❌ No | ❌ No | 🏪 Cart data |
+| **IndexedDB** | ~100MB+ | ✅ Yes | ✅ Yes | ❌ No | 📊 Large datasets |
+
+---
+
+#### Q36: Security trong Frontend - XSS, CORS, CSRF protection?
+
+**Trả lời:**
+
+**💡 Tổng quan về Frontend Security:**
+
+Frontend security là **tập hợp các biện pháp bảo vệ ứng dụng** khỏi các cuộc tấn công phổ biến và đảm bảo dữ liệu người dùng an toàn.
+
+```typescript
+// 🛡️ FRONTEND SECURITY MEASURES
+
+// 1. XSS (Cross-Site Scripting) PROTECTION
+interface XSSProtection {
+  sanitization: 'input' | 'output' | 'both';
+  encoding: 'html' | 'url' | 'javascript';
+  validation: 'whitelist' | 'blacklist' | 'regex';
+}
+
+class XSSProtector {
+  // HTML encoding để prevent XSS
+  static encodeHTML(str: string): string {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // Comprehensive HTML sanitization
+  static sanitizeHTML(html: string): string {
+    const allowedTags = ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li', 'a'];
+    const allowedAttributes = ['href', 'title'];
+
+    // Create a temporary element
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+
+    // Remove script tags and event handlers
+    const scripts = temp.querySelectorAll('script');
+    scripts.forEach(script => script.remove());
+
+    // Remove dangerous attributes
+    const allElements = temp.querySelectorAll('*');
+    allElements.forEach(element => {
+      // Remove all event handlers
+      Array.from(element.attributes).forEach(attr => {
+        if (attr.name.startsWith('on') || attr.name === 'javascript:') {
+          element.removeAttribute(attr.name);
+        }
+      });
+
+      // Check if tag is allowed
+      if (!allowedTags.includes(element.tagName.toLowerCase())) {
+        element.replaceWith(...element.childNodes);
+      }
+    });
+
+    return temp.innerHTML;
+  }
+
+  // URL sanitization
+  static sanitizeURL(url: string): string {
+    try {
+      const parsed = new URL(url);
+
+      // Block dangerous protocols
+      const dangerousProtocols = ['javascript:', 'data:', 'vbscript:'];
+      if (dangerousProtocols.includes(parsed.protocol)) {
+        return '#';
+      }
+
+      return parsed.toString();
+    } catch {
+      return '#'; // Invalid URL
+    }
+  }
+
+  // Input validation
+  static validateInput(input: string, type: 'email' | 'url' | 'text' | 'number'): boolean {
+    const patterns = {
+      email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      url: /^https?:\/\/.+/,
+      text: /^[a-zA-Z0-9\s\-_.]+$/,
+      number: /^\d+$/
+    };
+
+    return patterns[type].test(input);
+  }
+
+  // Content Security Policy helper
+  static generateCSP(): string {
+    return [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' https://trusted-cdn.com",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https:",
+      "font-src 'self' https://fonts.googleapis.com",
+      "connect-src 'self' https://api.example.com",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'"
+    ].join('; ');
+  }
+}
+
+// React component với XSS protection
+interface SafeHTMLProps {
+  html: string;
+  allowedTags?: string[];
+  className?: string;
+}
+
+const SafeHTML: React.FC<SafeHTMLProps> = ({
+  html,
+  allowedTags = ['p', 'br', 'strong', 'em'],
+  className
+}) => {
+  const sanitizedHTML = React.useMemo(() => {
+    return XSSProtector.sanitizeHTML(html);
+  }, [html]);
+
+  return (
+    <div
+      className={className}
+      dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+    />
+  );
+};
+
+// 2. CORS (Cross-Origin Resource Sharing) CONFIGURATION
+interface CORSConfig {
+  allowedOrigins: string[];
+  allowedMethods: string[];
+  allowedHeaders: string[];
+  credentials: boolean;
+  maxAge?: number;
+}
+
+class CORSManager {
+  private config: CORSConfig;
+
+  constructor(config: CORSConfig) {
+    this.config = config;
+  }
+
+  // Check if origin is allowed
+  isOriginAllowed(origin: string): boolean {
+    return this.config.allowedOrigins.includes('*') ||
+           this.config.allowedOrigins.includes(origin);
+  }
+
+  // Generate CORS headers
+  generateHeaders(origin: string): Record<string, string> {
+    const headers: Record<string, string> = {};
+
+    if (this.isOriginAllowed(origin)) {
+      headers['Access-Control-Allow-Origin'] = origin;
+    }
+
+    headers['Access-Control-Allow-Methods'] = this.config.allowedMethods.join(', ');
+    headers['Access-Control-Allow-Headers'] = this.config.allowedHeaders.join(', ');
+
+    if (this.config.credentials) {
+      headers['Access-Control-Allow-Credentials'] = 'true';
+    }
+
+    if (this.config.maxAge) {
+      headers['Access-Control-Max-Age'] = this.config.maxAge.toString();
+    }
+
+    return headers;
+  }
+
+  // Preflight request handler
+  handlePreflight(request: Request): Response {
+    const origin = request.headers.get('origin') || '';
+    const headers = this.generateHeaders(origin);
+
+    return new Response(null, {
+      status: 204,
+      headers
+    });
+  }
+}
+
+// Frontend CORS-aware HTTP client
+class SecureHTTPClient {
+  private baseURL: string;
+  private defaultHeaders: Record<string, string>;
+
+  constructor(baseURL: string, defaultHeaders: Record<string, string> = {}) {
+    this.baseURL = baseURL;
+    this.defaultHeaders = {
+      'Content-Type': 'application/json',
+      ...defaultHeaders
+    };
+  }
+
+  async request<T>(
+    endpoint: string,
+    options: RequestInit & {
+      timeout?: number;
+      retries?: number;
+    } = {}
+  ): Promise<T> {
+    const url = new URL(endpoint, this.baseURL);
+
+    // Security check: ensure HTTPS in production
+    if (process.env.NODE_ENV === 'production' && url.protocol !== 'https:') {
+      throw new Error('HTTPS required in production');
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, options.timeout || 10000);
+
+    try {
+      const response = await fetch(url.toString(), {
+        ...options,
+        headers: {
+          ...this.defaultHeaders,
+          ...options.headers
+        },
+        signal: controller.signal,
+        credentials: 'include' // Include cookies for CORS
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      // Check Content-Type to prevent MIME type attacks
+      const contentType = response.headers.get('content-type');
+      if (contentType && !contentType.includes('application/json')) {
+        console.warn('⚠️ Unexpected content type:', contentType);
+      }
+
+      return await response.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout');
+      }
+
+      // Retry logic for network errors
+      if (options.retries && options.retries > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return this.request<T>(endpoint, { ...options, retries: options.retries - 1 });
+      }
+
+      throw error;
+    }
+  }
+
+  async get<T>(endpoint: string, options?: RequestInit): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'GET' });
+  }
+
+  async post<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
+    return this.request<T>(endpoint, {
+      ...options,
+      method: 'POST',
+      body: data ? JSON.stringify(data) : undefined
+    });
+  }
+}
+
+// 3. CSRF (Cross-Site Request Forgery) PROTECTION
+class CSRFProtector {
+  private tokenKey = 'csrf-token';
+  private tokenHeaderName = 'X-CSRF-Token';
+
+  // Generate CSRF token
+  generateToken(): string {
+    const array = new Uint8Array(32);
+    crypto.getRandomValues(array);
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Store CSRF token
+  setToken(token: string): void {
+    // Store in meta tag
+    let metaTag = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
+    if (!metaTag) {
+      metaTag = document.createElement('meta');
+      metaTag.name = 'csrf-token';
+      document.head.appendChild(metaTag);
+    }
+    metaTag.content = token;
+
+    // Store in sessionStorage as backup
+    sessionStorage.setItem(this.tokenKey, token);
+  }
+
+  // Get CSRF token
+  getToken(): string | null {
+    // Try meta tag first
+    const metaTag = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
+    if (metaTag) {
+      return metaTag.content;
+    }
+
+    // Fallback to sessionStorage
+    return sessionStorage.getItem(this.tokenKey);
+  }
+
+  // Add CSRF token to headers
+  addTokenToHeaders(headers: Headers | Record<string, string>): void {
+    const token = this.getToken();
+    if (token) {
+      if (headers instanceof Headers) {
+        headers.set(this.tokenHeaderName, token);
+      } else {
+        headers[this.tokenHeaderName] = token;
+      }
+    }
+  }
+
+  // Verify CSRF token (for SPA routing)
+  verifyToken(providedToken: string): boolean {
+    const storedToken = this.getToken();
+    return storedToken === providedToken && providedToken !== null;
+  }
+}
+
+// CSRF-protected HTTP client
+class CSRFProtectedClient extends SecureHTTPClient {
+  private csrfProtector = new CSRFProtector();
+
+  async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    // Add CSRF token to state-changing requests
+    const method = options.method?.toUpperCase() || 'GET';
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+      const headers = new Headers(options.headers);
+      this.csrfProtector.addTokenToHeaders(headers);
+      options.headers = headers;
+    }
+
+    return super.request<T>(endpoint, options);
+  }
+
+  // Initialize CSRF token on app start
+  async initializeCSRF(): Promise<void> {
+    try {
+      const response = await super.get<{ token: string }>('/api/csrf-token');
+      this.csrfProtector.setToken(response.token);
+    } catch (error) {
+      console.error('Failed to initialize CSRF token:', error);
+    }
+  }
+}
+
+// 4. AUTHENTICATION & AUTHORIZATION
+interface UserPermissions {
+  resources: string[];
+  actions: string[];
+  conditions?: Record<string, any>;
+}
+
+class AuthGuard {
+  private permissions: UserPermissions | null = null;
+  private redirectURL = '/login';
+
+  setPermissions(permissions: UserPermissions): void {
+    this.permissions = permissions;
+  }
+
+  // Check if user has required permission
+  hasPermission(resource: string, action: string): boolean {
+    if (!this.permissions) return false;
+
+    return this.permissions.resources.includes(resource) &&
+           this.permissions.actions.includes(action);
+  }
+
+  // Check multiple permissions
+  hasAllPermissions(requirements: Array<{resource: string, action: string}>): boolean {
+    return requirements.every(req => this.hasPermission(req.resource, req.action));
+  }
+
+  // Check if user owns resource
+  canAccessResource(resourceId: string, ownerId: string, currentUserId: string): boolean {
+    return ownerId === currentUserId || this.hasPermission('admin', 'access');
+  }
+
+  // Route guard for React Router
+  requireAuth<T extends {}>(Component: React.ComponentType<T>) {
+    return (props: T) => {
+      const isAuthenticated = this.permissions !== null;
+
+      React.useEffect(() => {
+        if (!isAuthenticated) {
+          window.location.href = this.redirectURL;
+        }
+      }, [isAuthenticated]);
+
+      if (!isAuthenticated) {
+        return <div>🔄 Checking authentication...</div>;
+      }
+
+      return <Component {...props} />;
+    };
+  }
+
+  // Permission-based component
+  requirePermission(resource: string, action: string) {
+    return <T extends {}>(Component: React.ComponentType<T>) => {
+      return (props: T) => {
+        const hasAccess = this.hasPermission(resource, action);
+
+        if (!hasAccess) {
+          return <div>❌ Access denied</div>;
+        }
+
+        return <Component {...props} />;
+      };
+    };
+  }
+}
+
+// 5. SECURITY HEADERS
+class SecurityHeaders {
+  static getRecommendedHeaders(): Record<string, string> {
+    return {
+      // Prevent XSS attacks
+      'X-XSS-Protection': '1; mode=block',
+
+      // Prevent MIME type sniffing
+      'X-Content-Type-Options': 'nosniff',
+
+      // Prevent clickjacking
+      'X-Frame-Options': 'DENY',
+
+      // Force HTTPS
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+
+      // Control referrer information
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+
+      // Feature policy
+      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+
+      // Content Security Policy
+      'Content-Security-Policy': XSSProtector.generateCSP()
+    };
+  }
+
+  // Check if headers are properly set
+  static auditHeaders(response: Response): {
+    security: 'high' | 'medium' | 'low';
+    missing: string[];
+    recommendations: string[];
+  } {
+    const headers = response.headers;
+    const recommended = this.getRecommendedHeaders();
+    const missing: string[] = [];
+    const recommendations: string[] = [];
+
+    Object.keys(recommended).forEach(header => {
+      if (!headers.has(header)) {
+        missing.push(header);
+        recommendations.push(`Add ${header} header for better security`);
+      }
+    });
+
+    let security: 'high' | 'medium' | 'low' = 'high';
+    if (missing.length > 2) security = 'low';
+    else if (missing.length > 0) security = 'medium';
+
+    return { security, missing, recommendations };
+  }
+}
+
+// 6. SECURITY MONITORING
+class SecurityMonitor {
+  private violations: Array<{
+    type: string;
+    details: string;
+    timestamp: number;
+    userAgent: string;
+    url: string;
+  }> = [];
+
+  constructor() {
+    this.setupCSPReporting();
+    this.setupSecurityEventListeners();
+  }
+
+  private setupCSPReporting(): void {
+    // Listen for CSP violations
+    document.addEventListener('securitypolicyviolation', (event) => {
+      this.reportViolation('csp', {
+        blockedURI: event.blockedURI,
+        violatedDirective: event.violatedDirective,
+        originalPolicy: event.originalPolicy
+      });
+    });
+  }
+
+  private setupSecurityEventListeners(): void {
+    // Monitor for suspicious activities
+
+    // Detect potential XSS attempts
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const element = node as Element;
+
+              // Check for script injection
+              if (element.tagName === 'SCRIPT' && !element.hasAttribute('data-approved')) {
+                this.reportViolation('script_injection', {
+                  innerHTML: element.innerHTML,
+                  src: element.getAttribute('src')
+                });
+              }
+
+              // Check for suspicious attributes
+              Array.from(element.attributes || []).forEach(attr => {
+                if (attr.name.startsWith('on') || attr.value.includes('javascript:')) {
+                  this.reportViolation('suspicious_attribute', {
+                    attribute: attr.name,
+                    value: attr.value,
+                    element: element.tagName
+                  });
+                }
+              });
+            }
+          });
+        });
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true
+      });
+    });
+
+    // Monitor for frame busting attempts
+    if (window.top !== window.self) {
+      this.reportViolation('frame_detected', {
+        parentOrigin: document.referrer
+      });
+    }
+  }
+
+  private reportViolation(type: string, details: any): void {
+    const violation = {
+      type,
+      details: JSON.stringify(details),
+      timestamp: Date.now(),
+      userAgent: navigator.userAgent,
+      url: window.location.href
+    };
+
+    this.violations.push(violation);
+
+    // Send to security monitoring service
+    this.sendToSecurityService(violation);
+
+    console.warn('🚨 Security violation detected:', violation);
+  }
+
+  private async sendToSecurityService(violation: any): Promise<void> {
+    try {
+      await fetch('/api/security/violations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(violation)
+      });
+    } catch (error) {
+      console.error('Failed to report security violation:', error);
+    }
+  }
+
+  // Get security report
+  getSecurityReport(): {
+    totalViolations: number;
+    violationsByType: Record<string, number>;
+    recentViolations: any[];
+    riskLevel: 'low' | 'medium' | 'high';
+  } {
+    const violationsByType = this.violations.reduce((acc, violation) => {
+      acc[violation.type] = (acc[violation.type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const recentViolations = this.violations
+      .filter(v => Date.now() - v.timestamp < 24 * 60 * 60 * 1000) // Last 24 hours
+      .slice(-10);
+
+    let riskLevel: 'low' | 'medium' | 'high' = 'low';
+    if (this.violations.length > 50) riskLevel = 'high';
+    else if (this.violations.length > 10) riskLevel = 'medium';
+
+    return {
+      totalViolations: this.violations.length,
+      violationsByType,
+      recentViolations,
+      riskLevel
+    };
+  }
+}
+```
+
+**🔒 Security Best Practices:**
+
+```typescript
+const securityBestPractices = {
+  xss: [
+    "🧹 Always sanitize user input",
+    "🔒 Use Content Security Policy",
+    "⚡ Encode output data",
+    "🚫 Never use dangerouslySetInnerHTML without sanitization"
+  ],
+
+  cors: [
+    "🎯 Specify exact allowed origins",
+    "🔐 Use credentials carefully",
+    "⏰ Set appropriate max-age",
+    "🚫 Avoid wildcard (*) with credentials"
+  ],
+
+  csrf: [
+    "🎫 Use CSRF tokens for state-changing requests",
+    "🍪 SameSite cookie attribute",
+    "🔍 Verify referer header",
+    "🚫 Never rely on GET for state changes"
+  ],
+
+  general: [
+    "🔒 Always use HTTPS in production",
+    "🛡️ Implement proper authentication",
+    "📝 Log security events",
+    "🔄 Regular security audits",
+    "📊 Monitor and alert on violations"
+  ]
+};
+```
+
+---
 
 ### 9. React Advanced Topics & Modern Features
 
@@ -25429,83 +34090,23 @@ class TechnologyTrends {
 
 ---
 
+## 🚀 **Advanced Frontend Interview Questions - Câu Hỏi Nâng Cao Mở Rộng**
+
+---
+
 ### 🎯 **Interview Success Formula**
 
 **Cách chuẩn bị cho các câu hỏi kinh nghiệm:**
 
 1. **Chuẩn bị STAR format**: Situation, Task, Action, Result
 2. **Quantify achievements**: Sử dụng số liệu cụ thể
-3. **Highlight problem-solving**: Tập trung vào cách giải quyết vấn đề
-4. **Show growth mindset**: Demonstrative learning từ failures
-5. **Technical depth**: Sẵn sàng deep dive vào technical details
-
-**🎯 Tips cho phỏng vấn:**
-
-**📋 PREPARATION CHECKLIST:**
-- ✅ **2-3 dự án chi tiết** với metrics cụ thể
-- ✅ **Practice explaining** complex concepts simply
-- ✅ **Specific examples** của challenges và solutions
-- ✅ **Show passion** for continuous learning
-- ✅ **Demonstrate collaboration** và leadership skills
-
-**🧠 MINDSET FRAMEWORK:**
-```
-📖 LEARN → 🛠️ APPLY → 📊 MEASURE → 🔄 IMPROVE
-```
-
-**🏆 SUCCESS FORMULA:**
-```
-💡 Technical Knowledge + 💬 Communication Skills + 🤝 Team Collaboration = HIRED!
-```
-
-**⚡ FINAL REMINDERS:**
-- **🎯 BE SPECIFIC** - "Improved performance by 70%" thay vì "improved performance"
-- **🛠️ SHOW PROCESS** - How you approach problems
-- **📈 BUSINESS IMPACT** - Always connect technical work to business value
-- **🔄 GROWTH MINDSET** - What you learned from failures
-- **❓ ASK QUESTIONS** - Show curiosity about their challenges
-
----
-
-# 🎉 **GOOD LUCK WITH YOUR INTERVIEW!**
-
-**Remember:** *"The best developers are not those who never make mistakes, but those who learn from every mistake and share that knowledge to help others grow."*
-
-**🚀 You've got this!** 💪
-
----
-
-## 🔗 **Quick Links Cheat Sheet**
-
-**📚 Sections:**
-- [📋 Mục Lục](#📋-mục-lục-tổng-kết)
-- [🟢 JavaScript Core](#1-javascript-core-fundamentals)
-- [🟢 React Fundamentals](#2-react-fundamentals)
-- [🟡 Câu Hỏi Trung Cấp](#q4-usestate-hook-hoạt-động-như-thế-nào)
-- [🔴 Câu Hỏi Nâng Cao](#q16-thiết-kế-kiến-trúc-micro-frontend-cho-ứng-dụng-scale-lớn)
-- [🚀 React Advanced](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng)
-- [💙 TypeScript Advanced](#💙-typescript-advanced-topics)
-- [💼 Experience Questions](#💼-câu-hỏi-kinh-nghiệm--thực-tế)
-- [🎯 Tổng Kết Summary](#🎯-tổng-kết-summary)
-
-**🔥 Popular Questions:**
-- [Event Loop](#q5-event-loop-hoạt-động-như-thế-nào-giải-thích-đơn-giản)
-- [Closure](#q6-closure-và-data-privacy-trong-javascript)
-- [Virtual DOM](#q20-virtual-dom-và-key-trong-lists)
-- [useMemo vs useCallback](#q22-usememo-vs-usecallback-chi-tiết)
-- [React Concurrent Mode](#q24-react-concurrent-mode-và-suspense---cách-hoạt-động-và-ứng-dụng)
-- [Performance Optimization](#q28-deep-dive-react-performance-optimization-techniques)
-- [Utility Types](#ts1-utility-types-trong-typescript---cách-sử-dụng-và-ứng-dụng)
-- [type vs interface](#ts3-type-vs-interface---sự-khác-biệt-và-best-practices)
-
-**⚡ Quick Reference:**
-- [📝 Key Concepts Cheat Sheet](#📝-key-concepts-cheat-sheet---những-kiến-thức-phải-nhớ)
-- [💡 Mental Models](#💡-quick-mental-models---cách-tư-duy-nhanh)
-- [⚠️ Common Mistakes](#⚠️-common-interview-mistakes---tránh-những-lỗi-này)
-- [🔥 Last-Minute Review](#🔥-last-minute-quick-review---5-phút-trước-phỏng-vấn)
+3. **Prepare technical stories**: Có sẵn 3-5 câu chuyện kỹ thuật
+4. **Practice explaining**: Tập giải thích code và architecture
+5. **Research company**: Tìm hiểu tech stack và challenges của công ty
 
 **📌 [⬆️ Back to Top](#📚-câu-hỏi-frontend-interview---từ-cơ-bản-đến-senior)**
 
 ---
 
 *Created with ❤️ for Frontend Developers*
+
