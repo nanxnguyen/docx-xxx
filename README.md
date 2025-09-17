@@ -1,10 +1,12 @@
-# 📚 Câu Hỏi Frontend
+# 📚 Câu Hỏi Frontend Interview - Từ Cơ Bản Đến Senior
+
 > **Tổng cộng: 23 câu hỏi cơ bản/trung cấp + 25 câu nâng cao + 7 câu React advanced + 10 câu TypeScript + 15 câu CSS/HTML + 9 câu kinh nghiệm = 89 câu hỏi**
->
+> RULE
 > **Tất cả examples được viết bằng TypeScript với chú thích tiếng Việt chi tiết**
 > Highlight các nội dung quan trọng để dễ hiểu và nhớ lâu
-> Nội dung cảu mỗi câu phải đảm bảo: phần trả lời thì trả lời chi tiết đến phần code hỗ trợ cho phần trả lời kèm chú thiích => rồi đến ví dụ dễ hiểu,....
-
+> Nội dung của mỗi câu phải đảm bảo:
+phần trả lời thì trả lời chi tiết bằng tiếng việt nó là gì, hoạt động như thế nào có ưu và nhược điểm gì => đến phần code hỗ trợ cho phần trả lời kèm chú thích => rồi đến ví dụ dễ hiểu,....
+> Best practices và khi nào sử dụng tối ưu nhất
 
 
 ## 🚀 **Quick Navigation**
@@ -416,37 +418,532 @@ function constExample(): void {
 
 **Trả lời:**
 
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **ES5 vs ES6+** là evolutionary jump trong JavaScript development
+- **Understanding differences** giúp developer làm việc với legacy và modern code
+- **Critical** cho understanding compatibility và performance implications
+- **Essential** cho coding interviews và technical discussions
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **ES5** (2009): Traditional JavaScript với function scope và prototypes
+- **ES6+** (2015+): Modern JavaScript với classes, modules, và block scope
+- **Progressive Enhancement**: Backwards compatibility với transpilation
+- **Modern Development**: TypeScript và build tools leverage ES6+ features
+
+**🧠 GHI NHỚ:**
+- **ES5** = **E**lementary **S**tandard (basic features)
+- **ES6+** = **E**nhanced **S**tandard (modern features)
+- **Transpilation** = ES6+ code → ES5 code for older browsers
+- **Polyfills** = Add missing features to older environments
+
 ```typescript
-// ES5 Features (2009)
-// 1. Array methods
-var numbers = [1, 2, 3, 4, 5];
-var doubled = numbers.map(function(n) { return n * 2; });
-var evens = numbers.filter(function(n) { return n % 2 === 0; });
-var sum = numbers.reduce(function(acc, n) { return acc + n; }, 0);
-
-// 2. Object methods
-var obj = { name: 'John', age: 30 };
-var keys = Object.keys(obj);
-var hasName = obj.hasOwnProperty('name');
-
-// 3. Function bind
-function greet() {
-  console.log('Hello ' + this.name);
+// 🎯 1. ES5 FEATURES (2009) - TRADITIONAL JAVASCRIPT
+// 📋 Interface cho ES5 compatibility
+interface ES5Features {
+  arrayMethods: string[];
+  objectMethods: string[];
+  functionFeatures: string[];
+  limitations: string[];
 }
-var boundGreet = greet.bind({ name: 'John' });
 
-// ES6+ Features (2015+)
-// 1. Let/Const và Block Scope
-let x = 10;
-const y = 20;
+// 🚀 1.1 ES5 Array Methods - Foundation của functional programming
+function es5ArrayMethods(): void {
+  console.log('🎯 ES5 Array Methods:');
 
-if (true) {
-  let x = 30; // Different variable
-  console.log(x); // 30
+  var numbers: number[] = [1, 2, 3, 4, 5];
+
+  // 🔄 Map - transform mỗi element
+  var doubled = numbers.map(function(n: number): number {
+    return n * 2;
+  });
+  console.log('Doubled:', doubled); // [2, 4, 6, 8, 10]
+
+  // 🔍 Filter - lọc elements theo condition
+  var evens = numbers.filter(function(n: number): boolean {
+    return n % 2 === 0;
+  });
+  console.log('Evens:', evens); // [2, 4]
+
+  // 📊 Reduce - gộp thành single value
+  var sum = numbers.reduce(function(acc: number, n: number): number {
+    return acc + n;
+  }, 0);
+  console.log('Sum:', sum); // 15
+
+  // 🔍 Find methods
+  var firstEven = numbers.filter(function(n: number): boolean {
+    return n % 2 === 0;
+  })[0]; // No native find() in ES5
+  console.log('First even:', firstEven); // 2
 }
-console.log(x); // 10
 
-// 2. Arrow Functions
+// 🚀 1.2 ES5 Object Methods
+function es5ObjectMethods(): void {
+  console.log('🎯 ES5 Object Methods:');
+
+  var person = {
+    name: 'John',
+    age: 30,
+    city: 'New York'
+  };
+
+  // 🔑 Object.keys - get property names
+  var keys = Object.keys(person);
+  console.log('Keys:', keys); // ['name', 'age', 'city']
+
+  // ✅ hasOwnProperty - check if property exists
+  var hasName = person.hasOwnProperty('name');
+  console.log('Has name:', hasName); // true
+
+  // 🎯 Property descriptor
+  Object.defineProperty(person, 'email', {
+    value: 'john@example.com',
+    writable: false,
+    enumerable: true,
+    configurable: false
+  });
+  console.log('Email:', person.email);
+
+  // 🔒 Prevent modifications
+  Object.freeze(person); // Make object immutable
+  Object.seal(person);   // Prevent adding/removing properties
+}
+
+// 🚀 1.3 ES5 Function Features
+function es5FunctionFeatures(): void {
+  console.log('🎯 ES5 Function Features:');
+
+  // 🔗 Function.bind - create bound function
+  function greet(greeting: string): void {
+    console.log(greeting + ' ' + this.name);
+  }
+
+  var person = { name: 'John' };
+  var boundGreet = greet.bind(person);
+  boundGreet('Hello'); // "Hello John"
+
+  // 🎯 Constructor function pattern
+  function Person(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+
+  Person.prototype.introduce = function(): string {
+    return 'Hi, I am ' + this.name + ', ' + this.age + ' years old';
+  };
+
+  var john = new Person('John', 30);
+  console.log(john.introduce());
+}
+
+// 🎯 2. ES6+ FEATURES (2015+) - MODERN JAVASCRIPT
+// 📋 Interface cho ES6+ features
+interface ES6Features {
+  syntax: string[];
+  dataStructures: string[];
+  modules: string[];
+  async: string[];
+}
+
+// 🚀 2.1 ES6 Variable Declarations
+function es6VariableDeclarations(): void {
+  console.log('🎯 ES6 Variable Declarations:');
+
+  // ✅ let - block scoped, mutable
+  let counter = 0;
+  if (true) {
+    let counter = 10; // Different variable
+    console.log('Inside block:', counter); // 10
+  }
+  console.log('Outside block:', counter); // 0
+
+  // ✅ const - block scoped, immutable binding
+  const config = {
+    apiUrl: 'https://api.example.com',
+    timeout: 5000
+  };
+
+  // config = {}; // Error! Cannot reassign
+  config.timeout = 10000; // OK! Object contents can change
+  console.log('Updated config:', config);
+
+  // ✅ Temporal Dead Zone
+  try {
+    console.log(tdz); // ReferenceError
+  } catch (error) {
+    console.log('TDZ Error:', error.message);
+  }
+  let tdz = 'Now it exists';
+}
+
+// 🚀 2.2 ES6 Arrow Functions
+function es6ArrowFunctions(): void {
+  console.log('🎯 ES6 Arrow Functions:');
+
+  // 📋 Interface cho examples
+  interface User {
+    name: string;
+    age: number;
+  }
+
+  const users: User[] = [
+    { name: 'John', age: 30 },
+    { name: 'Jane', age: 25 },
+    { name: 'Bob', age: 35 }
+  ];
+
+  // ⚡ Arrow function syntax variations
+  const simpleArrow = () => 'Hello World';
+  const singleParam = (name: string) => `Hello ${name}`;
+  const multipleParams = (a: number, b: number) => a + b;
+  const blockBody = (user: User) => {
+    const greeting = `Hello ${user.name}`;
+    console.log(greeting);
+    return greeting;
+  };
+
+  // 🎯 Array methods với arrow functions
+  const names = users.map(user => user.name);
+  const adults = users.filter(user => user.age >= 30);
+  const totalAge = users.reduce((sum, user) => sum + user.age, 0);
+
+  console.log('Names:', names);
+  console.log('Adults:', adults);
+  console.log('Total age:', totalAge);
+
+  // 🔗 this binding difference
+  const obj = {
+    name: 'Object',
+    regularFunction: function() {
+      console.log('Regular this:', this.name); // "Object"
+    },
+    arrowFunction: () => {
+      console.log('Arrow this:', this.name); // undefined (lexical scope)
+    }
+  };
+
+  obj.regularFunction();
+  obj.arrowFunction();
+}
+
+// 🚀 2.3 ES6 Template Literals
+function es6TemplateLiterals(): void {
+  console.log('🎯 ES6 Template Literals:');
+
+  const name = 'John';
+  const age = 30;
+  const city = 'New York';
+
+  // 🎨 String interpolation
+  const introduction = `Hello, I'm ${name}, ${age} years old, living in ${city}`;
+  console.log(introduction);
+
+  // 📝 Multiline strings
+  const multiline = `
+    This is a multiline string
+    that spans across multiple lines
+    without concatenation
+  `;
+  console.log(multiline);
+
+  // 🎯 Tagged template literals
+  function highlight(strings: TemplateStringsArray, ...values: any[]): string {
+    return strings.reduce((result, string, i) => {
+      const value = values[i] ? `<strong>${values[i]}</strong>` : '';
+      return result + string + value;
+    }, '');
+  }
+
+  const highlighted = highlight`Name: ${name}, Age: ${age}`;
+  console.log('Highlighted:', highlighted);
+}
+
+// 🚀 2.4 ES6 Destructuring
+function es6Destructuring(): void {
+  console.log('🎯 ES6 Destructuring:');
+
+  // 📦 Array destructuring
+  const colors = ['red', 'green', 'blue', 'yellow'];
+  const [primary, secondary, ...rest] = colors;
+  console.log('Primary:', primary);     // red
+  console.log('Secondary:', secondary); // green
+  console.log('Rest:', rest);           // ['blue', 'yellow']
+
+  // 🏠 Object destructuring
+  const user = {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+    address: {
+      street: '123 Main St',
+      city: 'New York',
+      country: 'USA'
+    }
+  };
+
+  // ✨ Basic destructuring
+  const { name, email } = user;
+  console.log('Name:', name, 'Email:', email);
+
+  // 🔄 Renaming variables
+  const { name: userName, email: userEmail } = user;
+  console.log('User Name:', userName);
+
+  // 🏠 Nested destructuring
+  const {
+    address: {
+      city,
+      country
+    }
+  } = user;
+  console.log('City:', city, 'Country:', country);
+
+  // 🎯 Default values
+  const { phone = 'N/A', age = 0 } = user;
+  console.log('Phone:', phone, 'Age:', age);
+}
+
+// 🚀 2.5 ES6 Classes
+function es6Classes(): void {
+  console.log('🎯 ES6 Classes:');
+
+  // 🏗️ Class definition
+  class Animal {
+    protected name: string;
+    protected age: number;
+    private static count: number = 0;
+
+    constructor(name: string, age: number) {
+      this.name = name;
+      this.age = age;
+      Animal.count++;
+    }
+
+    // 🎯 Method
+    makeSound(): string {
+      return `${this.name} makes a sound`;
+    }
+
+    // 🔧 Getter
+    get info(): string {
+      return `${this.name} is ${this.age} years old`;
+    }
+
+    // 🔧 Setter
+    set newAge(age: number) {
+      if (age > 0) {
+        this.age = age;
+      }
+    }
+
+    // 🏷️ Static method
+    static getCount(): number {
+      return Animal.count;
+    }
+  }
+
+  // 🧬 Inheritance
+  class Dog extends Animal {
+    private breed: string;
+
+    constructor(name: string, age: number, breed: string) {
+      super(name, age); // Call parent constructor
+      this.breed = breed;
+    }
+
+    // 🔄 Override method
+    makeSound(): string {
+      return `${this.name} barks: Woof!`;
+    }
+
+    // 🎯 New method
+    wagTail(): string {
+      return `${this.name} wags tail happily`;
+    }
+  }
+
+  // 🧪 Usage
+  const dog = new Dog('Buddy', 3, 'Golden Retriever');
+  console.log(dog.info);
+  console.log(dog.makeSound());
+  console.log(dog.wagTail());
+  console.log('Total animals:', Animal.getCount());
+}
+
+// 🚀 2.6 ES6 Modules
+function es6ModulesExample(): void {
+  console.log('🎯 ES6 Modules:');
+
+  // 📝 Module exports (math.ts)
+  const mathModule = `
+    // Named exports
+    export const PI = 3.14159;
+    export function add(a: number, b: number): number {
+      return a + b;
+    }
+    export function multiply(a: number, b: number): number {
+      return a * b;
+    }
+
+    // Default export
+    export default function calculate(operation: string, a: number, b: number): number {
+      switch (operation) {
+        case 'add': return add(a, b);
+        case 'multiply': return multiply(a, b);
+        default: return 0;
+      }
+    }
+  `;
+
+  // 📝 Module imports (app.ts)
+  const appModule = `
+    // Named imports
+    import { PI, add, multiply } from './math';
+
+    // Default import
+    import calculate from './math';
+
+    // Namespace import
+    import * as MathUtils from './math';
+
+    // Mixed imports
+    import calculate, { PI, add } from './math';
+  `;
+
+  console.log('Math module example:', mathModule);
+  console.log('App module example:', appModule);
+}
+
+// 🚀 2.7 ES6+ Async Features
+function es6AsyncFeatures(): void {
+  console.log('🎯 ES6+ Async Features:');
+
+  // 🎯 Promises (ES6)
+  const fetchData = (): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const success = Math.random() > 0.3;
+        if (success) {
+          resolve('Data fetched successfully');
+        } else {
+          reject(new Error('Failed to fetch data'));
+        }
+      }, 1000);
+    });
+  };
+
+  // 🎯 Async/Await (ES2017)
+  const asyncExample = async (): Promise<void> => {
+    try {
+      console.log('Fetching data...');
+      const data = await fetchData();
+      console.log('Success:', data);
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  };
+
+  asyncExample();
+}
+
+// 🎯 3. COMPARISON TABLE
+function comparisonTable(): JSX.Element {
+  return (
+    <div>
+      <h3>📊 ES5 vs ES6+ Comparison</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>ES5</th>
+            <th>ES6+</th>
+            <th>Benefits</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Variables</strong></td>
+            <td><code>var</code></td>
+            <td><code>let, const</code></td>
+            <td>Block scope, TDZ protection</td>
+          </tr>
+          <tr>
+            <td><strong>Functions</strong></td>
+            <td><code>function</code></td>
+            <td><code>() => {}</code></td>
+            <td>Shorter syntax, lexical this</td>
+          </tr>
+          <tr>
+            <td><strong>Classes</strong></td>
+            <td><code>function + prototype</code></td>
+            <td><code>class</code></td>
+            <td>Cleaner OOP syntax</td>
+          </tr>
+          <tr>
+            <td><strong>Modules</strong></td>
+            <td><code>IIFE, CommonJS</code></td>
+            <td><code>import/export</code></td>
+            <td>Static analysis, tree shaking</td>
+          </tr>
+          <tr>
+            <td><strong>Strings</strong></td>
+            <td><code>+ concatenation</code></td>
+            <td><code>template literals</code></td>
+            <td>Interpolation, multiline</td>
+          </tr>
+          <tr>
+            <td><strong>Destructuring</strong></td>
+            <td><code>manual extraction</code></td>
+            <td><code>{ }, [ ]</code></td>
+            <td>Concise data extraction</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// 🎯 4. WHEN TO USE WHICH?
+function usageGuide(): JSX.Element {
+  return (
+    <div>
+      <h3>🎯 Khi nào dùng ES5 vs ES6+?</h3>
+
+      <div>
+        <h4>✅ Dùng ES5 khi:</h4>
+        <ul>
+          <li>🔧 Legacy browser support (IE < 11)</li>
+          <li>📦 Library compatibility requirements</li>
+          <li>🎯 Learning JavaScript fundamentals</li>
+          <li>🏢 Corporate environments với strict compatibility</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng ES6+ khi:</h4>
+        <ul>
+          <li>🚀 Modern development (React, Vue, Angular)</li>
+          <li>📦 Build tools available (Babel, TypeScript)</li>
+          <li>⚡ Performance và maintainability quan trọng</li>
+          <li>👥 Team development với modern practices</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Best Practices:</h4>
+        <ul>
+          <li>🎯 Use ES6+ cho new projects</li>
+          <li>🔧 Use Babel cho browser compatibility</li>
+          <li>📊 Use TypeScript cho type safety</li>
+          <li>⚡ Use modern bundlers (Webpack, Vite)</li>
+          <li>🧪 Test across target browsers</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+```
 const add = (a, b) => a + b;
 const square = x => x * x;
 const greet = name => {
@@ -598,22 +1095,379 @@ const counter = new Counter();
 
 **Trả lời:**
 
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **Hoisting** là fundamental concept trong JavaScript execution context
+- **Understanding hoisting** helps prevent bugs và unexpected behaviors
+- **Critical** cho understanding temporal dead zone và variable declarations
+- **Essential** cho JavaScript interviews và debugging
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **Hoisting**: JavaScript engine moves variable/function declarations to top của scope
+- **Declaration vs Initialization**: Chỉ declaration được hoisted, initialization thì không
+- **Different behaviors**: `var`, `let`, `const`, và `function` hoist khác nhau
+- **Temporal Dead Zone**: Period giữa declaration hoisting và actual declaration line
+
+**🧠 GHI NHỚ:**
+- **var** = **V**ariable **A**vailable **R**ight away (undefined)
+- **let/const** = **L**ocked **E**arly **T**il declared (TDZ)
+- **function** = **F**ully **U**sable **N**ow (complete hoisting)
+- **TDZ** = **T**emporal **D**ead **Z**one (cannot access)
+
 ```typescript
-// 1. Variable Hoisting
-console.log(x); // undefined (not ReferenceError)
-var x = 5;
+// 🎯 1. VARIABLE HOISTING - DIFFERENT BEHAVIORS
+// 📋 Interface cho demonstrating hoisting
+interface HoistingDemo {
+  varExample(): void;
+  letConstExample(): void;
+  functionExample(): void;
+  classExample(): void;
+}
 
-// Equivalent to:
-var x; // hoisted to top, initialized with undefined
-console.log(x); // undefined
-x = 5;
+// 🚀 1.1 VAR HOISTING - Declaration hoisted, initialization không
+function varHoisting(): void {
+  console.log('🎯 VAR Hoisting Examples:');
 
-// Let/Const Hoisting - Temporal Dead Zone
-console.log(y); // ReferenceError: Cannot access 'y' before initialization
-let y = 10;
+  // ✅ This works - var is hoisted as undefined
+  console.log('Before declaration:', x); // undefined (not ReferenceError)
+  var x: number = 5;
+  console.log('After declaration:', x); // 5
 
-console.log(z); // ReferenceError: Cannot access 'z' before initialization
-const z = 20;
+  // 🎯 What JavaScript engine actually does:
+  // var x; // <-- Hoisted to top as undefined
+  // console.log('Before declaration:', x); // undefined
+  // x = 5; // <-- Assignment happens here
+  // console.log('After declaration:', x); // 5
+
+  // 🔄 Function scope example
+  function example(): void {
+    if (true) {
+      console.log('Inside if:', y); // undefined (hoisted to function top)
+      var y: string = 'hello';
+    }
+    console.log('Outside if:', y); // 'hello' (var is function-scoped)
+  }
+
+  example();
+
+  // 🎯 Loop example showing var hoisting issues
+  console.log('Var in loop issue:');
+  for (var i = 0; i < 3; i++) {
+    setTimeout(() => {
+      console.log('Var i:', i); // Always prints 3 (closure captures final value)
+    }, 100);
+  }
+}
+
+// 🚀 1.2 LET/CONST HOISTING - Temporal Dead Zone (TDZ)
+function letConstHoisting(): void {
+  console.log('🎯 LET/CONST Hoisting Examples:');
+
+  // ❌ This throws ReferenceError - TDZ
+  try {
+    console.log('Before declaration:', a); // ReferenceError: Cannot access 'a' before initialization
+  } catch (error) {
+    console.log('TDZ Error:', error.message);
+  }
+  let a: number = 10;
+  console.log('After declaration:', a); // 10
+
+  // ❌ Same for const
+  try {
+    console.log('Before const declaration:', b); // ReferenceError
+  } catch (error) {
+    console.log('Const TDZ Error:', error.message);
+  }
+  const b: string = 'hello';
+  console.log('After const declaration:', b); // 'hello'
+
+  // 🎯 Block scope example
+  function blockScopeExample(): void {
+    if (true) {
+      // ❌ TDZ - c is hoisted but in TDZ
+      try {
+        console.log('Before let in block:', c);
+      } catch (error) {
+        console.log('Block TDZ Error:', error.message);
+      }
+      let c: boolean = true;
+      console.log('After let in block:', c); // true
+    }
+
+    // ❌ c is not accessible outside block
+    try {
+      console.log('Outside block:', c);
+    } catch (error) {
+      console.log('Block scope error:', error.message);
+    }
+  }
+
+  blockScopeExample();
+
+  // 🎯 Loop example showing let hoisting benefits
+  console.log('Let in loop solution:');
+  for (let j = 0; j < 3; j++) {
+    setTimeout(() => {
+      console.log('Let j:', j); // Prints 0, 1, 2 (each iteration has own binding)
+    }, 200);
+  }
+}
+
+// 🚀 1.3 FUNCTION HOISTING - Complete hoisting
+function functionHoisting(): void {
+  console.log('🎯 Function Hoisting Examples:');
+
+  // ✅ This works - function declarations are fully hoisted
+  console.log('Calling hoisted function:', greet()); // "Hello, World!"
+
+  function greet(): string {
+    return 'Hello, World!';
+  }
+
+  // ❌ Function expressions are NOT hoisted like this
+  try {
+    console.log('Calling function expression:', sayHi()); // TypeError
+  } catch (error) {
+    console.log('Function expression error:', error.message);
+  }
+
+  var sayHi = function(): string {
+    return 'Hi there!';
+  };
+
+  // ❌ Arrow functions are also NOT hoisted
+  try {
+    console.log('Calling arrow function:', sayBye()); // TypeError or ReferenceError
+  } catch (error) {
+    console.log('Arrow function error:', error.message);
+  }
+
+  var sayBye = (): string => 'Bye!';
+
+  // ✅ After declarations, they work fine
+  console.log('Function expression works now:', sayHi()); // "Hi there!"
+  console.log('Arrow function works now:', sayBye()); // "Bye!"
+}
+
+// 🚀 1.4 CLASS HOISTING - TDZ like let/const
+function classHoisting(): void {
+  console.log('🎯 Class Hoisting Examples:');
+
+  // ❌ Classes are in TDZ
+  try {
+    const instance = new MyClass(); // ReferenceError
+  } catch (error) {
+    console.log('Class TDZ Error:', error.message);
+  }
+
+  class MyClass {
+    name: string;
+
+    constructor() {
+      this.name = 'My Class';
+    }
+
+    greet(): string {
+      return `Hello from ${this.name}`;
+    }
+  }
+
+  // ✅ After declaration, it works
+  const instance = new MyClass();
+  console.log('Class instance:', instance.greet());
+}
+
+// 🚀 1.5 COMPLEX HOISTING SCENARIOS
+function complexHoistingScenarios(): void {
+  console.log('🎯 Complex Hoisting Scenarios:');
+
+  // 🔄 Function vs Variable with same name
+  console.log('Function vs Variable:', typeof foo); // "function"
+
+  var foo = 'I am a variable';
+
+  function foo(): string {
+    return 'I am a function';
+  }
+
+  console.log('After variable assignment:', foo); // "I am a variable"
+
+  // 🎯 What actually happens:
+  // function foo() { return 'I am a function'; } // <-- Function hoisted first
+  // var foo; // <-- Variable declaration hoisted (but doesn't override function)
+  // console.log(typeof foo); // "function"
+  // foo = 'I am a variable'; // <-- Assignment happens here
+  // console.log(foo); // "I am a variable"
+
+  // 🔄 Nested function hoisting
+  function outer(): void {
+    console.log('Outer function can call inner:', inner()); // Works!
+
+    function inner(): string {
+      return 'Inner function result';
+    }
+
+    // ❌ But this doesn't work
+    try {
+      console.log('Variable function:', varFunc()); // TypeError
+    } catch (error) {
+      console.log('Variable function error:', error.message);
+    }
+
+    var varFunc = function(): string {
+      return 'Variable function result';
+    };
+  }
+
+  outer();
+}
+
+// 🚀 1.6 PRACTICAL EXAMPLES & COMMON PITFALLS
+function practicalExamples(): void {
+  console.log('🎯 Practical Examples:');
+
+  // 🎯 Common interview question
+  for (var i = 0; i < 3; i++) {
+    setTimeout(function() {
+      console.log('Problem - var i:', i); // Always 3
+    }, 300);
+  }
+
+  // ✅ Solution 1: Use let
+  for (let j = 0; j < 3; j++) {
+    setTimeout(function() {
+      console.log('Solution 1 - let j:', j); // 0, 1, 2
+    }, 400);
+  }
+
+  // ✅ Solution 2: IIFE with var
+  for (var k = 0; k < 3; k++) {
+    (function(index) {
+      setTimeout(function() {
+        console.log('Solution 2 - IIFE k:', index); // 0, 1, 2
+      }, 500);
+    })(k);
+  }
+
+  // ✅ Solution 3: bind
+  for (var l = 0; l < 3; l++) {
+    setTimeout(function(index) {
+      console.log('Solution 3 - bind l:', index); // 0, 1, 2
+    }.bind(null, l), 600);
+  }
+}
+
+// 🎯 2. COMPARISON TABLE
+function hoistingComparisonTable(): JSX.Element {
+  return (
+    <div>
+      <h3>📊 Hoisting Behavior Comparison</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Declaration Type</th>
+            <th>Hoisted?</th>
+            <th>Initialized?</th>
+            <th>TDZ?</th>
+            <th>Scope</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>var</code></td>
+            <td>✅ Yes</td>
+            <td>✅ undefined</td>
+            <td>❌ No</td>
+            <td>Function</td>
+          </tr>
+          <tr>
+            <td><code>let</code></td>
+            <td>✅ Yes</td>
+            <td>❌ No</td>
+            <td>✅ Yes</td>
+            <td>Block</td>
+          </tr>
+          <tr>
+            <td><code>const</code></td>
+            <td>✅ Yes</td>
+            <td>❌ No</td>
+            <td>✅ Yes</td>
+            <td>Block</td>
+          </tr>
+          <tr>
+            <td><code>function</code></td>
+            <td>✅ Yes</td>
+            <td>✅ Complete</td>
+            <td>❌ No</td>
+            <td>Function</td>
+          </tr>
+          <tr>
+            <td><code>function expression</code></td>
+            <td>⚠️ Variable only</td>
+            <td>❌ undefined</td>
+            <td>Depends on var/let</td>
+            <td>Depends on var/let</td>
+          </tr>
+          <tr>
+            <td><code>class</code></td>
+            <td>✅ Yes</td>
+            <td>❌ No</td>
+            <td>✅ Yes</td>
+            <td>Block</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// 🎯 3. WHEN TO USE WHICH?
+function hoistingBestPractices(): JSX.Element {
+  return (
+    <div>
+      <h3>🎯 Best Practices để tránh Hoisting Issues?</h3>
+
+      <div>
+        <h4>✅ Modern JavaScript Guidelines:</h4>
+        <ul>
+          <li>🎯 <strong>Use const by default</strong>: For values that won't be reassigned</li>
+          <li>📦 <strong>Use let for variables</strong>: When you need to reassign</li>
+          <li>❌ <strong>Avoid var</strong>: Unless working với legacy code</li>
+          <li>⬆️ <strong>Declare before use</strong>: Always declare variables before using</li>
+          <li>🎯 <strong>Use function declarations</strong>: For functions you want hoisted</li>
+          <li>📝 <strong>Use function expressions</strong>: For conditional function creation</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Common Pitfalls to Avoid:</h4>
+        <ul>
+          <li>🚫 Don't rely on hoisting behavior cho readability</li>
+          <li>🚫 Don't use var in loops với closures</li>
+          <li>🚫 Don't access variables before declaration (even if hoisted)</li>
+          <li>🚫 Don't mix function declarations và expressions với same name</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Debugging Hoisting Issues:</h4>
+        <ul>
+          <li>🔍 Use strict mode để catch hoisting problems</li>
+          <li>🧪 Use ESLint rules: no-use-before-define</li>
+          <li>📊 Use TypeScript cho better error detection</li>
+          <li>🎯 Understand execution context và scope</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+```
+
+**🎯 TÓM TẮT:**
+- **Hoisting** moves declarations to top của scope, nhưng initialization remains in place
+- **var** hoisted as undefined, **let/const** create TDZ until declaration
+- **Function declarations** completely hoisted, **expressions** follow variable rules
+- **Best practice**: Declare before use, prefer const/let over var
 
 // 2. Function Hoisting
 // Function declarations are fully hoisted
@@ -1909,115 +2763,454 @@ setTimeout(() => controller.abort(), 2000);
 
 **Trả lời:**
 
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **Object manipulation** là core skill trong JavaScript/TypeScript development
+- **Data sanitization** cần thiết cho security và performance
+- **Object comparison** critical cho state management và testing
+- **Essential** cho understanding immutability và functional programming
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **Property Removal**: Loại bỏ properties khỏi objects (mutable vs immutable)
+- **Object Comparison**: So sánh objects theo reference vs value
+- **Shallow vs Deep**: So sánh 1 cấp vs nhiều cấp nested
+- **Performance**: Trade-offs giữa different approaches
+
+**🧠 GHI NHỚ:**
+- **delete** = **D**estructive **E**diting (mutates original)
+- **Destructuring** = **D**estructive **E**xtraction (immutable)
+- **Shallow** = **S**urface **L**evel comparison
+- **Deep** = **D**eep **L**evel comparison (recursive)
+
 ```typescript
-// 1. Remove property từ object
-const user = {
-  id: 1,
-  name: 'John',
-  email: 'john@example.com',
-  password: 'secret',
-  role: 'admin'
-};
-
-// Method 1: delete operator
-delete user.password;
-console.log(user); // { id: 1, name: 'John', email: 'john@example.com', role: 'admin' }
-
-// Method 2: Destructuring + Rest (immutable)
-const { password, ...userWithoutPassword } = user;
-console.log(userWithoutPassword); // { id: 1, name: 'John', email: 'john@example.com', role: 'admin' }
-console.log(user); // Original object unchanged
-
-// Method 3: Omit function
-function omit(obj, ...keys) {
-  const result = { ...obj };
-  keys.forEach(key => delete result[key]);
-  return result;
+// 🎯 1. REMOVE PROPERTY TỪ OBJECT - MULTIPLE APPROACHES
+// 📋 Interface cho examples
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  preferences?: {
+    theme: string;
+    language: string;
+  };
 }
 
-const publicUser = omit(user, 'password', 'role');
-console.log(publicUser); // { id: 1, name: 'John', email: 'john@example.com' }
+// 🚀 1.1 MUTABLE APPROACHES - Thay đổi object gốc
+function mutableApproaches(): void {
+  console.log('🎯 Mutable Approaches:');
 
-// Method 4: Pick function (opposite of omit)
-function pick(obj, ...keys) {
-  return keys.reduce((result, key) => {
-    if (key in obj) {
-      result[key] = obj[key];
+  const user: User = {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+    password: 'secret123',
+    role: 'admin',
+    preferences: {
+      theme: 'dark',
+      language: 'en'
     }
+  };
+
+  // ❌ Method 1: delete operator - MUTABLE
+  const user1 = { ...user }; // Copy để không ảnh hưởng original
+  delete user1.password;
+  console.log('After delete:', user1);
+  // ✅ Pros: Simple, direct
+  // ❌ Cons: Mutates object, không type-safe
+
+  // ❌ Method 2: Setting to undefined - MUTABLE
+  const user2 = { ...user };
+  user2.password = undefined as any;
+  console.log('After undefined:', user2);
+  // ✅ Pros: Property still exists
+  // ❌ Cons: Property value is undefined, not removed
+
+  // ❌ Method 3: Using Object.assign - MUTABLE
+  const user3 = { ...user };
+  Object.assign(user3, { password: undefined });
+  console.log('After assign:', user3);
+}
+
+// 🚀 1.2 IMMUTABLE APPROACHES - Không thay đổi object gốc
+function immutableApproaches(): void {
+  console.log('🎯 Immutable Approaches:');
+
+  const user: User = {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+    password: 'secret123',
+    role: 'admin',
+    preferences: {
+      theme: 'dark',
+      language: 'en'
+    }
+  };
+
+  // ✅ Method 1: Destructuring + Rest - IMMUTABLE
+  const { password, ...userWithoutPassword } = user;
+  console.log('Destructuring result:', userWithoutPassword);
+  console.log('Original unchanged:', user);
+  // ✅ Pros: Immutable, type-safe, clean syntax
+  // ❌ Cons: Cần biết property name trước
+
+  // ✅ Method 2: Omit utility function - IMMUTABLE
+  function omit<T extends Record<string, any>, K extends keyof T>(
+    obj: T,
+    ...keys: K[]
+  ): Omit<T, K> {
+    const result = { ...obj };
+    keys.forEach(key => delete result[key]);
     return result;
-  }, {});
-}
-
-const basicUser = pick(user, 'id', 'name');
-console.log(basicUser); // { id: 1, name: 'John' }
-
-// Method 5: Using Object.fromEntries
-function removeProperties(obj, ...propsToRemove) {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([key]) => !propsToRemove.includes(key))
-  );
-}
-
-const filteredUser = removeProperties(user, 'password', 'role');
-
-// 2. So sánh objects
-// Shallow comparison
-function shallowEqual(obj1, obj2) {
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  if (keys1.length !== keys2.length) {
-    return false;
   }
 
-  for (let key of keys1) {
-    if (obj1[key] !== obj2[key]) {
+  const publicUser = omit(user, 'password', 'role');
+  console.log('Omit result:', publicUser);
+  // ✅ Pros: Reusable, type-safe, multiple properties
+  // ❌ Cons: Slightly more complex
+
+  // ✅ Method 3: Pick utility function - IMMUTABLE (opposite of omit)
+  function pick<T extends Record<string, any>, K extends keyof T>(
+    obj: T,
+    ...keys: K[]
+  ): Pick<T, K> {
+    return keys.reduce((result, key) => {
+      if (key in obj) {
+        result[key] = obj[key];
+      }
+      return result;
+    }, {} as Pick<T, K>);
+  }
+
+  const basicUser = pick(user, 'id', 'name', 'email');
+  console.log('Pick result:', basicUser);
+  // ✅ Pros: Select only needed properties
+  // ❌ Cons: Need to specify all wanted properties
+
+  // ✅ Method 4: Object.fromEntries + filter - IMMUTABLE
+  function removeProperties<T extends Record<string, any>>(
+    obj: T,
+    ...propsToRemove: (keyof T)[]
+  ): Partial<T> {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([key]) => !propsToRemove.includes(key as keyof T))
+    ) as Partial<T>;
+  }
+
+  const cleanUser = removeProperties(user, 'password', 'role');
+  console.log('Filter result:', cleanUser);
+  // ✅ Pros: Very flexible, functional approach
+  // ❌ Cons: Loses type information
+}
+
+// 🚀 1.3 ADVANCED UTILITY FUNCTIONS
+function advancedUtilities(): void {
+  console.log('🎯 Advanced Utilities:');
+
+  // 🎯 Generic omit with type safety
+  function safeOmit<T, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+    const result = { ...obj };
+    keys.forEach(key => delete result[key]);
+    return result;
+  }
+
+  // 🎯 Conditional omit based on predicate
+  function omitBy<T extends Record<string, any>>(
+    obj: T,
+    predicate: (value: any, key: string) => boolean
+  ): Partial<T> {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([key, value]) => !predicate(value, key))
+    ) as Partial<T>;
+  }
+
+  // 🎯 Remove nested properties
+  function omitNested<T extends Record<string, any>>(
+    obj: T,
+    path: string
+  ): T {
+    const keys = path.split('.');
+    const result = { ...obj };
+
+    if (keys.length === 1) {
+      delete result[keys[0]];
+      return result;
+    }
+
+    let current = result;
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (current[keys[i]] && typeof current[keys[i]] === 'object') {
+        current[keys[i]] = { ...current[keys[i]] };
+        current = current[keys[i]];
+      } else {
+        return result; // Path doesn't exist
+      }
+    }
+
+    delete current[keys[keys.length - 1]];
+    return result;
+  }
+
+  // 🧪 Usage examples
+  const user: User = {
+    id: 1,
+    name: 'John',
+    email: 'john@example.com',
+    password: 'secret',
+    role: 'admin',
+    preferences: {
+      theme: 'dark',
+      language: 'en'
+    }
+  };
+
+  // Remove multiple properties
+  const safeResult = safeOmit(user, ['password', 'role']);
+  console.log('Safe omit:', safeResult);
+
+  // Remove by condition
+  const noSecrets = omitBy(user, (value, key) =>
+    key.includes('password') || key.includes('secret')
+  );
+  console.log('No secrets:', noSecrets);
+
+  // Remove nested property
+  const noTheme = omitNested(user, 'preferences.theme');
+  console.log('No theme:', noTheme);
+}
+
+// 🎯 2. OBJECT COMPARISON - SHALLOW VS DEEP
+// 📋 Interface cho comparison examples
+interface ComparisonData {
+  id: number;
+  name: string;
+  details: {
+    age: number;
+    city: string;
+  };
+  tags: string[];
+}
+
+// 🚀 2.1 SHALLOW COMPARISON - So sánh 1 cấp
+function shallowComparison(): void {
+  console.log('🎯 Shallow Comparison:');
+
+  const obj1: ComparisonData = {
+    id: 1,
+    name: 'John',
+    details: { age: 30, city: 'NYC' },
+    tags: ['developer', 'react']
+  };
+
+  const obj2: ComparisonData = {
+    id: 1,
+    name: 'John',
+    details: { age: 30, city: 'NYC' },
+    tags: ['developer', 'react']
+  };
+
+  // ❌ Reference comparison - Always false for different objects
+  console.log('Reference equal:', obj1 === obj2); // false
+
+  // ✅ Shallow comparison function
+  function shallowEqual<T extends Record<string, any>>(obj1: T, obj2: T): boolean {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    // Different number of keys
+    if (keys1.length !== keys2.length) {
       return false;
     }
-  }
 
-  return true;
-}
+    // Check each key-value pair
+    for (let key of keys1) {
+      if (obj1[key] !== obj2[key]) {
+        return false;
+      }
+    }
 
-const obj1 = { a: 1, b: 2 };
-const obj2 = { a: 1, b: 2 };
-const obj3 = { a: 1, b: { c: 3 } };
-const obj4 = { a: 1, b: { c: 3 } };
-
-console.log(shallowEqual(obj1, obj2)); // true
-console.log(shallowEqual(obj3, obj4)); // false (different object references)
-
-// Deep comparison
-function deepEqual(obj1, obj2) {
-  if (obj1 === obj2) {
     return true;
   }
 
-  if (obj1 == null || obj2 == null) {
-    return false;
+  console.log('Shallow equal:', shallowEqual(obj1, obj2)); // true
+
+  // 🎯 Shallow comparison với different nested objects
+  const obj3: ComparisonData = {
+    id: 1,
+    name: 'John',
+    details: { age: 30, city: 'NYC' }, // Same content but different reference
+    tags: ['developer', 'react']
+  };
+
+  console.log('Shallow equal (different refs):', shallowEqual(obj1, obj3)); // true
+  console.log('Nested objects equal:', obj1.details === obj3.details); // false
+}
+
+// 🚀 2.2 DEEP COMPARISON - So sánh recursive
+function deepComparison(): void {
+  console.log('🎯 Deep Comparison:');
+
+  const obj1: ComparisonData = {
+    id: 1,
+    name: 'John',
+    details: { age: 30, city: 'NYC' },
+    tags: ['developer', 'react']
+  };
+
+  const obj2: ComparisonData = {
+    id: 1,
+    name: 'John',
+    details: { age: 30, city: 'NYC' },
+    tags: ['developer', 'react']
+  };
+
+  // ✅ Deep comparison function
+  function deepEqual(obj1: any, obj2: any): boolean {
+    // Same reference
+    if (obj1 === obj2) {
+      return true;
+    }
+
+    // One is null/undefined
+    if (obj1 == null || obj2 == null) {
+      return obj1 === obj2;
+    }
+
+    // Different types
+    if (typeof obj1 !== typeof obj2) {
+      return false;
+    }
+
+    // Primitive values
+    if (typeof obj1 !== 'object') {
+      return obj1 === obj2;
+    }
+
+    // Arrays
+    if (Array.isArray(obj1) && Array.isArray(obj2)) {
+      if (obj1.length !== obj2.length) {
+        return false;
+      }
+      return obj1.every((item, index) => deepEqual(item, obj2[index]));
+    }
+
+    // Objects
+    if (Array.isArray(obj1) || Array.isArray(obj2)) {
+      return false;
+    }
+
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+
+    return keys1.every(key => deepEqual(obj1[key], obj2[key]));
   }
 
-  if (typeof obj1 !== typeof obj2) {
-    return false;
-  }
+  console.log('Deep equal:', deepEqual(obj1, obj2)); // true
 
-  if (typeof obj1 !== 'object') {
-    return obj1 === obj2;
-  }
+  // 🎯 Deep comparison với different nested content
+  const obj3: ComparisonData = {
+    id: 1,
+    name: 'John',
+    details: { age: 31, city: 'NYC' }, // Different age
+    tags: ['developer', 'react']
+  };
 
-  if (Array.isArray(obj1) !== Array.isArray(obj2)) {
-    return false;
-  }
+  console.log('Deep equal (different content):', deepEqual(obj1, obj3)); // false
+}
 
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
+// 🎯 3. COMPARISON TABLE & USAGE GUIDE
+function comparisonTable(): JSX.Element {
+  return (
+    <div>
+      <h3>📊 Property Removal Methods Comparison</h3>
 
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Mutability</th>
+            <th>Type Safety</th>
+            <th>Performance</th>
+            <th>Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>delete</code></td>
+            <td>❌ Mutable</td>
+            <td>❌ No</td>
+            <td>⚡ Fast</td>
+            <td>Quick fixes, legacy code</td>
+          </tr>
+          <tr>
+            <td><code>destructuring</code></td>
+            <td>✅ Immutable</td>
+            <td>✅ Yes</td>
+            <td>⚡ Fast</td>
+            <td>Single property removal</td>
+          </tr>
+          <tr>
+            <td><code>omit()</code></td>
+            <td>✅ Immutable</td>
+            <td>✅ Yes</td>
+            <td>⚡ Fast</td>
+            <td>Multiple properties</td>
+          </tr>
+          <tr>
+            <td><code>pick()</code></td>
+            <td>✅ Immutable</td>
+            <td>✅ Yes</td>
+            <td>⚡ Fast</td>
+            <td>Select specific properties</td>
+          </tr>
+        </tbody>
+      </table>
 
-  for (let key of keys1) {
-    if (!keys2.includes(key)) {
+      <h3>🎯 Khi nào dùng phương pháp nào?</h3>
+
+      <div>
+        <h4>✅ Property Removal:</h4>
+        <ul>
+          <li>🔧 <strong>delete operator</strong>: Legacy code, quick fixes</li>
+          <li>🎯 <strong>destructuring</strong>: Single property, immutable updates</li>
+          <li>📦 <strong>omit()</strong>: Multiple properties, utility functions</li>
+          <li>🎨 <strong>pick()</strong>: Select specific properties, API responses</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Object Comparison:</h4>
+        <ul>
+          <li>⚡ <strong>===</strong>: Same reference, performance critical</li>
+          <li>🎯 <strong>shallowEqual()</strong>: Simple objects, React props</li>
+          <li>🔍 <strong>deepEqual()</strong>: Complex objects, testing</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Best Practices:</h4>
+        <ul>
+          <li>🎯 Prefer immutable approaches cho data integrity</li>
+          <li>⚡ Use shallow comparison khi possible cho performance</li>
+          <li>🔧 Use TypeScript cho type safety</li>
+          <li>🧪 Test comparison functions thoroughly</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+```
+
+**🎯 TÓM TẮT:**
+- **Property Removal**: Use destructuring/omit cho immutable updates
+- **Object Comparison**: Use shallowEqual cho simple objects, deepEqual cho complex
+- **Performance**: shallow > deep, immutable > mutable
+- **Type Safety**: Always prefer TypeScript approaches
       return false;
     }
 
@@ -2180,41 +3373,376 @@ console.log(restored); // Original nested structure
 
 **Trả lời:**
 
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **Loop performance** ảnh hưởng trực tiếp đến **user experience**
+- **Browser rendering** (Paint, Repaint, Reflow) là core của web performance
+- Hiểu **optimization techniques** giúp build fast applications
+- **Critical** cho large datasets và real-time applications
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **Paint**: Vẽ pixels lên screen
+- **Repaint**: Vẽ lại khi style thay đổi (color, background)
+- **Reflow**: Recalculate layout khi structure thay đổi
+- **Loop optimization**: Chọn đúng loop type cho từng use case
+
+**🧠 GHI NHỚ:**
+- **for loop** = Fastest, **forEach** = Slowest
+- **Reflow** > **Repaint** > **Paint** (cost order)
+- **Batch DOM updates** để tránh multiple reflows
+- **Use requestAnimationFrame** cho smooth animations
+
 ```typescript
-// 1. Loop Performance Comparison
-const data = Array.from({ length: 100000 }, (_, i) => i);
+// 🎯 1. LOOP PERFORMANCE COMPARISON
+import { performance } from 'perf_hooks';
 
-// for loop - Fastest
-console.time('for loop');
-let sum1 = 0;
-for (let i = 0; i < data.length; i++) {
-  sum1 += data[i];
+// 📋 Interface cho performance test
+interface PerformanceTest {
+  name: string;
+  time: number;
+  memory: number;
 }
-console.timeEnd('for loop');
 
-// for...of - Good performance
-console.time('for...of');
-let sum2 = 0;
-for (const item of data) {
-  sum2 += item;
+// 🎯 Test data - Large array để test performance
+const testData = Array.from({ length: 1000000 }, (_, i) => ({
+  id: i,
+  value: Math.random() * 1000,
+  name: `Item ${i}`,
+  category: i % 10 === 0 ? 'special' : 'normal'
+}));
+
+// 🎯 1. FOR LOOP - FASTEST
+function testForLoop(data: typeof testData): PerformanceTest {
+  const startTime = performance.now();
+  const startMemory = process.memoryUsage().heapUsed;
+
+  let sum = 0;
+  let count = 0;
+
+  // 🚀 Traditional for loop - fastest
+  for (let i = 0; i < data.length; i++) {
+    sum += data[i].value;
+    if (data[i].category === 'special') {
+      count++;
+    }
+  }
+
+  const endTime = performance.now();
+  const endMemory = process.memoryUsage().heapUsed;
+
+  console.log(`🔢 For loop: ${sum}, Special items: ${count}`);
+
+  return {
+    name: 'For Loop',
+    time: endTime - startTime,
+    memory: endMemory - startMemory
+  };
 }
-console.timeEnd('for...of');
 
-// forEach - Slower due to function calls
-console.time('forEach');
-let sum3 = 0;
-data.forEach(item => {
-  sum3 += item;
-});
-console.timeEnd('forEach');
+// 🎯 2. FOR...OF LOOP - GOOD PERFORMANCE
+function testForOfLoop(data: typeof testData): PerformanceTest {
+  const startTime = performance.now();
+  const startMemory = process.memoryUsage().heapUsed;
 
-// for...in - Slowest (don't use for arrays)
-console.time('for...in');
-let sum4 = 0;
-for (const index in data) {
-  sum4 += data[index];
+  let sum = 0;
+  let count = 0;
+
+  // 🚀 For...of loop - good performance, readable
+  for (const item of data) {
+    sum += item.value;
+    if (item.category === 'special') {
+      count++;
+    }
+  }
+
+  const endTime = performance.now();
+  const endMemory = process.memoryUsage().heapUsed;
+
+  console.log(`🔄 For...of: ${sum}, Special items: ${count}`);
+
+  return {
+    name: 'For...of Loop',
+    time: endTime - startTime,
+    memory: endMemory - startMemory
+  };
 }
-console.timeEnd('for...in');
+
+// 🎯 3. FOREACH - SLOWER DUE TO FUNCTION CALLS
+function testForEachLoop(data: typeof testData): PerformanceTest {
+  const startTime = performance.now();
+  const startMemory = process.memoryUsage().heapUsed;
+
+  let sum = 0;
+  let count = 0;
+
+  // 🚀 forEach - slower due to function call overhead
+  data.forEach(item => {
+    sum += item.value;
+    if (item.category === 'special') {
+      count++;
+    }
+  });
+
+  const endTime = performance.now();
+  const endMemory = process.memoryUsage().heapUsed;
+
+  console.log(`📋 forEach: ${sum}, Special items: ${count}`);
+
+  return {
+    name: 'forEach Loop',
+    time: endTime - startTime,
+    memory: endMemory - startMemory
+  };
+}
+
+// 🎯 4. MAP/FILTER/REDUCE - FUNCTIONAL APPROACH
+function testFunctionalLoops(data: typeof testData): PerformanceTest {
+  const startTime = performance.now();
+  const startMemory = process.memoryUsage().heapUsed;
+
+  // 🚀 Functional approach - readable but slower
+  const sum = data.reduce((acc, item) => acc + item.value, 0);
+  const count = data.filter(item => item.category === 'special').length;
+
+  const endTime = performance.now();
+  const endMemory = process.memoryUsage().heapUsed;
+
+  console.log(`⚡ Functional: ${sum}, Special items: ${count}`);
+
+  return {
+    name: 'Functional (map/filter/reduce)',
+    time: endTime - startTime,
+    memory: endMemory - startMemory
+  };
+}
+
+// 🎯 5. BROWSER RENDERING OPTIMIZATION
+class RenderingOptimizer {
+  private element: HTMLElement;
+  private items: Array<{ id: number; text: string; color: string }> = [];
+
+  constructor(element: HTMLElement) {
+    this.element = element;
+  }
+
+  // ❌❌❌ BAD - Causes multiple reflows
+  badRender(items: Array<{ id: number; text: string; color: string }>): void {
+    console.log('❌ Bad rendering - multiple reflows');
+
+    items.forEach(item => {
+      const div = document.createElement('div');
+      div.textContent = item.text;
+      div.style.color = item.color;
+      div.style.padding = '10px';
+      div.style.margin = '5px';
+      div.style.border = '1px solid #ccc';
+
+      // 🚨 Each appendChild causes reflow
+      this.element.appendChild(div);
+    });
+  }
+
+  // ✅✅✅ GOOD - Batch DOM updates
+  goodRender(items: Array<{ id: number; text: string; color: string }>): void {
+    console.log('✅ Good rendering - single reflow');
+
+    // 🚀 Create document fragment để batch updates
+    const fragment = document.createDocumentFragment();
+
+    items.forEach(item => {
+      const div = document.createElement('div');
+      div.textContent = item.text;
+      div.style.color = item.color;
+      div.style.padding = '10px';
+      div.style.margin = '5px';
+      div.style.border = '1px solid #ccc';
+
+      // 🚀 Add to fragment (no reflow yet)
+      fragment.appendChild(div);
+    });
+
+    // 🚀 Single appendChild - only one reflow
+    this.element.appendChild(fragment);
+  }
+
+  // 🎯 6. PAINT OPTIMIZATION
+  optimizePaint(): void {
+    // ✅ Use transform instead of changing position
+    const element = this.element.querySelector('.animated') as HTMLElement;
+
+    if (element) {
+      // ❌ Bad - causes reflow
+      // element.style.left = '100px';
+      // element.style.top = '100px';
+
+      // ✅ Good - uses composite layer
+      element.style.transform = 'translate(100px, 100px)';
+    }
+  }
+
+  // 🎯 7. REQUESTANIMATIONFRAME OPTIMIZATION
+  animateWithRAF(callback: () => void): void {
+    const animate = (): void => {
+      callback();
+      requestAnimationFrame(animate);
+    };
+
+    requestAnimationFrame(animate);
+  }
+
+  // 🎯 8. DEBOUNCE SCROLL EVENTS
+  debounceScroll(callback: () => void, delay: number = 16): () => void {
+    let timeoutId: number;
+
+    return (): void => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(callback, delay);
+    };
+  }
+}
+
+// 🎯 9. PERFORMANCE MONITORING
+class PerformanceMonitor {
+  private metrics: PerformanceTest[] = [];
+
+  addMetric(metric: PerformanceTest): void {
+    this.metrics.push(metric);
+  }
+
+  getResults(): PerformanceTest[] {
+    return this.metrics.sort((a, b) => a.time - b.time);
+  }
+
+  printResults(): void {
+    console.log('\n📊 Performance Results:');
+    console.log('========================');
+
+    this.metrics.forEach(metric => {
+      console.log(`${metric.name}: ${metric.time.toFixed(2)}ms, ${metric.memory} bytes`);
+    });
+  }
+}
+
+// 🎯 10. USAGE EXAMPLES
+function runPerformanceTests(): void {
+  const monitor = new PerformanceMonitor();
+
+  console.log('🚀 Running performance tests...\n');
+
+  // 🧪 Test all loop types
+  monitor.addMetric(testForLoop(testData));
+  monitor.addMetric(testForOfLoop(testData));
+  monitor.addMetric(testForEachLoop(testData));
+  monitor.addMetric(testFunctionalLoops(testData));
+
+  // 📊 Print results
+  monitor.printResults();
+
+  // 🎯 Recommendations
+  console.log('\n💡 Recommendations:');
+  console.log('✅ Use for loops for maximum performance');
+  console.log('✅ Use for...of for readability with good performance');
+  console.log('⚠️ Avoid forEach for large datasets');
+  console.log('⚠️ Use functional methods sparingly for performance-critical code');
+}
+
+// 🎯 11. REACT PERFORMANCE OPTIMIZATION
+function ReactPerformanceExample(): JSX.Element {
+  const [items, setItems] = useState<Array<{ id: number; text: string }>>([]);
+  const [filter, setFilter] = useState<string>('');
+
+  // 🚀 Memoized filtered items
+  const filteredItems = useMemo(() => {
+    console.log('🔍 Filtering items...');
+
+    if (!filter.trim()) return items;
+
+    // ✅ Use for...of for good performance
+    const result: Array<{ id: number; text: string }> = [];
+    for (const item of items) {
+      if (item.text.toLowerCase().includes(filter.toLowerCase())) {
+        result.push(item);
+      }
+    }
+
+    return result;
+  }, [items, filter]);
+
+  // 🚀 Memoized component
+  const ItemComponent = memo<{ item: { id: number; text: string } }>(({ item }) => {
+    return (
+      <div className="item">
+        <span>{item.text}</span>
+      </div>
+    );
+  });
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        placeholder="Filter items..."
+      />
+
+      <div className="items-list">
+        {filteredItems.map(item => (
+          <ItemComponent key={item.id} item={item} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// 🎯 12. WHEN TO USE WHICH LOOP?
+function LoopDecisionGuide(): JSX.Element {
+  return (
+    <div>
+      <h3>🎯 Khi nào dùng loop nào?</h3>
+
+      <div>
+        <h4>✅ Dùng for loop khi:</h4>
+        <ul>
+          <li>🚀 Maximum performance cần thiết</li>
+          <li>📊 Large datasets (>10,000 items)</li>
+          <li>⏱️ Real-time applications</li>
+          <li>🎯 Simple iterations</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng for...of khi:</h4>
+        <ul>
+          <li>📖 Readability quan trọng</li>
+          <li>🔄 Iterating over arrays/objects</li>
+          <li>⚡ Good performance cần thiết</li>
+          <li>🎯 Modern JavaScript code</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng forEach khi:</h4>
+        <ul>
+          <li>📝 Side effects cần thiết</li>
+          <li>🔧 Small datasets (<1,000 items)</li>
+          <li>🎨 Functional programming style</li>
+          <li>📚 Code readability quan trọng hơn performance</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng map/filter/reduce khi:</h4>
+        <ul>
+          <li>🔄 Data transformation</li>
+          <li>📊 Functional programming</li>
+          <li>🎯 Immutable data patterns</li>
+          <li>📝 Code clarity quan trọng</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+```
 
 // Performance ranking: for > for...of > forEach > for...in
 
@@ -2462,50 +3990,338 @@ const virtualList = new VirtualList(document.getElementById('list'), items);
 
 **Trả lời:**
 
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **Axios Interceptors** là middleware pattern cho HTTP requests
+- **Error Handling** là critical skill cho production applications
+- **Centralized logic** cho authentication, logging, retry mechanisms
+- **Essential** cho building robust, maintainable applications
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **Interceptors**: Middleware functions chạy trước/sau requests
+- **Request Interceptor**: Modify requests trước khi gửi
+- **Response Interceptor**: Handle responses và errors
+- **Error Handling**: Graceful degradation và user experience
+
+**🧠 GHI NHỚ:**
+- **Request Interceptor** = Pre-processing (auth, headers, logging)
+- **Response Interceptor** = Post-processing (error handling, data transformation)
+- **Error Interceptor** = Centralized error management
+- **Retry Logic** = Resilience cho network failures
+
 ```typescript
-// 1. Basic Axios Interceptors
-import axios from 'axios';
+// 🎯 1. AXIOS INTERCEPTORS - COMPLETE IMPLEMENTATION
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
-// Request Interceptor
-axios.interceptors.request.use(
-  (config) => {
-    // Add auth token
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+// 📋 Interface cho error types
+interface ApiError {
+  message: string;
+  status: number;
+  code: string;
+  timestamp: string;
+  path: string;
+}
 
-    // Add request timestamp
-    config.metadata = { startTime: new Date() };
+// 🎯 2. REQUEST INTERCEPTOR - PRE-PROCESSING
+class RequestInterceptor {
+  private static instance: RequestInterceptor;
+  private axiosInstance: AxiosInstance;
 
-    console.log('Request sent:', config);
-    return config;
-  },
-  (error) => {
-    console.error('Request error:', error);
-    return Promise.reject(error);
+  private constructor() {
+    this.axiosInstance = axios.create({
+      baseURL: process.env.REACT_APP_API_URL || 'https://api.example.com',
+      timeout: 10000,
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    this.setupInterceptors();
   }
-);
 
-// Response Interceptor
-axios.interceptors.response.use(
-  (response) => {
-    // Calculate request duration
-    const endTime = new Date();
-    const duration = endTime - response.config.metadata.startTime;
-    console.log(`Request took ${duration}ms`);
+  static getInstance(): RequestInterceptor {
+    if (!RequestInterceptor.instance) {
+      RequestInterceptor.instance = new RequestInterceptor();
+    }
+    return RequestInterceptor.instance;
+  }
 
-    return response;
-  },
-  (error) => {
-    // Handle common errors
-    if (error.response?.status === 401) {
-      // Redirect to login
-      localStorage.removeItem('authToken');
-      window.location.href = '/login';
+  private setupInterceptors(): void {
+    // 🚀 Request Interceptor - Chạy trước mỗi request
+    this.axiosInstance.interceptors.request.use(
+      (config: AxiosRequestConfig) => {
+        console.log('🚀 Request Interceptor:', config.method?.toUpperCase(), config.url);
+
+        // 🔐 Add authentication token
+        const token = this.getAuthToken();
+        if (token) {
+          config.headers = {
+            ...config.headers,
+            'Authorization': `Bearer ${token}`
+          };
+        }
+
+        // 📊 Add request ID for tracking
+        config.headers = {
+          ...config.headers,
+          'X-Request-ID': this.generateRequestId()
+        };
+
+        // ⏱️ Add timestamp
+        config.metadata = {
+          ...config.metadata,
+          startTime: Date.now()
+        };
+
+        return config;
+      },
+      (error: AxiosError) => {
+        console.error('❌ Request Interceptor Error:', error);
+        return Promise.reject(error);
+      }
+    );
+
+    // 🚀 Response Interceptor - Chạy sau mỗi response
+    this.axiosInstance.interceptors.response.use(
+      (response: AxiosResponse) => {
+        console.log('✅ Response Interceptor:', response.status, response.config.url);
+
+        // ⏱️ Calculate request duration
+        const duration = Date.now() - (response.config.metadata?.startTime || 0);
+        console.log(`⏱️ Request duration: ${duration}ms`);
+
+        return response;
+      },
+      (error: AxiosError) => {
+        console.error('❌ Response Interceptor Error:', error);
+
+        // 🔄 Handle different error types
+        return this.handleError(error);
+      }
+    );
+  }
+
+  // 🎯 3. AUTHENTICATION MANAGEMENT
+  private getAuthToken(): string | null {
+    try {
+      // 🚀 Get token from localStorage
+      const token = localStorage.getItem('auth_token');
+
+      if (!token) return null;
+
+      // 🔍 Check if token is expired
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const isExpired = Date.now() >= payload.exp * 1000;
+
+      if (isExpired) {
+        console.warn('⚠️ Token expired, removing...');
+        localStorage.removeItem('auth_token');
+        return null;
+      }
+
+      return token;
+    } catch (error) {
+      console.error('❌ Error parsing token:', error);
+      return null;
+    }
+  }
+
+  // 🎯 4. ERROR HANDLING STRATEGIES
+  private handleError(error: AxiosError): Promise<never> {
+    const apiError: ApiError = {
+      message: error.message || 'Unknown error occurred',
+      status: error.response?.status || 0,
+      code: error.code || 'UNKNOWN',
+      timestamp: new Date().toISOString(),
+      path: error.config?.url || 'unknown'
+    };
+
+    // 🔄 Handle different error types
+    switch (error.response?.status) {
+      case 401:
+        console.warn('🔒 Unauthorized - redirecting to login');
+        this.handleUnauthorized();
+        break;
+
+      case 403:
+        console.warn('🚫 Forbidden - insufficient permissions');
+        this.handleForbidden();
+        break;
+
+      case 404:
+        console.warn('🔍 Not Found - resource not available');
+        this.handleNotFound();
+        break;
+
+      case 429:
+        console.warn('⏱️ Rate Limited - too many requests');
+        this.handleRateLimit();
+        break;
+
+      case 500:
+        console.error('💥 Server Error - internal server error');
+        this.handleServerError();
+        break;
+
+      default:
+        console.error('❌ Unknown Error:', apiError);
+        this.handleGenericError(apiError);
     }
 
-    return Promise.reject(error);
+    return Promise.reject(apiError);
+  }
+
+  // 🎯 5. UTILITY METHODS
+  private generateRequestId(): string {
+    return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  private handleUnauthorized(): void {
+    // 🚀 Clear auth data
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_data');
+
+    // 🔄 Redirect to login
+    window.location.href = '/login';
+  }
+
+  private handleForbidden(): void {
+    // 🚫 Show permission denied message
+    this.showNotification('Permission denied', 'error');
+  }
+
+  private handleNotFound(): void {
+    // 🔍 Show not found message
+    this.showNotification('Resource not found', 'warning');
+  }
+
+  private handleRateLimit(): void {
+    // ⏱️ Show rate limit message
+    this.showNotification('Too many requests, please try again later', 'warning');
+  }
+
+  private handleServerError(): void {
+    // 💥 Show server error message
+    this.showNotification('Server error, please try again later', 'error');
+  }
+
+  private handleGenericError(error: ApiError): void {
+    // ❌ Show generic error message
+    this.showNotification(error.message, 'error');
+  }
+
+  private showNotification(message: string, type: 'success' | 'error' | 'warning'): void {
+    // 🚀 Show notification (implement based on your UI library)
+    console.log(`📢 ${type.toUpperCase()}: ${message}`);
+
+    // Example with a simple alert (replace with your notification system)
+    if (type === 'error') {
+      alert(`Error: ${message}`);
+    }
+  }
+
+  // 🎯 6. PUBLIC API METHODS
+  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.axiosInstance.get<T>(url, config);
+    return response.data;
+  }
+
+  public async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.axiosInstance.post<T>(url, data, config);
+    return response.data;
+  }
+
+  public async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.axiosInstance.put<T>(url, data, config);
+    return response.data;
+  }
+
+  public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.axiosInstance.delete<T>(url, config);
+    return response.data;
+  }
+}
+
+// 🎯 7. USAGE EXAMPLES
+class ApiService {
+  private httpClient: RequestInterceptor;
+
+  constructor() {
+    this.httpClient = RequestInterceptor.getInstance();
+  }
+
+  // 🚀 Get user data
+  async getUserData(userId: string): Promise<User> {
+    try {
+      return await this.httpClient.get<User>(`/users/${userId}`);
+    } catch (error) {
+      console.error('Failed to get user data:', error);
+      throw error;
+    }
+  }
+
+  // 🚀 Create new user
+  async createUser(userData: CreateUserRequest): Promise<User> {
+    try {
+      return await this.httpClient.post<User>('/users', userData);
+    } catch (error) {
+      console.error('Failed to create user:', error);
+      throw error;
+    }
+  }
+}
+
+// 🎯 8. WHEN TO USE AXIOS INTERCEPTORS?
+function InterceptorUsageGuide(): JSX.Element {
+  return (
+    <div>
+      <h3>🎯 Khi nào dùng Axios Interceptors?</h3>
+
+      <div>
+        <h4>✅ Dùng Request Interceptors khi:</h4>
+        <ul>
+          <li>🔐 Authentication cần add token tự động</li>
+          <li>📊 Logging requests cho debugging</li>
+          <li>🔄 Transform request data trước khi gửi</li>
+          <li>⏱️ Add timestamps hoặc request IDs</li>
+          <li>📝 Add common headers cho tất cả requests</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng Response Interceptors khi:</h4>
+        <ul>
+          <li>❌ Centralized error handling</li>
+          <li>🔄 Auto-retry failed requests</li>
+          <li>📊 Logging responses cho monitoring</li>
+          <li>🔄 Transform response data</li>
+          <li>🔐 Handle token refresh automatically</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng Error Handling khi:</h4>
+        <ul>
+          <li>🚫 Handle 401/403 errors globally</li>
+          <li>⏱️ Handle rate limiting (429)</li>
+          <li>💥 Handle server errors (5xx)</li>
+          <li>🔄 Implement retry logic</li>
+          <li>📢 Show user-friendly error messages</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>❌ Tránh khi:</h4>
+        <ul>
+          <li>🔧 Simple applications với ít API calls</li>
+          <li>⚡ Performance-critical code</li>
+          <li>🎯 One-off requests không cần common logic</li>
+          <li>📱 Mobile apps với limited network</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+```
   }
 );
 
@@ -2884,37 +4700,454 @@ async function fetchUserData(userId) {
 
 **Trả lời:**
 
-```typescript
-// 1. Strict Mode trong JavaScript
-'use strict'; // Global strict mode
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **Strict Mode** là JavaScript's way để catch common mistakes
+- **JavaScript Classes** là modern approach cho OOP trong JS
+- **Essential** cho writing robust, maintainable code
+- **Critical** cho understanding modern JavaScript development
 
-function normalFunction() {
-  // Non-strict mode behavior
-  undeclaredVar = 10; // Creates global variable
-  return undeclaredVar;
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **Strict Mode**: Restrictive variant của JavaScript với stricter error checking
+- **Classes**: Syntactic sugar over JavaScript's prototype-based inheritance
+- **Both** help write better, more predictable code
+- **Modern JavaScript** relies heavily on both concepts
+
+**🧠 GHI NHỚ:**
+- **Strict Mode** = "use strict" directive
+- **Classes** = Constructor functions + prototype + syntax sugar
+- **Strict Mode** catches errors early, prevents common mistakes
+- **Classes** provide cleaner OOP syntax
+
+```typescript
+// 🎯 1. STRICT MODE - COMPLETE IMPLEMENTATION
+'use strict'; // Global strict mode - affects entire script
+
+// 📋 Interface cho demonstration
+interface UserData {
+  name: string;
+  age: number;
+  email: string;
 }
 
-function strictFunction() {
-  'use strict'; // Function-level strict mode
+// 🎯 2. STRICT MODE BEHAVIORS
+class StrictModeDemo {
+  private data: UserData;
 
-  // undeclaredVar = 10; // ReferenceError in strict mode
+  constructor(data: UserData) {
+    this.data = data;
+  }
 
-  // Other strict mode changes:
+  // 🚀 Strict mode prevents common mistakes
+  demonstrateStrictMode(): void {
+    console.log('🎯 Strict Mode Demonstrations:');
 
-  // 1. 'this' is undefined in functions (not window)
-  console.log(this); // undefined
+    // ❌ 1. Undeclared variables throw ReferenceError
+    try {
+      // undeclaredVar = 10; // ReferenceError in strict mode
+      console.log('✅ Undeclared variables are caught');
+    } catch (error) {
+      console.error('❌ ReferenceError:', error);
+    }
 
-  // 2. Can't delete variables, functions, or arguments
-  var x = 10;
-  // delete x; // SyntaxError
+    // ❌ 2. 'this' is undefined in functions (not window)
+    function strictFunction(): void {
+      console.log('this in strict function:', this); // undefined
+    }
+    strictFunction();
 
-  // 3. Duplicate parameter names not allowed
-  // function duplicate(a, a) {} // SyntaxError
+    // ❌ 3. Can't delete variables, functions, or arguments
+    const x = 10;
+    // delete x; // SyntaxError in strict mode
+    console.log('✅ Cannot delete variables');
 
-  // 4. Octal literals not allowed
-  // var octal = 077; // SyntaxError
+    // ❌ 4. Duplicate parameter names not allowed
+    // function duplicate(a: number, a: number) {} // SyntaxError
+    console.log('✅ Duplicate parameters not allowed');
 
-  // 5. Can't assign to read-only properties
+    // ❌ 5. Octal literals not allowed
+    // const octal = 010; // SyntaxError in strict mode
+    console.log('✅ Octal literals not allowed');
+
+    // ❌ 6. 'eval' and 'arguments' can't be used as variable names
+    // const eval = 10; // SyntaxError
+    // const arguments = 10; // SyntaxError
+    console.log('✅ eval and arguments are reserved');
+
+    // ❌ 7. 'with' statement not allowed
+    // with (obj) { } // SyntaxError
+    console.log('✅ with statement not allowed');
+  }
+
+  // 🎯 3. STRICT MODE BENEFITS
+  demonstrateBenefits(): void {
+    console.log('\n💡 Strict Mode Benefits:');
+
+    // ✅ 1. Prevents accidental globals
+    function createLocalVar(): void {
+      const localVar = 'I am local';
+      console.log('✅ Local variable created safely:', localVar);
+    }
+    createLocalVar();
+
+    // ✅ 2. Makes 'this' behavior predictable
+    const obj = {
+      name: 'Test Object',
+      getName: function(): string {
+        return this.name; // 'this' refers to obj
+      },
+      getThisInStrict: function(): any {
+        'use strict';
+        return this; // 'this' is undefined in strict mode
+      }
+    };
+
+    console.log('✅ Object method this:', obj.getName());
+    console.log('✅ Strict function this:', obj.getThisInStrict());
+
+    // ✅ 3. Prevents duplicate property names
+    const user = {
+      name: 'John',
+      age: 30
+      // name: 'Jane' // SyntaxError in strict mode
+    };
+    console.log('✅ No duplicate properties allowed');
+
+    // ✅ 4. Makes eval() safer
+    const evalCode = 'var evalVar = "safe";';
+    eval(evalCode);
+    // console.log(evalVar); // ReferenceError - eval doesn't leak to outer scope
+    console.log('✅ eval() is safer in strict mode');
+  }
+}
+
+// 🎯 4. JAVASCRIPT CLASSES - COMPLETE IMPLEMENTATION
+// 📋 Base interface
+interface AnimalInterface {
+  name: string;
+  age: number;
+  makeSound(): string;
+  move(): string;
+}
+
+// 🎯 5. BASE CLASS
+abstract class Animal implements AnimalInterface {
+  protected name: string;
+  protected age: number;
+  protected static speciesCount: number = 0;
+
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+    Animal.speciesCount++;
+  }
+
+  // 🚀 Abstract method - must be implemented by subclasses
+  abstract makeSound(): string;
+
+  // 🚀 Concrete method - shared by all subclasses
+  move(): string {
+    return `${this.name} is moving`;
+  }
+
+  // 🚀 Getter
+  get info(): string {
+    return `${this.name} is ${this.age} years old`;
+  }
+
+  // 🚀 Setter
+  set newAge(age: number) {
+    if (age < 0) {
+      throw new Error('Age cannot be negative');
+    }
+    this.age = age;
+  }
+
+  // 🚀 Static method
+  static getSpeciesCount(): number {
+    return Animal.speciesCount;
+  }
+
+  // 🚀 Private method (ES2022)
+  #privateMethod(): string {
+    return 'This is private';
+  }
+
+  // 🚀 Public method that uses private method
+  publicMethod(): string {
+    return this.#privateMethod();
+  }
+}
+
+// 🎯 6. INHERITANCE - DOG CLASS
+class Dog extends Animal {
+  private breed: string;
+  private isTrained: boolean;
+
+  constructor(name: string, age: number, breed: string, isTrained: boolean = false) {
+    super(name, age); // Call parent constructor
+    this.breed = breed;
+    this.isTrained = isTrained;
+  }
+
+  // 🚀 Implement abstract method
+  makeSound(): string {
+    return `${this.name} barks: Woof! Woof!`;
+  }
+
+  // 🚀 Override parent method
+  move(): string {
+    return `${this.name} runs around the yard`;
+  }
+
+  // 🚀 Dog-specific methods
+  fetch(): string {
+    return `${this.name} fetches the ball`;
+  }
+
+  sit(): string {
+    if (this.isTrained) {
+      return `${this.name} sits down`;
+    }
+    return `${this.name} doesn't know how to sit yet`;
+  }
+
+  // 🚀 Getter for breed
+  get dogBreed(): string {
+    return this.breed;
+  }
+
+  // 🚀 Method to train the dog
+  train(): void {
+    this.isTrained = true;
+    console.log(`${this.name} has been trained!`);
+  }
+}
+
+// 🎯 7. INHERITANCE - CAT CLASS
+class Cat extends Animal {
+  private color: string;
+  private isIndoor: boolean;
+
+  constructor(name: string, age: number, color: string, isIndoor: boolean = true) {
+    super(name, age);
+    this.color = color;
+    this.isIndoor = isIndoor;
+  }
+
+  // 🚀 Implement abstract method
+  makeSound(): string {
+    return `${this.name} meows: Meow! Meow!`;
+  }
+
+  // 🚀 Override parent method
+  move(): string {
+    return `${this.name} silently walks around`;
+  }
+
+  // 🚀 Cat-specific methods
+  purr(): string {
+    return `${this.name} purrs contentedly`;
+  }
+
+  climb(): string {
+    return `${this.name} climbs up the tree`;
+  }
+
+  // 🚀 Getter for color
+  get catColor(): string {
+    return this.color;
+  }
+}
+
+// 🎯 8. MIXINS - REUSABLE FUNCTIONALITY
+interface Flyable {
+  fly(): string;
+  altitude: number;
+}
+
+interface Swimmable {
+  swim(): string;
+  depth: number;
+}
+
+// 🎯 9. MIXIN IMPLEMENTATION
+class FlyingMixin {
+  altitude: number = 0;
+
+  fly(): string {
+    this.altitude += 100;
+    return `Flying at altitude ${this.altitude}m`;
+  }
+}
+
+class SwimmingMixin {
+  depth: number = 0;
+
+  swim(): string {
+    this.depth += 10;
+    return `Swimming at depth ${this.depth}m`;
+  }
+}
+
+// 🎯 10. DUCK CLASS WITH MIXINS
+class Duck extends Animal {
+  private canFly: boolean;
+  private canSwim: boolean;
+
+  constructor(name: string, age: number, canFly: boolean = true, canSwim: boolean = true) {
+    super(name, age);
+    this.canFly = canFly;
+    this.canSwim = canSwim;
+  }
+
+  makeSound(): string {
+    return `${this.name} quacks: Quack! Quack!`;
+  }
+
+  move(): string {
+    return `${this.name} waddles around`;
+  }
+
+  // 🚀 Duck-specific methods
+  quack(): string {
+    return `${this.name} quacks loudly`;
+  }
+
+  // 🚀 Conditional flying
+  tryFly(): string {
+    if (this.canFly) {
+      return `${this.name} flies away`;
+    }
+    return `${this.name} cannot fly`;
+  }
+
+  // 🚀 Conditional swimming
+  trySwim(): string {
+    if (this.canSwim) {
+      return `${this.name} swims in the pond`;
+    }
+    return `${this.name} cannot swim`;
+  }
+}
+
+// 🎯 11. USAGE EXAMPLES
+function demonstrateClasses(): void {
+  console.log('\n🎯 Class Demonstrations:');
+
+  // 🚀 Create animals
+  const dog = new Dog('Buddy', 3, 'Golden Retriever', false);
+  const cat = new Cat('Whiskers', 2, 'Orange', true);
+  const duck = new Duck('Donald', 1, true, true);
+
+  // 🚀 Demonstrate polymorphism
+  const animals: Animal[] = [dog, cat, duck];
+
+  animals.forEach(animal => {
+    console.log(animal.info);
+    console.log(animal.makeSound());
+    console.log(animal.move());
+    console.log('---');
+  });
+
+  // 🚀 Demonstrate specific methods
+  console.log('Dog specific:');
+  console.log(dog.fetch());
+  console.log(dog.sit());
+  dog.train();
+  console.log(dog.sit());
+
+  console.log('\nCat specific:');
+  console.log(cat.purr());
+  console.log(cat.climb());
+
+  console.log('\nDuck specific:');
+  console.log(duck.quack());
+  console.log(duck.tryFly());
+  console.log(duck.trySwim());
+
+  // 🚀 Demonstrate static methods
+  console.log(`\nTotal animals created: ${Animal.getSpeciesCount()}`);
+
+  // 🚀 Demonstrate getters and setters
+  console.log(`Dog breed: ${dog.dogBreed}`);
+  console.log(`Cat color: ${cat.catColor}`);
+
+  dog.newAge = 4;
+  console.log(`Dog's new age: ${dog.info}`);
+}
+
+// 🎯 12. WHEN TO USE STRICT MODE?
+function StrictModeUsageGuide(): JSX.Element {
+  return (
+    <div>
+      <h3>🎯 Khi nào dùng Strict Mode?</h3>
+
+      <div>
+        <h4>✅ Nên dùng khi:</h4>
+        <ul>
+          <li>🚀 New projects hoặc modern JavaScript</li>
+          <li>🧪 Development và testing</li>
+          <li>📚 Learning JavaScript</li>
+          <li>🔧 Refactoring legacy code</li>
+          <li>👥 Team development với coding standards</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Nên dùng Classes khi:</h4>
+        <ul>
+          <li>🏗️ Object-oriented programming</li>
+          <li>🔄 Code reusability và inheritance</li>
+          <li>📦 Creating libraries hoặc frameworks</li>
+          <li>🎯 Modeling real-world entities</li>
+          <li>👥 Team development với OOP patterns</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>❌ Tránh khi:</h4>
+        <ul>
+          <li>🔧 Legacy code không thể modify</li>
+          <li>⚡ Performance-critical code</li>
+          <li>📱 Simple scripts hoặc one-off tasks</li>
+          <li>🎯 Functional programming approach</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+// 🎯 13. BEST PRACTICES
+function BestPracticesGuide(): JSX.Element {
+  return (
+    <div>
+      <h3>💡 Best Practices cho Strict Mode và Classes</h3>
+
+      <div>
+        <h4>✅ Strict Mode Best Practices:</h4>
+        <ul>
+          <li>🔧 Always use 'use strict' in new projects</li>
+          <li>📝 Use let/const instead of var</li>
+          <li>🎯 Declare variables before using them</li>
+          <li>🚫 Avoid eval() and with statements</li>
+          <li>📊 Use strict equality (===) instead of (==)</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Classes Best Practices:</h4>
+        <ul>
+          <li>🏗️ Use composition over inheritance when possible</li>
+          <li>🔒 Keep methods small and focused</li>
+          <li>📝 Use TypeScript cho better type safety</li>
+          <li>🎯 Follow single responsibility principle</li>
+          <li>🧪 Write unit tests for classes</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+```
   var obj = {};
   Object.defineProperty(obj, 'prop', { value: 10, writable: false });
   // obj.prop = 20; // TypeError
@@ -3482,27 +5715,466 @@ function TextInput() {
 
 **Trả lời:**
 
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **Component Lifecycle** là foundation của React component behavior
+- **useEffect** thay thế tất cả lifecycle methods trong functional components
+- **Essential** cho understanding React rendering và optimization
+- **Critical** cho managing side effects và preventing memory leaks
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **Lifecycle**: Mounting → Updating → Unmounting phases
+- **useEffect**: All-in-one hook cho lifecycle management
+- **Dependency Array**: Controls khi effect chạy
+- **Cleanup Function**: Prevents memory leaks và cancels subscriptions
+
+**🧠 GHI NHỚ:**
+- **Mounting** = componentDidMount
+- **Updating** = componentDidUpdate
+- **Unmounting** = componentWillUnmount
+- **useEffect** = All lifecycle methods combined
+
 ```typescript
-// 1. Class Component Lifecycle Complete
-class UserProfileClass extends React.Component {
-  constructor(props) {
+// 🎯 1. COMPONENT LIFECYCLE - COMPLETE CLASS COMPONENT
+import React, { Component, useEffect, useState, useRef, useCallback } from 'react';
+
+// 📋 Interface cho component props và state
+interface UserProfileProps {
+  userId: string;
+  theme: 'light' | 'dark';
+}
+
+interface UserProfileState {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  prevUserId: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  lastLogin: string;
+}
+
+// 🎯 2. CLASS COMPONENT LIFECYCLE - TRADITIONAL APPROACH
+class UserProfileClass extends Component<UserProfileProps, UserProfileState> {
+  private mounted: boolean = false;
+  private abortController: AbortController = new AbortController();
+
+  constructor(props: UserProfileProps) {
     super(props);
-    this.state = { user: null, loading: true, error: null };
-    console.log('1. Constructor - Component được khởi tạo');
+    this.state = {
+      user: null,
+      loading: true,
+      error: null,
+      prevUserId: props.userId
+    };
+    console.log('🎯 1. Constructor - Component được khởi tạo');
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    console.log('2. getDerivedStateFromProps - Sync state với props');
+  // 🚀 Static method - sync state với props changes
+  static getDerivedStateFromProps(
+    nextProps: UserProfileProps,
+    prevState: UserProfileState
+  ): Partial<UserProfileState> | null {
+    console.log('🎯 2. getDerivedStateFromProps - Sync state với props');
+
     if (nextProps.userId !== prevState.prevUserId) {
-      return { prevUserId: nextProps.userId, user: null, loading: true };
+      return {
+        prevUserId: nextProps.userId,
+        user: null,
+        loading: true,
+        error: null
+      };
     }
     return null;
   }
 
-  componentDidMount() {
-    console.log('3. componentDidMount - Component đã mount');
-    this.fetchUser();
-    this.timer = setInterval(() => console.log('Timer tick'), 1000);
+  // 🚀 Component mounting - chạy sau render đầu tiên
+  async componentDidMount(): Promise<void> {
+    console.log('🎯 3. componentDidMount - Component đã mount vào DOM');
+    this.mounted = true;
+
+    // 🔄 Set up subscriptions, fetch data
+    await this.fetchUserData();
+    this.setupEventListeners();
+  }
+
+  // 🚀 Component updating - chạy sau mỗi lần re-render
+  async componentDidUpdate(
+    prevProps: UserProfileProps,
+    prevState: UserProfileState
+  ): Promise<void> {
+    console.log('🎯 4. componentDidUpdate - Component đã update');
+
+    // 🔄 Check if userId changed
+    if (prevProps.userId !== this.props.userId) {
+      console.log('User ID changed, fetching new data...');
+      await this.fetchUserData();
+    }
+
+    // 🔄 Check if theme changed
+    if (prevProps.theme !== this.props.theme) {
+      console.log('Theme changed, updating UI...');
+      this.updateTheme();
+    }
+  }
+
+  // 🚀 Component unmounting - cleanup
+  componentWillUnmount(): void {
+    console.log('🎯 5. componentWillUnmount - Component sẽ bị unmount');
+    this.mounted = false;
+
+    // 🧹 Cleanup subscriptions, timers, event listeners
+    this.abortController.abort();
+    this.removeEventListeners();
+    this.clearTimers();
+  }
+
+  // 🚀 Error boundary - catch errors
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    console.error('🎯 6. componentDidCatch - Component caught error:', error);
+    console.error('Error info:', errorInfo);
+
+    this.setState({
+      error: `Component error: ${error.message}`,
+      loading: false
+    });
+  }
+
+  // 🚀 Fetch user data
+  private async fetchUserData(): Promise<void> {
+    try {
+      this.setState({ loading: true, error: null });
+
+      const response = await fetch(`/api/users/${this.props.userId}`, {
+        signal: this.abortController.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const userData: User = await response.json();
+
+      if (this.mounted) {
+        this.setState({
+          user: userData,
+          loading: false
+        });
+      }
+    } catch (error) {
+      if (this.mounted && error.name !== 'AbortError') {
+        this.setState({
+          error: error instanceof Error ? error.message : 'Unknown error',
+          loading: false
+        });
+      }
+    }
+  }
+
+  // 🚀 Event listeners setup
+  private setupEventListeners(): void {
+    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('online', this.handleOnline);
+    window.addEventListener('offline', this.handleOffline);
+  }
+
+  // 🚀 Event listeners cleanup
+  private removeEventListeners(): void {
+    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('online', this.handleOnline);
+    window.removeEventListener('offline', this.handleOffline);
+  }
+
+  // 🚀 Event handlers
+  private handleResize = (): void => {
+    console.log('Window resized');
+  };
+
+  private handleOnline = (): void => {
+    console.log('Back online');
+    this.fetchUserData();
+  };
+
+  private handleOffline = (): void => {
+    console.log('Gone offline');
+  };
+
+  // 🚀 Update theme
+  private updateTheme(): void {
+    document.body.className = `theme-${this.props.theme}`;
+  }
+
+  // 🚀 Clear timers
+  private clearTimers(): void {
+    // Clear any running timers
+  }
+
+  render(): JSX.Element {
+    console.log('🎯 Render - Component đang render');
+
+    const { user, loading, error } = this.state;
+
+    if (loading) {
+      return <div className="loading">🔄 Loading user data...</div>;
+    }
+
+    if (error) {
+      return <div className="error">❌ Error: {error}</div>;
+    }
+
+    if (!user) {
+      return <div className="no-data">📭 No user data available</div>;
+    }
+
+    return (
+      <div className={`user-profile theme-${this.props.theme}`}>
+        <img src={user.avatar} alt={user.name} />
+        <h2>{user.name}</h2>
+        <p>Email: {user.email}</p>
+        <p>Last Login: {user.lastLogin}</p>
+      </div>
+    );
+  }
+}
+
+// 🎯 3. FUNCTIONAL COMPONENT WITH USEEFFECT - MODERN APPROACH
+function UserProfileFunction({ userId, theme }: UserProfileProps): JSX.Element {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 🔧 Refs for cleanup
+  const mountedRef = useRef<boolean>(true);
+  const abortControllerRef = useRef<AbortController>(new AbortController());
+
+  // 🎯 4. USEEFFECT AS COMPONENTDIDMOUNT
+  useEffect(() => {
+    console.log('🎯 useEffect [] - componentDidMount equivalent');
+
+    // 🚀 Setup initial subscriptions
+    const setupSubscriptions = (): void => {
+      window.addEventListener('resize', handleResize);
+      window.addEventListener('online', handleOnline);
+      window.addEventListener('offline', handleOffline);
+    };
+
+    setupSubscriptions();
+
+    // 🧹 Cleanup function - componentWillUnmount equivalent
+    return (): void => {
+      console.log('🎯 useEffect cleanup [] - componentWillUnmount equivalent');
+      mountedRef.current = false;
+      abortControllerRef.current.abort();
+
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []); // Empty dependency array = run once on mount
+
+  // 🎯 5. USEEFFECT AS COMPONENTDIDUPDATE FOR USERID
+  useEffect(() => {
+    console.log('🎯 useEffect [userId] - componentDidUpdate for userId');
+
+    const fetchUserData = async (): Promise<void> => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // 🚀 Create new AbortController for each request
+        abortControllerRef.current = new AbortController();
+
+        const response = await fetch(`/api/users/${userId}`, {
+          signal: abortControllerRef.current.signal
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const userData: User = await response.json();
+
+        if (mountedRef.current) {
+          setUser(userData);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (mountedRef.current && err.name !== 'AbortError') {
+          setError(err instanceof Error ? err.message : 'Unknown error');
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchUserData();
+
+    // 🧹 Cleanup previous request
+    return (): void => {
+      console.log('🎯 useEffect cleanup [userId] - cancel previous request');
+      abortControllerRef.current.abort();
+    };
+  }, [userId]); // Run when userId changes
+
+  // 🎯 6. USEEFFECT AS COMPONENTDIDUPDATE FOR THEME
+  useEffect(() => {
+    console.log('🎯 useEffect [theme] - componentDidUpdate for theme');
+
+    // 🎨 Update theme class
+    document.body.className = `theme-${theme}`;
+
+    // 🧹 Cleanup function
+    return (): void => {
+      console.log('🎯 useEffect cleanup [theme] - reset theme');
+      document.body.className = '';
+    };
+  }, [theme]); // Run when theme changes
+
+  // 🎯 7. USEEFFECT WITH CUSTOM DEPENDENCY
+  useEffect(() => {
+    console.log('🎯 useEffect [user] - when user data changes');
+
+    if (user) {
+      // 🚀 Analytics tracking
+      console.log(`User ${user.name} profile viewed`);
+
+      // 🚀 Update document title
+      document.title = `Profile - ${user.name}`;
+    }
+
+    // 🧹 Cleanup
+    return (): void => {
+      document.title = 'App';
+    };
+  }, [user]); // Run when user data changes
+
+  // 🎯 8. EVENT HANDLERS
+  const handleResize = useCallback((): void => {
+    console.log('Window resized');
+  }, []);
+
+  const handleOnline = useCallback((): void => {
+    console.log('Back online');
+    // Refetch data when back online
+  }, []);
+
+  const handleOffline = useCallback((): void => {
+    console.log('Gone offline');
+  }, []);
+
+  // 🎯 9. RENDER LOGIC
+  if (loading) {
+    return <div className="loading">🔄 Loading user data...</div>;
+  }
+
+  if (error) {
+    return <div className="error">❌ Error: {error}</div>;
+  }
+
+  if (!user) {
+    return <div className="no-data">📭 No user data available</div>;
+  }
+
+  return (
+    <div className={`user-profile theme-${theme}`}>
+      <img src={user.avatar} alt={user.name} />
+      <h2>{user.name}</h2>
+      <p>Email: {user.email}</p>
+      <p>Last Login: {user.lastLogin}</p>
+    </div>
+  );
+}
+
+// 🎯 10. LIFECYCLE COMPARISON TABLE
+function LifecycleComparison(): JSX.Element {
+  return (
+    <div>
+      <h3>📊 Class Component vs useEffect Comparison</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Class Component</th>
+            <th>Functional Component (useEffect)</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>componentDidMount</code></td>
+            <td><code>useEffect(() => {}, [])</code></td>
+            <td>Chạy sau render đầu tiên</td>
+          </tr>
+          <tr>
+            <td><code>componentDidUpdate</code></td>
+            <td><code>useEffect(() => {}, [dep])</code></td>
+            <td>Chạy sau mỗi lần update</td>
+          </tr>
+          <tr>
+            <td><code>componentWillUnmount</code></td>
+            <td><code>useEffect(() => () => cleanup, [])</code></td>
+            <td>Cleanup trước khi unmount</td>
+          </tr>
+          <tr>
+            <td><code>shouldComponentUpdate</code></td>
+            <td><code>React.memo()</code></td>
+            <td>Optimization để prevent re-render</td>
+          </tr>
+          <tr>
+            <td><code>getDerivedStateFromProps</code></td>
+            <td><code>useState + useEffect</code></td>
+            <td>Sync state với props</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// 🎯 11. WHEN TO USE WHICH?
+function LifecycleUsageGuide(): JSX.Element {
+  return (
+    <div>
+      <h3>🎯 Khi nào dùng Class vs Functional Components?</h3>
+
+      <div>
+        <h4>✅ Dùng Class Components khi:</h4>
+        <ul>
+          <li>🔧 Legacy codebase cần maintain</li>
+          <li>❌ Error boundaries (chỉ class components có thể catch errors)</li>
+          <li>📚 Learning React lifecycle concepts</li>
+          <li>🎯 Complex lifecycle logic khó convert</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng Functional Components khi:</h4>
+        <ul>
+          <li>🚀 New projects hoặc modern React</li>
+          <li>⚡ Better performance với hooks</li>
+          <li>🔄 Code reusability với custom hooks</li>
+          <li>📝 Cleaner, more readable code</li>
+          <li>🧪 Easier testing</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ useEffect best practices:</h4>
+        <ul>
+          <li>🎯 Always include dependencies trong dependency array</li>
+          <li>🧹 Always cleanup subscriptions, timers, listeners</li>
+          <li>🔄 Use multiple useEffect cho different concerns</li>
+          <li>⚡ Use useCallback, useMemo để prevent unnecessary re-runs</li>
+          <li>🚫 Avoid infinite loops bằng cách manage dependencies properly</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+```
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -6908,58 +9580,183 @@ const fetchUser = createAsyncThunk(
 
 **Trả lời:**
 
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **Performance optimization** là core skill của Senior Developer
+- **React.memo, useMemo, useCallback** là 3 tools chính để optimize
+- Hiểu **khi nào dùng** giúp tránh over-optimization
+- **Memory vs CPU trade-offs** cần cân nhắc kỹ
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **React.memo**: Prevent component re-renders
+- **useMemo**: Memoize expensive calculations
+- **useCallback**: Memoize functions để tránh re-creation
+- **All** có cost về memory, chỉ dùng khi cần thiết
+
+**🧠 GHI NHỚ:**
+- **React.memo** = Component level optimization
+- **useMemo** = Value level optimization
+- **useCallback** = Function level optimization
+- **Measure first** → Optimize second
+
 ```typescript
-// React.memo - Prevent unnecessary re-renders
-const ExpensiveComponent = React.memo(({ data, onUpdate }) => {
-  console.log('ExpensiveComponent rendered');
+// 🎯 1. REACT.MEMO - COMPONENT LEVEL OPTIMIZATION
+import React, { useState, useMemo, useCallback, memo } from 'react';
+
+// 📋 Interface cho data types
+interface Item {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+}
+
+interface ExpensiveComponentProps {
+  data: Item[];
+  onUpdate: (id: number) => void;
+  onDelete: (id: number) => void;
+  filter: string;
+}
+
+// 🎯 React.memo với custom comparison
+const ExpensiveComponent = memo<ExpensiveComponentProps>(({
+  data,
+  onUpdate,
+  onDelete,
+  filter
+}) => {
+  console.log('🏃‍♂️ ExpensiveComponent rendered - EXPENSIVE OPERATION!');
+
+  // 🚀 Expensive filtering operation
+  const filteredData = data.filter(item =>
+    item.name.toLowerCase().includes(filter.toLowerCase())
+  );
 
   return (
     <div>
-      {data.map(item => (
-        <div key={item.id} onClick={() => onUpdate(item.id)}>
-          {item.name}
+      <h3>📊 Filtered Items ({filteredData.length})</h3>
+      {filteredData.map(item => (
+        <div key={item.id} className="item-card">
+          <h4>{item.name}</h4>
+          <p>💰 Price: ${item.price}</p>
+          <p>🏷️ Category: {item.category}</p>
+          <button onClick={() => onUpdate(item.id)}>
+            ✏️ Update
+          </button>
+          <button onClick={() => onDelete(item.id)}>
+            🗑️ Delete
+          </button>
         </div>
       ))}
     </div>
   );
 }, (prevProps, nextProps) => {
-  // Custom comparison function (optional)
-  return prevProps.data.length === nextProps.data.length &&
-         prevProps.data.every((item, index) =>
-           item.id === nextProps.data[index].id
-         );
+  // 🎯 Custom comparison function - QUAN TRỌNG!
+  console.log('🔍 Comparing props...');
+
+  // ✅ Chỉ re-render nếu data hoặc filter thay đổi
+  const dataChanged = prevProps.data.length !== nextProps.data.length ||
+    !prevProps.data.every((item, index) =>
+      item.id === nextProps.data[index]?.id &&
+      item.name === nextProps.data[index]?.name
+    );
+
+  const filterChanged = prevProps.filter !== nextProps.filter;
+
+  // 🚨 Return true = re-render, false = skip re-render
+  return !(dataChanged || filterChanged);
 });
 
-function ParentComponent() {
-  const [count, setCount] = useState(0);
-  const [items, setItems] = useState([
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' }
+// 🎯 2. USEMEMO - VALUE LEVEL OPTIMIZATION
+function ParentComponent(): JSX.Element {
+  const [count, setCount] = useState<number>(0);
+  const [items, setItems] = useState<Item[]>([
+    { id: 1, name: 'Laptop', price: 999, category: 'Electronics' },
+    { id: 2, name: 'Phone', price: 699, category: 'Electronics' },
+    { id: 3, name: 'Book', price: 19, category: 'Education' }
   ]);
+  const [filter, setFilter] = useState<string>('');
 
-  // useMemo - Memoize expensive calculations
-  const expensiveValue = useMemo(() => {
-    console.log('Calculating expensive value...');
-    return items.reduce((sum, item) => sum + item.id, 0) * 1000;
+  // 🚀 useMemo - Memoize expensive calculations
+  const expensiveValue = useMemo<number>(() => {
+    console.log('💰 Calculating expensive value...');
+
+    // 💰 Simulate expensive calculation
+    const totalPrice = items.reduce((sum, item) => sum + item.price, 0);
+    const averagePrice = totalPrice / items.length;
+
+    // 🧮 Complex calculation (simulate)
+    return Math.round(averagePrice * 1000 * Math.random());
+  }, [items]); // ⬆️ Chỉ tính lại khi items thay đổi
+
+  // 🚀 useMemo - Memoize filtered data
+  const filteredItems = useMemo<Item[]>(() => {
+    console.log('🔍 Filtering items...');
+
+    if (!filter.trim()) return items;
+
+    return items.filter(item =>
+      item.name.toLowerCase().includes(filter.toLowerCase()) ||
+      item.category.toLowerCase().includes(filter.toLowerCase())
+    );
+  }, [items, filter]); // ⬆️ Chỉ filter lại khi items hoặc filter thay đổi
+
+  // 🚀 useMemo - Memoize statistics
+  const statistics = useMemo(() => {
+    console.log('📊 Calculating statistics...');
+
+    const totalItems = items.length;
+    const totalValue = items.reduce((sum, item) => sum + item.price, 0);
+    const averagePrice = totalValue / totalItems;
+    const categories = [...new Set(items.map(item => item.category))];
+
+    return {
+      totalItems,
+      totalValue,
+      averagePrice,
+      categories
+    };
   }, [items]);
 
-  // useCallback - Memoize functions
-  const handleUpdate = useCallback((itemId) => {
+  // 🎯 3. USECALLBACK - FUNCTION LEVEL OPTIMIZATION
+  // ✅ useCallback - Memoize functions để tránh re-creation
+  const handleUpdate = useCallback((itemId: number): void => {
+    console.log('✏️ Updating item:', itemId);
+
     setItems(prevItems =>
       prevItems.map(item =>
         item.id === itemId
-          ? { ...item, name: `Updated ${item.name}` }
+          ? { ...item, name: `${item.name} (Updated)` }
           : item
       )
     );
-  }, []); // No dependencies needed since we use functional update
+  }, []); // ⬆️ Empty dependency array vì setItems stable
 
-  // Without useCallback, this function is recreated on every render
-  const handleUpdateBad = (itemId) => {
+  const handleDelete = useCallback((itemId: number): void => {
+    console.log('🗑️ Deleting item:', itemId);
+
+    setItems(prevItems => prevItems.filter(item => item.id !== itemId));
+  }, []); // ⬆️ Empty dependency array vì setItems stable
+
+  const handleAddItem = useCallback((): void => {
+    console.log('➕ Adding new item');
+
+    const newItem: Item = {
+      id: Date.now(),
+      name: `New Item ${items.length + 1}`,
+      price: Math.floor(Math.random() * 1000),
+      category: 'Misc'
+    };
+
+    setItems(prevItems => [...prevItems, newItem]);
+  }, [items.length]); // ⬆️ Dependency vì cần items.length
+
+  // ❌❌❌ CÁCH SAI - Không dùng useCallback
+  const handleBadUpdate = (itemId: number): void => {
+    // 🚨 Function được tạo mới mỗi render → ExpensiveComponent re-render
     setItems(prevItems =>
       prevItems.map(item =>
         item.id === itemId
-          ? { ...item, name: `Updated ${item.name}` }
+          ? { ...item, name: `${item.name} (Bad Update)` }
           : item
       )
     );
@@ -6967,15 +9764,239 @@ function ParentComponent() {
 
   return (
     <div>
-      <p>Count: {count}</p>
-      <p>Expensive Value: {expensiveValue}</p>
-      <button onClick={() => setCount(c => c + 1)}>
-        Increment Count
+      <h2>🚀 Performance Optimization Demo</h2>
+
+      {/* 🔢 Counter - Không ảnh hưởng đến ExpensiveComponent */}
+      <div>
+        <p>Count: {count}</p>
+        <button onClick={() => setCount(c => c + 1)}>
+          ➕ Increment Count
+        </button>
+      </div>
+
+      {/* 📊 Statistics - Memoized */}
+      <div>
+        <h3>📊 Statistics</h3>
+        <p>Total Items: {statistics.totalItems}</p>
+        <p>Total Value: ${statistics.totalValue}</p>
+        <p>Average Price: ${statistics.averagePrice.toFixed(2)}</p>
+        <p>Categories: {statistics.categories.join(', ')}</p>
+        <p>Expensive Value: {expensiveValue}</p>
+      </div>
+
+      {/* 🔍 Filter */}
+      <div>
+        <input
+          type="text"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          placeholder="Filter items..."
+        />
+      </div>
+
+      {/* ➕ Add Item */}
+      <div>
+        <button onClick={handleAddItem}>
+          ➕ Add New Item
+        </button>
+      </div>
+
+      {/* 🎯 ExpensiveComponent - Memoized với custom comparison */}
+      <ExpensiveComponent
+        data={filteredItems}
+        onUpdate={handleUpdate}
+        onDelete={handleDelete}
+        filter={filter}
+      />
+
+      {/* ❌ Bad Example - Không memoized */}
+      <div>
+        <h3>❌ Bad Example (No Memoization)</h3>
+        <button onClick={() => handleBadUpdate(1)}>
+          🚨 Bad Update (Causes Re-render)
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// 🎯 4. ADVANCED USEMEMO PATTERNS
+function AdvancedMemoExample(): JSX.Element {
+  const [users, setUsers] = useState<Array<{ id: number; name: string; age: number }>>([]);
+  const [sortBy, setSortBy] = useState<'name' | 'age'>('name');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  // 🚀 useMemo với complex sorting
+  const sortedUsers = useMemo(() => {
+    console.log('🔄 Sorting users...');
+
+    return [...users].sort((a, b) => {
+      if (sortBy === 'name') {
+        return a.name.localeCompare(b.name);
+      } else {
+        return a.age - b.age;
+      }
+    });
+  }, [users, sortBy]);
+
+  // 🚀 useMemo với search
+  const filteredUsers = useMemo(() => {
+    console.log('🔍 Filtering users...');
+
+    if (!searchTerm.trim()) return sortedUsers;
+
+    return sortedUsers.filter(user =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [sortedUsers, searchTerm]);
+
+  // 🚀 useMemo với expensive computation
+  const userStats = useMemo(() => {
+    console.log('📊 Calculating user stats...');
+
+    const totalUsers = filteredUsers.length;
+    const averageAge = totalUsers > 0
+      ? filteredUsers.reduce((sum, user) => sum + user.age, 0) / totalUsers
+      : 0;
+
+    const ageGroups = filteredUsers.reduce((groups, user) => {
+      const group = user.age < 30 ? 'young' : user.age < 60 ? 'middle' : 'senior';
+      groups[group] = (groups[group] || 0) + 1;
+      return groups;
+    }, {} as Record<string, number>);
+
+    return {
+      totalUsers,
+      averageAge,
+      ageGroups
+    };
+  }, [filteredUsers]);
+
+  return (
+    <div>
+      <h3>👥 Advanced Memo Example</h3>
+
+      <div>
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'name' | 'age')}>
+          <option value="name">Sort by Name</option>
+          <option value="age">Sort by Age</option>
+        </select>
+
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search users..."
+        />
+      </div>
+
+      <div>
+        <h4>📊 Stats</h4>
+        <p>Total: {userStats.totalUsers}</p>
+        <p>Average Age: {userStats.averageAge.toFixed(1)}</p>
+        <p>Age Groups: {JSON.stringify(userStats.ageGroups)}</p>
+      </div>
+
+      <ul>
+        {filteredUsers.map(user => (
+          <li key={user.id}>
+            {user.name} (Age: {user.age})
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// 🎯 5. PERFORMANCE MEASUREMENT
+function PerformanceMeasurement(): JSX.Element {
+  const [renderCount, setRenderCount] = useState<number>(0);
+  const [memoizedValue, setMemoizedValue] = useState<number>(0);
+
+  // 🚀 useMemo với performance measurement
+  const expensiveCalculation = useMemo(() => {
+    console.log('⏱️ Expensive calculation running...');
+
+    const start = performance.now();
+
+    // 💰 Simulate expensive operation
+    let result = 0;
+    for (let i = 0; i < 1000000; i++) {
+      result += Math.random();
+    }
+
+    const end = performance.now();
+    console.log(`⏱️ Calculation took ${end - start} milliseconds`);
+
+    return result;
+  }, [memoizedValue]); // ⬆️ Chỉ tính lại khi memoizedValue thay đổi
+
+  return (
+    <div>
+      <h3>⏱️ Performance Measurement</h3>
+      <p>Render Count: {renderCount}</p>
+      <p>Expensive Value: {expensiveCalculation.toFixed(2)}</p>
+
+      <button onClick={() => setRenderCount(c => c + 1)}>
+        🔄 Force Re-render
       </button>
 
-      <ExpensiveComponent
-        data={items}
-        onUpdate={handleUpdate}
+      <button onClick={() => setMemoizedValue(Math.random())}>
+        💰 Trigger Expensive Calculation
+      </button>
+    </div>
+  );
+}
+
+// 🎯 6. WHEN TO USE WHICH?
+function OptimizationGuide(): JSX.Element {
+  return (
+    <div>
+      <h3>🎯 Khi nào dùng gì?</h3>
+
+      <div>
+        <h4>✅ Dùng React.memo khi:</h4>
+        <ul>
+          <li>Component render expensive</li>
+          <li>Props ít thay đổi</li>
+          <li>Parent re-render frequently</li>
+          <li>Có custom comparison logic</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng useMemo khi:</h4>
+        <ul>
+          <li>Expensive calculations</li>
+          <li>Complex data transformations</li>
+          <li>Filtering/sorting large datasets</li>
+          <li>Creating objects/arrays for props</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng useCallback khi:</h4>
+        <ul>
+          <li>Functions passed as props</li>
+          <li>Functions in dependency arrays</li>
+          <li>Event handlers for expensive components</li>
+          <li>Functions used in useMemo/useEffect</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>❌ Đừng dùng khi:</h4>
+        <ul>
+          <li>Simple calculations</li>
+          <li>Primitive values</li>
+          <li>Functions không được pass as props</li>
+          <li>Over-optimization (measure first!)</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+```
       />
     </div>
   );
@@ -6986,11 +10007,41 @@ function ParentComponent() {
 
 **Trả lời:**
 
-```typescript
-import { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **Code Splitting** giúp giảm **bundle size** và **initial load time**
+- **Lazy Loading** cải thiện **user experience** và **performance**
+- **Critical** cho large applications với nhiều routes/components
+- **SEO impact** và **Core Web Vitals** optimization
 
-// Dynamic imports với React.lazy
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **Code Splitting**: Chia code thành nhiều chunks nhỏ
+- **Lazy Loading**: Load components khi cần thiết
+- **Dynamic imports**: Import modules at runtime
+- **Bundle optimization**: Giảm initial bundle size
+
+**🧠 GHI NHỚ:**
+- **React.lazy** = Lazy load components
+- **Suspense** = Handle loading states
+- **Error Boundaries** = Handle loading errors
+- **Route-based splitting** = Most common approach
+
+```typescript
+// 🎯 1. ROUTE-BASED CODE SPLITTING
+import React, { lazy, Suspense, Component, ErrorInfo, ReactNode } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+
+// 📋 Interface cho Error Boundary
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  fallback?: ReactNode;
+}
+
+// 🎯 Dynamic imports với React.lazy
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Profile = lazy(() =>
@@ -6999,48 +10050,76 @@ const Profile = lazy(() =>
   }))
 );
 
-// Component-level splitting
+// 🎯 Component-level splitting với pre-loading
 const HeavyChart = lazy(() =>
   import('./components/HeavyChart').then(module => {
+    console.log('📊 HeavyChart loaded');
     // Pre-load dependencies
     return Promise.all([
       module.default,
-      import('./utils/chartHelpers')
+      import('./utils/chartHelpers'),
+      import('./utils/dataProcessor')
     ]).then(([Component]) => ({ default: Component }));
   })
 );
 
-// Loading component
-function LoadingSpinner() {
+// 🎯 Library splitting - Chia nhỏ third-party libraries
+const DataTable = lazy(() =>
+  import('react-data-table-component').then(module => ({
+    default: module.default
+  }))
+);
+
+// 🎯 2. LOADING COMPONENTS
+function LoadingSpinner(): JSX.Element {
   return (
     <div className="loading-container">
-      <div className="spinner">Loading...</div>
+      <div className="spinner">🔄 Loading...</div>
+      <p>Please wait while we load the content...</p>
     </div>
   );
 }
 
-// Error Boundary cho lazy loading
-class LazyLoadErrorBoundary extends React.Component {
-  constructor(props) {
+function ChartLoadingSkeleton(): JSX.Element {
+  return (
+    <div className="chart-skeleton">
+      <div className="skeleton-header">📊</div>
+      <div className="skeleton-chart">
+        <div className="skeleton-bar"></div>
+        <div className="skeleton-bar"></div>
+        <div className="skeleton-bar"></div>
+      </div>
+    </div>
+  );
+}
+
+// 🎯 3. ERROR BOUNDARY CHO LAZY LOADING
+class LazyLoadErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    console.error('🚨 LazyLoad Error:', error);
     return { hasError: true, error };
   }
 
-  componentDidCatch(error, errorInfo) {
-    console.error('Lazy loading error:', error, errorInfo);
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    console.error('🚨 Error Boundary caught an error:', error, errorInfo);
+
+    // 🚀 Log error to monitoring service
+    // logErrorToService(error, errorInfo);
   }
 
-  render() {
+  render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <div>
-          <h2>Something went wrong loading this component.</h2>
-          <button onClick={() => window.location.reload()}>
-            Reload Page
+        <div className="error-boundary">
+          <h2>❌ Something went wrong</h2>
+          <p>Failed to load component. Please try again.</p>
+          <button onClick={() => this.setState({ hasError: false, error: null })}>
+            🔄 Retry
           </button>
         </div>
       );
@@ -7050,42 +10129,231 @@ class LazyLoadErrorBoundary extends React.Component {
   }
 }
 
-// Main App với code splitting
-function App() {
+// 🎯 4. ADVANCED LAZY LOADING PATTERNS
+// 🚀 Conditional lazy loading
+function ConditionalLazyComponent({ shouldLoad }: { shouldLoad: boolean }): JSX.Element {
+  const [LazyComponent, setLazyComponent] = useState<React.ComponentType | null>(null);
+
+  useEffect(() => {
+    if (shouldLoad && !LazyComponent) {
+      console.log('🚀 Loading conditional component...');
+
+      import('./components/ExpensiveComponent').then(module => {
+        setLazyComponent(() => module.default);
+      });
+    }
+  }, [shouldLoad, LazyComponent]);
+
+  if (!shouldLoad) {
+    return <div>Component not needed yet</div>;
+  }
+
+  if (!LazyComponent) {
+    return <LoadingSpinner />;
+  }
+
+  return <LazyComponent />;
+}
+
+// 🚀 Preloading components
+function usePreloadComponent(componentPath: string): () => Promise<void> {
+  return useCallback(async (): Promise<void> => {
+    console.log(`🚀 Preloading component: ${componentPath}`);
+
+    try {
+      await import(componentPath);
+      console.log(`✅ Component preloaded: ${componentPath}`);
+    } catch (error) {
+      console.error(`❌ Failed to preload: ${componentPath}`, error);
+    }
+  }, [componentPath]);
+}
+
+// 🚀 Lazy loading với retry mechanism
+function createLazyWithRetry<T extends React.ComponentType<any>>(
+  importFunc: () => Promise<{ default: T }>,
+  retries: number = 3
+): React.LazyExoticComponent<T> {
+  return lazy(async () => {
+    let lastError: Error | null = null;
+
+    for (let i = 0; i < retries; i++) {
+      try {
+        console.log(`🔄 Attempt ${i + 1} to load component...`);
+        return await importFunc();
+      } catch (error) {
+        lastError = error as Error;
+        console.warn(`⚠️ Attempt ${i + 1} failed:`, error);
+
+        if (i < retries - 1) {
+          // Wait before retry
+          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+        }
+      }
+    }
+
+    throw lastError;
+  });
+}
+
+// 🎯 5. MAIN APPLICATION COMPONENT
+function App(): JSX.Element {
+  // 🚀 Preload functions
+  const preloadDashboard = usePreloadComponent('./pages/Dashboard');
+  const preloadProfile = usePreloadComponent('./pages/Profile');
+
   return (
     <Router>
-      <LazyLoadErrorBoundary>
-        <Suspense fallback={<LoadingSpinner />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
-        </Suspense>
-      </LazyLoadErrorBoundary>
+      <div className="app">
+        <nav>
+          <Link to="/">🏠 Home</Link>
+          <Link to="/dashboard" onMouseEnter={preloadDashboard}>
+            📊 Dashboard
+          </Link>
+          <Link to="/profile" onMouseEnter={preloadProfile}>
+            👤 Profile
+          </Link>
+        </nav>
+
+        <main>
+          <ErrorBoundary>
+            <Suspense fallback={<LoadingSpinner />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <Suspense fallback={<ChartLoadingSkeleton />}>
+                      <Dashboard />
+                    </Suspense>
+                  }
+                />
+                <Route path="/profile" element={<Profile />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
+        </main>
+      </div>
     </Router>
   );
 }
 
-// Advanced: Dynamic import với conditions
-function DynamicComponentLoader({ type, data }) {
-  const [Component, setComponent] = useState(null);
-  const [loading, setLoading] = useState(true);
+// 🎯 6. COMPONENT-LEVEL SPLITTING
+function DataVisualization(): JSX.Element {
+  const [showChart, setShowChart] = useState<boolean>(false);
+  const [showTable, setShowTable] = useState<boolean>(false);
 
+  return (
+    <div>
+      <h3>📊 Data Visualization</h3>
+
+      <div>
+        <button onClick={() => setShowChart(!showChart)}>
+          {showChart ? 'Hide' : 'Show'} Chart
+        </button>
+        <button onClick={() => setShowTable(!showTable)}>
+          {showTable ? 'Hide' : 'Show'} Table
+        </button>
+      </div>
+
+      {/* 🚀 Lazy load chart only when needed */}
+      {showChart && (
+        <Suspense fallback={<ChartLoadingSkeleton />}>
+          <HeavyChart />
+        </Suspense>
+      )}
+
+      {/* 🚀 Lazy load table only when needed */}
+      {showTable && (
+        <Suspense fallback={<div>Loading table...</div>}>
+          <DataTable />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+
+// 🎯 7. WEBPACK CHUNK NAMING
+// 🚀 Named chunks for better caching
+const AdminPanel = lazy(() =>
+  import(/* webpackChunkName: "admin" */ './pages/AdminPanel')
+);
+
+const UserManagement = lazy(() =>
+  import(/* webpackChunkName: "admin" */ './pages/UserManagement')
+);
+
+const Settings = lazy(() =>
+  import(/* webpackChunkName: "settings" */ './pages/Settings')
+);
+
+// 🎯 8. PERFORMANCE MONITORING
+function useLazyLoadPerformance(componentName: string) {
   useEffect(() => {
-    const loadComponent = async () => {
-      try {
-        let module;
-        switch (type) {
-          case 'chart':
-            module = await import('./components/Chart');
-            break;
-          case 'table':
-            module = await import('./components/Table');
-            break;
-          case 'graph':
-            module = await import('./components/Graph');
-            break;
+    const startTime = performance.now();
+
+    return () => {
+      const endTime = performance.now();
+      const loadTime = endTime - startTime;
+
+      console.log(`⏱️ ${componentName} load time: ${loadTime.toFixed(2)}ms`);
+
+      // 🚀 Send to analytics
+      // analytics.track('component_load_time', {
+      //   component: componentName,
+      //   loadTime: loadTime
+      // });
+    };
+  }, [componentName]);
+}
+
+// 🎯 9. BUNDLE ANALYSIS
+function BundleAnalysis(): JSX.Element {
+  return (
+    <div>
+      <h3>📊 Bundle Analysis Tips</h3>
+      <ul>
+        <li>✅ Use webpack-bundle-analyzer to visualize chunks</li>
+        <li>✅ Monitor chunk sizes (aim for < 250KB)</li>
+        <li>✅ Use dynamic imports for large libraries</li>
+        <li>✅ Implement proper caching strategies</li>
+        <li>✅ Consider preloading critical chunks</li>
+      </ul>
+    </div>
+  );
+}
+
+// 🎯 10. WHEN TO USE CODE SPLITTING
+function CodeSplittingGuide(): JSX.Element {
+  return (
+    <div>
+      <h3>🎯 Khi nào dùng Code Splitting?</h3>
+
+      <div>
+        <h4>✅ Nên dùng khi:</h4>
+        <ul>
+          <li>📱 Large applications với nhiều routes</li>
+          <li>📊 Heavy components (charts, maps, editors)</li>
+          <li>🔧 Admin panels hoặc features ít dùng</li>
+          <li>📚 Large third-party libraries</li>
+          <li>🎨 Different themes hoặc layouts</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>❌ Không nên dùng khi:</h4>
+        <ul>
+          <li>📱 Small applications</li>
+          <li>⚡ Critical path components</li>
+          <li>🔄 Frequently used components</li>
+          <li>📦 Small libraries (< 50KB)</li>
+          <li>🎯 Components cần load ngay lập tức</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+```
           default:
             module = await import('./components/Default');
         }
@@ -7113,20 +10381,72 @@ function DynamicComponentLoader({ type, data }) {
 
 **Trả lời:**
 
+**🎯 TẠI SAO CÂU HỎI NÀY QUAN TRỌNG:**
+- **3 patterns chính** để share logic giữa components
+- **HOC** = Traditional approach, **Render Props** = Flexible, **Custom Hooks** = Modern
+- Hiểu **trade-offs** giúp chọn đúng pattern cho từng use case
+- **Performance implications** và **maintainability** khác nhau
+
+**💡 KHÁI NIỆM CỐT LÕI:**
+- **HOC**: Function nhận component, return component mới
+- **Render Props**: Component nhận function làm children
+- **Custom Hooks**: Function bắt đầu với "use", return state/logic
+- **All** solve logic reuse problem differently
+
+**🧠 GHI NHỚ:**
+- **HOC** = Higher-Order Component (wraps components)
+- **Render Props** = Function as children pattern
+- **Custom Hooks** = Modern, preferred approach
+- **Choose based on** complexity, reusability, team preference
+
 ```typescript
-// 1. Higher-Order Component (HOC)
-function withAuth(WrappedComponent) {
-  return function WithAuthComponent(props) {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+// 🎯 1. HIGHER-ORDER COMPONENT (HOC) - TRADITIONAL APPROACH
+import React, { useState, useEffect, Component, ReactNode } from 'react';
+
+// 📋 Interface cho HOC props
+interface WithAuthProps {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+}
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'user' | 'guest';
+}
+
+// 🎯 HOC với TypeScript generics
+function withAuth<P extends object>(
+  WrappedComponent: React.ComponentType<P & WithAuthProps>
+): React.ComponentType<P> {
+  return function WithAuthComponent(props: P): JSX.Element {
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-      const checkAuth = async () => {
+      const checkAuth = async (): Promise<void> => {
         try {
-          const userData = await authService.getCurrentUser();
+          setLoading(true);
+          setError(null);
+
+          // 🚀 Simulate API call
+          const userData: User = await new Promise((resolve) => {
+            setTimeout(() => {
+              resolve({
+                id: 1,
+                name: 'John Doe',
+                email: 'john@example.com',
+                role: 'user'
+              });
+            }, 1000);
+          });
+
           setUser(userData);
-        } catch (error) {
-          console.error('Auth check failed:', error);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Auth failed');
         } finally {
           setLoading(false);
         }
@@ -7135,50 +10455,394 @@ function withAuth(WrappedComponent) {
       checkAuth();
     }, []);
 
-    if (loading) return <div>Checking authentication...</div>;
-    if (!user) return <div>Please log in</div>;
+    // 🔄 Loading state
+    if (loading) {
+      return (
+        <div className="auth-loading">
+          <div className="spinner">🔄 Checking authentication...</div>
+        </div>
+      );
+    }
 
-    return <WrappedComponent {...props} user={user} />;
+    // ❌ Error state
+    if (error) {
+      return (
+        <div className="auth-error">
+          <h3>❌ Authentication Error</h3>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>
+            🔄 Retry
+          </button>
+        </div>
+      );
+    }
+
+    // 🚫 Unauthorized state
+    if (!user) {
+      return (
+        <div className="auth-unauthorized">
+          <h3>🔒 Access Denied</h3>
+          <p>Please log in to continue</p>
+          <button onClick={() => window.location.href = '/login'}>
+            🔑 Login
+          </button>
+        </div>
+      );
+    }
+
+    // ✅ Authenticated - render wrapped component
+    return <WrappedComponent {...props} user={user} loading={loading} error={error} />;
   };
 }
 
-// Sử dụng HOC
-const ProtectedDashboard = withAuth(Dashboard);
+// 🎯 2. RENDER PROPS PATTERN - FLEXIBLE APPROACH
+interface AuthProviderProps {
+  children: (auth: WithAuthProps) => ReactNode;
+}
 
-// 2. Render Props Pattern
-class AuthProvider extends React.Component {
-  state = {
+class AuthProvider extends Component<AuthProviderProps, WithAuthProps> {
+  state: WithAuthProps = {
     user: null,
     loading: true,
     error: null
   };
 
-  componentDidMount() {
-    this.checkAuth();
+  async componentDidMount(): Promise<void> {
+    try {
+      this.setState({ loading: true, error: null });
+
+      // 🚀 Simulate API call
+      const userData: User = await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            id: 2,
+            name: 'Jane Smith',
+            email: 'jane@example.com',
+            role: 'admin'
+          });
+        }, 1500);
+      });
+
+      this.setState({ user: userData, loading: false });
+    } catch (error) {
+      this.setState({
+        error: error instanceof Error ? error.message : 'Auth failed',
+        loading: false
+      });
+    }
   }
 
-  checkAuth = async () => {
-    try {
-      const user = await authService.getCurrentUser();
-      this.setState({ user, loading: false });
-    } catch (error) {
-      this.setState({ error: error.message, loading: false });
-    }
-  };
-
-  render() {
+  render(): ReactNode {
+    // 🎯 Render props - function as children
     return this.props.children(this.state);
   }
 }
 
-// Sử dụng Render Props
-function App() {
+// 🎯 3. CUSTOM HOOKS - MODERN APPROACH
+function useAuth(): WithAuthProps & {
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  refresh: () => Promise<void>;
+} {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 🚀 Login function
+  const login = async (email: string, password: string): Promise<void> => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // 🚀 Simulate login API
+      const userData: User = await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (email === 'admin@example.com' && password === 'password') {
+            resolve({
+              id: 3,
+              name: 'Admin User',
+              email: 'admin@example.com',
+              role: 'admin'
+            });
+          } else {
+            reject(new Error('Invalid credentials'));
+          }
+        }, 1000);
+      });
+
+      setUser(userData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🚀 Logout function
+  const logout = (): void => {
+    setUser(null);
+    setError(null);
+  };
+
+  // 🚀 Refresh function
+  const refresh = async (): Promise<void> => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // 🚀 Simulate refresh API
+      const userData: User = await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({ ...user, name: `${user.name} (Refreshed)` });
+        }, 500);
+      });
+
+      setUser(userData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Refresh failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    user,
+    loading,
+    error,
+    login,
+    logout,
+    refresh
+  };
+}
+
+// 🎯 4. USAGE EXAMPLES
+// HOC Usage
+interface DashboardProps {
+  title: string;
+  user: User;
+  loading: boolean;
+  error: string | null;
+}
+
+function Dashboard({ title, user, loading, error }: DashboardProps): JSX.Element {
+  if (loading) return <div>🔄 Loading dashboard...</div>;
+  if (error) return <div>❌ Error: {error}</div>;
+
+  return (
+    <div>
+      <h2>📊 {title}</h2>
+      <p>Welcome, {user.name}!</p>
+      <p>Role: {user.role}</p>
+      <p>Email: {user.email}</p>
+    </div>
+  );
+}
+
+const ProtectedDashboard = withAuth(Dashboard);
+
+// Render Props Usage
+function RenderPropsExample(): JSX.Element {
   return (
     <AuthProvider>
       {({ user, loading, error }) => {
-        if (loading) return <div>Loading...</div>;
-        if (error) return <div>Error: {error}</div>;
-        if (!user) return <LoginForm />;
+        if (loading) return <div>🔄 Loading with render props...</div>;
+        if (error) return <div>❌ Error: {error}</div>;
+        if (!user) return <div>🔒 Please login</div>;
+
+        return (
+          <div>
+            <h3>🎯 Render Props Example</h3>
+            <p>User: {user.name}</p>
+            <p>Role: {user.role}</p>
+          </div>
+        );
+      }}
+    </AuthProvider>
+  );
+}
+
+// Custom Hook Usage
+function CustomHookExample(): JSX.Element {
+  const { user, loading, error, login, logout, refresh } = useAuth();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  const handleLogin = async (): Promise<void> => {
+    await login(email, password);
+  };
+
+  if (loading) return <div>🔄 Loading with custom hook...</div>;
+  if (error) return <div>❌ Error: {error}</div>;
+  if (!user) {
+    return (
+      <div>
+        <h3>🔑 Login with Custom Hook</h3>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        />
+        <button onClick={handleLogin}>🔑 Login</button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h3>🎯 Custom Hook Example</h3>
+      <p>User: {user.name}</p>
+      <p>Role: {user.role}</p>
+      <button onClick={refresh}>🔄 Refresh</button>
+      <button onClick={logout}>🚪 Logout</button>
+    </div>
+  );
+}
+
+// 🎯 5. COMPARISON TABLE
+function PatternComparison(): JSX.Element {
+  return (
+    <div>
+      <h3>📊 Pattern Comparison</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Aspect</th>
+            <th>HOC</th>
+            <th>Render Props</th>
+            <th>Custom Hooks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Learning Curve</strong></td>
+            <td>❌ Complex</td>
+            <td>⚠️ Medium</td>
+            <td>✅ Easy</td>
+          </tr>
+          <tr>
+            <td><strong>TypeScript Support</strong></td>
+            <td>❌ Difficult</td>
+            <td>⚠️ Medium</td>
+            <td>✅ Excellent</td>
+          </tr>
+          <tr>
+            <td><strong>Reusability</strong></td>
+            <td>✅ High</td>
+            <td>✅ High</td>
+            <td>✅ Highest</td>
+          </tr>
+          <tr>
+            <td><strong>Performance</strong></td>
+            <td>⚠️ Can cause issues</td>
+            <td>⚠️ Can cause issues</td>
+            <td>✅ Optimized</td>
+          </tr>
+          <tr>
+            <td><strong>Testing</strong></td>
+            <td>❌ Difficult</td>
+            <td>⚠️ Medium</td>
+            <td>✅ Easy</td>
+          </tr>
+          <tr>
+            <td><strong>Bundle Size</strong></td>
+            <td>⚠️ Can increase</td>
+            <td>⚠️ Can increase</td>
+            <td>✅ Minimal impact</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// 🎯 6. WHEN TO USE WHICH?
+function PatternDecisionGuide(): JSX.Element {
+  return (
+    <div>
+      <h3>🎯 Khi nào dùng pattern nào?</h3>
+
+      <div>
+        <h4>✅ Dùng HOC khi:</h4>
+        <ul>
+          <li>🔧 Legacy codebase cần maintain</li>
+          <li>📦 Third-party libraries sử dụng HOC</li>
+          <li>🎯 Cần wrap nhiều components với same logic</li>
+          <li>👥 Team đã quen với HOC pattern</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng Render Props khi:</h4>
+        <ul>
+          <li>🎨 Cần flexibility cao trong rendering</li>
+          <li>🔄 Logic phức tạp cần custom UI</li>
+          <li>📊 Data visualization components</li>
+          <li>🎯 Cần share logic nhưng UI khác nhau</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>✅ Dùng Custom Hooks khi:</h4>
+        <ul>
+          <li>🚀 New projects hoặc refactoring</li>
+          <li>⚡ Cần performance tốt nhất</li>
+          <li>🧪 Testing dễ dàng</li>
+          <li>📱 Logic cần reuse across components</li>
+          <li>🎯 TypeScript support tốt</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>❌ Tránh khi:</h4>
+        <ul>
+          <li>HOC: Over-wrapping, prop drilling</li>
+          <li>Render Props: Over-engineering simple logic</li>
+          <li>Custom Hooks: Logic quá simple, không cần reuse</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+// 🎯 7. MIGRATION STRATEGY
+function MigrationStrategy(): JSX.Element {
+  return (
+    <div>
+      <h3>🔄 Migration Strategy</h3>
+
+      <div>
+        <h4>HOC → Custom Hooks:</h4>
+        <ol>
+          <li>1️⃣ Extract logic từ HOC thành custom hook</li>
+          <li>2️⃣ Update components để sử dụng hook</li>
+          <li>3️⃣ Remove HOC wrapper</li>
+          <li>4️⃣ Test thoroughly</li>
+        </ol>
+      </div>
+
+      <div>
+        <h4>Render Props → Custom Hooks:</h4>
+        <ol>
+          <li>1️⃣ Extract render function logic thành hook</li>
+          <li>2️⃣ Update component để sử dụng hook directly</li>
+          <li>3️⃣ Remove render props wrapper</li>
+          <li>4️⃣ Simplify component structure</li>
+        </ol>
+      </div>
+    </div>
+  );
+}
+```
 
         return <Dashboard user={user} />;
       }}
@@ -25458,7 +29122,14 @@ interface GoodContract {
 
 **Trả lời:**
 
-Đây là **FUNDAMENTAL QUESTION** về CSS units. Mỗi unit có **USE CASES riêng biệt** và ảnh hưởng khác nhau đến responsive design.
+Đây là **FUNDAMENTAL QUESTION** về CSS units - một trong những concepts quan trọng nhất trong CSS. Mỗi unit có **USE CASES riêng biệt**, **cách hoạt động khác nhau**, và ảnh hưởng trực tiếp đến **responsive design**, **accessibility**, và **maintainability** của ứng dụng.
+
+**CSS Units** là các đơn vị đo lường được sử dụng để định nghĩa kích thước, khoảng cách, và vị trí của các elements trong CSS. Việc chọn đúng unit type không chỉ ảnh hưởng đến giao diện mà còn ảnh hưởng đến **performance**, **scalability**, và **user experience**.
+
+**Ưu điểm và nhược điểm của từng loại:**
+- **`px`**: Cố định, dễ hiểu nhưng không responsive
+- **`em`**: Linh hoạt, scale theo parent nhưng có thể gây compounding issues
+- **`rem`**: Predictable, scale theo root, tốt cho accessibility
 
 #### **🔥 SO SÁNH CHI TIẾT:**
 
@@ -25650,7 +29321,19 @@ interface GoodContract {
 
 **Trả lời:**
 
-Đây là câu hỏi về **CSS ARCHITECTURE** trong modern React apps. Mỗi approach có **trade-offs khác nhau** về maintainability, performance, và developer experience.
+Đây là câu hỏi về **CSS ARCHITECTURE** trong modern React applications - một trong những quyết định quan trọng nhất khi xây dựng scalable frontend projects. Mỗi approach có **trade-offs khác nhau** về **maintainability**, **performance**, **bundle size**, **developer experience**, và **team collaboration**.
+
+**CSS-in-JS** và **CSS Modules** là hai paradigms chính trong modern React development. Việc chọn đúng approach ảnh hưởng trực tiếp đến:
+- **Code organization**: Cách tổ chức và quản lý styles
+- **Performance**: Runtime overhead và bundle size
+- **Developer experience**: TypeScript support, debugging, và tooling
+- **Scalability**: Khả năng mở rộng khi team và project lớn lên
+- **Maintainability**: Dễ dàng maintain và refactor code
+
+**Ưu điểm và nhược điểm của từng approach:**
+- **CSS Modules**: Build-time scoping, excellent performance, limited dynamic styling
+- **Styled Components**: Runtime CSS-in-JS, full TypeScript support, larger bundle size
+- **Inline Styles**: No build step, limited CSS features, good for simple cases
 
 #### **🔥 SO SÁNH TỔNG QUAN:**
 
@@ -26009,7 +29692,20 @@ const AnimatedCard = styled(Card)`
 
 **Trả lời:**
 
-CSS Specificity là **ALGORITHM** để determine style nào sẽ được apply khi có **CONFLICT**. Hiểu rõ specificity là **KEY** để viết maintainable CSS.
+CSS Specificity là **ALGORITHM** quan trọng nhất trong CSS để determine style nào sẽ được apply khi có **CONFLICT** giữa các selectors. Hiểu rõ specificity là **KEY** để viết maintainable, predictable CSS và tránh các vấn đề về styling conflicts.
+
+**CSS Specificity** hoạt động như một hệ thống scoring để browser quyết định rule nào có priority cao nhất. Khi multiple CSS rules target cùng một element, browser sẽ sử dụng specificity để chọn rule nào sẽ được áp dụng.
+
+**Cách hoạt động:**
+- Browser tính toán specificity score cho mỗi selector
+- Selector có score cao nhất sẽ được áp dụng
+- Nếu scores bằng nhau, rule cuối cùng trong CSS sẽ được áp dụng (cascade order)
+
+**Tại sao quan trọng:**
+- **Predictable styling**: Biết chính xác style nào sẽ được áp dụng
+- **Maintainable code**: Tránh sử dụng `!important` không cần thiết
+- **Debugging**: Dễ dàng debug khi styles không hoạt động như mong đợi
+- **Team collaboration**: Mọi người hiểu cùng một cách CSS hoạt động
 
 #### **🔥 SPECIFICITY CALCULATION:**
 
@@ -26274,7 +29970,25 @@ div.nav .item { color: purple; }      /* (0,0,2,1) = 21 */
 
 **Trả lời:**
 
-CSS Position là **LAYOUT MECHANISM** fundamentally khác nhau. Hiểu rõ position là **CRITICAL** cho layout design và element positioning.
+CSS Position là **LAYOUT MECHANISM** cơ bản nhất trong CSS để control cách elements được positioned trong document flow. Hiểu rõ position là **CRITICAL** cho layout design, element positioning, và tạo ra các complex layouts.
+
+**CSS Position** định nghĩa cách một element được positioned trong document. Mỗi position value có **behavior khác nhau** về:
+- **Document flow**: Element có nằm trong normal flow hay không
+- **Positioning context**: Element được positioned relative to cái gì
+- **Stacking context**: Thứ tự z-index và layering
+- **Scrolling behavior**: Element có scroll cùng page hay không
+
+**Cách hoạt động:**
+- Browser sử dụng position property để determine element's final position
+- Positioned elements (absolute, fixed, relative) tạo ra positioning context
+- Z-index chỉ hoạt động với positioned elements
+- Position affects how elements interact với other layout properties
+
+**Tại sao quan trọng:**
+- **Layout control**: Tạo ra complex layouts và overlays
+- **Responsive design**: Position elements relative to different contexts
+- **Performance**: Một số position values có performance implications
+- **Accessibility**: Position affects screen reader navigation
 
 #### **🔥 POSITION TYPES OVERVIEW:**
 
@@ -26627,7 +30341,24 @@ body {
 
 **Trả lời:**
 
-Đây là câu hỏi về **CSS ARCHITECTURE** và **METHODOLOGY**. Ba approaches này solve khác nhau problems trong CSS organization và maintainability.
+Đây là câu hỏi về **CSS ARCHITECTURE** và **METHODOLOGY** - ba approaches khác nhau để solve các vấn đề về CSS organization, maintainability, và scalability trong large-scale projects. Mỗi approach có **strengths riêng** và được sử dụng cho **different purposes**.
+
+**CSS Variables, SCSS, và BEM** là ba pillars của modern CSS architecture:
+- **CSS Variables**: Runtime theming và dynamic values
+- **SCSS**: Build-time preprocessing và advanced features
+- **BEM**: Naming convention và component organization
+
+**Cách hoạt động:**
+- **CSS Variables**: Native browser support, runtime calculation, cascade inheritance
+- **SCSS**: Compile-time processing, advanced features, modular architecture
+- **BEM**: Naming convention, component-based thinking, maintainable selectors
+
+**Tại sao quan trọng:**
+- **Scalability**: Manage CSS trong large projects
+- **Maintainability**: Dễ dàng update và refactor styles
+- **Team collaboration**: Consistent naming và organization
+- **Performance**: Optimize CSS delivery và runtime
+- **Theming**: Support multiple themes và dynamic styling
 
 #### **🔥 OVERVIEW COMPARISON:**
 
@@ -27106,7 +30837,23 @@ $scale: $base-size * $golden-ratio;
 
 **Trả lời:**
 
-Đây là **FUNDAMENTAL HTML** question về **SEMANTIC ELEMENTS**. `div` và `span` có **different display behaviors** và **semantic meanings**.
+Đây là **FUNDAMENTAL HTML** question về **SEMANTIC ELEMENTS** - hai elements cơ bản nhất trong HTML để structure content. `div` và `span` có **different display behaviors**, **semantic meanings**, và **use cases** rất khác nhau.
+
+**`div` và `span`** là generic container elements nhưng có **fundamental differences**:
+- **`div`**: Block-level element, tạo ra new line và có thể chứa other block elements
+- **`span`**: Inline element, không tạo ra new line và chỉ chứa inline content
+
+**Cách hoạt động:**
+- **`div`**: Behaves như block element, có width 100% by default, có thể set width/height
+- **`span`**: Behaves như inline element, width theo content, không thể set width/height
+- **Semantic meaning**: Cả hai đều không có semantic meaning, chỉ là containers
+- **Accessibility**: Screen readers treat chúng khác nhau
+
+**Tại sao quan trọng:**
+- **Layout structure**: Chọn đúng element cho layout purposes
+- **Styling**: Different CSS properties work với different elements
+- **Accessibility**: Screen readers interpret chúng differently
+- **Semantic HTML**: Nên sử dụng semantic elements khi có thể
 
 #### **🔥 CORE DIFFERENCES:**
 
@@ -27494,7 +31241,25 @@ span {
 
 **Trả lời:**
 
-CSS Box Model là **FUNDAMENTAL CONCEPT** của web layout. Hiểu rõ **margin vs padding** và **box-sizing** là **CRITICAL** cho precise layout control.
+CSS Box Model là **FUNDAMENTAL CONCEPT** của web layout - foundation của tất cả CSS positioning và spacing. Hiểu rõ **margin vs padding** và **box-sizing** là **CRITICAL** cho precise layout control, responsive design, và debugging CSS issues.
+
+**CSS Box Model** định nghĩa cách browser calculates space mà một element chiếm dụng. Mỗi element được wrap trong một box với các layers khác nhau:
+- **Content**: Nội dung thực tế của element
+- **Padding**: Space giữa content và border
+- **Border**: Line bao quanh padding
+- **Margin**: Space bên ngoài border
+
+**Cách hoạt động:**
+- Browser tính toán total size của element dựa trên box model
+- **box-sizing** property determines cách width/height được calculated
+- **margin** và **padding** có different behaviors và collapse rules
+- **Box model** affects layout flow và element positioning
+
+**Tại sao quan trọng:**
+- **Layout precision**: Control exact spacing và positioning
+- **Responsive design**: Predictable behavior across devices
+- **Debugging**: Hiểu tại sao elements không align correctly
+- **Performance**: Efficient layout calculations
 
 #### **🔥 BOX MODEL ANATOMY:**
 
@@ -27903,7 +31668,27 @@ Total width calculation:
 
 **Trả lời:**
 
-Building a **SCALABLE THEME SYSTEM** là essential cho modern applications. **CSS Variables + Design Tokens** tạo ra **CONSISTENT**, **MAINTAINABLE** và **ACCESSIBLE** design system.
+Building a **SCALABLE THEME SYSTEM** là essential cho modern applications - một approach systematic để manage design consistency, maintainability, và accessibility across large-scale projects. **CSS Variables + Design Tokens** tạo ra **CONSISTENT**, **MAINTAINABLE** và **ACCESSIBLE** design system.
+
+**Theme System** là một structured approach để manage visual design elements:
+- **Design Tokens**: Atomic design values (colors, spacing, typography)
+- **CSS Variables**: Runtime implementation của design tokens
+- **Theme Architecture**: Hierarchical organization của design system
+- **Consistency**: Unified visual language across components
+
+**Cách hoạt động:**
+- **Design Tokens**: Define design values at design level
+- **CSS Variables**: Implement tokens as CSS custom properties
+- **Theme Switching**: Runtime theme changes without rebuild
+- **Cascade Inheritance**: Tokens inherit và override through cascade
+- **Type Safety**: TypeScript integration cho design tokens
+
+**Tại sao quan trọng:**
+- **Consistency**: Unified design language across app
+- **Maintainability**: Centralized design management
+- **Scalability**: Easy to add new themes và variations
+- **Accessibility**: Built-in support cho high contrast, reduced motion
+- **Performance**: Efficient theme switching without page reload
 
 #### **🔥 DESIGN TOKENS HIERARCHY:**
 
@@ -28476,7 +32261,25 @@ export const useTheme = (): ThemeContextType => {
 
 **Trả lời:**
 
-CSS Reset và Normalize là **FOUNDATION STRATEGIES** để handle **BROWSER INCONSISTENCIES**. Hiểu rõ differences và khi nào sử dụng là **CRUCIAL** cho consistent cross-browser design.
+CSS Reset và Normalize là **FOUNDATION STRATEGIES** để handle **BROWSER INCONSISTENCIES** - một trong những challenges lớn nhất trong web development. Hiểu rõ differences và khi nào sử dụng là **CRUCIAL** cho consistent cross-browser design và predictable styling behavior.
+
+**Browser Inconsistencies** là vấn đề cơ bản trong web development:
+- **Default styles**: Mỗi browser có default CSS styles khác nhau
+- **Box model differences**: Cách tính toán spacing và sizing
+- **Font rendering**: Different font sizes và line heights
+- **Form elements**: Styling của inputs, buttons, selects
+
+**Cách hoạt động:**
+- **CSS Reset**: Removes tất cả default styles, starts from scratch
+- **Normalize**: Preserves useful defaults, fixes inconsistencies
+- **Custom Reset**: Hybrid approach, selective resetting
+- **Modern CSS**: CSS custom properties và modern selectors
+
+**Tại sao quan trọng:**
+- **Cross-browser consistency**: Same appearance across browsers
+- **Predictable styling**: Know exactly what styles are applied
+- **Performance**: Reduce CSS conflicts và overrides
+- **Maintainability**: Easier to debug và maintain styles
 
 #### **🔥 BROWSER DEFAULT STYLES PROBLEM:**
 
@@ -29117,7 +32920,25 @@ button, .ui-element {
 
 **Trả lời:**
 
-**Pseudo-classes** và **Pseudo-elements** là **POWERFUL CSS SELECTORS** để target elements based on **STATE** hoặc **STRUCTURE**. Hiểu rõ differences và use cases là **ESSENTIAL** cho advanced CSS.
+**Pseudo-classes** và **Pseudo-elements** là **POWERFUL CSS SELECTORS** để target elements based on **STATE** hoặc **STRUCTURE** - một trong những features mạnh mẽ nhất của CSS để tạo ra interactive và dynamic styling. Hiểu rõ differences và use cases là **ESSENTIAL** cho advanced CSS development.
+
+**Pseudo-classes và Pseudo-elements** là hai loại selectors đặc biệt:
+- **Pseudo-classes**: Target elements based on state hoặc position
+- **Pseudo-elements**: Target specific parts của elements hoặc tạo ra virtual elements
+- **Syntax difference**: Single colon (`:`) vs double colon (`::`)
+- **DOM impact**: No DOM changes vs creates virtual elements
+
+**Cách hoạt động:**
+- **Pseudo-classes**: Browser evaluates element state, applies styles conditionally
+- **Pseudo-elements**: Browser creates virtual elements, styles them separately
+- **Cascade**: Both follow normal CSS cascade rules
+- **Specificity**: Have different specificity values
+
+**Tại sao quan trọng:**
+- **Interactive design**: Create hover, focus, active states
+- **Content generation**: Add content without HTML changes
+- **Styling flexibility**: Target specific parts của elements
+- **Performance**: Efficient way to create complex styling
 
 #### **🔥 PSEUDO-CLASSES vs PSEUDO-ELEMENTS:**
 
@@ -29691,7 +33512,25 @@ button, .ui-element {
 
 **Trả lời:**
 
-`display: none` và `visibility: hidden` đều **HIDE ELEMENTS** nhưng có **FUNDAMENTAL DIFFERENCES** về **DOM flow**, **performance**, và **browser rendering**. Hiểu rõ differences là **CRUCIAL** cho optimization.
+`display: none` và `visibility: hidden` đều **HIDE ELEMENTS** nhưng có **FUNDAMENTAL DIFFERENCES** về **DOM flow**, **performance**, và **browser rendering** - một trong những concepts quan trọng nhất cho CSS performance optimization. Hiểu rõ differences là **CRUCIAL** cho optimization và debugging performance issues.
+
+**Element Hiding** là common requirement trong web development:
+- **`display: none`**: Completely removes element from document flow
+- **`visibility: hidden`**: Hides element but preserves space
+- **Performance impact**: Different rendering behaviors affect performance
+- **Use cases**: Different scenarios require different approaches
+
+**Cách hoạt động:**
+- **`display: none`**: Element không được render, không chiếm space, không trigger events
+- **`visibility: hidden`**: Element được render nhưng invisible, chiếm space, không trigger events
+- **Browser rendering**: Different impact on layout calculations
+- **JavaScript access**: Different behavior với DOM APIs
+
+**Tại sao quan trọng:**
+- **Performance optimization**: Choose right method cho performance
+- **Layout stability**: Avoid layout shifts và reflows
+- **Animation performance**: Smooth transitions và animations
+- **Memory usage**: Efficient resource management
 
 #### **🔥 CORE DIFFERENCES:**
 
@@ -30220,7 +34059,25 @@ tester.runPerformanceTest();
 
 **Trả lời:**
 
-**Flexbox** và **CSS Grid** là hai **POWERFUL LAYOUT SYSTEMS** với **different strengths**. Hiểu rõ **when to use what** là **CRITICAL** cho optimal layout design và performance.
+**Flexbox** và **CSS Grid** là hai **POWERFUL LAYOUT SYSTEMS** với **different strengths** - hai paradigms chính trong modern CSS layout. Hiểu rõ **when to use what** là **CRITICAL** cho optimal layout design, performance, và maintainable code.
+
+**Layout Systems** là foundation của modern web design:
+- **Flexbox**: 1D layout system, perfect cho components và UI elements
+- **CSS Grid**: 2D layout system, ideal cho page layouts và complex grids
+- **Different purposes**: Each solves different layout problems
+- **Complementary**: Often used together trong same project
+
+**Cách hoạt động:**
+- **Flexbox**: Arranges items along single axis (row hoặc column)
+- **CSS Grid**: Arranges items in two dimensions (rows và columns)
+- **Content-driven vs Container-driven**: Different approaches to sizing
+- **Alignment**: Different alignment capabilities và use cases
+
+**Tại sao quan trọng:**
+- **Layout efficiency**: Choose right tool cho right job
+- **Performance**: Optimal rendering performance
+- **Maintainability**: Easier to maintain và modify layouts
+- **Responsive design**: Better responsive behavior
 
 #### **🔥 FUNDAMENTAL DIFFERENCES:**
 
@@ -30804,7 +34661,25 @@ tester.runPerformanceTest();
 
 **Trả lời:**
 
-**CSS Frameworks** solve different problems: **Utility-first** (Tailwind), **Component-based** (MUI), và **Enterprise-ready** (Ant Design). Chọn đúng framework là **CRITICAL** cho project success và developer productivity.
+**CSS Frameworks** solve different problems: **Utility-first** (Tailwind), **Component-based** (MUI), và **Enterprise-ready** (Ant Design) - ba approaches khác nhau để accelerate development và ensure consistency. Chọn đúng framework là **CRITICAL** cho project success, developer productivity, và long-term maintainability.
+
+**CSS Frameworks** là pre-built solutions để solve common styling challenges:
+- **Tailwind CSS**: Utility-first approach, low-level utilities
+- **Material-UI (MUI)**: Component-based, Material Design system
+- **Ant Design**: Enterprise-ready, comprehensive component library
+- **Different philosophies**: Each has different design philosophy
+
+**Cách hoạt động:**
+- **Tailwind**: Utility classes, build-time purging, highly customizable
+- **MUI**: Pre-built components, theme system, TypeScript support
+- **Ant Design**: Complete design system, enterprise features, less customizable
+- **Bundle size**: Different impact on final bundle size
+
+**Tại sao quan trọng:**
+- **Development speed**: Faster development với pre-built solutions
+- **Consistency**: Unified design language across application
+- **Maintainability**: Easier to maintain với established patterns
+- **Team collaboration**: Common knowledge base cho team
 
 #### **🔥 FRAMEWORK COMPARISON OVERVIEW:**
 
@@ -31552,7 +35427,25 @@ const antBundleSize = {
 
 **Trả lời:**
 
-**HTML5 Semantic Elements** provide **MEANINGFUL STRUCTURE** và **ACCESSIBILITY** cho modern web applications. Using semantic HTML là **FOUNDATION** cho SEO, accessibility, và maintainable code.
+**HTML5 Semantic Elements** provide **MEANINGFUL STRUCTURE** và **ACCESSIBILITY** cho modern web applications - một evolution quan trọng từ generic `<div>` elements sang meaningful, accessible markup. Using semantic HTML là **FOUNDATION** cho SEO, accessibility, maintainable code, và modern web standards.
+
+**Semantic HTML** là approach để write HTML với meaningful elements:
+- **Meaningful structure**: Elements có semantic meaning thay vì generic containers
+- **Accessibility**: Screen readers và assistive technologies hiểu content better
+- **SEO benefits**: Search engines understand content structure
+- **Maintainability**: Code dễ hiểu và maintain hơn
+
+**Cách hoạt động:**
+- **Browser interpretation**: Browsers understand semantic meaning của elements
+- **Screen reader support**: Assistive technologies navigate by semantic structure
+- **SEO crawling**: Search engines use semantic structure để understand content
+- **CSS styling**: Semantic elements có default styling và behavior
+
+**Tại sao quan trọng:**
+- **Accessibility**: Better experience cho users với disabilities
+- **SEO**: Improved search engine ranking và visibility
+- **Code quality**: More maintainable và self-documenting code
+- **Future-proofing**: Follows web standards và best practices
 
 #### **🔥 SEMANTIC ELEMENTS OVERVIEW:**
 
@@ -32197,7 +36090,25 @@ const SemanticNav: React.FC<{
 
 **Trả lời:**
 
-`defer` và `async` attributes control **SCRIPT LOADING BEHAVIOR** và **EXECUTION TIMING**. Understanding these attributes là **CRITICAL** cho **page performance** và **proper script execution order**.
+`defer` và `async` attributes control **SCRIPT LOADING BEHAVIOR** và **EXECUTION TIMING** - một trong những optimizations quan trọng nhất cho page performance. Understanding these attributes là **CRITICAL** cho **page performance**, **proper script execution order**, và **optimal user experience**.
+
+**Script Loading** là critical aspect của web performance:
+- **Blocking behavior**: Scripts có thể block HTML parsing
+- **Execution timing**: Khi nào scripts được execute
+- **Dependencies**: Scripts có thể depend on each other
+- **Performance impact**: Different loading strategies affect page speed
+
+**Cách hoạt động:**
+- **Default behavior**: Scripts block parsing và execute immediately
+- **`async`**: Download parallel, execute immediately when ready
+- **`defer`**: Download parallel, execute after DOM is ready
+- **Browser optimization**: Modern browsers optimize script loading
+
+**Tại sao quan trọng:**
+- **Page performance**: Faster page load times
+- **User experience**: Better perceived performance
+- **SEO**: Page speed affects search rankings
+- **Core Web Vitals**: Impacts LCP, FID, CLS metrics
 
 #### **🔥 SCRIPT LOADING BEHAVIOR:**
 
