@@ -1,4 +1,4 @@
-# 📚 JavaScript Core Fundamentals - Câu Hỏi Phỏng Vấn
+# 📚 JavaScript Core Fundamentals 
 
 > **Tất cả examples được viết bằng TypeScript với chú thích tiếng Việt chi tiết**
 > **Highlight các nội dung quan trọng để dễ hiểu và nhớ lâu**
