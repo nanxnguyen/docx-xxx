@@ -6,19 +6,19 @@
 ## 🎯 **Mục Lục**
 
 ### **Phần 1: Data Types & Memory Management**
-- [Q1: Primitive vs Reference Values](#q1-primitive-vs-reference-values)
+- [Q1: Primitive vs Reference Values - Giá Trị Nguyên Thủy vs Tham Chiếu](#q1-primitive-vs-reference-values---giá-trị-nguyên-thủy-vs-tham-chiếu)
 - [Q2: Immutable vs Mutable](#q2-immutable-vs-mutable)
 - [Q3: Deep Copy vs Shallow Copy](#q3-deep-copy-vs-shallow-copy)
 - [Q4: Spread Operator (...)](#q4-spread-operator)
 
 ### **Phần 2: ES5 vs ES6+ Features**
-- [Q5: ES5 vs ES6+ Features](#q5-es5-vs-es6-features)
+- [Q5: ES5 vs ES6+ Features - So Sánh Chi Tiết](#q5-es5-vs-es6-features---so-sánh-chi-tiết)
 - [Q6: let, const, var](#q6-let-const-var)
 - [Q7: Hoisting](#q7-hoisting)
 - [Q8: Set/Map, WeakSet/WeakMap](#q8-setmap-weaksetset-weakmap)
 
 ### **Phần 3: JavaScript Engine & Event Loop**
-- [Q9: Call Stack, Callback Queue, Event Loop](#q9-call-stack-callback-queue-event-loop)
+- [Q9: Call Stack, Callback Queue, Event Loop - Cơ Chế Hoạt Động JavaScript](#q9-call-stack-callback-queue-event-loop---cơ-chế-hoạt-động-javascript)
 - [Q10: Event Loop - Giải thích đơn giản](#q10-event-loop-giải-thích-đơn-giản)
 - [Q11: Web APIs (setTimeout, DOM Events)](#q11-web-apis-settimeout-dom-events)
 - [Q12: Microtask vs Macrotask](#q12-microtask-vs-macrotask)
@@ -54,7 +54,7 @@
 
 ### **Phần 9: Advanced Topics**
 - [Q32: Functional Programming - Pure Functions, Currying & HOF](#q32-functional-programming---pure-functions-currying--hof)
-- [Q33: Browser Rendering (Paint, Repaint, Reflow)](#q33-browser-rendering)
+- [Q33: Browser Rendering (Paint, Repaint, Reflow)](#q33-browser-rendering-paint-repaint-reflow)
 - [Q34: Loop Performance](#q34-loop-performance)
 - [Q35: Strict Mode](#q35-strict-mode)
 - [Q36: JavaScript Proxy](#q36-javascript-proxy)
@@ -75,6 +75,11 @@
 - [Q43: Dynamic Import & Module System](#q43-dynamic-import--module-system)
 - [Q44: Advanced Array & Object Methods](#q44-advanced-array--object-methods)
 - [Q45: Advanced Object Concepts](#q45-advanced-object-concepts)
+
+### **Phần 14: Advanced Mistakes & Security**
+- [Q46: Common JavaScript Mistakes - Lỗi Thường Gặp](#q46-common-javascript-mistakes---lỗi-thường-gặp)
+- [Q47: JavaScript Security Vulnerabilities - Lỗ Hổng Bảo Mật](#q47-javascript-security-vulnerabilities---lỗ-hổng-bảo-mật)
+- [Q48: Performance Anti-Patterns - Anti-Patterns Hiệu Suất](#q48-performance-anti-patterns---anti-patterns-hiệu-suất)
 
 ---
 
@@ -4464,9 +4469,514 @@ obj.a.b = 2; // Error in strict mode
 
 ---
 
+## **Phần 14: Advanced Mistakes & Security**
+
+### **Q46: Common JavaScript Mistakes - Lỗi Thường Gặp**
+
+**Trả lời:**
+- **🔥 Type Coercion Mistakes**: Sử dụng `==` thay vì `===`, unexpected type conversions
+- **🎯 Scope & Hoisting Issues**: `var` hoisting, temporal dead zone với `let/const`
+- **⚡ Async/Await Mistakes**: Không handle errors, missing await keywords
+- **✅ Memory Leaks**: Event listeners không cleanup, circular references
+- **⚠️ Performance Issues**: Inefficient loops, DOM manipulation trong loops
+
+**Code Example:**
+```typescript
+// 🔥 Type Coercion Mistakes (Lỗi ép kiểu)
+// ❌ Sai: Sử dụng == thay vì ===
+console.log(0 == false);     // true - unexpected!
+console.log("" == 0);        // true - dangerous!
+console.log(null == undefined); // true - confusing!
+
+// ✅ Đúng: Sử dụng ===
+console.log(0 === false);    // false - clear
+console.log("" === 0);       // false - safe
+console.log(null === undefined); // false - explicit
+
+// 🎯 Scope & Hoisting Issues (Vấn đề phạm vi và hoisting)
+// ❌ Sai: var hoisting confusion
+console.log(x); // undefined - not error!
+var x = 5;
+
+// ❌ Sai: temporal dead zone
+console.log(y); // ReferenceError!
+let y = 5;
+
+// ✅ Đúng: declare trước khi sử dụng
+let z = 5;
+console.log(z); // 5
+
+// ⚡ Async/Await Mistakes (Lỗi async/await)
+// ❌ Sai: Không handle errors
+async function fetchData() {
+  const response = await fetch('/api/data');
+  const data = await response.json(); // Có thể throw error
+  return data;
+}
+
+// ✅ Đúng: Handle errors properly
+async function fetchData() {
+  try {
+    const response = await fetch('/api/data');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Fetch error:', error);
+    throw error;
+  }
+}
+
+// ✅ Memory Leaks (Rò rỉ bộ nhớ)
+// ❌ Sai: Event listeners không cleanup
+function addClickListener() {
+  document.addEventListener('click', handleClick);
+  // Không remove listener - memory leak!
+}
+
+// ✅ Đúng: Cleanup event listeners
+function addClickListener() {
+  const handler = (e: Event) => handleClick(e);
+  document.addEventListener('click', handler);
+
+  // Return cleanup function
+  return () => {
+    document.removeEventListener('click', handler);
+  };
+}
+
+// ✅ Performance Issues (Vấn đề hiệu suất)
+// ❌ Sai: DOM manipulation trong loop
+const items = [1, 2, 3, 4, 5];
+for (let i = 0; i < items.length; i++) {
+  document.getElementById('list').innerHTML += `<li>${items[i]}</li>`;
+  // Mỗi lần thay đổi DOM trigger reflow!
+}
+
+// ✅ Đúng: Batch DOM updates
+const items = [1, 2, 3, 4, 5];
+const listElement = document.getElementById('list');
+const fragment = document.createDocumentFragment();
+
+items.forEach(item => {
+  const li = document.createElement('li');
+  li.textContent = item.toString();
+  fragment.appendChild(li);
+});
+
+listElement.appendChild(fragment); // Single DOM update
+
+// 🔥 Advanced Mistakes (Lỗi nâng cao)
+// ❌ Sai: Circular references
+let obj1: any = { name: 'obj1' };
+let obj2: any = { name: 'obj2' };
+obj1.ref = obj2;
+obj2.ref = obj1; // Circular reference - memory leak!
+
+// ✅ Đúng: WeakMap cho circular references
+const refs = new WeakMap();
+let obj1: any = { name: 'obj1' };
+let obj2: any = { name: 'obj2' };
+refs.set(obj1, obj2);
+refs.set(obj2, obj1); // WeakMap allows garbage collection
+
+// ❌ Sai: Prototype pollution
+const obj: any = {};
+obj.__proto__.isAdmin = true; // Dangerous!
+
+// ✅ Đúng: Object.create(null) hoặc Object.freeze
+const obj = Object.create(null); // No prototype
+// hoặc
+Object.freeze(Object.prototype); // Prevent modification
+```
+
+**🎯 Best Practices:**
+- **✅ Luôn sử dụng `===`** thay vì `==` để tránh type coercion
+- **✅ Sử dụng `let/const`** thay vì `var` để tránh hoisting issues
+- **✅ Handle errors** trong async/await với try/catch
+- **✅ Cleanup resources** (event listeners, timers, subscriptions)
+- **✅ Batch DOM updates** để tránh multiple reflows
+- **✅ Sử dụng WeakMap/WeakSet** cho circular references
+
+---
+
+### **Q47: JavaScript Security Vulnerabilities - Lỗ Hổng Bảo Mật**
+
+**Trả lời:**
+- **🔥 XSS (Cross-Site Scripting)**: Inject malicious scripts vào web pages
+- **🎯 CSRF (Cross-Site Request Forgery)**: Force users thực hiện unwanted actions
+- **⚡ Prototype Pollution**: Modify Object.prototype gây unexpected behavior
+- **✅ Code Injection**: Execute arbitrary code thông qua eval() hoặc similar
+- **⚠️ Information Disclosure**: Expose sensitive data trong client-side code
+
+**Code Example:**
+```typescript
+// 🔥 XSS (Cross-Site Scripting) Vulnerabilities
+// ❌ Nguy hiểm: Direct innerHTML với user input
+function displayUserInput(userInput: string) {
+  document.getElementById('output').innerHTML = userInput;
+  // Nếu userInput = "<script>alert('XSS')</script>" - nguy hiểm!
+}
+
+// ✅ An toàn: Sanitize input hoặc sử dụng textContent
+function displayUserInput(userInput: string) {
+  const output = document.getElementById('output');
+  output.textContent = userInput; // Safe - không execute HTML
+}
+
+// ✅ An toàn: Sử dụng DOMPurify để sanitize
+import DOMPurify from 'dompurify';
+function displayUserInput(userInput: string) {
+  const cleanInput = DOMPurify.sanitize(userInput);
+  document.getElementById('output').innerHTML = cleanInput;
+}
+
+// 🎯 CSRF (Cross-Site Request Forgery) Protection
+// ❌ Nguy hiểm: Không có CSRF token
+async function transferMoney(amount: number, toAccount: string) {
+  const response = await fetch('/api/transfer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amount, toAccount })
+  });
+  // Có thể bị CSRF attack!
+}
+
+// ✅ An toàn: Sử dụng CSRF token
+async function transferMoney(amount: number, toAccount: string) {
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+  const response = await fetch('/api/transfer', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': csrfToken || ''
+    },
+    body: JSON.stringify({ amount, toAccount })
+  });
+}
+
+// ⚡ Prototype Pollution Prevention
+// ❌ Nguy hiểm: Merge objects không kiểm tra
+function mergeObjects(target: any, source: any) {
+  for (const key in source) {
+    target[key] = source[key]; // Có thể modify prototype!
+  }
+  return target;
+}
+
+// ✅ An toàn: Kiểm tra hasOwnProperty
+function mergeObjects(target: any, source: any) {
+  for (const key in source) {
+    if (source.hasOwnProperty(key)) {
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+
+// ✅ An toàn: Sử dụng Object.create(null)
+const safeObject = Object.create(null); // No prototype
+safeObject.__proto__ = { malicious: true }; // Không hoạt động
+
+// ✅ Code Injection Prevention
+// ❌ Nguy hiểm: Sử dụng eval()
+function executeUserCode(userCode: string) {
+  return eval(userCode); // Cực kỳ nguy hiểm!
+}
+
+// ✅ An toàn: Sử dụng Function constructor với validation
+function executeUserCode(userCode: string) {
+  // Validate code trước khi execute
+  if (!isValidCode(userCode)) {
+    throw new Error('Invalid code');
+  }
+
+  // Sử dụng sandbox environment
+  return new Function('return ' + userCode)();
+}
+
+// ✅ Information Disclosure Prevention
+// ❌ Nguy hiểm: Expose sensitive data trong client
+const API_KEY = 'secret-api-key-12345'; // Visible trong source code!
+const DATABASE_URL = 'mongodb://user:password@localhost/db';
+
+// ✅ An toàn: Sử dụng environment variables
+const API_KEY = process.env.REACT_APP_API_KEY; // Chỉ trong build time
+// Hoặc fetch từ secure endpoint
+async function getApiKey() {
+  const response = await fetch('/api/get-key', {
+    credentials: 'include' // Include cookies
+  });
+  return response.json();
+}
+
+// 🔥 Content Security Policy (CSP)
+// ✅ Implement CSP headers
+const cspHeader = `
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://trusted-cdn.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https:;
+  connect-src 'self' https://api.example.com;
+`;
+
+// ✅ Sử dụng nonce cho inline scripts
+const nonce = generateNonce();
+const script = document.createElement('script');
+script.nonce = nonce;
+script.textContent = 'console.log("Safe inline script")';
+document.head.appendChild(script);
+
+// 🎯 Secure Coding Practices
+// ✅ Input validation
+function validateInput(input: string): boolean {
+  // Whitelist approach
+  const allowedPattern = /^[a-zA-Z0-9\s]+$/;
+  return allowedPattern.test(input) && input.length <= 100;
+}
+
+// ✅ Output encoding
+function encodeOutput(input: string): string {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+// ✅ Secure random generation
+function generateSecureToken(): string {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+}
+```
+
+**🎯 Security Best Practices:**
+- **✅ Luôn validate và sanitize** user input
+- **✅ Sử dụng HTTPS** cho tất cả communications
+- **✅ Implement CSP** để prevent XSS attacks
+- **✅ Sử dụng CSRF tokens** cho state-changing operations
+- **✅ Không expose sensitive data** trong client-side code
+- **✅ Sử dụng secure random generators** cho tokens và keys
+- **✅ Regular security audits** và dependency updates
+
+---
+
+### **Q48: Performance Anti-Patterns - Anti-Patterns Hiệu Suất**
+
+**Trả lời:**
+- **🔥 Memory Leaks**: Event listeners, timers, closures không cleanup
+- **🎯 Inefficient DOM Operations**: Multiple reflows, unnecessary DOM queries
+- **⚡ Blocking Operations**: Synchronous operations trong main thread
+- **✅ Inefficient Loops**: Nested loops, unnecessary iterations
+- **⚠️ Poor Caching**: Không cache expensive operations
+
+**Code Example:**
+```typescript
+// 🔥 Memory Leak Anti-Patterns
+// ❌ Sai: Event listeners không cleanup
+class Component {
+  constructor() {
+    window.addEventListener('resize', this.handleResize);
+    // Không cleanup - memory leak!
+  }
+
+  handleResize = () => {
+    // Handle resize
+  };
+}
+
+// ✅ Đúng: Cleanup event listeners
+class Component {
+  private cleanup: (() => void)[] = [];
+
+  constructor() {
+    const handler = this.handleResize.bind(this);
+    window.addEventListener('resize', handler);
+
+    this.cleanup.push(() => {
+      window.removeEventListener('resize', handler);
+    });
+  }
+
+  destroy() {
+    this.cleanup.forEach(cleanup => cleanup());
+  }
+
+  private handleResize = () => {
+    // Handle resize
+  };
+}
+
+// 🎯 Inefficient DOM Operations
+// ❌ Sai: Multiple DOM queries và reflows
+function updateElements() {
+  for (let i = 0; i < 1000; i++) {
+    const element = document.getElementById(`item-${i}`); // DOM query mỗi lần
+    element.style.width = '100px';  // Trigger reflow
+    element.style.height = '100px'; // Trigger reflow again
+    element.style.backgroundColor = 'red'; // Trigger repaint
+  }
+}
+
+// ✅ Đúng: Batch DOM operations
+function updateElements() {
+  const elements = document.querySelectorAll('[id^="item-"]'); // Single query
+  const fragment = document.createDocumentFragment();
+
+  elements.forEach(element => {
+    // Batch style changes
+    element.style.cssText = 'width: 100px; height: 100px; background-color: red;';
+  });
+
+  // Single reflow/repaint
+}
+
+// ⚡ Blocking Operations Anti-Patterns
+// ❌ Sai: Blocking main thread
+function processLargeData(data: number[]) {
+  let result = 0;
+  for (let i = 0; i < data.length; i++) {
+    result += Math.sqrt(data[i]); // Blocking operation
+  }
+  return result;
+}
+
+// ✅ Đúng: Use Web Workers hoặc chunking
+function processLargeData(data: number[]): Promise<number> {
+  return new Promise((resolve) => {
+    const chunkSize = 1000;
+    let result = 0;
+    let index = 0;
+
+    function processChunk() {
+      const end = Math.min(index + chunkSize, data.length);
+
+      for (let i = index; i < end; i++) {
+        result += Math.sqrt(data[i]);
+      }
+
+      index = end;
+
+      if (index < data.length) {
+        // Yield control back to browser
+        setTimeout(processChunk, 0);
+      } else {
+        resolve(result);
+      }
+    }
+
+    processChunk();
+  });
+}
+
+// ✅ Inefficient Loop Anti-Patterns
+// ❌ Sai: Nested loops với unnecessary operations
+function findDuplicates(arr1: number[], arr2: number[]): number[] {
+  const duplicates: number[] = [];
+
+  for (let i = 0; i < arr1.length; i++) {
+    for (let j = 0; j < arr2.length; j++) {
+      if (arr1[i] === arr2[j]) {
+        duplicates.push(arr1[i]);
+      }
+    }
+  }
+
+  return duplicates;
+}
+
+// ✅ Đúng: Sử dụng Set cho O(1) lookup
+function findDuplicates(arr1: number[], arr2: number[]): number[] {
+  const set2 = new Set(arr2);
+  return arr1.filter(item => set2.has(item));
+}
+
+// ✅ Poor Caching Anti-Patterns
+// ❌ Sai: Không cache expensive operations
+function expensiveCalculation(n: number): number {
+  // Simulate expensive operation
+  let result = 0;
+  for (let i = 0; i < n * 1000000; i++) {
+    result += Math.random();
+  }
+  return result;
+}
+
+// Gọi nhiều lần với cùng input
+console.log(expensiveCalculation(5)); // Expensive
+console.log(expensiveCalculation(5)); // Expensive again!
+
+// ✅ Đúng: Implement caching
+const calculationCache = new Map<number, number>();
+
+function expensiveCalculation(n: number): number {
+  if (calculationCache.has(n)) {
+    return calculationCache.get(n)!;
+  }
+
+  let result = 0;
+  for (let i = 0; i < n * 1000000; i++) {
+    result += Math.random();
+  }
+
+  calculationCache.set(n, result);
+  return result;
+}
+
+// 🔥 Advanced Performance Anti-Patterns
+// ❌ Sai: Unnecessary object creation trong loops
+function processItems(items: string[]) {
+  const results: string[] = [];
+
+  items.forEach(item => {
+    const processor = new ItemProcessor(); // New object mỗi lần
+    results.push(processor.process(item));
+  });
+
+  return results;
+}
+
+// ✅ Đúng: Reuse objects
+function processItems(items: string[]) {
+  const processor = new ItemProcessor(); // Single instance
+  return items.map(item => processor.process(item));
+}
+
+// ❌ Sai: Inefficient string concatenation
+function buildString(parts: string[]): string {
+  let result = '';
+  for (const part of parts) {
+    result += part; // Creates new string mỗi lần
+  }
+  return result;
+}
+
+// ✅ Đúng: Sử dụng array join
+function buildString(parts: string[]): string {
+  return parts.join('');
+}
+```
+
+**🎯 Performance Best Practices:**
+- **✅ Cleanup resources** (event listeners, timers, subscriptions)
+- **✅ Batch DOM operations** để minimize reflows/repaints
+- **✅ Use Web Workers** cho CPU-intensive tasks
+- **✅ Implement caching** cho expensive operations
+- **✅ Optimize algorithms** (use appropriate data structures)
+- **✅ Profile và measure** performance trước khi optimize
+- **✅ Use browser DevTools** để identify bottlenecks
+
+---
+
 ## **🎯 Tổng Kết - JavaScript Core Fundamentals**
 
-> **📊 Tổng quan**: 45 câu hỏi cốt lõi JavaScript được phân chia thành 13 chủ đề chính, từ cơ bản đến nâng cao
+> **📊 Tổng quan**: 48 câu hỏi cốt lõi JavaScript được phân chia thành 14 chủ đề chính, từ cơ bản đến nâng cao
 
 ---
 
@@ -4630,12 +5140,15 @@ const processUser = pipe(
 - Kỹ thuật thao tác object
 - Chiến lược xử lý lỗi
 
-### **🔴 Cấp Senior (Q26-Q45)**
+### **🔴 Cấp Senior (Q26-Q48)**
 **Tập trung**: Kiến trúc, hiệu suất, khả năng bảo trì
 - Patterns async nâng cao
 - Khái niệm lập trình hàm
 - Tối ưu rendering trình duyệt
 - Kỹ thuật metaprogramming
+- Lỗi thường gặp và cách tránh
+- Bảo mật và lỗ hổng JavaScript
+- Anti-patterns hiệu suất
 
 ---
 
@@ -4653,6 +5166,8 @@ const processUser = pipe(
 - **Backend Node.js**: Patterns async, xử lý lỗi, quản lý bộ nhớ
 - **Tối ưu trình duyệt**: Hiệu suất rendering, thao tác DOM
 - **Kiến trúc code**: Module patterns, lập trình hàm
+- **Bảo mật ứng dụng**: XSS, CSRF, input validation, secure coding
+- **Debugging & Performance**: Memory leaks, anti-patterns, optimization
 
 ---
 
@@ -4682,4 +5197,3 @@ const processUser = pipe(
 
 > **🏗️ Kiến Trúc Quan Trọng**: Chọn đúng patterns cho đúng vấn đề. Đừng over-engineer, nhưng cũng đừng under-engineer.
 
-**🎉 Chúc mừng! Bạn giờ đã có hiểu biết toàn diện về JavaScript Core Fundamentals. Sử dụng kiến thức này để xây dựng những ứng dụng tuyệt vời và vượt qua các cuộc phỏng vấn!** 🚀
