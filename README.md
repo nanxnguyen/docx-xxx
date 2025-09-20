@@ -1,4 +1,4 @@
-# 📚 Câu Hỏi Frontend Interview - Từ Cơ Bản Đến Senior
+# 📚 Câu Hỏi 
 
 > **Tổng cộng: 23 câu hỏi cơ bản/trung cấp + 25 câu nâng cao + 7 câu React advanced + 10 câu TypeScript + 15 câu CSS/HTML + 9 câu kinh nghiệm = 89 câu hỏi**
 > RULE
