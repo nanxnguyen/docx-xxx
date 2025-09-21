@@ -1,4 +1,4 @@
-# 📚 JavaScript Core Fundamentals 
+# 📚 JavaScript Core Fundamentals - Câu Hỏi Phỏng Vấn
 
 > **Tất cả examples được viết bằng TypeScript với chú thích tiếng Việt chi tiết**
 > **Highlight các nội dung quan trọng để dễ hiểu và nhớ lâu**
@@ -9,17 +9,17 @@
 - [Q1: Primitive vs Reference Values - Giá Trị Nguyên Thủy vs Tham Chiếu](#q1-primitive-vs-reference-values---giá-trị-nguyên-thủy-vs-tham-chiếu)
 - [Q2: Immutable vs Mutable](#q2-immutable-vs-mutable)
 - [Q3: Deep Copy vs Shallow Copy](#q3-deep-copy-vs-shallow-copy)
-- [Q4: Spread Operator (...)](#q4-spread-operator)
+- [Q4: Spread Operator (...)](#q4-spread-operator-)
 
 ### **Phần 2: ES5 vs ES6+ Features**
 - [Q5: ES5 vs ES6+ Features - So Sánh Chi Tiết](#q5-es5-vs-es6-features---so-sánh-chi-tiết)
 - [Q6: let, const, var](#q6-let-const-var)
 - [Q7: Hoisting](#q7-hoisting)
-- [Q8: Set/Map, WeakSet/WeakMap](#q8-setmap-weaksetset-weakmap)
+- [Q8: Set/Map, WeakSet/WeakMap](#q8-setmap-weaksetweakmap)
 
 ### **Phần 3: JavaScript Engine & Event Loop**
 - [Q9: Call Stack, Callback Queue, Event Loop - Cơ Chế Hoạt Động JavaScript](#q9-call-stack-callback-queue-event-loop---cơ-chế-hoạt-động-javascript)
-- [Q10: Event Loop - Giải thích đơn giản](#q10-event-loop-giải-thích-đơn-giản)
+- [Q10: Event Loop - Giải thích đơn giản](#q10-event-loop---giải-thích-đơn-giản)
 - [Q11: Web APIs (setTimeout, DOM Events)](#q11-web-apis-settimeout-dom-events)
 - [Q12: Microtask vs Macrotask](#q12-microtask-vs-macrotask)
 
