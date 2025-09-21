@@ -28,37 +28,31 @@
 
 ### **Phần 4: State Management & Data Flow**
 - [Q16: State vs Props - So Sánh State và Props](#q16-state-vs-props---so-sánh-state-và-props)
-- [Q17: useRef vs useState - Khi Nào Dùng Gì](#q17-useref-vs-usestate---khi-nào-dùng-gì)
-- [Q18: Context API vs Redux - State Management Solutions](#q18-context-api-vs-redux---state-management-solutions)
-- [Q19: Redux/Zustand - Global State Management](#q19-reduxzustand---global-state-management)
+- [Q17: Context API - Global State Management](#q17-context-api---global-state-management)
+- [Q18: Redux vs Zustand - State Management Libraries](#q18-redux-vs-zustand---state-management-libraries)
+- [Q19: Controlled vs Uncontrolled Components - Form Handling](#q19-controlled-vs-uncontrolled-components---form-handling)
+- [Q20: HOC, Render Props, Compound Components - Advanced Patterns](#q20-hoc-render-props-compound-components---advanced-patterns)
 
-### **Phần 5: Forms & User Input**
-- [Q20: Controlled vs Uncontrolled Components](#q20-controlled-vs-uncontrolled-components)
-- [Q21: React Hook Form - Form Management](#q21-react-hook-form---form-management)
+### **Phần 5: Data Fetching & React Query**
+- [Q21: React Query - Data Fetching & Caching](#q21-react-query---data-fetching--caching)
+- [Q22: useEffect Cleanup - Cleanup Functions](#q22-useeffect-cleanup---cleanup-functions)
+- [Q23: Error Boundary - Error Handling](#q23-error-boundary---error-handling)
+- [Q24: Code Splitting & Lazy Loading - Performance Optimization](#q24-code-splitting--lazy-loading---performance-optimization)
+- [Q25: React Reconciliation - Diffing Algorithm](#q25-react-reconciliation---diffing-algorithm)
 
-### **Phần 6: Advanced Patterns**
-- [Q22: HOC (Higher-Order Components)](#q22-hoc-higher-order-components)
-- [Q23: Render Props Pattern](#q23-render-props-pattern)
-- [Q24: Compound Components](#q24-compound-components)
+### **Phần 6: React Router & Navigation**
+- [Q26: React Router - Client-side Routing](#q26-react-router---client-side-routing)
+- [Q27: React Portal - Render Outside DOM Tree](#q27-react-portal---render-outside-dom-tree)
+- [Q28: startTransition - Concurrent Features](#q28-starttransition---concurrent-features)
+- [Q29: Fragments - Group Elements](#q29-fragments---group-elements)
+- [Q30: React Idletime - Idle Detection](#q30-react-idletime---idle-detection)
 
-### **Phần 7: Data Fetching & Async**
-- [Q25: React Query - Server State Management](#q25-react-query---server-state-management)
-- [Q26: useEffect Cleanup - Cleanup Functions](#q26-useeffect-cleanup---cleanup-functions)
-
-### **Phần 8: Advanced React Features**
-- [Q27: Code Splitting & Lazy Loading](#q27-code-splitting--lazy-loading)
-- [Q28: React Reconciliation - Diffing Algorithm](#q28-react-reconciliation---diffing-algorithm)
-- [Q29: React Router - Client-side Routing](#q29-react-router---client-side-routing)
-- [Q30: React Portal - Render Outside DOM Tree](#q30-react-portal---render-outside-dom-tree)
-
-### **Phần 9: React 18+ Features**
-- [Q31: startTransition - Concurrent Features](#q31-starttransition---concurrent-features)
-- [Q32: React Fragments - Grouping Elements](#q32-react-fragments---grouping-elements)
-- [Q33: React IdleTime - Performance Monitoring](#q33-react-idletime---performance-monitoring)
-
-### **Phần 10: Error Handling & Best Practices**
-- [Q34: Error Boundaries - Error Handling](#q34-error-boundaries---error-handling)
-- [Q35: Stable References - Reference Stability](#q35-stable-references---reference-stability)
+### **Phần 7: Advanced React Features**
+- [Q31: Stable Reference - Stable References](#q31-stable-reference---stable-references)
+- [Q32: React DevTools - Debugging Tools](#q32-react-devtools---debugging-tools)
+- [Q33: React Testing - Testing Strategies](#q33-react-testing---testing-strategies)
+- [Q34: React Performance - Performance Optimization](#q34-react-performance---performance-optimization)
+- [Q35: React Best Practices - Best Practices](#q35-react-best-practices---best-practices)
 
 ---
 
@@ -5696,6 +5690,383 @@ const IdleTimer: React.FC = () => {
   - *Lý do*: Provide smooth transitions between idle và active states
   - *Pattern*: Pause/resume operations based on idle state
   - *UX*: Ensure smooth user experience
+
+---
+
+## **Phần 7: Advanced React Features**
+
+### **Q31: Stable Reference - Stable References** 🔥
+
+**Trả lời:**
+- **🔥 Stable Reference**: Reference không thay đổi giữa các renders
+  - *Là gì*: Object/function reference giữ nguyên giữa các renders
+  - *Mục đích*: Tránh unnecessary re-renders, optimize performance
+  - *Cách tạo*: useRef, useMemo, useCallback, useState với function
+
+- **🎯 useRef**: Tạo stable reference
+  - *Cách hoạt động*: useRef tạo object với current property
+  - *Stable*: Object reference không bao giờ thay đổi
+  - *Use case*: DOM refs, mutable values, timers
+
+- **⚡ useMemo/useCallback**: Memoize values/functions
+  - *useMemo*: Memoize computed values
+  - *useCallback*: Memoize function references
+  - *Dependencies*: Chỉ thay đổi khi dependencies thay đổi
+
+- **✅ Ưu điểm**: Better performance, prevent unnecessary re-renders
+  - *Performance*: Tránh unnecessary re-renders
+  - *Optimization*: Optimize component performance
+  - *Predictable*: Predictable behavior
+
+- **⚠️ Nhược điểm**: Overuse có thể gây issues, complexity
+  - *Overuse*: Có thể over-optimize
+  - *Complexity*: Tăng complexity của code
+  - *Memory*: Có thể tăng memory usage
+
+**Code Example:**
+```typescript
+import React, { useState, useRef, useMemo, useCallback } from 'react';
+
+// 🔥 Stable Reference - Basic usage
+const StableReferenceExample: React.FC = () => {
+  const [count, setCount] = useState(0);
+
+  // Stable reference với useRef
+  const stableRef = useRef({ value: 'stable' });
+
+  // Stable function với useCallback
+  const stableFunction = useCallback(() => {
+    console.log('Stable function called');
+  }, []);
+
+  // Stable value với useMemo
+  const stableValue = useMemo(() => {
+    return { computed: count * 2 };
+  }, [count]);
+
+  return (
+    <div>
+      <h3>Stable Reference Example</h3>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <button onClick={stableFunction}>Call Stable Function</button>
+    </div>
+  );
+};
+```
+
+---
+
+### **Q32: React DevTools - Debugging Tools** 🎯
+
+**Trả lời:**
+- **🔥 React DevTools**: Browser extension để debug React apps
+  - *Là gì*: Chrome/Firefox extension để inspect React components
+  - *Features*: Component tree, props, state, hooks, profiler
+  - *Installation*: Install từ Chrome Web Store hoặc Firefox Add-ons
+
+- **🎯 Components Tab**: Inspect component tree
+  - *Component tree*: Visual representation của component hierarchy
+  - *Props/State*: View component props và state
+  - *Hooks*: Inspect hooks values và dependencies
+
+- **⚡ Profiler Tab**: Performance profiling
+  - *Profiling*: Record và analyze component performance
+  - *Flame graph*: Visual representation của render times
+  - *Commit details*: Detailed information về each commit
+
+- **✅ Ưu điểm**: Better debugging, performance analysis, development experience
+  - *Debugging*: Easier debugging với visual tools
+  - *Performance*: Identify performance bottlenecks
+  - *Development*: Better development experience
+
+- **⚠️ Nhược điểm**: Chỉ dùng được trong development, learning curve
+  - *Development only*: Chỉ hoạt động trong development mode
+  - *Learning*: Cần hiểu cách sử dụng effectively
+  - *Browser*: Chỉ support Chrome và Firefox
+
+**Code Example:**
+```typescript
+import React, { useState, useEffect } from 'react';
+
+// 🔥 React DevTools - Debugging example
+const DevToolsExample: React.FC = () => {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch('/api/users')
+      .then(response => response.json())
+      .then(data => {
+        setUsers(data);
+        setLoading(false);
+      });
+  }, []);
+
+  return (
+    <div>
+      <h3>DevTools Example</h3>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <ul>
+          {users.map(user => (
+            <UserItem key={user.id} user={user} />
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+const UserItem: React.FC<{ user: any }> = ({ user }) => {
+  return (
+    <li>
+      <strong>{user.name}</strong> - {user.email}
+    </li>
+  );
+};
+```
+
+---
+
+### **Q33: React Testing - Testing Strategies** ⚡
+
+**Trả lời:**
+- **🔥 React Testing**: Testing React components và applications
+  - *Là gì*: Testing strategies cho React components
+  - *Tools*: Jest, React Testing Library, Enzyme
+  - *Types*: Unit tests, integration tests, e2e tests
+
+- **🎯 React Testing Library**: Modern testing approach
+  - *Philosophy*: Test components như user sử dụng
+  - *Queries*: getByRole, getByText, getByTestId
+  - *User events*: fireEvent, userEvent
+
+- **⚡ Testing Patterns**: Common testing patterns
+  - *Render testing*: Test component renders correctly
+  - *Interaction testing*: Test user interactions
+  - *State testing*: Test component state changes
+
+- **✅ Ưu điểm**: Better test coverage, confidence, maintainability
+  - *Coverage*: Better test coverage
+  - *Confidence*: Confidence in code changes
+  - *Maintainability*: Easier to maintain code
+
+- **⚠️ Nhược điểm**: Time consuming, complexity, maintenance
+  - *Time*: Writing tests takes time
+  - *Complexity*: Can increase complexity
+  - *Maintenance*: Tests need maintenance
+
+**Code Example:**
+```typescript
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+
+// 🔥 React Testing - Basic testing
+const Counter: React.FC = () => {
+  const [count, setCount] = React.useState(0);
+
+  return (
+    <div>
+      <span data-testid="count">{count}</span>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+};
+
+// Test file
+describe('Counter', () => {
+  test('renders counter with initial value', () => {
+    render(<Counter />);
+    expect(screen.getByTestId('count')).toHaveTextContent('0');
+  });
+
+  test('increments counter when button clicked', () => {
+    render(<Counter />);
+    fireEvent.click(screen.getByText('Increment'));
+    expect(screen.getByTestId('count')).toHaveTextContent('1');
+  });
+});
+```
+
+---
+
+### **Q34: React Performance - Performance Optimization** 🎯
+
+**Trả lời:**
+- **🔥 Performance Optimization**: Optimize React app performance
+  - *Là gì*: Techniques để improve React app performance
+  - *Areas*: Rendering, bundle size, memory usage, network
+  - *Tools*: React DevTools Profiler, Lighthouse, Bundle Analyzer
+
+- **🎯 Rendering Optimization**: Optimize rendering performance
+  - *React.memo*: Prevent unnecessary re-renders
+  - *useMemo*: Memoize expensive calculations
+  - *useCallback*: Memoize function references
+  - *Virtualization*: Virtual scrolling cho large lists
+
+- **⚡ Bundle Optimization**: Optimize bundle size
+  - *Code splitting*: Split code into smaller chunks
+  - *Tree shaking*: Remove unused code
+  - *Lazy loading*: Load components on demand
+  - *Bundle analysis*: Analyze bundle composition
+
+- **✅ Ưu điểm**: Better user experience, faster loading, lower costs
+  - *UX*: Better user experience
+  - *Loading*: Faster loading times
+  - *Costs*: Lower hosting costs
+
+- **⚠️ Nhược điểm**: Complexity, time investment, over-optimization
+  - *Complexity*: Tăng complexity
+  - *Time*: Requires time investment
+  - *Over-optimization*: Có thể over-optimize
+
+**Code Example:**
+```typescript
+import React, { memo, useMemo, useCallback } from 'react';
+
+// 🔥 Performance Optimization - Memoization
+const ExpensiveComponent = memo<{ items: number[] }>(({ items }) => {
+  const expensiveValue = useMemo(() => {
+    console.log('Expensive calculation running...');
+    return items.reduce((sum, item) => sum + item, 0);
+  }, [items]);
+
+  return <div>Sum: {expensiveValue}</div>;
+});
+
+const ParentComponent: React.FC = () => {
+  const [items, setItems] = useState([1, 2, 3, 4, 5]);
+  const [count, setCount] = useState(0);
+
+  const handleAddItem = useCallback(() => {
+    setItems(prev => [...prev, Math.random() * 10]);
+  }, []);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <button onClick={handleAddItem}>Add Item</button>
+      <ExpensiveComponent items={items} />
+    </div>
+  );
+};
+```
+
+---
+
+### **Q35: React Best Practices - Best Practices** ⚡
+
+**Trả lời:**
+- **🔥 Best Practices**: Recommended practices cho React development
+  - *Là gì*: Guidelines và patterns để write better React code
+  - *Areas*: Component design, state management, performance, testing
+  - *Benefits*: Maintainable, scalable, performant code
+
+- **🎯 Component Design**: Design components effectively
+  - *Single responsibility*: Mỗi component có một responsibility
+  - *Composition*: Favor composition over inheritance
+  - *Props interface*: Define clear props interfaces
+  - *Default props*: Use default props cho optional props
+
+- **⚡ State Management**: Manage state effectively
+  - *Lift state up*: Lift state to common ancestor
+  - *State structure*: Keep state structure flat
+  - *State updates*: Use functional updates
+  - *State splitting*: Split complex state
+
+- **✅ Ưu điểm**: Better code quality, maintainability, team collaboration
+  - *Quality*: Better code quality
+  - *Maintainability*: Easier to maintain
+  - *Collaboration*: Better team collaboration
+
+- **⚠️ Nhược điểm**: Learning curve, consistency, enforcement
+  - *Learning*: Cần time để learn
+  - *Consistency*: Cần maintain consistency
+  - *Enforcement*: Cần enforce practices
+
+**Code Example:**
+```typescript
+import React, { useState, useCallback } from 'react';
+
+// 🔥 Best Practices - Component design
+interface UserCardProps {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    avatar?: string;
+  };
+  onEdit?: (user: User) => void;
+  onDelete?: (userId: string) => void;
+}
+
+const UserCard: React.FC<UserCardProps> = ({
+  user,
+  onEdit,
+  onDelete
+}) => {
+  const handleEdit = useCallback(() => {
+    onEdit?.(user);
+  }, [user, onEdit]);
+
+  const handleDelete = useCallback(() => {
+    onDelete?.(user.id);
+  }, [user.id, onDelete]);
+
+  return (
+    <div className="user-card">
+      <img
+        src={user.avatar || '/default-avatar.png'}
+        alt={user.name}
+        className="avatar"
+      />
+      <div className="user-info">
+        <h3>{user.name}</h3>
+        <p>{user.email}</p>
+      </div>
+      <div className="actions">
+        {onEdit && (
+          <button onClick={handleEdit}>Edit</button>
+        )}
+        {onDelete && (
+          <button onClick={handleDelete}>Delete</button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Usage
+const UserList: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+
+  const handleEditUser = useCallback((user: User) => {
+    // Edit user logic
+  }, []);
+
+  const handleDeleteUser = useCallback((userId: string) => {
+    setUsers(prev => prev.filter(user => user.id !== userId));
+  }, []);
+
+  return (
+    <div>
+      {users.map(user => (
+        <UserCard
+          key={user.id}
+          user={user}
+          onEdit={handleEditUser}
+          onDelete={handleDeleteUser}
+        />
+      ))}
+    </div>
+  );
+};
+```
 
 ---
 
