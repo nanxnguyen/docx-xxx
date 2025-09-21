@@ -6,53 +6,53 @@
 ## 🎯 **Mục Lục**
 
 ### **Phần 1: React Hooks Fundamentals**
-- [Q1: useState Hook - Quản Lý State Cơ Bản](#q1-usestate-hook---quản-lý-state-cơ-bản)
-- [Q2: useRef Hook - Tham Chiếu DOM & Mutable Values](#q2-useref-hook---tham-chiếu-dom--mutable-values)
-- [Q3: useEffect Hook - Side Effects & Lifecycle](#q3-useeffect-hook---side-effects--lifecycle)
-- [Q4: useLayoutEffect Hook - Synchronous Effects](#q4-uselayouteffect-hook---synchronous-effects)
-- [Q5: useReducer Hook - Complex State Management](#q5-usereducer-hook---complex-state-management)
-- [Q6: useContext Hook - Context API](#q6-usecontext-hook---context-api)
-- [Q7: useImperativeHandle Hook - Imperative API](#q7-useimperativehandle-hook---imperative-api)
+- [Q1: useState Hook - Quản Lý State Cơ Bản](#q1-usestate-hook---quản-lý-state-cơ-bản-)
+- [Q2: useRef Hook - Tham Chiếu DOM & Mutable Values](#q2-useref-hook---tham-chiếu-dom--mutable-values-)
+- [Q3: useEffect Hook - Side Effects & Lifecycle](#q3-useeffect-hook---side-effects--lifecycle-)
+- [Q4: useLayoutEffect Hook - Synchronous Effects](#q4-uselayouteffect-hook---synchronous-effects-)
+- [Q5: useReducer Hook - Complex State Management](#q5-usereducer-hook---complex-state-management-)
+- [Q6: useContext Hook - Context API](#q6-usecontext-hook---context-api-)
+- [Q7: useImperativeHandle Hook - Imperative API](#q7-useimperativehandle-hook---imperative-api-)
 
 ### **Phần 2: Component Lifecycle & Optimization**
-- [Q8: Class Component Lifecycle - Vòng Đời Class Component](#q8-class-component-lifecycle---vòng-đời-class-component)
-- [Q9: Functional Component Lifecycle - Vòng Đời Functional Component](#q9-functional-component-lifecycle---vòng-đời-functional-component)
-- [Q10: PureComponent vs React.memo - Tối Ưu Re-render](#q10-purecomponent-vs-reactmemo---tối-ưu-re-render)
-- [Q11: useMemo vs useCallback - Memoization Hooks](#q11-usememo-vs-usecallback---memoization-hooks)
+- [Q8: Class Component Lifecycle - Vòng Đời Class Component](#q8-class-component-lifecycle---vòng-đời-class-component-)
+- [Q9: Functional Component Lifecycle - Vòng Đời Functional Component](#q9-functional-component-lifecycle---vòng-đời-functional-component-)
+- [Q10: PureComponent vs React.memo - Tối Ưu Re-render](#q10-purecomponent-vs-reactmemo---tối-ưu-re-render-)
+- [Q11: useMemo vs useCallback - Memoization Hooks](#q11-usememo-vs-usecallback---memoization-hooks-)
 
 ### **Phần 3: Virtual DOM & Performance**
-- [Q12: Virtual DOM - Cơ Chế Virtual DOM](#q12-virtual-dom---cơ-chế-virtual-dom)
-- [Q13: Key Prop - Tối Ưu List Rendering](#q13-key-prop---tối-ưu-list-rendering)
-- [Q14: React Batching - Batch Updates](#q14-react-batching---batch-updates)
-- [Q15: Parent-Child Re-render - Tối Ưu Re-render](#q15-parent-child-re-render---tối-ưu-re-render)
+- [Q12: Virtual DOM - Cơ Chế Virtual DOM](#q12-virtual-dom---cơ-chế-virtual-dom-)
+- [Q13: Key Prop - Tối Ưu List Rendering](#q13-key-prop---tối-ưu-list-rendering-)
+- [Q14: React Batching - Batch Updates](#q14-react-batching---batch-updates-)
+- [Q15: Parent-Child Re-render - Tối Ưu Re-render](#q15-parent-child-re-render---tối-ưu-re-render-)
 
 ### **Phần 4: State Management & Data Flow**
-- [Q16: State vs Props - So Sánh State và Props](#q16-state-vs-props---so-sánh-state-và-props)
-- [Q17: Context API - Global State Management](#q17-context-api---global-state-management)
-- [Q18: Redux vs Zustand - State Management Libraries](#q18-redux-vs-zustand---state-management-libraries)
-- [Q19: Controlled vs Uncontrolled Components - Form Handling](#q19-controlled-vs-uncontrolled-components---form-handling)
-- [Q20: HOC, Render Props, Compound Components - Advanced Patterns](#q20-hoc-render-props-compound-components---advanced-patterns)
+- [Q16: State vs Props - So Sánh State và Props](#q16-state-vs-props---so-sánh-state-và-props-)
+- [Q17: Context API - Global State Management](#q17-context-api---global-state-management-)
+- [Q18: Redux vs Zustand - State Management Libraries](#q18-redux-vs-zustand---state-management-libraries-)
+- [Q19: Controlled vs Uncontrolled Components - Form Handling](#q19-controlled-vs-uncontrolled-components---form-handling-)
+- [Q20: HOC, Render Props, Compound Components - Advanced Patterns](#q20-hoc-render-props-compound-components---advanced-patterns-)
 
 ### **Phần 5: Data Fetching & React Query**
-- [Q21: React Query - Data Fetching & Caching](#q21-react-query---data-fetching--caching)
-- [Q22: useEffect Cleanup - Cleanup Functions](#q22-useeffect-cleanup---cleanup-functions)
-- [Q23: Error Boundary - Error Handling](#q23-error-boundary---error-handling)
-- [Q24: Code Splitting & Lazy Loading - Performance Optimization](#q24-code-splitting--lazy-loading---performance-optimization)
-- [Q25: React Reconciliation - Diffing Algorithm](#q25-react-reconciliation---diffing-algorithm)
+- [Q21: React Query - Data Fetching & Caching](#q21-react-query---data-fetching--caching-)
+- [Q22: useEffect Cleanup - Cleanup Functions](#q22-useeffect-cleanup---cleanup-functions-)
+- [Q23: Error Boundary - Error Handling](#q23-error-boundary---error-handling-)
+- [Q24: Code Splitting & Lazy Loading - Performance Optimization](#q24-code-splitting--lazy-loading---performance-optimization-)
+- [Q25: React Reconciliation - Diffing Algorithm](#q25-react-reconciliation---diffing-algorithm-)
 
 ### **Phần 6: React Router & Navigation**
-- [Q26: React Router - Client-side Routing](#q26-react-router---client-side-routing)
-- [Q27: React Portal - Render Outside DOM Tree](#q27-react-portal---render-outside-dom-tree)
-- [Q28: startTransition - Concurrent Features](#q28-starttransition---concurrent-features)
-- [Q29: Fragments - Group Elements](#q29-fragments---group-elements)
-- [Q30: React Idletime - Idle Detection](#q30-react-idletime---idle-detection)
+- [Q26: React Router - Client-side Routing](#q26-react-router---client-side-routing-)
+- [Q27: React Portal - Render Outside DOM Tree](#q27-react-portal---render-outside-dom-tree-)
+- [Q28: startTransition - Concurrent Features](#q28-starttransition---concurrent-features-)
+- [Q29: Fragments - Group Elements](#q29-fragments---group-elements-)
+- [Q30: React Idletime - Idle Detection](#q30-react-idletime---idle-detection-)
 
 ### **Phần 7: Advanced React Features**
-- [Q31: Stable Reference - Stable References](#q31-stable-reference---stable-references)
-- [Q32: React DevTools - Debugging Tools](#q32-react-devtools---debugging-tools)
-- [Q33: React Testing - Testing Strategies](#q33-react-testing---testing-strategies)
-- [Q34: React Performance - Performance Optimization](#q34-react-performance---performance-optimization)
-- [Q35: React Best Practices - Best Practices](#q35-react-best-practices---best-practices)
+- [Q31: Stable Reference - Stable References](#q31-stable-reference---stable-references-)
+- [Q32: React DevTools - Debugging Tools](#q32-react-devtools---debugging-tools-)
+- [Q33: React Testing - Testing Strategies](#q33-react-testing---testing-strategies-)
+- [Q34: React Performance - Performance Optimization](#q34-react-performance---performance-optimization-)
+- [Q35: React Best Practices - Best Practices](#q35-react-best-practices---best-practices-)
 
 ---
 
