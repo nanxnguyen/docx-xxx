@@ -111,7 +111,8 @@
 
 ## **Phần 1: Data Types & Memory Management**
 
-### **Q1: Primitive vs Reference Values - Giá Trị Nguyên Thủy vs Tham Chiếu**
+<details>
+<summary><h3>📌 Q1: Primitive vs Reference Values - Giá Trị Nguyên Thủy vs Tham Chiếu</h3></summary>
 
 **⚡ Quick Summary:**
 > **Primitive** = Lưu giá trị trực tiếp (stack), copy = tạo bản sao mới  
@@ -211,9 +212,13 @@ function updateUser(user: any) {
 }
 ```
 
+</details>
+
 ---
 
-### **Q2: Falsy/Truthy Values**
+<details>
+<summary><h3>📌 Q2: Falsy/Truthy Values</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Falsy: false, 0, '', null, undefined, NaN. Truthy = còn lại
@@ -251,9 +256,13 @@ function greet(name?: string) {
 }
 ```
 
+</details>
+
 ---
 
-### **Q3: == vs === (Type Coercion)**
+<details>
+<summary><h3>📌 Q3: == vs === (Type Coercion)</h3></summary>
+
 
 **⚡ Quick Summary:**
 > `==` coerce types, `===` không coerce. Luôn dùng `===`
@@ -283,9 +292,13 @@ if (user.age === 25) { /* Rõ ràng */ }
 if (value == null) { /* Check both null and undefined */ }
 ```
 
+</details>
+
 ---
 
-### **Q4: null vs undefined**
+<details>
+<summary><h3>📌 Q4: null vs undefined</h3></summary>
+
 
 **⚡ Quick Summary:**
 > `null` = intentionally empty. `undefined` = chưa được gán giá trị
@@ -318,9 +331,13 @@ const name = user?.name ?? 'Guest'; // Only null/undefined → 'Guest'
 const theme = settings?.theme ?? 'light';
 ```
 
+</details>
+
 ---
 
-### **Q5: || && ?? và Optional Chaining**
+<details>
+<summary><h3>📌 Q5: || && ?? và Optional Chaining</h3></summary>
+
 
 **⚡ Quick Summary:**
 > `||` = OR, `&&` = AND, `??` = nullish coalescing (chỉ null/undefined). `?.` = optional chaining
@@ -351,9 +368,13 @@ const count = items?.length ?? 0; // Safe với nullish coalescing
 const hasEmail = user?.contact?.email && true; // && cho conditional
 ```
 
+</details>
+
 ---
 
-### **Q6: Immutable vs Mutable**
+<details>
+<summary><h3>📌 Q6: Immutable vs Mutable</h3></summary>
+
 
 **⚡ Quick Summary:**
 > **Mutable** = Có thể sửa trực tiếp  
@@ -416,9 +437,13 @@ let updatedUsers = users.map((user) =>
 );
 ```
 
+</details>
+
 ---
 
-### **Q7: Deep Copy vs Shallow Copy**
+<details>
+<summary><h3>📌 Q7: Deep Copy vs Shallow Copy</h3></summary>
+
 
 **⚡ Quick Summary:**
 > **Shallow Copy** = Copy level đầu tiên, nested object vẫn share reference  
@@ -499,9 +524,13 @@ copy.a.b = 2; // obj.a.b cũng = 2!
 let copy = structuredClone(obj); // hoặc custom deep copy function
 ```
 
+</details>
+
 ---
 
-### **Q8: Type Checking - Kiểm Tra Kiểu Dữ Liệu**
+<details>
+<summary><h3>📌 Q8: Type Checking - Kiểm Tra Kiểu Dữ Liệu</h3></summary>
+
 
 **⚡ Quick Summary:**
 > `typeof` nhanh nhưng có bugs (null, array). Dùng `Object.prototype.toString.call()` cho chính xác 100%
@@ -629,6 +658,8 @@ safeBoolean('no') // false
 - `Array.isArray()`: Best cho array
 - `Number.isNaN()`: Best cho NaN
 - `instanceof`: Dùng cho objects (không dùng cho primitives)
+
+</details>
 
 ---
 
@@ -818,7 +849,9 @@ function parseUser(api: UserAPI): User {
 
 ## **Phần 2: ES5 vs ES6+ Features**
 
-### **Q9: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động**
+<details>
+<summary><h3>📌 Q9: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động</h3></summary>
+
 
 **⚡ Quick Summary:**
 > ES6+ = let/const, arrow functions, classes, destructuring, promises, modules. ES5 = var, function, callbacks
@@ -1700,9 +1733,13 @@ import User from './user'; // ✅ Default export
 - Using build tools (Webpack, Vite, Babel)
 - TypeScript project
 
+</details>
+
 ---
 
-### **Q10: Hoisting & Temporal Dead Zone**
+<details>
+<summary><h3>📌 Q10: Hoisting & Temporal Dead Zone</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Hoisting = Khai báo được đưa lên đầu scope. `var` = undefined, `let/const` = TDZ → ReferenceError
@@ -1712,6 +1749,8 @@ import User from './user'; // ✅ Default export
 - ⚡ **let/const**: Hoisted nhưng NOT initialized → TDZ → ReferenceError
 - 🎯 **function declaration**: Hoisted toàn bộ → gọi trước khai báo OK
 - ⏰ **TDZ**: Vùng từ đầu scope đến dòng khai báo - biến tồn tại nhưng không access được
+
+</details>
 
 ---
 
@@ -1871,7 +1910,9 @@ for (let i = 0; i < 3; i++) {
 
 ---
 
-### **Q11: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References**
+<details>
+<summary><h3>📌 Q11: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References</h3></summary>
+
 
 **⚡ Quick Summary:**
 > **Set** = unique values, **Map** = key-value (any type). **Weak** = không prevent GC, keys phải là objects
@@ -2378,15 +2419,21 @@ obj = null;
 - **WeakRef**: Minimal memory overhead, nhưng có CPU cost cho deref() checks
 - **FinalizationRegistry**: Minimal overhead, callback chạy async trong idle time
 
+</details>
+
 ---
 
 ## **Phần 3: JavaScript Engine & Event Loop**
 
-### **Q12: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)**
+<details>
+<summary><h3>📌 Q12: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)</h3></summary>
+
 
 **❓ Câu Hỏi:**
 
 Giải thích chi tiết cơ chế hoạt động của JavaScript Engine với Event Loop, Call Stack, Web APIs, Microtask/Macrotask Queues, và Single Thread.
+
+</details>
 
 ---
 
@@ -2992,11 +3039,15 @@ function addMicrotaskFixed() {
 
 ---
 
-### **Q13: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường**
+<details>
+<summary><h3>📌 Q13: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường</h3></summary>
+
 
 **🎯 Mục Đích:**
 
 Giải thích Event Loop theo cách dễ hiểu nhất, KHÔNG dùng thuật ngữ technical, giống như đang kể chuyện cho người không biết lập trình.
+
+</details>
 
 ---
 
@@ -3267,7 +3318,9 @@ Làm xong việc đang làm
 
 ## **Phần 4: Functions & Context**
 
-### **Q14: Closure & Data Privacy**
+<details>
+<summary><h3>📌 Q14: Closure & Data Privacy</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Closure = function nhớ được biến từ outer scope ngay cả khi outer function đã return. Dùng để private data
@@ -3429,9 +3482,13 @@ So với lựa chọn khác:
 - **Proxy**: Tiện reactive nhưng tốn chi phí bẫy (traps), phức tạp debug, không cần thiết khi chỉ cần pub/sub đơn giản.
 - **Global singleton**: Dễ rò rỉ state giữa tests/SSR, khó tạo nhiều instance độc lập.
 
+</details>
+
 ---
 
-### **Q15: Arrow vs Regular Functions & this Binding (call, apply, bind)**
+<details>
+<summary><h3>📌 Q15: Arrow vs Regular Functions & this Binding (call, apply, bind)</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Arrow function = lexical `this` (từ outer scope), không có arguments, không dùng new. `this` trong JS = context object, dùng call/apply/bind để set `this` manually.
@@ -3442,6 +3499,8 @@ So với lựa chọn khác:
 - 📞 **call**: `fn.call(thisArg, arg1, arg2)` - invoke ngay với args riêng lẻ
 - 📋 **apply**: `fn.apply(thisArg, [args])` - invoke ngay với array
 - 🔗 **bind**: `fn.bind(thisArg)` - return function mới với this cố định
+
+</details>
 
 ---
 
@@ -4195,7 +4254,9 @@ class SearchBox {
 
 ---
 
-### **Q16: IIFE (Immediately Invoked Function Expression) & Functional Programming**
+<details>
+<summary><h3>📌 Q16: IIFE (Immediately Invoked Function Expression) & Functional Programming</h3></summary>
+
 
 **⚡ Quick Summary:**
 > IIFE = `(function(){})()` - chạy ngay, tạo scope riêng. FP = pure functions, immutability
@@ -4208,6 +4269,8 @@ class SearchBox {
 **❓ Câu Hỏi:**
 
 Giải thích IIFE, Pure Functions, Currying và Higher-Order Functions trong JavaScript. Bao gồm cách hoạt động, ưu nhược điểm và ứng dụng thực tế.
+
+</details>
 
 ---
 
@@ -4573,7 +4636,9 @@ const tax4 = calculateVAT(2000);
 
 ## **Phần 5: DOM & Events**
 
-### **Q17: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)**
+<details>
+<summary><h3>📌 Q17: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Event Bubbling = child → parent. Capturing = parent → child. Delegation = listen ở parent
@@ -4591,6 +4656,8 @@ Giải thích chi tiết cơ chế hoạt động của DOM Events trong JavaScr
 2. Event Delegation Pattern
 3. Sự khác biệt giữa `target` và `currentTarget`
 4. Các best practices và common mistakes
+
+</details>
 
 ---
 
@@ -4890,7 +4957,9 @@ document.getElementById('parent')?.addEventListener('click', (e: Event) => {
 
 ---
 
-### **Q18: DOM API & Query Methods**
+<details>
+<summary><h3>📌 Q18: DOM API & Query Methods</h3></summary>
+
 
 **⚡ Quick Summary:**
 > querySelector = CSS selector. getElementById = nhanh nhất. querySelectorAll = NodeList
@@ -5009,11 +5078,15 @@ div.innerHTML = userInput; // XSS vulnerability
 div.textContent = userInput; // Safe
 ```
 
+</details>
+
 ---
 
 ## **Phần 6: Type Checking & Operators**
 
-### **Q19: Async/Await vs Promises vs Callbacks & Promise.all/any/race**
+<details>
+<summary><h3>📌 Q19: Async/Await vs Promises vs Callbacks & Promise.all/any/race</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Callbacks = nested hell. Promises = chaining. Async/await = sync-like code. Promise.all/any/race/allSettled = combine nhiều promises
@@ -5091,6 +5164,8 @@ async function fetchDataAsync(): Promise<any> {
 - Sử dụng proper error handling
 - Tránh callback hell
 - Sử dụng TypeScript cho type safety
+
+</details>
 
 ---
 
@@ -6012,7 +6087,9 @@ Nhưng với đúng patterns và tools, bạn có thể xử lý mọi tình hu�
 
 ---
 
-### **Q20: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa**
+<details>
+<summary><h3>📌 Q20: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Interceptors = middleware cho request/response. Transform data, add headers, handle errors
@@ -6560,6 +6637,8 @@ axios.interceptors.response.use(
 - **Token Refresh**: Queue all requests khi refreshing để avoid multiple refresh calls
 - **Caching**: Cache GET requests trong interceptors để reduce server load
 
+</details>
+
 ---
 
 ## **PHẦN 2: Axios - Core Features & Advanced Patterns**
@@ -6872,7 +6951,9 @@ const authAPI = axios.create({ baseURL: '/auth' });
 
 ---
 
-### **Q21: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao**
+<details>
+<summary><h3>📌 Q21: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao</h3></summary>
+
 
 ```typescript
 // ═══════════════════════════════════════════════════════════
@@ -6995,6 +7076,8 @@ const createUserAxios = async (userData: any) => {
  * └────────────────────┴──────────────────┴──────────────────┘
  */
 ```
+
+</details>
 
 ---
 
@@ -7729,7 +7812,9 @@ axios.create({ timeout: 10000 });
 
 ## **Phần 8: Object Manipulation**
 
-### **Q22: Compare Objects**
+<details>
+<summary><h3>📌 Q22: Compare Objects</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Compare objects: JSON.stringify, lodash isEqual, hoặc custom recursive compare
@@ -7797,9 +7882,13 @@ console.log(deepEqual(obj1, obj2)); // true
 - Sử dụng libraries như Lodash cho complex comparisons
 - Sử dụng TypeScript cho type safety
 
+</details>
+
 ---
 
-### **Q23: Compare Strings**
+<details>
+<summary><h3>📌 Q23: Compare Strings</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Compare strings: `===`, `localeCompare()` (i18n), ignore case với toLowerCase()
@@ -8164,11 +8253,15 @@ const goodArray = bigArray.sort((a, b) => collator.compare(a, b)); // ✅ Nhanh 
 - **Unicode variants**: Dùng `normalize('NFC')` hoặc `normalize('NFD')`
 - **Fuzzy search**: Remove accents với `normalize('NFD')` + regex
 
+</details>
+
 ---
 
 ## **Phần 9: Advanced Topics**
 
-### **Q24: Browser Rendering (Paint, Repaint, Reflow)**
+<details>
+<summary><h3>📌 Q24: Browser Rendering (Paint, Repaint, Reflow)</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Reflow = recalculate layout (expensive). Repaint = redraw pixels. Paint = first render
@@ -8238,9 +8331,13 @@ function animateWithTransform(): void {
 - Sử dụng requestAnimationFrame
 - Batch DOM changes
 
+</details>
+
 ---
 
-### **Q25: Loop Performance & Async Loops**
+<details>
+<summary><h3>📌 Q25: Loop Performance & Async Loops</h3></summary>
+
 
 **⚡ Quick Summary:**
 > for loop = fastest. forEach = readable. map/filter = functional. Async loops = Promise.all hoặc for await
@@ -8360,6 +8457,8 @@ Có nhiều cách để loop qua array/object trong JavaScript, mỗi cách có 
 - `forEach`: KHÔNG support `await` đúng cách → callbacks chạy **parallel** nhưng không đợi
 - `map` + `Promise.all`: Best practice cho **parallel** async operations
 - `for await...of`: Dành cho **async iterables** (streams, generators)
+
+</details>
 
 ---
 
@@ -8909,7 +9008,9 @@ loopControl();
 
 ---
 
-### **Q26: Handle Caching - HTTP Caching & Browser Cache Strategies**
+<details>
+<summary><h3>📌 Q26: Handle Caching - HTTP Caching & Browser Cache Strategies</h3></summary>
+
 
 **⚡ Quick Summary:**
 > HTTP Cache = Cache-Control, ETag. Browser Cache = disk/memory cache. Service Worker = offline cache
@@ -9885,9 +9986,13 @@ if (isStaticAsset) {
 - **Cache Invalidation**: Version-based, time-based, pattern-based, tag-based
 - **Modern Approach**: React Query, SWR for automatic cache management
 
+</details>
+
 ---
 
-### **Q27: JavaScript Proxy**
+<details>
+<summary><h3>📌 Q27: JavaScript Proxy</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Proxy = intercept object operations (get, set, delete...). Reflect = default behaviors
@@ -9969,9 +10074,13 @@ const loggingProxy = new Proxy(
 - Sử dụng proxy cho metaprogramming
 - Sử dụng proper error handling
 
+</details>
+
 ---
 
-### **Q28: JavaScript Classes**
+<details>
+<summary><h3>📌 Q28: JavaScript Classes</h3></summary>
+
 
 **⚡ Quick Summary:**
 > ES6 Classes = syntactic sugar over prototypes. constructor, methods, static, inheritance
@@ -10084,11 +10193,15 @@ console.log(circle.area); // 314.16
 - Sử dụng static methods cho utility functions
 - Sử dụng getters/setters cho data validation
 
+</details>
+
 ---
 
 ## **Phần 10: Advanced Functional Programming**
 
-### **Q29: EventEmitter & Observer Pattern**
+<details>
+<summary><h3>📌 Q29: EventEmitter & Observer Pattern</h3></summary>
+
 
 **⚡ Quick Summary:**
 > EventEmitter = publish/subscribe pattern. on() subscribe, emit() publish, off() unsubscribe
@@ -10268,9 +10381,13 @@ const cleanup = () => emitter.off('event', handler);
 // Call cleanup when component unmounts
 ```
 
+</details>
+
 ---
 
-### **Q30: Generator Functions & Async Generators**
+<details>
+<summary><h3>📌 Q30: Generator Functions & Async Generators</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Generator = function* với yield. Pause/resume execution. Async generator = for await...of
@@ -10429,11 +10546,15 @@ const values = [...gen]; // [1, 2, 3]
 // Generator is exhausted after iteration
 ```
 
+</details>
+
 ---
 
 ## **Phần 12: Memory Management & Performance**
 
-### **Q31: Memory Management & Garbage Collection**
+<details>
+<summary><h3>📌 Q31: Memory Management & Garbage Collection</h3></summary>
+
 
 **Trả lời:**
 
@@ -10560,9 +10681,13 @@ const cleanup = () => document.removeEventListener('click', handler);
 cleanup(); // Remove listener
 ```
 
+</details>
+
 ---
 
-### **Q32: Memory Leaks Detection & Prevention**
+<details>
+<summary><h3>📌 Q32: Memory Leaks Detection & Prevention</h3></summary>
+
 
 **Trả lời:**
 
@@ -10759,11 +10884,15 @@ const interval = setInterval(() => {}, 1000);
 clearInterval(interval); // Cleanup
 ```
 
+</details>
+
 ---
 
 ## **Phần 13: Module System & Advanced Object Concepts**
 
-### **Q33: Dynamic Import & Module System**
+<details>
+<summary><h3>📌 Q33: Dynamic Import & Module System</h3></summary>
+
 
 **Trả lời:**
 
@@ -10911,9 +11040,13 @@ try {
 }
 ```
 
+</details>
+
 ---
 
-### **Q34: Advanced Array & Object Methods, Object Concepts & Immutability**
+<details>
+<summary><h3>📌 Q34: Advanced Array & Object Methods, Object Concepts & Immutability</h3></summary>
+
 
 **Trả lời:**
 
@@ -11063,6 +11196,8 @@ const flattened = nested.flat(); // [1, 2, [3, [4]]] - only 1 level
 // ✅ Đúng: Specify depth
 const deeplyFlattened = nested.flat(Infinity); // [1, 2, 3, 4]
 ```
+
+</details>
 
 ---
 
@@ -11295,7 +11430,9 @@ obj.a.b = 2; // Error in strict mode
 
 ---
 
-### **Q35: React Hooks & Advanced Patterns - Lifecycle, Performance, Architecture**
+<details>
+<summary><h3>📌 Q35: React Hooks & Advanced Patterns - Lifecycle, Performance, Architecture</h3></summary>
+
 
 **Trả lời:**
 
@@ -11307,6 +11444,8 @@ Câu hỏi này bao gồm tất cả kiến thức quan trọng về React từ 
 - Advanced patterns (HOC, Render Props, Compound Components)
 - React 18+ features (Suspense, Server Components, Concurrent Rendering, useTransition, useDeferredValue)
 - React Router, Portal, Batching, Code Splitting
+
+</details>
 
 ---
 
@@ -14146,12 +14285,16 @@ function MyComponent() {
 
 ---
 
-### **Q36: Next.js - React Framework for Production**
+<details>
+<summary><h3>📌 Q36: Next.js - React Framework for Production</h3></summary>
+
 
 **🎯 Next.js là gì:**
 - React framework for production với built-in routing, SSR, SSG, API routes
 - Tối ưu performance, SEO, developer experience
 - Zero-config, file-based routing, automatic code splitting
+
+</details>
 
 ---
 
@@ -14962,7 +15105,9 @@ const callback = () => handleClick(); // Auto-memoized
 
 ## **Phần 15: Bổ Sung Nâng Cao**
 
-### **Q37: CommonJS vs ES Modules (ESM) & Bundling Deep Dive**
+<details>
+<summary><h3>📌 Q37: CommonJS vs ES Modules (ESM) & Bundling Deep Dive</h3></summary>
+
 
 **Trả lời:**
 
@@ -15529,9 +15674,13 @@ export default { a };
 - **Webpack**: Complex apps với nhiều loaders/plugins
 - **Vite**: Development với ESM native, production với Rollup
 
+</details>
+
 ---
 
-### **Q38: Cancellation, Concurrency & Retry**
+<details>
+<summary><h3>📌 Q38: Cancellation, Concurrency & Retry</h3></summary>
+
 
 **Trả lời:**
 
@@ -15616,8 +15765,12 @@ async function retry<T>(op: () => Promise<T>, tries = 3) {
 // ❌ Retry vô hạn, không jitter → dồn tải (thundering herd)
 ```
 
+</details>
+
 ---
-### **Q39: Web Workers, Service Worker & PWA Basics**
+<details>
+<summary><h3>📌 Q39: Web Workers, Service Worker & PWA Basics</h3></summary>
+
 
 **Trả lời:**
 
@@ -15659,9 +15812,13 @@ self.addEventListener('fetch', (e) => {
 // ❌ Dùng DOM API bên trong Worker → không có sẵn
 ```
 
+</details>
+
 ---
 
-### **Q40: Browser Storage - LocalStorage, SessionStorage, Cookie & IndexedDB**
+<details>
+<summary><h3>📌 Q40: Browser Storage - LocalStorage, SessionStorage, Cookie & IndexedDB</h3></summary>
+
 
 **Trả lời:**
 
@@ -15671,6 +15828,8 @@ Browser cung cấp **4 cách lưu trữ data** ở client-side, mỗi cách phù
 - **LocalStorage**: 5-10MB, persistent (không mất khi đóng tab), sync API, dùng cho settings/preferences
 - **SessionStorage**: 5-10MB, mất khi đóng tab, sync API, dùng cho temporary data
 - **IndexedDB**: 50MB-unlimited, async, database-like, dùng cho large datasets
+
+</details>
 
 ---
 
@@ -16508,7 +16667,9 @@ try {
 
 ---
 
-### **Q41: Shadow DOM & Custom Elements**
+<details>
+<summary><h3>📌 Q41: Shadow DOM & Custom Elements</h3></summary>
+
 
 **Trả lời:**
 
@@ -16539,9 +16700,13 @@ customElements.define('my-badge', MyBadge);
 // ❌ Trông chờ CSS global tác động vào shadow tree
 ```
 
+</details>
+
 ---
 
-### **Q42: Polyfill & Transpiling**
+<details>
+<summary><h3>📌 Q42: Polyfill & Transpiling</h3></summary>
+
 
 **⚡ Quick Summary:**
 > Polyfill = code thay thế feature chưa hỗ trợ. Transpiling = convert modern → old JS (Babel)
@@ -16704,13 +16869,19 @@ if (Array.prototype.includes) {
 }
 ```
 
+</details>
+
 ---
 
-### **Q44: Tooling: Bundling, Minify, Tree-shaking, Code Splitting, ESLint/Prettier, Source Maps**
+<details>
+<summary><h3>📌 Q44: Tooling: Bundling, Minify, Tree-shaking, Code Splitting, ESLint/Prettier, Source Maps</h3></summary>
+
 
 **❓ Câu Hỏi:**
 
 Giải thích chi tiết các công cụ và kỹ thuật tối ưu hóa trong frontend development: Bundling (gộp file), Minify (nén code), Tree-shaking (loại bỏ code thừa), Code splitting (tách code), ESLint/Prettier, và Source Maps. Bao gồm cách hoạt động, ưu nhược điểm, và ứng dụng thực tế.
+
+</details>
 
 ---
 
@@ -18551,10 +18722,14 @@ export default function Analytics() {
 
 ---
 
-### **Q45: Performance Profiling (performance.mark, Long Tasks, DevTools)**
+<details>
+<summary><h3>📌 Q45: Performance Profiling (performance.mark, Long Tasks, DevTools)</h3></summary>
+
 
 **❓ Câu Hỏi:**
 Làm thế nào để profile và debug performance issues trong web app? Phân tích các tools và techniques hiệu quả nhất.
+
+</details>
 
 ---
 
@@ -19468,11 +19643,15 @@ async function calculateAll() {
 
 ---
 
-### **Q46: Observer APIs - Intersection, Resize, Mutation Observer**
+<details>
+<summary><h3>📌 Q46: Observer APIs - Intersection, Resize, Mutation Observer</h3></summary>
+
 
 **❓ Câu Hỏi:**
 
 Observer APIs là gì? Khi nào và tại sao nên dùng chúng thay vì event listeners truyền thống?
+
+</details>
 
 ---
 
@@ -20626,7 +20805,9 @@ Observer APIs là công cụ mạnh mẽ để theo dõi thay đổi DOM một c
 
 ---
 
-### **Q47: Độ Phức Tạp Thuật Toán (Big O) - Map, Set, Array, Object**
+<details>
+<summary><h3>📌 Q47: Độ Phức Tạp Thuật Toán (Big O) - Map, Set, Array, Object</h3></summary>
+
 
 **Trả lời:**
 
@@ -21066,9 +21247,13 @@ const filtered = arr.filter((item) => !condition); // O(n)
 - **Object O(1)** property access, tương tự Map nhưng key string/symbol only
 - Chọn đúng data structure → performance tăng exponentially (O(n²) → O(n))
 
+</details>
+
 ---
 
-### **Q48: Từ URL đến UI - Quá Trình Browser Render Một Trang Web (Critical Rendering Path)**
+<details>
+<summary><h3>📌 Q48: Từ URL đến UI - Quá Trình Browser Render Một Trang Web (Critical Rendering Path)</h3></summary>
+
 
 **Trả lời:**
 
@@ -21221,6 +21406,8 @@ Khi user nhập URL `https://example.com` và nhấn Enter, có **12 bước ch�
     - **Chú thích**: Vẽ món ăn lên giấy và ghép các lớp lại thành hình hoàn chỉnh
 
 **🎯 Total Time: ~800ms - 5000ms** (phụ thuộc network, server, complexity)
+
+</details>
 
 ---
 
@@ -21755,7 +21942,9 @@ getTTFB(console.log);
 
 ---
 
-### **Q49: OOP (Object-Oriented Programming) trong JavaScript - Classes, Inheritance, Encapsulation & SOLID Principles?**
+<details>
+<summary><h3>📌 Q49: OOP (Object-Oriented Programming) trong JavaScript - Classes, Inheritance, Encapsulation & SOLID Principles?</h3></summary>
+
 
 **Trả lời:**
 OOP (Lập trình Hướng Đối Tượng) là **paradigm lập trình** dựa trên **objects** (đối tượng) chứa:
@@ -22195,6 +22384,8 @@ JavaScript hỗ trợ OOP thông qua 5 concepts chính:
    - Không phụ thuộc vào **concretions** (concrete classes)
    - Dễ swap implementations, dễ test
    - Ví dụ: `OrderService` nhận `ILogger` (interface) thay vì `ConsoleLogger` (concrete)
+
+</details>
 
 ---
 
@@ -23410,7 +23601,9 @@ describe('TradingService', () => {
 
 ## **Phần 16: Senior-Level Questions (Câu Hỏi Cấp Senior)**
 
-### **Q50: Tối Ưu Performance của React Web App**
+<details>
+<summary><h3>📌 Q50: Tối Ưu Performance của React Web App</h3></summary>
+
 
 **❓ Tình Huống:**
 
@@ -23424,6 +23617,8 @@ Bạn là Senior Frontend Developer của một Trading Platform (React + TypeSc
 - **User Complaints**: App chậm, lag, sometimes crash
 
 **Yêu cầu:** Thiết kế và implement chiến lược tối ưu toàn diện (từ build-time đến runtime).
+
+</details>
 
 ---
 
@@ -24018,7 +24213,9 @@ function OrderList({ orders }) {
 
 ---
 
-### **Q51: Bảo Mật Security trên Web Application**
+<details>
+<summary><h3>📌 Q51: Bảo Mật Security trên Web Application</h3></summary>
+
 
 **❓ Tình Huống:**
 
@@ -24038,6 +24235,8 @@ Bạn là Senior Frontend Developer phụ trách security cho Trading Platform x
 - Data exposure in client-side code
 
 **Yêu cầu:** Thiết kế và implement chiến lược bảo mật toàn diện (defense in depth).
+
+</details>
 
 ---
 
@@ -25244,10 +25443,14 @@ setInterval(() => {
 
 ---
 
-### **Q52: Hashing, Encryption & Digital Signatures - Phân Biệt & Ứng Dụng Thực Tế**
+<details>
+<summary><h3>📌 Q52: Hashing, Encryption & Digital Signatures - Phân Biệt & Ứng Dụng Thực Tế</h3></summary>
+
 
 **❓ Câu Hỏi:**
 Phân biệt Hashing, Encryption và Digital Signature. Khi nào dùng từng loại? Giải thích cơ chế hoạt động và ví dụ thực tế với bcrypt, AES, RSA, JWT signing.
+
+</details>
 
 ---
 
@@ -26502,10 +26705,14 @@ const payload = jwt.verify(token, publicKey);
 
 ---
 
-### **Q53: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách**
+<details>
+<summary><h3>📌 Q53: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách</h3></summary>
+
 
 **❓ Câu Hỏi:**
 Làm thế nào xử lý Date/Time trong JavaScript không bị ảnh hưởng bởi múi giờ?
+
+</details>
 
 ---
 
@@ -26854,7 +27061,9 @@ date.setMonth(2) // Side effect!
 
 ---
 
-### **Q54: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết**
+<details>
+<summary><h3>📌 Q54: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết</h3></summary>
+
 
 **Trả lời:**
 
@@ -26871,6 +27080,8 @@ date.setMonth(2) // Side effect!
 - Browser **hiển thị ngay** HTML → sau đó download JS để tương tác
 - Giống như: Mua furniture đã lắp ráp sẵn (chỉ cần đặt vào nhà)
 - Rendering engine: Node.js server (React renderToString)
+
+</details>
 
 ---
 
@@ -27912,11 +28123,15 @@ SEO needed?
 
 ---
 
-### **Q55: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security**
+<details>
+<summary><h3>📌 Q55: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security</h3></summary>
+
 
 **Trả lời:**
 
 Hệ thống authentication cho ngân hàng/chứng khoán yêu cầu **bảo mật cực kỳ cao** vì liên quan đến tiền bạc và thông tin nhạy cảm. Flow chuẩn sử dụng **JWT (JSON Web Token)** với **Access Token + Refresh Token** kết hợp **httpOnly Cookie**.
+
+</details>
 
 ---
 
@@ -29059,11 +29274,15 @@ await logEvent({
 
 ---
 
-### **Q56: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns**
+<details>
+<summary><h3>📌 Q56: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns</h3></summary>
+
 
 **❓ Câu Hỏi:**
 
 Giải thích chi tiết kiến trúc Microfrontend và Monorepo, bao gồm Module Federation (Webpack/Vite), Multi-framework development, Communication patterns, Routing strategies, và Styling isolation. Phân tích ưu nhược điểm và ứng dụng thực tế.
+
+</details>
 
 ---
 
@@ -33811,7 +34030,9 @@ export const ThemeProvider = ({ children }) => {
 
 ---
 
-### **Q57: WebSocket & Real-time Streaming - WebSocket, Socket.IO, Centrifuge**
+<details>
+<summary><h3>📌 Q57: WebSocket & Real-time Streaming - WebSocket, Socket.IO, Centrifuge</h3></summary>
+
 
 **⚡ Quick Summary:**
 > WebSocket = persistent connection, real-time bidirectional communication. Socket.IO = WebSocket + fallback + rooms. Centrifuge = scalable real-time messaging với Redis
@@ -33823,6 +34044,8 @@ export const ThemeProvider = ({ children }) => {
 - ⚡ **Use Case**: Trading (real-time price), Chat, Live dashboard, Notifications
 
 **Trả lời:**
+
+</details>
 
 ---
 
@@ -38213,10 +38436,14 @@ npx husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
 > "Git workflow tốt = ít conflicts + deploy nhanh + dễ rollback. Communication > Tools!" 🚀
 
 ---
-### **Q58: Build Tools - Vite vs Webpack vs Rollup, SWC vs Babel, Turbopack, esbuild**
+<details>
+<summary><h3>📌 Q58: Build Tools - Vite vs Webpack vs Rollup, SWC vs Babel, Turbopack, esbuild</h3></summary>
+
 
 **❓ Câu Hỏi:**
 So sánh các build tools hiện đại (công cụ build): Vite, Webpack, Rollup, esbuild, Turbopack và transpilers (trình chuyển đổi code): SWC vs Babel. Khi nào nên dùng tool nào?
+
+</details>
 
 ---
 
