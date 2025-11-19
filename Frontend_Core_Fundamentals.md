@@ -9109,725 +9109,405 @@ async function fetchWithCache(url: string): Promise<any> {
   }
 }
 
-// ============================================
-// 4. SERVICE WORKER CACHE STRATEGIES
-// ============================================
+**📋 PHÂN TÍCH CHI TIẾT: Browser Cache HTML, CSS, JS, Images**
 
-// 📝 service-worker.ts
+**🎯 Cơ Chế Cache Của Browser:**
 
-// Strategy 1: Cache First (Offline-first, cho static assets)
-async function cacheFirst(request: Request): Promise<Response> {
-  // 1. Kiểm tra cache trước
-  const cachedResponse = await caches.match(request);
+Browser cache dựa vào **HTTP Headers** từ server để quyết định:
+- **Có cache không?** → `Cache-Control`, `Expires`
+- **Cache bao lâu?** → `max-age`
+- **Khi nào cần revalidate?** → `ETag`, `Last-Modified`
 
-  if (cachedResponse) {
-    console.log('✅ Cache hit:', request.url);
-    return cachedResponse;
-  }
-
-  // 2. Cache miss → Fetch từ network
-  console.log('📡 Fetching:', request.url);
-  const networkResponse = await fetch(request);
-
-  // 3. Lưu vào cache cho lần sau
-  const cache = await caches.open('static-v1');
-  cache.put(request, networkResponse.clone());
-
-  return networkResponse;
-}
-
-// Strategy 2: Network First (Cho dynamic data)
-async function networkFirst(request: Request): Promise<Response> {
-  try {
-    // 1. Thử fetch từ network trước
-    const networkResponse = await fetch(request);
-
-    // 2. Update cache với data mới
-    const cache = await caches.open('dynamic-v1');
-    cache.put(request, networkResponse.clone());
-
-    console.log('📡 Network response:', request.url);
-    return networkResponse;
-  } catch (error) {
-    // 3. Network fail → Fallback to cache
-    console.log('⚠️ Network failed, using cache');
-    const cachedResponse = await caches.match(request);
-
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-
-    // 4. No cache → Return error page
-    return new Response('Offline', { status: 503 });
-  }
-}
-
-// Strategy 3: Stale While Revalidate (Best of both)
-async function staleWhileRevalidate(request: Request): Promise<Response> {
-  const cache = await caches.open('swr-v1');
-
-  // 1. Lấy cached response (nếu có)
-  const cachedResponse = await cache.match(request);
-
-  // 2. Fetch update từ network (async, không block)
-  const networkResponsePromise = fetch(request).then((response) => {
-    // Update cache với data mới
-    cache.put(request, response.clone());
-    return response;
-  });
-
-  // 3. Return cached ngay lập tức (stale data)
-  // Đồng thời update cache ở background
-  return cachedResponse || networkResponsePromise;
-}
-
-// Strategy 4: Cache Only (Offline-only)
-async function cacheOnly(request: Request): Promise<Response> {
-  const cachedResponse = await caches.match(request);
-
-  if (cachedResponse) {
-    return cachedResponse;
-  }
-
-  return new Response('Not in cache', { status: 404 });
-}
-
-// Strategy 5: Network Only (No caching)
-async function networkOnly(request: Request): Promise<Response> {
-  return fetch(request);
-}
-
-// ============================================
-// 5. SERVICE WORKER - Complete Example
-// ============================================
-
-// service-worker.ts
-const CACHE_VERSION = 'v1';
-const CACHE_NAMES = {
-  static: `static-${CACHE_VERSION}`,
-  dynamic: `dynamic-${CACHE_VERSION}`,
-  api: `api-${CACHE_VERSION}`,
-};
-
-// Static assets to precache
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js',
-  '/logo.png',
-  '/offline.html',
-];
-
-// Install event - Precache static assets
-self.addEventListener('install', (event: ExtendableEvent) => {
-  console.log('🚀 Service Worker installing...');
-
-  event.waitUntil(
-    caches
-      .open(CACHE_NAMES.static)
-      .then((cache) => {
-        console.log('📦 Precaching static assets');
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .then(() => {
-        // Force activate immediately
-        return self.skipWaiting();
-      })
-  );
-});
-
-// Activate event - Clean up old caches
-self.addEventListener('activate', (event: ExtendableEvent) => {
-  console.log('✅ Service Worker activated');
-
-  event.waitUntil(
-    caches
-      .keys()
-      .then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            // Xóa cache không thuộc version hiện tại
-            if (!Object.values(CACHE_NAMES).includes(cacheName)) {
-              console.log('🗑️ Deleting old cache:', cacheName);
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
-      .then(() => {
-        // Take control of all pages
-        return self.clients.claim();
-      })
-  );
-});
-
-// Fetch event - Apply caching strategies
-self.addEventListener('fetch', (event: FetchEvent) => {
-  const { request } = event;
-  const url = new URL(request.url);
-
-  // 🔥 Strategy selection based on request type
-  if (url.pathname.match(/\.(js|css|png|jpg|jpeg|svg|woff2)$/)) {
-    // Static assets → Cache First
-    event.respondWith(cacheFirst(request));
-  } else if (url.pathname.startsWith('/api/')) {
-    // API calls → Stale While Revalidate
-    event.respondWith(staleWhileRevalidate(request));
-  } else if (url.pathname.endsWith('.html') || url.pathname === '/') {
-    // HTML pages → Network First
-    event.respondWith(networkFirst(request));
-  } else {
-    // Default → Network Only
-    event.respondWith(networkOnly(request));
-  }
-});
-
-// ============================================
-// 6. LOCALSTORAGE CACHING (Simple Client Cache)
-// ============================================
-
-interface CacheItem<T> {
-  data: T;
-  timestamp: number;
-  expiry: number; // milliseconds
-}
-
-class LocalStorageCache {
-  private prefix = 'cache_';
-
-  // Lưu data vào localStorage với expiry time
-  set<T>(key: string, data: T, expiryMs: number = 3600000): void {
-    // Default 1 hour
-    try {
-      const item: CacheItem<T> = {
-        data,
-        timestamp: Date.now(),
-        expiry: expiryMs,
-      };
-
-      localStorage.setItem(this.prefix + key, JSON.stringify(item));
-      console.log(`✅ Cached to localStorage: ${key}`);
-    } catch (error) {
-      // localStorage full hoặc disabled
-      console.error('❌ localStorage error:', error);
-    }
-  }
-
-  // Lấy data từ localStorage
-  get<T>(key: string): T | null {
-    try {
-      const itemStr = localStorage.getItem(this.prefix + key);
-
-      if (!itemStr) {
-        return null;
-      }
-
-      const item: CacheItem<T> = JSON.parse(itemStr);
-
-      // Kiểm tra expiry
-      const age = Date.now() - item.timestamp;
-
-      if (age > item.expiry) {
-        console.log(`⏰ Cache expired: ${key}`);
-        this.remove(key);
-        return null;
-      }
-
-      console.log(`✅ Cache hit: ${key}`);
-      return item.data;
-    } catch (error) {
-      console.error('❌ localStorage read error:', error);
-      return null;
-    }
-  }
-
-  // Xóa cache item
-  remove(key: string): void {
-    localStorage.removeItem(this.prefix + key);
-  }
-
-  // Clear all cache items
-  clear(): void {
-    Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith(this.prefix)) {
-        localStorage.removeItem(key);
-      }
-    });
-    console.log('🗑️ Cleared all cache');
-  }
-
-  // Get all cache keys
-  keys(): string[] {
-    return Object.keys(localStorage)
-      .filter((key) => key.startsWith(this.prefix))
-      .map((key) => key.replace(this.prefix, ''));
-  }
-}
-
-// Sử dụng LocalStorage Cache
-const cache = new LocalStorageCache();
-
-async function fetchUserData(userId: string): Promise<any> {
-  // 1. Kiểm tra cache
-  const cached = cache.get(`user_${userId}`);
-
-  if (cached) {
-    console.log('✅ Using cached user data');
-    return cached;
-  }
-
-  // 2. Fetch từ API
-  console.log('📡 Fetching user data from API');
-  const response = await fetch(`/api/users/${userId}`);
-  const data = await response.json();
-
-  // 3. Cache data (5 phút)
-  cache.set(`user_${userId}`, data, 5 * 60 * 1000);
-
-  return data;
-}
-
-// ============================================
-// 7. INDEXEDDB CACHING (Large Data)
-// ============================================
-
-class IndexedDBCache {
-  private dbName = 'my-app-cache';
-  private storeName = 'responses';
-  private db: IDBDatabase | null = null;
-
-  // Mở connection đến IndexedDB
-  async open(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.dbName, 1);
-
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => {
-        this.db = request.result;
-        resolve();
-      };
-
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-
-        // Tạo object store
-        if (!db.objectStoreNames.contains(this.storeName)) {
-          const store = db.createObjectStore(this.storeName, { keyPath: 'url' });
-          store.createIndex('timestamp', 'timestamp', { unique: false });
-          console.log('📦 Created IndexedDB object store');
-        }
-      };
-    });
-  }
-
-  // Lưu response vào IndexedDB
-  async set(url: string, data: any, expiryMs: number = 3600000): Promise<void> {
-    if (!this.db) await this.open();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction([this.storeName], 'readwrite');
-      const store = transaction.objectStore(this.storeName);
-
-      const item = {
-        url,
-        data,
-        timestamp: Date.now(),
-        expiry: expiryMs,
-      };
-
-      const request = store.put(item);
-
-      request.onsuccess = () => {
-        console.log(`✅ Cached to IndexedDB: ${url}`);
-        resolve();
-      };
-
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  // Lấy data từ IndexedDB
-  async get<T>(url: string): Promise<T | null> {
-    if (!this.db) await this.open();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction([this.storeName], 'readonly');
-      const store = transaction.objectStore(this.storeName);
-
-      const request = store.get(url);
-
-      request.onsuccess = () => {
-        const item = request.result;
-
-        if (!item) {
-          resolve(null);
-          return;
-        }
-
-        // Kiểm tra expiry
-        const age = Date.now() - item.timestamp;
-
-        if (age > item.expiry) {
-          console.log(`⏰ Cache expired: ${url}`);
-          this.remove(url);
-          resolve(null);
-          return;
-        }
-
-        console.log(`✅ Cache hit: ${url}`);
-        resolve(item.data);
-      };
-
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  // Xóa item
-  async remove(url: string): Promise<void> {
-    if (!this.db) await this.open();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction([this.storeName], 'readwrite');
-      const store = transaction.objectStore(this.storeName);
-
-      const request = store.delete(url);
-
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  // Clear all data
-  async clear(): Promise<void> {
-    if (!this.db) await this.open();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction([this.storeName], 'readwrite');
-      const store = transaction.objectStore(this.storeName);
-
-      const request = store.clear();
-
-      request.onsuccess = () => {
-        console.log('🗑️ Cleared IndexedDB cache');
-        resolve();
-      };
-
-      request.onerror = () => reject(request.error);
-    });
-  }
-}
-
-// ============================================
-// 8. CACHE INVALIDATION STRATEGIES
-// ============================================
-
-class CacheInvalidation {
-  // Time-based invalidation
-  static async invalidateByTime(maxAge: number): Promise<void> {
-    const cache = await caches.open('api-v1');
-    const requests = await cache.keys();
-
-    for (const request of requests) {
-      const response = await cache.match(request);
-      if (!response) continue;
-
-      const dateHeader = response.headers.get('Date');
-      if (!dateHeader) continue;
-
-      const age = Date.now() - new Date(dateHeader).getTime();
-
-      if (age > maxAge) {
-        await cache.delete(request);
-        console.log(`🗑️ Invalidated: ${request.url}`);
-      }
-    }
-  }
-
-  // Version-based invalidation
-  static async invalidateByVersion(newVersion: string): Promise<void> {
-    const cacheNames = await caches.keys();
-
-    for (const cacheName of cacheNames) {
-      if (!cacheName.includes(newVersion)) {
-        await caches.delete(cacheName);
-        console.log(`🗑️ Deleted old cache: ${cacheName}`);
-      }
-    }
-  }
-
-  // Pattern-based invalidation
-  static async invalidateByPattern(pattern: RegExp): Promise<void> {
-    const cache = await caches.open('api-v1');
-    const requests = await cache.keys();
-
-    for (const request of requests) {
-      if (pattern.test(request.url)) {
-        await cache.delete(request);
-        console.log(`🗑️ Invalidated: ${request.url}`);
-      }
-    }
-  }
-
-  // Manual invalidation with tags
-  static async invalidateByTags(tags: string[]): Promise<void> {
-    // Implement tag-based cache invalidation
-    // Requires storing tags with cached items
-    const cache = await caches.open('tagged-cache');
-    const requests = await cache.keys();
-
-    for (const request of requests) {
-      const response = await cache.match(request);
-      if (!response) continue;
-
-      const cachedTags = response.headers.get('X-Cache-Tags')?.split(',') || [];
-
-      // Check if any tag matches
-      if (tags.some((tag) => cachedTags.includes(tag))) {
-        await cache.delete(request);
-        console.log(`🗑️ Invalidated by tags: ${request.url}`);
-      }
-    }
-  }
-}
-
-// ============================================
-// 9. REACT QUERY / SWR INTEGRATION (Modern Approach)
-// ============================================
-
-// 🔥 Using React Query for automatic caching
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-
-function useUserData(userId: string) {
-  return useQuery({
-    queryKey: ['user', userId],
-    queryFn: () => fetch(`/api/users/${userId}`).then((res) => res.json()),
-    staleTime: 5 * 60 * 1000, // 5 phút - data còn "fresh"
-    cacheTime: 10 * 60 * 1000, // 10 phút - giữ trong cache
-    refetchOnWindowFocus: true, // Refetch khi user quay lại tab
-    retry: 3, // Retry 3 lần nếu fail
-  });
-}
-
-// Invalidate cache
-function InvalidateExample() {
-  const queryClient = useQueryClient();
-
-  const handleUpdate = () => {
-    // Invalidate specific query
-    queryClient.invalidateQueries({ queryKey: ['user'] });
-
-    // Or refetch
-    queryClient.refetchQueries({ queryKey: ['user', '123'] });
-
-    // Or update cache directly
-    queryClient.setQueryData(['user', '123'], { name: 'New Name' });
-  };
-
-  return <button onClick={handleUpdate}>Update</button>;
-}
-
-// ============================================
-// 10. COMPREHENSIVE CACHE STRATEGY
-// ============================================
-
-class ComprehensiveCacheStrategy {
-  private browserCache = new CacheManager();
-  private localStorage = new LocalStorageCache();
-  private indexedDB = new IndexedDBCache();
-
-  async fetch<T>(url: string, options?: {
-    strategy?: 'cache-first' | 'network-first' | 'stale-while-revalidate';
-    maxAge?: number;
-    useIndexedDB?: boolean;
-  }): Promise<T> {
-    const { 
-      strategy = 'cache-first',
-      maxAge = 3600000, // 1 hour
-      useIndexedDB = false 
-    } = options || {};
-
-    const cacheKey = url;
-
-    // 1. Check localStorage cache (fastest)
-    if (!useIndexedDB) {
-      const cached = this.localStorage.get<T>(cacheKey);
-      if (cached && strategy === 'cache-first') {
-        return cached;
-      }
-    }
-
-    // 2. Check IndexedDB cache (for large data)
-    if (useIndexedDB) {
-      const cached = await this.indexedDB.get<T>(cacheKey);
-      if (cached && strategy === 'cache-first') {
-        return cached;
-      }
-    }
-
-    // 3. Fetch from network
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      // 4. Update caches
-      if (useIndexedDB) {
-        await this.indexedDB.set(cacheKey, data, maxAge);
-      } else {
-        this.localStorage.set(cacheKey, data, maxAge);
-      }
-
-      return data;
-    } catch (error) {
-      // 5. Network failed - try cache as fallback
-      if (strategy === 'network-first') {
-        const cached = useIndexedDB
-          ? await this.indexedDB.get<T>(cacheKey)
-          : this.localStorage.get<T>(cacheKey);
-
-        if (cached) {
-          console.log('⚠️ Using stale cache due to network error');
-          return cached;
-        }
-      }
-
-      throw error;
-    }
-  }
-}
-
-// Usage
-const cacheStrategy = new ComprehensiveCacheStrategy();
-
-// Fetch với cache strategy
-const userData = await cacheStrategy.fetch('/api/user/123', {
-  strategy: 'cache-first',
-  maxAge: 5 * 60 * 1000, // 5 minutes
-});
-
-const largeData = await cacheStrategy.fetch('/api/large-dataset', {
-  strategy: 'stale-while-revalidate',
-  maxAge: 30 * 60 * 1000, // 30 minutes
-  useIndexedDB: true, // Use IndexedDB for large data
-});
-```
-
-**🎯 Best Practices (Thực Hành Tốt):**
-
-1. **✅ Cache static assets aggressively** với long-term cache headers (1 year)
-2. **✅ Use versioned filenames** (app.abc123.js) để avoid cache invalidation issues
-3. **✅ Cache HTML minimally** hoặc không cache để luôn có latest version
-4. **✅ Use ETag/Last-Modified** cho efficient conditional requests
-5. **✅ Implement proper cache invalidation** strategy
-6. **✅ Use Service Worker** cho offline support và advanced caching
-7. **✅ Set Vary headers** cho content negotiation (gzip, WebP, etc.)
-8. **✅ Use CDN caching** cho global performance
-9. **✅ Monitor cache hit rates** để optimize strategy
-10. **✅ Clear old caches** regularly để avoid storage bloat
-
-**❌ Common Mistakes (Lỗi Thường Gặp):**
-
-```typescript
-// ❌ LỖI 1: Cache HTML files với long expiry
-// HTML nên luôn fresh để có latest version
-res.setHeader('Cache-Control', 'public, max-age=31536000'); // ❌ Sai!
-
-// ✅ ĐÚNG: No-cache cho HTML
-res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-
-// ❌ LỖI 2: Không use versioned filenames
-// <script src="app.js"></script> ❌ Cache invalidation khó
-
-// ✅ ĐÚNG: Use hash in filename
-// <script src="app.abc123.js"></script> ✅
-
-// ❌ LỖI 3: Cache sensitive data in browser
-localStorage.setItem('authToken', token); // ❌ Insecure!
-
-// ✅ ĐÚNG: Use httpOnly cookies hoặc sessionStorage
-sessionStorage.setItem('tempData', data); // ✅ Better
-
-// ❌ LỖI 4: Không handle cache invalidation
-// Cache forever without invalidation plan ❌
-
-// ✅ ĐÚNG: Implement version-based or time-based invalidation
-CacheInvalidation.invalidateByVersion('v2'); // ✅
-
-// ❌ LỖI 5: Cache API responses without expiry
-cache.set('users', data); // ❌ No expiry!
-
-// ✅ ĐÚNG: Always set expiry time
-cache.set('users', data, 5 * 60 * 1000); // ✅ 5 minutes
-
-// ❌ LỖI 6: Không check storage quota
-localStorage.setItem('largeData', hugeString); // ❌ Có thể fail!
-
-// ✅ ĐÚNG: Handle QuotaExceededError
-try {
-  localStorage.setItem('data', value);
-} catch (error) {
-  if (error.name === 'QuotaExceededError') {
-    // Clear old cache or use IndexedDB
-    cache.clear();
-  }
-}
-
-// ❌ LỖI 7: Cache everything với same strategy
-// One size doesn't fit all ❌
-
-// ✅ ĐÚNG: Different strategies cho different content types
-if (isStaticAsset) {
-  strategy = 'cache-first';
-} else if (isAPI) {
-  strategy = 'stale-while-revalidate';
-} else if (isHTML) {
-  strategy = 'network-first';
-}
-```
-
-**📊 Cache Strategy Decision Tree:**
+**📁 Cache Theo Từng Loại File:**
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  CHỌN CACHE STRATEGY NÀO?                        │
+│  FILE TYPE    CACHE STRATEGY           KHI NÀO REQUEST MỚI      │
 ├─────────────────────────────────────────────────────────────────┤
+│  HTML         Cache-Control: no-cache  Mỗi lần load page        │
+│  index.html   → Luôn hỏi server        (có thể trả 304)         │
+│               → Server trả 304 nếu     Browser dùng cache        │
+│                  không đổi             nếu server trả 304        │
 │                                                                  │
-│  📦 Static Assets (JS, CSS, Images)?                            │
-│  ├─ Has hash in filename? (app.abc123.js)                       │
-│  │  └─✅ Cache First + Long expiry (1 year)                     │
-│  └─ No hash?                                                     │
-│     └─⚡ Short expiry (1 day) + ETag                            │
+│  CSS/JS       max-age=31536000         Khi URL/hash thay đổi    │
+│  app.[hash]   immutable                app.abc123.css →         │
+│  .css/.js     → Cache 1 năm            app.xyz789.css           │
+│               → KHÔNG bao giờ          (URL mới = request mới)  │
+│                 request lại                                     │
+│                 nếu hash không đổi                              │
 │                                                                  │
-│  📄 HTML Pages?                                                  │
-│  └─✅ Network First + No-cache                                   │
-│     (Always get latest version)                                  │
+│  Images       max-age=604800           - Sau 7 ngày             │
+│  logo.png     → Cache 7 ngày           - Hard refresh           │
+│               → Browser tự động        - Clear cache            │
+│                 request lại sau        - URL thêm query:        │
+│                 7 ngày                   logo.png?v=2           │
 │                                                                  │
-│  🌐 API Responses?                                               │
-│  ├─ Rarely changes? (config, constants)                         │
-│  │  └─✅ Cache First + Medium expiry (1 hour)                   │
-│  ├─ Changes often? (user data, feed)                            │
-│  │  └─⚡ Stale While Revalidate (show old, fetch new)          │
-│  └─ Real-time? (notifications, messages)                        │
-│     └─🔴 Network Only (no caching)                              │
-│                                                                  │
-│  💾 Large Data? (> 5MB)                                          │
-│  └─✅ IndexedDB + Stale While Revalidate                        │
-│                                                                  │
-│  📱 Offline Support?                                             │
-│  └─✅ Service Worker + Cache First                              │
-│     (với Network First cho HTML)                                 │
+│  API Data     max-age=300              - Sau 5 phút             │
+│  /api/users   must-revalidate          - ETag thay đổi          │
+│               → Recheck mỗi 5 phút     - Manual refresh         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**✅ Tổng Kết:**
+**🔍 Khi Nào Browser REQUEST TÀI NGUYÊN MỚI (Không Dùng Cache)?**
 
-- **HTTP Caching**: Server-side cache headers (Cache-Control, ETag, Last-Modified)
-- **Browser Cache**: Automatic caching based on headers
-- **Service Worker**: Advanced caching strategies (Cache First, Network First, SWR)
-- **LocalStorage**: Simple client-side caching (< 5MB)
-- **IndexedDB**: Large data caching (async, scalable)
-- **Cache Invalidation**: Version-based, time-based, pattern-based, tag-based
-- **Modern Approach**: React Query, SWR for automatic cache management
+**1. Cache Headers Yêu Cầu:**
+```http
+Cache-Control: no-cache  → Phải hỏi server (có thể dùng cache nếu server trả 304)
+Cache-Control: no-store  → KHÔNG bao giờ cache, luôn request mới
+Cache-Control: max-age=0 → Cache hết hạn ngay, phải revalidate
+```
+
+**2. Cache Hết Hạn:**
+```javascript
+// max-age hết hạn
+Response headers: Cache-Control: max-age=3600 (1 giờ)
+→ Sau 1 giờ, browser request lại
+
+// Expires hết hạn
+Response headers: Expires: Thu, 01 Jan 2024 00:00:00 GMT
+→ Sau thời điểm này, browser request lại
+```
+
+**3. User Action:**
+```
+- Hard Refresh (Cmd+Shift+R / Ctrl+F5)
+  → Bỏ qua TẤT CẢ cache, request lại tất cả
+  → Gửi header: Cache-Control: no-cache
+
+- Normal Refresh (F5)
+  → HTML request lại (vì no-cache)
+  → CSS/JS/Images: dùng cache nếu chưa hết max-age
+
+- Clear Browser Cache
+  → Xóa hết cache
+  → Lần load tiếp theo request lại tất cả
+```
+
+**4. URL Thay Đổi:**
+```html
+<!-- Deploy cũ -->
+<link href="/static/app.abc123.css">
+
+<!-- Deploy mới → Hash khác -->
+<link href="/static/app.xyz789.css">
+
+→ Browser thấy URL mới → Request file mới
+→ app.abc123.css vẫn trong cache nhưng không dùng nữa
+```
+
+**5. Conditional Request với ETag:**
+```http
+# Lần 1: Browser request
+GET /api/users
+Response:
+  ETag: "abc123"
+  Cache-Control: max-age=300
+
+# Lần 2: Sau 5 phút (max-age hết)
+GET /api/users
+Request headers: If-None-Match: "abc123"
+
+→ Server check:
+  - Data không đổi → 304 Not Modified (browser dùng cache)
+  - Data đã đổi → 200 OK với data mới + ETag mới
+```
+
+**❓ BROWSER CÓ CHECK BUNDLE HASH KHÔNG?**
+
+**TL;DR: KHÔNG! Browser KHÔNG verify hash trong filename.**
+
+**Chi tiết:**
+
+1. **Hash chỉ là convention, không phải browser feature:**
+```javascript
+// ❌ Browser KHÔNG làm việc này
+const filename = 'app.abc123.js';
+const hash = extractHash(filename); // ← KHÔNG tồn tại
+const content = downloadFile(filename);
+if (hashContent(content) !== hash) {
+  throw new Error('Mismatch'); // ← Không bao giờ xảy ra
+}
+
+// ✅ Browser chỉ làm việc này
+const cachedURL = 'app.abc123.js';
+const newURL = 'app.xyz789.js';
+
+if (cachedURL === newURL) {
+  useCachedFile(); // Dùng cache
+} else {
+  downloadNewFile(); // URL khác → Download mới
+}
+```
+
+2. **Browser cache dựa vào URL string comparison:**
+```
+Cache key = Full URL
+- https://example.com/app.abc123.js → Cache entry 1
+- https://example.com/app.xyz789.js → Cache entry 2
+
+Browser KHÔNG extract hash 'abc123' hoặc 'xyz789'
+Browser CHỈ so sánh URL as string
+```
+
+3. **Hash được dùng NHƯ THẾ NÀO? (HASH BUNDLE Ở ĐÂU TRONG URL?)**
+
+**Hash bundle = Content hash được nhúng vào TÊN FILE trong URL:**
+
+```javascript
+// ❌ SAI LẦM THƯỜNG GẶP: Nghĩ hash ở query string
+https://example.com/app.js?v=abc123  // ← Đây KHÔNG phải hash bundle
+                         ↑
+                    Query param (có thể thay đổi thủ công)
+
+// ✅ ĐÚNG: Hash bundle nhúng TRONG TÊN FILE
+https://example.com/static/app.abc123.js
+                              ↑↑↑↑↑↑
+                         Hash của file content
+                         
+https://example.com/static/css/main.8f7d6e2a.css
+                                   ↑↑↑↑↑↑↑↑
+                              Hash của CSS content
+
+https://example.com/static/js/vendors.chunk.3a4b5c.js
+                                          ↑↑↑↑↑↑
+                                    Hash của chunk vendors
+```
+
+**Cụ thể hơn - VÍ DỤ THỰC TẾ:**
+
+**Build lần 1:**
+```bash
+# Build tool (Webpack/Vite) tạo files:
+dist/
+  index.html
+  static/
+    js/
+      main.abc123def.js      ← Hash của main bundle
+      vendors.456789.js      ← Hash của vendors chunk
+    css/
+      styles.fedcba987.css   ← Hash của CSS
+    
+# index.html reference:
+<script src="/static/js/main.abc123def.js"></script>
+<link href="/static/css/styles.fedcba987.css">
+```
+
+**Build lần 2 (sau khi sửa code):**
+```bash
+# Chỉ sửa file main.tsx → Chỉ hash của main thay đổi
+dist/
+  index.html
+  static/
+    js/
+      main.xyz789abc.js      ← Hash MỚI (content thay đổi)
+      vendors.456789.js      ← Hash GIỮ NGUYÊN (không sửa)
+    css/
+      styles.fedcba987.css   ← Hash GIỮ NGUYÊN (không sửa)
+
+# index.html mới:
+<script src="/static/js/main.xyz789abc.js"></script>
+           ↑ URL mới vì hash khác ↑
+<link href="/static/css/styles.fedcba987.css">
+     ↑ URL giữ nguyên vì hash không đổi ↑
+```
+
+**SO SÁNH URL CŨ vs MỚI:**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  FILE          URL CŨ                    URL MỚI                │
+├─────────────────────────────────────────────────────────────────┤
+│  Main JS       /static/js/               /static/js/            │
+│                main.abc123def.js         main.xyz789abc.js      │
+│                     ↑↑↑↑↑↑                    ↑↑↑↑↑↑            │
+│                   Hash cũ                  Hash mới             │
+│                                                                 │
+│  Vendors       /static/js/               /static/js/            │
+│                vendors.456789.js         vendors.456789.js      │
+│                       ↑↑↑↑↑↑                    ↑↑↑↑↑↑           │
+│                     Giữ nguyên (không sửa code)                 │
+│                                                                 │
+│  CSS           /static/css/              /static/css/           │
+│                styles.fedcba987.css      styles.fedcba987.css   │
+│                       ↑↑↑↑↑↑↑↑                  ↑↑↑↑↑↑↑↑         │
+│                     Giữ nguyên (không sửa CSS)                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**QUY TRÌNH BUILD TOOL TẠO HASH:**
+
+```typescript
+// Webpack/Vite config
+export default {
+  output: {
+    filename: '[name].[contenthash].js',
+    //               ↑↑↑↑↑↑↑↑↑↑↑↑
+    //         Placeholder cho content hash
+    
+    chunkFilename: '[name].[contenthash].chunk.js',
+  },
+  
+  css: {
+    filename: '[name].[contenthash].css'
+  }
+}
+
+// Build process:
+1. Đọc file content:   "const App = () => { return <div>Hello</div> }"
+2. Hash content:       MD5/SHA256 → "abc123def456"
+3. Tạo filename:       "main.abc123def456.js"
+4. Ghi file ra disk:   dist/static/js/main.abc123def456.js
+5. Update HTML:        <script src="/static/js/main.abc123def456.js">
+```
+
+**BROWSER XỬ LÝ NHƯ THẾ NÀO:**
+
+```javascript
+// Browser KHÔNG biết "abc123" là hash
+// Browser CHỈ coi đây là tên file bình thường
+
+// Bước 1: Parse HTML
+<script src="/static/js/main.abc123def.js"></script>
+
+// Bước 2: Chuẩn bị request
+const url = "https://example.com/static/js/main.abc123def.js";
+                                           ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+                                    Browser coi đây là tên file hoàn chỉnh
+
+// Bước 3: Check cache
+const cacheKey = url; // Full URL làm key
+if (cache.has(cacheKey)) {
+  // Có cache → Dùng cache
+} else {
+  // Không có → Request server
+  fetch(url);
+}
+
+// Bước 4: Khi deploy mới, HTML có URL mới
+<script src="/static/js/main.xyz789abc.js"></script>
+                                ↑↑↑↑↑↑↑↑↑
+                            Hash khác = URL khác
+
+const newUrl = "https://example.com/static/js/main.xyz789abc.js";
+
+// Browser check cache:
+cache.has(newUrl) // → false (vì URL chưa từng thấy)
+// → Request file mới từ server
+```
+
+Build tool (Webpack/Vite/Rollup):
+1. Hash file content → 'abc123'
+2. Tạo file: app.abc123.js  ← Hash ở đây
+             ↑↑↑ ↑↑↑↑↑↑
+           Tên  Hash nhúng trong tên file
+3. Update HTML: <script src="app.abc123.js">
+
+Content thay đổi:
+1. Hash mới → 'xyz789'
+2. File mới: app.xyz789.js  ← Hash mới ở đây
+3. HTML mới: <script src="app.xyz789.js">
+                          ↑↑↑↑↑↑
+                    URL thay đổi vì hash khác
+
+Browser:
+→ URL mới (app.xyz789.js ≠ app.abc123.js)
+→ File mới → Request mới
+→ Bypass cache TẰT NHIÊN ✅
+```
+
+4. **Tại sao không cần verify hash?**
+```
+✅ Build tool đảm bảo hash chính xác
+✅ HTTPS đảm bảo file không bị tamper
+✅ URL khác = File khác (theo browser)
+✅ Cache busting tự động
+
+❌ Browser verify hash = Không cần thiết
+❌ Browser verify hash = Tốn performance
+❌ Browser verify hash = KHÔNG phải trách nhiệm của browser
+```
+
+**🎯 Flow Hoàn Chỉnh - Deploy Mới:**
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  STEP 1: User visit lần đầu                                  │
+├──────────────────────────────────────────────────────────────┤
+│  GET /index.html                                             │
+│  → Response: Cache-Control: no-cache                         │
+│  → Body: <link href="app.abc123.css">                        │
+│                                                              │
+│  GET /app.abc123.css                                         │
+│  → Response: Cache-Control: max-age=31536000, immutable      │
+│  → Browser cache CSS (1 năm)                                 │
+└──────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────┐
+│  STEP 2: Developer deploy version mới                        │
+├──────────────────────────────────────────────────────────────┤
+│  Build tool → CSS content thay đổi                           │
+│  → Hash mới: xyz789                                          │
+│  → File mới: app.xyz789.css                                  │
+│  → HTML mới: <link href="app.xyz789.css">                    │
+└──────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────┐
+│  STEP 3: User reload (F5)                                    │
+├──────────────────────────────────────────────────────────────┤
+│  GET /index.html                                             │
+│  → no-cache → Phải hỏi server                                │
+│  → Response: HTML mới với app.xyz789.css                     │
+│                                                              │
+│  Browser parse HTML → Thấy app.xyz789.css                    │
+│  → Check cache: KHÔNG có app.xyz789.css                      │
+│  → GET /app.xyz789.css (request mới)                         │
+│  → Cache CSS mới                                             │
+│                                                              │
+│  ✅ app.abc123.css vẫn trong cache nhưng không dùng          │
+└──────────────────────────────────────────────────────────────┘
+```
+
+**💡 Best Practices:**
+
+```typescript
+// 1. HTML: Luôn no-cache
+app.get('*.html', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.sendFile(/* ... */);
+});
+
+// 2. Static assets với hash: Cache dài hạn
+app.use('/static', express.static('public', {
+  maxAge: '365d',
+  immutable: true,
+  setHeaders: (res) => {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  }
+}));
+
+// 3. Images: Cache trung bình
+app.use('/images', (req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days
+  next();
+});
+
+// 4. API: Short cache + revalidate
+app.get('/api/*', (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
+  res.setHeader('ETag', generateETag(data));
+  // ...
+});
+```
+
+**✅ TÓM TẮT:**
+
+| Câu hỏi | Trả lời |
+|---------|---------|
+| Browser cache HTML/CSS/JS/Images thế nào? | Dựa vào Cache-Control, max-age, ETag từ server |
+| Khi nào browser request tài nguyên mới? | 1. Cache hết hạn<br>2. no-cache/no-store<br>3. Hard refresh<br>4. URL thay đổi<br>5. ETag không khớp |
+| Browser có check bundle hash không? | **KHÔNG**. Chỉ so sánh URL string.<br>Hash để tạo URL mới → Force download |
+| Hash trong filename để làm gì? | Cache busting: Content đổi → Hash đổi → URL đổi → Browser download mới |
+
 
 </details>
 
