@@ -23406,7 +23406,7 @@ describe('TradingService', () => {
 </details>
 
 
-## **Phần 16: Senior-Level Questions (Câu Hỏi Cấp Senior)**
+## **Phần 16: Advanced Questions **
 
 <details>
 <summary><span style="font-size:1.25em;font-weight:bold;">🚀 Q50: Tối Ưu Performance của React Web App</span></summary>
