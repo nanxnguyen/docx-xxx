@@ -859,3 +859,135 @@ const authAPI = axios.create({ baseURL: '/auth' });
 
 ---
 
+
+
+
+
+
+---
+
+# 🌐 **Mindmap: Axios Interceptors (Chuẩn Senior)**
+
+```
+                    AXIOS INTERCEPTORS
+                           │
+ ┌─────────────────────────┴──────────────────────────┐
+ │                                                    │
+ │                                                    │
+ Request Interceptor                           Response Interceptor
+ (Chạy trước request)                           (Chạy trước return)
+ │                                                    │
+ │                                                    │
+- Add Token (Auth)                               - Transform response
+- Add headers                                    - Global error handling
+- Logging                                        - Retry logic
+- Add request ID                                 - Token refresh (401)
+- Modify params/data                             - Redirect login
+- Throttle / queue requests                      - Format API error
+- Start timer (measure duration)                 - Detect slow API
+ │                                                    │
+ │                                                    │
+ LIFO (Last In First Out)                        FIFO (First In First Out)
+```
+
+---
+
+## 🔥 **1. Request Interceptor – Những gì thường làm**
+
+```
+Request Interceptor:
+   ├── Add Authorization Token
+   ├── Add X-Request-ID
+   ├── Start performance timer
+   ├── Add Content-Type
+   ├── Logging (dev only)
+   ├── Dedupe request
+   ├── Queue requests (max concurrent)
+   └── Transform camelCase → snake_case
+```
+
+---
+
+## 🔥 **2. Response Interceptor – Những gì thường làm**
+
+```
+Response Interceptor:
+   ├── Transform response.data
+   ├── Remove pending request from dedupe map
+   ├── Check slow API (duration > 3s)
+   ├── Global error handling:
+   │       ├── 400 Validation
+   │       ├── 401 Refresh token
+   │       ├── 403 Forbidden
+   │       ├── 404 Not Found
+   │       └── 500 Server error
+   ├── Retry logic (network error)
+   ├── Auto redirect login
+   └── camelCase response
+```
+
+---
+
+# ⚡ **3. Token Refresh – Mindmap**
+
+```
+Token Refresh Flow:
+  1. Call API → 401?
+  2. Check _retry flag
+  3. Pause all requests (queue)
+  4. Call /refresh-token
+  5. If success:
+       - Update accessToken
+       - Retry all queued requests
+  6. If fail:
+       - logout()
+       - redirect("/login")
+```
+
+---
+
+# ⚙️ **4. Execution Order – Mindmap**
+
+```
+Request:
+   Add R1
+   Add R2
+   Add R3
+ → Execution: R3 → R2 → R1
+
+Response:
+   Add S1
+   Add S2
+   Add S3
+ → Execution: S1 → S2 → S3
+```
+
+---
+
+# 🛑 **5. Cleanup (React) – Mindmap**
+
+```
+useEffect:
+  ├── Setup request interceptor → idReq
+  ├── Setup response interceptor → idRes
+  └── Cleanup:
+         eject(idReq)
+         eject(idRes)
+```
+
+---
+
+# 🧠 **6. Best Practices – Mindmap**
+
+```
+Best Practices:
+  ├── Always eject interceptors (React cleanup)
+  ├── Use Axios instances (avoid global)
+  ├── Use separate instance for refresh token
+  ├── Centralize error handling
+  ├── Use request dedupe for spam click
+  ├── Use retry with exponential backoff
+  ├── Add request timing
+  ├── Don't modify config deeply (avoid side effects)
+  └── Avoid heavy logic inside interceptors
+```

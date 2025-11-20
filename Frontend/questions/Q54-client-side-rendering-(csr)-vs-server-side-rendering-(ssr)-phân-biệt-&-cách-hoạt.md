@@ -1056,3 +1056,11 @@ SEO needed?
 - SEO + Performance = SSR/SSG
 - Interactivity + Simple = CSR
 
+
+```
+💧 Hydration là quá trình Server render ra HTML → Browser hiển thị ngay → Sau đó React “gắn” event listeners vào HTML → UI trở nên tương tác được.
+
+"Hydration là bước React biến HTML do SSR hoặc SSG render sẵn thành UI có thể tương tác, bằng cách attach event listeners và khôi phục state.
+
+HTML từ server ngay lập tức giúp cải thiện SEO và First Contentful Paint, còn hydration giúp UI hoạt động như SPA. Thách thức lớn nhất là tránh hydration mismatch và tối ưu cost hydration trong các trang lớn bằng techniques như partial/lazy hydration.
+```

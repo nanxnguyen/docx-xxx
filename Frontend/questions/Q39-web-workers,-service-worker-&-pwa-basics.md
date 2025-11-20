@@ -1,4 +1,4 @@
-# 👷 Q39: Web Workers, Service Worker & PWA Basics
+# 👷 Q39: Web Workers, Service Worker & Background processesing & Share Worker
 
 
 
