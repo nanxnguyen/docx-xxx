@@ -1,7 +1,6 @@
 # 🏛️ Q49: OOP (Object-Oriented Programming) trong JavaScript - Classes, Inheritance, Encapsulation & SOLID Principles?
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🏛️ Q49: OOP (Object-Oriented Programming) trong JavaScript - Classes, Inheritance, Encapsulation & SOLID Principles?</span></summary>
+
 
 
 **Trả lời:**
@@ -1652,4 +1651,3 @@ describe('TradingService', () => {
    ```
 
 ---
-</details>

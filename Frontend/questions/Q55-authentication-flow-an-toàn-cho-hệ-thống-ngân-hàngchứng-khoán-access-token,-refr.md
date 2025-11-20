@@ -1,7 +1,6 @@
 # 🎫 Q55: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🎫 Q55: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security</span></summary>
+
 
 
 **Trả lời:**
@@ -1145,4 +1144,3 @@ await logEvent({
 - **Audit logging** = detect suspicious activities
 - **Multi-factor** everything (MFA, device fingerprint, inactivity timeout)
 
-</details>

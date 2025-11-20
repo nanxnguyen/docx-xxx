@@ -1,7 +1,6 @@
 # ⚡ Q58: Build Tools - Vite vs Webpack vs Rollup, SWC vs Babel, Turbopack, esbuild
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">⚡ Q58: Build Tools - Vite vs Webpack vs Rollup, SWC vs Babel, Turbopack, esbuild</span></summary>
+
 
 
 **❓ Câu Hỏi:**

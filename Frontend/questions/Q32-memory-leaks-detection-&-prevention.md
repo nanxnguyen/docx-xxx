@@ -1,7 +1,6 @@
 # 🚨 Q32: Memory Leaks Detection & Prevention
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🚨 Q32: Memory Leaks Detection & Prevention</span></summary>
+
 
 
 **Trả lời:**
@@ -199,4 +198,3 @@ const interval = setInterval(() => {}, 1000);
 clearInterval(interval); // Cleanup
 ```
 
-</details>

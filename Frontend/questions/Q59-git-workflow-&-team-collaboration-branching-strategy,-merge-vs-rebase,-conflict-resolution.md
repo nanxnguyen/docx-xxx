@@ -1,5 +1,5 @@
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🌿 Q59: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase, Conflict Resolution</span></summary>
+
+## 🌿 Q59: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase, Conflict Resolution
 
 
 **⚡ Quick Summary:**
@@ -1493,4 +1493,4 @@ npx husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
 
 **💡 Remember:**
 > "Git workflow tốt = ít conflicts + deploy nhanh + dễ rollback. Communication > Tools!" 🚀
-</details></details>
+

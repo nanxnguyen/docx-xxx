@@ -1,7 +1,6 @@
 # 📦 Q37: CommonJS vs ES Modules (ESM) & Bundling Deep Dive
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">📦 Q37: CommonJS vs ES Modules (ESM) & Bundling Deep Dive</span></summary>
+
 
 
 **Trả lời:**
@@ -569,4 +568,3 @@ export default { a };
 - **Webpack**: Complex apps với nhiều loaders/plugins
 - **Vite**: Development với ESM native, production với Rollup
 
-</details>

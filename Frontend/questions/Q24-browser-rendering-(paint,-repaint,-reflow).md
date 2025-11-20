@@ -1,7 +1,6 @@
 # 🎨 Q24: Browser Rendering (Paint, Repaint, Reflow)
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🎨 Q24: Browser Rendering (Paint, Repaint, Reflow)</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -72,4 +71,3 @@ function animateWithTransform(): void {
 - Sử dụng requestAnimationFrame
 - Batch DOM changes
 
-</details>

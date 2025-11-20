@@ -1,7 +1,6 @@
 # ▲ Q36: Next.js - React Framework for Production
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">▲ Q36: Next.js - React Framework for Production</span></summary>
+
 
 
 **🎯 Next.js là gì:**
@@ -813,4 +812,3 @@ const callback = () => handleClick(); // Auto-memoized
 - Static sites với dynamic features
 
 ---
-</details>

@@ -1,7 +1,6 @@
 # 🔐 Q14: Closure & Data Privacy
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔐 Q14: Closure & Data Privacy</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -164,4 +163,3 @@ So với lựa chọn khác:
 - **Proxy**: Tiện reactive nhưng tốn chi phí bẫy (traps), phức tạp debug, không cần thiết khi chỉ cần pub/sub đơn giản.
 - **Global singleton**: Dễ rò rỉ state giữa tests/SSR, khó tạo nhiều instance độc lập.
 
-</details>

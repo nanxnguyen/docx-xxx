@@ -1,7 +1,6 @@
 # 🧩 Q4: null vs undefined
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🧩 Q4: null vs undefined</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -35,4 +34,3 @@ const name = user?.name ?? 'Guest'; // Only null/undefined → 'Guest'
 const theme = settings?.theme ?? 'light';
 ```
 
-</details>

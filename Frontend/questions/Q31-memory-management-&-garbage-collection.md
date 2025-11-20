@@ -1,7 +1,6 @@
 # 🧹 Q31: Memory Management & Garbage Collection
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🧹 Q31: Memory Management & Garbage Collection</span></summary>
+
 
 
 **Trả lời:**
@@ -129,4 +128,3 @@ const cleanup = () => document.removeEventListener('click', handler);
 cleanup(); // Remove listener
 ```
 
-</details>

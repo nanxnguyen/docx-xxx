@@ -1,7 +1,6 @@
 # 📡 Q29: EventEmitter & Observer Pattern
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">📡 Q29: EventEmitter & Observer Pattern</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -182,4 +181,3 @@ const cleanup = () => emitter.off('event', handler);
 // Call cleanup when component unmounts
 ```
 
-</details>

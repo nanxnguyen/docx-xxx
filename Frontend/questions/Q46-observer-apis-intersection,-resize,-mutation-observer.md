@@ -1,7 +1,6 @@
 # 👁️ Q46: Observer APIs - Intersection, Resize, Mutation Observer
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">👁️ Q46: Observer APIs - Intersection, Resize, Mutation Observer</span></summary>
+
 
 
 **❓ Câu Hỏi:**
@@ -1158,4 +1157,3 @@ Observer APIs là công cụ mạnh mẽ để theo dõi thay đổi DOM một c
 5. **Debounce logic nặng** → tránh performance issue
 
 ---
-</details>

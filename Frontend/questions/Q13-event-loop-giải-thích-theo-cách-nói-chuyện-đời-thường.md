@@ -1,7 +1,6 @@
 # 💬 Q13: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">💬 Q13: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường</span></summary>
+
 
 
 **🎯 Mục Đích:**
@@ -273,4 +272,3 @@ Làm xong việc đang làm
 ```
 
 ---
-</details>

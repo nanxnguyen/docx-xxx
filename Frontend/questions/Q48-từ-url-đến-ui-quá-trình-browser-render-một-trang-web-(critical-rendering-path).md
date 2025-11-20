@@ -1,7 +1,6 @@
 # 🌍 Q48: Từ URL đến UI - Quá Trình Browser Render Một Trang Web (Critical Rendering Path)
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🌍 Q48: Từ URL đến UI - Quá Trình Browser Render Một Trang Web (Critical Rendering Path)</span></summary>
+
 
 
 **Trả lời:**
@@ -686,4 +685,3 @@ getTTFB(console.log);
 **⚡ Tối ưu:** Minimize critical resources, reduce bytes, optimize path length!
 
 ---
-</details>

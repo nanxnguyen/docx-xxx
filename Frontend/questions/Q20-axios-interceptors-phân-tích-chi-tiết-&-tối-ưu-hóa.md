@@ -1,7 +1,6 @@
 # 🔌 Q20: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔌 Q20: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa</span></summary>
+
 
 
 **⚡ Quick Summary:**

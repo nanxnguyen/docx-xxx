@@ -1,7 +1,6 @@
 # 📥 Q33: Dynamic Import & Module System
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">📥 Q33: Dynamic Import & Module System</span></summary>
+
 
 
 **Trả lời:**
@@ -150,4 +149,3 @@ try {
 }
 ```
 
-</details>

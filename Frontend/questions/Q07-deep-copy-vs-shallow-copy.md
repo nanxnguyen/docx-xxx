@@ -1,7 +1,6 @@
 # 📦 Q7: Deep Copy vs Shallow Copy
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">📦 Q7: Deep Copy vs Shallow Copy</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -83,4 +82,3 @@ copy.a.b = 2; // obj.a.b cũng = 2!
 let copy = structuredClone(obj); // hoặc custom deep copy function
 ```
 
-</details>

@@ -1,7 +1,6 @@
 # 🔄 Q12: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔄 Q12: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)</span></summary>
+
 
 
 **❓ Câu Hỏi:**
@@ -609,4 +608,3 @@ function addMicrotaskFixed() {
 2. **Promise.then chạy trước setTimeout**: Microtask luôn ưu tiên cao hơn macrotask
 3. **Blocking code làm đóng băng UI**: Phải break heavy work thành chunks với setTimeout
 4. **Microtask starvation**: Tạo vô hạn microtasks sẽ chặn macrotasks → UI không render được
-</details>

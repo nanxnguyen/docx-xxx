@@ -1,7 +1,6 @@
 # ⚛️ Q35: React Hooks & Advanced Patterns - Lifecycle, Performance, Architecture
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">⚛️ Q35: React Hooks & Advanced Patterns - Lifecycle, Performance, Architecture</span></summary>
+
 
 
 **Trả lời:**
@@ -2850,4 +2849,3 @@ function MyComponent() {
 - Error Boundaries chỉ catch rendering errors, không catch event handlers/async
 
 ---
-</details>

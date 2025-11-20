@@ -1,7 +1,6 @@
 # ⚡ Q9: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">⚡ Q9: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -884,4 +883,3 @@ import User from './user'; // ✅ Default export
 - Using build tools (Webpack, Vite, Babel)
 - TypeScript project
 
-</details>

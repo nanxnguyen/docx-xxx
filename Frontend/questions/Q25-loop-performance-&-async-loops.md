@@ -1,7 +1,6 @@
 # 🔁 Q25: Loop Performance & Async Loops
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔁 Q25: Loop Performance & Async Loops</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -666,4 +665,3 @@ loopControl();
    ```
 
 ---
-</details>

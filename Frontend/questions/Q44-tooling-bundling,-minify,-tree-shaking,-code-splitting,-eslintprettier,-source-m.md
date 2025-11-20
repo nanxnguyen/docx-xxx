@@ -1,7 +1,6 @@
 # 🏗️ Q44: Tooling: Bundling, Minify, Tree-shaking, Code Splitting, ESLint/Prettier, Source Maps
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🏗️ Q44: Tooling: Bundling, Minify, Tree-shaking, Code Splitting, ESLint/Prettier, Source Maps</span></summary>
+
 
 
 **❓ Câu Hỏi:**
@@ -1846,4 +1845,3 @@ export default function Analytics() {
    ```
 
 ---
-</details>

@@ -1,7 +1,6 @@
 # 🔌 Q57: WebSocket & Real-time Streaming - WebSocket, Socket.IO, Centrifuge
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔌 Q57: WebSocket & Real-time Streaming - WebSocket, Socket.IO, Centrifuge</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -1062,4 +1061,4 @@ setTimeout(flushBatch, 16); // 60fps
 ---
 
 
-</details>
+

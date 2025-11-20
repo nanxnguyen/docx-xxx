@@ -1,7 +1,6 @@
 # 📝 Q23: Compare Strings
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">📝 Q23: Compare Strings</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -367,4 +366,3 @@ const goodArray = bigArray.sort((a, b) => collator.compare(a, b)); // ✅ Nhanh 
 - **Unicode variants**: Dùng `normalize('NFC')` hoặc `normalize('NFD')`
 - **Fuzzy search**: Remove accents với `normalize('NFD')` + regex
 
-</details>

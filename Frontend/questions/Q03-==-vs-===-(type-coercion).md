@@ -1,7 +1,6 @@
 # 🔍 Q3: == vs === (Type Coercion)
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔍 Q3: == vs === (Type Coercion)</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -32,4 +31,3 @@ if (user.age === 25) { /* Rõ ràng */ }
 if (value == null) { /* Check both null and undefined */ }
 ```
 
-</details>

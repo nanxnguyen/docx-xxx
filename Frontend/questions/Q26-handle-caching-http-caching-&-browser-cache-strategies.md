@@ -1,7 +1,6 @@
 # 💾 Q26: Handle Caching - HTTP Caching & Browser Cache Strategies
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">💾 Q26: Handle Caching - HTTP Caching & Browser Cache Strategies</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -658,4 +657,3 @@ app.get('/api/*', (req, res) => {
 | Hash trong filename để làm gì? | Cache busting: Content đổi → Hash đổi → URL đổi → Browser download mới |
 
 
-</details>

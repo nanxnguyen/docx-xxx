@@ -1,7 +1,6 @@
 # 💡 Q2: Falsy/Truthy Values
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">💡 Q2: Falsy/Truthy Values</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -40,4 +39,3 @@ function greet(name?: string) {
 }
 ```
 
-</details>

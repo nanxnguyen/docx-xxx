@@ -1,7 +1,6 @@
 # 🔄 Q30: Generator Functions & Async Generators
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔄 Q30: Generator Functions & Async Generators</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -161,4 +160,3 @@ const values = [...gen]; // [1, 2, 3]
 // Generator is exhausted after iteration
 ```
 
-</details>

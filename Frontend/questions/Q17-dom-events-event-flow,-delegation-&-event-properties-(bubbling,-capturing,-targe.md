@@ -1,7 +1,6 @@
 # 🎪 Q17: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🎪 Q17: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -21,7 +20,7 @@ Giải thích chi tiết cơ chế hoạt động của DOM Events trong JavaScr
 3. Sự khác biệt giữa `target` và `currentTarget`
 4. Các best practices và common mistakes
 
-</details>
+
 
 **📚 Phần 1: Event Flow - 3 Phases của DOM Events**
 
@@ -316,4 +315,3 @@ document.getElementById('parent')?.addEventListener('click', (e: Event) => {
 3. Quên stopPropagation() khi có nested events
 4. Event delegation nhưng không check target
 5. Mix capturing và bubbling không rõ ràng
-</details>

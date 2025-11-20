@@ -1,7 +1,6 @@
 # ➡️ Q15: Arrow vs Regular Functions & this Binding (call, apply, bind)
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">➡️ Q15: Arrow vs Regular Functions & this Binding (call, apply, bind)</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -763,4 +762,3 @@ class SearchBox {
 **Remember:**
 > "Arrow function = lexical this (từ outer scope). Regular function = dynamic this (runtime). Dùng call/apply khi cần gọi ngay, bind khi cần function mới với this cố định!" 🎯
 
-</details>

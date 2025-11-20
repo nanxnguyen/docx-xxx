@@ -1,7 +1,6 @@
 # 🔑 Q52: Hashing, Encryption & Digital Signatures - Phân Biệt & Ứng Dụng Thực Tế
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔑 Q52: Hashing, Encryption & Digital Signatures - Phân Biệt & Ứng Dụng Thực Tế</span></summary>
+
 
 
 **❓ Câu Hỏi:**
@@ -1258,4 +1257,3 @@ const payload = jwt.verify(token, publicKey);
 - Dùng proven libraries (bcrypt, crypto, jsonwebtoken)
 - Never roll your own crypto!
 
-</details>

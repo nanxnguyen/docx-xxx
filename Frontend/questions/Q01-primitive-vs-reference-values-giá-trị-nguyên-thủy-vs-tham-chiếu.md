@@ -1,7 +1,6 @@
 # 🚩 Q1: Primitive vs Reference Values - Giá Trị Nguyên Thủy vs Tham Chiếu
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🚩 Q1: Primitive vs Reference Values - Giá Trị Nguyên Thủy vs Tham Chiếu</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -102,4 +101,3 @@ function updateUser(user: any) {
 }
 ```
 
-</details>

@@ -1,7 +1,6 @@
 # ⏰ Q53: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">⏰ Q53: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách</span></summary>
+
 
 
 **❓ Câu Hỏi:**
@@ -351,4 +350,3 @@ date.setMonth(2) // Side effect!
 - Defense in depth: Multiple layers of protection
 - Use proven libraries - NEVER roll your own crypto or date handling!
 
-</details>

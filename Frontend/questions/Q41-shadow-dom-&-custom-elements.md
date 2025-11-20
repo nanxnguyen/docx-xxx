@@ -1,7 +1,6 @@
 # 🎭 Q41: Shadow DOM & Custom Elements
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🎭 Q41: Shadow DOM & Custom Elements</span></summary>
+
 
 
 **Trả lời:**
@@ -33,4 +32,3 @@ customElements.define('my-badge', MyBadge);
 // ❌ Trông chờ CSS global tác động vào shadow tree
 ```
 
-</details>

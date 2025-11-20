@@ -1,7 +1,6 @@
 # 🔧 Q42: Polyfill & Transpiling
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔧 Q42: Polyfill & Transpiling</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -165,4 +164,3 @@ if (Array.prototype.includes) {
 }
 ```
 
-</details>

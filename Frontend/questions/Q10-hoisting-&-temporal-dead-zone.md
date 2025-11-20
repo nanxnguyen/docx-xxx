@@ -1,7 +1,6 @@
 # ⏫ Q10: Hoisting & Temporal Dead Zone
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">⏫ Q10: Hoisting & Temporal Dead Zone</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -168,4 +167,3 @@ for (let i = 0; i < 3; i++) {
 - **typeof không safe** trong TDZ!
 - **Luôn dùng const/let**, tránh var
 
-</details>

@@ -1,7 +1,6 @@
 # 🖥️ Q54: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🖥️ Q54: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết</span></summary>
+
 
 
 **Trả lời:**
@@ -1057,4 +1056,3 @@ SEO needed?
 - SEO + Performance = SSR/SSG
 - Interactivity + Simple = CSR
 
-</details>

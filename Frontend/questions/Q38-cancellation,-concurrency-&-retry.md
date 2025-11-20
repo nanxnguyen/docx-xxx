@@ -1,7 +1,6 @@
 # ⏹️ Q38: Cancellation, Concurrency & Retry
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">⏹️ Q38: Cancellation, Concurrency & Retry</span></summary>
+
 
 
 **Trả lời:**
@@ -87,4 +86,3 @@ async function retry<T>(op: () => Promise<T>, tries = 3) {
 // ❌ Retry vô hạn, không jitter → dồn tải (thundering herd)
 ```
 
-</details>

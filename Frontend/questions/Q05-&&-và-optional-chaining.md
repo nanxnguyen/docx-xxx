@@ -1,7 +1,6 @@
 # 🔗 Q5: || && ?? và Optional Chaining
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔗 Q5: || && ?? và Optional Chaining</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -33,4 +32,3 @@ const count = items?.length ?? 0; // Safe với nullish coalescing
 const hasEmail = user?.contact?.email && true; // && cho conditional
 ```
 
-</details>

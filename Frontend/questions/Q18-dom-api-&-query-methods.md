@@ -1,7 +1,6 @@
 # 🌐 Q18: DOM API & Query Methods
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🌐 Q18: DOM API & Query Methods</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -121,4 +120,3 @@ div.innerHTML = userInput; // XSS vulnerability
 div.textContent = userInput; // Safe
 ```
 
-</details>

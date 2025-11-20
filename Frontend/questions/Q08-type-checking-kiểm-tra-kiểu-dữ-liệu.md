@@ -1,7 +1,6 @@
 # 🧪 Q8: Type Checking - Kiểm Tra Kiểu Dữ Liệu
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🧪 Q8: Type Checking - Kiểm Tra Kiểu Dữ Liệu</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -313,4 +312,3 @@ function parseUser(api: UserAPI): User {
 
 **Use Cases:** Parse API responses, validate user input, convert data formats, safe defaults
 ---
-</details>

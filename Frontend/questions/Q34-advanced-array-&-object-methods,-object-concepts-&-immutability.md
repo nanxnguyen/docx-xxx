@@ -1,7 +1,6 @@
 # 🛠️ Q34: Advanced Array & Object Methods, Object Concepts & Immutability
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🛠️ Q34: Advanced Array & Object Methods, Object Concepts & Immutability</span></summary>
+
 
 
 **Trả lời:**
@@ -381,4 +380,3 @@ obj.a.b = 2; // Error in strict mode
 ```
 
 ---
-</details>

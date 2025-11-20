@@ -1,7 +1,6 @@
 # 🪞 Q27: JavaScript Proxy
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🪞 Q27: JavaScript Proxy</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -84,4 +83,3 @@ const loggingProxy = new Proxy(
 - Sử dụng proxy cho metaprogramming
 - Sử dụng proper error handling
 
-</details>

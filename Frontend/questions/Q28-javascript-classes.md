@@ -1,7 +1,6 @@
 # 🏛️ Q28: JavaScript Classes
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🏛️ Q28: JavaScript Classes</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -115,4 +114,3 @@ console.log(circle.area); // 314.16
 - Sử dụng static methods cho utility functions
 - Sử dụng getters/setters cho data validation
 
-</details>

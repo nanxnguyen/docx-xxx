@@ -1,7 +1,6 @@
 # 🔒 Q6: Immutable vs Mutable
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔒 Q6: Immutable vs Mutable</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -65,4 +64,3 @@ let updatedUsers = users.map((user) =>
 );
 ```
 
-</details>

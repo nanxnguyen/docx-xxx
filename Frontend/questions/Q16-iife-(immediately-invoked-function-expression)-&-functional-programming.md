@@ -1,7 +1,6 @@
 # 🎯 Q16: IIFE (Immediately Invoked Function Expression) & Functional Programming
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🎯 Q16: IIFE (Immediately Invoked Function Expression) & Functional Programming</span></summary>
+
 
 
 **⚡ Quick Summary:**

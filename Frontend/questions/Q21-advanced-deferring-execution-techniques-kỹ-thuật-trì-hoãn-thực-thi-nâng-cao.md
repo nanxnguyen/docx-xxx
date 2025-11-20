@@ -1,7 +1,6 @@
 # ⏱️ Q21: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">⏱️ Q21: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao</span></summary>
+
 
 
 ```typescript
@@ -126,7 +125,7 @@ const createUserAxios = async (userData: any) => {
  */
 ```
 
-</details>
+
 
 ### **2. Axios Instance & Configuration**
 
@@ -856,4 +855,3 @@ axios.create({ timeout: 10000 });
 ```
 
 ---
-</details>

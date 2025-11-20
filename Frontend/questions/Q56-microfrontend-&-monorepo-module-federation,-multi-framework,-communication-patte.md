@@ -1,7 +1,6 @@
 # 🧱 Q56: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🧱 Q56: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns</span></summary>
+
 
 
 **❓ Câu Hỏi:**
@@ -1519,7 +1518,6 @@ shell: react@18 ↔ dashboard: react@17 // ❌ Conflict!
 
 ---
 
-## 63. Design System & Frontend Architecture - Xây Dựng Cấu Trúc FE Có Thể Scale, Design Patterns
 
 **❓ Câu Hỏi:**
 > "Design system, Steps to build a FE structure? How you define structure for app can be scale? Apply any design pattern yet?"
@@ -4750,4 +4748,3 @@ export const ThemeProvider = ({ children }) => {
  */
 ```
 
-</details>

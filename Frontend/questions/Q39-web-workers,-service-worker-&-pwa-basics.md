@@ -1,7 +1,6 @@
 # 👷 Q39: Web Workers, Service Worker & PWA Basics
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">👷 Q39: Web Workers, Service Worker & PWA Basics</span></summary>
+
 
 
 **Trả lời:**
@@ -44,4 +43,3 @@ self.addEventListener('fetch', (e) => {
 // ❌ Dùng DOM API bên trong Worker → không có sẵn
 ```
 
-</details>

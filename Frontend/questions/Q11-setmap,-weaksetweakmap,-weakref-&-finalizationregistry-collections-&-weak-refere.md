@@ -1,7 +1,6 @@
 # 🗂️ Q11: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🗂️ Q11: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -509,4 +508,3 @@ obj = null;
 - **WeakRef**: Minimal memory overhead, nhưng có CPU cost cho deref() checks
 - **FinalizationRegistry**: Minimal overhead, callback chạy async trong idle time
 
-</details>

@@ -1,7 +1,6 @@
 # 💽 Q40: Browser Storage - LocalStorage, SessionStorage, Cookie & IndexedDB
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">💽 Q40: Browser Storage - LocalStorage, SessionStorage, Cookie & IndexedDB</span></summary>
+
 
 
 **Trả lời:**
@@ -846,4 +845,3 @@ try {
 - Luôn **try-catch**, **check availability**, **namespace keys**
 
 ---
-</details>

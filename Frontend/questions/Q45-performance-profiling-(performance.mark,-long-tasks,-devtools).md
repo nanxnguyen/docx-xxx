@@ -1,7 +1,6 @@
 # 📊 Q45: Performance Profiling (performance.mark, Long Tasks, DevTools)
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">📊 Q45: Performance Profiling (performance.mark, Long Tasks, DevTools)</span></summary>
+
 
 
 **❓ Câu Hỏi:**
@@ -918,4 +917,3 @@ async function calculateAll() {
 > **"You can't improve what you don't measure. Always measure, analyze, optimize, then measure again!"**
 
 ---
-</details>

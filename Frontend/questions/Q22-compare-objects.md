@@ -1,7 +1,6 @@
 # 🔀 Q22: Compare Objects
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔀 Q22: Compare Objects</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -70,4 +69,3 @@ console.log(deepEqual(obj1, obj2)); // true
 - Sử dụng libraries như Lodash cho complex comparisons
 - Sử dụng TypeScript cho type safety
 
-</details>

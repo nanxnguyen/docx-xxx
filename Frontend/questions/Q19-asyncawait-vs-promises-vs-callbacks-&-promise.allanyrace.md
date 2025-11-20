@@ -1,7 +1,6 @@
 # ⚙️ Q19: Async/Await vs Promises vs Callbacks & Promise.all/any/race
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">⚙️ Q19: Async/Await vs Promises vs Callbacks & Promise.all/any/race</span></summary>
+
 
 
 **⚡ Quick Summary:**
@@ -998,4 +997,3 @@ const results = await Promise.allSettled([
 Nhưng với đúng patterns và tools, bạn có thể xử lý mọi tình huống async một cách hiệu quả! 🚀
 
 ---
-</details>

@@ -1,7 +1,6 @@
 # 🔐 Q51: Bảo Mật Security trên Web Application
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🔐 Q51: Bảo Mật Security trên Web Application</span></summary>
+
 
 
 **❓ Tình Huống:**
@@ -1224,4 +1223,3 @@ setInterval(() => {
 }, 60000); // Mỗi phút
 ```
 
-</details>

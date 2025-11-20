@@ -1,7 +1,6 @@
 # 📈 Q47: Độ Phức Tạp Thuật Toán (Big O) - Map, Set, Array, Object
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">📈 Q47: Độ Phức Tạp Thuật Toán (Big O) - Map, Set, Array, Object</span></summary>
+
 
 
 **Trả lời:**
@@ -442,4 +441,3 @@ const filtered = arr.filter((item) => !condition); // O(n)
 - **Object O(1)** property access, tương tự Map nhưng key string/symbol only
 - Chọn đúng data structure → performance tăng exponentially (O(n²) → O(n))
 
-</details>

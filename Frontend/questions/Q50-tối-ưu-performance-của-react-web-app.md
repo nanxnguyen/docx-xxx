@@ -1,7 +1,6 @@
 # 🚀 Q50: Tối Ưu Performance của React Web App
 
-<details>
-<summary><span style="font-size:1.25em;font-weight:bold;">🚀 Q50: Tối Ưu Performance của React Web App</span></summary>
+
 
 
 **❓ Tình Huống:**
@@ -607,4 +606,3 @@ function OrderList({ orders }) {
 ```
 
 ---
-</details>
