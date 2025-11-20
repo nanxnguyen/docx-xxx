@@ -729,6 +729,221 @@ const results = await pool.process(items);
 
 ---
 
+#### **6️⃣ Sequential Execution - Chạy Promises Theo Thứ Tự**
+
+**🔹 Problem: Promise.all chạy SONG SONG, không theo thứ tự**
+
+```typescript
+// ❌ Promise.all chạy ĐỒNG THỜI
+const results = await Promise.all(
+  items.map(item => processItem(item))
+);
+// ⚠️ TẤT CẢ chạy cùng lúc! Item 3 có thể xong trước item 1
+// ⚠️ Server có thể quá tải (1000 requests cùng lúc)
+```
+
+---
+
+### **✅ Giải Pháp: 4 Cách Chạy Sequential**
+
+#### **1. For...of Loop (Đơn giản nhất - Khuyến nghị) ⭐**
+
+```typescript
+// ✅ Chạy TUẦN TỰ - Đợi xong mới chạy tiếp
+async function processSequential(items: string[]) {
+  const results = [];
+  
+  for (const item of items) {
+    const result = await processItem(item);
+    results.push(result);
+  }
+  
+  return results;
+}
+
+// Example: API steps phụ thuộc nhau
+const step1 = await fetch('/api/validate').then(r => r.json());
+const step2 = await fetch('/api/upload', { 
+  headers: { token: step1.token } // Cần token từ step1
+}).then(r => r.json());
+const step3 = await fetch('/api/save', {
+  body: JSON.stringify({ fileId: step2.fileId }) // Cần fileId từ step2
+}).then(r => r.json());
+```
+
+#### **2. Reduce Pattern**
+
+```typescript
+// Functional programming style
+const results = await items.reduce(async (prevPromise, item) => {
+  const acc = await prevPromise; // Đợi promise trước
+  const result = await processItem(item);
+  return [...acc, result];
+}, Promise.resolve([]));
+```
+
+#### **3. Generator Pattern**
+
+```typescript
+// Real-time updates
+async function* processWithProgress(items: string[]) {
+  for (const item of items) {
+    const result = await processItem(item);
+    yield result; // Emit ngay khi xong
+  }
+}
+
+// Usage: Update UI từng kết quả
+for await (const result of processWithProgress(items)) {
+  updateUI(result); // Cập nhật ngay
+  console.log('Progress:', result);
+}
+```
+
+#### **4. Batched (Cân bằng Speed + Server Load)**
+
+```typescript
+// Xử lý 10 items/lần (giữa parallel và sequential)
+async function processBatched(items: string[], batchSize = 10) {
+  const results = [];
+  
+  for (let i = 0; i < items.length; i += batchSize) {
+    const batch = items.slice(i, i + batchSize);
+    const batchResults = await Promise.all(
+      batch.map(item => processItem(item))
+    );
+    results.push(...batchResults);
+  }
+  
+  return results;
+}
+```
+
+---
+
+### **📊 So Sánh Performance**
+
+```typescript
+// 5 items, mỗi item mất 1 giây
+
+// Promise.all (Parallel): ~1s (tất cả cùng lúc)
+await Promise.all(items.map(processItem));
+
+// for...of (Sequential): ~5s (từng cái một)
+for (const item of items) await processItem(item);
+
+// Batched (2 items/batch): ~3s (cân bằng)
+await processBatched(items, 2);
+```
+
+**Bảng So Sánh:**
+
+```
+┌──────────────┬────────┬────────┬─────────────┬──────────────────┐
+│ Pattern      │ Speed  │ Order  │ Server Load │ Use Case         │
+├──────────────┼────────┼────────┼─────────────┼──────────────────┤
+│ Promise.all  │ ⚡⚡⚡⚡ │ ❌     │ 🔥🔥🔥🔥    │ Tasks độc lập    │
+│ for...of     │ ⚡     │ ✅     │ ✅          │ Tasks phụ thuộc  │
+│ generator    │ ⚡     │ ✅     │ ✅          │ Real-time update │
+│ batched      │ ⚡⚡⚡  │ ⚠️     │ ⚡⚡        │ Cân bằng        │
+└──────────────┴────────┴────────┴─────────────┴──────────────────┘
+```
+
+---
+
+### **🎯 Real-World Examples**
+
+```typescript
+// Example 1: Multi-step Form (Phải theo thứ tự)
+async function submitForm(data: any) {
+  const validated = await fetch('/api/validate', { body: data });
+  const uploaded = await fetch('/api/upload', { headers: { token: validated.token } });
+  const saved = await fetch('/api/save', { body: { fileId: uploaded.fileId } });
+  return saved;
+}
+
+// Example 2: Rate-Limited API (1 request/giây)
+async function fetchWithRateLimit(urls: string[]) {
+  const results = [];
+  for (let i = 0; i < urls.length; i++) {
+    results.push(await fetch(urls[i]).then(r => r.json()));
+    if (i < urls.length - 1) await new Promise(r => setTimeout(r, 1000));
+  }
+  return results;
+}
+
+// Example 3: Database Migrations (Phải đúng thứ tự)
+for (const migration of migrations) {
+  await migration.up();
+  await db.log({ name: migration.name, date: Date.now() });
+}
+```
+
+---
+
+### **🚨 Common Mistakes**
+
+```typescript
+// ❌ LỖI 1: forEach không đợi async
+items.forEach(async (item) => {
+  await processItem(item); // ❌ forEach không đợi!
+});
+
+// ✅ ĐÚNG: Dùng for...of
+for (const item of items) {
+  await processItem(item);
+}
+
+// ❌ LỖI 2: map tạo array of promises
+const results = items.map(async (item) => await processItem(item));
+// results = [Promise, Promise, ...] ❌
+
+// ✅ ĐÚNG: Thêm Promise.all hoặc for...of
+const results = await Promise.all(items.map(processItem));
+
+// ❌ LỖI 3: reduce không await accumulator
+const results = items.reduce(async (acc, item) => {
+  acc.push(await processItem(item)); // ❌ acc là Promise!
+  return acc;
+}, []);
+
+// ✅ ĐÚNG: Await accumulator
+const results = await items.reduce(async (prevPromise, item) => {
+  const acc = await prevPromise; // ✅
+  return [...acc, await processItem(item)];
+}, Promise.resolve([]));
+```
+
+---
+
+### **💡 Best Practices**
+
+**Khi nào dùng gì?**
+
+```typescript
+// ✅ Tasks ĐỘC LẬP → Promise.all (parallel)
+const [users, posts, comments] = await Promise.all([
+  fetchUsers(),
+  fetchPosts(),
+  fetchComments()
+]);
+
+// ✅ Tasks PHỤ THUỘC → for...of (sequential)
+const token = await login();
+const data = await fetchData(token);
+const saved = await saveData(data);
+
+// ✅ Rate Limit / Server Load → Batched
+await processBatched(1000items, 50); // 50 items/lần
+
+// ✅ Real-time Updates → Generator
+for await (const progress of uploadFiles(files)) {
+  updateProgressBar(progress);
+}
+```
+
+---
+
 #### **5️⃣ Async Iteration - Xử Lý Dữ Liệu Stream**
 
 **🔹 Problem: Process large datasets**

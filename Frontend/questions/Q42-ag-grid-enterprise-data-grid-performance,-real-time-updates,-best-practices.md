@@ -1,54 +1,875 @@
 # 📊 Q42: AG Grid - Enterprise Data Grid: Performance, Real-time Updates & Best Practices
 
 **⚡ Quick Summary:**
-> AG Grid = Enterprise data grid cho high-frequency updates. Virtual scrolling + Transaction API + Async batching = xử lý 100K+ rows mượt mà. Dùng applyTransactionAsync thay vì setRowData để tăng 100x performance.
+> AG Grid = Enterprise data grid cho high-frequency updates. getRowId (O(1)) + applyTransactionAsync (batching) + Virtual scrolling = xử lý 100K+ rows mượt mà.
 
 **💡 Ghi Nhớ:**
-- 🚀 **Performance**: Virtual scrolling, Transaction API, Row node cache O(1)
-- ⚡ **Real-time**: WebSocket integration, applyTransactionAsync, cell flash
-- 🎯 **Best Practices**: getRowId, immutable data, useMemo columnDefs
-- 📦 **Bundle**: Community ~150KB gzip, Enterprise ~250KB gzip
+- 🚀 **Top 3 Performance**: getRowId, applyTransactionAsync, Virtual scrolling
+- ⚡ **Real-time**: WebSocket → applyTransactionAsync (batch updates)
+- 🎯 **Must-Have**: getRowId (1000x faster), immutable data, useMemo columnDefs
+- ⚠️ **Never**: setRowData cho updates, mutable data, forEach async
 
 ---
 
-## **1. Giới thiệu AG Grid**
+## **0. Tại Sao Chọn AG Grid?** 🤔
 
-### **1.1. AG Grid là gì?**
+### **0.1. So Sánh Với Các Thư Viện Khác**
 
 ```typescript
 /**
- * 📊 AG Grid:
+ * 📊 SO SÁNH CÁC DATA GRID LIBRARIES
  * 
- * Thư viện data grid mạnh mẽ cho JavaScript/React, đặc biệt phù hợp cho:
- * - High-frequency data updates (real-time streaming)
- * - Large datasets (hàng triệu rows)
- * - Complex data visualization (grouping, aggregation, filtering)
- * - Enterprise applications (trading platforms, financial dashboards)
+ * ┌──────────────────┬─────────────┬──────────────┬─────────────┬──────────────┐
+ * │ Library          │ Performance │ Features     │ Bundle Size │ License      │
+ * ├──────────────────┼─────────────┼──────────────┼─────────────┼──────────────┤
+ * │ AG Grid          │ ⭐⭐⭐⭐⭐    │ ⭐⭐⭐⭐⭐     │ ~150KB gz   │ MIT + Paid   │
+ * │ MUI DataGrid     │ ⭐⭐⭐       │ ⭐⭐⭐⭐      │ ~200KB gz   │ MIT + Paid   │
+ * │ React Table      │ ⭐⭐⭐⭐     │ ⭐⭐⭐        │ ~15KB gz    │ MIT (Free)   │
+ * │ Tanstack Table   │ ⭐⭐⭐⭐     │ ⭐⭐⭐⭐      │ ~15KB gz    │ MIT (Free)   │
+ * │ react-data-grid  │ ⭐⭐⭐       │ ⭐⭐⭐        │ ~80KB gz    │ MIT (Free)   │
+ * └──────────────────┴─────────────┴──────────────┴─────────────┴──────────────┘
  * 
- * 💎 Editions:
- * - Community Edition: Free, đầy đủ features cơ bản
- * - Enterprise Edition: Trả phí ($999+/dev/năm), advanced features
+ * 🎯 ĐIỂM MẠNH AG GRID:
+ * 1. Performance tốt nhất cho large datasets (100K+ rows)
+ * 2. Real-time updates (WebSocket, streaming data)
+ * 3. Virtual scrolling mạnh mẽ
+ * 4. Enterprise features (pivoting, aggregation, excel export)
+ * 5. Mature ecosystem (9+ years development)
+ * 
+ * ⚠️ ĐIỂM YẾU AG GRID:
+ * 1. Bundle size lớn (~150KB)
+ * 2. Learning curve cao
+ * 3. Enterprise features cần trả phí ($999+/dev/năm)
+ * 4. API phức tạp
+ */
+```
+
+### **0.2. Ưu Điểm AG Grid** ✅
+
+```typescript
+/**
+ * ✅ ƯU ĐIỂM (PROS):
+ * 
+ * 1️⃣ PERFORMANCE CỰC TỐT:
+ *    - Virtual scrolling: Chỉ render cells trong viewport
+ *    - Row node cache: O(1) lookup với getRowId
+ *    - Transaction API: Incremental updates (không re-render toàn bộ)
+ *    - Async batching: Gộp nhiều updates → giảm 80% renders
+ *    
+ *    📊 Numbers:
+ *    - 100,000 rows: Render trong ~200ms (vs MUI: ~2000ms)
+ *    - Real-time: 1000 updates/s mượt mà (vs others: lag)
+ *    - Memory: 10MB cho 10K rows (vs others: 50-100MB)
+ * 
+ * 2️⃣ REAL-TIME UPDATES:
+ *    - WebSocket integration tốt
+ *    - Cell flash animations (visual feedback)
+ *    - Batch updates tự động
+ *    - Change detection thông minh
+ *    
+ *    🎯 Use cases:
+ *    - Crypto trading platforms
+ *    - Stock market dashboards
+ *    - Real-time analytics
+ *    - Order books
+ * 
+ * 3️⃣ FEATURES PHONG PHÚ:
+ *    Community (Free):
+ *    - Sorting, filtering, pagination
+ *    - Column resizing, pinning, moving
+ *    - Cell editing, validation
+ *    - Custom cell renderers
+ *    - Export CSV
+ *    
+ *    Enterprise (Paid):
+ *    - Excel-like pivot tables
+ *    - Server-side row model (infinite scroll)
+ *    - Advanced filtering
+ *    - Grouping & aggregation
+ *    - Export Excel/PDF
+ *    - Range selection
+ *    - Master/detail views
+ * 
+ * 4️⃣ CUSTOMIZATION:
+ *    - Cell renderers (React components)
+ *    - Custom filters & editors
+ *    - Themes (Quartz, Alpine, Balham, Material)
+ *    - CSS variables để customize colors
+ *    - Full TypeScript support
+ * 
+ * 5️⃣ MATURE ECOSYSTEM:
+ *    - 9+ years phát triển
+ *    - Active community
+ *    - Excellent documentation
+ *    - Regular updates
+ *    - Framework integrations (React, Angular, Vue, Vanilla JS)
  */
 
-// 📦 BƯỚC 1: Import các module cần thiết
-import { AgGridReact } from 'ag-grid-react';  // React wrapper cho AG Grid
-import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
-import 'ag-grid-community/styles/ag-grid.css';  // ✅ CSS base (BẮT BUỘC)
-import 'ag-grid-community/styles/ag-theme-quartz.css';  // ✅ Theme CSS (chọn 1 theme)
+// Example: Performance với large dataset
+function LargeDatasetExample() {
+  // 100,000 rows
+  const rowData = Array.from({ length: 100000 }, (_, i) => ({
+    id: i,
+    name: `User ${i}`,
+    email: `user${i}@example.com`,
+    age: 20 + (i % 50)
+  }));
 
-// 🔧 BƯỚC 2: Đăng ký modules (chỉ làm 1 lần, thường ở file main)
-ModuleRegistry.registerModules([AllCommunityModule]);
-// ⚠️ Lưu ý: AllCommunityModule bao gồm TẤT CẢ features miễn phí
-// Enterprise features cần mua license riêng
+  return (
+    <AgGridReact
+      rowData={rowData}
+      getRowId={(params) => params.data.id} // ⚡ O(1) lookup
+      // → AG Grid chỉ render ~30 rows trong viewport
+      // → Scroll mượt mà, không lag!
+    />
+  );
+}
 
-// 📊 BƯỚC 3: Tạo Grid Component
+// Example: Real-time updates
+function RealTimeExample() {
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
+
+  useEffect(() => {
+    if (!gridApi) return;
+
+    // 1000 updates/giây từ WebSocket
+    const ws = new WebSocket('wss://stream.example.com');
+    
+    ws.onmessage = (event) => {
+      const updates = JSON.parse(event.data); // Array of 10-20 updates
+      
+      gridApi.applyTransactionAsync({ update: updates });
+      // ✅ AG Grid tự động batch → chỉ render 20 lần/s thay vì 1000 lần/s
+      // ✅ CPU: 15% (vs MUI: 80%)
+    };
+
+    return () => ws.close();
+  }, [gridApi]);
+
+  return (
+    <AgGridReact
+      onGridReady={(params) => setGridApi(params.api)}
+      asyncTransactionWaitMillis={50} // Batch mỗi 50ms
+    />
+  );
+}
+```
+
+### **0.3. Nhược Điểm AG Grid** ❌
+
+```typescript
+/**
+ * ❌ NHƯỢC ĐIỂM (CONS):
+ * 
+ * 1️⃣ BUNDLE SIZE LỚN:
+ *    - Community: ~150KB gzipped (~450KB raw)
+ *    - Enterprise: ~250KB gzipped (~750KB raw)
+ *    
+ *    So sánh:
+ *    - React Table: ~15KB (10x nhỏ hơn!)
+ *    - Tanstack Table: ~15KB
+ *    - MUI DataGrid: ~200KB
+ *    
+ *    💡 Solution:
+ *    - Tree shaking (chỉ import modules cần dùng)
+ *    - Code splitting (lazy load grid)
+ *    - CDN cho production
+ * 
+ * 2️⃣ LEARNING CURVE CAO:
+ *    - API phức tạp (500+ config options)
+ *    - Nhiều concepts mới (Row Node, Grid API, Column API)
+ *    - Documentation dày (1000+ pages)
+ *    
+ *    ⏱️ Time to learn:
+ *    - Basic: 1-2 ngày
+ *    - Intermediate: 1-2 tuần
+ *    - Advanced: 1-2 tháng
+ * 
+ * 3️⃣ ENTERPRISE FEATURES PAID:
+ *    - Pivot tables: $999/dev/năm
+ *    - Excel export: $999/dev/năm
+ *    - Server-side row model: $999/dev/năm
+ *    - Range selection: $999/dev/năm
+ *    
+ *    💰 Pricing:
+ *    - Single Dev: $999/năm
+ *    - Team (5 devs): $4,495/năm
+ *    - Enterprise (unlimited): $14,995/năm
+ *    
+ *    ⚠️ NOTE: Community edition vẫn rất mạnh, đủ cho 80% use cases!
+ * 
+ * 4️⃣ OVERKILL CHO SIMPLE TABLES:
+ *    - Nếu chỉ cần sort/filter → React Table nhẹ hơn
+ *    - Nếu < 1000 rows → MUI DataGrid đơn giản hơn
+ *    - Nếu static data → HTML table + CSS đủ
+ *    
+ *    ❌ ĐỪng dùng AG Grid nếu:
+ *    - < 1000 rows
+ *    - Không cần real-time updates
+ *    - Không cần advanced features
+ *    - Bundle size quan trọng hơn performance
+ * 
+ * 5️⃣ API PHỨC TẠP:
+ *    - Nhiều cách làm 1 việc (confusing cho beginners)
+ *    - Breaking changes giữa major versions
+ *    - TypeScript types phức tạp
+ *    
+ *    Example:
+ *    // Update data có 3 cách:
+ *    setRowData(newData);              // Cách 1: Re-render toàn bộ
+ *    gridApi.applyTransaction(...);    // Cách 2: Incremental
+ *    gridApi.applyTransactionAsync(...);// Cách 3: Batched
+ *    // → Beginners không biết chọn cách nào!
+ */
+
+// ❌ Example: Overkill cho simple table
+function SimpleTableBad() {
+  const data = [
+    { name: 'John', age: 30 },
+    { name: 'Jane', age: 25 }
+  ]; // Chỉ 2 rows!
+
+  return (
+    <AgGridReact rowData={data} /> // ❌ 150KB bundle cho 2 rows!
+  );
+}
+
+// ✅ Better: Dùng HTML table
+function SimpleTableGood() {
+  return (
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Age</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>John</td><td>30</td></tr>
+        <tr><td>Jane</td><td>25</td></tr>
+      </tbody>
+    </table>
+    // ✅ 0KB bundle, đơn giản, đủ dùng!
+  );
+}
+```
+
+### **0.4. Khi Nào Nên Dùng AG Grid?** 🎯
+
+```typescript
+/**
+ * ✅ NÊN DÙNG AG GRID KHI:
+ * 
+ * 1. Large datasets (10K+ rows):
+ *    - Stock market data
+ *    - Transaction history
+ *    - Log viewers
+ *    - Analytics dashboards
+ * 
+ * 2. Real-time updates:
+ *    - Trading platforms (crypto, stocks)
+ *    - Live sports scores
+ *    - IoT sensor data
+ *    - Chat/messaging apps
+ * 
+ * 3. Complex data operations:
+ *    - Grouping, pivoting
+ *    - Aggregations (sum, avg, count)
+ *    - Advanced filtering
+ *    - Excel-like editing
+ * 
+ * 4. Performance critical:
+ *    - Smooth scrolling required
+ *    - Low latency updates
+ *    - High-frequency data (100+ updates/s)
+ * 
+ * ❌ KHÔNG NÊN DÙNG KHI:
+ * 
+ * 1. Small datasets (< 1000 rows):
+ *    → Dùng MUI DataGrid, React Table, hoặc HTML table
+ * 
+ * 2. Static data (không update):
+ *    → Dùng React Table hoặc Tanstack Table (15KB)
+ * 
+ * 3. Simple requirements:
+ *    → Chỉ cần sort/filter → React Table đủ
+ * 
+ * 4. Bundle size critical:
+ *    → Mobile apps, low-end devices → React Table
+ * 
+ * 5. Budget limited:
+ *    → Cần pivot/excel export nhưng không có budget
+ *    → Dùng React Table + custom implementation
+ */
+
+// Decision tree
+function chooseDataGrid(requirements: {
+  rowCount: number;
+  realTime: boolean;
+  complexFeatures: boolean;
+  budgetForLicense: boolean;
+}): string {
+  const { rowCount, realTime, complexFeatures, budgetForLicense } = requirements;
+
+  // Large dataset + Real-time → AG Grid
+  if (rowCount > 10000 && realTime) {
+    return 'AG Grid ⭐⭐⭐⭐⭐';
+  }
+
+  // Need enterprise features + có budget → AG Grid Enterprise
+  if (complexFeatures && budgetForLicense) {
+    return 'AG Grid Enterprise ⭐⭐⭐⭐⭐';
+  }
+
+  // Medium dataset + performance important → AG Grid Community
+  if (rowCount > 5000) {
+    return 'AG Grid Community ⭐⭐⭐⭐';
+  }
+
+  // Small dataset + simple → MUI DataGrid
+  if (rowCount < 1000) {
+    return 'MUI DataGrid hoặc React Table ⭐⭐⭐';
+  }
+
+  // Default: React Table (lightweight)
+  return 'React Table / Tanstack Table ⭐⭐⭐⭐';
+}
+
+// Examples
+console.log(chooseDataGrid({
+  rowCount: 50000,
+  realTime: true,
+  complexFeatures: false,
+  budgetForLicense: false
+})); // → "AG Grid ⭐⭐⭐⭐⭐"
+
+console.log(chooseDataGrid({
+  rowCount: 500,
+  realTime: false,
+  complexFeatures: false,
+  budgetForLicense: false
+})); // → "MUI DataGrid hoặc React Table ⭐⭐⭐"
+```
+
+### **0.5. AG Grid vs Competitors - Chi Tiết** 📊
+
+```typescript
+/**
+ * 🥊 AG GRID VS MUI DATAGRID
+ * 
+ * ┌──────────────────────┬─────────────────┬─────────────────┐
+ * │ Feature              │ AG Grid         │ MUI DataGrid    │
+ * ├──────────────────────┼─────────────────┼─────────────────┤
+ * │ Performance          │ ⭐⭐⭐⭐⭐        │ ⭐⭐⭐           │
+ * │ Bundle Size          │ ~150KB gz       │ ~200KB gz       │
+ * │ Learning Curve       │ Cao             │ Trung bình      │
+ * │ Virtual Scrolling    │ Excellent       │ Good            │
+ * │ Real-time Updates    │ Excellent       │ OK              │
+ * │ Free Features        │ Nhiều           │ Ít hơn          │
+ * │ Paid License         │ $999/dev/năm    │ $1000/dev/năm   │
+ * │ TypeScript Support   │ Excellent       │ Excellent       │
+ * │ Documentation        │ Excellent       │ Good            │
+ * │ Community            │ Large           │ Large           │
+ * │ UI/UX                │ Functional      │ Beautiful (MUI) │
+ * └──────────────────────┴─────────────────┴─────────────────┘
+ * 
+ * 🎯 CHỌN AG GRID khi: Performance > UI design
+ * 🎯 CHỌN MUI khi: UI design > Performance, đã dùng MUI ecosystem
+ * 
+ * 
+ * 🥊 AG GRID VS REACT TABLE (TANSTACK TABLE)
+ * 
+ * ┌──────────────────────┬─────────────────┬─────────────────┐
+ * │ Feature              │ AG Grid         │ React Table     │
+ * ├──────────────────────┼─────────────────┼─────────────────┤
+ * │ Performance          │ ⭐⭐⭐⭐⭐        │ ⭐⭐⭐⭐         │
+ * │ Bundle Size          │ ~150KB gz       │ ~15KB gz        │
+ * │ Out-of-box Features  │ Nhiều           │ Ít (headless)   │
+ * │ Customization        │ Trung bình      │ Rất cao         │
+ * │ Virtual Scrolling    │ Built-in        │ Cần thêm lib    │
+ * │ Real-time            │ Built-in        │ Tự implement    │
+ * │ Learning Curve       │ Cao             │ Trung bình      │
+ * │ License              │ MIT + Paid      │ MIT (Free)      │
+ * │ Setup Time           │ 5 phút          │ 30-60 phút      │
+ * └──────────────────────┴─────────────────┴─────────────────┘
+ * 
+ * 🎯 CHỌN AG GRID khi: Cần features ngay, không muốn custom nhiều
+ * 🎯 CHỌN REACT TABLE khi: Bundle size critical, cần full control, thích headless
+ * 
+ * 
+ * 🎯 RECOMMENDATION (Khuyến nghị):
+ * 
+ * 📈 LARGE ENTERPRISE APP (10K+ rows, real-time):
+ *    → AG Grid Community/Enterprise
+ *    Lý do: Performance tốt nhất, features đầy đủ
+ * 
+ * 🏢 MEDIUM BUSINESS APP (1K-10K rows):
+ *    → AG Grid Community hoặc MUI DataGrid
+ *    Lý do: Cân bằng features/performance/DX
+ * 
+ * 🏠 SMALL APP (< 1K rows):
+ *    → React Table, Tanstack Table, hoặc MUI DataGrid
+ *    Lý do: Nhẹ, đơn giản, đủ dùng
+ * 
+ * 📱 MOBILE/PWA (bundle size critical):
+ *    → React Table, Tanstack Table
+ *    Lý do: Bundle size nhỏ nhất (15KB)
+ * 
+ * 💰 STARTUP (limited budget):
+ *    → AG Grid Community hoặc React Table
+ *    Lý do: Free, đủ features cho MVP
+ */
+```
+
+---
+
+## **1. Setup & Basic Usage**
+
+```typescript
+// 📦 Installation
+npm install ag-grid-react ag-grid-community
+
+// 🎨 Import
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
+
+// ✅ Basic Grid
 function CryptoGrid() {
-  // 💾 State: Dữ liệu hiển thị trong grid
-  const [rowData, setRowData] = useState([
-    { ticker: 'BTCUSDT', price: 50000, volume: 1234 },  // Hàng 1: Bitcoin
-    { ticker: 'ETHUSDT', price: 3000, volume: 5678 }    // Hàng 2: Ethereum
+  const [rowData] = useState([
+    { ticker: 'BTCUSDT', price: 50000, volume: 1234 },
+    { ticker: 'ETHUSDT', price: 3000, volume: 5678 }
   ]);
-  // 👉 Mỗi object = 1 hàng (row)
+
+  const columnDefs = useMemo(() => [
+    { field: 'ticker', headerName: 'Symbol' },
+    { field: 'price', headerName: 'Price' },
+    { field: 'volume', headerName: 'Volume' }
+  ], []);
+
+  return (
+    <div className="ag-theme-quartz" style={{ height: 500 }}>
+      <AgGridReact
+        rowData={rowData}
+        columnDefs={columnDefs}
+      />
+    </div>
+  );
+}
+```
+
+---
+
+## **2. Performance Optimizations** 🚀
+
+### **2.1. getRowId - QUAN TRỌNG NHẤT** ⭐⭐⭐⭐⭐
+
+```typescript
+// ❌ SAI: Không có getRowId → O(n) lookup
+<AgGridReact rowData={data} />
+// Problem: AG Grid dùng index → tìm row phải duyệt array
+
+// ✅ ĐÚNG: Có getRowId → O(1) lookup
+<AgGridReact
+  rowData={data}
+  getRowId={(params) => params.data.ticker} // Unique ID
+/>
+// → AG Grid tạo Map: { 'BTCUSDT': rowNode } → tìm ngay lập tức!
+
+/**
+ * 📊 Performance Impact:
+ * - 1,000 rows: 100ms → 1ms (100x faster)
+ * - 10,000 rows: 1000ms → 1ms (1000x faster)
+ */
+```
+
+### **2.2. applyTransaction - Incremental Updates** ⭐⭐⭐⭐⭐
+
+```typescript
+// ❌ SAI: setRowData → Re-render toàn bộ
+const [rowData, setRowData] = useState(initialData);
+setRowData(prev => prev.map(row => 
+  row.ticker === ticker ? { ...row, price: newPrice } : row
+));
+// → 10,000 rows × 5 cells = 50,000 cells re-render ❌
+
+// ✅ ĐÚNG: applyTransaction → Chỉ update 1 row
+const [gridApi, setGridApi] = useState<GridApi | null>(null);
+
+function updatePrice(ticker: string, newPrice: number) {
+  const rowNode = gridApi.getRowNode(ticker); // O(1) thanks to getRowId
+  const updatedData = { ...rowNode.data, price: newPrice }; // Immutable
+  gridApi.applyTransaction({ update: [updatedData] });
+  // → Chỉ re-render 1 row = 5 cells ✅
+}
+
+/**
+ * 📊 Performance (10,000 rows, update 1 row):
+ * - setRowData: ~500ms, 50,000 cells
+ * - applyTransaction: ~2ms, 5 cells
+ * → 250x faster!
+ */
+```
+
+### **2.3. applyTransactionAsync - Batch Updates** ⭐⭐⭐⭐⭐
+
+```typescript
+// ❌ SAI: Sync transaction → 100 renders/giây
+socket.on('price-update', (update) => {
+  gridApi.applyTransaction({ update: [update] }); // Render ngay!
+});
+// → 100 updates/s → 100 renders/s → CPU 70%
+
+// ✅ ĐÚNG: Async transaction → Batch renders
+const gridOptions = {
+  asyncTransactionWaitMillis: 50, // Gộp updates mỗi 50ms
+};
+
+socket.on('price-update', (update) => {
+  gridApi.applyTransactionAsync({ update: [update] });
+});
+// → 100 updates/s → CHỈ 20 renders/s → CPU 15%
+
+/**
+ * 📊 Timeline (50ms batching):
+ * 0ms:  Update 1,2,3 → Queue
+ * 50ms: ⚡ Render 3 updates cùng lúc
+ * → Giảm 80% renders!
+ */
+```
+
+### **2.4. Immutable Data** ⭐⭐⭐⭐
+
+```typescript
+// ❌ SAI: Mutable (AG Grid không detect change)
+rowNode.data.price = newPrice; // Sửa trực tiếp
+gridApi.applyTransaction({ update: [rowNode.data] });
+// → oldRef === newRef → AG Grid nghĩ "không có gì thay đổi" ❌
+
+// ✅ ĐÚNG: Immutable (tạo object mới)
+const updatedData = { ...rowNode.data, price: newPrice };
+gridApi.applyTransaction({ update: [updatedData] });
+// → oldRef !== newRef → AG Grid biết có thay đổi ✅
+
+/**
+ * 💡 Tại sao?
+ * AG Grid dùng reference comparison (O(1)) thay vì deep comparison (O(n))
+ * → Nhanh hơn 100x với objects lớn
+ */
+```
+
+### **2.5. Virtual Scrolling** (Mặc định bật)
+
+```typescript
+/**
+ * 🌟 Virtual Scrolling tự động bật
+ * 
+ * 10,000 rows → CHỈ render ~30 rows (viewport + buffer)
+ * → Memory: 200MB → 8MB (96% giảm)
+ * → Initial render: 2000ms → 80ms (25x faster)
+ */
+
+const gridOptions = {
+  rowBuffer: 10, // Render thêm 10 rows ngoài viewport
+};
+```
+
+---
+
+## **3. Real-time Updates** ⚡
+
+### **3.1. WebSocket Integration**
+
+```typescript
+// ✅ Real-time crypto prices
+function CryptoGrid() {
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
+
+  useEffect(() => {
+    if (!gridApi) return;
+
+    // WebSocket connection
+    const ws = new WebSocket('wss://stream.binance.com/ws');
+
+    ws.onmessage = (event) => {
+      const update = JSON.parse(event.data);
+      
+      gridApi.applyTransactionAsync({
+        update: [{
+          ticker: update.s,
+          price: parseFloat(update.c),
+          volume: parseFloat(update.v)
+        }]
+      });
+    };
+
+    return () => ws.close(); // Cleanup
+  }, [gridApi]);
+
+  return (
+    <AgGridReact
+      onGridReady={(params) => setGridApi(params.api)}
+      getRowId={(params) => params.data.ticker}
+      asyncTransactionWaitMillis={50}
+    />
+  );
+}
+```
+
+### **3.2. Cell Flash (Visual Feedback)**
+
+```typescript
+const columnDefs = [
+  {
+    field: 'price',
+    enableCellChangeFlash: true, // ✅ Flash khi value thay đổi
+    cellClassRules: {
+      'price-up': (params) => params.value > params.oldValue,   // Xanh
+      'price-down': (params) => params.value < params.oldValue, // Đỏ
+    }
+  }
+];
+
+// CSS
+.price-up { background-color: #00ff0030; }
+.price-down { background-color: #ff000030; }
+```
+
+---
+
+## **4. Column Definitions** 📊
+
+```typescript
+const columnDefs = useMemo(() => [
+  // Basic column
+  { field: 'ticker', headerName: 'Symbol', width: 120 },
+  
+  // Value formatter
+  {
+    field: 'price',
+    valueFormatter: (params) => `$${params.value.toFixed(2)}`,
+  },
+  
+  // Cell class rules (conditional styling)
+  {
+    field: 'change24h',
+    cellClassRules: {
+      'text-green': (params) => params.value > 0,
+      'text-red': (params) => params.value < 0,
+    }
+  },
+  
+  // Column group
+  {
+    headerName: 'Statistics',
+    children: [
+      { field: 'high24h', headerName: '24h High' },
+      { field: 'low24h', headerName: '24h Low' },
+    ]
+  }
+], []); // ✅ useMemo → Chỉ tạo 1 lần
+```
+
+---
+
+## **5. Best Practices** 💡
+
+### **✅ DO:**
+
+```typescript
+// 1. Always use getRowId
+<AgGridReact getRowId={(params) => params.data.id} />
+
+// 2. Use applyTransactionAsync for high-frequency
+gridApi.applyTransactionAsync({ update: [data] });
+
+// 3. Immutable data
+const updated = { ...oldData, field: newValue };
+
+// 4. useMemo for columnDefs
+const columnDefs = useMemo(() => [...], []);
+
+// 5. Cleanup subscriptions
+useEffect(() => {
+  const ws = new WebSocket('...');
+  return () => ws.close();
+}, []);
+```
+
+### **❌ DON'T:**
+
+```typescript
+// 1. setRowData cho updates
+setRowData(prev => prev.map(...)); // ❌ Re-render toàn bộ
+
+// 2. Mutable data
+rowNode.data.price = newPrice; // ❌ AG Grid không detect
+
+// 3. Recreate columnDefs mỗi render
+const columnDefs = [{ field: 'ticker' }]; // ❌ Re-configure mỗi lần
+
+// 4. Bind trong columnDefs
+cellRenderer: this.MyRenderer.bind(this) // ❌ New function mỗi lần
+
+// 5. Forget cleanup
+const ws = new WebSocket('...'); // ❌ Memory leak
+```
+
+---
+
+## **6. Common Use Cases** 🎯
+
+### **6.1. Crypto Trading Dashboard**
+
+```typescript
+function CryptoTrading() {
+  const columnDefs = useMemo(() => [
+    { field: 'ticker', pinned: 'left' },
+    { 
+      field: 'price', 
+      valueFormatter: (p) => `$${p.value.toFixed(2)}`,
+      enableCellChangeFlash: true,
+    },
+    { 
+      field: 'change24h',
+      valueFormatter: (p) => `${p.value > 0 ? '+' : ''}${p.value.toFixed(2)}%`,
+      cellClassRules: {
+        'text-green': (p) => p.value > 0,
+        'text-red': (p) => p.value < 0,
+      }
+    }
+  ], []);
+
+  return (
+    <AgGridReact
+      columnDefs={columnDefs}
+      getRowId={(params) => params.data.ticker}
+      asyncTransactionWaitMillis={50}
+      enableCellChangeFlash={true}
+    />
+  );
+}
+```
+
+### **6.2. Order Book**
+
+```typescript
+function OrderBook() {
+  return (
+    <AgGridReact
+      getRowId={(params) => params.data.price}
+      asyncTransactionWaitMillis={16} // 60 FPS
+      suppressCellFocus={true}
+      suppressRowClickSelection={true}
+      columnDefs={[
+        { field: 'price', sort: 'desc' },
+        { field: 'amount' },
+        { field: 'total' }
+      ]}
+    />
+  );
+}
+```
+
+---
+
+## **7. Performance Checklist** ✅
+
+```
+□ getRowId implemented (unique ID)
+□ applyTransactionAsync for updates (not setRowData)
+□ Immutable data ({ ...old, new })
+□ useMemo for columnDefs
+□ asyncTransactionWaitMillis configured (50ms recommended)
+□ Virtual scrolling enabled (default)
+□ Cleanup WebSocket/subscriptions
+□ valueFormatter instead of cellRenderer (when possible)
+□ suppressCellFocus if not needed
+□ rowBuffer = 10 (default OK)
+```
+
+---
+
+## **8. Troubleshooting** 🔧
+
+```typescript
+/**
+ * ❌ Problem: Updates không hiển thị
+ * → Check: Có dùng immutable data không?
+ * 
+ * ❌ Problem: Lag khi scroll
+ * → Check: Có dùng cellRenderer phức tạp không? Dùng valueFormatter
+ * 
+ * ❌ Problem: Memory leak
+ * → Check: Có cleanup WebSocket/subscriptions không?
+ * 
+ * ❌ Problem: Chậm khi update nhiều rows
+ * → Check: Có dùng applyTransactionAsync không?
+ * 
+ * ❌ Problem: getRowNode(id) chậm
+ * → Check: Có implement getRowId không?
+ */
+```
+
+---
+
+## **📊 Performance Comparison**
+
+```
+┌─────────────────────┬──────────────┬─────────────┬──────────────┐
+│ Method              │ 10K rows     │ CPU         │ Use Case     │
+├─────────────────────┼──────────────┼─────────────┼──────────────┤
+│ setRowData          │ ~500ms       │ 80-100%     │ ❌ Never     │
+│ applyTransaction    │ ~2ms         │ 5-10%       │ ✅ Updates   │
+│ applyTransactionAsync│ ~2ms batched│ 5-10%       │ ⭐ Real-time │
+│ getRowNode (no ID)  │ O(n)         │ High        │ ❌ Slow      │
+│ getRowNode (w/ ID)  │ O(1)         │ Low         │ ✅ Fast      │
+└─────────────────────┴──────────────┴─────────────┴──────────────┘
+```
+
+---
+
+## **🎯 Quick Reference**
+
+**Setup:**
+```typescript
+npm install ag-grid-react ag-grid-community
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
+```
+
+**Must-Have Props:**
+```typescript
+<AgGridReact
+  getRowId={(params) => params.data.id}           // ⭐ O(1) lookup
+  asyncTransactionWaitMillis={50}                 // ⭐ Batching
+  onGridReady={(params) => setGridApi(params.api)}// ⭐ API access
+/>
+```
+
+**Update Data:**
+```typescript
+// ✅ Right way
+gridApi.applyTransactionAsync({ 
+  update: [{ ...oldData, price: newPrice }] 
+});
+
+// ❌ Wrong way
+setRowData(prev => prev.map(...));
+```
+
+**Styling:**
+```typescript
+<div className="ag-theme-quartz" style={{ height: 500 }}>
+  <AgGridReact ... />
+</div>
+```
+
+---
+
+**🎓 Key Takeaways:**
+1. **getRowId** = 1000x faster lookups
+2. **applyTransactionAsync** = 80% less renders  
+3. **Immutable data** = Change detection works
+4. **useMemo** = Prevent re-configurations
+5. **Cleanup** = No memory leaks
   // 👉 Mỗi property = 1 cột (column)
 
   // 🏗️ Column Definitions: Cấu hình các cột
