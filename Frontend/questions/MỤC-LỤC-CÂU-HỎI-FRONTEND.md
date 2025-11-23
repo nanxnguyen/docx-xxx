@@ -1,6 +1,6 @@
 # 📚 MỤC LỤC CÂU HỎI FRONTEND - INTERVIEW QUESTIONS
 
-> **Tổng hợp 60 câu hỏi phỏng vấn Frontend từ cơ bản đến nâng cao**  
+> **Tổng hợp 57 câu hỏi phỏng vấn Frontend từ cơ bản đến nâng cao**  
 > Cập nhật: November 23, 2025
 
 ---
@@ -12,8 +12,9 @@
 - [III. Advanced JavaScript (Q27-Q34)](#iii-advanced-javascript-q27-q34)
 - [IV. React & Frameworks (Q35-Q36)](#iv-react--frameworks-q35-q36)
 - [V. Build Tools & Modules (Q37-Q38)](#v-build-tools--modules-q37-q38)
-- [VI. Browser APIs & Storage (Q39-Q40)](#vi-browser-apis--storage-q39-q40)
-- [VII. UI Libraries & Performance (Q42-Q60)](#vii-ui-libraries--performance-q42-q60)
+- [VI. Browser APIs & Security (Q39-Q40)](#vi-browser-apis--security-q39-q40)
+- [VII. UI Libraries & Performance (Q42-Q48)](#vii-ui-libraries--performance-q42-q48)
+- [VIII. Senior-Level Topics (Q49-Q57)](#viii-senior-level-topics-q49-q57)
 
 ---
 
@@ -111,20 +112,50 @@
 
 ---
 
-## **VI. Browser APIs & Storage** (Q39-Q40)
+## **VI. Browser APIs & Security** (Q39-Q40)
 
 | # | Câu hỏi | Độ khó | Nội dung chính |
 |---|---------|--------|----------------|
-| **Q39** | [Web Workers, Service Worker & PWA](Q39-web-workers,-service-worker-&-pwa-basics.md) | ⭐⭐⭐⭐ | Multi-threading, offline support, PWA |
+| **Q39** | [Bảo mật Security trên Web Application](Q39-bảo-mật-security-trên-web-application.md) | ⭐⭐⭐⭐⭐ | XSS, CSRF, CORS, CSP, Authentication |
 | **Q40** | [Browser Storage](Q40-browser-storage-localstorage,-sessionstorage,-cookie-&-indexeddb.md) | ⭐⭐⭐ | localStorage, sessionStorage, cookies, IndexedDB |
 
 ---
 
-## **VII. UI Libraries & Performance** (Q42-Q60)
+## **VII. UI Libraries & Performance** (Q42-Q48)
 
 | # | Câu hỏi | Độ khó | Nội dung chính |
 |---|---------|--------|----------------|
 | **Q42** | [AG Grid - Enterprise Data Grid](Q42-ag-grid-enterprise-data-grid-performance,-real-time-updates,-best-practices.md) | ⭐⭐⭐⭐⭐ | Performance, real-time updates, getRowId, applyTransactionAsync |
+
+---
+
+## **VIII. Senior-Level Topics** (Q49-Q57)
+
+> **🎯 Các chủ đề nâng cao cho Senior Frontend Developer**
+
+### **🏗️ System Design & Architecture**
+
+| # | Câu hỏi | Độ khó | Nội dung chính |
+|---|---------|--------|----------------|
+| **Q49** | [System Design - Thiết kế Hệ thống Frontend Architecture](Q49-system-design-thiết-kế-hệ-thống-frontend-architecture.md) | ⭐⭐⭐⭐⭐ | Micro-frontends, Monorepo, BFF Pattern, State Architecture, Error Boundaries, Feature Flags |
+| **Q50** | [Testing Strategy - Unit, Integration, E2E Testing](Q50-testing-strategy-unit,-integration,-e2e-testing.md) | ⭐⭐⭐⭐⭐ | Test Pyramid, Jest/Vitest, React Testing Library, Playwright/Cypress, Visual Regression |
+| **Q51** | [Performance Monitoring & APM](Q51-performance-monitoring-&-apm-application-performance-monitoring.md) | ⭐⭐⭐⭐⭐ | Core Web Vitals, Sentry, DataDog, Performance Budgets, Source Maps |
+
+### **🔧 Advanced TypeScript & DevOps**
+
+| # | Câu hỏi | Độ khó | Nội dung chính |
+|---|---------|--------|----------------|
+| **Q52** | [TypeScript Advanced Patterns](Q52-typescript-advanced-patterns-generics,-utility-types,-advanced-patterns.md) | ⭐⭐⭐⭐⭐ | Generic Constraints, Utility Types, Mapped Types, Type Guards, Branded Types |
+| **Q53** | [CI/CD Pipeline - GitHub Actions, Deployment Automation](Q53-cicd-pipeline-github-actions,-deployment-automation.md) | ⭐⭐⭐⭐⭐ | GitHub Actions, Build Optimization, Blue-Green/Canary Deployment, Docker |
+| **Q54** | [Code Quality & Standards](Q54-code-quality-&-standards-eslint,-prettier,-code-review.md) | ⭐⭐⭐⭐ | ESLint Advanced Config, Prettier, Husky, Commitlint, SonarQube, Bundle Analysis |
+
+### **🌐 API & Accessibility**
+
+| # | Câu hỏi | Độ khó | Nội dung chính |
+|---|---------|--------|----------------|
+| **Q55** | [GraphQL vs REST - API Design, Apollo Client](Q55-graphql-vs-rest-api-design,-apollo-client.md) | ⭐⭐⭐⭐ | GraphQL Queries/Mutations, Apollo Cache, Pagination, Optimistic Updates |
+| **Q56** | [Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers](Q56-web-accessibility-(a11y)-wcag-2.1,-aria,-screen-readers.md) | ⭐⭐⭐⭐ | WCAG Compliance, ARIA Attributes, Keyboard Navigation, Color Contrast, axe-core |
+| **Q57** | [State Management Comparison - Redux vs Zustand vs Jotai](Q57-state-management-comparison-redux-vs-zustand-vs-jotai.md) | ⭐⭐⭐⭐ | Redux Toolkit, Zustand, Jotai Atoms, Performance Comparison, Migration Strategies |
 
 ---
 
@@ -134,16 +165,16 @@
 ┌─────────────────────┬────────┬────────────┐
 │ Category            │ Count  │ Percentage │
 ├─────────────────────┼────────┼────────────┤
-│ JavaScript Core     │ 22     │ 37%        │
-│ Async & Fetching    │ 5      │ 8%         │
-│ Advanced JS         │ 8      │ 13%        │
-│ React & Frameworks  │ 2      │ 3%         │
-│ Build Tools         │ 2      │ 3%         │
-│ Browser APIs        │ 2      │ 3%         │
-│ UI Libraries        │ 1      │ 2%         │
-│ Others              │ 18     │ 31%        │
+│ JavaScript Core     │ 22     │ 39%        │
+│ Async & Fetching    │ 5      │ 9%         │
+│ Advanced JS         │ 8      │ 14%        │
+│ React & Frameworks  │ 2      │ 4%         │
+│ Build Tools         │ 2      │ 4%         │
+│ Browser & Security  │ 2      │ 4%         │
+│ UI Libraries        │ 7      │ 12%        │
+│ Senior Topics       │ 9      │ 16%        │
 ├─────────────────────┼────────┼────────────┤
-│ TOTAL               │ 60     │ 100%       │
+│ TOTAL               │ 57     │ 100%       │
 └─────────────────────┴────────┴────────────┘
 ```
 
@@ -178,14 +209,14 @@ START HERE:
 6. Q36: Next.js framework
 ```
 
-### **🔥 Advanced (3+ năm)**
+### **🔥 Advanced (3+ năm) - Senior Level**
 ```
 1. Q27: Proxy patterns
 2. Q30: Generators
 3. Q37: Module systems
 4. Q38: Cancellation & concurrency
-5. Q39: Web Workers & PWA
-6. Q42: AG Grid performance
+5. Q42: AG Grid performance
+6. Q49-Q57: Senior Topics (System Design, Testing, CI/CD, TypeScript Advanced, GraphQL, a11y, State Management)
 ```
 
 ---
@@ -217,33 +248,49 @@ START HERE:
 
 ## 🔍 **Quick Reference**
 
-### **Top 10 Most Important Questions:**
+### **Top 15 Most Important Questions:**
 
+**🔥 Foundation (Must-know):**
 1. **Q12** - Event Loop (Must-know cho mọi level)
 2. **Q19** - Async/Await (90% projects dùng)
 3. **Q31** - Memory Management (Production issues)
 4. **Q35** - React Hooks (React ecosystem)
-5. **Q23** - React Query (Modern data fetching)
-6. **Q26** - Caching Strategies (Performance)
-7. **Q15** - this Binding (Common bug source)
+5. **Q15** - this Binding (Common bug source)
+
+**⚡ Advanced (Mid-Senior):**
+6. **Q23** - React Query (Modern data fetching)
+7. **Q26** - Caching Strategies (Performance)
 8. **Q24** - Browser Rendering (Optimization)
 9. **Q36** - Next.js (Modern framework)
 10. **Q42** - AG Grid (Enterprise apps)
 
+**🎯 Senior-Level (Leadership):**
+11. **Q49** - System Design (Micro-frontends, Architecture)
+12. **Q50** - Testing Strategy (Test Pyramid, E2E)
+13. **Q52** - TypeScript Advanced (Type System mastery)
+14. **Q53** - CI/CD Pipeline (DevOps integration)
+15. **Q55** - GraphQL vs REST (API design decisions)
+
 ### **Common Interview Combos:**
 
 ```
-📍 Junior Interview:
+📍 Junior Interview (0-2 years):
    Q01 → Q03 → Q04 → Q19 → Q35 (basic)
 
-📍 Mid-level Interview:
+📍 Mid-level Interview (2-4 years):
    Q12 → Q14 → Q15 → Q23 → Q31 → Q35 (advanced)
 
-📍 Senior Interview:
-   Q12 → Q27 → Q31 → Q36 → Q38 → Q42
+📍 Senior Interview (4+ years):
+   Q12 → Q31 → Q49 → Q50 → Q52 → Q53
+   
+📍 Tech Lead Interview:
+   Q49 (System Design) → Q50 (Testing) → Q53 (CI/CD) → Q56 (Accessibility) → Q57 (State Management)
 
 📍 Performance-focused:
-   Q24 → Q25 → Q26 → Q31 → Q42
+   Q24 → Q25 → Q26 → Q31 → Q42 → Q51
+
+📍 Architecture-focused:
+   Q36 (Next.js) → Q37 (Modules) → Q49 (System Design) → Q52 (TypeScript) → Q55 (API Design)
 ```
 
 ---
@@ -285,9 +332,20 @@ Nếu phát hiện lỗi hoặc muốn bổ sung nội dung:
 
 ## 📅 **Version History**
 
-- **v1.0** (Nov 2025) - Initial release với 60 câu hỏi
+- **v1.0** (Nov 2025) - Initial release với 48 câu hỏi
 - **v1.1** - Thêm AG Grid, React Query, Memory Management
 - **v1.2** - Merge Q22+Q23, Q31+Q32, optimize Q42
+- **v2.0** (Nov 23, 2025) - ✨ **MAJOR UPDATE:** Thêm 9 Senior-level topics:
+  - Q49: System Design & Architecture
+  - Q50: Testing Strategy (Test Pyramid, E2E)
+  - Q51: Performance Monitoring (APM)
+  - Q52: TypeScript Advanced Patterns
+  - Q53: CI/CD Pipeline & Deployment
+  - Q54: Code Quality & Standards
+  - Q55: GraphQL vs REST
+  - Q56: Web Accessibility (a11y)
+  - Q57: State Management Comparison
+  - **Total: 57 câu hỏi**
 
 ---
 
