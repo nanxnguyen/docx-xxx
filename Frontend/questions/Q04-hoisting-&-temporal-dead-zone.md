@@ -1,0 +1,169 @@
+# ⏫ Q04: Hoisting & Temporal Dead Zone
+
+
+
+
+**⚡ Quick Summary:**
+> Hoisting = Khai báo được đưa lên đầu scope. `var` = undefined, `let/const` = TDZ → ReferenceError
+
+**💡 Ghi Nhớ:**
+- 🔥 **var**: Hoisted + initialized = undefined → dùng trước khai báo OK (nhưng undefined)
+- ⚡ **let/const**: Hoisted nhưng NOT initialized → TDZ → ReferenceError
+- 🎯 **function declaration**: Hoisted toàn bộ → gọi trước khai báo OK
+- ⏰ **TDZ**: Vùng từ đầu scope đến dòng khai báo - biến tồn tại nhưng không access được
+
+
+**Trả lời:**
+
+- **Hoisting**: Cơ chế đưa declarations lên đầu scope trước khi code execute
+- **TDZ (Temporal Dead Zone)**: Vùng từ đầu block scope đến dòng khai báo let/const - không thể access biến
+- **Ưu điểm**: Function hoisting cho phép tổ chức code linh hoạt
+- **Nhược điểm**: var hoisting gây confusion, TDZ errors khó debug
+
+**Code Example:**
+
+```typescript
+// ═══════════════════════════════════════════════════════════
+// 1. FUNCTION HOISTING
+// ═══════════════════════════════════════════════════════════
+
+// ✅ Function Declaration - hoisted hoàn toàn
+console.log(sayHello('World')); // "Hello World" ✅
+function sayHello(name: string): string {
+  return `Hello ${name}`;
+}
+
+// ❌ Function Expression - không hoisted
+// console.log(sayGoodbye("World")); // ReferenceError
+const sayGoodbye = (name: string) => `Goodbye ${name}`;
+
+// ═══════════════════════════════════════════════════════════
+// 2. VAR HOISTING (không có TDZ)
+// ═══════════════════════════════════════════════════════════
+
+console.log(x); // undefined ✅ (không lỗi)
+var x = 5;
+console.log(x); // 5
+
+// JavaScript "nhìn" code như:
+// var x = undefined;
+// console.log(x);
+// x = 5;
+
+// ═══════════════════════════════════════════════════════════
+// 3. LET/CONST - TEMPORAL DEAD ZONE (TDZ)
+// ═══════════════════════════════════════════════════════════
+
+{
+  // ← TDZ BẮT ĐẦU cho biến y
+  
+  // console.log(y); // ❌ ReferenceError - đang trong TDZ!
+  // console.log(typeof y); // ❌ ReferenceError - typeof cũng không safe!
+  
+  let y = 10; // ← TDZ KẾT THÚC
+  console.log(y); // ✅ 10
+}
+
+// So sánh var vs let
+function compare() {
+  console.log(a); // undefined ✅ - var không có TDZ
+  var a = 1;
+  
+  // console.log(b); // ❌ ReferenceError - let có TDZ
+  let b = 2;
+}
+
+// ═══════════════════════════════════════════════════════════
+// 4. TDZ PITFALLS - Những cái bẫy
+// ═══════════════════════════════════════════════════════════
+
+// Pitfall 1: typeof trong TDZ
+{
+  // typeof x; // ❌ ReferenceError
+  let x = 1;
+}
+
+// Pitfall 2: Nested scopes
+let outer = 'outer';
+{
+  // console.log(outer); // ❌ ReferenceError!
+  // Inner scope đã "claim" biến outer → TDZ
+  let outer = 'inner';
+}
+
+// Pitfall 3: Default parameters
+// function fn(a = b, b = 1) {} // ❌ ReferenceError - b trong TDZ
+function fn(a = 1, b = a) {} // ✅ OK - a đã initialize
+
+// Pitfall 4: Class hoisting
+// const p = new Person(); // ❌ ReferenceError - class có TDZ
+class Person {}
+```
+
+**Best Practices:**
+
+```typescript
+// ✅ Khai báo variables ở đầu scope
+function good() {
+  const a = 1;
+  let b = 2;
+  // ... logic
+}
+
+// ✅ Dùng const/let, tránh var
+const API_URL = 'https://api.com'; // const cho values không đổi
+let count = 0; // let khi cần re-assign
+
+// ✅ Function declarations khi cần hoisting
+helper(); // ✅ OK
+function helper() {}
+
+// ✅ Arrow/const cho callbacks
+const process = (data) => data.map(x => x * 2);
+```
+
+**Common Mistakes:**
+
+```typescript
+// ❌ Mistake 1: var trong loops
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 100); // 3, 3, 3 ❌
+}
+
+// ✅ Fix: let trong loops
+for (let i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 100); // 0, 1, 2 ✅
+}
+
+// ❌ Mistake 2: Access let/const trong TDZ
+{
+  // console.log(value); // ❌ ReferenceError
+  let value = 10;
+}
+
+// ✅ Fix: Khai báo trước khi dùng
+{
+  let value = 10;
+  console.log(value); // ✅ 10
+}
+```
+
+**So Sánh:**
+
+| Feature | var | let/const |
+|---------|-----|-----------|
+| Hoisted? | ✅ Có | ✅ Có |
+| Initialized? | ✅ undefined | ❌ Không |
+| TDZ? | ❌ Không | ✅ Có |
+| Access trước khai báo | undefined | ReferenceError |
+| Scope | Function | Block |
+
+**💡 Key Takeaways:**
+
+- **var**: Hoisted + undefined → access trước OK (nhưng undefined)
+- **let/const**: Hoisted → TDZ → ReferenceError nếu access trước
+- **function declaration**: Hoisted hoàn toàn → gọi trước OK
+- **TDZ**: Từ đầu scope đến dòng khai báo - biến tồn tại nhưng không access được
+- **typeof không safe** trong TDZ!
+- **Luôn dùng const/let**, tránh var
+
