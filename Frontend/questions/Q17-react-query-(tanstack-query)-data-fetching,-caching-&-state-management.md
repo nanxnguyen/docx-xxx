@@ -1,5 +1,51 @@
 # 🔄 Q17: React Query (TanStack Query) - Data Fetching, Caching & State Management
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
+
+**"React Query là thư viện quản lý DỮ LIỆU TỪ SERVER, khác với state nội bộ ứng dụng (Redux/Zustand).**
+
+**📦 Khái Niệm Cốt Lõi:**
+- **Dữ liệu Server vs State Client**: Dữ liệu server = bất đồng bộ, chia sẻ, có thể cũ (thông tin user, bài viết). State client = đồng bộ, cục bộ (trạng thái UI, dữ liệu form).
+- **Query (Truy vấn)**: Lấy và lưu cache dữ liệu bằng `useQuery({ queryKey, queryFn })`. QueryKey = định danh cache + mảng phụ thuộc.
+- **Mutation (Thay đổi)**: Chỉnh sửa dữ liệu server bằng `useMutation()`, tự động làm mới các query liên quan.
+- **Chiến lược Cache**: `staleTime` (dữ liệu tươi bao lâu) vs `gcTime` (thời gian giữ cache sau khi component unmount).
+
+**🔑 Refetch vs Invalidate:**
+- **`refetch()`**: Buộc lấy lại dữ liệu ngay lập tức (kích hoạt thủ công).
+- **`invalidateQueries()`**: Đánh dấu dữ liệu cũ → tự động lấy lại ở background nếu component đang hiển thị.
+- **Thực hành tốt**: Dùng `invalidateQueries` sau khi thay đổi dữ liệu để tự động đồng bộ giao diện.
+
+**♻️ Vòng Đời Query (7 giai đoạn):**
+1. **Fresh (Tươi)**: Dữ liệu mới lấy, còn trong `staleTime` → không lấy lại.
+2. **Stale (Cũ)**: Hết `staleTime` → sẵn sàng lấy lại khi có kích hoạt (focus cửa sổ, mount, interval).
+3. **Fetching (Đang lấy)**: Đang gọi API (background hoặc lần đầu).
+4. **Inactive (Không hoạt động)**: Component unmount → query không active.
+5. **Garbage Collection (Thu hồi)**: Sau `gcTime` (mặc định 5 phút) → xóa cache.
+6. **Error (Lỗi)**: Lấy dữ liệu thất bại → tự động thử lại với thời gian chờ tăng dần.
+7. **Paused (Tạm dừng)**: Chế độ offline → tạm dừng lấy dữ liệu, tiếp tục khi online.
+
+**🎯 Các Trường Hợp Sử Dụng:**
+- **Tự động lấy lại**: Focus cửa sổ, kết nối lại mạng, polling theo khoảng thời gian.
+- **Cập nhật lạc quan**: Cập nhật giao diện trước, rollback nếu API thất bại.
+- **Cuộn vô hạn**: `useInfiniteQuery()` với `getNextPageParam`.
+- **Prefetching**: `queryClient.prefetchQuery()` trước khi chuyển trang.
+
+**⚠️ Lỗi Thường Gặp:**
+- Nhầm lẫn `staleTime` với `gcTime` (staleTime = độ tươi, gcTime = thời gian giữ cache).
+- Quên dependencies trong `queryKey` → không lấy lại khi params thay đổi.
+- Lạm dụng trạng thái loading → dùng `isLoading` vs `isPending` đúng ngữ cảnh.
+- Không xử lý trạng thái lỗi → thiếu error boundaries.
+
+**💡 Kiến Thức Senior:**
+- **Hiệu năng**: React Query gộp requests → nhiều components cùng query chỉ gọi API 1 lần.
+- **DevTools**: Dùng React Query DevTools để debug trạng thái cache, thời gian stale, trạng thái query.
+- **SSR**: Kết hợp với `HydrationBoundary` + `prefetchQuery` trên server.
+- **Chuyển đổi**: Thay thế Redux/SWR dần dần → migrate từng tính năng, không làm cùng lúc.
+
+---
+
 ## **📚 Giới Thiệu**
 
 **React Query (TanStack Query)** là thư viện quản lý server state mạnh mẽ nhất cho React.
@@ -3226,6 +3272,1366 @@ retry: (failureCount, error) => {
 
 ---
 
+## **🔄 REFETCH vs INVALIDATE - Sự Khác Biệt Chi Tiết**
+
+### **📌 1. RefetchQueries - Force Refetch Ngay Lập Tức**
+
+```typescript
+/**
+ * ⚡ REFETCHQUERIES = FETCH LẠI NGAY LẬP TỨC
+ * 
+ * • Trigger fetch immediately (không cần đợi)
+ * • Bỏ qua staleTime
+ * • Trả về Promise (await để đợi hoàn tất)
+ */
+
+import { useQueryClient } from '@tanstack/react-query';
+
+function RefetchExample() {
+  const queryClient = useQueryClient();
+  
+  const handleRefetch = async () => {
+    // ✅ Refetch tất cả queries
+    await queryClient.refetchQueries();
+    
+    // ✅ Refetch specific query
+    await queryClient.refetchQueries({ queryKey: ['users'] });
+    
+    // ✅ Refetch với filters
+    await queryClient.refetchQueries({
+      queryKey: ['users'],
+      type: 'active',    // Chỉ active queries (đang có observers)
+      exact: true,       // Exact match ['users'], không ['users', '123']
+      stale: true,       // Chỉ refetch queries đã stale
+    });
+    
+    // ✅ Refetch và đợi kết quả
+    const results = await queryClient.refetchQueries({ queryKey: ['users'] });
+    console.log('Refetch completed:', results);
+  };
+  
+  return <button onClick={handleRefetch}>Force Refetch</button>;
+}
+
+/**
+ * ⏱️ TIMING:
+ * • refetchQueries() chạy NGAY LẬP TỨC
+ * • Không cần đợi staleTime expire
+ * • Blocking operation (await để đợi)
+ */
+
+// ═══════════════════════════════════════════════════════════════
+// USE CASES CHO REFETCH
+// ═══════════════════════════════════════════════════════════════
+
+// 1️⃣ Manual refresh button
+function UserList() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery({ queryKey: ['users'], queryFn: fetchUsers });
+  
+  const handleRefresh = async () => {
+    await queryClient.refetchQueries({ queryKey: ['users'] });
+    toast.success('Refreshed!');
+  };
+  
+  return (
+    <div>
+      <button onClick={handleRefresh}>🔄 Refresh</button>
+      <UserTable users={data} />
+    </div>
+  );
+}
+
+// 2️⃣ Pull-to-refresh
+function MobileUserList() {
+  const queryClient = useQueryClient();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  const handlePullRefresh = async () => {
+    setIsRefreshing(true);
+    await queryClient.refetchQueries({ queryKey: ['users'] });
+    setIsRefreshing(false);
+  };
+  
+  return (
+    <PullToRefresh onRefresh={handlePullRefresh} isRefreshing={isRefreshing}>
+      <UserList />
+    </PullToRefresh>
+  );
+}
+
+// 3️⃣ Refetch after certain actions
+function PaymentPage() {
+  const queryClient = useQueryClient();
+  
+  const handlePaymentComplete = async () => {
+    // Refetch balance ngay sau khi thanh toán
+    await queryClient.refetchQueries({ queryKey: ['balance'] });
+  };
+  
+  return <PaymentForm onComplete={handlePaymentComplete} />;
+}
+
+// 4️⃣ Refetch only stale queries
+function RefreshStaleData() {
+  const queryClient = useQueryClient();
+  
+  const refreshStale = async () => {
+    // Chỉ refetch queries đã stale (theo staleTime)
+    await queryClient.refetchQueries({ stale: true });
+  };
+  
+  return <button onClick={refreshStale}>Refresh Stale Data</button>;
+}
+```
+
+---
+
+### **📌 2. InvalidateQueries - Mark as Stale, Refetch Khi Cần**
+
+```typescript
+/**
+ * ⏰ INVALIDATEQUERIES = MARK AS STALE
+ * 
+ * • Đánh dấu queries là "stale" (cũ)
+ * • Không fetch ngay lập tức
+ * • Refetch khi:
+ *   - Query có observers (component đang dùng)
+ *   - Component mount/window focus (nếu refetchOnMount/refetchOnWindowFocus = true)
+ */
+
+import { useQueryClient } from '@tanstack/react-query';
+
+function InvalidateExample() {
+  const queryClient = useQueryClient();
+  
+  const handleInvalidate = () => {
+    // ✅ Invalidate tất cả queries
+    queryClient.invalidateQueries();
+    
+    // ✅ Invalidate specific query
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+    
+    // ✅ Invalidate với filters
+    queryClient.invalidateQueries({
+      queryKey: ['users'],
+      exact: true,       // Exact match
+      refetchType: 'active', // 'active' | 'inactive' | 'all' | 'none'
+    });
+  };
+  
+  return <button onClick={handleInvalidate}>Invalidate Cache</button>;
+}
+
+/**
+ * ⏱️ TIMING:
+ * • invalidateQueries() chạy ĐỒNG BỘ
+ * • Chỉ đánh dấu "stale", không fetch ngay
+ * • Fetch xảy ra khi:
+ *   1. Query có active observers
+ *   2. Component mount (refetchOnMount: true)
+ *   3. Window focus (refetchOnWindowFocus: true)
+ */
+
+// ═══════════════════════════════════════════════════════════════
+// USE CASES CHO INVALIDATE
+// ═══════════════════════════════════════════════════════════════
+
+// 1️⃣ After mutation (MOST COMMON)
+function CreateUserForm() {
+  const queryClient = useQueryClient();
+  
+  const createMutation = useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      // ✅ Invalidate users list
+      // → Refetch nếu component đang hiển thị
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+  
+  return <UserForm onSubmit={createMutation.mutate} />;
+}
+
+// 2️⃣ Invalidate related queries
+function UpdateUserMutation() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<User> }) =>
+      updateUser(id, data),
+    
+    onSuccess: (updatedUser) => {
+      // Invalidate multiple related queries
+      queryClient.invalidateQueries({ queryKey: ['user', updatedUser.id] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ['user', updatedUser.id, 'posts'] });
+    },
+  });
+}
+
+// 3️⃣ Invalidate with refetchType
+function AdminDashboard() {
+  const queryClient = useQueryClient();
+  
+  const invalidateAll = () => {
+    // Invalidate ALL queries (kể cả inactive)
+    queryClient.invalidateQueries({
+      refetchType: 'all', // Refetch luôn, không cần observers
+    });
+  };
+  
+  const invalidateActive = () => {
+    // Chỉ invalidate queries đang active (có component dùng)
+    queryClient.invalidateQueries({
+      refetchType: 'active', // Default behavior
+    });
+  };
+  
+  const invalidateNone = () => {
+    // Chỉ mark stale, không refetch (lazy refetch)
+    queryClient.invalidateQueries({
+      refetchType: 'none', // Refetch khi component mount lần sau
+    });
+  };
+  
+  return (
+    <div>
+      <button onClick={invalidateAll}>Invalidate All</button>
+      <button onClick={invalidateActive}>Invalidate Active</button>
+      <button onClick={invalidateNone}>Mark Stale Only</button>
+    </div>
+  );
+}
+
+// 4️⃣ Invalidate queries matching pattern
+function InvalidateUserData() {
+  const queryClient = useQueryClient();
+  
+  const invalidateAllUserQueries = () => {
+    // Invalidate tất cả queries bắt đầu với ['users']
+    // VD: ['users'], ['users', '123'], ['users', 'list', {...}]
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+  };
+  
+  const invalidateOnlyUsersList = () => {
+    // Chỉ invalidate chính xác ['users']
+    queryClient.invalidateQueries({
+      queryKey: ['users'],
+      exact: true, // Không match ['users', '123']
+    });
+  };
+  
+  return (
+    <div>
+      <button onClick={invalidateAllUserQueries}>Invalidate All User Queries</button>
+      <button onClick={invalidateOnlyUsersList}>Invalidate Users List Only</button>
+    </div>
+  );
+}
+```
+
+---
+
+### **📌 3. So Sánh Chi Tiết: Refetch vs Invalidate**
+
+```typescript
+/**
+ * ╔═══════════════════════════════════════════════════════════════════╗
+ * ║                  REFETCH vs INVALIDATE                             ║
+ * ╠═══════════════════════════════════════════════════════════════════╣
+ * ║  Feature          │  refetchQueries        │  invalidateQueries   ║
+ * ╠═══════════════════════════════════════════════════════════════════╣
+ * ║  Timing           │  NGAY LẬP TỨC          │  KHI CẦN             ║
+ * ║  Blocking         │  Có (async/await)      │  Không               ║
+ * ║  Force fetch      │  ✅ Có                 │  ❌ Không            ║
+ * ║  Ignore staleTime │  ✅ Có                 │  ❌ Không            ║
+ * ║  Require observer │  ❌ Không              │  ✅ Có (default)     ║
+ * ║  Return promise   │  ✅ Có                 │  ❌ Không            ║
+ * ║  Use case         │  Manual refresh        │  After mutations     ║
+ * ╚═══════════════════════════════════════════════════════════════════╝
+ */
+
+// ═══════════════════════════════════════════════════════════════
+// SCENARIO COMPARISONS
+// ═══════════════════════════════════════════════════════════════
+
+// Scenario 1: User clicks "Refresh" button
+// ✅ REFETCH: Fetch ngay lập tức, hiển thị loading
+const handleRefreshButton = async () => {
+  setIsRefreshing(true);
+  await queryClient.refetchQueries({ queryKey: ['users'] });
+  setIsRefreshing(false);
+};
+
+// ❌ INVALIDATE: Chỉ mark stale, fetch khi component re-render
+const handleRefreshButton = () => {
+  queryClient.invalidateQueries({ queryKey: ['users'] });
+  // Fetch sẽ xảy ra khi component re-render hoặc window focus
+};
+
+// ═══════════════════════════════════════════════════════════════
+
+// Scenario 2: After creating a user
+// ❌ REFETCH: Fetch ngay cả khi không có component nào hiển thị users
+const createMutation = useMutation({
+  mutationFn: createUser,
+  onSuccess: async () => {
+    await queryClient.refetchQueries({ queryKey: ['users'] });
+    // Fetch ngay lập tức, dù không cần thiết
+  },
+});
+
+// ✅ INVALIDATE: Chỉ fetch khi component đang hiển thị users
+const createMutation = useMutation({
+  mutationFn: createUser,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+    // Fetch chỉ khi có component đang dùng ['users']
+  },
+});
+
+// ═══════════════════════════════════════════════════════════════
+
+// Scenario 3: Multiple queries cùng lúc
+// ✅ REFETCH: Fetch tất cả queries matching, return Promise
+const refreshAll = async () => {
+  await queryClient.refetchQueries({ queryKey: ['users'] });
+  await queryClient.refetchQueries({ queryKey: ['posts'] });
+  console.log('All refreshed!');
+};
+
+// ✅ INVALIDATE: Mark tất cả queries, fetch parallel nếu active
+const refreshAll = () => {
+  queryClient.invalidateQueries({ queryKey: ['users'] });
+  queryClient.invalidateQueries({ queryKey: ['posts'] });
+  // Fetch parallel nếu cả 2 queries đều active
+};
+
+// ═══════════════════════════════════════════════════════════════
+
+// Scenario 4: Background data sync
+// ❌ REFETCH: Không phù hợp (force fetch ngay)
+useEffect(() => {
+  const interval = setInterval(() => {
+    queryClient.refetchQueries({ queryKey: ['stats'] });
+  }, 5000);
+  return () => clearInterval(interval);
+}, []);
+
+// ✅ USE QUERY với refetchInterval thay vì refetchQueries
+const { data } = useQuery({
+  queryKey: ['stats'],
+  queryFn: fetchStats,
+  refetchInterval: 5000, // Auto refetch every 5s
+});
+```
+
+---
+
+### **📌 4. Kết Hợp Refetch + Invalidate**
+
+```typescript
+/**
+ * 🔀 KẾT HỢP REFETCH + INVALIDATE
+ */
+
+// Use case: Optimistic update + ensure sync
+function useUpdateUser() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: updateUser,
+    
+    // 1. Optimistic update (instant UI)
+    onMutate: async (updatedUser) => {
+      await queryClient.cancelQueries({ queryKey: ['user', updatedUser.id] });
+      
+      const previousUser = queryClient.getQueryData(['user', updatedUser.id]);
+      
+      queryClient.setQueryData(['user', updatedUser.id], updatedUser);
+      
+      return { previousUser };
+    },
+    
+    // 2. On success: Invalidate để ensure sync
+    onSuccess: (data, variables) => {
+      // ✅ Invalidate user detail
+      queryClient.invalidateQueries({ queryKey: ['user', variables.id] });
+      
+      // ✅ Invalidate users list (lazy refetch)
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+    
+    // 3. On error: Rollback + refetch để fix
+    onError: (err, variables, context) => {
+      if (context?.previousUser) {
+        queryClient.setQueryData(['user', variables.id], context.previousUser);
+      }
+      
+      // ✅ Force refetch để lấy data chính xác từ server
+      queryClient.refetchQueries({ queryKey: ['user', variables.id] });
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Pattern: Invalidate nhưng chờ refetch
+// ═══════════════════════════════════════════════════════════════
+
+async function handleAction() {
+  // Mark queries as stale
+  queryClient.invalidateQueries({ queryKey: ['users'] });
+  
+  // Force refetch và đợi kết quả
+  await queryClient.refetchQueries({ queryKey: ['users'] });
+  
+  console.log('Data synced!');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Pattern: Selective refetch based on conditions
+// ═══════════════════════════════════════════════════════════════
+
+function useSmartRefresh() {
+  const queryClient = useQueryClient();
+  
+  return async () => {
+    // Invalidate tất cả
+    queryClient.invalidateQueries();
+    
+    // Nhưng chỉ refetch queries quan trọng
+    await queryClient.refetchQueries({
+      predicate: (query) => {
+        // Refetch queries có priority cao
+        return query.meta?.priority === 'high';
+      },
+    });
+  };
+}
+
+// Usage
+const { data } = useQuery({
+  queryKey: ['critical-data'],
+  queryFn: fetchCriticalData,
+  meta: { priority: 'high' }, // Mark as high priority
+});
+```
+
+---
+
+### **📌 5. Best Practices: Khi Nào Dùng Gì?**
+
+```typescript
+/**
+ * 🎯 KHI NÀO DÙNG REFETCH?
+ */
+
+// ✅ 1. User action (manual refresh)
+function RefreshButton() {
+  const queryClient = useQueryClient();
+  
+  const handleClick = async () => {
+    await queryClient.refetchQueries({ queryKey: ['users'] });
+    toast.success('Refreshed!');
+  };
+  
+  return <button onClick={handleClick}>🔄 Refresh</button>;
+}
+
+// ✅ 2. Pull-to-refresh
+function MobileList() {
+  const queryClient = useQueryClient();
+  
+  const handlePullRefresh = async () => {
+    await queryClient.refetchQueries({ queryKey: ['items'] });
+  };
+  
+  return <PullToRefresh onRefresh={handlePullRefresh} />;
+}
+
+// ✅ 3. After critical action (cần data ngay)
+async function handlePayment() {
+  await processPayment();
+  
+  // Refetch balance ngay lập tức
+  await queryClient.refetchQueries({ queryKey: ['balance'] });
+  
+  showSuccessMessage();
+}
+
+// ✅ 4. Force sync after error
+function handleRetry() {
+  // Refetch để lấy data chính xác từ server
+  queryClient.refetchQueries({ queryKey: ['data'] });
+}
+
+/**
+ * 🎯 KHI NÀO DÙNG INVALIDATE?
+ */
+
+// ✅ 1. After mutation (MOST COMMON)
+const createMutation = useMutation({
+  mutationFn: createUser,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+  },
+});
+
+// ✅ 2. Related data changed
+const updatePostMutation = useMutation({
+  mutationFn: updatePost,
+  onSuccess: (post) => {
+    // Invalidate post detail
+    queryClient.invalidateQueries({ queryKey: ['post', post.id] });
+    
+    // Invalidate posts list
+    queryClient.invalidateQueries({ queryKey: ['posts'] });
+    
+    // Invalidate author's posts
+    queryClient.invalidateQueries({ queryKey: ['user', post.authorId, 'posts'] });
+  },
+});
+
+// ✅ 3. Background sync (passive refetch)
+function useBackgroundSync() {
+  const queryClient = useQueryClient();
+  
+  useEffect(() => {
+    // Invalidate mỗi 30s, refetch khi active
+    const interval = setInterval(() => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, [queryClient]);
+}
+
+// ✅ 4. WebSocket updates
+function useWebSocketUpdates() {
+  const queryClient = useQueryClient();
+  
+  useEffect(() => {
+    const ws = new WebSocket('ws://...');
+    
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      
+      // Invalidate affected queries
+      queryClient.invalidateQueries({ queryKey: ['orders', data.orderId] });
+    };
+    
+    return () => ws.close();
+  }, [queryClient]);
+}
+
+/**
+ * 📋 DECISION TREE
+ * 
+ * Cần data NGAY LẬP TỨC?
+ * ├─ YES → refetchQueries
+ * │  • Manual refresh button
+ * │  • Pull-to-refresh
+ * │  • After critical action
+ * │
+ * └─ NO → invalidateQueries
+ *    • After mutations
+ *    • Background sync
+ *    • WebSocket updates
+ *    • Related data changed
+ */
+```
+
+---
+
+## **🔄 VÒNG ĐỜI CỦA QUERY (Query Lifecycle)**
+
+### **📌 1. Query Lifecycle Overview**
+
+```typescript
+/**
+ * 🔄 VÒNG ĐỜI CỦA QUERY
+ * 
+ * ┌─────────────────────────────────────────────────────────────────┐
+ * │                      QUERY LIFECYCLE                             │
+ * ├─────────────────────────────────────────────────────────────────┤
+ * │                                                                  │
+ * │  1. INITIALIZATION (Query được tạo)                             │
+ * │     ↓                                                            │
+ * │  2. FETCHING (Đang fetch data)                                  │
+ * │     ↓                                                            │
+ * │  3. SUCCESS / ERROR (Fetch xong)                                │
+ * │     ↓                                                            │
+ * │  4. FRESH → STALE (Theo staleTime)                              │
+ * │     ↓                                                            │
+ * │  5. BACKGROUND REFETCH (Khi trigger refetch)                    │
+ * │     ↓                                                            │
+ * │  6. INACTIVE (Không còn observers)                              │
+ * │     ↓                                                            │
+ * │  7. GARBAGE COLLECTION (Sau gcTime)                             │
+ * │                                                                  │
+ * └─────────────────────────────────────────────────────────────────┘
+ */
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 1: INITIALIZATION
+// ═══════════════════════════════════════════════════════════════
+
+function UserProfile({ userId }: { userId: string }) {
+  // Query được tạo khi component mount
+  const query = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUser(userId),
+    staleTime: 5 * 60 * 1000,  // 5 minutes
+    gcTime: 10 * 60 * 1000,    // 10 minutes
+  });
+  
+  /*
+   * Khi component mount:
+   * 1. React Query check cache
+   * 2. Nếu có cache:
+   *    - Fresh (< staleTime) → Return cache, không fetch
+   *    - Stale (> staleTime) → Return cache + background refetch
+   * 3. Nếu không có cache:
+   *    - Set status = 'pending'
+   *    - Trigger fetch
+   */
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 2: FETCHING
+// ═══════════════════════════════════════════════════════════════
+
+/*
+ * Status: 'pending'
+ * fetchStatus: 'fetching'
+ * isLoading: true (lần đầu, chưa có cache)
+ * isFetching: true (bất kỳ lúc nào fetch, kể cả background)
+ * 
+ * Timeline:
+ * T0: queryFn() được gọi
+ * T1: Đang fetch...
+ * T2: Response trả về
+ */
+
+const query = useQuery({
+  queryKey: ['user', userId],
+  queryFn: async () => {
+    console.log('🚀 Fetching started');
+    const data = await fetchUser(userId);
+    console.log('✅ Fetching completed');
+    return data;
+  },
+});
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 3: SUCCESS / ERROR
+// ═══════════════════════════════════════════════════════════════
+
+// SUCCESS
+/*
+ * status: 'success'
+ * fetchStatus: 'idle'
+ * isSuccess: true
+ * data: {...}
+ * dataUpdatedAt: timestamp
+ */
+
+// ERROR
+/*
+ * status: 'error'
+ * fetchStatus: 'idle'
+ * isError: true
+ * error: Error object
+ * errorUpdatedAt: timestamp
+ */
+
+const query = useQuery({
+  queryKey: ['user', userId],
+  queryFn: fetchUser,
+  
+  // Callbacks
+  onSuccess: (data) => {
+    console.log('✅ Query succeeded:', data);
+  },
+  
+  onError: (error) => {
+    console.error('❌ Query failed:', error);
+  },
+  
+  onSettled: (data, error) => {
+    console.log('🏁 Query settled (success or error)');
+  },
+});
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 4: FRESH → STALE
+// ═══════════════════════════════════════════════════════════════
+
+/*
+ * FRESH STATE (< staleTime)
+ * • Data được coi là "mới"
+ * • Không refetch khi component mount
+ * • Không refetch khi window focus
+ * 
+ * STALE STATE (> staleTime)
+ * • Data được coi là "cũ"
+ * • Sẽ refetch khi:
+ *   - Component mount (refetchOnMount: true)
+ *   - Window focus (refetchOnWindowFocus: true)
+ *   - Network reconnect (refetchOnReconnect: true)
+ */
+
+const query = useQuery({
+  queryKey: ['user', userId],
+  queryFn: fetchUser,
+  staleTime: 5 * 60 * 1000, // 5 minutes
+});
+
+/*
+ * Timeline:
+ * T0:   Fetch completed → FRESH
+ * T300: Still FRESH (< 5 min)
+ * T301: Becomes STALE (> 5 min)
+ * 
+ * Sau T301:
+ * • User focus window → Refetch
+ * • Component re-mount → Refetch
+ */
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 5: BACKGROUND REFETCH
+// ═══════════════════════════════════════════════════════════════
+
+/*
+ * Background refetch xảy ra khi:
+ * • Query stale + window focus
+ * • Query stale + component mount
+ * • Query stale + network reconnect
+ * • invalidateQueries()
+ * • refetchQueries()
+ * • refetchInterval
+ */
+
+const query = useQuery({
+  queryKey: ['user', userId],
+  queryFn: fetchUser,
+  
+  // Refetch khi window focus (và query đã stale)
+  refetchOnWindowFocus: true,
+  
+  // Refetch khi component mount (và query đã stale)
+  refetchOnMount: true,
+  
+  // Refetch khi reconnect
+  refetchOnReconnect: true,
+  
+  // Refetch theo interval
+  refetchInterval: 30000, // 30 seconds
+});
+
+/*
+ * Trong background refetch:
+ * • status: 'success' (vẫn có data cũ)
+ * • fetchStatus: 'fetching'
+ * • isFetching: true
+ * • isRefetching: true
+ * • Data cũ vẫn hiển thị cho đến khi fetch mới xong
+ */
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 6: INACTIVE
+// ═══════════════════════════════════════════════════════════════
+
+/*
+ * Query trở thành INACTIVE khi:
+ * • Không còn component nào sử dụng (no observers)
+ * • Component unmount
+ * 
+ * Inactive query:
+ * • Vẫn còn trong cache
+ * • Không refetch nữa (trừ khi có component mount lại)
+ * • Đếm ngược gcTime để xóa
+ */
+
+function Parent() {
+  const [showProfile, setShowProfile] = useState(true);
+  
+  return (
+    <div>
+      <button onClick={() => setShowProfile(!showProfile)}>Toggle</button>
+      
+      {showProfile && <UserProfile userId="123" />}
+      {/* 
+        Khi setShowProfile(false):
+        • UserProfile unmount
+        • Query ['user', '123'] becomes INACTIVE
+        • Bắt đầu đếm gcTime
+      */}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 7: GARBAGE COLLECTION
+// ═══════════════════════════════════════════════════════════════
+
+/*
+ * Garbage Collection xảy ra khi:
+ * • Query INACTIVE
+ * • gcTime hết (default 5 phút)
+ * 
+ * Sau GC:
+ * • Query bị xóa khỏi cache
+ * • Lần mount tiếp theo sẽ fetch lại từ đầu
+ */
+
+const query = useQuery({
+  queryKey: ['user', userId],
+  queryFn: fetchUser,
+  staleTime: 5 * 60 * 1000,   // 5 min: Fresh → Stale
+  gcTime: 10 * 60 * 1000,      // 10 min: Inactive → GC
+});
+
+/*
+ * Timeline:
+ * T0:   Component mount → Fetch
+ * T300: Component unmount → Query INACTIVE
+ * T900: gcTime expires → Query REMOVED from cache
+ * T1000: Component mount again → Fetch lại từ đầu
+ */
+```
+
+---
+
+### **📌 2. Query States Deep Dive**
+
+```typescript
+/**
+ * 📊 QUERY STATES MATRIX
+ */
+
+interface QueryState {
+  // ═══════════════════════════════════════════════════════════════
+  // STATUS (3 trạng thái chính)
+  // ═══════════════════════════════════════════════════════════════
+  
+  status: 'pending' | 'error' | 'success';
+  
+  /*
+   * 'pending':  Chưa có data (loading lần đầu)
+   * 'error':    Có error
+   * 'success':  Có data
+   */
+  
+  // ═══════════════════════════════════════════════════════════════
+  // FETCH STATUS (3 trạng thái fetch)
+  // ═══════════════════════════════════════════════════════════════
+  
+  fetchStatus: 'idle' | 'fetching' | 'paused';
+  
+  /*
+   * 'idle':     Không fetch
+   * 'fetching': Đang fetch
+   * 'paused':   Fetch bị pause (offline)
+   */
+  
+  // ═══════════════════════════════════════════════════════════════
+  // BOOLEAN HELPERS
+  // ═══════════════════════════════════════════════════════════════
+  
+  isLoading: boolean;        // status === 'pending'
+  isError: boolean;          // status === 'error'
+  isSuccess: boolean;        // status === 'success'
+  
+  isFetching: boolean;       // fetchStatus === 'fetching'
+  isPaused: boolean;         // fetchStatus === 'paused'
+  
+  isRefetching: boolean;     // isFetching && !isLoading
+  isLoadingError: boolean;   // isLoading && isError
+  isRefetchError: boolean;   // isError && data !== undefined
+  
+  // ═══════════════════════════════════════════════════════════════
+  // DATA STATES
+  // ═══════════════════════════════════════════════════════════════
+  
+  data: TData | undefined;
+  error: Error | null;
+  
+  dataUpdatedAt: number;     // Timestamp lần cuối data update
+  errorUpdatedAt: number;    // Timestamp lần cuối error update
+  
+  // ═══════════════════════════════════════════════════════════════
+  // STALE & GC
+  // ═══════════════════════════════════════════════════════════════
+  
+  isStale: boolean;          // Query đã stale (> staleTime)
+  isInvalidated: boolean;    // Query bị invalidate
+  
+  // ═══════════════════════════════════════════════════════════════
+  // OBSERVER COUNT
+  // ═══════════════════════════════════════════════════════════════
+  
+  observersCount: number;    // Số lượng components đang dùng query
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STATE COMBINATIONS
+// ═══════════════════════════════════════════════════════════════
+
+/*
+┌─────────────────────────────────────────────────────────────────┐
+│  Status     │ FetchStatus │ Scenario                             │
+├─────────────────────────────────────────────────────────────────┤
+│  pending    │ fetching    │ Loading lần đầu (no cache)           │
+│  pending    │ paused      │ Loading nhưng offline                │
+│  success    │ idle        │ Data loaded, không fetch             │
+│  success    │ fetching    │ Background refetch                   │
+│  error      │ idle        │ Failed, không retry                  │
+│  error      │ fetching    │ Failed, đang retry                   │
+└─────────────────────────────────────────────────────────────────┘
+*/
+
+// Example usage
+function DataComponent() {
+  const query = useQuery({ queryKey: ['data'], queryFn: fetchData });
+  
+  // Loading lần đầu (no cache)
+  if (query.status === 'pending' && query.fetchStatus === 'fetching') {
+    return <Spinner />;
+  }
+  
+  // Background refetch (có data cũ)
+  if (query.status === 'success' && query.fetchStatus === 'fetching') {
+    return (
+      <div>
+        <RefreshIndicator />
+        <DataDisplay data={query.data} />
+      </div>
+    );
+  }
+  
+  // Error (failed, có retry)
+  if (query.status === 'error' && query.fetchStatus === 'fetching') {
+    return <div>Error, retrying... ({query.failureCount}/3)</div>;
+  }
+  
+  // Error (failed, no retry)
+  if (query.status === 'error' && query.fetchStatus === 'idle') {
+    return <ErrorMessage error={query.error} />;
+  }
+  
+  // Success
+  return <DataDisplay data={query.data} />;
+}
+```
+
+---
+
+### **📌 3. Query Lifecycle Events**
+
+```typescript
+/**
+ * 🎯 LIFECYCLE CALLBACKS
+ */
+
+const query = useQuery({
+  queryKey: ['user', userId],
+  queryFn: fetchUser,
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 1. onSuccess: Chạy khi fetch thành công
+  // ═══════════════════════════════════════════════════════════════
+  
+  onSuccess: (data) => {
+    console.log('✅ Fetch succeeded:', data);
+    
+    // Use cases:
+    // • Show toast
+    // • Update related state
+    // • Prefetch related data
+    // • Analytics tracking
+    
+    toast.success('User loaded');
+    
+    // Prefetch user's posts
+    queryClient.prefetchQuery({
+      queryKey: ['user', data.id, 'posts'],
+      queryFn: () => fetchUserPosts(data.id),
+    });
+  },
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 2. onError: Chạy khi fetch failed
+  // ═══════════════════════════════════════════════════════════════
+  
+  onError: (error) => {
+    console.error('❌ Fetch failed:', error);
+    
+    // Use cases:
+    // • Show error toast
+    // • Log error
+    // • Redirect to error page
+    // • Clear related cache
+    
+    toast.error(error.message);
+    
+    // Log to error tracking
+    Sentry.captureException(error);
+  },
+  
+  // ═══════════════════════════════════════════════════════════════
+  // 3. onSettled: Chạy sau khi fetch xong (success hoặc error)
+  // ═══════════════════════════════════════════════════════════════
+  
+  onSettled: (data, error) => {
+    console.log('🏁 Fetch settled');
+    
+    // Use cases:
+    // • Hide loading
+    // • Cleanup
+    // • Analytics
+    
+    if (error) {
+      console.log('Settled with error:', error);
+    } else {
+      console.log('Settled with data:', data);
+    }
+  },
+});
+
+// ═══════════════════════════════════════════════════════════════
+// GLOBAL CALLBACKS (QueryClient level)
+// ═══════════════════════════════════════════════════════════════
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Global onSuccess
+      onSuccess: (data) => {
+        console.log('Global: Query succeeded');
+      },
+      
+      // Global onError
+      onError: (error) => {
+        console.error('Global: Query failed');
+        
+        // Global error handling
+        if (error.status === 401) {
+          // Redirect to login
+          router.push('/login');
+        }
+      },
+      
+      // Global onSettled
+      onSettled: () => {
+        console.log('Global: Query settled');
+      },
+    },
+  },
+});
+
+// ═══════════════════════════════════════════════════════════════
+// QUERY CACHE EVENTS
+// ═══════════════════════════════════════════════════════════════
+
+const queryCache = queryClient.getQueryCache();
+
+// Subscribe to cache events
+const unsubscribe = queryCache.subscribe((event) => {
+  if (event.type === 'added') {
+    console.log('📌 Query added:', event.query.queryKey);
+  }
+  
+  if (event.type === 'removed') {
+    console.log('🗑️ Query removed:', event.query.queryKey);
+  }
+  
+  if (event.type === 'updated') {
+    console.log('🔄 Query updated:', event.query.queryKey);
+    console.log('  State:', event.query.state);
+  }
+});
+
+// Cleanup
+unsubscribe();
+```
+
+---
+
+### **📌 4. Stale Time vs GC Time - Detailed Explanation**
+
+```typescript
+/**
+ * ⏱️ STALETIME vs GCTIME
+ */
+
+// ═══════════════════════════════════════════════════════════════
+// STALE TIME = Thời gian data được coi là "FRESH"
+// ═══════════════════════════════════════════════════════════════
+
+const query1 = useQuery({
+  queryKey: ['user', userId],
+  queryFn: fetchUser,
+  staleTime: 5 * 60 * 1000, // 5 minutes
+});
+
+/*
+ * staleTime = 5 phút:
+ * 
+ * T0:   Fetch completed → Data FRESH
+ * T1-4: Data still FRESH
+ *       • Component re-mount → Return cache, NO refetch
+ *       • Window focus → Return cache, NO refetch
+ * T5:   Data becomes STALE
+ *       • Component re-mount → Return cache + background refetch
+ *       • Window focus → Return cache + background refetch
+ */
+
+// ═══════════════════════════════════════════════════════════════
+// GC TIME = Thời gian giữ cache sau khi INACTIVE
+// ═══════════════════════════════════════════════════════════════
+
+const query2 = useQuery({
+  queryKey: ['user', userId],
+  queryFn: fetchUser,
+  gcTime: 10 * 60 * 1000, // 10 minutes
+});
+
+/*
+ * gcTime = 10 phút:
+ * 
+ * T0:   Component mount → Fetch
+ * T5:   Component unmount → Query INACTIVE
+ * T6-14: Query still in cache (inactive)
+ *        • Component re-mount → Return cache (nếu chưa stale)
+ * T15:  gcTime expires → Query REMOVED from cache
+ *        • Component re-mount → Fetch lại từ đầu
+ */
+
+// ═══════════════════════════════════════════════════════════════
+// COMMON CONFIGURATIONS
+// ═══════════════════════════════════════════════════════════════
+
+// 1. Static data (rarely changes)
+const staticQuery = useQuery({
+  queryKey: ['countries'],
+  queryFn: fetchCountries,
+  staleTime: Infinity,       // Never stale
+  gcTime: Infinity,          // Never GC
+});
+
+// 2. Real-time data (always fresh)
+const realtimeQuery = useQuery({
+  queryKey: ['stock-price'],
+  queryFn: fetchStockPrice,
+  staleTime: 0,              // Always stale
+  refetchInterval: 1000,     // Refetch every 1s
+});
+
+// 3. Normal data (default behavior)
+const normalQuery = useQuery({
+  queryKey: ['users'],
+  queryFn: fetchUsers,
+  staleTime: 5 * 60 * 1000,  // 5 min: Fresh → Stale
+  gcTime: 10 * 60 * 1000,    // 10 min: Inactive → GC
+});
+
+// 4. Expensive data (cache longer)
+const expensiveQuery = useQuery({
+  queryKey: ['dashboard-stats'],
+  queryFn: fetchDashboardStats,
+  staleTime: 10 * 60 * 1000, // 10 min: Fresh → Stale
+  gcTime: 30 * 60 * 1000,    // 30 min: Inactive → GC
+});
+
+// 5. Paginated data (cache all pages)
+const paginatedQuery = useQuery({
+  queryKey: ['users', page],
+  queryFn: () => fetchUsers(page),
+  staleTime: 5 * 60 * 1000,
+  gcTime: Infinity,          // Never GC (keep all pages)
+});
+```
+
+---
+
+### **📌 5. Query Lifecycle Visualization**
+
+```typescript
+/**
+ * 📊 COMPLETE QUERY LIFECYCLE DIAGRAM
+ */
+
+/*
+┌─────────────────────────────────────────────────────────────────┐
+│                    QUERY LIFECYCLE                               │
+│                                                                  │
+│  Component Mount                                                 │
+│       │                                                          │
+│       ├─→ Check Cache                                           │
+│       │    ├─→ No Cache                                         │
+│       │    │    └─→ [PHASE 1] INITIALIZATION                    │
+│       │    │         • status: 'pending'                        │
+│       │    │         • fetchStatus: 'fetching'                  │
+│       │    │         • isLoading: true                          │
+│       │    │                                                     │
+│       │    │         [PHASE 2] FETCHING                         │
+│       │    │         • queryFn() executed                       │
+│       │    │         • Network request                          │
+│       │    │                                                     │
+│       │    │         [PHASE 3] SUCCESS/ERROR                    │
+│       │    │         ├─→ Success                                │
+│       │    │         │    • status: 'success'                   │
+│       │    │         │    • data: {...}                         │
+│       │    │         │    • onSuccess() called                  │
+│       │    │         └─→ Error                                  │
+│       │    │              • status: 'error'                     │
+│       │    │              • error: Error                        │
+│       │    │              • onError() called                    │
+│       │    │              • Retry if configured                 │
+│       │    │                                                     │
+│       │    └─→ Has Cache                                        │
+│       │         ├─→ Fresh (< staleTime)                         │
+│       │         │    • Return cache immediately                 │
+│       │         │    • NO refetch                               │
+│       │         └─→ Stale (> staleTime)                         │
+│       │              • Return cache immediately                 │
+│       │              • Background refetch                       │
+│       │                                                          │
+│       │    [PHASE 4] FRESH → STALE                              │
+│       │    • After staleTime: isStale = true                    │
+│       │    • Triggers:                                          │
+│       │      - Window focus + refetchOnWindowFocus             │
+│       │      - Component mount + refetchOnMount                │
+│       │      - Reconnect + refetchOnReconnect                  │
+│       │                                                          │
+│       │    [PHASE 5] BACKGROUND REFETCH                         │
+│       │    • status: 'success' (old data)                       │
+│       │    • fetchStatus: 'fetching'                            │
+│       │    • isFetching: true, isRefetching: true              │
+│       │    • UI shows old data + loading indicator             │
+│       │                                                          │
+│  Component Unmount                                               │
+│       │                                                          │
+│       └─→ [PHASE 6] INACTIVE                                    │
+│            • observersCount: 0                                   │
+│            • No refetch                                          │
+│            • Start gcTime countdown                              │
+│                                                                  │
+│            [PHASE 7] GARBAGE COLLECTION                          │
+│            • After gcTime: Query removed from cache             │
+│            • Next mount: Fetch from scratch                     │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+*/
+
+// ═══════════════════════════════════════════════════════════════
+// EXAMPLE: Complete lifecycle with logging
+// ═══════════════════════════════════════════════════════════════
+
+function UserProfile({ userId }: { userId: string }) {
+  const queryClient = useQueryClient();
+  
+  const query = useQuery({
+    queryKey: ['user', userId],
+    
+    queryFn: async () => {
+      console.log('📡 [FETCH] Starting fetch...');
+      const data = await fetchUser(userId);
+      console.log('✅ [FETCH] Completed');
+      return data;
+    },
+    
+    staleTime: 5 * 60 * 1000,  // 5 min
+    gcTime: 10 * 60 * 1000,    // 10 min
+    
+    onSuccess: (data) => {
+      console.log('✅ [SUCCESS] Query succeeded:', data);
+      console.log('   status:', query.status);
+      console.log('   isStale:', queryClient.getQueryState(['user', userId])?.isStale);
+    },
+    
+    onError: (error) => {
+      console.error('❌ [ERROR] Query failed:', error);
+    },
+    
+    onSettled: () => {
+      console.log('🏁 [SETTLED] Query settled');
+    },
+  });
+  
+  useEffect(() => {
+    console.log('🔵 [MOUNT] Component mounted');
+    
+    return () => {
+      console.log('🔴 [UNMOUNT] Component unmounted');
+      console.log('   Query will become INACTIVE');
+      console.log('   GC in', 10, 'minutes');
+    };
+  }, []);
+  
+  useEffect(() => {
+    console.log('🔄 [STATE] Query state changed');
+    console.log('   status:', query.status);
+    console.log('   fetchStatus:', query.fetchStatus);
+    console.log('   isLoading:', query.isLoading);
+    console.log('   isFetching:', query.isFetching);
+    console.log('   isRefetching:', query.isRefetching);
+  }, [query.status, query.fetchStatus]);
+  
+  if (query.isLoading) return <Spinner />;
+  if (query.isError) return <Error error={query.error} />;
+  
+  return (
+    <div>
+      {query.isFetching && <RefreshIndicator />}
+      <UserCard user={query.data} />
+    </div>
+  );
+}
+
+/*
+ * CONSOLE OUTPUT:
+ * 
+ * === First Mount ===
+ * 🔵 [MOUNT] Component mounted
+ * 🔄 [STATE] status: pending, fetchStatus: fetching, isLoading: true
+ * 📡 [FETCH] Starting fetch...
+ * ✅ [FETCH] Completed
+ * ✅ [SUCCESS] Query succeeded: {...}
+ *    status: success
+ *    isStale: false
+ * 🔄 [STATE] status: success, fetchStatus: idle, isFetching: false
+ * 🏁 [SETTLED] Query settled
+ * 
+ * === Unmount ===
+ * 🔴 [UNMOUNT] Component unmounted
+ *    Query will become INACTIVE
+ *    GC in 10 minutes
+ * 
+ * === Re-mount (within 5 min - FRESH) ===
+ * 🔵 [MOUNT] Component mounted
+ * 🔄 [STATE] status: success, fetchStatus: idle (no refetch)
+ * 
+ * === Re-mount (after 5 min - STALE) ===
+ * 🔵 [MOUNT] Component mounted
+ * 🔄 [STATE] status: success, fetchStatus: fetching (background refetch)
+ * 📡 [FETCH] Starting fetch...
+ * ✅ [FETCH] Completed
+ * ✅ [SUCCESS] Query succeeded: {...}
+ * 🏁 [SETTLED] Query settled
+ * 
+ * === Re-mount (after 10 min - GC) ===
+ * 🔵 [MOUNT] Component mounted
+ * 🔄 [STATE] status: pending, fetchStatus: fetching (fetch from scratch)
+ * 📡 [FETCH] Starting fetch...
+ * ...
+ */
+```
+
+---
+
 **🎯 Key Takeaways:**
 
 1. **Cancellation** prevents memory leaks & race conditions
@@ -3237,3 +4643,6 @@ retry: (failureCount, error) => {
 7. **Advanced caching** tailors behavior to use case
 8. **Query filters** enable powerful batch operations
 9. **Prevent waterfalls** reduces total loading time
+10. **Refetch** = force fetch ngay lập tức
+11. **Invalidate** = mark stale, lazy refetch
+12. **Query lifecycle** có 7 phases: Init → Fetch → Success/Error → Fresh → Stale → Inactive → GC

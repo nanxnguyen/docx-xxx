@@ -1,7 +1,95 @@
 # ⚙️ Q13: Async/Await vs Promises vs Callbacks & Promise.all/any/race
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
+**"JavaScript async tiến hóa: Callbacks → Promises → Async/Await. Mỗi mẫu giải quyết code bất đồng bộ với đánh đổi khác nhau.**
+
+**📊 Tiến Hóa Mẫu Async:**
+1. **Callbacks**: Hàm làm tham số → thực thi sau khi hoàn thành thao tác bất đồng bộ.
+   - ❌ Callback Hell (kim tự tháp hủy diệt), xử lý lỗi khó.
+   - ✅ Đơn giản, hỗ trợ phổ biến.
+
+2. **Promises**: Object đại diện cho việc hoàn thành/thất bại trong tương lai.
+   - ✅ Chuỗi (`.then()`), xử lý lỗi tốt hơn (`.catch()`), tránh callback hell.
+   - ❌ Vẫn dài dòng, có thể `.then()` hell.
+   - **Trạng thái**: Pending → Fulfilled (resolved) | Rejected.
+
+3. **Async/Await**: Cú pháp đường cho Promises → code giống sync.
+   - ✅ Dễ đọc (như code sync), `try/catch` cho lỗi.
+   - ❌ Phải dùng `await` trong hàm `async`, tuần tự theo mặc định (không song song).
+
+**🔧 Promise Combinators (4 Phương Thức):**
+1. **`Promise.all([p1, p2, p3])`**:
+   - Đợi TẤT CẢ promises resolve.
+   - Reject ngay nếu 1 promise reject (thất bại nhanh).
+   - Trả về mảng kết quả theo thứ tự.
+   - ✅ Trường hợp: Lấy nhiều tài nguyên, tất cả đều cần.
+
+2. **`Promise.allSettled([p1, p2, p3])`**:
+   - Đợi TẤT CẢ promises hoàn thành (fulfilled hoặc rejected).
+   - Không bao giờ reject.
+   - Trả về mảng `{ status, value/reason }`.
+   - ✅ Trường hợp: Thực thi tất cả, không quan tâm thành công/thất bại của từng cái.
+
+3. **`Promise.race([p1, p2, p3])`**:
+   - Resolve/reject với promise đầu tiên hoàn thành (nhanh nhất thắng).
+   - ✅ Trường hợp: Cơ chế timeout, phản hồi server nhanh nhất.
+
+4. **`Promise.any([p1, p2, p3])`**:
+   - Resolve với promise đầu tiên fulfilled.
+   - Reject nếu TẤT CẢ reject (AggregateError).
+   - ✅ Trường hợp: Cơ chế dự phòng, phản hồi thành công đầu tiên.
+
+**🎯 Practical Examples:**
+```js
+// Sequential (slow - 3s total)
+async function sequential() {
+  const user = await fetchUser();    // 1s
+  const posts = await fetchPosts();  // 1s
+  const comments = await fetchComments(); // 1s
+}
+
+// Parallel (fast - 1s total)
+async function parallel() {
+  const [user, posts, comments] = await Promise.all([
+    fetchUser(),
+    fetchPosts(),
+    fetchComments()
+  ]); // All run concurrently!
+}
+
+// Timeout with race
+const fetchWithTimeout = (url, timeout = 5000) => {
+  return Promise.race([
+    fetch(url),
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeout))
+  ]);
+};
+```
+
+**⚠️ Common Mistakes:**
+- **Forgot `await`**: Promise không execute → return Promise object, không phải value.
+- **Sequential khi có thể parallel**: `await` trong loop → chậm. Dùng `Promise.all()`.
+  ```js
+  // ❌ Slow (sequential)
+  for (const id of ids) {
+    await fetchUser(id); // Chờ từng cái
+  }
+  // ✅ Fast (parallel)
+  await Promise.all(ids.map(id => fetchUser(id)));
+  ```
+- **Unhandled rejections**: Missing `.catch()` hoặc `try/catch` → silent failures.
+- **Promise.all fail-fast**: 1 promise fail → tất cả fail. Dùng `allSettled` nếu cần.
+
+**💡 Senior Insights:**
+- **Error handling**: `try/catch` trong async function catch bất kỳ `await` nNano throw.
+- **Top-level await**: ES2022 → `await` ngoNani async function trong modules.
+- **Microtask queue**: Promises execute trong microtask queue → priority hơn setTimeout.
+- **Cancellation**: Native promises không support cancel → dùng AbortController (fetch) hoặc libraries (Bluebird).
+
+---
 
 **⚡ Quick Summary:**
 > Callbacks = nested hell. Promises = chaining. Async/await = sync-like code. Promise.all/any/race/allSettled = combine nhiều promises

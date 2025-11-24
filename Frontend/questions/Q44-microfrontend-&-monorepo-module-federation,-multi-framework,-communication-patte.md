@@ -1,7 +1,95 @@
 # 🧱 Q44: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
+**"Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Federation = runtime integration (share code, no rebuild).**
+
+**🏗️ Microfrontend Architecture:**
+- **Concept**: Mỗi team sở hữu 1 microfrontend (MFE) → deploy độc lập → tech stack riêng.
+- **Runtime Integration**: MFEs load at runtime (không phải build time) → independent releases.
+- **Shell App (Host)**: Container app load remote MFEs.
+
+**🔧 Module Federation (Webpack 5 / Vite):**
+- **Expose**: MFE expose components/modules.
+  ```js
+  // microfrontend-a/webpack.config.js
+  new ModuleFederationPlugin({
+    name: 'mfeA',
+    filename: 'remoteEntry.js',
+    exposes: { './Button': './src/Button' }
+  });
+  ```
+- **Consume**: Host import remote modules.
+  ```js
+  // shell/webpack.config.js
+  new ModuleFederationPlugin({
+    remotes: { mfeA: 'mfeA@http://localhost:3001/remoteEntry.js' }
+  });
+  // Usage
+  const Button = lazy(() => import('mfeA/Button'));
+  ```
+- **Shared Dependencies**: Share React, libraries → load once (not duplicate).
+  ```js
+  shared: { react: { singleton: true }, 'react-dom': { singleton: true } }
+  ```
+
+**♻️ Communication Patterns:**
+1. **Props/Callbacks**: Parent pass props to child MFE → simple, tightly coupled.
+2. **Custom Events**: `window.dispatchEvent()` → loose coupling.
+3. **State Management**: Shared Zustand/Redux store → sync state across MFEs.
+4. **PubSub**: Event bus (RxJS) → publish/subscribe pattern.
+
+**🎯 Multi-Framework Support:**
+- **React + Vue + Angular**: Mỗi MFE dùng framework khác nhau.
+- **Web Components**: Wrap MFEs trong custom elements → framework-agnostic.
+  ```js
+  // mfe-vue wrapped as <vue-widget>
+  customElements.define('vue-widget', VueWidgetElement);
+  // Use in React
+  <vue-widget data={data} />
+  ```
+
+**🔑 Monorepo (Nx / Turborepo):**
+- **Concept**: 1 repo chứa multiple projects → shared tooling, dependencies.
+- **Benefits**:
+  - Atomic commits across projects.
+  - Shared libraries, utilities.
+  - Consistent tooling (ESLint, Prettier, TypeScript configs).
+  - Dependency graph → build chỉ affected projects.
+- **Tools**: Nx (Angular ecosystem), Turborepo (Vercel), Lerna (legacy).
+
+**⚠️ Trade-offs:**
+
+| Aspect | Monolith | Microfrontend |
+|--------|----------|---------------|
+| **Complexity** | Low | High (orchestration, communication) |
+| **Build Time** | Slow (1 large app) | Fast (parallel builds) |
+| **Deploy** | All-or-nothing | Independent per MFE |
+| **Team Autonomy** | Low (shared codebase) | High (own tech stack) |
+| **Bundle Size** | Optimized | Risk of duplication |
+| **Developer Experience** | Simple | Complex (tooling, debugging) |
+
+**💡 Senior Insights:**
+- **When to use MFE**: Large teams (10+ devs), independent releases critical, different domains (e-commerce: catalog, checkout, profile).
+- **When NOT to use**: Small teams, simple apps, tight coupling between features.
+- **Module Federation vs Iframe**: MF = shared dependencies, better performance. Iframe = total isolation but clunky UX.
+- **Styling Isolation**: CSS Modules, Shadow DOM, CSS-in-JS (styled-components) → prevent style conflicts.
+- **Routing**: Each MFE handle own routes + Shell sync URL state.
+
+**🚀 Real-World Example (E-commerce):**
+```
+Shell (Host App)
+├── Product Catalog MFE (Team A - React)
+├── Shopping Cart MFE (Team B - Vue)
+├── Checkout MFE (Team C - Angular)
+└── User Profile MFE (Team D - React)
+```
+- Team A deploy catalog update → không ảnh hưởng Teams B, C, D.
+- Shared: React, UI library (button, input) via Module Federation.
+
+---
 
 **❓ Câu Hỏi:**
 

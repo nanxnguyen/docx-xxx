@@ -1,5 +1,75 @@
 # 🎯 Q02: Data Types & Memory Management - Tổng Hợp Toàn Diện
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
+
+**"JavaScript có 8 kiểu dữ liệu: 7 nguyên thủy (không thay đổi được) + 1 phức tạp (object - thay đổi được).**
+
+**📦 Nguyên Thủy vs Tham Chiếu:**
+- **Nguyên thủy** (number, string, boolean, undefined, null, symbol, bigint):
+  - Lưu theo GIÁ TRỊ trong stack.
+  - Không thay đổi được → gán lại tạo giá trị mới.
+  - Copy theo giá trị → các bản sao độc lập.
+- **Tham chiếu** (object, array, function):
+  - Lưu theo THAM CHIẾU trong heap.
+  - Thay đổi được → sửa trực tiếp.
+  - Copy theo tham chiếu → trỏ đến cùng object.
+
+**🔑 Khái Niệm Cốt Lõi:**
+1. **== vs ===**:
+   - `==`: So sánh lỏng → chuyển đổi kiểu tự động (vd: `"5" == 5` → true).
+   - `===`: So sánh nghiêm ngặt → không chuyển kiểu (vd: `"5" === 5` → false).
+   - Thực hành tốt: Luôn dùng `===` trừ khi kiểm tra null/undefined.
+
+2. **null vs undefined**:
+   - `undefined`: Biến chưa được assign value (default).
+   - `null`: Intentionally empty value (developer set).
+   - `typeof null` → "object" (JavaScript bug legacy).
+
+3. **Shallow Copy vs Deep Copy**:
+   - **Shallow**: Copy top-level properties only → nested objects vẫn reference.
+     ```js
+     const shallow = { ...obj }; // Spread
+     const shallow2 = Object.assign({}, obj);
+     ```
+   - **Deep**: Copy recursively tất cả levels → independent clone.
+     ```js
+     const deep = structuredClone(obj); // Native (modern)
+     const deep2 = JSON.parse(JSON.stringify(obj)); // Hack (lose functions, dates)
+     ```
+
+4. **Type Checking**:
+   - `typeof`: Check primitive types (`typeof "hello"` → "string").
+   - `instanceof`: Check object types (`[] instanceof Array` → true).
+   - `Array.isArray()`: Check arrays specifically.
+   - `Object.prototype.toString.call()`: Most accurate (e.g., `[object Date]`).
+
+**♻️ Memory Management & GC:**
+- **Stack**: Primitive values, function calls (LIFO, fast, limited size).
+- **Heap**: Objects, arrays (larger, slower, managed by GC).
+- **Garbage Collection**: Mark-and-sweep algorithm → auto free unreachable objects.
+- **Memory Leaks**:
+  - Global variables không cleanup.
+  - Event listeners không remove.
+  - Closures giữ reference đến large objects.
+  - Detached DOM nodes.
+
+**⚠️ Common Pitfalls:**
+- **Mutating objects**: `arr.push()` modify original → dùng immutable methods (`[...arr, item]`).
+- **Reference comparison**: `{} === {}` → false (khác reference). Dùng deep equality libraries (lodash.isEqual).
+- **Type coercion bugs**: `"5" + 3` → "53" (string concat), `"5" - 3` → 2 (number subtract).
+- **Falsy values**: `0`, `""`, `null`, `undefined`, `false`, `NaN` → tất cả falsy nhưng khác nhau!
+
+**💡 Senior Insights:**
+- **Immutability**: Prefer immutable operations (spread, map, filter) → easier debugging, avoid side effects.
+- **WeakMap/WeakSet**: Hold weak references → auto GC khi keys không còn reference → prevent memory leaks.
+- **structuredClone()**: Modern deep clone (support Dates, RegExp, Typed Arrays), but lose functions/symbols.
+- **Performance**: Primitive faster than objects (stack vs heap). Dùng primitives when possible.
+- **TypeScript**: Eliminate runtime type errors → catch type mistakes at compile time.
+
+---
+
 > **Tổng hợp**: Primitive vs Reference, Falsy/Truthy, == vs ===, null vs undefined, Immutable vs Mutable, Deep/Shallow Copy, Type Checking, Memory Management & GC
 
 ---

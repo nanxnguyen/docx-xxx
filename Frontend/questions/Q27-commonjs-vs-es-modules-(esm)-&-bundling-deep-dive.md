@@ -1,7 +1,84 @@
 # 📦 Q27: CommonJS vs ES Modules (ESM) & Bundling Deep Dive
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
+**"CommonJS (CJS) là hệ thống module Node.js (đồng bộ, runtime). ESM là chuẩn JavaScript (bất đồng bộ, phân tích tĩnh).**
+
+**📊 CommonJS (CJS) - Node.js Cũ:**
+- **Cú pháp**: `require()` import, `module.exports` export.
+- **Tải**: Đồng bộ (chặn) → tốt cho server, không tốt cho trình duyệt.
+- **Thực thi**: Đánh giá runtime → imports động (có điều kiện, đường dẫn tính toán).
+- **Caching**: Module được cache sau lần require đầu → mẫu singleton.
+- **Scope**: Dựa trên file, scope module cô lập.
+- **Phần mở rộng**: `.js`, `.cjs`.
+- ✅ Trường hợp: Backend Node.js, gói npm cũ.
+
+**🎯 ES Modules (ESM) - Chuẩn Hiện Đại:**
+- **Cú pháp**: Câu lệnh `import/export`.
+- **Tải**: Bất đồng bộ (không chặn) → tốt cho trình duyệt.
+- **Thực thi**: Phân tích tĩnh → phân giải compile-time → tree-shaking (loại bỏ code chết).
+- **Strict Mode**: Chế độ strict mặc định.
+- **Phần mở rộng**: `.mjs`, `.js` (với `"type": "module"` trong package.json).
+- ✅ Trường hợp: Trình duyệt hiện đại, Node.js 12+, frameworks frontend.
+
+**🔑 Khác Biệt Chính:**
+| Tính Năng | CommonJS | ESM |
+|-----------|----------|-----|
+| **Tải** | Đồng bộ | Bất đồng bộ |
+| **Cú pháp** | `require()`, `module.exports` | `import`, `export` |
+| **Phân tích** | Runtime (động) | Compile-time (tĩnh) |
+| **Tree-shaking** | ❌ Không hỗ trợ | ✅ Hỗ trợ (bundlers) |
+| **Top-level await** | ❌ Không hỗ trợ | ✅ Hỗ trợ (ES2022) |
+| **Trình duyệt** | ❌ Cần bundler | ✅ Hỗ trợ native |
+| **Dynamic import** | `require(variable)` | Hàm `import()` |
+| **Hoisting** | Không hoist | Hoist (imports đầu file) |
+
+**🚀 Tree-Shaking (Loại Bỏ Code Chết):**
+- **Khái niệm**: Bundlers (Webpack, Rollup) phân tích ESM imports → xóa exports không dùng → bundle nhỏ hơn.
+- **Tại sao chỉ ESM**: Imports tĩnh → bundler biết chính xác code nào được dùng (compile-time).
+- **Hạn chế CJS**: Require động → bundler không biết code nào sẽ dùng (runtime) → phải bao gồm tất cả.
+
+**🔧 Interop (CJS ↔ ESM):**
+- **ESM import CJS**: `import cjsModule from 'cjs-package'` → default export = `module.exports`.
+- **CJS require ESM**: Không thể synchronous require ESM → phải dùng dynamic `import()`.
+  ```js
+  // CJS file
+  (async () => {
+    const esmModule = await import('./esm-file.mjs');
+  })();
+  ```
+- **Dual packages**: Publish cả CJS và ESM versions (`.cjs`, `.mjs`) với `exports` field trong package.json.
+
+**⚠️ Common Pitfalls:**
+- **Named imports từ CJS**: CJS không có named exports thật.
+  ```js
+  // CJS
+  module.exports = { foo: 1 };
+  // ESM import
+  import { foo } from 'cjs-module'; // ❌ Không work! (Node.js synthetic support)
+  import cjs from 'cjs-module'; // ✅ cjs = { foo: 1 }
+  const { foo } = cjs;
+  ```
+- **File extensions**: ESM trong browser cần `.js` extension trong imports. Node.js không cần (resolve algorithm).
+- **`__dirname`, `__filename`**: Không tồn tại trong ESM → dùng `import.meta.url`.
+  ```js
+  // CJS
+  console.log(__dirname);
+  // ESM
+  import { fileURLToPath } from 'url';
+  const __dirname = fileURLToPath(new URL('.', import.meta.url));
+  ```
+
+**💡 Senior Insights:**
+- **Migration strategy**: Dual publish (CJS + ESM) cho libraries → backward compatibility.
+- **Bundlers**: Webpack, Rollup, esbuild prefer ESM → better tree-shaking, faster builds.
+- **Node.js**: ESM stable since v12, recommended cho new projects.
+- **Package.json `type` field**: `"type": "module"` → `.js` files treated as ESM. Default = CJS.
+- **Performance**: ESM parsing faster (static analysis), nhưng CJS caching có thể faster trong một số cases.
+
+---
 
 **Trả lời:**
 

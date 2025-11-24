@@ -1,7 +1,68 @@
 # ⚡ Q03: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
+**"ES6+ (2015+) mang lại JavaScript hiện đại với classes, modules, arrow functions, async/await.**
+
+**📊 ES5 vs ES6+ (Key Differences):**
+
+| Feature | ES5 (2009) | ES6+ (2015+) |
+|---------|-----------|-------------|
+| **Variables** | `var` (function scope) | `let/const` (block scope) |
+| **Functions** | `function() {}` | Arrow `() => {}` |
+| **Classes** | Prototype + constructor | `class` syntax |
+| **Modules** | CommonJS/AMD | `import/export` |
+| **Strings** | Concatenation `+` | Template literals `` `${}` `` |
+| **Objects** | Manual copy | Spread `{...obj}`, destructuring |
+| **Async** | Callbacks | Promises, async/await |
+| **Loops** | `for`, `while` | `for...of`, `forEach`, `map` |
+
+**🔥 ES6+ Must-Know Features:**
+1. **let/const**: Block scope → avoid hoisting issues, `const` prevent reassignment.
+2. **Arrow Functions**: Lexical `this`, concise syntax, no `arguments` object.
+3. **Destructuring**: `const { name } = user`, `const [a, b] = arr` → extract values easily.
+4. **Spread/Rest**: `...` operator → copy arrays/objects, function params.
+5. **Template Literals**: `` `Hello ${name}` `` → multi-line strings, interpolation.
+6. **Classes**: `class Person extends User` → OOP syntax (syntactic sugar cho prototypes).
+7. **Modules**: `import { fn } from './module'` → static imports, tree-shaking.
+8. **Promises & Async/Await**: Better async handling than callbacks.
+9. **Default Parameters**: `function fn(a = 1)` → không cần `a = a || 1`.
+10. **Optional Chaining**: `user?.address?.city` → safe navigation (ES2020).
+11. **Nullish Coalescing**: `value ?? 'default'` → khác với `||` (chỉ check null/undefined).
+
+**⚡ ES2016-ES2023 Highlights:**
+- **ES2016**: `**` (exponentiation), `Array.includes()`.
+- **ES2017**: `async/await`, `Object.values/entries()`, string padding.
+- **ES2018**: Rest/spread for objects, async iteration.
+- **ES2019**: `Array.flat/flatMap()`, `Object.fromEntries()`.
+- **ES2020**: Optional chaining `?.`, nullish coalescing `??`, `BigInt`, dynamic import.
+- **ES2021**: `String.replaceAll()`, numeric separators `1_000_000`.
+- **ES2022**: Top-level await, private fields `#private`, `Array.at()`.
+- **ES2023**: `Array.findLast()`, `toSorted()`, `toReversed()` (immutable array methods).
+
+**⚠️ Browser Compatibility:**
+- **ES5**: Universal support (IE9+, all browsers).
+- **ES6+**: Modern browsers (Chrome 51+, Firefox 54+, Safari 10+).
+- **Solution**: Babel transpile ES6+ → ES5 cho legacy browsers.
+- **Trend**: Evergreen browsers auto-update → ES6+ safe cho 95%+ users.
+
+**💡 Senior Insights:**
+- **Transpilation**: Babel transform ES6+ → ES5 at build time → support old browsers.
+- **Polyfills**: Add missing features (e.g., `Promise`, `Array.includes()`) at runtime.
+- **Bundle Size**: ES6+ code nhỏ hơn sau minify (classes, arrow functions compact hơn ES5).
+- **Performance**: Modern engines optimize ES6+ better (e.g., arrow functions, spread).
+- **Best Practice**: Write ES6+, transpile for production, use feature detection (`if ('fetch' in window)`).
+
+**🎯 Migration Tips:**
+- Replace `var` → `let/const` (use ESLint rule).
+- Replace `function` → arrow functions (except methods, constructors).
+- Use destructuring để extract values.
+- Replace string concat → template literals.
+- Use `async/await` thay vì `.then()` chains.
+
+---
 
 **⚡ Quick Summary:**
 > ES6+ = let/const, arrow functions, classes, destructuring, promises, modules. ES5 = var, function, callbacks

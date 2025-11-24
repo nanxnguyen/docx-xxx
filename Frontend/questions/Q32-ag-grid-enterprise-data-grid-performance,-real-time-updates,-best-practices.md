@@ -1,5 +1,50 @@
 # 📊 Q32: AG Grid - Enterprise Data Grid: Performance, Real-time Updates & Best Practices
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
+
+**"AG Grid = data grid doanh nghiệp với virtual scrolling, transaction API, cập nhật thời gian thực cho 100K+ hàng.**
+
+**🚀 Top 3 Tối Ưu Hiệu Năng:**
+1. **`getRowId`**: Cung cấp ID hàng ổn định → tra cứu O(1) (nhanh hơn 1000 lần so với mặc định). 
+   ```ts
+   getRowId: (params) => params.data.id // Phải unique & stable!
+   ```
+2. **`applyTransactionAsync`**: Gộp cập nhật → giảm 80% re-renders.
+   ```ts
+   gridRef.current.api.applyTransactionAsync({ update: rows });
+   ```
+3. **Virtual Scrolling**: Chỉ render hàng hiển thị (DOM ảo → cực nhẹ).
+
+**♻️ Cập Nhật Thời Gian Thực (WebSocket):**
+- **Luồng**: Tin nhắn WebSocket → cập nhật state cục bộ → `applyTransactionAsync` → AG Grid cập nhật tăng dần.
+- **Batching**: Gộp 100 updates/100ms → 1 transaction thay vì 100 re-renders.
+- **Tính bất biến**: Tạo objects mới cho updates → React phát hiện thay đổi đúng.
+
+**🔑 Khái Niệm Cốt Lõi:**
+- **Row Data vs Transaction API**:
+  - `setRowData`: Re-render toàn bộ (chậm) → chỉ dùng tải ban đầu.
+  - `applyTransaction`: Cập nhật tăng dần (nhanh) → dùng cho thời gian thực.
+- **Column Definitions**: `useMemo` → ngăn tạo lại mỗi render.
+- **Cell Renderers**: Components tùy chỉnh → định dạng cells (icons, buttons, charts).
+- **Server-side Row Model**: Tải dữ liệu lười từ server → cuộn vô hạn.
+
+**⚠️ Lỗi Thường Gặp:**
+- **Không dùng getRowId**: Tạo ID mặc định chậm hơn 1000 lần.
+- **Dùng forEach với applyTransaction**: Gọi 100 lần thay vì 1 batch.
+- **Dữ liệu có thể thay đổi**: Sửa object trực tiếp → AG Grid không phát hiện thay đổi.
+- **Tạo lại columnDefs**: Không useMemo → grid khởi tạo lại mỗi render.
+
+**💡 Kiến Thức Senior:**
+- **Hiệu năng**: AG Grid xử lý 100K hàng mượt (vs MUI DataGrid lag ở 10K).
+- **Kích thước Bundle**: ~150KB gzipped → đánh đổi cho tính năng.
+- **Enterprise vs Community**: Enterprise có pivoting, grouping, excel export ($999/dev/năm).
+- **So sánh**: AG Grid > MUI DataGrid (hiệu năng), React Table (linh hoạt nhưng làm thủ công).
+- **Trường hợp**: Nền tảng trading, dashboards quản trị, công cụ phân tích (datasets lớn + thời gian thực).
+
+---
+
 **⚡ Quick Summary:**
 > AG Grid = Enterprise data grid cho high-frequency updates. getRowId (O(1)) + applyTransactionAsync (batching) + Virtual scrolling = xử lý 100K+ rows mượt mà.
 

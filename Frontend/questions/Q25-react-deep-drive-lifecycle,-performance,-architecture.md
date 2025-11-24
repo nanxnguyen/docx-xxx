@@ -1,7 +1,69 @@
 # ⚛️ Q25: React Hooks & Advanced Patterns - Lifecycle, Performance, Architecture
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
+**"React Hooks thay thế Class Components với API sạch hơn và tái sử dụng tốt hơn.**
+
+**🪝 Hooks Cốt Lõi (Bắt Buộc Biết):**
+1. **useState**: Quản lý state. Cập nhật theo hàm `setState(prev => prev + 1)` tránh closure cũ.
+2. **useEffect**: Hiệu ứng phụ, vòng đời. Hàm cleanup ngăn rò rỉ bộ nhớ. Mảng phụ thuộc kiểm soát chạy lại.
+3. **useRef**: Giá trị thay đổi được nhưng không gây render lại. Truy cập DOM, lưu giá trị trước, timers.
+4. **useMemo**: Cache tính toán nặng. Chỉ tính lại khi dependencies thay đổi.
+5. **useCallback**: Cache tham chiếu hàm. Ngăn component con render lại khi truyền callbacks.
+6. **useContext**: Truy cập giá trị Context. Tránh prop drilling.
+7. **useReducer**: Logic state phức tạp. Thay thế useState khi có nhiều giá trị phụ.
+
+**🔄 Ánh Xạ Vòng Đời (Class → Hooks):**
+- **componentDidMount**: `useEffect(() => {}, [])`
+- **componentDidUpdate**: `useEffect(() => {}, [deps])`
+- **componentWillUnmount**: `useEffect(() => { return cleanup }, [])`
+- **getDerivedStateFromProps**: `useMemo(() => compute(props), [props])`
+- **shouldComponentUpdate**: `React.memo()` + `useMemo/useCallback`
+
+**⚙️ Virtual DOM và Reconciliation:**
+- **Virtual DOM**: Biểu diễn cây trong bộ nhớ → thuật toán so sánh nhanh.
+- **Reconciliation**: So sánh VDOM cũ vs mới → cập nhật DOM tối thiểu.
+- **Prop key**: Giúp React nhận diện item nào thay đổi → cập nhật danh sách hiệu quả. KHÔNG bao giờ dùng index làm key khi danh sách động.
+- **Kiến trúc Fiber**: Rendering tăng dần → tạm dừng/tiếp tục công việc → hiệu năng cảm nhận tốt hơn.
+
+**🚀 Tối Ưu Hiệu Năng:**
+1. **React.memo()**: So sánh nông props → bỏ qua render lại nếu props không đổi.
+2. **useMemo()**: Cache tính toán nặng → tránh tính lại mỗi lần render.
+3. **useCallback()**: Cache tham chiếu hàm → ngăn component con render lại.
+4. **Chia Code**: `React.lazy()` + Suspense → tải components theo yêu cầu.
+5. **Ảo hóa**: `react-window` cho danh sách dài → chỉ render items hiển thị.
+6. **Tránh hàm/object inline**: Tạo tham chiếu mới mỗi lần render → con render lại.
+
+**🎨 Mẫu Thiết Kế Nâng Cao:**
+- **HOC (Component Bậc Cao)**: Bọc component để inject props. Ví dụ: `withAuth(Component)`.
+- **Render Props**: Truyền hàm làm children. Ví dụ: `<DataProvider>{data => <List data={data} />}</DataProvider>`.
+- **Compound Components**: Các component giao tiếp qua Context. Ví dứ: `<Tabs><Tab /></Tabs>`.
+- **Custom Hooks**: Trích xuất logic tái sử dụng. Bắt đầu bằng `use`. Trả về state/functions.
+
+**⚡ Tính Năng React 18+:**
+1. **Concurrent Rendering**: Render có thể ngắt → UI phản hồi trong khi cập nhật nặng.
+2. **useTransition()**: Đánh dấu cập nhật không khẩn cấp → giữ UI phản hồi.
+3. **useDeferredValue()**: Trì hoãn render nặng → debouncing tích hợp sẵn.
+4. **Suspense cho Data Fetching**: Trạng thái loading khai báo.
+5. **Server Components**: Render trên server → không có JS bundle cho component đó.
+6. **Batching Tự Động**: Gộp nhiều setState → 1 lần render (kể cả trong async).
+
+**⚠️ Lỗi Thường Gặp:**
+- **Thiếu dependencies trong useEffect**: ESLint cảnh báo → sửa hoặc vô hiệu nếu cố ý.
+- **Vòng lặp vô hạn**: useEffect không có deps array + setState bên trong → render vô hạn.
+- **Lạm dụng useMemo/useCallback**: Tối ưu sớm → chỉ dùng khi đo được vấn đề hiệu năng.
+- **Thay đổi state trực tiếp**: `state.value = 1` → React không phát hiện → dùng `setState`.
+
+**💡 Kiến Thức Senior:**
+- **useEffect vs useLayoutEffect**: useLayoutEffect chạy đồng bộ sau render, TRƯỚC trình duyệt vẽ → dùng khi cần đo DOM.
+- **StrictMode**: Gọi effects 2 lần trong dev → bắt lỗi side effects sớm.
+- **Profiler**: Component `<Profiler>` + DevTools → đo hiệu năng render.
+- **Batching**: React 18 tự động gộp mọi cập nhật (kể cả setTimeout, promises) → ít render hơn.
+- **Keys trong Reconciliation**: Key thay đổi → unmount component cũ + mount mới → reset state.
+
+---
 
 **Trả lời:**
 

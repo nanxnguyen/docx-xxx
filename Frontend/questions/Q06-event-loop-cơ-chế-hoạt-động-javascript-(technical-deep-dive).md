@@ -1,7 +1,76 @@
 # 🔄 Q06: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
+**"JavaScript chạy đơn luồng với Event Loop để xử lý các thao tác bất đồng bộ.**
+
+**🏗️ Kiến Trúc (5 Thành Phần):**
+1. **Call Stack (Ngăn xếp gọi - LIFO)**: Nơi thực thi code đồng bộ. Đơn luồng → chỉ 1 hàm chạy tại 1 thời điểm.
+2. **Heap (Vùng nhớ)**: Cấp phát bộ nhớ cho objects, arrays, functions.
+3. **Web APIs (Trình duyệt) / C++ APIs (Node.js)**: Xử lý thao tác bất đồng bộ (setTimeout, fetch, fs.readFile) → chạy trên luồng riêng.
+4. **Microtask Queue (Hàng đợi ưu tiên cao)**: Promise callbacks, queueMicrotask, MutationObserver.
+5. **Macrotask Queue (Hàng đợi ưu tiên thấp)**: setTimeout, setInterval, I/O, UI rendering.
+
+**♻️ Luồng Hoạt Động Event Loop (Chi Tiết):**
+```
+while (true) {
+  1. Thực thi TẤT CẢ code đồng bộ trong Call Stack (cho đến khi trống)
+  2. Thực thi TẤT CẢ Microtasks (Promise.then, queueMicrotask)
+     → Làm trống hoàn toàn Microtask Queue
+  3. Render UI (Chỉ trình duyệt - 60fps = 16ms/frame)
+  4. Thực thi MỘT Macrotask (setTimeout callback)
+  5. Quay lại bước 2 (kiểm tra Microtasks lại)
+}
+```
+
+**🔑 Điểm Khác Biệt Quan Trọng:**
+- **Microtask vs Macrotask**:
+  - Microtask chạy TẤT CẢ trước khi Event Loop tiếp tục.
+  - Macrotask chỉ chạy 1 task mỗi vòng lặp.
+  - Ưu tiên: Microtask > UI Render > Macrotask.
+- **Trình duyệt vs Node.js**:
+  - Trình duyệt: Có giai đoạn render UI.
+  - Node.js: Có `process.nextTick()` (ưu tiên cao hơn Microtask) + 6 giai đoạn (timers, I/O, idle, poll, check, close).
+
+**⚠️ Lỗi Thường Gặp:**
+- **Làm đói UI**: Microtasks vô hạn chặn rendering → UI đóng băng.
+  ```js
+  function loop() {
+    Promise.resolve().then(loop); // ❌ Chặn UI mãi mãi
+  }
+  ```
+- **setTimeout(fn, 0) ≠ Tức thì**: Vẫn phải chờ Call Stack trống + Microtasks hoàn thành.
+- **Race Conditions**: Callbacks bất đồng bộ có thể thực thi không theo thứ tự mong đợi.
+
+**🎯 Ví Dụ Thực Tế:**
+```js
+console.log('1'); // Đồng bộ → Call Stack
+setTimeout(() => console.log('2'), 0); // Macrotask Queue
+Promise.resolve().then(() => console.log('3')); // Microtask Queue
+console.log('4'); // Đồng bộ → Call Stack
+
+// Kết quả: 1, 4, 3, 2
+// Lý do:
+// 1. Thực thi đồng bộ: log '1', '4'
+// 2. Call Stack trống → Kiểm tra Microtask → log '3'
+// 3. Kiểm tra Macrotask → log '2'
+```
+
+**💡 Kiến Thức Senior:**
+- **Hiệu năng**: Tránh chặn Call Stack với tính toán nặng → dùng Web Workers hoặc chia thành chunks với `setTimeout`.
+- **Debugging**: Hiểu Event Loop → debug lỗi bất đồng bộ (race conditions, callback hell).
+- **React**: `setState` batching dùng Microtask → nhiều lời gọi setState gộp thành 1 lần render lại.
+- **Node.js**: `setImmediate()` vs `setTimeout(fn, 0)` → `setImmediate` chạy trong giai đoạn check, nhanh hơn trong I/O callbacks.
+- **requestAnimationFrame**: Chạy TRƯỚC render (Chỉ trình duyệt) → animation mượt hơn setTimeout.
+
+**🔧 Kỹ Thuật Tối Ưu:**
+- **Chunking (Chia nhỏ)**: Chia tasks dài thành chunks nhỏ với `setTimeout` → không chặn UI.
+- **queueMicrotask()**: Nhanh hơn `Promise.resolve().then()` → ít chi phí hơn.
+- **Web Workers**: Offload tính toán nặng → luồng riêng (song song thật sự).
+
+---
 
 **❓ Câu Hỏi:**
 

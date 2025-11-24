@@ -1,7 +1,88 @@
 # ➡️ Q09: Arrow vs Regular Functions & this Binding (call, apply, bind)
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
+**"Arrow function khác regular function ở cách gắn `this`: từ vựng (scope bên ngoài) vs động (ngữ cảnh runtime).**
+
+**📊 Arrow vs Regular Functions (Key Differences):**
+1. **`this` Binding**:
+   - **Arrow**: Lexical `this` → inherit từ outer scope (không có `this` riêng).
+   - **Regular**: Dynamic `this` → phụ thuộc cái gì gọi function (runtime).
+
+2. **`arguments` Object**:
+   - **Arrow**: Không có `arguments` → dùng rest params `(...args)`.
+   - **Regular**: Có `arguments` (array-like object).
+
+3. **Constructor**:
+   - **Arrow**: Không dùng được `new` → throw error.
+   - **Regular**: Có thể dùng `new` → tạo instance.
+
+4. **Hoisting**:
+   - **Arrow**: Không hoisted (nếu dùng `const/let`).
+   - **Regular**: Hoisted (function declaration).
+
+**🔧 `this` Binding Methods (call, apply, bind):**
+- **`call(thisArg, arg1, arg2)`**: Invoke ngay với arguments riêng lẻ.
+  ```js
+  fn.call({ name: 'John' }, 1, 2); // this = { name: 'John' }, args: 1, 2
+  ```
+- **`apply(thisArg, [args])`**: Invoke ngay với arguments array.
+  ```js
+  fn.apply({ name: 'John' }, [1, 2]); // this = { name: 'John' }, args: [1, 2]
+  ```
+- **`bind(thisArg)`**: Return function mới với `this` cố định (không invoke).
+  ```js
+  const boundFn = fn.bind({ name: 'John' }); // Return new function
+  boundFn(1, 2); // this = { name: 'John' }
+  ```
+
+**🎯 `this` Binding Rules (4 Rules - Priority Order):**
+1. **`new` Binding**: `new Fn()` → `this` = new object.
+2. **Explicit Binding**: `call/apply/bind` → `this` = thisArg.
+3. **Implicit Binding**: `obj.method()` → `this` = obj.
+4. **Default Binding**: Standalone function → `this` = global object (window/global) hoặc undefined (strict mode).
+
+**⚠️ Common Mistakes:**
+- **Arrow trong object methods**: `this` không point to object!
+  ```js
+  const obj = {
+    name: 'John',
+    greet: () => console.log(this.name) // ❌ undefined! (this = outer scope)
+  };
+  // ✅ Dùng regular function hoặc method shorthand
+  ```
+- **Event handlers**: Regular function → `this` = event target. Arrow → `this` = outer scope.
+- **Class methods as callbacks**: Mất context → dùng arrow hoặc bind.
+  ```js
+  class Component {
+    handleClick() { console.log(this); }
+    render() {
+      // ❌ this = undefined (mất context)
+      button.addEventListener('click', this.handleClick);
+      // ✅ Fix: Arrow hoặc bind
+      button.addEventListener('click', () => this.handleClick());
+      button.addEventListener('click', this.handleClick.bind(this));
+    }
+  }
+  ```
+
+**💡 Senior Insights:**
+- **React Class Components**: Arrow class fields = auto-bind `this` (babel transform).
+- **Performance**: Arrow functions trong render → tạo new reference mỗi lần → child re-render. Dùng `useCallback`.
+- **call vs apply**: `apply` hữu ích khi arguments đã là array (e.g., `Math.max.apply(null, [1,2,3])`).
+- **Polyfill bind**: Implement bind manually để hiểu cơ chế:
+  ```js
+  Function.prototype.myBind = function(context, ...args) {
+    const fn = this;
+    return function(...newArgs) {
+      return fn.apply(context, [...args, ...newArgs]);
+    };
+  };
+  ```
+
+---
 
 **⚡ Quick Summary:**
 > Arrow function = lexical `this` (từ outer scope), không có arguments, không dùng new. `this` trong JS = context object, dùng call/apply/bind để set `this` manually.

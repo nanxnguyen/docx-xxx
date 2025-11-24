@@ -1,7 +1,78 @@
 # ▲ Q26: Next.js - React Framework for Production
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
+**"Next.js là framework React với SSR, SSG, routing và tối ưu hóa tích hợp sẵn.**
+
+**📦 Phương Pháp Render Cốt Lõi (4 Loại):**
+1. **SSR (Server-Side Rendering - Render Phía Server)**: Render HTML mỗi request → dữ liệu mới, SEO tốt. Dùng `getServerSideProps()`.
+   - ✅ Trường hợp: Dashboard, trang cá nhân, dữ liệu thời gian thực.
+   - ⚠️ Đánh đổi: TTFB chậm hơn, tải server cao.
+
+2. **SSG (Static Site Generation - Tạo Trang Tĩnh)**: Render HTML lúc build → phục vụ file tĩnh (cực nhanh). Dùng `getStaticProps()`.
+   - ✅ Trường hợp: Blog, tài liệu, trang marketing (nội dung ít thay đổi).
+   - ✅ Lợi ích: Thân thiện CDN, hiệu năng tốt nhất, SEO tốt.
+
+3. **ISR (Incremental Static Regeneration - Tạo Tĩnh Tăng Dần)**: SSG + tạo lại nền → mẫu stale-while-revalidate.
+   - `revalidate: 60` → tạo lại trang mỗi 60s nếu có request.
+   - ✅ Tốt nhất cả hai: Tốc độ tĩnh + dữ liệu mới.
+
+4. **CSR (Client-Side Rendering - Render Phía Client)**: Lấy dữ liệu trên client (như SPA). Dùng `useSWR` hoặc React Query.
+   - ✅ Trường hợp: Trang riêng tư, dashboard người dùng.
+   - ⚠️ Đánh đổi: Không SEO, tải ban đầu chậm hơn.
+
+**🗂️ App Router vs Pages Router:**
+- **Pages Router (Cũ):**
+  - Routing dựa trên file: `pages/about.tsx` → `/about`.
+  - `getServerSideProps`, `getStaticProps` cho lấy dữ liệu.
+  - Chỉ Client Components.
+
+- **App Router (Next.js 13+):**
+  - Dựa trên thư mục: `app/about/page.tsx` → `/about`.
+  - Server Components mặc định → không có JS bundle.
+  - Layouts, loading, error states tích hợp sẵn.
+  - `async/await` trực tiếp trong components (không cần getServerSideProps).
+  - Routing lồng nhau, parallel routes, intercepting routes.
+
+**⚡ Server Components vs Client Components:**
+- **Server Components**: Render trên server → không gửi JS tới client → tải nhanh hơn, SEO tốt hơn.
+  - Mặc định trong App Router.
+  - Không dùng được hooks (useState, useEffect), browser APIs.
+  - ✅ Trường hợp: Nội dung tĩnh, lấy dữ liệu, trang SEO.
+
+- **Client Components**: Chỉ thị `'use client'` → render trên client → tương tác được.
+  - Dùng được hooks, browser APIs, event handlers.
+  - ✅ Trường hợp: Form, giao diện tương tác, state client.
+
+**🎯 Tính Năng Chính:**
+- **Routing Dựa Trên File**: Không cần config, tự động chia code theo route.
+- **Tối Ưu Hình Ảnh**: Component `<Image>` → tự động resize, lazy load, WebP.
+- **API Routes**: `pages/api/` hoặc `app/api/` → serverless functions.
+- **Middleware**: Chạy code trước khi request hoàn thành → auth, redirects, rewrites.
+- **Chia Code Tự Động**: Chỉ tải JS cho trang hiện tại → tải nhanh hơn.
+
+**⚠️ Lỗi Thường Gặp:**
+- **Lấy dữ liệu trong useEffect (CSR) khi có thể dùng SSR/SSG**: Bỏ lỡ lợi ích SEO.
+- **Không dùng `next/image`**: Bỏ lỡ tối ưu tự động (resize, lazy load, WebP).
+- **Hardcode URLs**: Dùng `next/link` + `next/router` cho SPA navigation.
+- **Không tối ưu fonts**: Dùng `next/font` cho tối ưu font tự động.
+
+**💡 Kiến Thức Senior:**
+- **Rendering Hỗn Hợp**: Kết hợp SSR + SSG + CSR trong cùng app → chọn phương pháp cho từng trang.
+- **Edge Runtime**: Deploy middleware/API routes trên Edge → độ trễ thấp toàn cầu.
+- **Streaming SSR**: React 18 + App Router → stream HTML chunks → TTFB nhanh hơn.
+- **Partial Prerendering**: Next.js 14+ → vỏ tĩnh + nội dung động streamed.
+- **Turbopack**: Next.js 13+ dev server → bundler dựa trên Rust → nhanh hơn Webpack 700 lần.
+
+**🚀 Mẹo Hiệu Năng:**
+- **Prefetching**: `<Link>` tự động prefetch khi hover → chuyển trang tức thì.
+- **Import Động**: `next/dynamic` để chia code → tải components theo yêu cầu.
+- **Caching**: `revalidate` cho ISR, headers `Cache-Control` cho API routes.
+- **Phân Tích**: Báo cáo Web Vitals tích hợp → theo dõi hiệu năng người dùng thực.
+
+---
 
 **🎯 Next.js là gì:**
 - React framework for production với built-in routing, SSR, SSG, API routes

@@ -1,7 +1,90 @@
 # 💾 Q20: Handle Caching - HTTP Caching & Browser Cache Strategies
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
+**"HTTP caching = giảm yêu cầu server bằng Cache-Control, ETag. Service Worker = hỗ trợ offline.**
+
+**📦 Loại Cache & Phân Cấp:**
+1. **Memory Cache**: Trong bộ nhớ RAM → nhanh nhất, xóa khi đóng tab.
+2. **Disk Cache**: Trên ổ đĩa → duy trì qua các phiên.
+3. **Service Worker Cache**: API cache theo chương trình → hỗ trợ offline, chiến lược tùy chỉnh.
+4. **HTTP Cache**: Cache trình duyệt theo Cache-Control headers.
+5. **CDN Cache**: Servers biên cache tài nguyên tĩnh toàn cầu.
+
+**🔑 HTTP Cache Headers (Bắt Buộc Biết):**
+
+| Header | Mục Đích | Ví Dụ |
+|--------|----------|--------|
+| **Cache-Control** | Chỉ thị cache chính | `max-age=3600, public` |
+| **ETag** | Token xác thực | `"abc123"` (hash phiên bản) |
+| **Last-Modified** | Thời gian cập nhật cuối | `Thu, 01 Jan 2024 00:00:00 GMT` |
+| **Expires** | Ngày hết hạn (cũ) | `Thu, 01 Jan 2025 00:00:00 GMT` |
+| **Vary** | Thay đổi cache theo header | `Vary: Accept-Encoding` |
+
+**🔧 Chỉ Thị Cache-Control:**
+- **`max-age=3600`**: Cache 1 giờ (3600 giây).
+- **`public`**: Cache được bởi trình duyệt + CDN.
+- **`private`**: Chỉ cache bởi trình duyệt (không CDN) → dữ liệu cá nhân.
+- **`no-cache`**: Phải xác thực lại với server (304 Not Modified nếu không thay đổi).
+- **`no-store`**: Không cache (dữ liệu nhạy cảm: mật khẩu, thẻ tín dụng).
+- **`immutable`**: Tài nguyên không bao giờ thay đổi → không xác thực lại (tài nguyên tĩnh có hash).
+
+**♻️ Chiến Lược Cache (Service Worker):**
+
+1. **Cache First (Tài nguyên tĩnh)**:
+   - Kiểm tra cache → nếu có trả về → nếu không lấy từ mạng.
+   - ✅ Dùng cho: Fonts, hình ảnh, CSS, JS có tên file phiên bản.
+
+2. **Network First (Dữ liệu động)**:
+   - Lấy từ mạng → nếu thất bại trả về cache.
+   - ✅ Dùng cho: Dữ liệu API, nội dung người dùng.
+
+3. **Stale While Revalidate**:
+   - Trả về cache ngay (nhanh) + lấy mạng background → cập nhật cache.
+   - ✅ Dùng cho: Cân bằng tốc độ + độ mới (nguồn tin, mạng xã hội).
+
+4. **Network Only**:
+   - Luôn lấy từ mạng → không cache.
+   - ✅ Dùng cho: Phân tích, dữ liệu thời gian thực.
+
+5. **Cache Only**:
+   - Chỉ dùng cache → ưu tiên offline.
+   - ✅ Dùng cho: Vỏ ứng dụng PWA.
+
+**🔍 ETag & Conditional Requests:**
+- **ETag**: Hash của resource content → version identifier.
+- **Flow**:
+  1. Server response: `ETag: "abc123"`.
+  2. Browser cache + store ETag.
+  3. Next request: `If-None-Match: "abc123"`.
+  4. Server check: Unchanged → `304 Not Modified` (no body) | Changed → `200 OK` (new content + new ETag).
+- **Benefit**: Save bandwidth (304 response nhỏ hơn full response).
+
+**⚠️ Common Pitfalls:**
+- **Cache Busting**: Static assets thay đổi nhưng cùng filename → browser serve stale cache.
+  - **Solution**: Hash trong filename (`app.abc123.js`) hoặc query param (`app.js?v=123`).
+- **Over-caching**: Cache sensitive data (passwords) → security risk. Dùng `no-store`.
+- **Under-caching**: Không cache static assets → waste bandwidth, slow load.
+- **CDN cache**: Purge CDN cache khi deploy new version.
+
+**💡 Senior Insights:**
+- **Versioning Strategy**: Dùng content hash cho static assets (`webpack`/`vite` auto generate).
+- **Immutable Resources**: Set `Cache-Control: max-age=31536000, immutable` cho versioned assets → never revalidate.
+- **Service Worker**: Combine strategies (cache shell với Cache First, API với Network First).
+- **Performance**: Cache reduce TTFB (Time To First Byte), improve Core Web Vitals (LCP, FCP).
+- **DevTools**: Chrome DevTools → Network tab → check cache status (from disk cache, from memory cache).
+- **Cache-Control vs Expires**: `Cache-Control` modern, `Expires` legacy. Nếu both, `Cache-Control` wins.
+
+**🚀 Best Practices:**
+1. **Static assets**: Long max-age (1 year) + immutable + hash filenames.
+2. **HTML**: `no-cache` → always revalidate (ETag/Last-Modified).
+3. **API**: Short max-age (5 minutes) hoặc `no-cache` + ETag.
+4. **User-specific data**: `private` (not `public`).
+5. **Sensitive data**: `no-store`.
+
+---
 
 **⚡ Quick Summary:**
 > HTTP Cache = Cache-Control, ETag. Browser Cache = disk/memory cache. Service Worker = offline cache

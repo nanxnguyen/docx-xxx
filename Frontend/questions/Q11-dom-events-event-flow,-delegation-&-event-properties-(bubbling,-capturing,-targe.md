@@ -1,7 +1,71 @@
 # 🎪 Q11: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (2 phút):**
 
+**"Sự kiện DOM có 3 giai đoạn: Capturing (từ trên xuống) → Target → Bubbling (từ dưới lên).**
+
+**♻️ Luồng Sự Kiện (3 Giai Đoạn):**
+1. **Capturing Phase (Giai đoạn bắt)**: Sự kiện từ `window` → `document` → `html` → ... → phần tử target (từ trên xuống).
+2. **Target Phase (Giai đoạn target)**: Sự kiện chạm phần tử target (phần tử được click).
+3. **Bubbling Phase (Giai đoạn nổi)**: Sự kiện từ phần tử target → ... → `html` → `document` → `window` (từ dưới lên).
+
+**🔑 Khái Niệm Cốt Lõi:**
+- **Mặc định**: Event listeners chạy trong **Bubbling phase** (useCapture = false).
+- **Capturing**: Đặt `useCapture: true` → listener chạy trong Capturing phase.
+  ```js
+  element.addEventListener('click', handler, { capture: true });
+  ```
+- **Dừng Lan Truyền**: `event.stopPropagation()` → ngừng bubbling/capturing.
+- **Ngăn Hành Vi Mặc Định**: `event.preventDefault()` → ngăn hành vi mặc định (vd: form submit, chuyển link).
+
+**🎯 Mẫu Event Delegation:**
+- **Khái niệm**: Gắn listener ở phần tử cha, không phải từng con → tận dụng bubbling.
+- **Lợi ích**:
+  - Hiệu năng: 1 listener thay vì 100 listeners cho 100 items.
+  - Nội dung động: Không cần gắn lại listeners khi thêm/xóa con.
+- **Ví dụ**:
+  ```js
+  // ❌ Không hiệu quả: Gắn listener cho từng item
+  document.querySelectorAll('.item').forEach(item => {
+    item.addEventListener('click', handler); // 100 listeners!
+  });
+  
+  // ✅ Hiệu quả: Delegation
+  document.querySelector('.list').addEventListener('click', (e) => {
+    if (e.target.matches('.item')) { // Kiểm tra target
+      handler(e); // 1 listener!
+    }
+  });
+  ```
+
+**🔍 `target` vs `currentTarget`:**
+- **`event.target`**: Phần tử thực sự được click (phần tử gốc kích hoạt sự kiện).
+- **`event.currentTarget`**: Phần tử có listener gắn vào (đang xử lý sự kiện).
+- **Trường hợp**: Delegation → `currentTarget` = cha, `target` = con được click.
+  ```js
+  parent.addEventListener('click', (e) => {
+    console.log(e.target);        // Child element clicked
+    console.log(e.currentTarget); // Parent element (listener)
+  });
+  ```
+
+**⚠️ Common Pitfalls:**
+- **stopPropagation() overuse**: Ngăn cả analytics tracking, global handlers → dùng thận trọng.
+- **preventDefault() vs stopPropagation()**: Khác nhau! preventDefault ngăn default action, stopPropagation ngăn propagation.
+- **Event delegation với dynamic content**: Phải check `e.target.matches()` đúng selector.
+
+**💡 Senior Insights:**
+- **Performance**: Event delegation giảm memory usage (1 listener vs 1000) và faster DOM manipulation.
+- **Passive listeners**: `{ passive: true }` → improve scroll performance (không block scroll while waiting for preventDefault).
+  ```js
+  element.addEventListener('touchstart', handler, { passive: true });
+  ```
+- **once option**: `{ once: true }` → auto remove listener sau 1 lần fire.
+- **Capture for debugging**: Dùng capturing phase để intercept events trước khi children handle.
+
+---
 
 **⚡ Quick Summary:**
 > Event Bubbling = child → parent. Capturing = parent → child. Delegation = listen ở parent

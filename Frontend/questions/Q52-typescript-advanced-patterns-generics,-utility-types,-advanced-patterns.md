@@ -1,5 +1,141 @@
 # 🔷 Q52: TypeScript Advanced Patterns - Generics, Utility Types, Advanced Patterns
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"TypeScript advanced = Generics, Utility Types, Mapped Types, Conditional Types, Type Guards.**
+
+**🔧 Core Advanced Concepts:**
+
+1. **Generics**:
+   - **Purpose**: Type-safe reusable functions/components.
+   - **Constraints**: `<T extends Type>` → limit T to specific types.
+   ```ts
+   function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+     return obj[key]; // Type-safe property access
+   }
+   const user = { name: 'Alice', age: 30 };
+   getProperty(user, 'name'); // Type: string
+   ```
+
+2. **Utility Types** (Built-in):
+   - **`Partial<T>`**: Tất cả properties optional.
+   - **`Required<T>`**: Tất cả properties required.
+   - **`Pick<T, K>`**: Lấy subset properties.
+   - **`Omit<T, K>`**: Loại bỏ properties.
+   - **`Record<K, V>`**: Object với keys K, values V.
+   - **`Readonly<T>`**: Immutable properties.
+   ```ts
+   type User = { id: number; name: string; email: string };
+   type PartialUser = Partial<User>; // All optional
+   type UserName = Pick<User, 'id' | 'name'>; // Only id, name
+   type NoEmail = Omit<User, 'email'>; // Exclude email
+   ```
+
+3. **Mapped Types**:
+   - Transform existing types.
+   ```ts
+   type Readonly<T> = { readonly [K in keyof T]: T[K] };
+   type Optional<T> = { [K in keyof T]?: T[K] };
+   ```
+
+4. **Conditional Types**:
+   - `T extends U ? X : Y` → type-level if-else.
+   ```ts
+   type IsString<T> = T extends string ? true : false;
+   type A = IsString<string>; // true
+   type B = IsString<number>; // false
+   ```
+
+5. **Template Literal Types** (TS 4.1+):
+   - String manipulation at type level.
+   ```ts
+   type EventName<T extends string> = `on${Capitalize<T>}`;
+   type ClickEvent = EventName<'click'>; // "onClick"
+   ```
+
+6. **Type Guards**:
+   - Runtime type checking → narrow types.
+   ```ts
+   function isString(value: unknown): value is string {
+     return typeof value === 'string';
+   }
+   if (isString(value)) {
+     value.toUpperCase(); // TS knows value is string
+   }
+   ```
+
+7. **Discriminated Unions**:
+   - Type-safe state machines.
+   ```ts
+   type State = 
+     | { status: 'loading' }
+     | { status: 'success'; data: string }
+     | { status: 'error'; error: Error };
+   
+   function handle(state: State) {
+     switch (state.status) {
+       case 'loading': return 'Loading...';
+       case 'success': return state.data; // TS knows data exists
+       case 'error': return state.error.message;
+     }
+   }
+   ```
+
+**🎯 Real-World Use Cases:**
+
+1. **API Response Typing**:
+   ```ts
+   type ApiResponse<T> = 
+     | { success: true; data: T }
+     | { success: false; error: string };
+   
+   async function fetchUser(): Promise<ApiResponse<User>> {
+     // ...
+   }
+   ```
+
+2. **Form State**:
+   ```ts
+   type FormState<T> = {
+     values: T;
+     errors: Partial<Record<keyof T, string>>;
+     touched: Partial<Record<keyof T, boolean>>;
+   };
+   ```
+
+3. **Branded Types** (Nominal Typing):
+   - Prevent mixing similar types.
+   ```ts
+   type UserId = string & { __brand: 'UserId' };
+   type ProductId = string & { __brand: 'ProductId' };
+   
+   function getUser(id: UserId) { /*...*/ }
+   const userId = '123' as UserId;
+   getUser(userId); // OK
+   // getUser('456'); // Error: string not assignable to UserId
+   ```
+
+**⚠️ Common Mistakes:**
+- **any overuse**: Defeat purpose of TypeScript → dùng `unknown` + type guards.
+- **Type assertions abuse**: `as` bypass type checking → dùng type guards instead.
+- **Missing generic constraints**: `<T>` too broad → dùng `<T extends Type>`.
+
+**💡 Senior Insights:**
+- **infer keyword**: Extract types from other types.
+  ```ts
+  type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
+  ```
+- **Const assertions**: `as const` → literal types instead of widening.
+  ```ts
+  const colors = ['red', 'blue'] as const; // Type: readonly ["red", "blue"]
+  ```
+- **tsconfig strict mode**: Enable all strict checks (`strict: true`) → catch bugs early.
+- **Declaration files**: `.d.ts` for third-party libraries không có types.
+
+---
+
 > **Câu hỏi phỏng vấn Senior Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
 > **Thời gian trả lời:** 15-20 phút

@@ -1,5 +1,89 @@
 # 🔐 Q39: Bảo Mật Security trên Web Application
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"Web security = 7 layers: HTTPS, XSS, CSRF, Auth, Storage, API, Headers. Defense in depth.**
+
+**🛡️ 7-Layer Security Strategy:**
+
+1. **HTTPS + TLS**:
+   - Mã hóa data giữa browser ↔ server → ngăn Man-in-the-Middle.
+   - **HSTS**: `Strict-Transport-Security` header → bắt buộc HTTPS.
+
+2. **XSS Prevention (Cross-Site Scripting)**:
+   - **Problem**: Attacker inject malicious `<script>` → steal cookies, session.
+   - **Solution**:
+     - **React auto-escape**: `{userInput}` auto sanitize.
+     - **DOMPurify**: Sanitize HTML khi cần `dangerouslySetInnerHTML`.
+     - **CSP**: `Content-Security-Policy` header → block inline scripts.
+   ```js
+   // ❌ Vulnerable
+   <div dangerouslySetInnerHTML={{ __html: userInput }} />
+   // ✅ Safe
+   import DOMPurify from 'dompurify';
+   <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userInput) }} />
+   ```
+
+3. **CSRF Protection (Cross-Site Request Forgery)**:
+   - **Problem**: Attacker trick user send malicious request (e.g., transfer money).
+   - **Solution**:
+     - **CSRF Token**: Server generate unique token per session → include in forms.
+     - **SameSite Cookies**: `SameSite=Strict` → cookies chỉ send same-origin requests.
+
+4. **Authentication & Authorization**:
+   - **JWT**: Access token (short-lived, 15 min) + Refresh token (long-lived, 7 days).
+   - **HttpOnly Cookies**: Store tokens → JavaScript không access được (prevent XSS steal).
+   - **Token Refresh**: Auto refresh access token khi expired (seamless UX).
+
+5. **Secure Storage**:
+   - **NEVER localStorage for sensitive data**: JavaScript có thể access → XSS risk.
+   - **HttpOnly Cookies**: Best cho tokens (server-only access).
+   - **Encrypt sensitive data**: AES-256 encryption trước khi store.
+
+6. **API Security**:
+   - **Rate Limiting**: Limit requests (100/min) → prevent brute-force.
+   - **Input Validation**: Validate/sanitize inputs server-side (không tin client).
+   - **CORS**: Restrict origins có thể call API.
+   ```js
+   // Server (Express)
+   app.use(cors({ origin: 'https://trusted-domain.com' }));
+   ```
+
+7. **Security Headers**:
+   - **CSP**: `Content-Security-Policy: default-src 'self'` → block external scripts.
+   - **X-Frame-Options**: `DENY` → prevent clickjacking.
+   - **X-Content-Type-Options**: `nosniff` → prevent MIME sniffing.
+   - **Referrer-Policy**: Control referrer info leaked.
+
+**⚠️ Common Vulnerabilities (OWASP Top 10):**
+1. **Injection** (SQL, XSS): Sanitize inputs, use parameterized queries.
+2. **Broken Authentication**: Strong passwords, MFA, session timeout.
+3. **Sensitive Data Exposure**: Encrypt data, HTTPS, HttpOnly cookies.
+4. **XML External Entities (XXE)**: Disable XML external entity processing.
+5. **Broken Access Control**: Server-side authorization checks.
+6. **Security Misconfiguration**: Remove default credentials, disable debug mode.
+7. **XSS**: Escape outputs, CSP headers.
+8. **Insecure Deserialization**: Validate serialized data.
+9. **Using Components with Known Vulnerabilities**: Regular dependency updates (`npm audit`).
+10. **Insufficient Logging & Monitoring**: Log security events, monitor anomalies.
+
+**💡 Senior Insights:**
+- **Defense in Depth**: Multiple layers → nếu 1 layer fail, others protect.
+- **Security Audits**: Regular penetration testing, code reviews.
+- **Dependency Scanning**: `npm audit`, Snyk, Dependabot → auto update vulnerable packages.
+- **Security Headers**: Use helmet.js (Node.js) → auto set secure headers.
+- **HTTPS Everywhere**: Even internal apps → prevent internal network sniffing.
+
+**🚀 Best Practices:**
+- Principle of Least Privilege: Users chỉ access data cần thiết.
+- Never trust client-side validation: Always validate server-side.
+- Encrypt sensitive data at rest & in transit.
+- Regular security training cho developers.
+
+---
+
 **❓ Tình Huống:**
 
 Bạn là Senior Frontend Developer phụ trách security cho Trading Platform xử lý:
