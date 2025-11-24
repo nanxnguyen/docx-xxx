@@ -2828,7 +2828,586 @@ function MyComponent() {
 
 ---
 
-#### **🎯 TÓM TẮT Q39 - REACT COMPREHENSIVE**
+## **🚀 PHẦN 8: REACT PERFORMANCE & RENDERING DEEP DIVE**
+
+### **8.1. React Rendering Phases - Render vs Commit**
+
+```typescript
+// ===================================================
+// 🎯 REACT RENDERING PROCESS
+// ===================================================
+
+/**
+ * React rendering có 2 PHASE:
+ * 
+ * 1️⃣ RENDER PHASE (Pure, có thể pause/abort)
+ *    - Gọi component functions/render methods
+ *    - So sánh Virtual DOM cũ vs mới (Reconciliation)
+ *    - Tính toán những gì cần thay đổi
+ *    - ⚠️ Có thể bị interrupt/restart (Concurrent Mode)
+ * 
+ * 2️⃣ COMMIT PHASE (Synchronous, không thể interrupt)
+ *    - Apply changes vào DOM
+ *    - Run useLayoutEffect
+ *    - Run useEffect (sau khi paint)
+ *    - Browser paint screen
+ */
+
+// 📊 Timeline:
+/*
+┌─────────────────────────────────────────────────────────────────┐
+│  REACT RENDERING TIMELINE                                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  setState() called                                              │
+│       ↓                                                         │
+│  ┌─────────────────────────────┐                              │
+│  │  RENDER PHASE (Interruptible)│                              │
+│  ├─────────────────────────────┤                              │
+│  │  1. Call Component()         │                              │
+│  │  2. Create new VirtualDOM    │                              │
+│  │  3. Diff with old VirtualDOM │                              │
+│  │  4. Mark changes             │                              │
+│  └─────────────────────────────┘                              │
+│       ↓                                                         │
+│  ┌─────────────────────────────┐                              │
+│  │  COMMIT PHASE (Synchronous)  │                              │
+│  ├─────────────────────────────┤                              │
+│  │  1. Apply DOM changes        │                              │
+│  │  2. useLayoutEffect cleanup  │                              │
+│  │  3. useLayoutEffect effect   │                              │
+│  │  4. Browser Paint            │ ← User sees changes          │
+│  │  5. useEffect cleanup        │                              │
+│  │  6. useEffect effect         │                              │
+│  └─────────────────────────────┘                              │
+└─────────────────────────────────────────────────────────────────┘
+*/
+
+// ✅ Example: Measure DOM before paint
+function MeasureBeforePaint() {
+  const ref = useRef<HTMLDivElement>(null);
+  
+  useLayoutEffect(() => {
+    // ✅ Runs BEFORE browser paint
+    // DOM updated but not visible yet
+    const height = ref.current?.offsetHeight;
+    console.log('Height before paint:', height);
+  }, []);
+  
+  useEffect(() => {
+    // ✅ Runs AFTER browser paint
+    // User already sees the update
+    console.log('After paint');
+  }, []);
+  
+  return <div ref={ref}>Content</div>;
+}
+```
+
+---
+
+### **8.2. React Fiber Architecture (Advanced)**
+
+```typescript
+// ===================================================
+// 🧬 REACT FIBER - Reconciliation Engine
+// ===================================================
+
+/**
+ * 🎯 Fiber là gì?
+ * 
+ * Fiber = JavaScript object đại diện cho một React element
+ * 
+ * Mỗi component instance có một Fiber node, chứa:
+ * - type: Component type (function/class/div)
+ * - props: Props hiện tại
+ * - state: State hiện tại
+ * - hooks: Linked list of hooks (useState, useEffect...)
+ * - child, sibling, return: Pointers tạo thành Fiber tree
+ * - alternate: Pointer tới Fiber version trước (double buffering)
+ * - effectTag: Thay đổi cần apply (Placement, Update, Deletion)
+ */
+
+// 📊 Fiber Tree Structure:
+/*
+        App (Fiber)
+        /    \
+    Header  Content (Fiber)
+              /    \
+          Sidebar  Main (Fiber)
+          
+Mỗi node là một Fiber object:
+{
+  type: 'div',
+  props: { className: 'container' },
+  state: null,
+  hooks: null, // Linked list nếu là function component
+  child: <pointer to first child>,
+  sibling: <pointer to next sibling>,
+  return: <pointer to parent>,
+  alternate: <pointer to previous version>,
+  effectTag: 'Update',
+  memoizedState: { ... } // Cached state
+}
+*/
+
+// ===================================================
+// ⚡ CONCURRENT RENDERING (React 18+)
+// ===================================================
+
+/**
+ * Concurrent Rendering cho phép React:
+ * - Pause rendering để handle urgent updates
+ * - Resume rendering sau
+ * - Abandon rendering nếu không cần nữa
+ * 
+ * Priority levels:
+ * 1. Immediate (clicks, input)
+ * 2. User-blocking (hover)
+ * 3. Normal (data fetching)
+ * 4. Low (analytics)
+ * 5. Idle (offscreen prep)
+ */
+
+function SearchWithPriority() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const deferredQuery = useDeferredValue(query);
+  
+  // User input: HIGH PRIORITY (immediate)
+  const handleChange = (e) => {
+    setQuery(e.target.value); // Instant UI update
+  };
+  
+  // Search results: LOW PRIORITY (can be deferred)
+  useEffect(() => {
+    // This update can be interrupted
+    const filtered = expensiveSearch(deferredQuery);
+    setResults(filtered);
+  }, [deferredQuery]);
+  
+  return (
+    <div>
+      {/* Input always responsive */}
+      <input value={query} onChange={handleChange} />
+      
+      {/* Results can lag behind */}
+      <ResultsList results={results} />
+    </div>
+  );
+}
+```
+
+---
+
+### **8.3. React.memo Deep Dive - Memoization Pattern**
+
+```typescript
+// ===================================================
+// 🎯 REACT.MEMO - Component Memoization
+// ===================================================
+
+// ❌ Without memo: Re-renders on every parent render
+const ExpensiveComponent = ({ data }) => {
+  console.log('Rendering ExpensiveComponent');
+  return <div>{heavyComputation(data)}</div>;
+};
+
+function Parent() {
+  const [count, setCount] = useState(0);
+  const data = { value: 100 }; // New object every render!
+  
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      {/* ❌ Re-renders even though data.value is same */}
+      <ExpensiveComponent data={data} />
+    </div>
+  );
+}
+
+// ✅ With memo: Skip re-render if props unchanged
+const MemoizedComponent = memo(({ data }) => {
+  console.log('Rendering MemoizedComponent');
+  return <div>{heavyComputation(data)}</div>;
+});
+
+function ParentOptimized() {
+  const [count, setCount] = useState(0);
+  
+  // ✅ Stable reference with useMemo
+  const data = useMemo(() => ({ value: 100 }), []);
+  
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      {/* ✅ No re-render! data reference is stable */}
+      <MemoizedComponent data={data} />
+    </div>
+  );
+}
+
+// ===================================================
+// 🔍 CUSTOM COMPARISON FUNCTION
+// ===================================================
+
+interface Props {
+  user: { id: string; name: string; age: number };
+}
+
+// Only re-render if user.id changes (ignore name/age)
+const UserCard = memo(
+  ({ user }: Props) => {
+    console.log('Rendering UserCard');
+    return <div>{user.name}</div>;
+  },
+  (prevProps, nextProps) => {
+    // Return TRUE to SKIP re-render
+    // Return FALSE to RE-RENDER
+    return prevProps.user.id === nextProps.user.id;
+  }
+);
+
+// ===================================================
+// ⚠️ COMMON MISTAKES với React.memo
+// ===================================================
+
+// ❌ MISTAKE 1: Inline object props
+function Bad() {
+  return <MemoizedComponent data={{ value: 100 }} />; // New object every time!
+}
+
+// ✅ FIX: Extract to stable reference
+const DATA = { value: 100 }; // Outside component or useMemo
+function Good() {
+  return <MemoizedComponent data={DATA} />;
+}
+
+// ❌ MISTAKE 2: Inline function props
+function Bad2() {
+  return <MemoizedComponent onClick={() => console.log('click')} />; // New function!
+}
+
+// ✅ FIX: useCallback
+function Good2() {
+  const handleClick = useCallback(() => console.log('click'), []);
+  return <MemoizedComponent onClick={handleClick} />;
+}
+
+// ❌ MISTAKE 3: Children prop
+function Bad3() {
+  return (
+    <MemoizedComponent>
+      <div>Child</div> {/* New element every render */}
+    </MemoizedComponent>
+  );
+}
+
+// ✅ FIX: Extract children or use composition
+const CHILD = <div>Child</div>;
+function Good3() {
+  return <MemoizedComponent>{CHILD}</MemoizedComponent>;
+}
+```
+
+---
+
+### **8.4. useMemo vs useCallback - When & Why**
+
+```typescript
+// ===================================================
+// 🎯 USEMEMO - Memoize VALUES
+// ===================================================
+
+function ProductList({ products }) {
+  // ❌ Without useMemo: Recalculate every render
+  const expensiveTotal = products.reduce((sum, p) => sum + p.price, 0);
+  
+  // ✅ With useMemo: Only recalculate when products change
+  const total = useMemo(
+    () => products.reduce((sum, p) => sum + p.price, 0),
+    [products]
+  );
+  
+  return <div>Total: {total}</div>;
+}
+
+// ===================================================
+// 🎯 USECALLBACK - Memoize FUNCTIONS
+// ===================================================
+
+function Parent() {
+  const [count, setCount] = useState(0);
+  
+  // ❌ New function every render → Child re-renders
+  const handleClick = () => {
+    console.log('Clicked');
+  };
+  
+  // ✅ Stable function reference → Child doesn't re-render
+  const handleClickMemo = useCallback(() => {
+    console.log('Clicked');
+  }, []); // Empty deps = never recreate
+  
+  return <MemoizedChild onClick={handleClickMemo} />;
+}
+
+// ===================================================
+// 📊 PERFORMANCE COMPARISON
+// ===================================================
+
+// Benchmark: When to use useMemo/useCallback?
+function BenchmarkExample() {
+  const [filter, setFilter] = useState('');
+  const items = Array.from({ length: 10000 }, (_, i) => ({
+    id: i,
+    name: `Item ${i}`,
+  }));
+  
+  // ⚠️ useMemo NOT needed: Simple calculation
+  const count = items.length; // Fast, no need to memoize
+  
+  // ✅ useMemo needed: Expensive calculation
+  const filtered = useMemo(
+    () => items.filter((item) => item.name.includes(filter)),
+    [items, filter]
+  );
+  
+  // ✅ useCallback needed: Passed to memoized child
+  const handleSelect = useCallback((id: number) => {
+    console.log('Selected:', id);
+  }, []);
+  
+  return (
+    <div>
+      <input value={filter} onChange={(e) => setFilter(e.target.value)} />
+      <ItemList items={filtered} onSelect={handleSelect} />
+    </div>
+  );
+}
+
+// ===================================================
+// ⚠️ OVER-OPTIMIZATION TRAP
+// ===================================================
+
+// ❌ DON'T do this: useMemo for everything
+function OverOptimized() {
+  const a = useMemo(() => 1 + 2, []); // Silly!
+  const b = useMemo(() => 'Hello', []); // Waste of memory
+  return <div>{a} {b}</div>;
+}
+
+// ✅ DO this: Only memoize when needed
+function WellOptimized() {
+  const a = 1 + 2; // Fast, no memo needed
+  const b = 'Hello'; // Primitive, no memo needed
+  
+  // Only memo expensive computations or for stable refs
+  const expensive = useMemo(() => heavyComputation(), []);
+  
+  return <div>{a} {b} {expensive}</div>;
+}
+
+/**
+ * 🎯 RULES OF THUMB:
+ * 
+ * Use useMemo when:
+ * ✅ Expensive computation (>5ms)
+ * ✅ Creating objects/arrays passed to memoized children
+ * ✅ Derived data from large arrays/objects
+ * 
+ * Use useCallback when:
+ * ✅ Passing callbacks to memoized children
+ * ✅ Function is a dependency of useEffect/useMemo
+ * ✅ Function used in event handlers of optimized components
+ * 
+ * DON'T use when:
+ * ❌ Simple calculations (<1ms)
+ * ❌ Component already re-renders anyway
+ * ❌ Just to "feel" optimized
+ */
+```
+
+---
+
+### **8.5. Profiler API & Performance Debugging**
+
+```typescript
+// ===================================================
+// 📊 PROFILER API - Measure Render Performance
+// ===================================================
+
+import { Profiler, ProfilerOnRenderCallback } from 'react';
+
+const onRenderCallback: ProfilerOnRenderCallback = (
+  id, // Profiler id
+  phase, // "mount" or "update"
+  actualDuration, // Time spent rendering
+  baseDuration, // Estimated time without memoization
+  startTime, // When React began rendering
+  commitTime, // When React committed update
+  interactions // Set of interactions (deprecated)
+) => {
+  console.log(`${id} (${phase})`);
+  console.log(`Actual: ${actualDuration.toFixed(2)}ms`);
+  console.log(`Base: ${baseDuration.toFixed(2)}ms`);
+  
+  // Send to analytics
+  if (actualDuration > 16) { // Slower than 60fps
+    analytics.track('slow_render', {
+      component: id,
+      duration: actualDuration,
+    });
+  }
+};
+
+function App() {
+  return (
+    <Profiler id="App" onRender={onRenderCallback}>
+      <Header />
+      <Profiler id="Content" onRender={onRenderCallback}>
+        <Content />
+      </Profiler>
+    </Profiler>
+  );
+}
+
+// ===================================================
+// 🔍 WHY-DID-YOU-RENDER (Debug Re-renders)
+// ===================================================
+
+// Install: npm install @welldone-software/why-did-you-render
+import whyDidYouRender from '@welldone-software/why-did-you-render';
+
+if (process.env.NODE_ENV === 'development') {
+  whyDidYouRender(React, {
+    trackAllPureComponents: true,
+    logOnDifferentValues: true,
+  });
+}
+
+// Mark components to track
+const MyComponent = ({ data }) => {
+  return <div>{data.value}</div>;
+};
+MyComponent.whyDidYouRender = true;
+
+// Console output khi re-render không cần thiết:
+// MyComponent re-rendered because:
+// - data.value changed from 100 to 100 (same value!)
+// - data is different object reference
+
+// ===================================================
+// ⚡ CHROME DEVTOOLS - React Profiler
+// ===================================================
+
+/**
+ * Chrome DevTools → Profiler tab
+ * 
+ * 1. Record rendering
+ * 2. Interact with app
+ * 3. Stop recording
+ * 4. Analyze:
+ *    - Flame graph: Which components rendered
+ *    - Ranked: Slowest components
+ *    - Component tree: Why component rendered
+ *    
+ * Look for:
+ * - ⚠️ Yellow bars: Slow renders (>12ms)
+ * - 🔴 Red bars: Very slow (>16ms, drops frames)
+ * - Gray: Didn't render (optimized!)
+ */
+```
+
+---
+
+### **8.6. Bundle Splitting & Code Splitting Strategies**
+
+```typescript
+// ===================================================
+// 📦 CODE SPLITTING - Lazy Load Components
+// ===================================================
+
+import { lazy, Suspense } from 'react';
+
+// ✅ Route-based splitting
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Settings = lazy(() => import('./pages/Settings'));
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  );
+}
+
+// ===================================================
+// 📦 COMPONENT-BASED SPLITTING
+// ===================================================
+
+// Heavy chart library loaded only when needed
+const Chart = lazy(() => import('./components/Chart'));
+
+function Dashboard() {
+  const [showChart, setShowChart] = useState(false);
+  
+  return (
+    <div>
+      <button onClick={() => setShowChart(true)}>Show Chart</button>
+      
+      {showChart && (
+        <Suspense fallback={<ChartSkeleton />}>
+          <Chart data={data} />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+
+// ===================================================
+// 📦 VENDOR SPLITTING (Webpack)
+// ===================================================
+
+// webpack.config.js
+module.exports = {
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        // Vendor bundle: node_modules
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+        // Common bundle: shared code
+        common: {
+          minChunks: 2,
+          name: 'common',
+          chunks: 'async',
+        },
+      },
+    },
+  },
+};
+
+// Results in:
+// - main.js (your code)
+// - vendors.js (React, lodash, etc)
+// - common.js (shared components)
+// - [route].js (lazy-loaded pages)
+```
+
+---
+
+#### **🎯 TÓM TẮT Q25 - REACT COMPREHENSIVE**
 
 **✅ Đã cover:**
 1. **All Hooks**: useState, useEffect, useRef, useLayoutEffect, useReducer, useContext, useMemo, useCallback, useImperativeHandle, useSyncExternalStore
@@ -2839,6 +3418,9 @@ function MyComponent() {
 6. **React Features**: Batching, Code Splitting, Portal, Error Boundaries, Fragments
 7. **React 18+**: Suspense, Server Components, Concurrent Rendering, useTransition, useDeferredValue, Hydration
 8. **Routing**: React Router basics
+9. **🆕 Rendering Deep Dive**: Render vs Commit phases, Fiber architecture, Concurrent rendering
+10. **🆕 Performance Optimization**: React.memo deep dive, useMemo/useCallback best practices, Profiler API, why-did-you-render
+11. **🆕 Bundle Splitting**: Code splitting strategies, lazy loading, vendor splitting
 
 **💡 Key Takeaways cho Interview:**
 - Hiểu sâu useEffect cleanup function và dependency array
@@ -2847,5 +3429,1028 @@ function MyComponent() {
 - React.memo + stable references (useMemo/useCallback) để tối ưu re-renders
 - React 18 concurrent features (useTransition, useDeferredValue)
 - Error Boundaries chỉ catch rendering errors, không catch event handlers/async
+- **🆕 Render phase có thể interrupt, Commit phase synchronous**
+- **🆕 Fiber = JavaScript object representing React element**
+- **🆕 Only memoize expensive computations (>5ms) or for stable refs**
+- **🆕 Use Profiler API & Chrome DevTools to find bottlenecks**
+
+---
+
+#### **📚 PHẦN 9: REACT DESIGN PATTERNS - ADVANCED COMPONENT ARCHITECTURE**
+
+---
+
+## **📊 REACT PATTERNS OVERVIEW**
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│          REACT DESIGN PATTERNS (Component Architecture)      │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  🧩 COMPONENT COMPOSITION PATTERNS                           │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  • Compound Components                                 │ │
+│  │    Shared state giữa parent-children (như HTML <select>)│ │
+│  │    VD: <Tabs>, <Accordion>, <Dropdown>               │ │
+│  │                                                       │ │
+│  │  • Render Props                                       │ │
+│  │    Pass function as prop để render UI động            │ │
+│  │    VD: <DataProvider render={(data) => ...} />        │ │
+│  │                                                       │ │
+│  │  • Children as Function (Render Props variant)        │ │
+│  │    {(data) => <div>{data}</div>}                      │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                                                              │
+│  🎨 LOGIC REUSE PATTERNS                                     │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  • Higher-Order Components (HOC)                      │ │
+│  │    Wrap component để add behavior                     │ │
+│  │    VD: withAuth(Component), withRouter(Component)     │ │
+│  │                                                       │ │
+│  │  • Custom Hooks (Modern Replacement for HOC)          │ │
+│  │    useAuth(), useRouter() - Recommended approach      │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                                                              │
+│  🏗️ ARCHITECTURAL PATTERNS                                   │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  • Container/Presentational (Smart/Dumb)              │ │
+│  │    Container = logic, Presentational = UI             │ │
+│  │                                                       │ │
+│  │  • Controlled vs Uncontrolled Components              │ │
+│  │    Controlled = React state, Uncontrolled = DOM state │ │
+│  └────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────┘
+```
+
+---
+
+##### **9.1. COMPOUND COMPONENTS PATTERN**
+
+**🎯 Mục đích:**
+Tạo components phức tạp với shared state giữa parent-children, API linh hoạt cho user.
+
+**📖 Use Cases:**
+- Complex UI components: Tabs, Accordion, Dropdown, Menu
+- Flexible structure (user controls layout)
+- Implicit communication (như HTML `<select>` + `<option>`)
+
+**💡 Chi tiết kỹ thuật:**
+
+```typescript
+// ===================================================
+// 🧩 COMPOUND COMPONENTS - Shared State via Context
+// ===================================================
+
+import { createContext, useContext, useState, ReactNode } from 'react';
+
+// Context for shared state
+type TabsContextType = {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+};
+
+const TabsContext = createContext<TabsContextType | undefined>(undefined);
+
+function useTabs() {
+  const context = useContext(TabsContext);
+  if (!context) {
+    throw new Error('Tabs compound components must be used within <Tabs>');
+  }
+  return context;
+}
+
+// ===================================================
+// Parent Component (Provides Context)
+// ===================================================
+
+type TabsProps = {
+  defaultTab?: string;
+  children: ReactNode;
+};
+
+function Tabs({ defaultTab, children }: TabsProps) {
+  const [activeTab, setActiveTab] = useState(defaultTab || '');
+
+  return (
+    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+      <div className="tabs">{children}</div>
+    </TabsContext.Provider>
+  );
+}
+
+// ===================================================
+// Child Components (Consume Context)
+// ===================================================
+
+type TabListProps = {
+  children: ReactNode;
+};
+
+function TabList({ children }: TabListProps) {
+  return <div className="tab-list" role="tablist">{children}</div>;
+}
+
+type TabProps = {
+  value: string;
+  children: ReactNode;
+};
+
+function Tab({ value, children }: TabProps) {
+  const { activeTab, setActiveTab } = useTabs();
+  const isActive = activeTab === value;
+
+  return (
+    <button
+      role="tab"
+      aria-selected={isActive}
+      className={`tab ${isActive ? 'active' : ''}`}
+      onClick={() => setActiveTab(value)}
+    >
+      {children}
+    </button>
+  );
+}
+
+type TabPanelsProps = {
+  children: ReactNode;
+};
+
+function TabPanels({ children }: TabPanelsProps) {
+  return <div className="tab-panels">{children}</div>;
+}
+
+type TabPanelProps = {
+  value: string;
+  children: ReactNode;
+};
+
+function TabPanel({ value, children }: TabPanelProps) {
+  const { activeTab } = useTabs();
+
+  if (activeTab !== value) return null;
+
+  return (
+    <div role="tabpanel" className="tab-panel">
+      {children}
+    </div>
+  );
+}
+
+// ===================================================
+// Attach Sub-components to Parent (Compound Pattern)
+// ===================================================
+
+Tabs.List = TabList;
+Tabs.Tab = Tab;
+Tabs.Panels = TabPanels;
+Tabs.Panel = TabPanel;
+
+// ===================================================
+// USAGE: Flexible, Declarative API
+// ===================================================
+
+function App() {
+  return (
+    <Tabs defaultTab="profile">
+      <Tabs.List>
+        <Tabs.Tab value="profile">Profile</Tabs.Tab>
+        <Tabs.Tab value="settings">Settings</Tabs.Tab>
+        <Tabs.Tab value="notifications">Notifications</Tabs.Tab>
+      </Tabs.List>
+
+      <Tabs.Panels>
+        <Tabs.Panel value="profile">
+          <h2>Profile Content</h2>
+          <p>User profile information...</p>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="settings">
+          <h2>Settings Content</h2>
+          <p>Application settings...</p>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="notifications">
+          <h2>Notifications Content</h2>
+          <p>Notification preferences...</p>
+        </Tabs.Panel>
+      </Tabs.Panels>
+    </Tabs>
+  );
+}
+
+/**
+ * ✅ Advantages:
+ * - Flexible structure (user controls layout)
+ * - Implicit state sharing (no prop drilling)
+ * - Semantic API (reads like HTML)
+ * - Extensible (easy to add new sub-components)
+ * 
+ * ❌ Disadvantages:
+ * - Only works with direct children (or Context)
+ * - More boilerplate (multiple components)
+ * - Harder to enforce structure
+ */
+```
+
+---
+
+##### **9.2. RENDER PROPS PATTERN**
+
+**🎯 Mục đích:**
+Share logic giữa components mà vẫn giữ UI flexibility (function as prop).
+
+**📖 Use Cases:**
+- Data fetching components
+- Mouse tracking, scroll position
+- Animation controllers
+
+**💡 Chi tiết kỹ thuật:**
+
+```typescript
+// ===================================================
+// 🎨 RENDER PROPS - Function as Child
+// ===================================================
+
+// ===================================================
+// EXAMPLE 1: Mouse Tracker
+// ===================================================
+
+type MousePosition = { x: number; y: number };
+
+type MouseTrackerProps = {
+  render: (position: MousePosition) => ReactNode;
+};
+
+function MouseTracker({ render }: MouseTrackerProps) {
+  const [position, setPosition] = useState<MousePosition>({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setPosition({ x: event.clientX, y: event.clientY });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  return <>{render(position)}</>;
+}
+
+// Usage: Different UI based on same logic
+function App() {
+  return (
+    <div>
+      {/* Render as coordinates */}
+      <MouseTracker
+        render={({ x, y }) => (
+          <p>Mouse position: ({x}, {y})</p>
+        )}
+      />
+
+      {/* Render as dot following cursor */}
+      <MouseTracker
+        render={({ x, y }) => (
+          <div
+            style={{
+              position: 'fixed',
+              left: x,
+              top: y,
+              width: 20,
+              height: 20,
+              borderRadius: '50%',
+              background: 'red',
+              pointerEvents: 'none'
+            }}
+          />
+        )}
+      />
+    </div>
+  );
+}
+
+// ===================================================
+// EXAMPLE 2: Data Fetcher (Children as Function)
+// ===================================================
+
+type DataFetcherProps<T> = {
+  url: string;
+  children: (data: {
+    data: T | null;
+    loading: boolean;
+    error: Error | null;
+  }) => ReactNode;
+};
+
+function DataFetcher<T>({ url, children }: DataFetcherProps<T>) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((json) => {
+        setData(json);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err);
+        setLoading(false);
+      });
+  }, [url]);
+
+  return <>{children({ data, loading, error })}</>;
+}
+
+// Usage
+function UserProfile() {
+  return (
+    <DataFetcher<User> url="/api/users/123">
+      {({ data, loading, error }) => {
+        if (loading) return <div>Loading...</div>;
+        if (error) return <div>Error: {error.message}</div>;
+        if (!data) return <div>No data</div>;
+
+        return (
+          <div>
+            <h1>{data.name}</h1>
+            <p>{data.email}</p>
+          </div>
+        );
+      }}
+    </DataFetcher>
+  );
+}
+
+/**
+ * ✅ Advantages:
+ * - Maximum flexibility (UI completely controlled by consumer)
+ * - Logic reuse without UI assumptions
+ * - Type-safe with TypeScript generics
+ * 
+ * ❌ Disadvantages:
+ * - Callback hell (nested render props)
+ * - Verbose syntax
+ * - Harder to read
+ * 
+ * 💡 Modern Alternative: Custom Hooks (recommended)
+ */
+
+// ===================================================
+// MODERN: Custom Hook (Replaces Render Props)
+// ===================================================
+
+function useMousePosition() {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setPosition({ x: event.clientX, y: event.clientY });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  return position;
+}
+
+// Usage (much cleaner!)
+function App() {
+  const { x, y } = useMousePosition();
+
+  return <p>Mouse: ({x}, {y})</p>;
+}
+```
+
+---
+
+##### **9.3. HIGHER-ORDER COMPONENTS (HOC)**
+
+**🎯 Mục đích:**
+Wrap component để add behavior (authentication, logging, analytics).
+
+**📖 Pattern:**
+```typescript
+// HOC = Function that takes a component and returns a new component
+type HOC = <P>(Component: ComponentType<P>) => ComponentType<P>;
+
+// ⚠️ Mostly replaced by Custom Hooks (React 16.8+)
+```
+
+**💡 Chi tiết kỹ thuật:**
+
+```typescript
+// ===================================================
+// 🎁 HIGHER-ORDER COMPONENT - Wrap Component
+// ===================================================
+
+import { ComponentType } from 'react';
+
+// ===================================================
+// EXAMPLE 1: withAuth (Authentication HOC)
+// ===================================================
+
+type WithAuthProps = {
+  user: { name: string; role: string } | null;
+};
+
+function withAuth<P extends object>(
+  Component: ComponentType<P & WithAuthProps>
+): ComponentType<P> {
+  return function AuthenticatedComponent(props: P) {
+    const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      // Check authentication
+      fetch('/api/auth/me')
+        .then((res) => res.json())
+        .then((data) => {
+          setUser(data);
+          setLoading(false);
+        })
+        .catch(() => {
+          setUser(null);
+          setLoading(false);
+        });
+    }, []);
+
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+
+    if (!user) {
+      return <div>Please log in</div>;
+    }
+
+    // Pass user prop to wrapped component
+    return <Component {...props} user={user} />;
+  };
+}
+
+// Usage
+type DashboardProps = WithAuthProps & {
+  title: string;
+};
+
+function Dashboard({ user, title }: DashboardProps) {
+  return (
+    <div>
+      <h1>{title}</h1>
+      <p>Welcome, {user.name}!</p>
+    </div>
+  );
+}
+
+// Wrap component with HOC
+const AuthenticatedDashboard = withAuth(Dashboard);
+
+// Use wrapped component
+<AuthenticatedDashboard title="My Dashboard" />;
+
+// ===================================================
+// EXAMPLE 2: withLoading (Loading State HOC)
+// ===================================================
+
+type WithLoadingProps = {
+  loading: boolean;
+};
+
+function withLoading<P extends WithLoadingProps>(
+  Component: ComponentType<P>
+): ComponentType<P> {
+  return function LoadingComponent(props: P) {
+    if (props.loading) {
+      return <div className="spinner">Loading...</div>;
+    }
+
+    return <Component {...props} />;
+  };
+}
+
+// Usage
+type UserListProps = WithLoadingProps & {
+  users: User[];
+};
+
+function UserList({ users }: UserListProps) {
+  return (
+    <ul>
+      {users.map((user) => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+const UserListWithLoading = withLoading(UserList);
+
+// Use with loading prop
+<UserListWithLoading loading={isLoading} users={users} />;
+
+/**
+ * ✅ Advantages:
+ * - Reuse component logic (authentication, logging, etc.)
+ * - Separation of concerns (logic vs presentation)
+ * - Composable (wrap multiple HOCs)
+ * 
+ * ❌ Disadvantages:
+ * - Wrapper hell (nested HOCs)
+ * - Props collision (HOC props vs component props)
+ * - Ref forwarding issues (need forwardRef)
+ * - Hard to debug (many wrapper components)
+ * 
+ * 💡 Modern Alternative: Custom Hooks (cleaner, no wrappers)
+ */
+
+// ===================================================
+// MODERN: Custom Hook (Replaces HOC)
+// ===================================================
+
+function useAuth() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setUser(null);
+        setLoading(false);
+      });
+  }, []);
+
+  return { user, loading };
+}
+
+// Usage (no wrapper needed!)
+function Dashboard() {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <div>Please log in</div>;
+
+  return <div>Welcome, {user.name}!</div>;
+}
+```
+
+---
+
+##### **9.4. CONTAINER/PRESENTATIONAL PATTERN**
+
+**🎯 Mục đích:**
+Separate logic (Container/Smart) from UI (Presentational/Dumb).
+
+**📖 Separation of Concerns:**
+- **Container (Smart)**: Logic, state, data fetching, event handlers
+- **Presentational (Dumb)**: UI only, props in → JSX out
+
+**💡 Chi tiết kỹ thuật:**
+
+```typescript
+// ===================================================
+// 🏗️ CONTAINER/PRESENTATIONAL (Smart/Dumb Components)
+// ===================================================
+
+// ===================================================
+// PRESENTATIONAL COMPONENT (Dumb - UI Only)
+// ===================================================
+
+type UserCardProps = {
+  name: string;
+  email: string;
+  avatar: string;
+  onEdit: () => void;
+  onDelete: () => void;
+};
+
+function UserCard({ name, email, avatar, onEdit, onDelete }: UserCardProps) {
+  // ✅ No logic, no state, no side effects
+  // Just props → UI
+  return (
+    <div className="user-card">
+      <img src={avatar} alt={name} />
+      <h3>{name}</h3>
+      <p>{email}</p>
+      <button onClick={onEdit}>Edit</button>
+      <button onClick={onDelete}>Delete</button>
+    </div>
+  );
+}
+
+// ===================================================
+// CONTAINER COMPONENT (Smart - Logic + State)
+// ===================================================
+
+function UserCardContainer({ userId }: { userId: string }) {
+  // ✅ All logic here: state, data fetching, handlers
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/users/${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data);
+        setLoading(false);
+      });
+  }, [userId]);
+
+  const handleEdit = () => {
+    console.log('Edit user:', userId);
+    // Navigate to edit page or open modal
+  };
+
+  const handleDelete = async () => {
+    if (confirm('Delete user?')) {
+      await fetch(`/api/users/${userId}`, { method: 'DELETE' });
+      setUser(null);
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <div>User not found</div>;
+
+  // ✅ Pass data + handlers to presentational component
+  return (
+    <UserCard
+      name={user.name}
+      email={user.email}
+      avatar={user.avatar}
+      onEdit={handleEdit}
+      onDelete={handleDelete}
+    />
+  );
+}
+
+/**
+ * ✅ Advantages:
+ * - Testability:
+ *   - Container: Test logic (mocks, integration tests)
+ *   - Presentational: Test UI (Storybook, snapshot tests)
+ * - Reusability:
+ *   - Presentational component can be used with different containers
+ * - Clarity:
+ *   - Clear separation (logic vs presentation)
+ * 
+ * ❌ Disadvantages:
+ * - More files (2 files instead of 1)
+ * - Boilerplate (passing props down)
+ * - Over-engineering for simple components
+ * 
+ * 💡 Modern Approach: Custom Hooks + Component
+ */
+
+// ===================================================
+// MODERN: Custom Hook + Component (Simpler)
+// ===================================================
+
+// Hook (replaces Container logic)
+function useUser(userId: string) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/users/${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data);
+        setLoading(false);
+      });
+  }, [userId]);
+
+  const handleEdit = () => {
+    console.log('Edit user:', userId);
+  };
+
+  const handleDelete = async () => {
+    if (confirm('Delete user?')) {
+      await fetch(`/api/users/${userId}`, { method: 'DELETE' });
+      setUser(null);
+    }
+  };
+
+  return { user, loading, handleEdit, handleDelete };
+}
+
+// Component (presentational + hook)
+function UserCard({ userId }: { userId: string }) {
+  const { user, loading, handleEdit, handleDelete } = useUser(userId);
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <div>User not found</div>;
+
+  return (
+    <div className="user-card">
+      <img src={user.avatar} alt={user.name} />
+      <h3>{user.name}</h3>
+      <p>{user.email}</p>
+      <button onClick={handleEdit}>Edit</button>
+      <button onClick={handleDelete}>Delete</button>
+    </div>
+  );
+}
+
+// ✅ Benefits: Same separation, fewer files, easier to follow
+```
+
+---
+
+##### **9.5. CONTROLLED VS UNCONTROLLED COMPONENTS**
+
+**🎯 Mục đích:**
+Hiểu sự khác biệt giữa React-controlled state vs DOM-controlled state.
+
+**📖 So sánh:**
+
+| Aspect | **Controlled** | **Uncontrolled** |
+|--------|---------------|------------------|
+| **State location** | React state | DOM |
+| **Value prop** | `value={state}` | No value prop |
+| **Access value** | `state` variable | `ref.current.value` |
+| **Re-renders** | Every keystroke | No re-renders |
+| **Validation** | Real-time | On submit |
+| **Use case** | Forms with validation | Simple forms, file inputs |
+
+**💡 Chi tiết kỹ thuật:**
+
+```typescript
+// ===================================================
+// 🎛️ CONTROLLED vs UNCONTROLLED COMPONENTS
+// ===================================================
+
+// ===================================================
+// UNCONTROLLED INPUT (DOM State)
+// ===================================================
+
+function UncontrolledForm() {
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // ✅ Read value from DOM (not React state)
+    const name = nameRef.current?.value;
+    const email = emailRef.current?.value;
+
+    console.log({ name, email });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* ❌ No value prop, no onChange - DOM controls state */}
+      <input ref={nameRef} type="text" placeholder="Name" />
+      <input ref={emailRef} type="email" placeholder="Email" />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+/**
+ * ✅ Good for:
+ * - Simple forms (no validation needed)
+ * - File inputs (<input type="file"> - always uncontrolled)
+ * - Performance (no re-renders on every keystroke)
+ * 
+ * ❌ Bad for:
+ * - Real-time validation
+ * - Conditional rendering based on input
+ * - Formatting (e.g., phone numbers)
+ */
+
+// ===================================================
+// CONTROLLED INPUT (React State)
+// ===================================================
+
+function ControlledForm() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
+
+  const validateEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setName(value);
+
+    // ✅ Real-time validation
+    if (value.length < 3) {
+      setErrors((prev) => ({ ...prev, name: 'Name must be at least 3 characters' }));
+    } else {
+      setErrors((prev) => ({ ...prev, name: undefined }));
+    }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+
+    // ✅ Real-time validation
+    if (!validateEmail(value)) {
+      setErrors((prev) => ({ ...prev, email: 'Invalid email' }));
+    } else {
+      setErrors((prev) => ({ ...prev, email: undefined }));
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (Object.keys(errors).length === 0) {
+      console.log({ name, email });
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* ✅ value + onChange - React controls state */}
+      <div>
+        <input
+          type="text"
+          value={name}
+          onChange={handleNameChange}
+          placeholder="Name"
+        />
+        {errors.name && <span className="error">{errors.name}</span>}
+      </div>
+
+      <div>
+        <input
+          type="email"
+          value={email}
+          onChange={handleEmailChange}
+          placeholder="Email"
+        />
+        {errors.email && <span className="error">{errors.email}</span>}
+      </div>
+
+      <button type="submit" disabled={Object.keys(errors).length > 0}>
+        Submit
+      </button>
+    </form>
+  );
+}
+
+/**
+ * ✅ Good for:
+ * - Real-time validation
+ * - Formatting (phone numbers, credit cards)
+ * - Conditional UI (show/hide based on input)
+ * - Multi-step forms (preserve state between steps)
+ * 
+ * ❌ Bad for:
+ * - Large forms (many re-renders)
+ * - File inputs (use uncontrolled)
+ */
+
+// ===================================================
+// HYBRID APPROACH (Best of Both Worlds)
+// ===================================================
+
+import { useForm } from 'react-hook-form';
+
+function HybridForm() {
+  // ✅ react-hook-form: Uncontrolled internally, controlled API
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input
+        {...register('name', {
+          required: 'Name is required',
+          minLength: { value: 3, message: 'Min 3 characters' }
+        })}
+        placeholder="Name"
+      />
+      {errors.name && <span>{errors.name.message}</span>}
+
+      <input
+        {...register('email', {
+          required: 'Email is required',
+          pattern: { value: /^\S+@\S+$/i, message: 'Invalid email' }
+        })}
+        placeholder="Email"
+      />
+      {errors.email && <span>{errors.email.message}</span>}
+
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+/**
+ * ✅ react-hook-form advantages:
+ * - Uncontrolled internally (better performance)
+ * - Controlled-like API (validation, error messages)
+ * - Less re-renders (only re-render on submit or validation)
+ */
+```
+
+---
+
+##### **9.6. WHEN TO USE WHAT? - DECISION MATRIX**
+
+**📊 Pattern Selection Guide:**
+
+| Pattern | **Use Case** | **Modern Alternative** | **Status** |
+|---------|--------------|----------------------|-----------|
+| **Compound Components** | Complex UI (Tabs, Accordion, Dropdown) | Still relevant | ✅ Active |
+| **Render Props** | Logic reuse with UI flexibility | Custom Hooks | ⚠️ Legacy |
+| **HOC** | Wrap component with behavior (auth, logging) | Custom Hooks | ⚠️ Deprecated |
+| **Container/Presentational** | Separate logic from UI | Custom Hooks + Component | ✅ Active |
+| **Controlled** | Real-time validation, formatting | react-hook-form | ✅ Active |
+| **Uncontrolled** | Simple forms, file inputs, performance | Still relevant | ✅ Active |
+
+**💡 Best Practices:**
+
+```typescript
+// ══════════════════════════════════════════════════════════
+// PATTERN DECISION TREE
+// ══════════════════════════════════════════════════════════
+
+/**
+ * Question 1: Do you need shared state between parent-children?
+ * → YES: Use Compound Components (Tabs, Accordion)
+ * → NO: Continue to Q2
+ * 
+ * Question 2: Do you need to reuse logic across components?
+ * → YES: Use Custom Hooks (modern approach)
+ * → NO: Continue to Q3
+ * 
+ * Question 3: Do you need to separate logic from UI?
+ * → YES: Use Custom Hook + Component pattern
+ * → NO: Continue to Q4
+ * 
+ * Question 4: Are you building a form?
+ * → YES: Need validation? → Controlled + react-hook-form
+ *        Simple form? → Uncontrolled + useRef
+ * → NO: Use simple component
+ */
+
+// ══════════════════════════════════════════════════════════
+// MIGRATION GUIDE (Old → New)
+// ══════════════════════════════════════════════════════════
+
+// ❌ OLD: Render Props
+<DataProvider render={(data) => <Component data={data} />} />
+
+// ✅ NEW: Custom Hook
+function Component() {
+  const data = useData();
+  return <div>{data}</div>;
+}
+
+// ❌ OLD: HOC
+const AuthenticatedComponent = withAuth(Component);
+
+// ✅ NEW: Custom Hook
+function Component() {
+  const { user } = useAuth();
+  if (!user) return <Login />;
+  return <div>Welcome {user.name}</div>;
+}
+
+// ❌ OLD: Container/Presentational (2 files)
+// UserCardContainer.tsx + UserCard.tsx
+
+// ✅ NEW: Custom Hook + Component (1 file)
+function UserCard({ userId }) {
+  const { user, loading, handleEdit, handleDelete } = useUser(userId);
+  
+  if (loading) return <div>Loading...</div>;
+  
+  return (
+    <div className="user-card">
+      <h3>{user.name}</h3>
+      <button onClick={handleEdit}>Edit</button>
+      <button onClick={handleDelete}>Delete</button>
+    </div>
+  );
+}
+```
+
+**🎯 Key Takeaways:**
+
+1. **Custom Hooks** replaced most HOC/Render Props patterns
+2. **Compound Components** still best for complex UI (Tabs, Dropdowns)
+3. **Controlled** for validation, **Uncontrolled** for performance
+4. **react-hook-form** best for form management (hybrid approach)
+5. Always choose **simplest pattern** that solves the problem
+6. Don't over-engineer: Use patterns when you have clear need
 
 ---

@@ -601,6 +601,865 @@ const advancedTopics = [
 
 ---
 
+## **IX. JavaScript Core Deep Dive & Best Practices**
+
+### **9.1. This Keyword - Context Binding**
+
+```typescript
+/**
+ * 🎯 'this' KEYWORD - 4 BINDING RULES
+ */
+
+// ══════════════════════════════════════════════════════════
+// 1. DEFAULT BINDING (Global context)
+// ══════════════════════════════════════════════════════════
+
+function showThis() {
+  console.log(this); // Window (browser) or undefined (strict mode)
+}
+
+showThis();
+
+// Strict mode
+'use strict';
+function strictThis() {
+  console.log(this); // undefined
+}
+
+// ══════════════════════════════════════════════════════════
+// 2. IMPLICIT BINDING (Object method)
+// ══════════════════════════════════════════════════════════
+
+const person = {
+  name: 'John',
+  greet() {
+    console.log(this.name); // 'John' (this = person)
+  }
+};
+
+person.greet(); // ✅ 'John'
+
+// ❌ Lost binding
+const greetFn = person.greet;
+greetFn(); // undefined (this = window/undefined)
+
+// ══════════════════════════════════════════════════════════
+// 3. EXPLICIT BINDING (call, apply, bind)
+// ══════════════════════════════════════════════════════════
+
+function introduce(age: number, city: string) {
+  console.log(`${this.name}, ${age}, ${city}`);
+}
+
+const user = { name: 'Alice' };
+
+// call: immediate invocation
+introduce.call(user, 25, 'NYC'); // Alice, 25, NYC
+
+// apply: arguments as array
+introduce.apply(user, [25, 'NYC']); // Alice, 25, NYC
+
+// bind: returns new function
+const boundIntroduce = introduce.bind(user);
+boundIntroduce(25, 'NYC'); // Alice, 25, NYC
+
+// ══════════════════════════════════════════════════════════
+// 4. NEW BINDING (Constructor)
+// ══════════════════════════════════════════════════════════
+
+function Person(name: string) {
+  this.name = name;
+}
+
+const john = new Person('John'); // this = new object
+
+/**
+ * 🎯 PRECEDENCE (Highest to Lowest):
+ * 1. new binding
+ * 2. Explicit binding (call/apply/bind)
+ * 3. Implicit binding (object method)
+ * 4. Default binding (global)
+ */
+
+// ══════════════════════════════════════════════════════════
+// 5. ARROW FUNCTIONS (Lexical this)
+// ══════════════════════════════════════════════════════════
+
+const obj = {
+  name: 'Object',
+  
+  // Regular function
+  regular() {
+    setTimeout(function() {
+      console.log(this.name); // undefined (this = window)
+    }, 100);
+  },
+  
+  // Arrow function (inherits this from parent)
+  arrow() {
+    setTimeout(() => {
+      console.log(this.name); // 'Object' (this = obj)
+    }, 100);
+  }
+};
+
+/**
+ * ✅ Arrow function use cases:
+ * • Event handlers
+ * • Callbacks (setTimeout, map, filter)
+ * • React class methods
+ * 
+ * ❌ Don't use arrow functions:
+ * • Object methods (no own 'this')
+ * • Constructors (can't use 'new')
+ * • Methods needing dynamic 'this'
+ */
+```
+
+---
+
+### **9.2. Prototype Chain & Inheritance**
+
+```typescript
+/**
+ * 🧬 PROTOTYPE CHAIN
+ */
+
+// ══════════════════════════════════════════════════════════
+// PROTOTYPE BASICS
+// ══════════════════════════════════════════════════════════
+
+function Animal(name: string) {
+  this.name = name;
+}
+
+// Add method to prototype (shared across instances)
+Animal.prototype.speak = function() {
+  return `${this.name} makes a sound`;
+};
+
+const dog = new Animal('Dog');
+
+console.log(dog.speak()); // 'Dog makes a sound'
+console.log(dog.__proto__ === Animal.prototype); // true
+console.log(Animal.prototype.constructor === Animal); // true
+
+/**
+ * Prototype chain:
+ * dog → Animal.prototype → Object.prototype → null
+ */
+
+// ══════════════════════════════════════════════════════════
+// PROTOTYPAL INHERITANCE (ES5)
+// ══════════════════════════════════════════════════════════
+
+function Dog(name: string, breed: string) {
+  Animal.call(this, name); // Call parent constructor
+  this.breed = breed;
+}
+
+// Set up inheritance
+Dog.prototype = Object.create(Animal.prototype);
+Dog.prototype.constructor = Dog;
+
+// Override method
+Dog.prototype.speak = function() {
+  return `${this.name} barks`;
+};
+
+const husky = new Dog('Husky', 'Siberian');
+console.log(husky.speak()); // 'Husky barks'
+console.log(husky instanceof Dog); // true
+console.log(husky instanceof Animal); // true
+
+// ══════════════════════════════════════════════════════════
+// CLASS SYNTAX (ES6) - Syntactic Sugar
+// ══════════════════════════════════════════════════════════
+
+class Person {
+  constructor(public name: string, private age: number) {}
+  
+  greet() {
+    return `Hi, I'm ${this.name}`;
+  }
+  
+  // Getter
+  get info() {
+    return `${this.name}, ${this.age}`;
+  }
+  
+  // Static method
+  static create(name: string) {
+    return new Person(name, 0);
+  }
+}
+
+class Employee extends Person {
+  constructor(name: string, age: number, public role: string) {
+    super(name, age); // Call parent constructor
+  }
+  
+  // Override method
+  greet() {
+    return `${super.greet()}, I'm a ${this.role}`;
+  }
+}
+
+const emp = new Employee('Alice', 30, 'Developer');
+console.log(emp.greet()); // "Hi, I'm Alice, I'm a Developer"
+
+/**
+ * 🎯 Key Concepts:
+ * • Prototype chain: object → prototype → Object.prototype → null
+ * • Shared methods: Define on prototype (memory efficient)
+ * • Own properties: Define in constructor
+ * • Inheritance: Object.create() or extends keyword
+ */
+```
+
+---
+
+### **9.3. Memory Management & Garbage Collection**
+
+```typescript
+/**
+ * 🗑️ GARBAGE COLLECTION
+ */
+
+// ══════════════════════════════════════════════════════════
+// REACHABILITY
+// ══════════════════════════════════════════════════════════
+
+let user = { name: 'John' }; // Reachable (has reference)
+
+user = null; // No longer reachable → garbage collected
+
+// ══════════════════════════════════════════════════════════
+// MEMORY LEAKS (Common Patterns)
+// ══════════════════════════════════════════════════════════
+
+// ❌ 1. Global variables
+window.leakedData = new Array(1000000); // Never collected
+
+// ❌ 2. Forgotten timers
+setInterval(() => {
+  // References keep growing
+  const data = fetchData();
+}, 1000);
+
+// ✅ Fix: Clear timer
+const timerId = setInterval(/* ... */);
+clearInterval(timerId);
+
+// ❌ 3. Closures holding references
+function createLeak() {
+  const largeData = new Array(1000000);
+  
+  return function() {
+    console.log(largeData.length); // Keeps largeData in memory
+  };
+}
+
+// ❌ 4. DOM references
+const elements = [];
+for (let i = 0; i < 1000; i++) {
+  const el = document.createElement('div');
+  elements.push(el); // Keeps all elements in memory
+}
+
+// ✅ Fix: Remove references when done
+elements.length = 0;
+
+// ❌ 5. Event listeners
+const button = document.querySelector('button');
+button?.addEventListener('click', handleClick); // Keeps button in memory
+
+// ✅ Fix: Remove listener
+button?.removeEventListener('click', handleClick);
+
+// ══════════════════════════════════════════════════════════
+// WEAKMAP/WEAKSET (Auto garbage collection)
+// ══════════════════════════════════════════════════════════
+
+// ✅ WeakMap: Keys can be garbage collected
+const privateData = new WeakMap();
+
+class User {
+  constructor(name: string, ssn: string) {
+    privateData.set(this, { ssn }); // SSN stored privately
+    this.name = name;
+  }
+}
+
+let user1 = new User('John', '123-45-6789');
+user1 = null; // privateData entry auto-removed
+
+/**
+ * 🎯 Best Practices:
+ * • Nullify references when done
+ * • Clear timers/intervals
+ * • Remove event listeners
+ * • Use WeakMap/WeakSet for caches
+ * • Avoid global variables
+ * • Profile memory (Chrome DevTools)
+ */
+```
+
+---
+
+### **9.4. Error Handling Best Practices**
+
+```typescript
+/**
+ * ⚠️ ERROR HANDLING
+ */
+
+// ══════════════════════════════════════════════════════════
+// TRY/CATCH/FINALLY
+// ══════════════════════════════════════════════════════════
+
+async function fetchUser(id: number) {
+  try {
+    const response = await fetch(`/api/users/${id}`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    // Handle error
+    console.error('Failed to fetch user:', error);
+    
+    // Re-throw with context
+    throw new Error(`User fetch failed: ${error.message}`);
+  } finally {
+    // Always runs (cleanup)
+    console.log('Request completed');
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// CUSTOM ERROR CLASSES
+// ══════════════════════════════════════════════════════════
+
+class ApiError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number,
+    public response?: any
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+class ValidationError extends Error {
+  constructor(
+    message: string,
+    public field: string
+  ) {
+    super(message);
+    this.name = 'ValidationError';
+  }
+}
+
+// Usage
+function validateUser(user: any) {
+  if (!user.email) {
+    throw new ValidationError('Email is required', 'email');
+  }
+}
+
+try {
+  validateUser({ name: 'John' });
+} catch (error) {
+  if (error instanceof ValidationError) {
+    console.log(`Field ${error.field}: ${error.message}`);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// ERROR BOUNDARY PATTERN (React)
+// ══════════════════════════════════════════════════════════
+
+class ErrorBoundary extends React.Component {
+  state = { hasError: false, error: null };
+  
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+  
+  componentDidCatch(error: Error, errorInfo: any) {
+    // Log to error reporting service
+    logErrorToService(error, errorInfo);
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return <ErrorFallback error={this.state.error} />;
+    }
+    
+    return this.props.children;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// PROMISE ERROR HANDLING
+// ══════════════════════════════════════════════════════════
+
+// ❌ Unhandled promise rejection
+fetchData(); // If rejects, crashes in production
+
+// ✅ Always handle rejections
+fetchData().catch(error => {
+  console.error('Failed:', error);
+});
+
+// ✅ Global handler (last resort)
+window.addEventListener('unhandledrejection', event => {
+  console.error('Unhandled promise rejection:', event.reason);
+});
+
+/**
+ * 🎯 Best Practices:
+ * • Use try/catch for async/await
+ * • Create custom error classes
+ * • Add context to errors
+ * • Log errors to monitoring service
+ * • Handle promise rejections
+ * • Use Error Boundaries in React
+ * • Never swallow errors silently
+ */
+```
+
+---
+
+### **9.5. Performance Best Practices**
+
+```typescript
+/**
+ * ⚡ PERFORMANCE OPTIMIZATION
+ */
+
+// ══════════════════════════════════════════════════════════
+// 1. AVOID EXPENSIVE OPERATIONS IN LOOPS
+// ══════════════════════════════════════════════════════════
+
+// ❌ Bad: DOM query in loop
+for (let i = 0; i < 1000; i++) {
+  document.querySelector('.container')?.appendChild(createNode());
+}
+
+// ✅ Good: Cache DOM reference
+const container = document.querySelector('.container');
+for (let i = 0; i < 1000; i++) {
+  container?.appendChild(createNode());
+}
+
+// ✅ Better: Use DocumentFragment
+const fragment = document.createDocumentFragment();
+for (let i = 0; i < 1000; i++) {
+  fragment.appendChild(createNode());
+}
+container?.appendChild(fragment);
+
+// ══════════════════════════════════════════════════════════
+// 2. DEBOUNCE & THROTTLE
+// ══════════════════════════════════════════════════════════
+
+// Debounce: Wait until user stops typing
+function debounce<T extends (...args: any[]) => any>(
+  fn: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timer: number;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
+// Usage: Search input
+const searchInput = document.querySelector('input');
+searchInput?.addEventListener('input', debounce((e) => {
+  search(e.target.value);
+}, 300));
+
+// Throttle: Execute at most once per interval
+function throttle<T extends (...args: any[]) => any>(
+  fn: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle: boolean;
+  return (...args) => {
+    if (!inThrottle) {
+      fn(...args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+}
+
+// Usage: Scroll event
+window.addEventListener('scroll', throttle(() => {
+  console.log('Scrolled');
+}, 100));
+
+// ══════════════════════════════════════════════════════════
+// 3. LAZY LOADING & CODE SPLITTING
+// ══════════════════════════════════════════════════════════
+
+// Dynamic import
+const loadModule = async () => {
+  const module = await import('./heavy-module.js');
+  module.init();
+};
+
+// React lazy loading
+const HeavyComponent = React.lazy(() => import('./HeavyComponent'));
+
+function App() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <HeavyComponent />
+    </Suspense>
+  );
+}
+
+// ══════════════════════════════════════════════════════════
+// 4. MEMOIZATION
+// ══════════════════════════════════════════════════════════
+
+// Cache expensive calculations
+const memoize = <T extends (...args: any[]) => any>(fn: T) => {
+  const cache = new Map();
+  
+  return (...args: Parameters<T>): ReturnType<T> => {
+    const key = JSON.stringify(args);
+    
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  };
+};
+
+// Usage
+const fibonacci = memoize((n: number): number => {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+});
+
+console.log(fibonacci(40)); // Fast!
+
+// ══════════════════════════════════════════════════════════
+// 5. OBJECT/ARRAY OPERATIONS
+// ══════════════════════════════════════════════════════════
+
+// ❌ Slow: Array.includes for large arrays
+const largeArray = Array.from({ length: 10000 }, (_, i) => i);
+largeArray.includes(9999); // O(n)
+
+// ✅ Fast: Set.has
+const largeSet = new Set(largeArray);
+largeSet.has(9999); // O(1)
+
+// ❌ Slow: Object property lookup
+const obj = { a: 1, b: 2, /* ...1000 props */ };
+obj.hasOwnProperty('z'); // O(n) in worst case
+
+// ✅ Fast: Map
+const map = new Map(Object.entries(obj));
+map.has('z'); // O(1)
+
+// ══════════════════════════════════════════════════════════
+// 6. AVOID LAYOUT THRASHING
+// ══════════════════════════════════════════════════════════
+
+// ❌ Layout thrashing (read/write interleaved)
+elements.forEach(el => {
+  const width = el.offsetWidth; // Read (forces layout)
+  el.style.width = width + 10 + 'px'; // Write
+});
+
+// ✅ Batch reads, then batch writes
+const widths = elements.map(el => el.offsetWidth); // Batch reads
+elements.forEach((el, i) => {
+  el.style.width = widths[i] + 10 + 'px'; // Batch writes
+});
+
+/**
+ * 🎯 Performance Checklist:
+ * ✅ Cache DOM references
+ * ✅ Use event delegation
+ * ✅ Debounce/throttle events
+ * ✅ Lazy load heavy modules
+ * ✅ Use Set/Map for lookups
+ * ✅ Avoid layout thrashing
+ * ✅ Memoize expensive functions
+ * ✅ Use Web Workers for heavy tasks
+ * ✅ Profile with DevTools (Performance tab)
+ * ✅ Monitor with Lighthouse
+ */
+```
+
+---
+
+### **9.6. Code Quality Best Practices**
+
+```typescript
+/**
+ * 📝 CODE QUALITY
+ */
+
+// ══════════════════════════════════════════════════════════
+// 1. IMMUTABILITY
+// ══════════════════════════════════════════════════════════
+
+// ❌ Mutation
+const user = { name: 'John', age: 30 };
+user.age = 31; // Mutates original
+
+// ✅ Immutability
+const updatedUser = { ...user, age: 31 }; // New object
+
+// Array operations
+const numbers = [1, 2, 3];
+
+// ❌ Mutating
+numbers.push(4);
+
+// ✅ Immutable
+const newNumbers = [...numbers, 4];
+
+// ══════════════════════════════════════════════════════════
+// 2. PURE FUNCTIONS
+// ══════════════════════════════════════════════════════════
+
+// ✅ Pure: Same input → Same output, No side effects
+const add = (a: number, b: number) => a + b;
+
+// ❌ Impure: Side effects
+let total = 0;
+const addToTotal = (n: number) => {
+  total += n; // Modifies external state
+  return total;
+};
+
+// ✅ Pure version
+const addToTotal = (total: number, n: number) => total + n;
+
+// ══════════════════════════════════════════════════════════
+// 3. SINGLE RESPONSIBILITY PRINCIPLE
+// ══════════════════════════════════════════════════════════
+
+// ❌ Does too much
+function processUserData(data: any) {
+  const validated = validate(data);
+  const transformed = transform(validated);
+  const saved = save(transformed);
+  sendEmail(saved);
+  logActivity(saved);
+  return saved;
+}
+
+// ✅ Single responsibility
+function validateUser(data: any) { /* ... */ }
+function transformUser(data: any) { /* ... */ }
+function saveUser(data: any) { /* ... */ }
+function notifyUser(data: any) { /* ... */ }
+
+// Compose functions
+const processUser = (data: any) => {
+  const validated = validateUser(data);
+  const transformed = transformUser(validated);
+  const saved = saveUser(transformed);
+  notifyUser(saved);
+  return saved;
+};
+
+// ══════════════════════════════════════════════════════════
+// 4. EARLY RETURNS
+// ══════════════════════════════════════════════════════════
+
+// ❌ Nested conditions
+function processUser(user: User) {
+  if (user) {
+    if (user.active) {
+      if (user.email) {
+        return sendEmail(user.email);
+      } else {
+        return 'No email';
+      }
+    } else {
+      return 'Inactive';
+    }
+  } else {
+    return 'No user';
+  }
+}
+
+// ✅ Early returns (guard clauses)
+function processUser(user: User) {
+  if (!user) return 'No user';
+  if (!user.active) return 'Inactive';
+  if (!user.email) return 'No email';
+  
+  return sendEmail(user.email);
+}
+
+// ══════════════════════════════════════════════════════════
+// 5. DESCRIPTIVE NAMING
+// ══════════════════════════════════════════════════════════
+
+// ❌ Bad names
+const d = new Date();
+const u = getU();
+function calc(a, b) { return a * b; }
+
+// ✅ Descriptive names
+const currentDate = new Date();
+const activeUser = getActiveUser();
+function calculateTotal(price: number, quantity: number) {
+  return price * quantity;
+}
+
+// ══════════════════════════════════════════════════════════
+// 6. AVOID MAGIC NUMBERS
+// ══════════════════════════════════════════════════════════
+
+// ❌ Magic numbers
+if (user.age >= 18 && user.accountBalance > 1000) {
+  approveApplication();
+}
+
+// ✅ Named constants
+const MINIMUM_AGE = 18;
+const MINIMUM_BALANCE = 1000;
+
+if (user.age >= MINIMUM_AGE && user.accountBalance > MINIMUM_BALANCE) {
+  approveApplication();
+}
+
+/**
+ * 🎯 Code Quality Checklist:
+ * ✅ Use immutable data structures
+ * ✅ Write pure functions (no side effects)
+ * ✅ Single responsibility per function
+ * ✅ Early returns (guard clauses)
+ * ✅ Descriptive variable/function names
+ * ✅ Avoid magic numbers (use constants)
+ * ✅ Keep functions small (<20 lines)
+ * ✅ Use TypeScript for type safety
+ * ✅ Comment complex logic
+ * ✅ Write tests (unit, integration)
+ */
+```
+
+---
+
+### **9.7. Security Best Practices**
+
+```typescript
+/**
+ * 🔒 SECURITY
+ */
+
+// ══════════════════════════════════════════════════════════
+// 1. XSS PREVENTION
+// ══════════════════════════════════════════════════════════
+
+// ❌ Dangerous: innerHTML with user input
+const userInput = '<img src=x onerror="alert(1)">';
+element.innerHTML = userInput; // XSS vulnerability!
+
+// ✅ Safe: textContent or sanitize
+element.textContent = userInput; // Escaped automatically
+
+// ✅ Sanitize HTML
+import DOMPurify from 'dompurify';
+element.innerHTML = DOMPurify.sanitize(userInput);
+
+// ══════════════════════════════════════════════════════════
+// 2. CSRF PROTECTION
+// ══════════════════════════════════════════════════════════
+
+// ✅ Include CSRF token in requests
+fetch('/api/transfer', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRF-Token': getCsrfToken()
+  },
+  body: JSON.stringify({ amount: 100 })
+});
+
+// ══════════════════════════════════════════════════════════
+// 3. SENSITIVE DATA
+// ══════════════════════════════════════════════════════════
+
+// ❌ Storing sensitive data in localStorage
+localStorage.setItem('password', 'secret123'); // Accessible via XSS
+
+// ✅ Use httpOnly cookies (server-side only)
+// Set-Cookie: session=abc123; HttpOnly; Secure; SameSite=Strict
+
+// ❌ Logging sensitive data
+console.log('User password:', user.password);
+
+// ✅ Sanitize logs
+console.log('User:', { ...user, password: '[REDACTED]' });
+
+// ══════════════════════════════════════════════════════════
+// 4. INPUT VALIDATION
+// ══════════════════════════════════════════════════════════
+
+// ❌ No validation
+function transferMoney(amount: number) {
+  // What if amount is negative?
+  processTransfer(amount);
+}
+
+// ✅ Validate inputs
+function transferMoney(amount: number) {
+  if (typeof amount !== 'number') {
+    throw new ValidationError('Amount must be a number');
+  }
+  
+  if (amount <= 0) {
+    throw new ValidationError('Amount must be positive');
+  }
+  
+  if (amount > MAX_TRANSFER_AMOUNT) {
+    throw new ValidationError('Amount exceeds limit');
+  }
+  
+  processTransfer(amount);
+}
+
+/**
+ * 🎯 Security Checklist:
+ * ✅ Sanitize user input (XSS)
+ * ✅ Use CSRF tokens
+ * ✅ Validate all inputs
+ * ✅ Use HTTPS only
+ * ✅ Set secure headers (CSP, HSTS)
+ * ✅ Never store secrets in code
+ * ✅ Use httpOnly cookies
+ * ✅ Implement rate limiting
+ * ✅ Keep dependencies updated
+ * ✅ Use Content Security Policy
+ * 
+ * 📚 Chi tiết: Q39-bảo-mật-security
+ */
+```
+
+---
+
 ## **🎯 Quick Reference Card**
 
 ```typescript

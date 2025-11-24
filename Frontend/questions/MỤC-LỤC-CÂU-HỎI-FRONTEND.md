@@ -1,6 +1,6 @@
 # 📚 MỤC LỤC CÂU HỎI FRONTEND - INTERVIEW QUESTIONS
 
-> **Tổng hợp 57 câu hỏi phỏng vấn Frontend từ cơ bản đến nâng cao**  
+> **Tổng hợp 60 câu hỏi phỏng vấn Frontend từ cơ bản đến nâng cao** *(Updated with Q59-Q61)*  
 > Cập nhật: November 23, 2025
 
 ---
@@ -14,7 +14,7 @@
 - [V. Build Tools & Modules (Q37-Q38)](#v-build-tools--modules-q37-q38)
 - [VI. Browser APIs & Security (Q39-Q40)](#vi-browser-apis--security-q39-q40)
 - [VII. UI Libraries & Performance (Q42-Q48)](#vii-ui-libraries--performance-q42-q48)
-- [VIII. Senior-Level Topics (Q49-Q57)](#viii-senior-level-topics-q49-q57)
+- [VIII. Senior-Level Topics (Q49-Q61)](#viii-senior-level-topics-q49-q61)
 
 ---
 
@@ -157,6 +157,14 @@
 | **Q56** | [Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers](Q56-web-accessibility-(a11y)-wcag-2.1,-aria,-screen-readers.md) | ⭐⭐⭐⭐ | WCAG Compliance, ARIA Attributes, Keyboard Navigation, Color Contrast, axe-core |
 | **Q57** | [State Management Comparison - Redux vs Zustand vs Jotai](Q57-state-management-comparison-redux-vs-zustand-vs-jotai.md) | ⭐⭐⭐⭐ | Redux Toolkit, Zustand, Jotai Atoms, Performance Comparison, Migration Strategies |
 
+### **🆕 NEW: CSS Architecture & Design Patterns (Q59-Q61)**
+
+| # | Câu hỏi | Độ khó | Nội dung chính |
+|---|---------|--------|----------------|
+| **Q59** | [CSS Architecture & Modern Styling Approaches](Q59-css-architecture-&-modern-styling-approaches.md) | ⭐⭐⭐⭐ | BEM, CSS Modules, Styled Components, Tailwind CSS, Critical CSS Extraction |
+| **Q60** | [JavaScript Design Patterns for Frontend](Q60-javascript-design-patterns-for-frontend.md) | ⭐⭐⭐⭐⭐ | Singleton, Observer, Pub/Sub, Factory, Module, Dependency Injection |
+| **Q61** | [React Design Patterns - Advanced Architecture](Q61-react-design-patterns-advanced-architecture.md) | ⭐⭐⭐⭐⭐ | Compound Components, Render Props, HOC, Container/Presentational, Controlled vs Uncontrolled |
+
 ---
 
 ## 📊 **Statistics**
@@ -165,25 +173,25 @@
 ┌─────────────────────┬────────┬────────────┐
 │ Category            │ Count  │ Percentage │
 ├─────────────────────┼────────┼────────────┤
-│ JavaScript Core     │ 22     │ 39%        │
-│ Async & Fetching    │ 5      │ 9%         │
-│ Advanced JS         │ 8      │ 14%        │
-│ React & Frameworks  │ 2      │ 4%         │
-│ Build Tools         │ 2      │ 4%         │
-│ Browser & Security  │ 2      │ 4%         │
+│ JavaScript Core     │ 22     │ 37%        │
+│ Async & Fetching    │ 5      │ 8%         │
+│ Advanced JS         │ 8      │ 13%        │
+│ React & Frameworks  │ 2      │ 3%         │
+│ Build Tools         │ 2      │ 3%         │
+│ Browser & Security  │ 2      │ 3%         │
 │ UI Libraries        │ 7      │ 12%        │
-│ Senior Topics       │ 9      │ 16%        │
+│ Senior Topics       │ 12     │ 20%        │
 ├─────────────────────┼────────┼────────────┤
-│ TOTAL               │ 57     │ 100%       │
+│ TOTAL               │ 60     │ 100%       │
 └─────────────────────┴────────┴────────────┘
 ```
 
 ### **Độ khó phân bố:**
 
-- ⭐ **Basic (1-2 ⭐):** 30% - Foundational concepts
-- ⭐⭐⭐ **Intermediate (3 ⭐):** 40% - Common interview questions
-- ⭐⭐⭐⭐ **Advanced (4 ⭐):** 20% - Senior-level topics
-- ⭐⭐⭐⭐⭐ **Expert (5 ⭐):** 10% - Deep technical knowledge
+- ⭐ **Basic (1-2 ⭐):** 28% - Foundational concepts
+- ⭐⭐⭐ **Intermediate (3 ⭐):** 37% - Common interview questions
+- ⭐⭐⭐⭐ **Advanced (4 ⭐):** 23% - Senior-level topics
+- ⭐⭐⭐⭐⭐ **Expert (5 ⭐):** 12% - Deep technical knowledge
 
 ---
 
@@ -197,6 +205,7 @@ START HERE:
 3. Q17-Q18: DOM basics
 4. Q19: Async fundamentals
 5. Q35: React hooks basics
+6. Q59: CSS Architecture (BEM, CSS Modules basics)
 ```
 
 ### **🚀 Intermediate (1-3 năm)**
@@ -207,6 +216,7 @@ START HERE:
 4. Q24: Browser rendering
 5. Q31: Memory management
 6. Q36: Next.js framework
+7. Q60: JavaScript Design Patterns (Observer, Factory, Module)
 ```
 
 ### **🔥 Advanced (3+ năm) - Senior Level**
@@ -217,6 +227,7 @@ START HERE:
 4. Q38: Cancellation & concurrency
 5. Q42: AG Grid performance
 6. Q49-Q57: Senior Topics (System Design, Testing, CI/CD, TypeScript Advanced, GraphQL, a11y, State Management)
+7. Q59-Q61: Advanced CSS + Design Patterns (Tailwind, CSS-in-JS, React Patterns, Dependency Injection)
 ```
 
 ---

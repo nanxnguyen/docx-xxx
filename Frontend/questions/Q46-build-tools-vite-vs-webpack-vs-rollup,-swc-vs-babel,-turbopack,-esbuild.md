@@ -917,6 +917,844 @@ export default defineConfig({
    }
    ```
 
+---
+
+#### **🔧 PHẦN 7: WEBPACK ADVANCED CONFIGURATION**
+
+---
+
+##### **7.1. Loaders Deep Dive - Xử Lý Mọi Loại File**
+
+```javascript
+// webpack.config.js
+
+module.exports = {
+  module: {
+    rules: [
+      // ===================================================
+      // 🎨 CSS/SCSS LOADERS (Style Sheets)
+      // ===================================================
+      {
+        test: /\.s?css$/,
+        use: [
+          // 3. Inject CSS into DOM (<style> tags)
+          'style-loader',
+
+          // 2. Convert CSS to CommonJS
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true, // CSS Modules (local scoping)
+              importLoaders: 2, // Apply postcss + sass before css-loader
+              sourceMap: true
+            }
+          },
+
+          // 1. PostCSS transformations (autoprefixer, tailwind)
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  'autoprefixer', // Add vendor prefixes
+                  'cssnano' // Minify CSS
+                ]
+              }
+            }
+          },
+
+          // 0. Convert SASS/SCSS to CSS
+          'sass-loader'
+        ]
+      },
+
+      // ===================================================
+      // 🖼️ IMAGE LOADERS (Optimize Images)
+      // ===================================================
+      {
+        test: /\.(png|jpe?g|gif|webp|svg)$/i,
+        type: 'asset', // Webpack 5 Asset Modules
+
+        parser: {
+          dataUrlCondition: {
+            maxSize: 8 * 1024 // < 8KB → inline as base64
+          }
+        },
+
+        generator: {
+          filename: 'images/[name].[hash:8][ext]'
+        },
+
+        use: [
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                progressive: true,
+                quality: 65
+              },
+              optipng: {
+                enabled: true
+              },
+              pngquant: {
+                quality: [0.65, 0.90],
+                speed: 4
+              },
+              gifsicle: {
+                interlaced: false
+              },
+              webp: {
+                quality: 75
+              }
+            }
+          }
+        ]
+      },
+
+      // ===================================================
+      // 📦 FONT LOADERS
+      // ===================================================
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name].[hash:8][ext]'
+        }
+      },
+
+      // ===================================================
+      // 📄 DATA LOADERS (JSON, CSV, XML, YAML)
+      // ===================================================
+      {
+        test: /\.ya?ml$/,
+        type: 'json',
+        parser: {
+          parse: yaml.parse
+        }
+      },
+
+      {
+        test: /\.csv$/,
+        use: ['csv-loader']
+      },
+
+      // ===================================================
+      // ⚡ BABEL LOADER (Transpile Modern JS)
+      // ===================================================
+      {
+        test: /\.m?jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', {
+                targets: '> 0.25%, not dead',
+                useBuiltIns: 'usage',
+                corejs: 3
+              }],
+              '@babel/preset-react'
+            ],
+            plugins: [
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-transform-runtime'
+            ],
+            cacheDirectory: true // Cache transpilation results
+          }
+        }
+      },
+
+      // ===================================================
+      // 📘 TYPESCRIPT LOADER (with ts-loader or swc-loader)
+      // ===================================================
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'swc-loader', // ⚡ Faster alternative to ts-loader
+          options: {
+            jsc: {
+              parser: {
+                syntax: 'typescript',
+                tsx: true,
+                decorators: true
+              },
+              transform: {
+                react: {
+                  runtime: 'automatic'
+                }
+              },
+              target: 'es2020'
+            }
+          }
+        }
+      },
+
+      // ===================================================
+      // 🧪 WEBASSEMBLY LOADER
+      // ===================================================
+      {
+        test: /\.wasm$/,
+        type: 'webassembly/async'
+      }
+    ]
+  },
+
+  experiments: {
+    asyncWebAssembly: true
+  }
+};
+```
+
+---
+
+##### **7.2. Plugins Deep Dive - Extend Webpack Capabilities**
+
+```javascript
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const CompressionPlugin = require('compression-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
+module.exports = {
+  plugins: [
+    // ===================================================
+    // 📄 HTML PLUGIN - Generate HTML with injected assets
+    // ===================================================
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      inject: 'body',
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true
+      }
+    }),
+
+    // ===================================================
+    // 🎨 EXTRACT CSS - Separate CSS from JS bundle
+    // ===================================================
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].[contenthash:8].css',
+      chunkFilename: 'css/[name].[contenthash:8].chunk.css'
+    }),
+
+    // ===================================================
+    // 📊 BUNDLE ANALYZER - Visualize bundle size
+    // ===================================================
+    new BundleAnalyzerPlugin({
+      analyzerMode: process.env.ANALYZE ? 'server' : 'disabled',
+      openAnalyzer: true,
+      generateStatsFile: true,
+      statsFilename: 'stats.json'
+    }),
+    // Run: ANALYZE=true npm run build
+
+    // ===================================================
+    // 🗜️ COMPRESSION - Gzip/Brotli compression
+    // ===================================================
+    new CompressionPlugin({
+      filename: '[path][base].gz',
+      algorithm: 'gzip',
+      test: /\.(js|css|html|svg)$/,
+      threshold: 10240, // Only compress files > 10KB
+      minRatio: 0.8
+    }),
+
+    new CompressionPlugin({
+      filename: '[path][base].br',
+      algorithm: 'brotliCompress',
+      test: /\.(js|css|html|svg)$/,
+      compressionOptions: {
+        level: 11
+      },
+      threshold: 10240,
+      minRatio: 0.8
+    }),
+
+    // ===================================================
+    // 📋 COPY PLUGIN - Copy static assets
+    // ===================================================
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'public/robots.txt', to: '.' },
+        { from: 'public/manifest.json', to: '.' },
+        { from: 'public/favicon.ico', to: '.' }
+      ]
+    }),
+
+    // ===================================================
+    // 🔧 SERVICE WORKER - PWA support with Workbox
+    // ===================================================
+    new WorkboxPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/api\.example\.com\/.*/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'api-cache',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 5 * 60 // 5 minutes
+            }
+          }
+        },
+        {
+          urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'image-cache',
+            expiration: {
+              maxEntries: 60,
+              maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+            }
+          }
+        }
+      ]
+    }),
+
+    // ===================================================
+    // ⚡ TYPESCRIPT TYPE CHECKING (Parallel to build)
+    // ===================================================
+    new ForkTsCheckerWebpackPlugin({
+      async: false, // Block build on errors
+      typescript: {
+        configFile: 'tsconfig.json',
+        diagnosticOptions: {
+          semantic: true,
+          syntactic: true
+        }
+      }
+    }),
+
+    // ===================================================
+    // 🔍 DEFINE PLUGIN - Inject environment variables
+    // ===================================================
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.API_URL': JSON.stringify(process.env.API_URL),
+      __DEV__: process.env.NODE_ENV !== 'production'
+    }),
+
+    // ===================================================
+    // 🔥 HOT MODULE REPLACEMENT
+    // ===================================================
+    new webpack.HotModuleReplacementPlugin(),
+
+    // ===================================================
+    // 📦 SPLIT CHUNKS PLUGIN (Automatic code splitting)
+    // ===================================================
+    // Configured in optimization.splitChunks (see next section)
+  ]
+};
+```
+
+---
+
+##### **7.3. Code Splitting Strategies - Optimize Load Performance**
+
+```javascript
+// webpack.config.js
+
+module.exports = {
+  optimization: {
+    // ===================================================
+    // 🎯 SPLIT CHUNKS - Automatic code splitting
+    // ===================================================
+    splitChunks: {
+      chunks: 'all', // Split both async and sync chunks
+
+      cacheGroups: {
+        // Strategy 1: Vendor bundle (node_modules)
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name(module) {
+            // Get package name (e.g., react, lodash)
+            const packageName = module.context.match(
+              /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+            )[1];
+
+            // Normalize package name for filename
+            return `vendor.${packageName.replace('@', '')}`;
+          },
+          priority: 10
+        },
+
+        // Strategy 2: React ecosystem (React, ReactDOM, Router)
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom)[\\/]/,
+          name: 'vendor.react',
+          priority: 20 // Higher priority than generic vendor
+        },
+
+        // Strategy 3: Large libraries (charts, editors, etc.)
+        charts: {
+          test: /[\\/]node_modules[\\/](chart\.js|recharts|d3)[\\/]/,
+          name: 'vendor.charts',
+          priority: 15
+        },
+
+        // Strategy 4: Common code (shared between routes)
+        common: {
+          minChunks: 2, // Used by at least 2 chunks
+          name: 'common',
+          priority: 5,
+          reuseExistingChunk: true,
+          enforce: true
+        },
+
+        // Strategy 5: CSS splitting
+        styles: {
+          name: 'styles',
+          type: 'css/mini-extract',
+          chunks: 'all',
+          enforce: true
+        }
+      },
+
+      // Advanced options
+      maxInitialRequests: 25, // Max parallel requests
+      maxAsyncRequests: 25,
+      minSize: 20000, // Min chunk size (20KB)
+      maxSize: 244000 // Try to split chunks > 244KB
+    },
+
+    // ===================================================
+    // 🔑 RUNTIME CHUNK - Extract Webpack runtime
+    // ===================================================
+    runtimeChunk: {
+      name: 'runtime' // Separate runtime code (improves long-term caching)
+    },
+
+    // ===================================================
+    // 🗜️ MINIMIZER - Minify JS & CSS
+    // ===================================================
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          parse: {
+            ecma: 2020
+          },
+          compress: {
+            ecma: 5,
+            warnings: false,
+            drop_console: true, // Remove console.log in production
+            drop_debugger: true
+          },
+          mangle: {
+            safari10: true
+          },
+          output: {
+            ecma: 5,
+            comments: false,
+            ascii_only: true
+          }
+        },
+        parallel: true, // Multi-core parallelization
+        extractComments: false
+      }),
+
+      new CssMinimizerPlugin({
+        minimizerOptions: {
+          preset: [
+            'default',
+            {
+              discardComments: { removeAll: true }
+            }
+          ]
+        }
+      })
+    ]
+  }
+};
+
+// ===================================================
+// 📦 DYNAMIC IMPORTS (Route-based code splitting)
+// ===================================================
+
+// App.tsx
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// Lazy load route components (creates separate bundles)
+const HomePage = lazy(() => import('./pages/Home'));
+const DashboardPage = lazy(() => import('./pages/Dashboard'));
+const ProfilePage = lazy(() => import('./pages/Profile'));
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  );
+}
+
+// ===================================================
+// 📊 CODE SPLITTING OUTPUT EXAMPLE
+// ===================================================
+
+/**
+ * Build Output:
+ * 
+ * dist/
+ * ├── runtime.a7b2c3d4.js           (5 KB)   - Webpack runtime
+ * ├── vendor.react.e5f6g7h8.js      (120 KB) - React ecosystem
+ * ├── vendor.charts.i9j0k1l2.js     (180 KB) - Chart libraries
+ * ├── vendor.lodash.m3n4o5p6.js     (70 KB)  - Lodash
+ * ├── common.q7r8s9t0.js            (30 KB)  - Shared code
+ * ├── main.u1v2w3x4.js              (50 KB)  - App entry
+ * ├── pages-Home.y5z6a7b8.js        (20 KB)  - Home route
+ * ├── pages-Dashboard.c9d0e1f2.js   (35 KB)  - Dashboard route
+ * └── pages-Profile.g3h4i5j6.js     (15 KB)  - Profile route
+ * 
+ * Initial Load (Home page):
+ * - runtime.js (5 KB)
+ * - vendor.react.js (120 KB)
+ * - common.js (30 KB)
+ * - main.js (50 KB)
+ * - pages-Home.js (20 KB)
+ * Total: 225 KB ✅ (vs 540 KB without splitting)
+ */
+```
+
+---
+
+##### **7.4. Bundle Analysis & Optimization**
+
+```javascript
+// ===================================================
+// 🔍 WEBPACK BUNDLE ANALYZER - Visualize Bundle Size
+// ===================================================
+
+// Install
+// npm install -D webpack-bundle-analyzer
+
+// webpack.config.js
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+module.exports = {
+  plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: 'bundle-report.html',
+      openAnalyzer: false,
+      generateStatsFile: true,
+      statsFilename: 'bundle-stats.json',
+      statsOptions: { source: false }
+    })
+  ]
+};
+
+// Run analysis
+// ANALYZE=true npm run build
+// Open dist/bundle-report.html
+
+// ===================================================
+// 📊 READING BUNDLE ANALYZER OUTPUT
+// ===================================================
+
+/**
+ * Bundle Analyzer shows:
+ * 
+ * ┌────────────────────────────────────────────┐
+ * │          Bundle Visualization               │
+ * ├────────────────────────────────────────────┤
+ * │  ┌──────────────┐  ┌──────┐  ┌─────────┐  │
+ * │  │              │  │      │  │         │  │
+ * │  │    React     │  │ Main │  │ Lodash  │  │
+ * │  │   (120 KB)   │  │(50KB)│  │ (70 KB) │  │
+ * │  │              │  │      │  │         │  │
+ * │  └──────────────┘  └──────┘  └─────────┘  │
+ * └────────────────────────────────────────────┘
+ * 
+ * Optimization Tips:
+ * 1. Large blocks = heavy dependencies → consider alternatives
+ * 2. Duplicates = same library in multiple bundles → fix splitChunks
+ * 3. Unused code = tree-shaking not working → check imports
+ */
+
+// ===================================================
+// 🎯 TREE SHAKING OPTIMIZATION
+// ===================================================
+
+// ❌ BAD: Import entire library (200 KB)
+import _ from 'lodash';
+const result = _.debounce(fn, 300);
+
+// ✅ GOOD: Import specific function (5 KB)
+import debounce from 'lodash/debounce';
+const result = debounce(fn, 300);
+
+// ❌ BAD: Import all icons (500 KB)
+import * as Icons from 'react-icons/fa';
+const Icon = Icons.FaBeer;
+
+// ✅ GOOD: Import specific icon (2 KB)
+import { FaBeer } from 'react-icons/fa';
+
+// ===================================================
+// 🗜️ COMPRESSION ANALYSIS
+// ===================================================
+
+// package.json script
+{
+  "scripts": {
+    "build:analyze": "webpack --config webpack.config.js --profile --json > stats.json && webpack-bundle-analyzer stats.json",
+    "build:size": "npm run build && gzip-size dist/*.js"
+  }
+}
+
+// Install gzip-size CLI
+// npm install -D gzip-size-cli
+
+// Analyze compressed sizes
+// npm run build:size
+
+/**
+ * Output Example:
+ * 
+ * Uncompressed vs Gzipped:
+ * - main.js:           150 KB → 45 KB  (70% reduction)
+ * - vendor.react.js:   120 KB → 40 KB  (67% reduction)
+ * - vendor.charts.js:  180 KB → 50 KB  (72% reduction)
+ * 
+ * ✅ Good compression ratio: 60-80%
+ * ⚠️ Poor compression ratio (<50%): Already compressed (images, videos)
+ */
+```
+
+---
+
+##### **7.5. Production Optimization Checklist**
+
+```javascript
+// webpack.config.prod.js - Production-ready configuration
+
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
+module.exports = {
+  mode: 'production', // ✅ Enable production optimizations
+
+  // ===================================================
+  // 📍 SOURCE MAPS (For debugging production issues)
+  // ===================================================
+  devtool: 'source-map', // or 'hidden-source-map' (don't expose to public)
+
+  // ===================================================
+  // 📦 OUTPUT CONFIGURATION
+  // ===================================================
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'js/[name].[contenthash:8].js',
+    chunkFilename: 'js/[name].[contenthash:8].chunk.js',
+    assetModuleFilename: 'assets/[name].[hash:8][ext]',
+    clean: true, // Clean dist folder before build
+    publicPath: '/' // CDN URL for production
+  },
+
+  // ===================================================
+  // 🎯 OPTIMIZATION CONFIGURATION
+  // ===================================================
+  optimization: {
+    minimize: true,
+    minimizer: [
+      // JavaScript minification
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true, // ✅ Remove console.log
+            drop_debugger: true,
+            pure_funcs: ['console.info', 'console.debug', 'console.warn']
+          },
+          mangle: true,
+          output: {
+            comments: false
+          }
+        },
+        extractComments: false,
+        parallel: true
+      }),
+
+      // CSS minification
+      new CssMinimizerPlugin()
+    ],
+
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          priority: 10
+        },
+        common: {
+          minChunks: 2,
+          priority: 5,
+          reuseExistingChunk: true
+        }
+      }
+    },
+
+    runtimeChunk: 'single', // ✅ Extract runtime for better caching
+
+    moduleIds: 'deterministic' // ✅ Stable module IDs
+  },
+
+  // ===================================================
+  // 🔧 PLUGINS
+  // ===================================================
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true
+      }
+    }),
+
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].[contenthash:8].css'
+    }),
+
+    // ✅ Compression (Gzip + Brotli)
+    new CompressionPlugin({
+      algorithm: 'gzip',
+      test: /\.(js|css|html|svg)$/,
+      threshold: 10240,
+      minRatio: 0.8
+    }),
+
+    new CompressionPlugin({
+      algorithm: 'brotliCompress',
+      test: /\.(js|css|html|svg)$/,
+      compressionOptions: { level: 11 },
+      threshold: 10240,
+      minRatio: 0.8
+    }),
+
+    // ✅ Bundle analyzer (optional)
+    process.env.ANALYZE && new BundleAnalyzerPlugin(),
+
+    // ✅ Environment variables
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    })
+  ].filter(Boolean),
+
+  // ===================================================
+  // ⚡ PERFORMANCE HINTS
+  // ===================================================
+  performance: {
+    hints: 'warning',
+    maxEntrypointSize: 512000, // 500 KB warning
+    maxAssetSize: 256000 // 250 KB warning
+  },
+
+  // ===================================================
+  // 🔧 MODULE RULES (See 7.1 for full loader config)
+  // ===================================================
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            cacheCompression: false
+          }
+        }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader, // ✅ Extract CSS (not style-loader)
+          'css-loader',
+          'postcss-loader'
+        ]
+      }
+    ]
+  }
+};
+
+// ===================================================
+// ✅ PRODUCTION BUILD CHECKLIST
+// ===================================================
+
+/**
+ * Before deploying to production:
+ * 
+ * ✅ Code Quality:
+ *   - [ ] Run linter (ESLint)
+ *   - [ ] Run tests (Jest)
+ *   - [ ] Fix all TypeScript errors
+ *   - [ ] Code review completed
+ * 
+ * ✅ Build Configuration:
+ *   - [ ] mode: 'production'
+ *   - [ ] Remove console.log (drop_console: true)
+ *   - [ ] Enable minification (minimize: true)
+ *   - [ ] Enable tree-shaking (sideEffects: false in package.json)
+ *   - [ ] Enable code splitting
+ *   - [ ] Extract CSS to separate files
+ *   - [ ] Generate source maps (for debugging)
+ * 
+ * ✅ Assets Optimization:
+ *   - [ ] Compress images (image-webpack-loader)
+ *   - [ ] Optimize fonts (subset if possible)
+ *   - [ ] Enable Gzip/Brotli compression
+ *   - [ ] Use contenthash for cache busting
+ * 
+ * ✅ Performance:
+ *   - [ ] Bundle size < 500 KB (initial)
+ *   - [ ] Run bundle analyzer (check large deps)
+ *   - [ ] Lazy load routes
+ *   - [ ] Preload critical resources
+ * 
+ * ✅ Security:
+ *   - [ ] npm audit (fix vulnerabilities)
+ *   - [ ] Update dependencies
+ *   - [ ] No secrets in code (use env vars)
+ *   - [ ] CSP headers configured
+ * 
+ * ✅ Testing:
+ *   - [ ] Test production build locally (npm run build && serve -s dist)
+ *   - [ ] Lighthouse score > 90
+ *   - [ ] Cross-browser testing (Chrome, Firefox, Safari, Edge)
+ *   - [ ] Mobile responsiveness
+ */
+```
+
+---
+
 **❌ DON'T:**
 1. **Over-configure**: Keep config simple
 2. **Ignore warnings**: Fix deprecations early

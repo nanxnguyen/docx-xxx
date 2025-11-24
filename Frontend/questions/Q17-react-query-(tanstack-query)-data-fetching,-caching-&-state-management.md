@@ -2028,3 +2028,1212 @@ function App() {
 > "React Query makes server state management effortless."
 >
 > "Don't manage server state in Redux/Zustand. Use React Query."
+
+---
+
+## 🔬 REACT QUERY DEEP DIVE - Advanced Topics
+
+### **📌 1. Query Cancellation & AbortController**
+
+```typescript
+// =====================================
+// QUERY CANCELLATION - Hủy requests khi component unmount
+// =====================================
+
+// ✅ Automatic cancellation với AbortController
+function SearchResults({ query }: { query: string }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ['search', query],
+    queryFn: async ({ signal }) => {
+      // ✅ React Query tự động pass AbortSignal vào queryFn
+      const response = await fetch(`/api/search?q=${query}`, {
+        signal, // ✅ Pass signal vào fetch
+      });
+
+      if (!response.ok) throw new Error('Search failed');
+      return response.json();
+    },
+    enabled: query.length > 0,
+  });
+
+  // 🎯 KHI COMPONENT UNMOUNT hoặc query key thay đổi:
+  // → React Query tự động gọi signal.abort()
+  // → Fetch request bị cancel
+  // → Tránh memory leak và race conditions
+
+  return <ResultsList results={data} />;
+}
+
+// ===================================================
+// MANUAL CANCELLATION với queryClient
+// ===================================================
+
+function SearchPage() {
+  const queryClient = useQueryClient();
+  const [query, setQuery] = useState('');
+
+  const handleClearSearch = async () => {
+    // ✅ Cancel tất cả search queries đang chạy
+    await queryClient.cancelQueries({ queryKey: ['search'] });
+
+    // Clear query
+    setQuery('');
+  };
+
+  return (
+    <div>
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search..."
+      />
+      <button onClick={handleClearSearch}>Clear & Cancel</button>
+
+      <SearchResults query={query} />
+    </div>
+  );
+}
+
+// ===================================================
+// AXIOS với CANCELLATION
+// ===================================================
+
+import axios from 'axios';
+
+function useSearchWithAxios(query: string) {
+  return useQuery({
+    queryKey: ['search', query],
+    queryFn: async ({ signal }) => {
+      // ✅ Convert AbortSignal to Axios CancelToken
+      const source = axios.CancelToken.source();
+
+      // Link signal to Axios cancel
+      signal?.addEventListener('abort', () => {
+        source.cancel('Query was cancelled by React Query');
+      });
+
+      const { data } = await axios.get('/api/search', {
+        params: { q: query },
+        cancelToken: source.token,
+      });
+
+      return data;
+    },
+    enabled: !!query,
+  });
+}
+
+// ===================================================
+// CLEANUP PATTERN cho non-fetch APIs
+// ===================================================
+
+function useWebSocketData(channel: string) {
+  return useQuery({
+    queryKey: ['websocket', channel],
+    queryFn: ({ signal }) => {
+      return new Promise((resolve, reject) => {
+        const ws = new WebSocket(`wss://api.example.com/${channel}`);
+
+        // ✅ Handle abort signal
+        signal?.addEventListener('abort', () => {
+          ws.close();
+          reject(new Error('WebSocket cancelled'));
+        });
+
+        ws.onmessage = (event) => {
+          resolve(JSON.parse(event.data));
+          ws.close();
+        };
+
+        ws.onerror = (error) => {
+          reject(error);
+          ws.close();
+        };
+      });
+    },
+    staleTime: Infinity,
+  });
+}
+```
+
+---
+
+### **📌 2. Request Deduplication (Ngăn duplicate requests)**
+
+```typescript
+// =====================================
+// REQUEST DEDUPLICATION
+// =====================================
+
+// 🎯 PROBLEM: Multiple components cùng fetch 1 data
+function UserProfile({ userId }: { userId: string }) {
+  const { data } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUser(userId),
+  });
+  return <div>{data?.name}</div>;
+}
+
+function UserAvatar({ userId }: { userId: string }) {
+  const { data } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUser(userId),
+  });
+  return <img src={data?.avatar} />;
+}
+
+function UserBadge({ userId }: { userId: string }) {
+  const { data } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUser(userId),
+  });
+  return <span>{data?.role}</span>;
+}
+
+// ✅ SOLUTION: React Query tự động deduplicate!
+function App() {
+  return (
+    <div>
+      {/* 3 components cùng query ['user', '123'] */}
+      <UserProfile userId="123" />
+      <UserAvatar userId="123" />
+      <UserBadge userId="123" />
+
+      {/* ✅ CHỈ 1 REQUEST được gửi!
+          ✅ 3 components share cùng 1 cache
+          ✅ Tất cả đều update khi data thay đổi
+      */}
+    </div>
+  );
+}
+
+// ===================================================
+// DEDUPLICATION với DIFFERENT COMPONENTS trong routing
+// ===================================================
+
+// Route: /users/123
+function UserPage({ userId }: { userId: string }) {
+  const { data: user } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUser(userId),
+  });
+
+  const { data: posts } = useQuery({
+    queryKey: ['posts', userId],
+    queryFn: () => fetchUserPosts(userId),
+  });
+
+  return (
+    <div>
+      <UserHeader user={user} />
+      <UserSidebar user={user} /> {/* ✅ Reuse cache, no request */}
+      <PostList posts={posts} />
+    </div>
+  );
+}
+
+// ===================================================
+// FORCE SEPARATE REQUESTS (khi cần)
+// ===================================================
+
+function Dashboard() {
+  // ✅ Thêm unique identifier vào query key
+  const { data: stats1 } = useQuery({
+    queryKey: ['stats', 'widget-1', Date.now()], // ✅ Unique key
+    queryFn: fetchStats,
+  });
+
+  const { data: stats2 } = useQuery({
+    queryKey: ['stats', 'widget-2', Date.now()], // ✅ Unique key
+    queryFn: fetchStats,
+  });
+
+  // ❌ 2 requests riêng biệt (không deduplicate)
+}
+```
+
+---
+
+### **📌 3. Parallel Queries Optimization**
+
+```typescript
+// =====================================
+// PARALLEL QUERIES OPTIMIZATION
+// =====================================
+
+// ✅ PATTERN 1: useQueries với dynamic array
+function MultiUserDashboard({ userIds }: { userIds: string[] }) {
+  const userQueries = useQueries({
+    queries: userIds.map((id) => ({
+      queryKey: ['user', id],
+      queryFn: () => fetchUser(id),
+      staleTime: 5 * 60 * 1000,
+    })),
+  });
+
+  // ✅ Access loading state
+  const isLoading = userQueries.some((q) => q.isLoading);
+  const isError = userQueries.some((q) => q.isError);
+
+  // ✅ Get all successful data
+  const users = userQueries
+    .map((q) => q.data)
+    .filter((data): data is User => data !== undefined);
+
+  if (isLoading) return <Spinner />;
+
+  return (
+    <div>
+      {users.map((user) => (
+        <UserCard key={user.id} user={user} />
+      ))}
+    </div>
+  );
+}
+
+// ===================================================
+// PATTERN 2: useQueries với combine (advanced)
+// ===================================================
+
+function CombinedDashboard() {
+  const result = useQueries({
+    queries: [
+      {
+        queryKey: ['users'],
+        queryFn: fetchUsers,
+        staleTime: 5 * 60 * 1000,
+      },
+      {
+        queryKey: ['posts'],
+        queryFn: fetchPosts,
+        staleTime: 5 * 60 * 1000,
+      },
+      {
+        queryKey: ['comments'],
+        queryFn: fetchComments,
+        staleTime: 5 * 60 * 1000,
+      },
+    ],
+    // ✅ combine: Transform results
+    combine: (results) => {
+      return {
+        data: {
+          users: results[0].data ?? [],
+          posts: results[1].data ?? [],
+          comments: results[2].data ?? [],
+        },
+        isLoading: results.some((r) => r.isLoading),
+        isError: results.some((r) => r.isError),
+        errors: results.map((r) => r.error).filter(Boolean),
+      };
+    },
+  });
+
+  if (result.isLoading) return <Spinner />;
+  if (result.isError) return <ErrorDisplay errors={result.errors} />;
+
+  return (
+    <div>
+      <UserSection users={result.data.users} />
+      <PostSection posts={result.data.posts} />
+      <CommentSection comments={result.data.comments} />
+    </div>
+  );
+}
+
+// ===================================================
+// PATTERN 3: Promise.all với ensureQueryData (manual)
+// ===================================================
+
+function usePrefetchDashboard() {
+  const queryClient = useQueryClient();
+
+  const prefetchAll = async () => {
+    // ✅ Parallel prefetch với Promise.all
+    await Promise.all([
+      queryClient.ensureQueryData({
+        queryKey: ['users'],
+        queryFn: fetchUsers,
+      }),
+      queryClient.ensureQueryData({
+        queryKey: ['posts'],
+        queryFn: fetchPosts,
+      }),
+      queryClient.ensureQueryData({
+        queryKey: ['comments'],
+        queryFn: fetchComments,
+      }),
+    ]);
+  };
+
+  return { prefetchAll };
+}
+
+// Usage
+function App() {
+  const { prefetchAll } = usePrefetchDashboard();
+
+  useEffect(() => {
+    prefetchAll(); // Prefetch tất cả khi app mount
+  }, []);
+
+  return <Dashboard />;
+}
+```
+
+---
+
+### **📌 4. Custom QueryClient Configuration**
+
+```typescript
+// =====================================
+// CUSTOM QUERYCLIENT - Advanced config
+// =====================================
+
+import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
+
+// ✅ QueryCache: Global cache với event listeners
+const queryCache = new QueryCache({
+  // ✅ onError: Handle tất cả query errors globally
+  onError: (error, query) => {
+    console.error('Query error:', {
+      error,
+      queryKey: query.queryKey,
+      queryHash: query.queryHash,
+    });
+
+    // ✅ Send to error tracking service
+    if (error instanceof ApiError && error.status >= 500) {
+      Sentry.captureException(error, {
+        tags: {
+          queryKey: JSON.stringify(query.queryKey),
+        },
+      });
+    }
+
+    // ✅ Show toast for specific errors
+    if (error instanceof ApiError && error.status === 401) {
+      toast.error('Session expired. Please login again.');
+      window.location.href = '/login';
+    }
+  },
+
+  // ✅ onSuccess: Global success handler
+  onSuccess: (data, query) => {
+    console.log('Query success:', query.queryKey);
+
+    // ✅ Analytics tracking
+    trackEvent('query_success', {
+      queryKey: query.queryKey,
+      dataSize: JSON.stringify(data).length,
+    });
+  },
+
+  // ✅ onSettled: Chạy sau mỗi query (success/error)
+  onSettled: (data, error, query) => {
+    console.log('Query settled:', {
+      queryKey: query.queryKey,
+      success: !error,
+    });
+  },
+});
+
+// ✅ MutationCache: Global mutation cache
+const mutationCache = new MutationCache({
+  onError: (error, variables, context, mutation) => {
+    console.error('Mutation error:', {
+      error,
+      mutationKey: mutation.options.mutationKey,
+      variables,
+    });
+
+    // ✅ Auto rollback on error
+    if (context?.previousData) {
+      queryClient.setQueryData(
+        mutation.options.mutationKey!,
+        context.previousData
+      );
+    }
+
+    // ✅ Show error toast
+    toast.error(error.message || 'Mutation failed');
+  },
+
+  onSuccess: (data, variables, context, mutation) => {
+    console.log('Mutation success:', mutation.options.mutationKey);
+
+    // ✅ Success notification
+    toast.success('Changes saved successfully');
+  },
+});
+
+// ✅ QueryClient với custom caches
+export const queryClient = new QueryClient({
+  queryCache,
+  mutationCache,
+
+  defaultOptions: {
+    queries: {
+      // ✅ Retry strategy
+      retry: (failureCount, error) => {
+        // Don't retry on 4xx errors
+        if (error instanceof ApiError && error.status < 500) {
+          return false;
+        }
+        return failureCount < 3;
+      },
+
+      // ✅ Retry delay với exponential backoff
+      retryDelay: (attemptIndex) => {
+        return Math.min(1000 * 2 ** attemptIndex, 30000);
+      },
+
+      // ✅ Network mode
+      networkMode: 'online', // 'online' | 'always' | 'offlineFirst'
+
+      // ✅ Meta data (custom data for queries)
+      meta: {
+        errorMessage: 'Failed to fetch data',
+      },
+    },
+
+    mutations: {
+      // ✅ Mutation network mode
+      networkMode: 'online',
+
+      // ✅ Mutation retry
+      retry: 0, // Don't retry mutations by default
+
+      // ✅ Meta data
+      meta: {
+        errorMessage: 'Failed to save changes',
+      },
+    },
+  },
+});
+
+// ===================================================
+// CUSTOM LOGGER
+// ===================================================
+
+class QueryLogger {
+  private logs: Array<{
+    type: 'query' | 'mutation';
+    action: 'start' | 'success' | 'error';
+    key: unknown[];
+    timestamp: number;
+  }> = [];
+
+  log(type: 'query' | 'mutation', action: string, key: unknown[]) {
+    const entry = {
+      type,
+      action,
+      key,
+      timestamp: Date.now(),
+    };
+
+    this.logs.push(entry);
+
+    // Keep only last 100 logs
+    if (this.logs.length > 100) {
+      this.logs.shift();
+    }
+
+    console.log(`[${type.toUpperCase()}] ${action}:`, key);
+  }
+
+  getLogs() {
+    return this.logs;
+  }
+
+  clear() {
+    this.logs = [];
+  }
+}
+
+export const queryLogger = new QueryLogger();
+
+// ✅ Use logger trong queries
+function useUserWithLogging(userId: string) {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: async () => {
+      queryLogger.log('query', 'start', ['user', userId]);
+
+      try {
+        const data = await fetchUser(userId);
+        queryLogger.log('query', 'success', ['user', userId]);
+        return data;
+      } catch (error) {
+        queryLogger.log('query', 'error', ['user', userId]);
+        throw error;
+      }
+    },
+  });
+}
+```
+
+---
+
+### **📌 5. Persistence (Persist cache to localStorage)**
+
+```typescript
+// =====================================
+// PERSISTENCE - Lưu cache vào localStorage
+// =====================================
+
+import { persistQueryClient } from '@tanstack/react-query-persist-client';
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+
+// ✅ Create persister
+const persister = createSyncStoragePersister({
+  storage: window.localStorage,
+  key: 'REACT_QUERY_CACHE', // LocalStorage key
+  serialize: JSON.stringify,
+  deserialize: JSON.parse,
+});
+
+// ✅ Persist query client
+persistQueryClient({
+  queryClient,
+  persister,
+  maxAge: 1000 * 60 * 60 * 24, // 24 hours
+  buster: 'v1.0.0', // Cache version (change to invalidate all cache)
+  dehydrateOptions: {
+    // ✅ Chọn queries nào được persist
+    shouldDehydrateQuery: (query) => {
+      // Chỉ persist queries có staleTime > 0
+      return query.state.status === 'success' && query.state.data !== undefined;
+    },
+  },
+});
+
+// ===================================================
+// SELECTIVE PERSISTENCE (chỉ persist 1 số queries)
+// ===================================================
+
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+
+function App() {
+  return (
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister,
+        maxAge: 1000 * 60 * 60 * 24,
+        dehydrateOptions: {
+          shouldDehydrateQuery: (query) => {
+            // ✅ Chỉ persist user data, không persist posts
+            const queryKey = query.queryKey;
+            return queryKey[0] === 'user' && query.state.status === 'success';
+          },
+        },
+      }}
+    >
+      <Router />
+    </PersistQueryClientProvider>
+  );
+}
+
+// ===================================================
+// CUSTOM PERSISTER (IndexedDB)
+// ===================================================
+
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+
+const asyncPersister = createAsyncStoragePersister({
+  storage: {
+    getItem: async (key) => {
+      // ✅ Get from IndexedDB
+      const db = await openDB('react-query-cache', 1);
+      return db.get('cache', key);
+    },
+    setItem: async (key, value) => {
+      // ✅ Set to IndexedDB
+      const db = await openDB('react-query-cache', 1);
+      await db.put('cache', value, key);
+    },
+    removeItem: async (key) => {
+      const db = await openDB('react-query-cache', 1);
+      await db.delete('cache', key);
+    },
+  },
+});
+
+// ===================================================
+// CLEAR PERSISTED CACHE
+// ===================================================
+
+function useClearCache() {
+  const queryClient = useQueryClient();
+
+  const clearCache = async () => {
+    // ✅ Clear in-memory cache
+    queryClient.clear();
+
+    // ✅ Clear persisted cache
+    await persister.removeClient();
+
+    // ✅ Clear localStorage
+    localStorage.removeItem('REACT_QUERY_CACHE');
+
+    console.log('Cache cleared');
+  };
+
+  return { clearCache };
+}
+```
+
+---
+
+### **📌 6. SSR/SSG with React Query (Next.js)**
+
+```typescript
+// =====================================
+// SSR/SSG PATTERNS
+// =====================================
+
+// ✅ PATTERN 1: Server-side rendering (getServerSideProps)
+// pages/users/[id].tsx
+import {
+  dehydrate,
+  QueryClient,
+  useQuery,
+  HydrationBoundary,
+} from '@tanstack/react-query';
+import type { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const queryClient = new QueryClient();
+
+  // ✅ Prefetch data on server
+  await queryClient.prefetchQuery({
+    queryKey: ['user', params?.id],
+    queryFn: () => fetchUser(params?.id as string),
+  });
+
+  return {
+    props: {
+      // ✅ Dehydrate cache để serialize
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+};
+
+// ✅ Component
+export default function UserPage({ dehydratedState }: any) {
+  return (
+    <HydrationBoundary state={dehydratedState}>
+      <UserProfile />
+    </HydrationBoundary>
+  );
+}
+
+function UserProfile() {
+  const router = useRouter();
+  const { data } = useQuery({
+    queryKey: ['user', router.query.id],
+    queryFn: () => fetchUser(router.query.id as string),
+    // ✅ Data đã có từ SSR, chỉ refetch khi stale
+    staleTime: 5 * 60 * 1000,
+  });
+
+  return <div>{data?.name}</div>;
+}
+
+// ===================================================
+// PATTERN 2: Static Site Generation (getStaticProps)
+// ===================================================
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ['user', params?.id],
+    queryFn: () => fetchUser(params?.id as string),
+  });
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+    revalidate: 60, // ✅ ISR: Revalidate every 60 seconds
+  };
+};
+
+// ✅ getStaticPaths
+export const getStaticPaths: GetStaticPaths = async () => {
+  const users = await fetchUsers();
+
+  return {
+    paths: users.map((user) => ({ params: { id: user.id } })),
+    fallback: 'blocking', // ✅ SSR for non-prerendered paths
+  };
+};
+
+// ===================================================
+// PATTERN 3: Next.js App Router (Server Components)
+// ===================================================
+
+// app/users/[id]/page.tsx
+import { QueryClient, HydrationBoundary, dehydrate } from '@tanstack/react-query';
+
+export default async function UserPage({ params }: { params: { id: string } }) {
+  const queryClient = new QueryClient();
+
+  // ✅ Prefetch trong Server Component
+  await queryClient.prefetchQuery({
+    queryKey: ['user', params.id],
+    queryFn: () => fetchUser(params.id),
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <UserProfile userId={params.id} />
+    </HydrationBoundary>
+  );
+}
+
+// ✅ Client Component
+'use client';
+function UserProfile({ userId }: { userId: string }) {
+  const { data } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUser(userId),
+  });
+
+  return <div>{data?.name}</div>;
+}
+```
+
+---
+
+### **📌 7. Advanced Caching Strategies**
+
+```typescript
+// =====================================
+// ADVANCED CACHING STRATEGIES
+// =====================================
+
+// ✅ STRATEGY 1: Cache-first, then revalidate
+function useCacheFirst<T>(key: string[], fetcher: () => Promise<T>) {
+  return useQuery({
+    queryKey: key,
+    queryFn: fetcher,
+    staleTime: Infinity, // ✅ Never mark as stale
+    gcTime: 1000 * 60 * 60 * 24, // ✅ Keep in cache for 24 hours
+
+    // ✅ Manual revalidation only
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+}
+
+// Usage
+const { data, refetch } = useCacheFirst(['static-data'], fetchStaticData);
+
+// Manual refresh button
+<button onClick={() => refetch()}>Refresh</button>;
+
+// ===================================================
+// STRATEGY 2: Stale-while-revalidate (SWR pattern)
+// ===================================================
+
+function useStaleWhileRevalidate<T>(key: string[], fetcher: () => Promise<T>) {
+  return useQuery({
+    queryKey: key,
+    queryFn: fetcher,
+    staleTime: 0, // ✅ Always stale → always revalidate
+    gcTime: 1000 * 60 * 5, // ✅ Keep cache 5 minutes
+
+    // ✅ Show cache immediately, refetch in background
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+
+    // ✅ Use cached data while refetching
+    placeholderData: (previousData) => previousData,
+  });
+}
+
+// ===================================================
+// STRATEGY 3: Time-based invalidation
+// ===================================================
+
+function useTimedCache<T>(
+  key: string[],
+  fetcher: () => Promise<T>,
+  ttl: number // Time to live in ms
+) {
+  const queryClient = useQueryClient();
+
+  // ✅ Auto invalidate after TTL
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: key });
+    }, ttl);
+
+    return () => clearTimeout(timer);
+  }, [key, ttl, queryClient]);
+
+  return useQuery({
+    queryKey: key,
+    queryFn: fetcher,
+    staleTime: ttl,
+    gcTime: ttl * 2,
+  });
+}
+
+// Usage
+const { data } = useTimedCache(['live-prices'], fetchPrices, 10000); // Invalidate every 10s
+
+// ===================================================
+// STRATEGY 4: Conditional caching
+// ===================================================
+
+function useConditionalCache<T>(
+  key: string[],
+  fetcher: () => Promise<T>,
+  shouldCache: boolean
+) {
+  return useQuery({
+    queryKey: key,
+    queryFn: fetcher,
+    staleTime: shouldCache ? 5 * 60 * 1000 : 0,
+    gcTime: shouldCache ? 10 * 60 * 1000 : 0,
+    enabled: true,
+  });
+}
+
+// Usage
+const isPremiumUser = useIsPremium();
+const { data } = useConditionalCache(
+  ['premium-data'],
+  fetchPremiumData,
+  isPremiumUser // ✅ Chỉ cache nếu là premium user
+);
+
+// ===================================================
+// STRATEGY 5: Multi-level cache (Memory + LocalStorage)
+// ===================================================
+
+function useMultiLevelCache<T>(key: string[], fetcher: () => Promise<T>) {
+  const queryClient = useQueryClient();
+
+  return useQuery({
+    queryKey: key,
+    queryFn: async () => {
+      // ✅ Level 1: Check localStorage first
+      const cached = localStorage.getItem(JSON.stringify(key));
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        const age = Date.now() - timestamp;
+
+        // ✅ Use localStorage cache if < 1 hour old
+        if (age < 1000 * 60 * 60) {
+          return data;
+        }
+      }
+
+      // ✅ Level 2: Fetch from server
+      const freshData = await fetcher();
+
+      // ✅ Save to localStorage
+      localStorage.setItem(
+        JSON.stringify(key),
+        JSON.stringify({ data: freshData, timestamp: Date.now() })
+      );
+
+      return freshData;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+```
+
+---
+
+### **📌 8. Query Filters & Batch Operations**
+
+```typescript
+// =====================================
+// QUERY FILTERS - Advanced filtering
+// =====================================
+
+import { QueryFilters } from '@tanstack/react-query';
+
+function useBatchOperations() {
+  const queryClient = useQueryClient();
+
+  // ✅ Invalidate multiple queries với filter
+  const invalidateByType = (type: string) => {
+    queryClient.invalidateQueries({
+      predicate: (query) => {
+        const [firstKey] = query.queryKey;
+        return firstKey === type;
+      },
+    });
+  };
+
+  // ✅ Invalidate queries có specific property
+  const invalidateStale = () => {
+    queryClient.invalidateQueries({
+      predicate: (query) => {
+        const age = Date.now() - (query.state.dataUpdatedAt || 0);
+        return age > 5 * 60 * 1000; // Older than 5 minutes
+      },
+    });
+  };
+
+  // ✅ Remove queries matching pattern
+  const removeByPattern = (pattern: string) => {
+    queryClient.removeQueries({
+      predicate: (query) => {
+        return query.queryKey.some((key) => String(key).includes(pattern));
+      },
+    });
+  };
+
+  // ✅ Cancel all queries của specific type
+  const cancelByType = async (type: string) => {
+    await queryClient.cancelQueries({
+      predicate: (query) => query.queryKey[0] === type,
+    });
+  };
+
+  // ✅ Get all queries matching filter
+  const getQueriesByType = (type: string) => {
+    return queryClient
+      .getQueryCache()
+      .findAll({ predicate: (query) => query.queryKey[0] === type });
+  };
+
+  return {
+    invalidateByType,
+    invalidateStale,
+    removeByPattern,
+    cancelByType,
+    getQueriesByType,
+  };
+}
+
+// ===================================================
+// BATCH UPDATES
+// ===================================================
+
+function useBatchUpdate() {
+  const queryClient = useQueryClient();
+
+  const batchUpdateUsers = (updates: Array<{ id: string; data: Partial<User> }>) => {
+    // ✅ Batch update multiple queries
+    queryClient.setQueriesData<User[]>({ queryKey: ['users'] }, (old) => {
+      if (!old) return old;
+
+      return old.map((user) => {
+        const update = updates.find((u) => u.id === user.id);
+        return update ? { ...user, ...update.data } : user;
+      });
+    });
+
+    // ✅ Update individual user queries
+    updates.forEach(({ id, data }) => {
+      queryClient.setQueryData<User>(['user', id], (old) =>
+        old ? { ...old, ...data } : old
+      );
+    });
+  };
+
+  return { batchUpdateUsers };
+}
+
+// Usage
+const { batchUpdateUsers } = useBatchUpdate();
+
+batchUpdateUsers([
+  { id: '1', data: { name: 'Updated User 1' } },
+  { id: '2', data: { name: 'Updated User 2' } },
+  { id: '3', data: { name: 'Updated User 3' } },
+]);
+```
+
+---
+
+### **📌 9. Query Dependencies & Waterfalls Prevention**
+
+```typescript
+// =====================================
+// PREVENT QUERY WATERFALLS
+// =====================================
+
+// ❌ BAD: Sequential queries (waterfall)
+function BadUserPosts({ userId }: { userId: string }) {
+  const { data: user } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUser(userId),
+  });
+
+  // ⚠️ Chờ user load xong mới fetch posts
+  const { data: posts } = useQuery({
+    queryKey: ['posts', user?.id],
+    queryFn: () => fetchUserPosts(user!.id),
+    enabled: !!user,
+  });
+
+  // ⚠️ Chờ posts load xong mới fetch comments
+  const { data: comments } = useQuery({
+    queryKey: ['comments', posts?.[0]?.id],
+    queryFn: () => fetchComments(posts![0].id),
+    enabled: !!posts && posts.length > 0,
+  });
+
+  // 🐌 Timeline: user (1s) → posts (1s) → comments (1s) = 3 giây!
+}
+
+// ✅ GOOD: Parallel queries khi có thể
+function GoodUserPosts({ userId }: { userId: string }) {
+  // ✅ Fetch user & posts song song (nếu userId đủ để fetch posts)
+  const { data: user } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUser(userId),
+  });
+
+  const { data: posts } = useQuery({
+    queryKey: ['posts', userId], // ✅ Dùng userId, không chờ user
+    queryFn: () => fetchUserPosts(userId),
+  });
+
+  // ✅ Fetch comments của tất cả posts cùng lúc
+  const commentQueries = useQueries({
+    queries:
+      posts?.map((post) => ({
+        queryKey: ['comments', post.id],
+        queryFn: () => fetchComments(post.id),
+      })) ?? [],
+  });
+
+  // ⚡ Timeline: user + posts (1s) → all comments parallel (1s) = 2 giây!
+}
+
+// ===================================================
+// DEPENDENCY RESOLUTION STRATEGY
+// ===================================================
+
+function useUserData(userId: string) {
+  // ✅ Fetch tất cả dependencies song song nếu có đủ info
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: ['user', userId],
+        queryFn: () => fetchUser(userId),
+      },
+      {
+        queryKey: ['user-stats', userId],
+        queryFn: () => fetchUserStats(userId),
+      },
+      {
+        queryKey: ['user-posts', userId],
+        queryFn: () => fetchUserPosts(userId),
+      },
+      {
+        queryKey: ['user-followers', userId],
+        queryFn: () => fetchUserFollowers(userId),
+      },
+    ],
+  });
+
+  return {
+    user: results[0].data,
+    stats: results[1].data,
+    posts: results[2].data,
+    followers: results[3].data,
+    isLoading: results.some((r) => r.isLoading),
+  };
+}
+```
+
+---
+
+## **🎓 REACT QUERY BEST PRACTICES - ADVANCED EDITION**
+
+### **✅ Performance Optimization**
+
+```typescript
+// 1. Selective re-renders với select
+const { data: userName } = useQuery({
+  queryKey: ['user', userId],
+  queryFn: fetchUser,
+  select: (user) => user.name, // ✅ Chỉ re-render khi name thay đổi
+});
+
+// 2. Structural sharing (automatic)
+// React Query tự động so sánh data mới vs cũ
+// Chỉ re-render khi có thay đổi thực sự
+
+// 3. Memoize query options
+const queryOptions = useMemo(
+  () => ({
+    queryKey: ['users', filters],
+    queryFn: () => fetchUsers(filters),
+  }),
+  [filters]
+);
+const { data } = useQuery(queryOptions);
+
+// 4. Prefetch intelligently
+const queryClient = useQueryClient();
+
+const handleHover = (userId: string) => {
+  queryClient.prefetchQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUser(userId),
+  });
+};
+```
+
+### **✅ Error Recovery Patterns**
+
+```typescript
+// 1. Fallback queries
+function useUserWithFallback(userId: string) {
+  const primary = useQuery({
+    queryKey: ['user', userId, 'primary'],
+    queryFn: () => fetchUserFromPrimaryAPI(userId),
+    retry: 1,
+  });
+
+  const fallback = useQuery({
+    queryKey: ['user', userId, 'fallback'],
+    queryFn: () => fetchUserFromFallbackAPI(userId),
+    enabled: primary.isError, // ✅ Chỉ fetch khi primary failed
+  });
+
+  return primary.isError ? fallback : primary;
+}
+
+// 2. Retry với custom logic
+retry: (failureCount, error) => {
+  // Network errors → retry
+  if (error.name === 'NetworkError') return failureCount < 5;
+
+  // 5xx errors → retry
+  if (error.status >= 500) return failureCount < 3;
+
+  // 4xx errors → don't retry
+  return false;
+};
+```
+
+---
+
+**🎯 Key Takeaways:**
+
+1. **Cancellation** prevents memory leaks & race conditions
+2. **Deduplication** saves network bandwidth automatically
+3. **Parallel queries** optimize loading performance
+4. **Custom QueryClient** enables global error handling
+5. **Persistence** improves offline experience
+6. **SSR/SSG** enhances initial page load & SEO
+7. **Advanced caching** tailors behavior to use case
+8. **Query filters** enable powerful batch operations
+9. **Prevent waterfalls** reduces total loading time

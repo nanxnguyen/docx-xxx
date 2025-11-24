@@ -812,3 +812,476 @@ const callback = () => handleClick(); // Auto-memoized
 - Static sites với dynamic features
 
 ---
+
+## **🔬 PHẦN 7: SERVER COMPONENTS DEEP DIVE**
+
+### **7.1. Server vs Client Components - Phân Biệt Chi Tiết**
+
+```typescript
+// ===================================================
+// 🖥️ SERVER COMPONENTS (Default trong App Router)
+// ===================================================
+
+/**
+ * 🎯 Server Components là gì?
+ * 
+ * - Render HOÀN TOÀN trên server
+ * - Không gửi JavaScript xuống client
+ * - Không có interactivity (no onClick, useState, useEffect)
+ * - Có thể fetch data trực tiếp (async/await)
+ * - Reduce bundle size (không ship React code cho component này)
+ */
+
+// ✅ Server Component (default)
+// app/products/page.tsx
+async function ProductsPage() {
+  // ✅ Fetch data directly (no useEffect needed!)
+  const products = await fetch('https://api.example.com/products').then(r =>
+    r.json()
+  );
+
+  return (
+    <div>
+      <h1>Products</h1>
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+}
+
+// ===================================================
+// 💻 CLIENT COMPONENTS (Opt-in với 'use client')
+// ===================================================
+
+/**
+ * 🎯 Client Components là gì?
+ * 
+ * - Render trên server (SSR) + hydrate trên client
+ * - CÓ interactivity (onClick, useState, useEffect)
+ * - Gửi JavaScript xuống client
+ * - Giống React traditional components
+ */
+
+// ✅ Client Component (needs 'use client' directive)
+// components/AddToCartButton.tsx
+'use client';
+
+import { useState } from 'react';
+
+export function AddToCartButton({ productId }: { productId: string }) {
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = async () => {
+    setLoading(true);
+    await addToCart(productId);
+    setLoading(false);
+  };
+
+  return (
+    <button onClick={handleClick} disabled={loading}>
+      {loading ? 'Adding...' : 'Add to Cart'}
+    </button>
+  );
+}
+
+// ===================================================
+// 🔀 COMPOSITION: Server + Client Components
+// ===================================================
+
+// ✅ Server Component (parent)
+async function ProductPage({ productId }: { productId: string }) {
+  const product = await fetchProduct(productId);
+
+  return (
+    <div>
+      {/* Server-rendered content */}
+      <h1>{product.name}</h1>
+      <p>{product.description}</p>
+
+      {/* Client-only interactivity */}
+      <AddToCartButton productId={productId} />
+    </div>
+  );
+}
+
+// ===================================================
+// 📊 COMPARISON TABLE
+// ===================================================
+
+/**
+┌──────────────────────┬───────────────────┬───────────────────┐
+│ Feature              │ Server Component  │ Client Component  │
+├──────────────────────┼───────────────────┼───────────────────┤
+│ JavaScript to client │ ❌ No             │ ✅ Yes            │
+│ useState/useEffect   │ ❌ No             │ ✅ Yes            │
+│ onClick/onChange     │ ❌ No             │ ✅ Yes            │
+│ Async/await          │ ✅ Yes            │ ❌ No (useEffect) │
+│ Access backend       │ ✅ Direct         │ ❌ Via API        │
+│ Access secrets       │ ✅ Safe           │ ❌ Exposed        │
+│ Bundle size          │ ✅ 0 KB           │ ⚠️ Adds KB        │
+│ SEO                  │ ✅ Perfect        │ ⚠️ Needs SSR      │
+└──────────────────────┴───────────────────┴───────────────────┘
+*/
+```
+
+---
+
+### **7.2. Data Fetching Patterns**
+
+```typescript
+// ===================================================
+// 🎯 PATTERN 1: Sequential Fetching (Waterfall)
+// ===================================================
+
+// ❌ BAD: Slow (total time = sum of all requests)
+async function SlowPage() {
+  const user = await fetchUser(); // 200ms
+  const posts = await fetchPosts(user.id); // 300ms
+  const comments = await fetchComments(posts[0].id); // 200ms
+  // Total: 700ms (sequential)
+
+  return <div>...</div>;
+}
+
+// ===================================================
+// ✅ PATTERN 2: Parallel Fetching
+// ===================================================
+
+// ✅ GOOD: Fast (total time = max of all requests)
+async function FastPage() {
+  // Start all requests in parallel
+  const [user, posts, comments] = await Promise.all([
+    fetchUser(), // 200ms
+    fetchPosts(), // 300ms
+    fetchComments(), // 200ms
+  ]);
+  // Total: 300ms (parallel)
+
+  return <div>...</div>;
+}
+
+// ===================================================
+// ✅ PATTERN 3: Streaming with Suspense
+// ===================================================
+
+// app/dashboard/page.tsx
+import { Suspense } from 'react';
+
+export default function DashboardPage() {
+  return (
+    <div>
+      {/* Show immediately */}
+      <Header />
+
+      {/* Stream in when ready */}
+      <Suspense fallback={<UserSkeleton />}>
+        <UserInfo /> {/* async component */}
+      </Suspense>
+
+      <Suspense fallback={<StatsSkeleton />}>
+        <Stats /> {/* async component */}
+      </Suspense>
+    </div>
+  );
+}
+
+// Async Server Component
+async function UserInfo() {
+  const user = await fetchUser(); // Slow query
+  return <div>{user.name}</div>;
+}
+
+async function Stats() {
+  const stats = await fetchStats(); // Slow query
+  return <div>{stats.count}</div>;
+}
+
+/**
+ * 🎯 Rendering Flow:
+ * 
+ * 1. Header renders immediately
+ * 2. UserSkeleton + StatsSkeleton show
+ * 3. UserInfo starts fetching (doesn't block Stats)
+ * 4. Stats starts fetching (parallel with UserInfo)
+ * 5. Whichever finishes first streams to client
+ * 6. Both eventually replace skeletons
+ * 
+ * ✅ User sees something immediately (Header + Skeletons)
+ * ✅ Progressive loading (better UX than spinner)
+ */
+
+// ===================================================
+// 🎯 PATTERN 4: Preload Pattern (Performance)
+// ===================================================
+
+// lib/data.ts
+import { cache } from 'react';
+
+// ✅ Deduplicate requests across components
+export const getUser = cache(async (id: string) => {
+  return fetch(`/api/users/${id}`).then((r) => r.json());
+});
+
+// app/users/[id]/page.tsx
+async function UserPage({ params }: { params: { id: string } }) {
+  const user = await getUser(params.id);
+
+  return (
+    <div>
+      <UserProfile userId={params.id} />
+      <UserPosts userId={params.id} />
+    </div>
+  );
+}
+
+// components/UserProfile.tsx
+async function UserProfile({ userId }: { userId: string }) {
+  const user = await getUser(userId); // Same request, cached!
+  return <div>{user.name}</div>;
+}
+
+// components/UserPosts.tsx
+async function UserPosts({ userId }: { userId: string }) {
+  const user = await getUser(userId); // Same request, cached!
+  const posts = await getPosts(userId);
+  return <PostList posts={posts} />;
+}
+
+/**
+ * ✅ getUser() called 3 times but only 1 network request!
+ * React automatically deduplicates during render
+ */
+```
+
+---
+
+### **7.3. Streaming SSR - Progressive Rendering**
+
+```typescript
+// ===================================================
+// 🌊 STREAMING SSR - Gửi HTML từng phần
+// ===================================================
+
+/**
+ * Traditional SSR:
+ * ┌─────────────────────────────────────────────────┐
+ * │  Server waits for ALL data                     │
+ * │  → Generates complete HTML                     │
+ * │  → Sends to browser (1 chunk)                  │
+ * │  → Browser shows everything                    │
+ * └─────────────────────────────────────────────────┘
+ * Total time: 3 seconds (all or nothing)
+ * 
+ * Streaming SSR:
+ * ┌─────────────────────────────────────────────────┐
+ * │  Server sends HTML shell immediately (100ms)   │
+ * │  → Browser shows shell + loading states        │
+ * │  → Server streams data as ready                │
+ * │  → Browser updates incrementally               │
+ * └─────────────────────────────────────────────────┘
+ * Time to First Byte: 100ms (fast!)
+ * Time to Full Page: 3 seconds (same, but UX better)
+ */
+
+// app/products/[id]/page.tsx
+import { Suspense } from 'react';
+
+export default function ProductPage({ params }: { params: { id: string } }) {
+  return (
+    <div>
+      {/* Sent immediately (shell) */}
+      <Navigation />
+      <Breadcrumb productId={params.id} />
+
+      {/* Suspense boundary = streaming point */}
+      <Suspense fallback={<ProductSkeleton />}>
+        <ProductDetails productId={params.id} />
+      </Suspense>
+
+      <Suspense fallback={<ReviewsSkeleton />}>
+        <ProductReviews productId={params.id} />
+      </Suspense>
+
+      {/* Sent immediately (footer) */}
+      <Footer />
+    </div>
+  );
+}
+
+// Slow async component
+async function ProductDetails({ productId }: { productId: string }) {
+  const product = await fetchProduct(productId); // 2 seconds
+  return <div>{product.name}</div>;
+}
+
+async function ProductReviews({ productId }: { productId: string }) {
+  const reviews = await fetchReviews(productId); // 1 second
+  return <ReviewList reviews={reviews} />;
+}
+
+/**
+ * 🎯 Timeline:
+ * 
+ * 0ms:   Send HTML shell (Navigation, Breadcrumb, Footer, Skeletons)
+ * 100ms: User sees page structure
+ * 1000ms: Reviews finish → stream to client → replace skeleton
+ * 2000ms: Product finishes → stream to client → replace skeleton
+ * 
+ * ✅ Time to First Byte: 100ms (vs 2000ms traditional SSR)
+ * ✅ User sees something immediately
+ * ✅ Progressive enhancement
+ */
+```
+
+---
+
+### **7.4. Server Actions - Backend Functions in Components**
+
+```typescript
+// ===================================================
+// ⚡ SERVER ACTIONS - RPC-like Backend Functions
+// ===================================================
+
+/**
+ * Server Actions = Functions that run on server,
+ * callable from client components
+ * 
+ * ✅ No need for API routes
+ * ✅ Type-safe (TypeScript inference)
+ * ✅ Progressive enhancement (works without JS)
+ */
+
+// app/actions.ts
+'use server';
+
+import { revalidatePath } from 'next/cache';
+
+export async function createPost(formData: FormData) {
+  const title = formData.get('title') as string;
+  const content = formData.get('content') as string;
+
+  // ✅ Direct database access (server-only code)
+  await db.posts.create({ data: { title, content } });
+
+  // ✅ Revalidate cache
+  revalidatePath('/posts');
+
+  return { success: true };
+}
+
+// components/PostForm.tsx
+'use client';
+
+import { createPost } from '@/app/actions';
+import { useFormStatus } from 'react-dom';
+
+export function PostForm() {
+  async function handleSubmit(formData: FormData) {
+    const result = await createPost(formData);
+    if (result.success) {
+      alert('Post created!');
+    }
+  }
+
+  return (
+    <form action={handleSubmit}>
+      <input name="title" required />
+      <textarea name="content" required />
+      <SubmitButton />
+    </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button type="submit" disabled={pending}>
+      {pending ? 'Creating...' : 'Create Post'}
+    </button>
+  );
+}
+
+// ===================================================
+// 🎯 SERVER ACTIONS PATTERNS
+// ===================================================
+
+// Pattern 1: Optimistic UI
+'use client';
+
+import { useOptimistic } from 'react';
+import { likePost } from './actions';
+
+export function LikeButton({ postId, initialLikes }) {
+  const [optimisticLikes, setOptimisticLikes] = useOptimistic(initialLikes);
+
+  async function handleLike() {
+    // Update UI immediately (optimistic)
+    setOptimisticLikes((likes) => likes + 1);
+
+    // Call server action
+    await likePost(postId);
+  }
+
+  return (
+    <button onClick={handleLike}>
+      ❤️ {optimisticLikes}
+    </button>
+  );
+}
+
+// Pattern 2: Revalidation after mutation
+'use server';
+
+export async function updateProduct(id: string, data: ProductData) {
+  await db.products.update({ where: { id }, data });
+
+  // Revalidate specific paths
+  revalidatePath(`/products/${id}`);
+  revalidatePath('/products');
+
+  // Or revalidate by tag
+  revalidateTag('products');
+}
+```
+
+---
+
+#### **🎯 TÓM TẮT Q26 - NEXT.JS COMPREHENSIVE (Updated)**
+
+**✅ Core Features:**
+- **Rendering**: SSR, SSG, ISR, CSR - chọn per page
+- **Routing**: File-based, dynamic routes, API routes
+- **Optimization**: Image, font, script automatic optimization
+- **SEO**: Built-in metadata API, sitemap, structured data
+
+**💡 SEO Techniques:**
+1. SSR/SSG cho better indexing
+2. Metadata API (title, description, OG tags)
+3. Structured data (JSON-LD)
+4. Image optimization với alt text
+5. Sitemap & robots.txt
+6. Internal linking với Link component
+
+**🚀 Khi nào dùng Next.js:**
+- Cần SEO (blog, e-commerce, marketing)
+- Performance-critical apps
+- Full-stack React apps (API routes)
+- Static sites với dynamic features
+
+**🆕 Server Components Deep Dive:**
+- **Server vs Client**: Server = no JS to client, Client = 'use client' directive
+- **Data Fetching**: Sequential vs Parallel vs Streaming patterns
+- **Streaming SSR**: Progressive rendering với Suspense, better TTFB
+- **Server Actions**: Type-safe backend functions, no API routes needed
+- **React Cache**: Automatic request deduplication
+
+**💡 Key Takeaways:**
+- Server Components reduce bundle size (no JavaScript shipped)
+- Streaming SSR improves perceived performance (100ms TTFB)
+- Server Actions enable full-stack TypeScript without API layer
+- Next.js 15 changes: opt-in caching, async request APIs
+- PPR (Next 16) = static shell + dynamic streaming
+
+---

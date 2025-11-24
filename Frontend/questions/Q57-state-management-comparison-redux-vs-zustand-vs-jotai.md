@@ -724,4 +724,1414 @@ function Canvas() {
 
 ---
 
-**🎯 Remember:** "Choose the simplest state manager that solves your problem. Don't over-engineer!"
+## 8. Redux Deep Dive - Advanced Patterns
+
+### **8.1. Redux Middleware Architecture**
+
+```typescript
+// ===================================================
+// 🔌 **CUSTOM MIDDLEWARE** - Logging & Analytics
+// ===================================================
+
+import { Middleware } from '@reduxjs/toolkit';
+
+// ✅ Logger Middleware
+const loggerMiddleware: Middleware = (store) => (next) => (action) => {
+  console.group(action.type);
+  console.log('⏰ Dispatching:', action);
+  console.log('📊 Previous State:', store.getState());
+  
+  const result = next(action);
+  
+  console.log('📈 Next State:', store.getState());
+  console.groupEnd();
+  
+  return result;
+};
+
+// ===================================================
+// 📡 **API MIDDLEWARE** - Centralized API calls
+// ===================================================
+
+interface ApiAction {
+  type: string;
+  endpoint: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  body?: any;
+  onSuccess?: string;
+  onError?: string;
+}
+
+const apiMiddleware: Middleware = (store) => (next) => async (action: any) => {
+  // Only process API actions
+  if (!action.endpoint) {
+    return next(action);
+  }
+
+  const { endpoint, method, body, onSuccess, onError } = action as ApiAction;
+
+  try {
+    const response = await fetch(endpoint, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${store.getState().auth.token}`,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.message);
+
+    // Dispatch success action
+    if (onSuccess) {
+      store.dispatch({ type: onSuccess, payload: data });
+    }
+
+    return data;
+  } catch (error) {
+    // Dispatch error action
+    if (onError) {
+      store.dispatch({ type: onError, payload: error.message });
+    }
+
+    throw error;
+  }
+};
+
+// Usage
+dispatch({
+  type: 'API_REQUEST',
+  endpoint: '/api/users',
+  method: 'GET',
+  onSuccess: 'users/fetchSuccess',
+  onError: 'users/fetchError',
+});
+
+// ===================================================
+// ⏱️ **DEBOUNCE MIDDLEWARE** - Throttle actions
+// ===================================================
+
+const debounceMiddleware: Middleware = (store) => {
+  const timers: Record<string, NodeJS.Timeout> = {};
+
+  return (next) => (action: any) => {
+    const { meta } = action;
+
+    if (!meta?.debounce) {
+      return next(action);
+    }
+
+    const { delay = 300, key = action.type } = meta.debounce;
+
+    // Clear existing timer
+    if (timers[key]) {
+      clearTimeout(timers[key]);
+    }
+
+    // Set new timer
+    return new Promise((resolve) => {
+      timers[key] = setTimeout(() => {
+        resolve(next(action));
+        delete timers[key];
+      }, delay);
+    });
+  };
+};
+
+// Usage
+dispatch({
+  type: 'search/setQuery',
+  payload: 'react',
+  meta: { debounce: { delay: 500, key: 'search' } },
+});
+
+// ===================================================
+// 🔄 **RETRY MIDDLEWARE** - Auto retry failed actions
+// ===================================================
+
+const retryMiddleware: Middleware = (store) => (next) => async (action: any) => {
+  const { meta } = action;
+
+  if (!meta?.retry) {
+    return next(action);
+  }
+
+  const { maxAttempts = 3, delay = 1000 } = meta.retry;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await next(action);
+    } catch (error) {
+      if (attempt === maxAttempts) {
+        throw error;
+      }
+
+      // Wait before retry (exponential backoff)
+      await new Promise((resolve) =>
+        setTimeout(resolve, delay * Math.pow(2, attempt - 1))
+      );
+
+      console.log(`🔄 Retry attempt ${attempt}/${maxAttempts}`);
+    }
+  }
+};
+
+// ===================================================
+// 📊 **ANALYTICS MIDDLEWARE** - Track user actions
+// ===================================================
+
+const analyticsMiddleware: Middleware = (store) => (next) => (action) => {
+  const result = next(action);
+
+  // Track specific actions
+  const trackedActions = ['user/login', 'cart/addItem', 'order/submit'];
+
+  if (trackedActions.includes(action.type)) {
+    // Send to analytics service
+    analytics.track(action.type, {
+      userId: store.getState().user?.id,
+      timestamp: Date.now(),
+      payload: action.payload,
+    });
+  }
+
+  return result;
+};
+
+// ===================================================
+// 🔧 **CONFIGURE STORE với Custom Middleware**
+// ===================================================
+
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these action types
+        ignoredActions: ['persist/PERSIST'],
+        // Ignore these field paths in all actions
+        ignoredActionPaths: ['meta.arg', 'payload.timestamp'],
+        // Ignore these paths in the state
+        ignoredPaths: ['items.dates'],
+      },
+      thunk: {
+        extraArgument: { api, analytics }, // ✅ Inject dependencies
+      },
+    })
+      .prepend(loggerMiddleware)
+      .concat(apiMiddleware, debounceMiddleware, retryMiddleware, analyticsMiddleware),
+});
+```
+
+---
+
+### **8.2. Advanced Selectors with Reselect**
+
+```typescript
+// ===================================================
+// 🎯 **MEMOIZED SELECTORS** - Optimize re-renders
+// ===================================================
+
+import { createSelector, createEntityAdapter } from '@reduxjs/toolkit';
+
+// ✅ Entity Adapter (normalized state)
+const usersAdapter = createEntityAdapter<User>({
+  selectId: (user) => user.id,
+  sortComparer: (a, b) => a.name.localeCompare(b.name),
+});
+
+const usersSlice = createSlice({
+  name: 'users',
+  initialState: usersAdapter.getInitialState({
+    loading: false,
+    error: null,
+  }),
+  reducers: {
+    addUser: usersAdapter.addOne,
+    updateUser: usersAdapter.updateOne,
+    removeUser: usersAdapter.removeOne,
+    setUsers: usersAdapter.setAll,
+  },
+});
+
+// ✅ Basic selectors từ adapter
+export const {
+  selectAll: selectAllUsers,
+  selectById: selectUserById,
+  selectIds: selectUserIds,
+  selectEntities: selectUserEntities,
+  selectTotal: selectTotalUsers,
+} = usersAdapter.getSelectors((state: RootState) => state.users);
+
+// ===================================================
+// 🔍 **COMPLEX MEMOIZED SELECTORS**
+// ===================================================
+
+// Selector 1: Get active users
+export const selectActiveUsers = createSelector(
+  [selectAllUsers],
+  (users) => users.filter((user) => user.status === 'active')
+);
+
+// Selector 2: Get users by role
+export const selectUsersByRole = createSelector(
+  [selectAllUsers, (_state: RootState, role: string) => role],
+  (users, role) => users.filter((user) => user.role === role)
+);
+
+// Selector 3: Get user statistics (expensive computation)
+export const selectUserStats = createSelector(
+  [selectAllUsers],
+  (users) => {
+    console.log('⚡ Computing user stats...'); // Only logs when users change
+
+    return {
+      total: users.length,
+      active: users.filter((u) => u.status === 'active').length,
+      inactive: users.filter((u) => u.status === 'inactive').length,
+      byRole: users.reduce((acc, user) => {
+        acc[user.role] = (acc[user.role] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+    };
+  }
+);
+
+// ===================================================
+// 🔗 **CHAINED SELECTORS** - Compose selectors
+// ===================================================
+
+// Base selectors
+const selectCartItems = (state: RootState) => state.cart.items;
+const selectProducts = (state: RootState) => state.products.entities;
+
+// Derived selector: Get cart items with product details
+export const selectCartWithProducts = createSelector(
+  [selectCartItems, selectProducts],
+  (cartItems, products) => {
+    return cartItems.map((item) => ({
+      ...item,
+      product: products[item.productId],
+    }));
+  }
+);
+
+// Derived selector: Calculate cart total
+export const selectCartTotal = createSelector(
+  [selectCartWithProducts],
+  (items) => {
+    return items.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    );
+  }
+);
+
+// Derived selector: Calculate tax
+export const selectCartTax = createSelector(
+  [selectCartTotal, (state: RootState) => state.settings.taxRate],
+  (total, taxRate) => total * taxRate
+);
+
+// Derived selector: Calculate grand total
+export const selectCartGrandTotal = createSelector(
+  [selectCartTotal, selectCartTax],
+  (subtotal, tax) => subtotal + tax
+);
+
+// ===================================================
+// 📊 **PARAMETERIZED SELECTORS** - Factory pattern
+// ===================================================
+
+// ✅ Create selector factory
+const makeSelectUserPosts = () =>
+  createSelector(
+    [
+      (state: RootState) => state.posts.entities,
+      (_state: RootState, userId: string) => userId,
+    ],
+    (posts, userId) => {
+      return Object.values(posts).filter((post) => post?.userId === userId);
+    }
+  );
+
+// Usage in component
+function UserPosts({ userId }: { userId: string }) {
+  // ✅ Create selector instance per component
+  const selectUserPosts = useMemo(makeSelectUserPosts, []);
+  const posts = useAppSelector((state) => selectUserPosts(state, userId));
+
+  return <PostList posts={posts} />;
+}
+
+// ===================================================
+// 🎯 **STRUCTURED SELECTORS** - Combine multiple selectors
+// ===================================================
+
+import { createStructuredSelector } from 'reselect';
+
+const selectDashboardData = createStructuredSelector({
+  users: selectAllUsers,
+  stats: selectUserStats,
+  cart: selectCartWithProducts,
+  total: selectCartTotal,
+});
+
+// Usage
+function Dashboard() {
+  const data = useAppSelector(selectDashboardData);
+  // data = { users, stats, cart, total }
+
+  return (
+    <div>
+      <UserList users={data.users} />
+      <Stats stats={data.stats} />
+      <Cart items={data.cart} total={data.total} />
+    </div>
+  );
+}
+```
+
+---
+
+### **8.3. Redux Persist & Hydration**
+
+```typescript
+// ===================================================
+// 💾 **REDUX PERSIST** - Save state to storage
+// ===================================================
+
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // localStorage
+import { PersistGate } from 'redux-persist/integration/react';
+
+// ✅ Persist config
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth', 'settings'], // Only persist these reducers
+  blacklist: ['ui', 'temp'], // Don't persist these
+  version: 1,
+  migrate: async (state: any) => {
+    // Migration logic for version updates
+    if (state?._persist?.version < 1) {
+      // Migrate from old schema to new
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          newField: 'default',
+        },
+      };
+    }
+    return state;
+  },
+};
+
+// ✅ Create persisted reducer
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+      },
+    }),
+});
+
+export const persistor = persistStore(store);
+
+// ===================================================
+// 🎯 **APP SETUP với Persist**
+// ===================================================
+
+import { Provider } from 'react-redux';
+
+function App() {
+  return (
+    <Provider store={store}>
+      <PersistGate loading={<Spinner />} persistor={persistor}>
+        <Router />
+      </PersistGate>
+    </Provider>
+  );
+}
+
+// ===================================================
+// 🔄 **SELECTIVE PERSIST** - Per-slice config
+// ===================================================
+
+import { createTransform } from 'redux-persist';
+
+// Transform to persist only specific fields
+const userTransform = createTransform(
+  // Transform state on its way to storage
+  (inboundState: any) => ({
+    token: inboundState.token,
+    userId: inboundState.userId,
+    // Don't persist sensitive data
+  }),
+  // Transform state on its way back from storage
+  (outboundState: any) => ({
+    ...outboundState,
+    profile: null, // Will be refetched
+  }),
+  { whitelist: ['auth'] }
+);
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  transforms: [userTransform],
+};
+
+// ===================================================
+// 🧹 **PURGE PERSISTED STATE** - Clear storage
+// ===================================================
+
+import { PURGE } from 'redux-persist';
+
+function LogoutButton() {
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    // Clear persisted state
+    dispatch({ type: PURGE, result: () => null });
+
+    // Or manually
+    persistor.purge();
+  };
+
+  return <button onClick={handleLogout}>Logout</button>;
+}
+```
+
+---
+
+### **8.4. Redux Testing Strategies**
+
+```typescript
+// ===================================================
+// 🧪 **TESTING REDUCERS**
+// ===================================================
+
+import { counterSlice, increment, decrement } from './counterSlice';
+
+describe('counterSlice', () => {
+  const initialState = { value: 0 };
+
+  it('should return initial state', () => {
+    expect(counterSlice.reducer(undefined, { type: 'unknown' })).toEqual(
+      initialState
+    );
+  });
+
+  it('should increment', () => {
+    const actual = counterSlice.reducer(initialState, increment());
+    expect(actual.value).toBe(1);
+  });
+
+  it('should decrement', () => {
+    const actual = counterSlice.reducer({ value: 1 }, decrement());
+    expect(actual.value).toBe(0);
+  });
+});
+
+// ===================================================
+// 🧪 **TESTING ASYNC THUNKS**
+// ===================================================
+
+import { fetchUserById } from './userSlice';
+import { server } from '../mocks/server'; // MSW
+import { rest } from 'msw';
+
+describe('fetchUserById', () => {
+  it('should fetch user successfully', async () => {
+    const mockUser = { id: '1', name: 'John' };
+
+    server.use(
+      rest.get('/api/users/1', (req, res, ctx) => {
+        return res(ctx.json(mockUser));
+      })
+    );
+
+    const dispatch = jest.fn();
+    const thunk = fetchUserById('1');
+
+    await thunk(dispatch, () => ({}), undefined);
+
+    const { calls } = dispatch.mock;
+    expect(calls[0][0].type).toBe('user/fetchById/pending');
+    expect(calls[1][0].type).toBe('user/fetchById/fulfilled');
+    expect(calls[1][0].payload).toEqual(mockUser);
+  });
+
+  it('should handle error', async () => {
+    server.use(
+      rest.get('/api/users/1', (req, res, ctx) => {
+        return res(ctx.status(500), ctx.json({ error: 'Server error' }));
+      })
+    );
+
+    const dispatch = jest.fn();
+    const thunk = fetchUserById('1');
+
+    await thunk(dispatch, () => ({}), undefined);
+
+    const { calls } = dispatch.mock;
+    expect(calls[1][0].type).toBe('user/fetchById/rejected');
+  });
+});
+
+// ===================================================
+// 🧪 **TESTING SELECTORS**
+// ===================================================
+
+import { selectUserStats } from './userSelectors';
+
+describe('selectUserStats', () => {
+  it('should compute stats correctly', () => {
+    const state = {
+      users: {
+        ids: ['1', '2', '3'],
+        entities: {
+          '1': { id: '1', status: 'active', role: 'admin' },
+          '2': { id: '2', status: 'active', role: 'user' },
+          '3': { id: '3', status: 'inactive', role: 'user' },
+        },
+      },
+    };
+
+    const stats = selectUserStats(state as any);
+
+    expect(stats).toEqual({
+      total: 3,
+      active: 2,
+      inactive: 1,
+      byRole: { admin: 1, user: 2 },
+    });
+  });
+});
+
+// ===================================================
+// 🧪 **INTEGRATION TESTS** - with React Testing Library
+// ===================================================
+
+import { renderWithProviders } from '../test-utils';
+import { screen, fireEvent } from '@testing-library/react';
+
+// Test utility
+export function renderWithProviders(
+  ui: React.ReactElement,
+  {
+    preloadedState = {},
+    store = configureStore({ reducer: rootReducer, preloadedState }),
+    ...renderOptions
+  } = {}
+) {
+  function Wrapper({ children }: { children: React.ReactNode }) {
+    return <Provider store={store}>{children}</Provider>;
+  }
+
+  return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
+}
+
+describe('Counter Component', () => {
+  it('should increment counter', () => {
+    renderWithProviders(<Counter />);
+
+    const incrementButton = screen.getByText('+');
+    fireEvent.click(incrementButton);
+
+    expect(screen.getByText('1')).toBeInTheDocument();
+  });
+});
+```
+
+---
+
+## 9. Zustand Deep Dive - Advanced Patterns
+
+### **9.1. Zustand Middleware Composition**
+
+```typescript
+// ===================================================
+// 🐻 **ZUSTAND MIDDLEWARE** - Advanced patterns
+// ===================================================
+
+import { create } from 'zustand';
+import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
+
+// ===================================================
+// 📊 **FULL MIDDLEWARE STACK**
+// ===================================================
+
+interface TodoStore {
+  todos: Todo[];
+  filter: 'all' | 'active' | 'completed';
+  addTodo: (text: string) => void;
+  toggleTodo: (id: string) => void;
+  removeTodo: (id: string) => void;
+  setFilter: (filter: 'all' | 'active' | 'completed') => void;
+}
+
+export const useTodoStore = create<TodoStore>()(
+  // ✅ Layer 1: DevTools (outermost)
+  devtools(
+    // ✅ Layer 2: Persist
+    persist(
+      // ✅ Layer 3: Subscribe with selector
+      subscribeWithSelector(
+        // ✅ Layer 4: Immer (innermost)
+        immer((set) => ({
+          todos: [],
+          filter: 'all',
+
+          addTodo: (text) =>
+            set((state) => {
+              state.todos.push({
+                id: crypto.randomUUID(),
+                text,
+                completed: false,
+              });
+            }),
+
+          toggleTodo: (id) =>
+            set((state) => {
+              const todo = state.todos.find((t) => t.id === id);
+              if (todo) {
+                todo.completed = !todo.completed;
+              }
+            }),
+
+          removeTodo: (id) =>
+            set((state) => {
+              state.todos = state.todos.filter((t) => t.id !== id);
+            }),
+
+          setFilter: (filter) =>
+            set({ filter }),
+        }))
+      ),
+      {
+        name: 'todo-storage',
+        partialize: (state) => ({ todos: state.todos }), // Only persist todos
+      }
+    ),
+    { name: 'TodoStore' }
+  )
+);
+
+// ===================================================
+// 🔔 **SUBSCRIBE TO SPECIFIC CHANGES**
+// ===================================================
+
+// Subscribe to filter changes only
+useTodoStore.subscribe(
+  (state) => state.filter,
+  (filter, prevFilter) => {
+    console.log('Filter changed:', prevFilter, '→', filter);
+    analytics.track('filter_changed', { filter });
+  }
+);
+
+// Subscribe to todos count
+useTodoStore.subscribe(
+  (state) => state.todos.length,
+  (count, prevCount) => {
+    console.log('Todo count:', prevCount, '→', count);
+  }
+);
+
+// ===================================================
+// 🎯 **CUSTOM MIDDLEWARE** - Logger
+// ===================================================
+
+const logger = (config) => (set, get, api) => {
+  return config(
+    (...args) => {
+      console.log('📝 Before:', get());
+      set(...args);
+      console.log('📊 After:', get());
+    },
+    get,
+    api
+  );
+};
+
+const useStore = create(
+  logger((set) => ({
+    count: 0,
+    increment: () => set((state) => ({ count: state.count + 1 })),
+  }))
+);
+
+// ===================================================
+// ⏱️ **TIME-TRAVEL MIDDLEWARE**
+// ===================================================
+
+const timeTravel = (config) => (set, get, api) => {
+  const history = [];
+  const maxHistory = 50;
+
+  return config(
+    (...args) => {
+      // Save current state to history
+      history.push(get());
+      if (history.length > maxHistory) {
+        history.shift();
+      }
+
+      set(...args);
+    },
+    get,
+    {
+      ...api,
+      undo: () => {
+        if (history.length > 0) {
+          const prevState = history.pop();
+          set(prevState, true); // Replace state
+        }
+      },
+      getHistory: () => history,
+    }
+  );
+};
+
+// ===================================================
+// 🔄 **RESET MIDDLEWARE** - Reset to initial state
+// ===================================================
+
+const resetters = new Set<() => void>();
+
+const resetMiddleware = (config) => (set, get, api) => {
+  const initialState = config(set, get, api);
+
+  resetters.add(() => set(initialState));
+
+  return {
+    ...initialState,
+    reset: () => set(initialState),
+  };
+};
+
+export const resetAllStores = () => {
+  resetters.forEach((reset) => reset());
+};
+```
+
+---
+
+### **9.2. Zustand Slices Pattern**
+
+```typescript
+// ===================================================
+// 🍰 **SLICES PATTERN** - Modular store composition
+// ===================================================
+
+// ✅ Slice 1: Auth
+interface AuthSlice {
+  user: User | null;
+  token: string | null;
+  login: (user: User, token: string) => void;
+  logout: () => void;
+}
+
+const createAuthSlice = (set): AuthSlice => ({
+  user: null,
+  token: null,
+  login: (user, token) => set({ user, token }),
+  logout: () => set({ user: null, token: null }),
+});
+
+// ✅ Slice 2: UI
+interface UISlice {
+  sidebarOpen: boolean;
+  theme: 'light' | 'dark';
+  toggleSidebar: () => void;
+  setTheme: (theme: 'light' | 'dark') => void;
+}
+
+const createUISlice = (set): UISlice => ({
+  sidebarOpen: true,
+  theme: 'light',
+  toggleSidebar: () =>
+    set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+  setTheme: (theme) => set({ theme }),
+});
+
+// ✅ Slice 3: Notifications
+interface NotificationSlice {
+  notifications: Notification[];
+  addNotification: (notification: Notification) => void;
+  removeNotification: (id: string) => void;
+}
+
+const createNotificationSlice = (set, get): NotificationSlice => ({
+  notifications: [],
+  addNotification: (notification) =>
+    set((state) => ({
+      notifications: [...state.notifications, notification],
+    })),
+  removeNotification: (id) =>
+    set((state) => ({
+      notifications: state.notifications.filter((n) => n.id !== id),
+    })),
+});
+
+// ===================================================
+// 🔗 **COMBINE SLICES**
+// ===================================================
+
+type Store = AuthSlice & UISlice & NotificationSlice;
+
+export const useAppStore = create<Store>()(
+  devtools(
+    persist(
+      immer((set, get, api) => ({
+        ...createAuthSlice(set),
+        ...createUISlice(set),
+        ...createNotificationSlice(set, get),
+      })),
+      {
+        name: 'app-storage',
+        partialize: (state) => ({
+          theme: state.theme,
+          sidebarOpen: state.sidebarOpen,
+        }),
+      }
+    )
+  )
+);
+
+// ===================================================
+// 🎯 **SLICE-SPECIFIC HOOKS** - Optimize re-renders
+// ===================================================
+
+// Only subscribe to auth slice
+export const useAuth = () =>
+  useAppStore((state) => ({
+    user: state.user,
+    token: state.token,
+    login: state.login,
+    logout: state.logout,
+  }));
+
+// Only subscribe to UI slice
+export const useUI = () =>
+  useAppStore((state) => ({
+    sidebarOpen: state.sidebarOpen,
+    theme: state.theme,
+    toggleSidebar: state.toggleSidebar,
+    setTheme: state.setTheme,
+  }));
+
+// Usage
+function Sidebar() {
+  const { sidebarOpen, toggleSidebar } = useUI();
+  // ✅ Only re-renders when sidebarOpen or theme changes
+
+  return <aside className={sidebarOpen ? 'open' : 'closed'} />;
+}
+```
+
+---
+
+### **9.3. Zustand Async Actions & Error Handling**
+
+```typescript
+// ===================================================
+// 📡 **ASYNC ACTIONS** - Best practices
+// ===================================================
+
+interface UserStore {
+  users: User[];
+  loading: boolean;
+  error: string | null;
+  
+  fetchUsers: () => Promise<void>;
+  createUser: (user: CreateUserDTO) => Promise<User>;
+  updateUser: (id: string, updates: Partial<User>) => Promise<void>;
+  deleteUser: (id: string) => Promise<void>;
+}
+
+export const useUserStore = create<UserStore>()((set, get) => ({
+  users: [],
+  loading: false,
+  error: null,
+
+  // ===================================================
+  // ✅ FETCH with loading & error states
+  // ===================================================
+  fetchUsers: async () => {
+    set({ loading: true, error: null });
+
+    try {
+      const response = await fetch('/api/users');
+      if (!response.ok) throw new Error('Failed to fetch users');
+
+      const users = await response.json();
+      set({ users, loading: false });
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : 'Unknown error',
+        loading: false,
+      });
+    }
+  },
+
+  // ===================================================
+  // ✅ CREATE with optimistic update
+  // ===================================================
+  createUser: async (userData) => {
+    const tempUser: User = {
+      id: `temp-${Date.now()}`,
+      ...userData,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Optimistic update
+    set((state) => ({
+      users: [...state.users, tempUser],
+    }));
+
+    try {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) throw new Error('Failed to create user');
+
+      const newUser = await response.json();
+
+      // Replace temp user with real user
+      set((state) => ({
+        users: state.users.map((u) => (u.id === tempUser.id ? newUser : u)),
+      }));
+
+      return newUser;
+    } catch (error) {
+      // Rollback on error
+      set((state) => ({
+        users: state.users.filter((u) => u.id !== tempUser.id),
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }));
+
+      throw error;
+    }
+  },
+
+  // ===================================================
+  // ✅ UPDATE with optimistic update
+  // ===================================================
+  updateUser: async (id, updates) => {
+    // Save previous state for rollback
+    const previousUsers = get().users;
+
+    // Optimistic update
+    set((state) => ({
+      users: state.users.map((u) =>
+        u.id === id ? { ...u, ...updates } : u
+      ),
+    }));
+
+    try {
+      const response = await fetch(`/api/users/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+
+      if (!response.ok) throw new Error('Failed to update user');
+
+      const updatedUser = await response.json();
+
+      set((state) => ({
+        users: state.users.map((u) => (u.id === id ? updatedUser : u)),
+      }));
+    } catch (error) {
+      // Rollback on error
+      set({ users: previousUsers, error: error.message });
+      throw error;
+    }
+  },
+
+  // ===================================================
+  // ✅ DELETE with optimistic update
+  // ===================================================
+  deleteUser: async (id) => {
+    const previousUsers = get().users;
+
+    // Optimistic delete
+    set((state) => ({
+      users: state.users.filter((u) => u.id !== id),
+    }));
+
+    try {
+      const response = await fetch(`/api/users/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete user');
+    } catch (error) {
+      // Rollback on error
+      set({ users: previousUsers, error: error.message });
+      throw error;
+    }
+  },
+}));
+
+// ===================================================
+// 🎯 **USAGE IN COMPONENT**
+// ===================================================
+
+function UserList() {
+  const { users, loading, error, fetchUsers, deleteUser } = useUserStore();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteUser(id);
+      toast.success('User deleted');
+    } catch (error) {
+      toast.error('Failed to delete user');
+    }
+  };
+
+  if (loading) return <Spinner />;
+  if (error) return <Error message={error} />;
+
+  return (
+    <div>
+      {users.map((user) => (
+        <UserCard key={user.id} user={user} onDelete={() => handleDelete(user.id)} />
+      ))}
+    </div>
+  );
+}
+```
+
+---
+
+### **9.4. Zustand Performance Optimization**
+
+```typescript
+// ===================================================
+// ⚡ **PERFORMANCE OPTIMIZATION**
+// ===================================================
+
+// ❌ BAD: Re-renders on any state change
+function BadComponent() {
+  const store = useAppStore(); // Subscribe to entire store
+  return <div>{store.count}</div>;
+}
+
+// ✅ GOOD: Only re-renders when count changes
+function GoodComponent() {
+  const count = useAppStore((state) => state.count);
+  return <div>{count}</div>;
+}
+
+// ===================================================
+// 🎯 **SHALLOW COMPARISON** - For objects
+// ===================================================
+
+import { shallow } from 'zustand/shallow';
+
+// ❌ BAD: New object reference every render
+function BadMultiSelect() {
+  const { count, user } = useAppStore((state) => ({
+    count: state.count,
+    user: state.user,
+  }));
+  // Re-renders on ANY state change!
+}
+
+// ✅ GOOD: Shallow comparison
+function GoodMultiSelect() {
+  const { count, user } = useAppStore(
+    (state) => ({
+      count: state.count,
+      user: state.user,
+    }),
+    shallow // Only re-render if count or user changes
+  );
+}
+
+// ===================================================
+// 📊 **COMPUTED VALUES** - Memoization
+// ===================================================
+
+interface CartStore {
+  items: CartItem[];
+  taxRate: number;
+  
+  // ✅ Computed getter (runs on every access)
+  getTotal: () => number;
+  getTax: () => number;
+  getGrandTotal: () => number;
+}
+
+export const useCartStore = create<CartStore>()((set, get) => ({
+  items: [],
+  taxRate: 0.1,
+
+  getTotal: () => {
+    return get().items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  },
+
+  getTax: () => {
+    return get().getTotal() * get().taxRate;
+  },
+
+  getGrandTotal: () => {
+    return get().getTotal() + get().getTax();
+  },
+}));
+
+// Usage with useMemo to prevent recalculation
+function CartSummary() {
+  const getTotal = useCartStore((state) => state.getTotal);
+  const total = useMemo(() => getTotal(), [getTotal]);
+
+  return <div>Total: ${total}</div>;
+}
+
+// ===================================================
+// 🔍 **CUSTOM EQUALITY FUNCTION**
+// ===================================================
+
+function UserProfile() {
+  const user = useAppStore(
+    (state) => state.user,
+    (a, b) => a?.id === b?.id // Only re-render if user ID changes
+  );
+
+  return <div>{user?.name}</div>;
+}
+```
+
+---
+
+### **9.5. Zustand Testing**
+
+```typescript
+// ===================================================
+// 🧪 **TESTING ZUSTAND STORES**
+// ===================================================
+
+import { act, renderHook } from '@testing-library/react';
+import { useCounterStore } from './counterStore';
+
+describe('useCounterStore', () => {
+  beforeEach(() => {
+    // Reset store before each test
+    useCounterStore.setState({ count: 0 });
+  });
+
+  it('should increment count', () => {
+    const { result } = renderHook(() => useCounterStore());
+
+    act(() => {
+      result.current.increment();
+    });
+
+    expect(result.current.count).toBe(1);
+  });
+
+  it('should decrement count', () => {
+    const { result } = renderHook(() => useCounterStore());
+
+    act(() => {
+      useCounterStore.setState({ count: 5 });
+      result.current.decrement();
+    });
+
+    expect(result.current.count).toBe(4);
+  });
+
+  it('should reset count', () => {
+    const { result } = renderHook(() => useCounterStore());
+
+    act(() => {
+      useCounterStore.setState({ count: 10 });
+      result.current.reset();
+    });
+
+    expect(result.current.count).toBe(0);
+  });
+});
+
+// ===================================================
+// 🧪 **TESTING ASYNC ACTIONS**
+// ===================================================
+
+describe('useUserStore async actions', () => {
+  beforeEach(() => {
+    useUserStore.setState({ users: [], loading: false, error: null });
+  });
+
+  it('should fetch users', async () => {
+    const mockUsers = [
+      { id: '1', name: 'User 1' },
+      { id: '2', name: 'User 2' },
+    ];
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockUsers),
+      })
+    ) as jest.Mock;
+
+    const { result } = renderHook(() => useUserStore());
+
+    await act(async () => {
+      await result.current.fetchUsers();
+    });
+
+    expect(result.current.users).toEqual(mockUsers);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
+  });
+
+  it('should handle fetch error', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+      })
+    ) as jest.Mock;
+
+    const { result } = renderHook(() => useUserStore());
+
+    await act(async () => {
+      await result.current.fetchUsers();
+    });
+
+    expect(result.current.users).toEqual([]);
+    expect(result.current.error).toBe('Failed to fetch users');
+  });
+});
+
+// ===================================================
+// 🧪 **MOCK STORE FOR COMPONENT TESTS**
+// ===================================================
+
+// Create mock store
+const createMockStore = (initialState = {}) => {
+  return create(() => ({
+    count: 0,
+    increment: jest.fn(),
+    ...initialState,
+  }));
+};
+
+// Test component
+describe('Counter component', () => {
+  it('should render count', () => {
+    const mockStore = createMockStore({ count: 5 });
+
+    render(<Counter />);
+
+    expect(screen.getByText('5')).toBeInTheDocument();
+  });
+});
+```
+
+---
+
+## **🎯 Redux vs Zustand - When to Use What**
+
+```typescript
+// ===================================================
+// 📊 **DECISION MATRIX**
+// ===================================================
+
+const WHEN_TO_USE_REDUX = [
+  '✅ Large enterprise applications',
+  '✅ Need Redux DevTools time-travel debugging',
+  '✅ Complex state logic with multiple reducers',
+  '✅ Team already familiar with Redux',
+  '✅ Need middleware ecosystem (sagas, observables)',
+  '✅ Strict unidirectional data flow required',
+  '✅ Need to replay user sessions for debugging',
+];
+
+const WHEN_TO_USE_ZUSTAND = [
+  '✅ Small to medium applications',
+  '✅ Bundle size is critical (<1KB vs 12KB)',
+  '✅ Want minimal boilerplate',
+  '✅ Need simple API that team can learn quickly',
+  '✅ Performance is priority (selective subscriptions)',
+  '✅ Don\'t need complex middleware',
+  '✅ Want flexibility without constraints',
+];
+
+// ===================================================
+// 🏆 **PERFORMANCE COMPARISON**
+// ===================================================
+
+const PERFORMANCE_COMPARISON = {
+  bundleSize: {
+    redux: '~12 KB (Redux Toolkit + React-Redux)',
+    zustand: '~1 KB ⭐ (12x smaller!)',
+  },
+  
+  boilerplate: {
+    redux: 'Medium (slices, actions, reducers)',
+    zustand: 'Minimal ⭐ (just create store)',
+  },
+  
+  rerenderOptimization: {
+    redux: 'Manual (useSelector + memoization)',
+    zustand: 'Automatic ⭐ (subscribe to slices)',
+  },
+  
+  devTools: {
+    redux: '✅ Best-in-class ⭐',
+    zustand: '✅ Good (via middleware)',
+  },
+  
+  learningCurve: {
+    redux: 'Steep (many concepts)',
+    zustand: 'Gentle ⭐ (simple hooks)',
+  },
+  
+  middleware: {
+    redux: '✅ Rich ecosystem ⭐',
+    zustand: '✅ Good (persist, immer, devtools)',
+  },
+};
+```
+
+---
+
+**🎯 Key Takeaways:**
+
+### **Redux Deep Dive:**
+1. **Middleware** enables centralized side effects (API, logging, analytics)
+2. **Reselect** optimizes expensive computations with memoization
+3. **Entity Adapter** normalizes state for O(1) lookups
+4. **Redux Persist** saves state to storage automatically
+5. **Testing** is straightforward with pure functions
+
+### **Zustand Deep Dive:**
+1. **Middleware composition** creates powerful store behaviors
+2. **Slices pattern** organizes large stores modularly
+3. **Optimistic updates** improve perceived performance
+4. **Selective subscriptions** prevent unnecessary re-renders
+5. **Minimal API** reduces cognitive load
+
+### **Choose Based On:**
+- **Redux** → Large apps, need DevTools, complex workflows
+- **Zustand** → Small/medium apps, bundle size critical, want simplicity

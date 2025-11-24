@@ -3095,18 +3095,658 @@ checkSecurityHeaders('https://yourwebsite.com');
 17. **Educate developers** - Security training, OWASP Top 10
 18. **Have incident response plan** - Know what to do when breached
 
-### **🚨 OWASP Top 10 (2021) - Must Know**
+### **🚨 OWASP Top 10 (2021) - Deep Dive**
 
-1. **A01:2021-Broken Access Control** - IDOR, missing auth checks
-2. **A02:2021-Cryptographic Failures** - Weak encryption, exposed secrets
-3. **A03:2021-Injection** - SQL, NoSQL, Command injection
-4. **A04:2021-Insecure Design** - Flawed architecture
-5. **A05:2021-Security Misconfiguration** - Default configs, verbose errors
-6. **A06:2021-Vulnerable Components** - Outdated libraries
-7. **A07:2021-Identification and Authentication Failures** - Weak auth
-8. **A08:2021-Software and Data Integrity Failures** - Unsigned code, supply chain
-9. **A09:2021-Security Logging and Monitoring Failures** - No logs, no alerts
-10. **A10:2021-Server-Side Request Forgery (SSRF)** - Unvalidated URLs
+---
+
+#### **A01:2021 - Broken Access Control (97% ứng dụng có lỗi này)**
+
+```typescript
+// ❌ BAD: Missing authorization check
+app.get('/api/users/:userId/profile', async (req, res) => {
+  const profile = await db.users.findById(req.params.userId);
+  res.json(profile); // Bất kỳ user nào cũng xem được profile của nhau!
+});
+
+// ✅ GOOD: Verify ownership
+app.get('/api/users/:userId/profile', authenticate, async (req, res) => {
+  const requestedUserId = req.params.userId;
+  const currentUserId = req.user.id;
+
+  // Check authorization
+  if (requestedUserId !== currentUserId && !req.user.isAdmin) {
+    return res.status(403).json({ error: 'Access denied' });
+  }
+
+  const profile = await db.users.findById(requestedUserId);
+  res.json(profile);
+});
+
+// 🛡️ Common Patterns:
+// 1. IDOR (Insecure Direct Object Reference)
+//    URL: /api/invoices/1234 → Change to /api/invoices/1235 (xem invoice người khác)
+//    Fix: Verify ownership trước khi trả data
+
+// 2. Missing Function Level Access Control
+//    User thường access /admin/deleteUser endpoint
+//    Fix: Middleware kiểm tra role/permission
+
+// 3. CORS Misconfiguration
+//    Access-Control-Allow-Origin: * (cho phép tất cả domain)
+//    Fix: Whitelist specific domains
+```
+
+---
+
+#### **A02:2021 - Cryptographic Failures (Mất Mát Bảo Mật Mã Hóa)**
+
+```typescript
+// ❌ BAD: Weak encryption (MD5, SHA1 đã bị crack)
+const hash = crypto.createHash('md5').update(password).digest('hex');
+
+// ✅ GOOD: Strong password hashing (bcrypt, argon2)
+import bcrypt from 'bcryptjs';
+
+async function hashPassword(password: string): Promise<string> {
+  const salt = await bcrypt.genSalt(12); // Cost factor 12 (khuyến nghị)
+  return bcrypt.hash(password, salt);
+}
+
+async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(password, hash);
+}
+
+// ❌ BAD: Lưu API keys trong code
+const STRIPE_KEY = 'sk_live_abc123...';
+
+// ✅ GOOD: Dùng environment variables
+const STRIPE_KEY = process.env.STRIPE_SECRET_KEY;
+
+// ❌ BAD: Truyền sensitive data qua GET (URL có thể bị log)
+fetch('/api/checkout?creditCard=1234567890123456');
+
+// ✅ GOOD: Dùng POST với HTTPS
+fetch('/api/checkout', {
+  method: 'POST',
+  body: JSON.stringify({ creditCard: encrypted }),
+  headers: { 'Content-Type': 'application/json' }
+});
+
+// 🛡️ Encryption at Rest (Mã hóa dữ liệu lưu trữ)
+import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+
+function encrypt(text: string, key: Buffer): { encrypted: string; iv: string } {
+  const iv = randomBytes(16); // Initialization Vector
+  const cipher = createCipheriv('aes-256-gcm', key, iv);
+
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+
+  return { encrypted, iv: iv.toString('hex') };
+}
+
+function decrypt(encrypted: string, key: Buffer, iv: string): string {
+  const decipher = createDecipheriv('aes-256-gcm', key, Buffer.from(iv, 'hex'));
+
+  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+
+  return decrypted;
+}
+```
+
+---
+
+#### **A03:2021 - Injection (SQL, NoSQL, Command Injection)**
+
+```typescript
+// ❌ BAD: SQL Injection vulnerability
+app.get('/users', async (req, res) => {
+  const name = req.query.name;
+  const query = `SELECT * FROM users WHERE name = '${name}'`;
+  // Hacker nhập: ' OR '1'='1
+  // Query thành: SELECT * FROM users WHERE name = '' OR '1'='1'
+  // → Trả tất cả users!
+});
+
+// ✅ GOOD: Prepared statements (parameterized queries)
+app.get('/users', async (req, res) => {
+  const name = req.query.name;
+  const query = 'SELECT * FROM users WHERE name = ?';
+  const users = await db.query(query, [name]); // Driver tự escape
+  res.json(users);
+});
+
+// ❌ BAD: NoSQL Injection (MongoDB)
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username, password });
+  // Hacker gửi: { "username": "admin", "password": { "$ne": null } }
+  // Query thành: { username: "admin", password: { $ne: null } } → bypass password!
+});
+
+// ✅ GOOD: Validate input type
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  // Validate input types
+  if (typeof username !== 'string' || typeof password !== 'string') {
+    return res.status(400).json({ error: 'Invalid input' });
+  }
+
+  const user = await User.findOne({ username });
+  const isValid = await bcrypt.compare(password, user.passwordHash);
+
+  if (!isValid) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  res.json({ token: generateToken(user) });
+});
+
+// ❌ BAD: Command Injection
+app.get('/download', (req, res) => {
+  const filename = req.query.filename;
+  exec(`cat /files/${filename}`, (err, stdout) => {
+    // Hacker nhập: ../../etc/passwd
+    // Hoặc: file.txt; rm -rf /
+    res.send(stdout);
+  });
+});
+
+// ✅ GOOD: Whitelist filenames, không dùng exec với user input
+const ALLOWED_FILES = ['report.pdf', 'invoice.pdf'];
+
+app.get('/download', (req, res) => {
+  const filename = req.query.filename;
+
+  if (!ALLOWED_FILES.includes(filename)) {
+    return res.status(400).json({ error: 'Invalid filename' });
+  }
+
+  const filepath = path.join(__dirname, 'files', filename);
+  res.sendFile(filepath);
+});
+```
+
+---
+
+#### **A04:2021 - Insecure Design (Thiết Kế Không An Toàn)**
+
+```typescript
+// ❌ BAD: No rate limiting cho password reset
+app.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  await sendPasswordResetEmail(email); // Hacker spam email!
+  res.json({ success: true });
+});
+
+// ✅ GOOD: Rate limiting + CAPTCHA
+import rateLimit from 'express-rate-limit';
+
+const passwordResetLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 phút
+  max: 3, // Tối đa 3 requests
+  message: 'Too many password reset requests. Please try again later.'
+});
+
+app.post('/forgot-password', passwordResetLimiter, async (req, res) => {
+  const { email, captchaToken } = req.body;
+
+  // Verify CAPTCHA
+  const isHuman = await verifyCaptcha(captchaToken);
+  if (!isHuman) {
+    return res.status(400).json({ error: 'CAPTCHA verification failed' });
+  }
+
+  await sendPasswordResetEmail(email);
+  res.json({ success: true });
+});
+
+// 🛡️ Security by Design Patterns:
+// 1. Zero Trust Architecture - Không tin bất kỳ request nào
+// 2. Principle of Least Privilege - Quyền tối thiểu cần thiết
+// 3. Defense in Depth - Nhiều tầng bảo mật
+// 4. Fail Secure - Khi lỗi → deny access, không phải allow
+```
+
+---
+
+#### **A05:2021 - Security Misconfiguration**
+
+```typescript
+// ❌ BAD: Verbose error messages
+app.get('/api/users/:id', async (req, res) => {
+  try {
+    const user = await db.users.findById(req.params.id);
+    res.json(user);
+  } catch (error) {
+    // Leak database structure, version, query
+    res.status(500).json({ error: error.message, stack: error.stack });
+  }
+});
+
+// ✅ GOOD: Generic error messages in production
+app.get('/api/users/:id', async (req, res) => {
+  try {
+    const user = await db.users.findById(req.params.id);
+    res.json(user);
+  } catch (error) {
+    // Log chi tiết server-side (cho devs)
+    logger.error('Database error:', error);
+
+    // Trả generic message cho client (không leak info)
+    if (process.env.NODE_ENV === 'production') {
+      res.status(500).json({ error: 'Internal server error' });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// ❌ BAD: Default credentials
+const dbConfig = {
+  username: 'admin',
+  password: 'admin123'
+};
+
+// ✅ GOOD: Environment-specific configs
+const dbConfig = {
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  ssl: process.env.NODE_ENV === 'production'
+};
+
+// 🛡️ Security Headers (Express helmet)
+import helmet from 'helmet';
+
+app.use(helmet()); // Tự động set các security headers
+```
+
+---
+
+#### **A06:2021 - Vulnerable and Outdated Components**
+
+```bash
+# ❌ BAD: Không update dependencies
+npm install lodash@3.10.1  # Có CVE-2019-10744 (Prototype Pollution)
+
+# ✅ GOOD: Regular dependency audits
+npm audit                    # Check vulnerabilities
+npm audit fix                # Auto-fix non-breaking
+npm audit fix --force        # Fix breaking changes (test trước!)
+
+# ✅ Automated scanning (CI/CD)
+# .github/workflows/security.yml
+name: Security Scan
+on: [push, pull_request]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm audit --audit-level=moderate
+      - uses: snyk/actions/node@master  # Snyk scan
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+```
+
+```typescript
+// 🛡️ Dependency Security Checklist:
+const securityChecklist = {
+  weekly: [
+    'npm audit',
+    'Check Snyk/Dependabot PRs',
+    'Review security advisories (GitHub Security tab)'
+  ],
+  monthly: [
+    'Update major versions (test thoroughly)',
+    'Remove unused dependencies (npm-check)'
+  ],
+  beforeDeploy: [
+    'npm outdated',
+    'npm audit --production',
+    'Verify lockfile integrity'
+  ]
+};
+
+// ✅ Subresource Integrity (SRI) cho CDN
+// Verify CDN file không bị tamper
+<script
+  src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"
+  integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+z0z0z..."
+  crossorigin="anonymous"
+></script>
+```
+
+---
+
+#### **A07:2021 - Identification and Authentication Failures**
+
+```typescript
+// ❌ BAD: Weak password policy
+function validatePassword(password: string): boolean {
+  return password.length >= 6; // Quá yếu!
+}
+
+// ✅ GOOD: Strong password policy
+function validatePassword(password: string): boolean {
+  const minLength = 12;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  return (
+    password.length >= minLength &&
+    hasUpperCase &&
+    hasLowerCase &&
+    hasNumber &&
+    hasSpecialChar
+  );
+}
+
+// ❌ BAD: No brute force protection
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  // Hacker thử 1000 passwords/giây!
+});
+
+// ✅ GOOD: Rate limiting + Account lockout
+import rateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
+
+const loginLimiter = rateLimit({
+  store: new RedisStore({ client: redisClient }),
+  windowMs: 15 * 60 * 1000, // 15 phút
+  max: 5, // 5 attempts
+  message: 'Too many login attempts. Account locked for 15 minutes.'
+});
+
+app.post('/login', loginLimiter, async (req, res) => {
+  const { username, password } = req.body;
+
+  // Track failed attempts trong database
+  const user = await User.findOne({ username });
+
+  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+    await incrementFailedAttempts(username);
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  // Reset failed attempts on success
+  await resetFailedAttempts(username);
+
+  res.json({ token: generateToken(user) });
+});
+
+// ✅ GOOD: Multi-Factor Authentication (MFA)
+import speakeasy from 'speakeasy';
+
+// Generate TOTP secret (once per user)
+const secret = speakeasy.generateSecret({ length: 20 });
+await User.update({ id: userId }, { totpSecret: secret.base32 });
+
+// Verify TOTP code (mỗi lần login)
+function verifyTOTP(token: string, secret: string): boolean {
+  return speakeasy.totp.verify({
+    secret,
+    encoding: 'base32',
+    token,
+    window: 2 // Allow ±2 time steps (60s tolerance)
+  });
+}
+
+app.post('/login/verify-mfa', async (req, res) => {
+  const { userId, totpCode } = req.body;
+  const user = await User.findById(userId);
+
+  if (!verifyTOTP(totpCode, user.totpSecret)) {
+    return res.status(401).json({ error: 'Invalid MFA code' });
+  }
+
+  res.json({ token: generateToken(user) });
+});
+```
+
+---
+
+#### **A08:2021 - Software and Data Integrity Failures**
+
+```typescript
+// ❌ BAD: Unsigned updates (supply chain attack)
+fetch('https://cdn.example.com/update.js')
+  .then(res => res.text())
+  .then(code => eval(code)); // Hacker thay thế file trên CDN!
+
+// ✅ GOOD: Verify integrity với SRI
+<script
+  src="https://cdn.example.com/library.js"
+  integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/ux..."
+  crossorigin="anonymous"
+></script>
+
+// ✅ GOOD: Digital signatures cho updates
+import { createVerify } from 'crypto';
+
+async function verifyUpdate(updateData: Buffer, signature: string, publicKey: string): Promise<boolean> {
+  const verify = createVerify('SHA256');
+  verify.update(updateData);
+  verify.end();
+
+  return verify.verify(publicKey, signature, 'hex');
+}
+
+// Trước khi apply update:
+const isValid = await verifyUpdate(updateData, signature, PUBLIC_KEY);
+if (!isValid) {
+  throw new Error('Update signature verification failed!');
+}
+
+// 🛡️ CI/CD Pipeline Security
+// .github/workflows/deploy.yml
+jobs:
+  deploy:
+    steps:
+      - name: Verify dependencies
+        run: npm audit --production
+
+      - name: Check lockfile
+        run: |
+          if git diff --name-only HEAD~1 | grep -q "package-lock.json"; then
+            echo "Lockfile changed - review required!"
+            exit 1
+          fi
+
+      - name: Build with integrity check
+        run: |
+          npm ci  # Use lockfile (không update packages)
+          npm run build
+          sha256sum dist/* > checksums.txt  # Verify build output
+```
+
+---
+
+#### **A09:2021 - Security Logging and Monitoring Failures**
+
+```typescript
+// ❌ BAD: Không log security events
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+
+  if (!user || !await bcrypt.compare(password, user.passwordHash)) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+    // Không biết ai đang brute force attack!
+  }
+});
+
+// ✅ GOOD: Comprehensive security logging
+import winston from 'winston';
+
+const securityLogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({ filename: 'security.log' }),
+    new winston.transports.Console() // Dev only
+  ]
+});
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const ip = req.ip;
+  const userAgent = req.get('User-Agent');
+
+  const user = await User.findOne({ username });
+
+  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+    // ✅ Log failed login attempt
+    securityLogger.warn('Failed login attempt', {
+      username,
+      ip,
+      userAgent,
+      timestamp: new Date().toISOString()
+    });
+
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  // ✅ Log successful login
+  securityLogger.info('Successful login', {
+    userId: user.id,
+    username,
+    ip,
+    userAgent,
+    timestamp: new Date().toISOString()
+  });
+
+  res.json({ token: generateToken(user) });
+});
+
+// 🛡️ Real-time Alerting (Suspicious Activity Detection)
+import { EventEmitter } from 'events';
+
+const securityEvents = new EventEmitter();
+
+// Alert on multiple failed logins
+let failedAttempts = new Map<string, number>();
+
+securityEvents.on('login:failed', (data) => {
+  const { username, ip } = data;
+  const key = `${username}:${ip}`;
+
+  const attempts = (failedAttempts.get(key) || 0) + 1;
+  failedAttempts.set(key, attempts);
+
+  if (attempts >= 5) {
+    // ⚠️ Alert security team
+    sendAlert({
+      type: 'BRUTE_FORCE_DETECTED',
+      username,
+      ip,
+      attempts,
+      timestamp: new Date()
+    });
+  }
+});
+
+// Monitor unusual patterns
+securityEvents.on('login:success', async (data) => {
+  const { userId, ip, userAgent } = data;
+
+  const lastLogin = await getLastLogin(userId);
+
+  // Detect login from new location/device
+  if (lastLogin.ip !== ip || lastLogin.userAgent !== userAgent) {
+    await sendEmail(user.email, {
+      subject: 'New login detected',
+      body: `Login from ${ip} at ${new Date()}. If this wasn't you, reset password immediately.`
+    });
+  }
+});
+
+// ✅ Log Events to Monitor:
+const eventsToLog = [
+  'login:success',
+  'login:failed',
+  'password:reset',
+  'password:changed',
+  'permission:denied',
+  'xss:attempt',
+  'sql:injection:attempt',
+  'file:upload',
+  'admin:action',
+  'api:rate:limit',
+  'session:expired'
+];
+```
+
+---
+
+#### **A10:2021 - Server-Side Request Forgery (SSRF)**
+
+```typescript
+// ❌ BAD: Unvalidated URL fetch
+app.post('/fetch-url', async (req, res) => {
+  const { url } = req.body;
+  const response = await fetch(url); // Hacker nhập: http://localhost:6379/
+  // → Access internal Redis server!
+  // Hoặc: file:///etc/passwd
+  res.send(await response.text());
+});
+
+// ✅ GOOD: Whitelist allowed domains
+const ALLOWED_DOMAINS = ['api.example.com', 'cdn.example.com'];
+
+app.post('/fetch-url', async (req, res) => {
+  const { url } = req.body;
+
+  // Parse URL
+  const parsedUrl = new URL(url);
+
+  // Check protocol (chỉ cho phép http/https)
+  if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+    return res.status(400).json({ error: 'Invalid protocol' });
+  }
+
+  // Check hostname (whitelist)
+  if (!ALLOWED_DOMAINS.includes(parsedUrl.hostname)) {
+    return res.status(400).json({ error: 'Domain not allowed' });
+  }
+
+  // Check không phải private IP
+  const ip = await dns.resolve4(parsedUrl.hostname);
+  if (isPrivateIP(ip[0])) {
+    return res.status(400).json({ error: 'Private IP not allowed' });
+  }
+
+  const response = await fetch(url);
+  res.send(await response.text());
+});
+
+// Helper: Detect private IPs
+function isPrivateIP(ip: string): boolean {
+  const parts = ip.split('.').map(Number);
+
+  return (
+    parts[0] === 10 || // 10.0.0.0/8
+    (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) || // 172.16.0.0/12
+    (parts[0] === 192 && parts[1] === 168) || // 192.168.0.0/16
+    parts[0] === 127 // 127.0.0.0/8 (localhost)
+  );
+}
+
+// 🛡️ SSRF Protection Layers:
+// 1. Whitelist allowed domains
+// 2. Block private IPs (10.x, 192.168.x, 127.x)
+// 3. Block metadata endpoints (169.254.169.254 - AWS metadata)
+// 4. Timeout requests (max 5 seconds)
+// 5. Limit response size (max 1MB)
+```
+
+---
 
 ### **📚 Learning Resources**
 

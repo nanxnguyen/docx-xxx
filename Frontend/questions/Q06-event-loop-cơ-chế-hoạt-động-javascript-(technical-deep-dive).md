@@ -608,3 +608,906 @@ function addMicrotaskFixed() {
 2. **Promise.then chạy trước setTimeout**: Microtask luôn ưu tiên cao hơn macrotask
 3. **Blocking code làm đóng băng UI**: Phải break heavy work thành chunks với setTimeout
 4. **Microtask starvation**: Tạo vô hạn microtasks sẽ chặn macrotasks → UI không render được
+
+---
+
+## 🎨 EVENT LOOP DEEP DIVE - BROWSER RENDERING PIPELINE
+
+### **7. Browser Rendering Cycle**
+
+**🔍 Vị trí Rendering trong Event Loop:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              BROWSER EVENT LOOP CYCLE (Chi tiết)            │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  1️⃣ Execute JavaScript (Call Stack)                        │
+│     └─ Run all synchronous code                            │
+│                                                             │
+│  2️⃣ Process ALL Microtasks                                 │
+│     ├─ process.nextTick() (Node.js)                        │
+│     ├─ Promise callbacks                                   │
+│     └─ queueMicrotask()                                    │
+│                                                             │
+│  3️⃣ Render Pipeline (60fps = ~16.67ms budget)             │
+│     ├─ requestAnimationFrame callbacks                     │
+│     ├─ Recalculate Styles (CSSOM)                          │
+│     ├─ Layout (Reflow) - tính vị trí/kích thước           │
+│     ├─ Paint - tạo draw commands                           │
+│     └─ Composite - GPU render layers                       │
+│                                                             │
+│  4️⃣ requestIdleCallback (if time remains)                  │
+│     └─ Low priority work khi browser rảnh                  │
+│                                                             │
+│  5️⃣ Process ONE Macrotask                                  │
+│     ├─ setTimeout/setInterval                              │
+│     ├─ Event callbacks (click, scroll...)                  │
+│     └─ I/O callbacks                                       │
+│                                                             │
+│  ↻ Repeat (typically 60 times/second)                      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### **8. requestAnimationFrame (RAF) - Timing Chi Tiết**
+
+**🎯 Khi nào RAF callbacks chạy:**
+
+```typescript
+// ===================================================
+// 🎬 RAF vs setTimeout - TIMING COMPARISON
+// ===================================================
+
+console.log('1: Start');
+
+// ❌ setTimeout: Không đồng bộ với frame
+setTimeout(() => {
+  console.log('4: setTimeout - có thể chạy GIỮA frame → janky animation');
+  document.body.style.transform = 'translateX(100px)';
+}, 16); // ~16ms ≈ 1 frame, nhưng không chính xác
+
+// ✅ RAF: Chạy ĐÚNG TRƯỚC KHI browser paint
+requestAnimationFrame(() => {
+  console.log('3: RAF - chạy NGAY TRƯỚC khi paint → smooth animation');
+  document.body.style.transform = 'translateX(100px)';
+});
+
+console.log('2: Sync end');
+
+/* OUTPUT TIMELINE:
+0ms    → "1: Start"
+0ms    → "2: Sync end"
+~16ms  → "3: RAF" (chạy đúng trước next paint)
+~16ms  → Browser paint frame
+~16ms  → "4: setTimeout" (có thể chạy sau paint → wasted work)
+*/
+
+// ===================================================
+// 🎨 SMOOTH ANIMATION với RAF
+// ===================================================
+
+class SmoothAnimation {
+  private startTime: number | null = null;
+  private duration = 1000; // 1 giây
+
+  animate(element: HTMLElement) {
+    const step = (timestamp: number) => {
+      // ① Khởi tạo startTime
+      if (!this.startTime) this.startTime = timestamp;
+
+      // ② Tính progress (0 → 1)
+      const elapsed = timestamp - this.startTime;
+      const progress = Math.min(elapsed / this.duration, 1);
+
+      // ③ Apply easing function
+      const eased = this.easeOutCubic(progress);
+
+      // ④ Update DOM
+      element.style.transform = `translateX(${eased * 500}px)`;
+
+      // ⑤ Continue nếu chưa xong
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    };
+
+    requestAnimationFrame(step);
+  }
+
+  private easeOutCubic(t: number): number {
+    return 1 - Math.pow(1 - t, 3);
+  }
+}
+
+// Usage
+const animator = new SmoothAnimation();
+animator.animate(document.getElementById('box')!);
+
+// ===================================================
+// ⚡ RAF + BATCH DOM READS/WRITES (FastDOM pattern)
+// ===================================================
+
+class FastDOM {
+  private reads: Array<() => void> = [];
+  private writes: Array<() => void> = [];
+  private scheduled = false;
+
+  // ✅ Schedule read (measure)
+  measure(callback: () => void) {
+    this.reads.push(callback);
+    this.scheduleFlush();
+  }
+
+  // ✅ Schedule write (mutate)
+  mutate(callback: () => void) {
+    this.writes.push(callback);
+    this.scheduleFlush();
+  }
+
+  private scheduleFlush() {
+    if (this.scheduled) return;
+    this.scheduled = true;
+
+    requestAnimationFrame(() => {
+      // ① Execute ALL reads first (prevent layout thrashing)
+      this.reads.forEach((fn) => fn());
+      this.reads = [];
+
+      // ② Then execute ALL writes
+      this.writes.forEach((fn) => fn());
+      this.writes = [];
+
+      this.scheduled = false;
+    });
+  }
+}
+
+// Usage - Tránh layout thrashing
+const fastdom = new FastDOM();
+
+// ❌ BAD: Interleaved read/write → layout thrashing
+for (let i = 0; i < 100; i++) {
+  const height = element.offsetHeight; // READ → force layout
+  element.style.height = height + 10 + 'px'; // WRITE → invalidate layout
+} // 100 layouts! 🐌
+
+// ✅ GOOD: Batch reads, then writes
+for (let i = 0; i < 100; i++) {
+  fastdom.measure(() => {
+    const height = element.offsetHeight; // READ
+    fastdom.mutate(() => {
+      element.style.height = height + 10 + 'px'; // WRITE
+    });
+  });
+} // 1 layout only! ⚡
+```
+
+---
+
+### **9. requestIdleCallback - Low Priority Work**
+
+**🔍 Khi nào dùng requestIdleCallback:**
+
+```typescript
+// ===================================================
+// 🕐 requestIdleCallback - DEFERRED WORK
+// ===================================================
+
+interface IdleDeadline {
+  didTimeout: boolean;
+  timeRemaining(): number; // ms còn lại trong frame
+}
+
+// ✅ Analytics tracking (không urgent)
+requestIdleCallback((deadline: IdleDeadline) => {
+  while (deadline.timeRemaining() > 0 && analyticsQueue.length > 0) {
+    const event = analyticsQueue.shift();
+    sendAnalytics(event);
+  }
+
+  // ⚠️ Nếu còn events, schedule lại
+  if (analyticsQueue.length > 0) {
+    requestIdleCallback(processAnalytics);
+  }
+});
+
+// ===================================================
+// 🎯 PRELOAD IMAGES khi browser rảnh
+// ===================================================
+
+const imagesToPreload = [
+  '/img1.jpg',
+  '/img2.jpg',
+  '/img3.jpg',
+  // ... 100 images
+];
+
+function preloadImages(deadline: IdleDeadline) {
+  while (
+    deadline.timeRemaining() > 0 && // Còn thời gian
+    imagesToPreload.length > 0
+  ) {
+    const img = new Image();
+    img.src = imagesToPreload.shift()!;
+  }
+
+  // Continue nếu còn images
+  if (imagesToPreload.length > 0) {
+    requestIdleCallback(preloadImages);
+  }
+}
+
+requestIdleCallback(preloadImages, { timeout: 2000 }); // Force sau 2s nếu không rảnh
+
+// ===================================================
+// 🧹 CLEANUP old cache entries
+// ===================================================
+
+class CacheCleanup {
+  private cacheEntries = new Map<string, { data: any; timestamp: number }>();
+
+  scheduleCleanup() {
+    requestIdleCallback((deadline) => {
+      const now = Date.now();
+      const maxAge = 1000 * 60 * 60; // 1 hour
+
+      for (const [key, entry] of this.cacheEntries) {
+        // ⚠️ Kiểm tra còn thời gian không
+        if (deadline.timeRemaining() < 1) {
+          // Reschedule
+          this.scheduleCleanup();
+          return;
+        }
+
+        // Xóa entries cũ
+        if (now - entry.timestamp > maxAge) {
+          this.cacheEntries.delete(key);
+        }
+      }
+    });
+  }
+}
+```
+
+---
+
+## 🔧 NODE.JS EVENT LOOP - PHASES DEEP DIVE
+
+### **10. Node.js Event Loop Architecture**
+
+**🔍 6 Phases của Node.js Event Loop:**
+
+```
+┌───────────────────────────────────────────────────────────┐
+│              NODE.JS EVENT LOOP PHASES                    │
+├───────────────────────────────────────────────────────────┤
+│                                                           │
+│   ┌─────────────────────────────────────────┐            │
+│   │  1️⃣ TIMERS PHASE                        │            │
+│   │  Execute setTimeout() / setInterval()   │            │
+│   └──────────────┬──────────────────────────┘            │
+│                  │                                        │
+│   ┌──────────────▼──────────────────────────┐            │
+│   │  2️⃣ PENDING CALLBACKS PHASE             │            │
+│   │  I/O callbacks deferred từ phase trước  │            │
+│   └──────────────┬──────────────────────────┘            │
+│                  │                                        │
+│   ┌──────────────▼──────────────────────────┐            │
+│   │  3️⃣ IDLE, PREPARE PHASE                 │            │
+│   │  Internal use only                      │            │
+│   └──────────────┬──────────────────────────┘            │
+│                  │                                        │
+│   ┌──────────────▼──────────────────────────┐            │
+│   │  4️⃣ POLL PHASE ⭐ (QUAN TRỌNG NHẤT)    │            │
+│   │  ├─ Retrieve new I/O events             │            │
+│   │  ├─ Execute I/O callbacks               │            │
+│   │  └─ Block here khi không có pending     │            │
+│   │     timers/setImmediate                 │            │
+│   └──────────────┬──────────────────────────┘            │
+│                  │                                        │
+│   ┌──────────────▼──────────────────────────┐            │
+│   │  5️⃣ CHECK PHASE                         │            │
+│   │  Execute setImmediate() callbacks       │            │
+│   └──────────────┬──────────────────────────┘            │
+│                  │                                        │
+│   ┌──────────────▼──────────────────────────┐            │
+│   │  6️⃣ CLOSE CALLBACKS PHASE               │            │
+│   │  socket.on('close', ...) callbacks      │            │
+│   └──────────────┬──────────────────────────┘            │
+│                  │                                        │
+│                  └──────────────┐                         │
+│                                 │                         │
+│   ⚡ MICROTASK QUEUES (giữa các phases):                 │
+│   ├─ process.nextTick() queue (highest priority)        │
+│   └─ Promise microtask queue                            │
+│                                 │                         │
+│                  ┌──────────────┘                         │
+│                  │                                        │
+│                  └──→ Loop back to Phase 1               │
+│                                                           │
+└───────────────────────────────────────────────────────────┘
+```
+
+---
+
+### **11. Node.js: setTimeout vs setImmediate**
+
+**🎯 THỨ TỰ PHỤ THUỘC CONTEXT:**
+
+```typescript
+// ===================================================
+// 🔀 CASE 1: Main module (non-I/O context)
+// ===================================================
+
+// THỨ TỰ KHÔNG DETERMINISTIC (phụ thuộc timing)
+setTimeout(() => console.log('setTimeout'), 0);
+setImmediate(() => console.log('setImmediate'));
+
+/* OUTPUT: CÓ THỂ LÀ:
+setTimeout
+setImmediate
+
+HOẶC:
+
+setImmediate
+setTimeout
+
+🔍 LÝ DO:
+- setTimeout(fn, 0) thực tế là setTimeout(fn, 1) (minimum 1ms)
+- Nếu Event Loop vào Timers phase SAU 1ms → setTimeout chạy trước
+- Nếu Event Loop vào Timers phase TRƯỚC 1ms → skip, setImmediate chạy trước
+*/
+
+// ===================================================
+// 🔀 CASE 2: I/O cycle context
+// ===================================================
+
+const fs = require('fs');
+
+fs.readFile('file.txt', () => {
+  // ✅ TRONG I/O callback, thứ tự LUÔN deterministic
+  setTimeout(() => console.log('setTimeout'), 0);
+  setImmediate(() => console.log('setImmediate'));
+});
+
+/* OUTPUT: LUÔN LUÔN:
+setImmediate
+setTimeout
+
+🔍 LÝ DO:
+- I/O callback chạy ở POLL phase
+- Sau POLL phase → CHECK phase (setImmediate)
+- Rồi mới loop về TIMERS phase (setTimeout)
+→ setImmediate LUÔN chạy trước setTimeout trong I/O callbacks
+*/
+
+// ===================================================
+// 🎯 process.nextTick() - HIGHEST PRIORITY
+// ===================================================
+
+setImmediate(() => console.log('1: setImmediate'));
+
+Promise.resolve().then(() => console.log('2: Promise'));
+
+process.nextTick(() => console.log('3: nextTick'));
+
+/* OUTPUT:
+3: nextTick         ← nextTick queue (highest)
+2: Promise          ← Promise microtask queue
+1: setImmediate     ← Check phase
+
+🔍 THỨ TỰ trong Node.js:
+1. process.nextTick() queue
+2. Promise microtask queue
+3. Macrotasks (timers, setImmediate...)
+*/
+
+// ===================================================
+// ⚠️  NGUY HIỂM: nextTick starvation
+// ===================================================
+
+// ❌ BAD: Block Event Loop
+function dangerousRecursion() {
+  process.nextTick(dangerousRecursion);
+}
+dangerousRecursion();
+
+/* ⚠️ KẾT QUẢ:
+- nextTick queue không bao giờ trống
+- Event Loop không bao giờ tiến tới các phases khác
+- I/O callbacks, timers, setImmediate KHÔNG BAO GIỜ chạy
+- Server treo hoàn toàn!
+*/
+
+// ✅ GOOD: Giới hạn hoặc dùng setImmediate
+function safeRecursion(count: number) {
+  if (count > 0) {
+    setImmediate(() => safeRecursion(count - 1)); // Cho phép I/O xử lý
+  }
+}
+safeRecursion(1000000); // OK, không block I/O
+```
+
+---
+
+### **12. Performance Optimization Patterns**
+
+**🚀 Patterns tối ưu Event Loop:**
+
+```typescript
+// ===================================================
+// Pattern 1: DEBOUNCE (Giảm tần suất execution)
+// ===================================================
+
+function debounce<T extends (...args: any[]) => void>(
+  fn: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  return function (...args: Parameters<T>) {
+    // Clear timeout cũ
+    if (timeoutId) clearTimeout(timeoutId);
+
+    // Set timeout mới
+    timeoutId = setTimeout(() => {
+      fn(...args);
+      timeoutId = null;
+    }, delay);
+  };
+}
+
+// Usage: Search input
+const searchInput = document.getElementById('search') as HTMLInputElement;
+const debouncedSearch = debounce((query: string) => {
+  console.log('API call:', query);
+  fetch(`/api/search?q=${query}`);
+}, 300); // Chỉ call API sau 300ms user NGƯNG gõ
+
+searchInput.addEventListener('input', (e) => {
+  debouncedSearch((e.target as HTMLInputElement).value);
+});
+
+// ===================================================
+// Pattern 2: THROTTLE (Giới hạn execution rate)
+// ===================================================
+
+function throttle<T extends (...args: any[]) => void>(
+  fn: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle = false;
+
+  return function (...args: Parameters<T>) {
+    if (inThrottle) return;
+
+    fn(...args);
+    inThrottle = true;
+
+    setTimeout(() => {
+      inThrottle = false;
+    }, limit);
+  };
+}
+
+// Usage: Scroll event
+const throttledScroll = throttle(() => {
+  console.log('Scroll position:', window.scrollY);
+}, 100); // Tối đa 10 lần/giây (100ms interval)
+
+window.addEventListener('scroll', throttledScroll);
+
+// ===================================================
+// Pattern 3: TIME SLICING (Chia nhỏ heavy tasks)
+// ===================================================
+
+class TimeSlicing {
+  async processLargeArray<T, R>(
+    items: T[],
+    processor: (item: T) => R,
+    options: {
+      chunkSize?: number;
+      onProgress?: (progress: number) => void;
+    } = {}
+  ): Promise<R[]> {
+    const { chunkSize = 100, onProgress } = options;
+    const results: R[] = [];
+    let processed = 0;
+
+    for (let i = 0; i < items.length; i += chunkSize) {
+      // ① Process chunk
+      const chunk = items.slice(i, i + chunkSize);
+      const chunkResults = chunk.map(processor);
+      results.push(...chunkResults);
+
+      processed += chunk.length;
+
+      // ② Report progress
+      if (onProgress) {
+        onProgress((processed / items.length) * 100);
+      }
+
+      // ③ Yield to Event Loop (cho UI render)
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+
+    return results;
+  }
+}
+
+// Usage
+const slicer = new TimeSlicing();
+const largeData = Array.from({ length: 100000 }, (_, i) => i);
+
+slicer
+  .processLargeArray(
+    largeData,
+    (n) => n * 2, // Heavy calculation
+    {
+      chunkSize: 1000,
+      onProgress: (progress) => {
+        console.log(`Progress: ${progress.toFixed(1)}%`);
+        // Update UI progress bar
+        progressBar.style.width = `${progress}%`;
+      },
+    }
+  )
+  .then((results) => console.log('Done:', results.length));
+
+// ===================================================
+// Pattern 4: IDLE CALLBACK QUEUE (Low priority work)
+// ===================================================
+
+class IdleQueue {
+  private queue: Array<() => void> = [];
+  private processing = false;
+
+  add(task: () => void) {
+    this.queue.push(task);
+    this.scheduleProcessing();
+  }
+
+  private scheduleProcessing() {
+    if (this.processing) return;
+    this.processing = true;
+
+    requestIdleCallback((deadline) => {
+      while (deadline.timeRemaining() > 0 && this.queue.length > 0) {
+        const task = this.queue.shift()!;
+        task();
+      }
+
+      this.processing = false;
+
+      // Reschedule nếu còn tasks
+      if (this.queue.length > 0) {
+        this.scheduleProcessing();
+      }
+    });
+  }
+}
+
+// Usage
+const idleQueue = new IdleQueue();
+
+// Thêm 1000 low-priority tasks
+for (let i = 0; i < 1000; i++) {
+  idleQueue.add(() => {
+    localStorage.setItem(`cache_${i}`, JSON.stringify({ data: i }));
+  });
+}
+// Tasks chỉ chạy khi browser RẢNH, không ảnh hưởng scrolling/animation
+```
+
+---
+
+### **13. Real-World Debugging Scenarios**
+
+**🐛 Scenario 1: Jank trong Animation**
+
+```typescript
+// ===================================================
+// 🐌 PROBLEM: Janky animation (dropped frames)
+// ===================================================
+
+// ❌ BAD: Force sync layout trong animation
+function animateBad(element: HTMLElement) {
+  let position = 0;
+
+  function frame() {
+    position += 5;
+
+    // ⚠️ READ: Force layout calculation
+    const currentHeight = element.offsetHeight;
+
+    // ⚠️ WRITE: Invalidate layout
+    element.style.transform = `translateX(${position}px)`;
+
+    // ⚠️ READ AGAIN: Another forced layout!
+    const newHeight = element.offsetHeight;
+
+    if (position < 500) {
+      requestAnimationFrame(frame);
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+// ✅ GOOD: Separate reads and writes
+function animateGood(element: HTMLElement) {
+  let position = 0;
+  let height: number;
+
+  function frame() {
+    // ① READ phase (before any writes)
+    height = element.offsetHeight;
+
+    // ② WRITE phase
+    position += 5;
+    element.style.transform = `translateX(${position}px)`;
+
+    if (position < 500) {
+      requestAnimationFrame(frame);
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+// ===================================================
+// 🔍 DEBUGGING: Performance DevTools
+// ===================================================
+
+/*
+Chrome DevTools → Performance Tab:
+
+❌ BAD animation shows:
+  - Yellow warnings: "Forced reflow"
+  - FPS drops < 60
+  - Long "Recalculate Style" bars
+
+✅ GOOD animation shows:
+  - Green 60fps line
+  - No forced reflows
+  - Short frame times (~16ms)
+*/
+```
+
+---
+
+**🐛 Scenario 2: Memory Leak với Timers**
+
+```typescript
+// ===================================================
+// 💧 PROBLEM: Memory leak với setInterval
+// ===================================================
+
+// ❌ BAD: Không cleanup interval
+class BadComponent {
+  private data: number[] = [];
+
+  mount() {
+    setInterval(() => {
+      this.data.push(Math.random()); // Memory leak!
+    }, 1000);
+  }
+
+  unmount() {
+    // ⚠️ setInterval vẫn chạy → this.data vẫn tăng → memory leak
+  }
+}
+
+// ✅ GOOD: Cleanup trong unmount
+class GoodComponent {
+  private data: number[] = [];
+  private intervalId: NodeJS.Timeout | null = null;
+
+  mount() {
+    this.intervalId = setInterval(() => {
+      this.data.push(Math.random());
+    }, 1000);
+  }
+
+  unmount() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    this.data = []; // Clear data
+  }
+}
+
+// ===================================================
+// 🔍 DEBUGGING: Memory Profiler
+// ===================================================
+
+/*
+Chrome DevTools → Memory Tab → Take heap snapshot:
+
+❌ BAD: Heap size tăng liên tục mỗi giây
+✅ GOOD: Heap size stable
+
+Detached DOM nodes:
+❌ BAD: Số lượng detached nodes tăng
+✅ GOOD: Số lượng stable hoặc giảm sau GC
+*/
+```
+
+---
+
+**🐛 Scenario 3: Race Condition với Async Code**
+
+```typescript
+// ===================================================
+// 🏁 PROBLEM: Race condition với multiple API calls
+// ===================================================
+
+// ❌ BAD: Không handle concurrent requests
+class BadSearchComponent {
+  private results: any[] = [];
+
+  async search(query: string) {
+    const data = await fetch(`/api/search?q=${query}`).then((r) => r.json());
+    this.results = data; // ⚠️ Có thể bị overwrite bởi request cũ!
+  }
+}
+
+/*
+Timeline:
+0ms   → User types "react"
+100ms → User types "react hooks"
+      → API call 1: "/api/search?q=react" started
+      → API call 2: "/api/search?q=react hooks" started
+300ms → API call 2 returns → this.results = [hooks results]
+500ms → API call 1 returns → this.results = [react results] ⚠️ WRONG!
+
+User sees results for "react" instead of "react hooks"!
+*/
+
+// ✅ GOOD: Abort previous requests
+class GoodSearchComponent {
+  private results: any[] = [];
+  private abortController: AbortController | null = null;
+
+  async search(query: string) {
+    // ① Abort previous request
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+
+    // ② Create new controller
+    this.abortController = new AbortController();
+
+    try {
+      const data = await fetch(`/api/search?q=${query}`, {
+        signal: this.abortController.signal,
+      }).then((r) => r.json());
+
+      this.results = data; // ✅ Only latest request updates results
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        console.log('Request aborted');
+      }
+    }
+  }
+}
+
+// ===================================================
+// ✅ ALTERNATIVE: Request ID tracking
+// ===================================================
+
+class RequestIdSearchComponent {
+  private results: any[] = [];
+  private latestRequestId = 0;
+
+  async search(query: string) {
+    const requestId = ++this.latestRequestId;
+
+    const data = await fetch(`/api/search?q=${query}`).then((r) => r.json());
+
+    // ✅ Only update if this is still the latest request
+    if (requestId === this.latestRequestId) {
+      this.results = data;
+    } else {
+      console.log('Stale request, ignoring');
+    }
+  }
+}
+```
+
+---
+
+## 📊 PERFORMANCE MONITORING & PROFILING
+
+### **14. Long Task API - Detect Blocking Code**
+
+```typescript
+// ===================================================
+// 🔍 DETECT LONG TASKS (> 50ms)
+// ===================================================
+
+// Browser API để track long tasks
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    // ⚠️ Task > 50ms detected!
+    console.warn('Long task detected:', {
+      duration: entry.duration,
+      startTime: entry.startTime,
+      name: entry.name,
+    });
+
+    // Send to analytics
+    sendToAnalytics({
+      type: 'long-task',
+      duration: entry.duration,
+      url: window.location.href,
+    });
+  }
+});
+
+observer.observe({ entryTypes: ['longtask'] });
+
+// ===================================================
+// 📊 USER TIMING API - Custom metrics
+// ===================================================
+
+// Mark start
+performance.mark('search-start');
+
+// ... do work
+await performSearch(query);
+
+// Mark end
+performance.mark('search-end');
+
+// Measure duration
+performance.measure('search-duration', 'search-start', 'search-end');
+
+// Get results
+const measure = performance.getEntriesByName('search-duration')[0];
+console.log(`Search took ${measure.duration}ms`);
+
+// Send to analytics
+sendToAnalytics({
+  metric: 'search-duration',
+  value: measure.duration,
+});
+```
+
+---
+
+## 🎯 BEST PRACTICES CHECKLIST
+
+```
+✅ EVENT LOOP OPTIMIZATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+☑️  Dùng RAF cho animations (không dùng setTimeout)
+☑️  Batch DOM reads/writes (FastDOM pattern)
+☑️  Debounce/throttle high-frequency events
+☑️  Time-slice heavy computations (yield mỗi 16ms)
+☑️  Dùng requestIdleCallback cho low-priority work
+☑️  Cleanup timers/intervals trong unmount
+☑️  Abort stale requests (AbortController)
+☑️  Monitor long tasks (> 50ms)
+☑️  Profile với Chrome DevTools Performance tab
+☑️  Tránh microtask starvation (giới hạn recursion)
+
+✅ NODE.JS SPECIFIC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+☑️  Prefer setImmediate over setTimeout(fn, 0) trong I/O
+☑️  Tránh process.nextTick recursion vô hạn
+☑️  Dùng worker_threads cho CPU-intensive tasks
+☑️  Monitor Event Loop lag với libraries (loopbench)
+☑️  Cluster mode cho multi-core utilization
+
+✅ DEBUGGING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+☑️  Chrome DevTools → Performance tab (timeline)
+☑️  Memory profiler (heap snapshots)
+☑️  Long Task API monitoring
+☑️  User Timing API cho custom metrics
+☑️  Lighthouse performance audit
+```
