@@ -1,5 +1,51 @@
 # ⏱️ Q15: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"Deferring execution là kỹ thuật trì hoãn chạy code để optimize performance, bao gồm debounce, throttle, requestIdleCallback, và lazy loading."**
+
+**🔑 5 Kỹ Thuật Chính:**
+
+**1. Debounce:**
+- **Chờ user ngừng action** rồi mới execute (delay reset sau mỗi call)
+- Use case: search input (chờ user gõ xong), window resize
+- Ví dụ: `debounce(fn, 300)` → user gõ → chờ 300ms không gõ nữa → chạy
+
+**2. Throttle:**
+- **Execute tối đa 1 lần trong X ms**, bỏ qua calls giữa interval
+- Use case: scroll events, mouse move, API rate limiting
+- Ví dụ: `throttle(fn, 1000)` → chạy ngay, ignore calls trong 1s tiếp theo
+
+**3. requestIdleCallback:**
+- Chạy task khi browser **idle** (không busy với rendering/user input)
+- Use case: analytics, non-critical updates, prefetching data
+- Fallback: `setTimeout(fn, 1)` cho browsers không support
+
+**4. requestAnimationFrame:**
+- Execute **trước next repaint** (~60fps = 16.67ms)
+- Use case: animations, smooth scrolling, visual updates
+- Better than `setTimeout` vì sync với browser refresh rate
+
+**5. Lazy Loading / Code Splitting:**
+- Load code/assets **only when needed** (dynamic import)
+- Use case: route-based splitting, below-fold images, modals
+- React: `React.lazy(() => import('./Component'))`
+
+**⚠️ Lỗi Thường Gặp:**
+- Debounce search mà không **cancel previous request** → race condition
+- Throttle scroll mà không check `passive: true` → jank
+- requestIdleCallback cho critical tasks → user thấy lag
+- Không cleanup timers khi unmount → memory leak
+
+**💡 Kiến Thức Senior:**
+- **Debounce vs Throttle**: Debounce = "chờ xong hẳn", Throttle = "giới hạn tần suất"
+- Leading vs Trailing edge: Leading chạy ngay lần đầu, Trailing chạy sau delay
+- **IntersectionObserver** hiệu quả hơn scroll throttle cho lazy loading (native API)
+- Web Workers cho **heavy computations** không block main thread
+- Priority scheduling: `scheduler.postTask()` API (Chrome) với priorities (user-blocking, user-visible, background)
+
 
 
 

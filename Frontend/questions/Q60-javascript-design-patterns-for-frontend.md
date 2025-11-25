@@ -1,5 +1,62 @@
 # 🏗️ Q60: JavaScript Design Patterns for Frontend Development
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"Design patterns: Singleton (1 instance), Observer (subscribe changes), Factory (create objects), Module (encapsulation), Pub/Sub (event-driven), Dependency Injection (loose coupling). Modern: Hooks patterns, Compound Components."**
+
+**🔑 6 Essential Patterns:**
+
+**1. Singleton - Single Instance:**
+- **Use case**: Database connection, config object, logger
+- **JS**: Module exports object (auto-singleton), class với static instance
+- **Caution**: Hard to test (global state), avoid unless necessary
+
+**2. Observer - Subscribe to Changes:**
+- **Use case**: Event listeners, state management, reactive programming
+- **Pattern**: Subject maintains observers list, notify on change
+- **Modern**: RxJS Observables, MobX, Vue reactivity
+
+**3. Pub/Sub (Publish-Subscribe):**
+- **Khác Observer**: Decoupled (event bus giữa publisher/subscriber)
+- **Use case**: Cross-component communication, analytics events
+- **Implementation**: EventEmitter, window.postMessage, Redux
+
+**4. Factory - Object Creation:**
+- **Use case**: Create objects without specifying exact class
+- **Example**: `React.createElement()`, component factories
+- **Benefits**: Flexibility, hide complexity
+
+**5. Module Pattern - Encapsulation:**
+- **ES6 Modules**: `export/import` - native encapsulation
+- **IIFE**: `(function(){ ... })()` - private scope (legacy)
+- **Use case**: Libraries, utilities, prevent global pollution
+
+**6. Dependency Injection:**
+- **Pattern**: Pass dependencies (không hard-code)
+- **Use case**: Testing (mock dependencies), loose coupling
+- **React**: Props, Context API, custom hooks
+
+**🔑 Modern React Patterns:**
+
+- **Compound Components**: `<Select>` + `<Option>` share state
+- **Render Props**: `<DataProvider render={data => ...} />`
+- **Higher-Order Components** (HOC): `withAuth(Component)`
+- **Custom Hooks**: `useAuth()`, `useFetch()` - reusable logic
+
+**⚠️ Lỗi Thường Gặp:**
+- Over-engineering: Dùng patterns không cần thiết → complexity
+- Singleton abuse → global state, hard test
+- Observer memory leaks → forget unsubscribe
+- Pub/Sub không type-safe → dùng TypeScript event types
+
+**💡 Kiến Thức Senior:**
+- **Strategy Pattern**: Interchangeable algorithms (sort strategies, payment methods)
+- **Command Pattern**: Undo/redo functionality (Redux actions)
+- **Proxy Pattern**: ES6 Proxy cho reactivity (Vue 3, MobX)
+- **Facade Pattern**: Simplify complex APIs (Axios wraps fetch, jQuery wraps DOM)
+
 **❓ Câu Hỏi:**
 
 Giải thích các Design Patterns phổ biến trong JavaScript/TypeScript frontend: Singleton, Observer, Factory, Module, Pub/Sub, Prototype, Dependency Injection. Khi nào nên dùng pattern nào?

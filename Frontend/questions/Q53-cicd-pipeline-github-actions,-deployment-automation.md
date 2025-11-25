@@ -1,5 +1,58 @@
 # 🚀 Q53: CI/CD Pipeline - GitHub Actions, Deployment Automation
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"CI/CD pipeline tự động hóa: Code quality (lint, test) → Build → Deploy. GitHub Actions: workflows YAML, matrix builds, caching. Deploy strategies: Blue-Green, Canary, Rolling. Secrets: GitHub Secrets + env variables."**
+
+**🔑 CI/CD Stages:**
+
+**1. Code Quality (on PR):**
+- ESLint + Prettier check (formatting)
+- TypeScript type check
+- Unit tests (Jest/Vitest)
+- Integration tests (React Testing Library)
+- Bundle size check (fail if > budget)
+
+**2. Build (on merge):**
+- Install dependencies (npm ci với cache)
+- Build production bundle (`npm run build`)
+- Generate source maps
+- Upload artifacts (S3, CDN)
+
+**3. Deploy:**
+- **Staging**: Auto-deploy on develop branch
+- **Production**: Auto-deploy on main (or manual approval)
+- Deployment strategies: Blue-Green, Canary, Rolling
+- Health checks + smoke tests
+
+**4. Post-Deploy:**
+- Lighthouse CI (performance check)
+- Sentry release tracking
+- Slack/Discord notifications
+- Rollback on failure
+
+**🔑 GitHub Actions Best Practices:**
+
+- **Matrix builds**: Test nhiều Node versions (18, 20, 22)
+- **Caching**: `actions/cache` cho node_modules - save 2-5 phiMút
+- **Secrets**: `${{ secrets.API_KEY }}` - không hardcode
+- **Conditional runs**: `if: github.event_name == 'push'`
+- **Reusable workflows**: Share common workflows
+
+**⚠️ Lỗi Thường Gặp:**
+- Không cache dependencies → mỗi build install lại (chậm)
+- Hardcode secrets trong code → security risk
+- Deploy thẳng production → không rollback, dùng Blue-Green
+- Không test staging → bugs in production
+
+**💡 Kiến Thức Senior:**
+- **Docker multi-stage builds**: Build image nhỏ (Alpine base, remove dev deps)
+- **Vercel/Netlify**: Zero-config CI/CD (auto-detect framework)
+- **Deployment slots** (Azure): Test production environment trước swap
+- **Feature flags**: Deploy code OFF, bật dần (LaunchDarkly)
+
 > **Câu hỏi phỏng vấn Senior Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
 > **Thời gian trả lời:** 15-20 phút

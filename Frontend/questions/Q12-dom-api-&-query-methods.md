@@ -1,5 +1,48 @@
 # 🌐 Q12: DOM API & Query Methods
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
+
+**"DOM API cung cấp methods để query và manipulate DOM. Query methods có performance và behaviors khác nhau - cần hiểu live vs static collections."**
+
+**🔑 4 Query Methods Chính:**
+
+**1. getElementById:**
+- **Nhanh nhất** (browser optimize với hash table)
+- Return **single element** hoặc `null`
+- Unique trong document (IDs phải unique)
+
+**2. querySelector / querySelectorAll:**
+- Nhận **CSS selectors** (`.class`, `#id`, `[attr]`, `:nth-child()`)
+- `querySelector`: first match, `querySelectorAll`: **NodeList** (static snapshot)
+- **Static** → không tự update khi DOM thay đổi
+
+**3. getElementsByClassName / getElementsByTagName:**
+- Return **HTMLCollection** (live collection)
+- **Live** → tự update khi DOM thay đổi (có thể gây bugs)
+- Nhanh hơn querySelectorAll nhưng ít flexible hơn
+
+**4. Performance:**
+- `getElementById` > `getElementsByClassName` > `querySelector` > `querySelectorAll` với complex selectors
+- **Cache references** khi query nhiều lần cùng element
+
+**⚠️ Lỗi Thường Gặp:**
+- Lặp qua `querySelectorAll` mà nghĩ nó là array → phải convert `[...nodeList]` hoặc `Array.from()`
+- Iterate HTMLCollection **trong vòng lặp modify DOM** → collection tự update → infinite loop
+- Query toàn document khi chỉ cần query trong container → chậm, dùng `container.querySelector()`
+
+**💡 Kiến Thức Senior:**
+- **Live vs Static**: HTMLCollection (live) vs NodeList (có thể live hoặc static tùy method)
+  - `getElementsBy*` → live HTMLCollection
+  - `querySelectorAll` → static NodeList
+  - `childNodes` → live NodeList
+- **Reflow/Repaint**: Mỗi DOM manipulation có thể trigger layout recalculation
+  - Batch updates: dùng DocumentFragment hoặc `.innerHTML` thay vì nhiều `.appendChild()`
+  - Read trước, write sau để tránh **layout thrashing** (đọc offsetHeight → ghi style → đọc → ghi → ...)
+- **MutationObserver** hiệu quả hơn polling DOM changes
+- Modern frameworks (React, Vue) dùng Virtual DOM để minimize direct DOM manipulation
+
 
 
 

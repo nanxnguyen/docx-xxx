@@ -1,7 +1,46 @@
 # 🔌 Q45: WebSocket & Real-time Streaming - WebSocket, Socket.IO, Centrifuge
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
+**"WebSocket = persistent bidirectional TCP connection cho real-time data. Socket.IO = WebSocket wrapper với auto-reconnect + rooms. Centrifuge = scalable pub/sub với Redis for enterprise."**
+
+**🔑 3 Technologies:**
+
+**1. Native WebSocket API:**
+- **Protocol**: `ws://` (unencrypted) hoặc `wss://` (SSL/TLS)
+- **Persistent connection** - 1 handshake, reuse mãi
+- **Bidirectional** - server push data bất cứ lúc nào
+- Use case: Trading platforms (real-time prices), chat, live notifications
+- Ưu điểm: Low latency (~50ms), less bandwidth than polling
+
+**2. Socket.IO (High-Level Library):**
+- **Auto-reconnect** khi connection lost
+- **Fallback mechanisms**: WebSocket → HTTP long-polling (nếu WS blocked)
+- **Rooms & Namespaces**: Organize connections (chat rooms, user-specific channels)
+- **Broadcasting**: Send message to all/specific clients
+- **Event-based API**: `socket.emit('event', data)` - cleaner than raw messages
+
+**3. Centrifuge (Scalable Pub/Sub):**
+- **Horizontal scaling** - multiple server instances share state via **Redis**
+- **Channel subscriptions**: Client subscribe channels, server publish to channels
+- **Presence**: Track online users in channels
+- **History**: Replay missed messages (offline → online)
+- Use case: Large-scale systems (>10k concurrent connections)
+
+**⚠️ Lỗi Thường Gặp:**
+- Không handle reconnection → connection lost = app broken
+- Send large payloads → slow, dùng binary (ArrayBuffer) thay JSON
+- Không authenticate WS connections → security risk
+- Memory leak: không cleanup event listeners khi disconnect
+
+**💡 Kiến Thức Senior:**
+- **WebSocket vs SSE**: SSE = server → client only (simpler), WS = bidirectional
+- **Heartbeat/Ping-Pong**: Detect dead connections (send ping every 30s, expect pong)
+- **Binary frames**: `ws.send(arrayBuffer)` nhanh hơn JSON strings (~40%)
+- **Backpressure**: Client slow consume → buffer overflow, implement flow control
+- **Load balancing**: Sticky sessions (same client → same server) or Redis pub/sub share state
 
 **⚡ Quick Summary:**
 > WebSocket = persistent connection, real-time bidirectional communication. Socket.IO = WebSocket + fallback + rooms. Centrifuge = scalable real-time messaging với Redis

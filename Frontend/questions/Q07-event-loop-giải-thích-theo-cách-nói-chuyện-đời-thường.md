@@ -1,5 +1,43 @@
 # 💬 Q07: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
+
+**"Event Loop là cơ chế JavaScript xử lý async code trong môi trường single-threaded bằng cách liên tục kiểm tra Call Stack và Task Queues."**
+
+**🔑 Ẩn Dụ Quán Cà Phê (dễ nhớ cho phỏng vấn):**
+
+**"Như 1 người phục vụ (JS Engine single-thread) làm việc tại quầy (Call Stack). Khi có việc lâu (async), giao cho máy tự động (Web APIs) rồi ghi tên vào sổ chờ. Liên tục check: ① Quầy trống chưa? ② Có khách VIP chưa? (Microtasks) → Phục vụ hết VIP trước. ③ Có khách thường chưa? (Macrotasks) → Phục vụ 1 người. ④ Lặp lại."**
+
+**🔑 3 Thành Phần Chính:**
+
+**1. Call Stack (Quầy pha chế):**
+- Xử lý **đồng bộ**, từng task một
+- Empty → Event Loop mới chạy
+- Stack overflow khi recursive không có base case
+
+**2. Task Queues:**
+- **Microtask Queue** (VIP): Promise `.then()`, `queueMicrotask()`, MutationObserver
+  - **Chạy hết tất cả** trước khi sang Macrotask
+- **Macrotask Queue** (thường): `setTimeout`, `setInterval`, I/O, UI rendering
+  - **Chạy 1 task** rồi check Microtask lại
+
+**3. Event Loop:**
+- **Vòng lặp vô hạn** kiểm tra: Call Stack empty → Microtasks → 1 Macrotask → repeat
+- Đảm bảo UI không bị block (rendering giữa các macrotasks)
+
+**⚠️ Lỗi Thường Gặp:**
+- Nghĩ `setTimeout(fn, 0)` chạy ngay → Sai! Vẫn phải chờ Call Stack empty + Microtasks xong
+- Không hiểu Microtask **chạy hết tất cả** → Promise chains dài có thể block UI
+- Dùng `setInterval` mà không clear → Memory leak + tasks chồng chéo
+
+**💡 Kiến Thức Senior:**
+- **Starvation**: Microtask queue dài vô hạn (recursive Promise) → Macrotasks không bao giờ chạy → UI freeze
+- **Rendering timing**: Browser render giữa macrotasks (60fps = ~16ms/task), nếu task > 16ms → jank
+- `requestAnimationFrame` chạy **trước render**, `setTimeout` chạy sau → dùng rAF cho animation mượt
+- Node.js có **6 phases** trong Event Loop (timers, I/O, poll, check, close) khác Browser (chỉ có Micro + Macro)
+
 
 
 

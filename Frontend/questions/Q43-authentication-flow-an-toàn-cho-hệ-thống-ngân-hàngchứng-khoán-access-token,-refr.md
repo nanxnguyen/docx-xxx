@@ -1,7 +1,55 @@
 # 🎫 Q43: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
 
+**"Secure auth flow: Access Token (short-lived, 15min, memory) + Refresh Token (long-lived, 7-30 days, httpOnly cookie). Implement token rotation, XSS/CSRF protection, MFA cho high-security systems."**
+
+**🔑 Architecture - Dual Token Pattern:**
+
+**1. Access Token (JWT):**
+- **Thời hạn**: 15 phút (ngắn - limit damage nếu stolen)
+- **Lưu ở**: Memory (JS variable) - KHÔNG localStorage (XSS vulnerable)
+- **Dùng để**: API calls - `Authorization: Bearer <token>`
+- **Mất khi**: Refresh page → lấy lại từ refresh token
+
+**2. Refresh Token:**
+- **Thời hạn**: 7-30 ngày (dài - UX tốt)
+- **Lưu ở**: **httpOnly Cookie** - JS không đọc được (chống XSS)
+- **Flags**: `Secure` (HTTPS only), `SameSite=Strict` (chống CSRF)
+- **Dùng để**: Lấy access token mới khi expired
+
+**3. Authentication Flow:**
+```
+Login → Server return:
+  - Access Token (response body)
+  - Refresh Token (httpOnly cookie)
+→ Client lưu access token in memory
+→ API calls với access token
+→ Token expired (15min) → call /refresh endpoint
+→ Server verify refresh token (cookie) → return new access token
+```
+
+**4. Security Measures:**
+- **Token Rotation**: Refresh token thay đổi mỗi lần dùng (detect stolen tokens)
+- **Token Blacklist**: Revoke tokens khi logout/suspicious activity
+- **MFA**: 2FA/OTP cho sensitive operations (transfer, withdraw)
+- **Device fingerprinting**: Detect unusual login locations
+- **Rate limiting**: Max 5 failed attempts → lock account 30min
+
+**⚠️ Lỗi Thường Gặp:**
+- Lưu tokens trong localStorage → **XSS steal tokens**
+- Không rotate refresh tokens → stolen token dùng mãi
+- CORS misconfiguration → expose tokens cross-origin
+- Không implement CSRF tokens → cross-site request attacks
+
+**💡 Kiến Thức Senior:**
+- **JWT structure**: Header.Payload.Signature (Base64URL encoded)
+- **Signature algorithms**: HS256 (symmetric, shared secret) vs **RS256** (asymmetric, safer - banking)
+- **Silent refresh**: Background refresh trước khi expired (smooth UX)
+- **Token introspection**: Server-side validation cho high-security (không tin client JWT)
+- **OAuth 2.0 + PKCE**: Authorization Code Flow với Proof Key (mobile apps)
 
 **Trả lời:**
 

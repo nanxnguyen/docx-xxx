@@ -1,5 +1,73 @@
 # 📊 Q51: Performance Monitoring & APM - Giám Sát Hiệu Suất Ứng Dụng (Bản Tiếng Việt)
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"APM tracking: Core Web Vitals (LCP, INP, CLS), Sentry (error tracking), DataDog RUM (user monitoring). Performance budgets, source maps trong production, Chrome DevTools profiling, custom metrics."**
+
+**🔑 7 Thành Phần APM:**
+
+**1. Core Web Vitals - Google Metrics:**
+- **LCP** (Largest Contentful Paint): < 2.5s (time to main content)
+- **INP** (Interaction to Next Paint): < 200ms (user interaction lag) - thay FID
+- **CLS** (Cumulative Layout Shift): < 0.1 (visual stability)
+- **Tool**: Lighthouse, PageSpeed Insights, Web Vitals library
+- **Impact**: SEO ranking, user experience
+
+**2. Sentry - Error Tracking:**
+- **Setup**: `Sentry.init()` với DSN, environment, release
+- **Features**: Error grouping, breadcrumbs, user context, performance tracing
+- **Source maps**: Upload để debug minified code trong production
+- **Alerts**: Email/Slack khi error spike
+- **Best practice**: Sampling rate (avoid quota), filter sensitive data
+
+**3. DataDog RUM (Real User Monitoring):**
+- **Metrics**: Page load, JS errors, resources, user actions, long tasks
+- **Session replay**: Record user sessions (find bugs)
+- **APM Integration**: Connect frontend errors với backend traces
+- **Custom events**: Track business metrics (purchases, clicks)
+
+**4. Performance Budgets:**
+- **Define**: Max bundle size (JS < 200KB), max LCP < 2.5s
+- **Enforce**: Webpack BundleBudgetPlugin, Lighthouse CI fail build
+- **Monitor**: Track trends, alert khi vượt budget
+
+**5. Source Maps Production:**
+- **Purpose**: Debug minified code trong production errors
+- **Security**: Upload private (Sentry/DataDog), không serve public
+- **Generate**: `webpack devtool: 'hidden-source-map'`
+
+**6. Chrome DevTools Profiling:**
+- **Performance tab**: Record timeline, find bottlenecks (long tasks)
+- **Coverage tab**: Unused JS/CSS (tree-shake candidates)
+- **Memory tab**: Heap snapshots, memory leaks (detached nodes)
+- **Network tab**: Waterfall, slow resources
+
+**7. Custom Performance Metrics:**
+```javascript
+// Performance API
+performance.mark('checkout-start');
+// ... logic
+performance.mark('checkout-end');
+performance.measure('checkout', 'checkout-start', 'checkout-end');
+const measure = performance.getEntriesByName('checkout')[0];
+// Send to APM: Sentry, DataDog
+```
+
+**⚠️ Lỗi Thường Gặp:**
+- Không set performance budgets → bundle bloat
+- Source maps public → security risk (expose code)
+- Không filter PII trong error logs → GDPR violation
+- Quá nhiều custom events → quota limit, performance overhead
+
+**💡 Kiến Thức Senior:**
+- **PerformanceObserver**: Monitor FCP, LCP, INP realtime (không dùng polling)
+- **Session replay privacy**: Mask sensitive inputs, credit cards
+- **Distributed tracing**: Trace request từ frontend → backend → DB
+- **Synthetic monitoring**: Automated tests (Pingdom, Checkly) để catch issues
+- **Alerting thresholds**: P95, P99 thay vì average (avoid outliers skew data)
+
 > **Câu hỏi phỏng vấn Senior Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
 > **Thời gian trả lời:** 15-20 phút

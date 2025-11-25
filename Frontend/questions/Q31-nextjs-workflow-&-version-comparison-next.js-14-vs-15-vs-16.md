@@ -1,5 +1,63 @@
 # ⚡ Q31: Next.js Workflow & Version Comparison - Next.js 14 vs 15 vs 16
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"Next.js workflow: File-based routing (App Router) → Rendering strategies (SSR/SSG/ISR) → Data fetching (Server Components) → Build optimization. Version evolution: v14 stable App Router, v15 React 19 + async APIs, v16 cache improvements."**
+
+**🔑 Next.js Workflow - 5 Bước:**
+
+**1. Routing - File-Based (App Router):**
+- `app/page.tsx` = homepage `/`
+- `app/blog/[slug]/page.tsx` = dynamic route `/blog/my-post`
+- `layout.tsx` = shared UI wrapper (persist across pages)
+- Route groups `(marketing)` không ảnh hưởng URL
+
+**2. Rendering Strategies:**
+- **SSR** (Server-Side Rendering): Render mỗi request, fresh data
+- **SSG** (Static Site Generation): Pre-render build time, fast CDN
+- **ISR** (Incremental Static Regeneration): SSG + revalidate background
+- **CSR** (Client-Side): Fetch data client-side (use client components)
+
+**3. Data Fetching:**
+- **Server Components** (default): `async` components fetch trên server
+- `fetch()` auto-cached, `revalidate` option cho ISR
+- **Client Components** (`'use client'`): dùng React Query, SWR, useEffect
+
+**4. Build & Deploy:**
+- `next build` → static HTML + optimized bundles
+- Vercel (zero-config), Docker, Node.js server
+- Edge Runtime cho ultra-low latency
+
+**5. Performance Optimizations:**
+- Automatic code splitting (per route)
+- Image optimization (`<Image />`), Font optimization
+- Route prefetching (`<Link />`)
+
+**🔑 Version Comparison:**
+
+| **Feature** | **Next.js 14** | **Next.js 15** | **Next.js 16** |
+|------------|---------------|---------------|---------------|
+| **React** | React 18 | **React 19** | React 19 |
+| **App Router** | Stable | Enhanced | Optimized |
+| **Key Feature** | Turbopack (beta), Server Actions stable | **Async Request APIs** (cookies/headers), Partial Prerendering | **Cache behavior changes**, DX improvements |
+| **Breaking** | - | `cookies()/headers()` giờ **async** | Default caching strategies changed |
+
+**⚠️ Lỗi Thường Gặp:**
+- Dùng `'use client'` không cần thiết → mất Server Component benefits (bundle size tăng)
+- Fetch data trong Client Components mà không cache → waterfall, chậm
+- Quên `revalidate` cho ISR → data stale mãi mãi
+- Mix Pages Router và App Router không hiểu middleware scope
+
+**💡 Kiến Thức Senior:**
+- **Server vs Client Components**: Server = zero JS to client, Client = interactivity (onClick, useState)
+- **Partial Prerendering** (v15): Combine static + dynamic trong cùng route (static shell + dynamic content)
+- **Turbopack** (v14+): Rust-based bundler nhanh hơn Webpack (~700x dev mode)
+- **Streaming SSR**: `<Suspense>` cho progressive rendering, TTFB nhanh hơn
+- **Middleware**: Chạy Edge Runtime, dùng cho auth, redirects, A/B testing
+
+
 
 **⚡ Quick Summary:**
 > Next.js 14 = App Router stable + Server Actions + Turbopack. Next.js 15 = React 19 + Async Request APIs + Partial Prerendering. Next.js 16 = Cache cải tiến + Improved DX. Workflow: Page/Layout → Rendering (SSR/SSG/ISR) → Data Fetching → Deployment.

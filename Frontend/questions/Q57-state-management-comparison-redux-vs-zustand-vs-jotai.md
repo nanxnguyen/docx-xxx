@@ -1,5 +1,55 @@
 # 🗂️ Q57: State Management Comparison - Redux vs Zustand vs Jotai
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"State management: Server state (React Query/SWR), Global state (Redux/Zustand/Jotai), Local state (useState). Redux = mature, boilerplate, DevTools. Zustand = simple, hooks-based. Jotai = atomic, granular. Chọn based on complexity."**
+
+**🔑 So Sánh 3 Libraries:**
+
+| **Aspect** | **Redux Toolkit** | **Zustand** | **Jotai** |
+|-----------|------------------|------------|----------|
+| **Philosophy** | Centralized store | Simple hooks | Atomic state |
+| **Boilerplate** | Medium (RTK giảm) | Low | Very low |
+| **Bundle size** | ~20KB | **~1KB** | **~3KB** |
+| **Learning curve** | High | Low | Medium |
+| **DevTools** | ✅ Best | ✅ Basic | ✅ Basic |
+| **Async** | createAsyncThunk | Manual | Async atoms |
+| **Use case** | Large apps, complex | Simple global state | Granular, React Suspense |
+
+**🔑 Khi nào dùng cái gì:**
+
+**1. Redux Toolkit:**
+- **Large apps** với complex state logic
+- Cần **time-travel debugging**, state persistence
+- Team quen Redux patterns
+- Middleware (logging, analytics)
+
+**2. Zustand:**
+- **Simple global state** (theme, auth status)
+- Muốn **minimal boilerplate** + hooks-based
+- Small-medium apps
+- Dễ migrate từ Context API
+
+**3. Jotai:**
+- **Atomic/granular updates** - chỉ re-render affected components
+- **React Suspense** integration
+- Derived state (computed values)
+- Bottom-up approach (atoms compose)
+
+**⚠️ Lỗi Thường Gặp:**
+- Dùng Redux cho server state → dùng React Query/SWR (cache, refetch, optimistic)
+- Mọi state vào global store → unnecessary, dùng local state cho forms/UI
+- Không normalize Redux state → nested updates phức tạp
+- Zustand không immer → mutate state trực tiếp, dùng `immer` middleware
+
+**💡 Kiến Thức Senior:**
+- **State categories**: Server (React Query) | Global (Zustand) | Local (useState) | URL (React Router)
+- **Redux Toolkit Query**: Built-in data fetching (alternative to React Query)
+- **Jotai atoms**: Làm việc với React.lazy, Suspense boundaries
+- **Zustand middleware**: persist (localStorage), immer (immutable updates), devtools
+
 > **Câu hỏi phỏng vấn Senior Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐ (Advanced)  
 > **Thời gian trả lời:** 12-15 phút

@@ -1,9 +1,48 @@
 # 👁️ Q34: Observer APIs - Intersection, Resize, Mutation Observer
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"Observer APIs (IntersectionObserver, ResizeObserver, MutationObserver) theo dõi DOM changes hiệu quả hơn event listeners, chạy async, không block main thread."**
+
+**🔑 3 Observer APIs:**
+
+**1. IntersectionObserver - Lazy Loading & Visibility:**
+- Theo dõi element **vào/ra viewport** (hoặc ancestor container)
+- Use case: **Lazy load images**, infinite scroll, analytics (viewability tracking)
+- Thay thế: `scroll` event + `getBoundingClientRect()` (performance tồi!)
+- Options: `threshold` (0-1), `rootMargin` (offset viewport)
+
+**2. ResizeObserver - Responsive Components:**
+- Theo dõi **thay đổi kích thước element** (width/height)
+- Use case: Responsive charts, grid layouts, container queries
+- Thay thế: `window.resize` event (chỉ detect window, không detect element resize)
+- Tránh layout thrashing - browser optimize batch updates
+
+**3. MutationObserver - DOM Changes:**
+- Theo dõi **DOM tree modifications** (add/remove nodes, attribute changes)
+- Use case: Auto-init third-party widgets, debug, accessibility tools
+- Thay thế: Mutation Events (deprecated - synchronous, performance tồi)
+- Options: `childList`, `attributes`, `characterData`, `subtree`
+
+**⚠️ Lỗi Thường Gặp:**
+- Quên `disconnect()` khi unmount → memory leak
+- MutationObserver trong callback modify DOM → **infinite loop** (observe chính mình)
+- Dùng `scroll` event thay IntersectionObserver → jank, battery drain
+- ResizeObserver không debounce → fire quá nhiều, tự debounce nếu cần
+
+**💡 Kiến Thức Senior:**
+- **Performance**: Observers chạy **async** trong requestIdleCallback-like phase → không block rendering
+- **Batching**: Browser batch nhiều observations, callback nhận array entries
+- **IntersectionObserver v2**: Thêm `isVisible` flag (check occlusion, opacity, filters)
+- **Container Queries** (CSS) dùng ResizeObserver internally
+- **Best practice**: 1 observer cho nhiều elements (reuse) thay vì 1 observer/element
 
 
 
-**❓ Câu Hỏi:**
+
+**❓ Câu Hỏi:****
 
 Observer APIs là gì? Khi nào và tại sao nên dùng chúng thay vì event listeners truyền thống?
 

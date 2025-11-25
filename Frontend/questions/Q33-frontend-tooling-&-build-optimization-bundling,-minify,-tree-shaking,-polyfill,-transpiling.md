@@ -1,5 +1,65 @@
 # 🏗️ Q33: Frontend Tooling & Build Optimization - Bundling, Minify, Tree-shaking, Code Splitting, Polyfill, Transpiling, ESLint/Prettier, Source Maps
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"Build tools optimize frontend: Bundling (gộp files), Minify (nén), Tree-shaking (loại unused code), Code splitting (lazy load), Polyfill (old browsers support), Transpiling (modern → old JS), ESLint/Prettier (code quality), Source maps (debugging)."**
+
+**🔑 8 Kỹ Thuật Chính:**
+
+**1. Bundling (Webpack, Vite, Rollup):**
+- Gộp nhiều files thành 1-2 bundles → giảm HTTP requests
+- Resolve dependencies, handle imports/exports
+- Ví dụ: 100 files → 1 `bundle.js` (10 requests → 1 request)
+
+**2. Minification:**
+- Xóa whitespace, shorten variable names, remove comments
+- **Terser** (JS), **cssnano** (CSS) - giảm 40-60% file size
+- `const myVariableName = 123` → `const a=123`
+
+**3. Tree-shaking:**
+- **Loại unused exports** - chỉ bundle code thực sự dùng
+- Cần ES modules (`import/export`), không work với CommonJS
+- Ví dụ: `import {add} from 'utils'` → chỉ bundle `add`, không bundle `subtract`
+
+**4. Code Splitting:**
+- Tách code thành nhiều chunks, **lazy load** khi cần
+- Route-based: mỗi route 1 bundle riêng
+- Dynamic imports: `const module = await import('./heavy.js')`
+
+**5. Polyfills:**
+- Thêm **missing features** cho old browsers (IE11, Safari cũ)
+- Core-js, Babel polyfills - support Promise, async/await, Array.includes...
+- **Differential serving**: modern bundle (ESM) + legacy bundle (polyfilled)
+
+**6. Transpiling (Babel, SWC):**
+- Convert **modern JS → old JS** (ES2022 → ES5)
+- JSX → JS, TypeScript → JS
+- `const arrow = () => {}` → `var arrow = function() {}`
+
+**7. ESLint/Prettier:**
+- **ESLint**: Find bugs, enforce code patterns (unused vars, no-console...)
+- **Prettier**: Auto-format code (spacing, quotes, semicolons)
+- Pre-commit hooks (Husky) để enforce
+
+**8. Source Maps:**
+- Map minified code → original source cho debugging
+- DevTools show **original code** thay vì minified
+- Types: `inline`, `hidden`, `eval` (dev), `source-map` (production)
+
+**⚠️ Lỗi Thường Gặp:**
+- Ship polyfills cho modern browsers → waste bandwidth (dùng differential serving)
+- Không tree-shake → bundle lodash toàn bộ (570KB) thay vì 1 function
+- Source maps trong production → expose source code (dùng `hidden-source-map`)
+- Over-splitting code → quá nhiều requests, worse than bundling
+
+**💡 Kiến Thức Senior:**
+- **Vite** nhanh hơn Webpack vì: ESBuild (Go) transpile, native ESM trong dev (không bundle)
+- **Module Federation** (Webpack 5): Share code giữa apps runtime (microfrontends)
+- **Turbopack** (Next.js 14): Rust-based, 700x faster than Webpack dev mode
+- Performance budget: Set limits (JS < 200KB, CSS < 50KB), fail build nếu vượt
+
 
 
 

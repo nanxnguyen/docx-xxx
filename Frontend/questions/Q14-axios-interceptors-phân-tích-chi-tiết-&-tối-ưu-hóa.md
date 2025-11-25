@@ -1,5 +1,45 @@
 # 🔌 Q14: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"Interceptors là middleware functions chạy trước/sau mỗi request/response, giúp centralize authentication, error handling, logging, và data transformation."**
+
+**🔑 4 Use Cases Chính:**
+
+**1. Authentication & Token Management:**
+- Request interceptor: **auto-add JWT token** vào headers
+- Response interceptor: **auto-refresh expired tokens** (401 → refresh → retry)
+- Pattern: Lưu refresh token, khi 401 → call refresh API → update token → retry failed request
+
+**2. Global Error Handling:**
+- **Centralized error processing** - không cần try/catch mọi nơi
+- Handle network errors, timeouts, 401/403/500 uniformly
+- Show toast notifications, log errors, redirect login
+
+**3. Request/Response Transformation:**
+- **Auto format** data: camelCase ↔ snake_case, date strings ↔ Date objects
+- Add common headers: `Content-Type`, `Accept-Language`, device info
+- Strip sensitive data trước khi log
+
+**4. Performance Monitoring & Retry:**
+- Track request **timing** (start time → duration)
+- **Exponential backoff retry** cho failed requests
+- Circuit breaker pattern (dừng requests sau N failures)
+
+**⚠️ Lỗi Thường Gặp:**
+- Không cleanup interceptor khi component unmount → **memory leak**
+- Modify request config trực tiếp mà không clone → side effects
+- Infinite loop khi retry logic không có **max attempts**
+- Token refresh race condition (multiple 401s cùng lúc) → queue requests
+
+**💡 Kiến Thức Senior:**
+- **Execution order**: Request interceptors = **LIFO** (last added runs first), Response = **FIFO**
+- Interceptor return Promise → có thể **async/await** bên trong
+- Eject interceptor: `const id = axios.interceptors.request.use(...); axios.interceptors.request.eject(id)`
+- Best practice: Tạo **separate axios instances** cho từng service (auth API, data API) với different interceptors
+
 
 
 

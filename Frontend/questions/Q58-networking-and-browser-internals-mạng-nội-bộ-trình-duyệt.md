@@ -1,10 +1,57 @@
 # 🌐 Q58: Networking & Browser Internals - Mạng & Nội Tế Trình Duyệt
 
-> **Câu hỏi phỏng vấn Senior Frontend Developer**
-> **Độ khó:** ⭐⭐⭐⭐⭐ (Advanced)
-> **Thời gian trả lời:** 15-25 phút
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
----
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"HTTP/2 = multiplexing (1 TCP), HTTP/3 = QUIC (UDP, no TCP HoL). CORS = cross-origin security (preflight OPTIONS). CSP = prevent XSS. Cache: immutable, stale-while-revalidate. CDN = edge caching, băng thông, latency."**
+
+**🔑 Network Fundamentals:**
+
+**1. HTTP Versions:**
+- **HTTP/1.1**: 1 request/connection, head-of-line blocking
+- **HTTP/2**: Multiplexing (many requests/1 TCP), header compression (HPACK), server push
+- **HTTP/3**: QUIC (UDP), faster handshake (0-RTT), no TCP HoL blocking
+- **Impact**: HTTP/2/3 = fewer requests overhead, không cần concat files
+
+**2. CORS (Cross-Origin Resource Sharing):**
+- **Same-origin policy**: Browser block cross-origin requests
+- **Simple requests**: GET/POST → check `Access-Control-Allow-Origin`
+- **Preflight**: OPTIONS request trước PUT/DELETE/custom headers
+- **Credentials**: `credentials: 'include'` + `Access-Control-Allow-Credentials: true`
+
+**3. CSP (Content Security Policy):**
+- **Prevent XSS**: Whitelist script sources
+- Header: `Content-Security-Policy: script-src 'self' cdn.example.com`
+- **Nonce**: `<script nonce="random123">` - random per request
+- **Report-only mode**: Test CSP without blocking
+
+**4. Browser Cache:**
+- **`Cache-Control: immutable`**: File không bao giờ thay đổi (hashed filenames)
+- **`stale-while-revalidate`**: Serve stale, fetch fresh background
+- **`max-age=3600`**: Cache 1 giờ
+- **ETag**: Validate cached file (304 Not Modified)
+
+**5. CDN (Content Delivery Network):**
+- **Edge caching**: Assets gần user (lower latency)
+- **Bandwidth**: Offload origin server
+- **Security**: DDoS protection, WAF
+
+**⚠️ Lỗi Thường Gặp:**
+- CORS errors → check server headers, proxy trong dev
+- Không cache static assets → waste bandwidth
+- CSP too strict → break inline scripts, dùng nonces
+- HTTP/1.1 concat files → không cần với HTTP/2
+
+**💡 Kiến Thức Senior:**
+- **DNS prefetch**: `<link rel="dns-prefetch" href="//cdn.example.com">`
+- **Preconnect**: Early TCP+TLS handshake
+- **Brotli compression**: Better than gzip (~20% smaller)
+- **Service Workers**: Network proxy, offline caching, cache strategies
+
+> **Câu hỏi phỏng vấn Senior Frontend Developer**
+> **Độ khó:** ⭐⭐⭐⭐⭐ (Advanced)  
+> **Thời gian trả lời:** 15-25 phút---
 
 ## 📋 Mục lục
 1. [HTTP/1.1, HTTP/2, HTTP/3 - So sánh ngắn gọn](#1-http-11-http2-http3)

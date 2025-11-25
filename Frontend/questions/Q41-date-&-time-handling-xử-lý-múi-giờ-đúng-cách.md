@@ -1,7 +1,47 @@
 # ⏰ Q41: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
+**"Dùng Timestamps (Unix milliseconds) hoặc ISO 8601 UTC cho storage/transmission, convert sang local timezone chỉ khi display. Libraries: date-fns, dayjs, Luxon."**
+
+**🔑 Best Practices:**
+
+**1. Storage & Transmission - Luôn UTC:**
+- **Timestamp** (Unix ms): `Date.now()` = 1705329000000 - absolute time point
+- **ISO 8601 UTC**: `new Date().toISOString()` = "2024-01-15T14:30:00.000Z"
+- Database lưu TIMESTAMP hoặc DATETIME UTC
+- API truyền ISO 8601 với 'Z' suffix (UTC)
+
+**2. Display - Convert to Local:**
+- `new Date(timestamp).toLocaleString('vi-VN', {timeZone: 'Asia/Ho_Chi_Minh'})`
+- `Intl.DateTimeFormat` cho i18n formatting
+- Show timezone explicitly: "15/01/2024 21:30 ICT"
+
+**3. Avoid Native Date Pitfalls:**
+- ❌ `new Date('2024-01-15')` → depends on browser timezone
+- ❌ Months zero-indexed: `new Date(2024, 1, 15)` = Feb 15
+- ❌ Mutable: `date.setMonth()` modifies original
+- ✅ Use libraries: **date-fns** (functional, tree-shakable), **dayjs** (lightweight), **Luxon** (immutable, timezone-aware)
+
+**4. Common Scenarios:**
+- **User selects date**: Convert local → UTC before send server
+- **Display server date**: Parse UTC → convert local timezone
+- **Scheduling**: Store UTC + user's timezone separately
+- **Recurring events**: Calculate in user's timezone (handle DST)
+
+**⚠️ Lỗi Thường Gặp:**
+- Lưu date string "DD/MM/YYYY" → parsing issues, dùng ISO 8601
+- Compare dates không normalize timezone → sai kết quả
+- Quên Daylight Saving Time (DST) → sai 1 giờ 2 lần/năm
+- Dùng `Date()` constructor với string → browser-dependent parsing
+
+**💡 Kiến Thức Senior:**
+- **IANA timezone database**: "Asia/Ho_Chi_Minh", không dùng "GMT+7" (không handle DST)
+- **ISO 8601 formats**: `2024-01-15T14:30:00Z` (UTC) vs `2024-01-15T14:30:00+07:00` (offset)
+- **Temporal API** (TC39 Stage 3): Future replacement for Date - `Temporal.ZonedDateTime`
+- **UTC Offset vs Timezone**: Offset = static (+7), Timezone = rules (handle DST, history)
 
 **❓ Câu Hỏi:**
 Làm thế nào xử lý Date/Time trong JavaScript không bị ảnh hưởng bởi múi giờ?

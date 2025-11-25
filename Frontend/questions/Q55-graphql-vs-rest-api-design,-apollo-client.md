@@ -1,5 +1,54 @@
 # 🔄 Q55: GraphQL vs REST - API Design, Apollo Client
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"GraphQL = single endpoint, client-driven queries, exact data (no over/under-fetching). REST = multiple endpoints, server-driven. Apollo Client: caching, optimistic updates, subscriptions. GraphQL tốt cho complex data, REST tốt cho simple CRUD."**
+
+**🔑 GraphQL vs REST:**
+
+| **Aspect** | **REST** | **GraphQL** |
+|-----------|---------|------------|
+| **Endpoints** | Multiple (`/users`, `/posts`) | Single (`/graphql`) |
+| **Data fetching** | Server decides | **Client decides** |
+| **Over-fetching** | ✅ Common | ❌ Exact fields |
+| **Under-fetching** | ✅ Multiple requests | ❌ Single request |
+| **Versioning** | `/v1`, `/v2` | **No versions** (deprecate fields) |
+| **Caching** | HTTP cache (simple) | Custom (Apollo cache) |
+
+**🔑 Apollo Client Features:**
+
+**1. Caching:**
+- **Normalized cache**: Store objects by ID, auto-dedupe
+- **Cache policies**: cache-first, network-only, cache-and-network
+- **Auto-update**: Mutations auto-update affected queries
+
+**2. Queries & Mutations:**
+- **useQuery**: Fetch data + loading/error states
+- **useMutation**: Modify data + optimistic updates
+- **Fragments**: Reusable field selections
+
+**3. Subscriptions (Real-time):**
+- WebSocket connection cho real-time updates
+- Use case: Chat, notifications, live data
+
+**4. Optimistic Updates:**
+- Update UI immediately (assume success)
+- Rollback if mutation fails
+
+**⚠️ Lỗi Thường Gặp:**
+- N+1 queries → backend performance issue (dùng DataLoader)
+- Không hiểu cache → redundant network requests
+- Over-complicated queries → chậm backend, split queries
+- Public GraphQL endpoint không rate limit → DoS risk
+
+**💡 Kiến Thức Senior:**
+- **Persisted queries**: Pre-register queries (security + performance)
+- **Automatic Persisted Queries** (APQ): Hash queries → reduce bandwidth
+- **Federation**: Microservices architecture cho GraphQL
+- **Batching**: Combine multiple queries in 1 HTTP request
+
 > **Câu hỏi phỏng vấn Senior Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐ (Advanced)  
 > **Thời gian trả lời:** 12-15 phút

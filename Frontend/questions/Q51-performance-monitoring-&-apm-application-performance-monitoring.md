@@ -1,5 +1,60 @@
 # 📊 Q51: Performance Monitoring & APM - Application Performance Monitoring
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"Performance monitoring tracks Core Web Vitals (LCP, INP, CLS) + custom metrics. Tools: Sentry (errors), DataDog/New Relic (RUM), Lighthouse CI (lab tests). Set budgets (JS < 200KB), alerts (LCP > 2.5s), optimize iteratively."**
+
+**🔑 Core Web Vitals (Google Ranking Factors):**
+
+**1. LCP (Largest Contentful Paint) - Tốc độ tải:**
+- **Métric**: Thời gian phần tử lớn nhất hiển thị
+- **Target**: ≤ 2.5s (good), 2.5-4s (needs improvement), > 4s (poor)
+- **Optimize**: Preload images, CDN, optimize images (WebP), server response time
+
+**2. INP (Interaction to Next Paint) - Responsiveness:**
+- **Métric**: Thời gian từ click/tap đến update UI
+- **Target**: ≤ 200ms (good), 200-500ms (needs improvement), > 500ms (poor)
+- **Optimize**: Debounce events, code splitting, avoid long tasks (>50ms)
+
+**3. CLS (Cumulative Layout Shift) - Visual stability:**
+- **Métric**: Layout shifts bất ngờ (images, ads load)
+- **Target**: ≤ 0.1 (good), 0.1-0.25 (needs improvement), > 0.25 (poor)
+- **Optimize**: Set width/height cho images, reserve space cho ads
+
+**🔑 APM Tools:**
+
+**1. Sentry - Error Tracking:**
+- **Captures**: JS errors, unhandled rejections, network errors
+- **Context**: User info, breadcrumbs (user actions), device/browser
+- **Source maps**: Show original code in production errors
+- **Alerts**: Slack/email khi error spike
+
+**2. DataDog/New Relic - RUM (Real User Monitoring):**
+- **Tracks**: Core Web Vitals, custom metrics, user sessions
+- **Distributed tracing**: Frontend request → API → Database (full stack)
+- **Dashboards**: Real-time metrics, historical trends
+- **Synthetic monitoring**: Simulated user journeys (check uptime)
+
+**3. Lighthouse CI:**
+- **Lab tests**: Automated performance audits on PR
+- **Budgets**: Fail build nếu JS > 200KB, LCP > 3s
+- **Trends**: Track performance regression over time
+
+**⚠️ Lỗi Thường Gặp:**
+- Ship source maps public → expose code, dùng `hidden-source-map`
+- Không sample events → high APM costs, sample 10-20% traffic
+- Ignore CLS → SEO penalty, poor UX
+- Không set performance budgets → gradual degradation
+
+**💡 Kiến Thức Senior:**
+- **TTFB (Time to First Byte)**: Server response time, optimize với CDN/edge
+- **FID → INP**: Google replaced FID (First Input Delay) với INP (2024)
+- **Custom metrics**: `performance.mark()`, `performance.measure()` cho business logic
+- **Session replay**: FullStory, LogRocket - replay user sessions cho debugging
+- **Alerting**: Set thresholds (LCP p75 > 3s) → PagerDuty/Slack alerts
+
 > **Câu hỏi phỏng vấn Senior Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
 > **Thời gian trả lời:** 15-20 phút

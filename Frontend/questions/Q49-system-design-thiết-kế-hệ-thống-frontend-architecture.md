@@ -1,5 +1,57 @@
 # 🏗️ Q49: System Design - Thiết Kế Hệ Thống Frontend Architecture
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (5-7 phút):**
+
+**"Frontend system design bao gồm: Architecture (Microfrontends/Monorepo), API layer (BFF, GraphQL), State management (global/local), Performance (CDN, lazy load), Resilience (error boundaries, fallbacks). Cần balance scalability vs complexity."**
+
+**🔑 5 Pillars của Frontend System Design:**
+
+**1. Architecture Patterns:**
+- **Microfrontends**: Independent deployable apps share same domain (Module Federation)
+  - Ưu: Teams tự chủ, tech diversity, independent deploy
+  - Nhược: Complexity, bundle duplication, runtime overhead
+- **Monorepo**: Single repo, multiple packages (Nx, Turborepo)
+  - Ưu: Code sharing, atomic commits, unified tooling
+  - Nhược: Build time, CI/CD complexity
+
+**2. API Layer Design:**
+- **BFF (Backend for Frontend)**: API gateway tailored cho frontend needs
+  - Aggregate multiple services, transform data format
+- **GraphQL**: Client-driven queries, avoid over/under-fetching
+- **REST**: Simple, cacheable, well-understood
+
+**3. State Management:**
+- **Global**: Redux/Zustand (auth, theme, user data)
+- **Server Cache**: React Query/SWR (API data, auto-refetch)
+- **Local**: useState/useReducer (form, UI state)
+- **URL**: React Router (filters, pagination)
+
+**4. Performance Optimization:**
+- **CDN**: Static assets + edge caching (CloudFlare, Vercel Edge)
+- **Code Splitting**: Route-based, component-based lazy loading
+- **Resource Hints**: preload, prefetch, preconnect
+- **Image Optimization**: WebP, AVIF, responsive images
+
+**5. Resilience & Monitoring:**
+- **Error Boundaries**: Catch React errors, show fallback UI
+- **Circuit Breaker**: Stop calling failing services
+- **Feature Flags**: Gradual rollouts, A/B testing
+- **Monitoring**: Sentry (errors), DataDog (performance), analytics
+
+**⚠️ Lỗi Thường Gặp:**
+- Over-engineering: Start monolith, migrate microfrontends when needed
+- Không cache API responses → redundant requests
+- Single global store (Redux) cho mọi state → complexity, dùng React Query cho server state
+- Không error boundaries → 1 component crash = toàn app crash
+
+**💡 Kiến Thức Senior:**
+- **CAP Theorem** (frontend context): Trade-off giữa Consistency (data freshness) vs Availability (offline support)
+- **Islands Architecture**: Static HTML + interactive components (Astro) - best performance
+- **Streaming SSR**: Progressive rendering (React 18 Suspense + Next.js)
+- **Observability**: Tracing (OpenTelemetry), RUM (Real User Monitoring), synthetic monitoring
+
 > **Câu hỏi phỏng vấn Senior/Lead Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
 > **Thời gian trả lời:** 20-30 phút (với whiteboard)

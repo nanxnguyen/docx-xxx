@@ -1,5 +1,53 @@
 # 🔀 Q16: Compare Data Types - Objects, Strings, Big Numbers & Decimals
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"So sánh data types phức tạp cần hiểu: Objects so sánh reference vs value, Strings xử lý Unicode/locale, Big Numbers/Decimals dùng libraries vì floating point precision issues."**
+
+**🔑 4 Khái Niệm Chính:**
+
+**1. Object Comparison - Shallow vs Deep:**
+- **Shallow**: So sánh reference + primitive values ở level 1
+  - `{a:1} === {a:1}` → `false` (different references)
+  - Use case: React.memo, shouldComponentUpdate
+- **Deep**: Recursive compare tất cả nested properties
+  - Dùng lodash `_.isEqual()` (handle circular refs, Date, RegExp)
+  - ⚠️ O(n) complexity, có thể infinite loop
+
+**2. String Comparison - Unicode & Locale:**
+- **`===` operator**: So sánh **binary representation** (không hiểu Ă ≠ A)
+- **`localeCompare()`**: So sánh theo **ngôn ngữ** (tiếng Việt: à < á < ả < ã < ạ)
+  - Ví dụ: `'à'.localeCompare('á', 'vi')` → `-1` (à đứng trước)
+- **`Intl.Collator`**: Performance cao hơn cho nhiều comparisons
+- ⚠️ Unicode variants: é (e + ́) vs é (single char) → dùng `.normalize('NFC')`
+
+**3. Big Numbers - Precision Issues:**
+- JavaScript Number: **53-bit precision** → max safe integer = 2^53 - 1
+- **Floating point error**: `0.1 + 0.2 !== 0.3` (binary representation)
+- **Solutions**:
+  - `BigInt` (native): integers only, không có decimals
+  - Libraries: `decimal.js`, `big.js`, `bignumber.js` (arbitrary precision)
+- ⚠️ KHÔNG dùng `===` cho decimals → dùng epsilon: `Math.abs(a - b) < Number.EPSILON`
+
+**4. Financial Calculations:**
+- Dùng **integers** (cents, đồng) thay vì floats: `1.99` → `199` cents
+- Libraries: `dinero.js` (money), `currency.js` (currency math)
+- Format: `Intl.NumberFormat` cho localized currency display
+
+**⚠️ Lỗi Thường Gặp:**
+- Deep compare objects trong render → re-render loop (dùng `useMemo`)
+- So sánh strings không normalize Unicode → "café" ≠ "café"
+- Tính toán tiền bằng floats → rounding errors: `(0.1 + 0.2) * 100 = 30.000000000000004`
+- Stringify objects để compare → không handle functions, Date, circular refs
+
+**💡 Kiến Thức Senior:**
+- **Structural sharing** (Immer, Redux): shallow copy chỉ modified branches → fast comparison
+- **Object.is()** vs `===`: `Object.is(NaN, NaN) = true`, `Object.is(+0, -0) = false`
+- JSON.stringify **không stable** (key order) → dùng `fast-json-stable-stringify`
+- Banking systems: **double-entry bookkeeping**, store as integers, round at display layer only
+
 
 
 

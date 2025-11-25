@@ -1,9 +1,48 @@
 # ⏹️ Q28: Cancellation, Concurrency & Retry
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"Cancellation dùng AbortController để hủy requests, Concurrency control giới hạn parallel tasks, Retry implement exponential backoff cho failed requests."**
+
+**🔑 3 Pattern Chính:**
+
+**1. Cancellation - AbortController:**
+- `const controller = new AbortController(); fetch(url, {signal: controller.signal})`
+- **`controller.abort()`** hủy request → throw `AbortError`
+- Use case: User navigate away, timeout, duplicate requests
+- Best practice: Lan truyền `signal` xuyên suốt async chain
+
+**2. Concurrency Control - Semaphore Pattern:**
+- **Giới hạn số tasks chạy đồng thời** (ví dụ: max 5 parallel requests)
+- Pattern: Queue + counter, chờ slot trống để chạy task tiếp
+- Use case: Rate limiting, prevent overload server/browser
+- Libraries: `p-limit`, `p-queue` (production-ready)
+
+**3. Retry - Exponential Backoff + Jitter:**
+- **Retry lỗi tạm thời** (5xx, network errors), không retry 4xx
+- Exponential backoff: `delay = baseDelay * 2^attempt` (100ms, 200ms, 400ms...)
+- **Jitter** (random noise): tránh "thundering herd" (nhiều clients retry cùng lúc)
+- Max attempts + total timeout để không retry vô hạn
+
+**⚠️ Lỗi Thường Gặp:**
+- Không cleanup AbortController khi unmount → memory leak
+- Retry **mọi lỗi** (kể cả 4xx) → spam server, waste resources
+- Concurrency limit quá thấp → chậm, quá cao → overload
+- Không cancel previous search request → race condition (results out of order)
+
+**💡 Kiến Thức Senior:**
+- **Idempotent requests**: Retry an toàn cho GET/PUT, cẩn thận với POST (dùng idempotency keys)
+- **Circuit Breaker pattern**: Dừng hẳn requests sau N failures liên tiếp, chờ recover
+- **`AbortSignal.timeout(ms)`** (native) thay `setTimeout + abort`
+- **Stale-While-Revalidate**: Return cached data ngay, fetch mới background, update sau
+- React Query/SWR **built-in** retry + cancellation + concurrency control
 
 
 
-**Trả lời:**
+
+**Trả lời:****
 
 - Hủy bỏ: `AbortController/AbortSignal` cho fetch/task dài; truyền `signal` xuyên suốt để hủy chuỗi async.
 - Giới hạn đồng thời: dùng semaphore/pool để kiểm soát số tác vụ chạy song song, tránh nghẽn băng thông hay quota.

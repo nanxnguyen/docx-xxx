@@ -1,5 +1,44 @@
 # 🗂️ Q05: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"Set/Map là collections nâng cao của JavaScript, còn WeakSet/WeakMap/WeakRef là phiên bản weak reference không ngăn garbage collection."**
+
+**🔑 4 Điểm Chính:**
+
+**1. Set vs Array:**
+- Set lưu **unique values**, tự động loại duplicate
+- Performance O(1) cho `.has()`, `.add()`, `.delete()` (Array là O(n))
+- Use case: deduplicate array `[...new Set([1,2,2,3])]`, check membership nhanh
+
+**2. Map vs Object:**
+- Map keys có thể là **bất kỳ type nào** (object, function, primitive) - Object chỉ dùng string/symbol
+- **Maintain insertion order** và có `.size` property
+- Use case: cache với object keys, counting occurrences, ordered data
+
+**3. WeakMap/WeakSet - Weak References:**
+- Keys phải là **objects**, không prevent garbage collection
+- **Không iterable**, không có `.size` - vì entries có thể biến mất bất cứ lúc nào
+- Use case: **private data** (WeakMap), metadata cho DOM nodes, preventing memory leaks
+
+**4. WeakRef & FinalizationRegistry:**
+- WeakRef: tạo weak reference tới 1 object cụ thể, có thể bị GC
+- FinalizationRegistry: callback khi object bị GC để cleanup resources
+- **⚠️ Non-deterministic** - không dùng cho core logic
+
+**⚠️ Lỗi Thường Gặp:**
+- Dùng Object khi cần Map → không maintain order, keys bị convert sang string
+- Dùng WeakMap với primitive keys → Error (phải dùng objects)
+- Expect WeakRef.deref() luôn return object → có thể return `undefined` nếu đã GC
+
+**💡 Kiến Thức Senior:**
+- WeakMap dùng cho **private properties pattern** trước khi có `#privateField`
+- Set/Map internally dùng **SameValueZero algorithm** (như `===` nhưng `NaN === NaN`)
+- WeakMap **không có memory leak** khi attach metadata vào DOM nodes (auto cleanup khi node removed)
+- FinalizationRegistry chỉ dùng cho **cleanup non-JS resources** (file handles, WASM memory), không dùng cho app logic
+
 
 
 

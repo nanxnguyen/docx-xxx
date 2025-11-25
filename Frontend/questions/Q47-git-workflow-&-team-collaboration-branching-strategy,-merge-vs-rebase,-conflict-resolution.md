@@ -1,5 +1,49 @@
 # 🌿 Q47: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase, Conflict Resolution
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"Git workflow tốt = ít conflicts + dễ review + dễ rollback. Git Flow cho dự án lớn, GitHub Flow cho CI/CD. Rebase tạo clean history, Merge giữ context. Feature flags deploy code chưa xong mà không ảnh hưởng production."**
+
+**🔑 2 Branching Strategies:**
+
+**1. Git Flow (Dự án lớn, release theo version):**
+- **Branches**: `main` (production) + `develop` (staging) + `feature/*` + `release/*` + `hotfix/*`
+- **Flow**: feature → develop → release → main
+- **Hotfix**: main → hotfix → main + develop (fix bug khNeedstoẩn cấp)
+- Use case: Enterprise apps, mobile apps (v1.0, v2.0 releases)
+
+**2. GitHub Flow (CI/CD, deploy liên tục):**
+- **Branches**: `main` (luôn deployable) + `feature/*`
+- **Flow**: feature → PR → review → merge main → auto deploy
+- **Simple**: Chỉ 2 loại branches, deploy mỗi merge
+- Use case: SaaS apps, web apps với frequent deployments
+
+**🔑 Merge vs Rebase:**
+
+| **Aspect** | **Merge** | **Rebase** |
+|-----------|----------|----------|
+| **History** | Giữ nguyên (merge commits) | Sạch (linear) |
+| **Context** | Giữ timeline thực | Mất timeline |
+| **Conflicts** | 1 lần resolve | Nhiều lần (mỗi commit) |
+| **Use case** | Public branches (main, develop) | Private feature branches |
+
+**Golden Rule**: **NEVER rebase public branches** (main, develop) - chỉ rebase local/feature branches
+
+**⚠️ Lỗi Thường Gặp:**
+- Rebase shared branch → force push → team mất commits
+- Không pull trước merge → conflicts
+- Commit trực tiếp vào main/develop → bypass reviews
+- Large PRs (>500 lines) → khó review, dùng feature flags thay vì
+
+**💡 Kiến Thức Senior:**
+- **Feature Flags**: Deploy code chưa xong nhưng tắt feature, bật dần (LaunchDarkly, Unleash)
+- **Trunk-Based Development**: Mọi người commit vào main, feature flags control releases
+- **Conventional Commits**: `feat:`, `fix:`, `docs:` - auto-generate changelogs
+- **Git bisect**: Binary search tìm commit gây bug (tự động test mỗi commit)
+- **Squash merge**: Combine feature commits thành 1 commit khi merge (clean main history)
+
 
 **⚡ Quick Summary:**
 > Git workflow tốt = ít conflict + dễ review + dễ rollback. Git Flow phù hợp dự án lớn, GitHub Flow phù hợp CI/CD. Rebase tạo history sạch, Merge giữ nguyên context. Feature flags giúp deploy code chưa hoàn thiện mà không ảnh hưởng production.

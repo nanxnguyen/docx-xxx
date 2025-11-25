@@ -1,5 +1,44 @@
 # 🔑 Q40: Hashing, Encryption & Digital Signatures - Phân Biệt & Ứng Dụng Thực Tế
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"Hashing = one-way (password storage), Encryption = two-way (data confidentiality), Digital Signature = verify authenticity. Mỗi loại phục vụ mục đích bảo mật khác nhau."**
+
+**🔑 3 Kỹ Thuật Chính:**
+
+**1. Hashing (One-Way):**
+- **Không đảo ngược** - input → hash, KHÔNG thể hash → input
+- Algorithms: **bcrypt** (passwords), SHA-256 (checksums), MD5 (deprecated)
+- Use case: **Password storage**, file integrity verification, blockchain
+- Salt để chống rainbow table: `bcrypt(password + salt)`
+
+**2. Encryption (Two-Way):**
+- **Mã hóa ↔ Giải mã** với key
+- **Symmetric** (AES): cùng key encrypt/decrypt - nhanh, HTTPS
+- **Asymmetric** (RSA): public key encrypt, private key decrypt - chậm hơn, key exchange
+- Use case: **Data confidentiality** (HTTPS, database encryption, file encryption)
+
+**3. Digital Signature:**
+- **Sign với private key**, **verify với public key**
+- Algorithms: RSA, ECDSA, EdDSA
+- Use case: **JWT tokens**, API authentication, verify message authenticity
+- Flow: `hash(data) → encrypt với private key → signature`
+
+**⚠️ Lỗi Thường Gặp:**
+- Hash passwords với SHA-256 thay bcrypt → dễ brute-force (SHA-256 quá nhanh)
+- Lưu encryption key cùng database → compromise key = compromise data
+- Dùng MD5/SHA-1 cho security → deprecated (collision attacks)
+- JWT verify với `HS256` mà expose secret → attacker tạo fake tokens
+
+**💡 Kiến Thức Senior:**
+- **bcrypt work factor**: Tăng rounds (10→12) khi CPU mạnh hơn để chống brute-force
+- **AES-GCM** > AES-CBC: authenticated encryption (chống tamper)
+- **RSA key size**: 2048-bit minimum, 4096-bit recommended (banking)
+- **JWT algorithms**: HS256 (symmetric, shared secret) vs RS256 (asymmetric, safer)
+- **Key rotation**: Thay đổi encryption keys định kỳ, re-encrypt data
+
 **❓ Câu Hỏi:**
 Phân biệt Hashing, Encryption và Digital Signature. Khi nào dùng từng loại? Giải thích cơ chế hoạt động và ví dụ thực tế với bcrypt, AES, RSA, JWT signing.
 

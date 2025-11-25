@@ -1,9 +1,63 @@
 # 🏛️ Q37: OOP (Object-Oriented Programming) trong JavaScript - Classes, Inheritance, Encapsulation & SOLID Principles?
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"OOP trong JS bao gồm Classes (ES6 sugar trên prototypes), Encapsulation (#private fields), Inheritance (extends), Polymorphism (override methods), + SOLID principles để thiết kế maintainable code."**
+
+**🔑 5 Pillars của OOP:**
+
+**1. Classes (Lớp):**
+- **Blueprint** để tầo objects: `class User { constructor(name) {...} }`
+- **Syntactic sugar** trên prototype-based inheritance
+- Methods tự động **non-enumerable**, khác function constructors
+
+**2. Encapsulation (Đóng gói):**
+- **Private fields**: `#balance` - truly private (ES2022), không access từ ngoài
+- **Public API**: Chỉ expose cần thiết (`getBalance()`, `deposit()`)
+- Protect implementation details, prevent invalid state
+
+**3. Inheritance (Kế thừa):**
+- `class Admin extends User` - **"is-a" relationship**
+- `super()` bắt buộc trong constructor, `super.method()` gọi parent
+- Prototype chain: `admin.__proto__` → `Admin.prototype` → `User.prototype` → `Object.prototype`
+
+**4. Polymorphism (Đa hình):**
+- **Override methods**: `Admin.login()` khác `User.login()`
+- Cùng interface, behavior khác nhau
+- Duck typing: "If it walks like a duck..."
+
+**5. Composition (Kết hợp):**
+- **"Has-a" relationship** - inject dependencies
+- `class UserService { constructor(logger, db) {...} }`
+- **Prefer over Inheritance** - flexible, loosely coupled
+
+**🔑 SOLID Principles:**
+
+- **S**ingle Responsibility: 1 class = 1 nhiệm vụ
+- **O**pen/Closed: Mở rộng, đóng sửa đổi (extend, không modify existing)
+- **L**iskov Substitution: Subclass thay thế parent không break code
+- **I**nterface Segregation: Nhiều interfaces nhỏ > 1 interface lớn
+- **D**ependency Inversion: Depend on abstractions, not concretions (inject)
+
+**⚠️ Lỗi Thường Gặp:**
+- Quên `super()` trong child constructor → ReferenceError
+- Dùng `_privateField` (convention) như truly private → vẫn access được, dùng `#` thay vì
+- **Deep inheritance chains** (>3 levels) → fragile, hard maintain
+- Pass methods as callbacks không bind `this` → `this` = undefined
+
+**💡 Kiến Thức Senior:**
+- **Composition > Inheritance**: Avoid "gorilla-banana problem" (muốn banana nhưng nhận cả gorilla + jungle)
+- **Mixins**: `Object.assign(MyClass.prototype, Loggable, Serializable)` - multiple behaviors
+- **Static methods** for factories: `User.fromJSON(json)`, `Array.from()`
+- **Private class fields** (#) không inherit (khác public properties)
+- Modern approach: **Functional programming** + **Hooks** (React) thay classes
 
 
 
-**Trả lời:**
+
+**Trả lời:****
 OOP (Lập trình Hướng Đối Tượng) là **paradigm lập trình** dựa trên **objects** (đối tượng) chứa:
 
 - **Data** (dữ liệu) → properties/fields (thuộc tính)

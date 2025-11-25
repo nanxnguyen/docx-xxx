@@ -1,5 +1,45 @@
 # 🎯 Q10: IIFE (Immediately Invoked Function Expression) & Functional Programming
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"IIFE là function execute ngay sau khi define để tạo private scope, còn Functional Programming bao gồm pure functions, immutability, currying và higher-order functions."**
+
+**🔑 4 Khái Niệm Chính:**
+
+**1. IIFE (Immediately Invoked Function Expression):**
+- Syntax: `(function(){ ... })()` hoặc `(() => { ... })()`
+- **Tạo scope riêng** → tránh pollute global namespace
+- Use case: Module pattern (trước ES6 modules), private variables, avoid variable hoisting conflicts
+- **Ví dụ**: `const counter = (function(){ let count=0; return {inc: ()=>++count} })()`
+
+**2. Pure Functions:**
+- **Same input → same output**, không có side effects (không modify external state)
+- **Predictable**, dễ test, dễ debug
+- Ví dụ: `add(a,b) => a+b` (pure) vs `arr.push(x)` (impure - mutate arr)
+
+**3. Currying:**
+- Transform `f(a,b,c)` thành `f(a)(b)(c)` - **partial application**
+- **Reusable functions** với preset arguments: `const add5 = add(5); add5(10) // 15`
+- Use case: event handlers, middleware, configuration functions
+
+**4. Higher-Order Functions:**
+- Functions nhận/return functions: `.map()`, `.filter()`, `.reduce()`
+- **Composition**: kết hợp nhiều functions `compose(f, g, h)(x) = f(g(h(x)))`
+- Use case: middleware stack, decorators, memoization
+
+**⚠️ Lỗi Thường Gặp:**
+- Quên `()` trong IIFE → `(function(){})` không execute
+- Mutate data trong pure function → side effects, khó debug
+- Over-curry functions → code khó đọc `f(a)(b)(c)(d)(e)`
+
+**💡 Kiến Thức Senior:**
+- IIFE giờ **ít dùng** vì ES6 modules (`import/export`) và block scope (`let/const`)
+- Pure functions quan trọng cho **memoization** (cache kết quả) và **parallelization**
+- Currying vs Partial Application: Curry **luôn return unary** (1 param), Partial có thể nhiều params
+- Functional Programming giúp **avoid shared mutable state** → tránh race conditions trong async code
+
 
 
 

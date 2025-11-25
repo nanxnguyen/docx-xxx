@@ -1,5 +1,47 @@
 # 🏛️ Q22: JavaScript Classes
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
+
+**"ES6 Classes là syntactic sugar trên prototype-based inheritance, cung cấp cleaner syntax cho constructor functions, inheritance, và encapsulation."**
+
+**🔑 4 Khái Niệm Chính:**
+
+**1. Class Basics:**
+- Syntax: `class Person { constructor(name) { this.name = name } method() {} }`
+- **Syntactic sugar** trên constructor functions + prototypes
+- `new` keyword bắt buộc (không như functions)
+- Methods tự động **non-enumerable**
+
+**2. Inheritance (`extends`):**
+- `class Child extends Parent` - kế thừa prototype chain
+- **`super()`** bắt buộc trong constructor (call parent constructor)
+- `super.method()` - gọi parent methods
+- Method overriding: child method override parent cùng tên
+
+**3. Static Methods/Properties:**
+- `static method()` - class-level, **không cần instance**
+- Call trực tiếp: `Person.staticMethod()`
+- Use case: utility functions, factory methods (`Array.from()`, `Object.keys()`)
+
+**4. Private Fields (ES2022):**
+- `#privateField` - truly private (không access từ ngoài)
+- Khác `_convention` (chỉ là naming, vẫn access được)
+
+**⚠️ Lỗi Thường Gặp:**
+- Quên `super()` trong child constructor → ReferenceError
+- Dùng arrow functions cho methods → `this` binding issues
+- Pass method as callback mà không bind → `this` = undefined
+- Nghĩ class tạo scope mới → Sai! Chỉ là syntax sugar
+
+**💡 Kiến Thức Senior:**
+- **Classes ARE functions**: `typeof MyClass === 'function'`
+- **Hoisting difference**: Class declarations **không hoist** (TDZ), function declarations hoist
+- **`this` binding**: Class methods không auto-bind `this` → dùng arrow functions hoặc `.bind()` trong constructor
+- **Mixins pattern**: Combine multiple classes với `Object.assign(MyClass.prototype, Mixin)`
+- Composition > Inheritance (prefer "has-a" over "is-a" relationships)
+
 
 
 

@@ -1,5 +1,63 @@
 # ⚛️ Q48: React 19 Migration Guide - Upgrade từ React 18 sang 19
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"React 19 thêm Actions (async transitions), new hooks (useActionState, useOptimistic, use), ref as prop. Breaking: PropTypes removed, createElement → jsx(), StrictMode 2 renders. Migration: npx codemod + manual fixes."**
+
+**🔑 New Features:**
+
+**1. Actions - Async State Transitions:**
+- **Tự động handle** pending/error states trong async operations
+- `useTransition` + async functions = Actions
+- `useActionState(action, initialState)` - all-in-one hook (replace useState + useTransition)
+- Form Actions: `<form action={serverAction}>` - auto pending/error
+
+**2. New Hooks:**
+- **`useActionState`**: Combine useState + useTransition + error handling
+- **`useOptimistic`**: Optimistic UI updates (show immediately, rollback if fail)
+- **`use(promise)`**: Read promises/context in render (Suspense integration)
+
+**3. Ref Simplification:**
+- **`ref` as regular prop** - không cần `forwardRef` wrapper
+- `<Component ref={myRef} />` works directly
+- Cleaner component APIs
+
+**4. Improved Suspense:**
+- Sibling Suspense boundaries không block nhau
+- Better error boundaries integration
+
+**🔑 Breaking Changes:**
+
+**1. PropTypes Removed:**
+- Dùng **TypeScript** hoặc **Zod** thay vì
+- Codemod: `npx codemod react/19/remove-prop-types`
+
+**2. StrictMode Double Render:**
+- Luôn render 2 lần trong dev (even production builds)
+- Để detect side effects, không ảnh hưởng performance production
+
+**3. createElement → jsx():**
+- Internal change, build tools auto-handle
+- Update Babel/SWC config nếu custom setup
+
+**4. Context Changes:**
+- `<Context.Provider>` deprecated → dùng `<Context>` directly
+- `Context.Consumer` deprecated → dùng `useContext` hook
+
+**⚠️ Lỗi Thường Gặp:**
+- Dùng PropTypes → runtime error, migrate sang TypeScript
+- Rely on single render trong StrictMode → side effects leak
+- Forget `use()` chỉ call trong render (không trong conditions/loops)
+- `useOptimistic` không rollback on error → phải manual handle
+
+**💡 Kiến Thức Senior:**
+- **Migration strategy**: Codemod → fix errors → incremental adoption (không cần rewrite all)
+- **Server Components**: React 19 stable support (Next.js App Router)
+- **Compiler (React Forget)**: Auto-memoization (experimental, beta 2024)
+- **Actions vs Mutations**: Actions = client transitions, Server Actions = server mutations
+
 
 **⚡ Quick Summary:**
 > React 19 = Actions + useActionState + useOptimistic + ref as prop + no forwardRef. Breaking changes: React.createElement → jsx(), StrictMode 2 renders, PropTypes removed. Migration: npx codemod + manual fixes.

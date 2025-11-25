@@ -1,5 +1,56 @@
 # 📏 Q54: Code Quality & Standards - ESLint, Prettier, Code Review
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"Code quality tools: ESLint (bugs + patterns), Prettier (formatting), Husky (pre-commit hooks), Commitlint (conventional commits). Code review: Small PRs, clear descriptions, constructive feedback, automated checks."**
+
+**🔑 Tooling Stack:**
+
+**1. ESLint - Linting:**
+- **Find bugs**: unused vars, missing deps, type errors
+- **Enforce patterns**: no-console, prefer-const, React hooks rules
+- **Plugins**: @typescript-eslint, eslint-plugin-react, jsx-a11y
+- **Config**: Extend airbnb/standard, customize rules
+
+**2. Prettier - Formatting:**
+- **Auto-format**: spacing, quotes, semicolons, line breaks
+- **Config**: `.prettierrc` - printWidth, singleQuote, trailingComma
+- **Integration**: ESLint plugin (eslint-plugin-prettier)
+- **IDE**: Format on save (VSCode, WebStorm)
+
+**3. Husky - Git Hooks:**
+- **Pre-commit**: Run lint + format trước commit
+- **Pre-push**: Run tests trước push
+- **Commit-msg**: Validate commit message format
+- **Setup**: `npx husky-init && npm install`
+
+**4. Commitlint - Conventional Commits:**
+- **Format**: `type(scope): subject` - `feat(auth): add login`
+- **Types**: feat, fix, docs, style, refactor, test, chore
+- **Benefits**: Auto-generate changelogs, semantic versioning
+
+**🔑 Code Review Best Practices:**
+
+- **Small PRs**: < 400 lines - dễ review, ít bugs
+- **Clear descriptions**: What/Why/How, screenshots, testing steps
+- **Automated checks**: Lint, tests, bundle size pass trước review
+- **Constructive feedback**: Suggest alternatives, explain WHY
+- **Timely reviews**: < 24 hours response time
+
+**⚠️ Lỗi Thường Gặp:**
+- ESLint warnings ignored → accumulate technical debt
+- Không Prettier → inconsistent formatting, merge conflicts
+- Large PRs (>1000 lines) → rubber-stamp reviews
+- Blame culture in reviews → team morale giảm
+
+**💡 Kiến Thức Senior:**
+- **SonarQube**: Code quality metrics (bugs, vulnerabilities, code smells)
+- **Bundle analysis**: webpack-bundle-analyzer - visualize bundle size
+- **Lighthouse CI**: Performance budgets trong CI/CD
+- **Danger.js**: Automate code review comments (big PRs warning, missing tests)
+
 > **Câu hỏi phỏng vấn Senior Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐ (Advanced)  
 > **Thời gian trả lời:** 12-15 phút

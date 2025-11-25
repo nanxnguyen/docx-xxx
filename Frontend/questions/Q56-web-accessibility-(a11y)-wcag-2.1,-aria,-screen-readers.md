@@ -1,5 +1,57 @@
 # ♿ Q56: Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"A11y đảm bảo mọi người dùng được web. WCAG 2.1 levels: A (minimum), AA (legal requirement), AAA (ideal). ARIA: roles, states, properties. Keyboard nav, color contrast, screen reader support. Tools: axe, Lighthouse."**
+
+**🔑 WCAG 2.1 Compliance:**
+
+**Level AA (Recommended - legal trong nhiều nước):**
+- **Color contrast**: ≥ 4.5:1 (text), ≥ 3:1 (large text 18pt+)
+- **Keyboard accessible**: All functionality với keyboard (no mouse-only)
+- **Alt text**: Tất cả images có alt (decorative = alt="")
+- **Form labels**: `<label>` cho mọi `<input>`
+- **Touch targets**: ≥ 44×44px (mobile)
+- **Focus indicators**: Rõ ràng khi tab (không `outline: none`)
+
+**🔑 ARIA Attributes:**
+
+**1. Roles:**
+- `role="button"` - custom button (div click → button semantics)
+- `role="navigation"`, `role="main"`, `role="complementary"`
+- **Rule**: Dùng semantic HTML trước (`<button>` > `<div role="button">`)
+
+**2. States:**
+- `aria-expanded="true/false"` - dropdown, accordion
+- `aria-checked="true/false"` - custom checkbox
+- `aria-disabled="true"` - disabled state
+
+**3. Properties:**
+- `aria-label="Close"` - label cho icon buttons
+- `aria-describedby="help-text"` - liên kết help text
+- `aria-live="polite"` - announce dynamic content (alerts)
+
+**🔑 Best Practices:**
+
+- **Semantic HTML**: `<button>`, `<nav>`, `<main>` thay vì divs
+- **Keyboard nav**: Tab order logic, Enter/Space activate, Esc close
+- **Screen reader testing**: NVDA (Windows), VoiceOver (Mac/iOS), TalkBack (Android)
+- **Skip links**: "Skip to main content" cho skip navigation
+
+**⚠️ Lỗi Thường Gặp:**
+- `outline: none` không custom focus indicator → keyboard users lost
+- Images không alt → screen readers "image"
+- Color-only info (red = error) → colorblind users miss
+- Auto-playing videos/carousels → disorienting
+
+**💡 Kiến Thức Senior:**
+- **Focus management**: Trap focus trong modals, restore sau close
+- **Live regions**: `aria-live="polite"` (wait), `"assertive"` (interrupt)
+- **Automated testing**: axe-core, jest-axe, Lighthouse CI
+- **Manual testing**: Tab navigation, zoom 200%, screen reader walkthrough
+
 > **Câu hỏi phỏng vấn Senior Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐ (Advanced)  
 > **Thời gian trả lời:** 12-15 phút

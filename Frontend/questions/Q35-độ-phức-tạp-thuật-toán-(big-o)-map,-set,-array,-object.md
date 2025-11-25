@@ -1,9 +1,58 @@
 # 📈 Q35: Độ Phức Tạp Thuật Toán (Big O) - Map, Set, Array, Object
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"Big O mô tả performance khi data scale. Map/Set = O(1) average (hash table), Array = O(1) index access nhưng O(n) search, Object = O(1) property access."**
+
+**🔑 Performance Comparison:**
+
+| **Operation** | **Map/Set** | **Object** | **Array** |
+|--------------|------------|-----------|----------|
+| **Access** | O(1) avg | O(1) | O(1) - index, O(n) - search |
+| **Insert** | O(1) avg | O(1) | O(1) - end, O(n) - start/middle |
+| **Delete** | O(1) avg | O(1) | O(1) - end, O(n) - start/middle |
+| **Search** | O(1) - `.has()` | O(n) - loop keys | O(n) - `.indexOf()` |
+| **Iterate** | O(n) | O(n) | O(n) |
+
+**🔑 Chi Tiết Từng Cấu Trúc:**
+
+**1. Map/Set - Hash Table (O(1) average):**
+- **Internal**: Hash function → bucket index → direct access
+- **Collision**: Cùng hash → linked list/tree trong bucket
+- **Average O(1)**: Hash function phân bố đều → ít collision
+- **Worst O(n)**: Tất cả keys cùng hash (rất hiếm)
+
+**2. Object - Similar Map (O(1) average):**
+- **Keys**: Chỉ strings/symbols (Map dùng any type)
+- **Property access**: `obj.prop` hoặc `obj['prop']` → O(1)
+- **Search value**: Phải loop `Object.values()` → O(n)
+- **Prototype chain**: Lookup theo chain nếu không có own property
+
+**3. Array - Contiguous Memory (mixed):**
+- **Index access**: `arr[5]` → O(1) (direct memory offset)
+- **Search**: `.indexOf()`, `.includes()` → **O(n)** (linear scan)
+- **Push/pop** (end): O(1) - không shift
+- **Unshift/shift** (start): **O(n)** - phải shift tất cả elements
+- **Splice** (middle): **O(n)** - shift elements sau insertion point
+
+**⚠️ Lỗi Thường Gặp:**
+- Dùng `array.indexOf()` trong loop → O(n²), dùng Set cho O(n)
+- `array.unshift()` nhiều lần → O(n²), dùng `.push()` rồi `.reverse()`
+- Nghĩ Object lookup **luôn O(1)** → Sai! Prototype chain có thể O(k) với k = chain depth
+- Dùng `delete obj.key` trong hot path → deoptimize V8, dùng `obj.key = undefined` thay vì
+
+**💡 Kiến Thức Senior:**
+- **Map vs Object performance**: Map nhanh hơn cho **frequent add/delete** (Object shape changes → deoptimize)
+- **Set for uniqueness**: `[...new Set(arr)]` dedup = O(n), `arr.filter((v,i,a) => a.indexOf(v)===i)` = O(n²)
+- **Sparse arrays**: `arr[1000] = 1` tạo holes → kiểu dữ liệu thay đổi (dictionary mode), chậm hơn
+- **WeakMap/WeakSet**: O(1) nhưng không prevent GC, không iterable
 
 
 
-**Trả lời:**
+
+**Trả lời:****
 
 - Khái niệm: Big O notation mô tả hiệu năng thuật toán khi data tăng lên; quan trọng để chọn cấu trúc dữ liệu phù hợp.
 - Map/Set: O(1) average cho get/set/delete nhờ hash table; O(n) worst case khi hash collision nhiều (rất hiếm).

@@ -1,9 +1,86 @@
 # 🌍 Q36: Từ URL đến UI - Quá Trình Browser Render Một Trang Web (Critical Rendering Path)
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"Từ URL → UI gồm: Network (DNS, TCP, TLS, HTTP), Parsing (HTML → DOM, CSS → CSSOM), Rendering (Layout, Paint, Composite). Critical Rendering Path optimize = faster First Paint."**
+
+**🔑 12 Bước Chính:**
+
+**PHASE 1: NETWORK (~300-1000ms)**
+
+**1. DNS Lookup** (~20-120ms):
+- Resolve `example.com` → IP address `93.184.216.34`
+- Cache: Browser → OS → Router → ISP DNS
+
+**2. TCP Handshake** (~100-300ms):
+- 3-way: SYN → SYN-ACK → ACK
+- Thiết lập kết nối giữa client-server
+
+**3. TLS Handshake** (~100-300ms - nếu HTTPS):
+- Certificate verification, key exchange
+- Encrypted connection setup
+
+**4. HTTP Request/Response** (~50-500ms):
+- Browser gửi GET request
+- Server return HTML (+ headers: cache, encoding...)
+
+**PHASE 2: PARSING (~50-200ms)**
+
+**5. HTML Parsing → DOM Tree:**
+- Tokenize HTML → parse tags → construct DOM tree
+- **Blocking**: `<script>` without `async/defer`
+
+**6. CSS Parsing → CSSOM Tree:**
+- Parse CSS → compute styles → CSSOM tree
+- **Render-blocking**: CSS blocks rendering
+
+**7. JavaScript Execution:**
+- Parser-blocking: `<script>` stops HTML parsing
+- Execute JS → modify DOM/CSSOM
+- `async` = execute when downloaded, `defer` = execute after DOM
+
+**PHASE 3: RENDERING (~100-500ms)**
+
+**8. Render Tree Construction:**
+- DOM + CSSOM → **Render Tree** (chỉ visible elements)
+- Skip `display:none`, `<head>`, `<script>`
+
+**9. Layout (Reflow):**
+- Tính toán **position & size** của mọi element
+- Output: **Box Model** (width, height, x, y)
+
+**10. Paint:**
+- Tạo **paint records** (fill text, colors, images, borders...)
+- Output: **Paint layers**
+
+**11. Composite:**
+- Kết hợp layers thành final image
+- GPU-accelerated (CSS transforms, opacity)
+
+**12. Display:**
+- Browser hiển thị pixels trên màn hình
+
+**⚠️ Lỗi Thường Gặp:**
+- `<script>` ở `<head>` không `async/defer` → block HTML parsing
+- CSS ở cuối `<body>` → **FOUC** (Flash of Unstyled Content)
+- Large DOM (>1500 nodes) → chậm layout/paint
+- Force sync layout (read `offsetHeight` → modify style → read again) → **layout thrashing**
+
+**💡 Kiến Thức Senior:**
+- **Critical Rendering Path optimization**:
+  - Minimize **render-blocking resources** (inline critical CSS, defer non-critical)
+  - **Preload** key resources: `<link rel="preload" href="font.woff2">`
+  - **HTTP/2 Server Push** critical assets
+- **Metrics**: FCP (First Contentful Paint), LCP (Largest), TTI (Time to Interactive)
+- **`will-change: transform`**: Hint browser tạo composite layer trước (optimize animations)
+- **Resource Hints**: `dns-prefetch`, `preconnect`, `prefetch`, `prerender`
 
 
 
-**Trả lời:**
+
+**Trả lời:****
 
 Khi user nhập URL `https://example.com` và nhấn Enter, có **12 bước chính** xảy ra:
 

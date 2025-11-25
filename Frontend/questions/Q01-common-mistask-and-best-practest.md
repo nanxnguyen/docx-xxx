@@ -1,5 +1,58 @@
 # 🚀 Q01: JavaScript Fundamentals Overview - Tổng Quan Nền Tảng
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-5 phút):**
+
+**"JavaScript là ngôn ngữ lập trình đơn luồng, bất đồng bộ, chạy trên V8 engine với Event Loop để xử lý I/O không chặn.**
+
+**🔑 5 Trụ Cột Nền Tảng:**
+
+1. **Kiểu Dữ Liệu & Bộ Nhớ**:
+   - 7 kiểu nguyên thủy (number, string, boolean, null, undefined, symbol, bigint) + Object
+   - Primitive = stack (theo giá trị), Reference = heap (theo tham chiếu)
+   - GC tự động dọn bộ nhớ (Mark-and-Sweep algorithm)
+
+2. **Execution Context & Scope**:
+   - Call Stack thực thi code đồng bộ (LIFO)
+   - Scope chain: Global → Function → Block scope
+   - Hoisting: `var` khởi tạo undefined, `let/const` trong TDZ
+   - Closure = hàm + môi trường từ vựng xung quanh
+
+3. **Bất Đồng Bộ (Event Loop)**:
+   - **Microtask Queue** (ưu tiên cao): Promise.then, queueMicrotask
+   - **Macrotask Queue** (ưu tiên thấp): setTimeout, setInterval
+   - Event Loop: Call Stack → Microtasks → UI Render → 1 Macrotask
+   - Async patterns: Callbacks → Promises → Async/Await
+
+4. **OOP & Prototypes**:
+   - Prototype chain: mỗi object có `__proto__` trỏ đến prototype
+   - Class = syntactic sugar cho prototype-based inheritance
+   - `this` binding: new → explicit (call/apply/bind) → implicit → default
+
+5. **Modern JavaScript (ES6+)**:
+   - `let/const` block scope thay `var`
+   - Arrow functions = lexical `this`
+   - Destructuring, spread/rest operators
+   - Modules (import/export), classes
+   - Promise, async/await cho async code
+
+**⚠️ Lỗi Thường Gặp:**
+- Mutate objects/arrays trực tiếp → dùng spread hoặc immutable methods
+- Quên `return` trong arrow function `() => { value }` → phải `() => value` hoặc `() => ({ value })`
+- `==` vs `===`: luôn dùng `===` (strict equality)
+- Closure memory leaks: event listeners không cleanup
+- `this` mất context khi pass method: dùng arrow function hoặc bind
+
+**💡 Kiến Thức Senior:**
+- **Performance**: Tránh blocking main thread, dùng Web Workers cho heavy computation
+- **Memory**: WeakMap/WeakSet cho weak references tránh leaks
+- **Security**: XSS prevention (sanitize inputs), CSP headers
+- **Tooling**: TypeScript cho type safety, ESLint cho code quality
+- **Patterns**: Module pattern, Observer, Factory, Singleton
+
+---
+
 > **Câu hỏi tổng quan**: Giới thiệu các khái niệm nền tảng JavaScript mà mọi Frontend Developer cần nắm vững
 
 ---

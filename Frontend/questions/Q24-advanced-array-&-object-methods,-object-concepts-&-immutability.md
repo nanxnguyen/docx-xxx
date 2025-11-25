@@ -1,5 +1,47 @@
 # 🛠️ Q24: Advanced Array & Object Methods, Object Concepts & Immutability
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+
+**"Advanced methods bao gồm flat/flatMap, Array.from, Object.entries/values/keys; Object concepts gồm prototype chain, Object.create, property descriptors; Immutability control với freeze/seal/preventExtensions."**
+
+**🔑 3 Nhóm Chính:**
+
+**1. Advanced Array Methods:**
+- **`flat(depth)`**: Flatten nested arrays - `[1,[2,[3]]].flat(2)` → `[1,2,3]`
+- **`flatMap(fn)`**: map + flatten (efficient hơn `.map().flat()`)
+- **`Array.from(iterable, mapFn)`**: Tạo array từ iterable + optional map
+  - Ví dụ: `Array.from({length: 5}, (_, i) => i)` → `[0,1,2,3,4]`
+- **`entries/keys/values`**: Iterate index-value pairs
+
+**2. Advanced Object Methods:**
+- **`Object.entries(obj)`**: `{a:1, b:2}` → `[['a',1], ['b',2]]` (iterate objects)
+- **`Object.fromEntries()`**: Ngược lại entries → object
+- **`Object.values(obj)`**: Lấy một values (không cần keys)
+- **`Object.assign(target, ...sources)`**: Shallow merge (mutate target)
+
+**3. Object Concepts & Immutability:**
+- **`Object.create(proto)`**: Tạo object với specific prototype (không inherit Object.prototype)
+- **`Object.freeze(obj)`**: **Deep immutable** - không thể add/delete/modify properties
+- **`Object.seal(obj)`**: Không add/delete nhưng **vẫn modify** được values
+- **`Object.preventExtensions(obj)`**: Chỉ không add properties mới
+- **Property Descriptors**: `Object.defineProperty()` - control writable, enumerable, configurable
+
+**⚠️ Lỗi Thường Gặp:**
+- `Object.freeze()` chỉ **shallow** → nested objects vẫn mutable (dùng deep-freeze libraries)
+- `Object.assign()` **mutate target** → dùng `{...obj1, ...obj2}` cho immutable merge
+- `.flat()` không specify depth → default = 1 (không flatten hết)
+- Dùng `for...in` iterate object mà không check `hasOwnProperty` → iterate cả prototype
+
+**💡 Kiến Thức Senior:**
+- **Prototype chain**: `obj.__proto__` (deprecated) vs `Object.getPrototypeOf(obj)`
+- **Mixins pattern**: `Object.assign(MyClass.prototype, Mixin1, Mixin2)` - share behavior
+- **Property descriptors**: `{value, writable, enumerable, configurable}` - fine-grained control
+  - `Object.keys()` chỉ lấy enumerable properties
+- **Immutability libraries**: Immer (structural sharing), Immutable.js (persistent data structures)
+- **Performance**: `Object.create(null)` nhanh hơn `{}` (không có prototype overhead)
+
 
 
 

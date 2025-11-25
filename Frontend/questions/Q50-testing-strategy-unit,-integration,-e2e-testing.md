@@ -1,5 +1,66 @@
 # 🧪 Q50: Testing Strategy - Unit, Integration, E2E Testing
 
+## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+
+### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+
+**"Test Pyramid: 60% Unit (fast, isolated), 30% Integration (component interactions), 10% E2E (critical user flows). Tools: Vitest/Jest (unit), React Testing Library (integration), Playwright (E2E). TDD cho logic, BDD cho features."**
+
+**🔑 Test Pyramid Strategy:**
+
+```
+        ╭─────╮
+       ╱ E2E  ╲     10% - Chậm, expensive, critical paths only
+      ╭───────╮
+     ╱ Integr. ╲   30% - Component + API integration
+    ╭─────────╮
+   ╱   Unit    ╲  60% - Fast, pure functions, business logic
+  ╰───────────╯
+```
+
+**🔑 3 Loại Tests:**
+
+**1. Unit Tests (Jest/Vitest):**
+- **Test**: Pure functions, utilities, hooks (isolated)
+- **Fast**: ~1ms/test, chạy thousands trong giây
+- **Mock**: External dependencies (APIs, modules)
+- **Coverage**: 80-90% cho business logic
+- Ví dụ: `formatCurrency(1000)` → "$1,000.00"
+
+**2. Integration Tests (React Testing Library):**
+- **Test**: Component interactions, user events, API integration
+- **Medium speed**: ~50-200ms/test
+- **Real DOM**: jsdom simulation, user-centric queries (`getByRole`)
+- **Coverage**: 70-80% cho UI components
+- Ví dụ: Click button → API call → show data
+
+**3. E2E Tests (Playwright/Cypress):**
+- **Test**: Critical user flows (login, checkout, payment)
+- **Slow**: ~5-30s/test, chạy real browser
+- **Flaky**: Network issues, timing problems
+- **Coverage**: Chỉ happy paths + critical errors
+- Ví dụ: Full checkout flow (add to cart → payment → confirmation)
+
+**🔑 Best Practices:**
+
+- **TDD (Test-Driven Development)**: Write test → fail → implement → pass → refactor
+- **AAA Pattern**: Arrange (setup) → Act (execute) → Assert (verify)
+- **Test behavior, not implementation**: Test user outcomes, not internal state
+- **CI/CD Integration**: Run unit/integration on PR, E2E on merge to main
+
+**⚠️ Lỗi Thường Gặp:**
+- Test implementation details (`.classList`, internal state) → brittle, dùng user-visible behavior
+- 100% coverage cho mọi thứ → waste time, focus critical logic
+- E2E tests cho mọi feature → chậm CI, dùng integration tests thay vì
+- Không test error cases → production bugs
+
+**💡 Kiến Thức Senior:**
+- **Visual Regression**: Chromatic, Percy - screenshot diff testing
+- **Performance Testing**: Lighthouse CI, WebPageTest - track metrics over time
+- **Contract Testing**: Pact - ensure frontend/backend API compatibility
+- **Mutation Testing**: Stryker - test your tests (kill mutants)
+- **Parallel execution**: Playwright sharding, Jest workers - faster CI
+
 > **Câu hỏi phỏng vấn Senior Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
 > **Thời gian trả lời:** 15-20 phút
