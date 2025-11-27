@@ -1,7 +1,5 @@
 # SUMMARY - Senior Frontend Interview Answers (Tiếng Việt)
 
-Mỗi mục: P1 = Tên câu hỏi; P2 = Trả lời ngắn gọn/chi tiết ở level Senior.
-
 ---
 **🗂️ Chú thích thuật ngữ (Tiếng Việt)**
 
@@ -36,13 +34,9 @@ Mỗi mục: P1 = Tên câu hỏi; P2 = Trả lời ngắn gọn/chi tiết ở 
 
 ---
 
-## 01. Q1: 🚀 Q01: JavaScript Fundamentals Overview - Tổng Quan Nền Tảng
+## Q01: JavaScript Fundamentals Overview - Tổng Quan Nền Tảng
 
-### P1: Tên câu hỏi: 🚀 Q01: JavaScript Fundamentals Overview - Tổng Quan Nền Tảng
-
-### P2: Trả lời (Senior):
-
-## 02. Q2: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-5 phút):**
 
@@ -97,97 +91,13 @@ Mỗi mục: P1 = Tên câu hỏi; P2 = Trả lời ngắn gọn/chi tiết ở 
 ---
 ---
 
-## 03. Q3: 🎯 Q02: Data Types & Memory Management - Tổng Hợp Toàn Diện
+## Q02: Data Types & Memory Management - Tổng Hợp Toàn Diện
 
-### P1: Tên câu hỏi: 🎯 Q02: Data Types & Memory Management - Tổng Hợp Toàn Diện
+### Trả lời (Senior):
 
-### P2: Trả lời (Senior):
+## Q03: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động
 
-## 04. Q4: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
-
-**"JavaScript có 8 kiểu dữ liệu: 7 nguyên thủy (không thay đổi được) + 1 phức tạp (object - thay đổi được).**
-
-**📦 Nguyên Thủy vs Tham Chiếu:**
-- **Nguyên thủy** (number, string, boolean, undefined, null, symbol, bigint):
-- Lưu theo GIÁ TRỊ trong stack. // Lưu giá trị thực tế trong ngăn xếp
-- Không thay đổi được → gán lại tạo giá trị mới. // Không thể sửa đổi, gán lại tạo bản sao mới
-- Copy theo giá trị → các bản sao độc lập. // Sao chép giá trị, bản sao không liên kết
-- **Tham chiếu** (object, array, function):
-- Lưu theo THAM CHIẾU trong heap. // Lưu địa chỉ trỏ đến vùng nhớ heap
-- Thay đổi được → sửa trực tiếp. // Có thể sửa đổi nội dung
-- Copy theo tham chiếu → trỏ đến cùng object. // Sao chép địa chỉ, cùng trỏ đến một object
-
-**🔑 Khái Niệm Cốt Lõi:**
-1. **== vs ===**:
-- `==`: So sánh lỏng → chuyển đổi kiểu tự động (vd: `"5" == 5` → true). // So sánh lỏng lẻo, tự động chuyển kiểu
-- `===`: So sánh nghiêm ngặt → không chuyển kiểu (vd: `"5" === 5` → false). // So sánh nghiêm ngặt, không chuyển kiểu
-- Thực hành tốt: Luôn dùng `===` trừ khi kiểm tra null/undefined. // Luôn dùng nghiêm ngặt trừ khi kiểm tra null/undefined
-
-2. **null vs undefined**:
-- `undefined`: Biến chưa được assign value (default). // Biến chưa được gán giá trị (mặc định)
-- `null`: Intentionally empty value (developer set). // Giá trị trống có chủ đích (developer đặt)
-- `typeof null` → "object" (JavaScript bug legacy). // typeof null trả về "object" (lỗi cũ của JavaScript)
-
-3. **Shallow Copy vs Deep Copy**:
-- **Shallow**: Copy top-level properties only → nested objects vẫn reference. // Sao chép nông: chỉ sao chép thuộc tính cấp trên, object lồng vẫn tham chiếu
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-- **Deep**: Copy recursively tất cả levels → independent clone. // Sao chép sâu: sao chép đệ quy tất cả cấp → bản sao độc lập
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-4. **Type Checking**:
-- `typeof`: Check primitive types (`typeof "hello"` → "string"). // Kiểm tra kiểu nguyên thủy
-- `instanceof`: Check object types (`[] instanceof Array` → true). // Kiểm tra kiểu object
-- `Array.isArray()`: Check arrays specifically. // Kiểm tra mảng cụ thể
-- `Object.prototype.toString.call()`: Most accurate (e.g., `[object Date]`). // Chính xác nhất
-
-**♻️ Memory Management & GC:**
-- **Stack**: Primitive values, function calls (LIFO, fast, limited size). // Ngăn xếp: giá trị nguyên thủy, lời gọi hàm (vào sau ra trước, nhanh, kích thước giới hạn)
-- **Heap**: Objects, arrays (larger, slower, managed by GC). // Đống: object, mảng (lớn hơn, chậm hơn, quản lý bởi GC)
-- **Garbage Collection**: Mark-and-sweep algorithm → auto free unreachable objects. // Thu gom rác: thuật toán đánh dấu và quét → tự động giải phóng object không thể truy cập
-- **Memory Leaks**:
-- Global variables không cleanup. // Biến toàn cục không dọn dẹp
-- Event listeners không remove. // Trình nghe sự kiện không xóa
-- Closures giữ reference đến large objects. // Bao đóng giữ tham chiếu đến object lớn
-- Detached DOM nodes. // Nút DOM tách rời
-
-**⚠️ Common Pitfalls:**
-- **Mutating objects**: `arr.push()` modify original → dùng immutable methods (`[...arr, item]`). // Đột biến object: arr.push() sửa gốc → dùng phương thức bất biến
-- **Reference comparison**: `{} === {}` → false (khác reference). Dùng deep equality libraries (lodash.isEqual). // So sánh tham chiếu: {} === {} → false (tham chiếu khác). Dùng thư viện so sánh sâu
-- **Type coercion bugs**: `"5" + 3` → "53" (string concat), `"5" - 3` → 2 (number subtract). // Lỗi ép kiểu: "5" + 3 → "53" (nối chuỗi), "5" - 3 → 2 (trừ số)
-- **Falsy values**: `0`, `""`, `null`, `undefined`, `false`, `NaN` → tất cả falsy nhưng khác nhau! // Giá trị falsy: 0, "", null, undefined, false, NaN → tất cả falsy nhưng khác nhau!
-
-**💡 Senior Insights:**
-- **Immutability**: Prefer immutable operations (spread, map, filter) → easier debugging, avoid side effects. // Bất biến: ưu tiên thao tác bất biến → dễ debug hơn, tránh tác dụng phụ
-- **WeakMap/WeakSet**: Hold weak references → auto GC khi keys không còn reference → prevent memory leaks. // WeakMap/WeakSet: giữ tham chiếu yếu → tự động GC khi keys không còn tham chiếu → ngăn rò rỉ bộ nhớ
-- **structuredClone()**: Modern deep clone (support Dates, RegExp, Typed Arrays), but lose functions/symbols. // structuredClone(): sao chép sâu hiện đại (hỗ trợ Ngày, RegExp, Mảng đã nhập), nhưng mất hàm/biểu tượng
-- **Performance**: Primitive faster than objects (stack vs heap). Dùng primitives when possible. // Hiệu suất: nguyên thủy nhanh hơn object (ngăn xếp vs đống). Dùng nguyên thủy khi có thể
-- **TypeScript**: Eliminate runtime type errors → catch type mistakes at compile time. // TypeScript: loại bỏ lỗi kiểu runtime → bắt lỗi kiểu lúc biên dịch
-
----
-
-> **Tổng hợp**: Primitive vs Reference, Falsy/Truthy, == vs ===, null vs undefined, Immutable vs Mutable, Deep/Shallow Copy, Type Checking, Memory Management & GC
-
----
----
-
-## 05. Q5: ⚡ Q03: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động
-
-### P1: Tên câu hỏi: ⚡ Q03: ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động
-
-### P2: Trả lời (Senior):
-
-## 06. Q6: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -269,17 +179,9 @@ const example = 42;
 
 **🎯 Timeline & Browser Support:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Code Example - Comprehensive Comparison:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🎯 Best Practices (Thực Hành Tốt):**
 
@@ -296,17 +198,9 @@ const example = 42;
 
 **❌ Common Mistakes (Lỗi Thường Gặp):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **📊 Performance Comparison:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **✅ Khi Nào Dùng ES5 vs ES6+:**
 
@@ -323,13 +217,9 @@ const example = 42;
 - TypeScript project
 ---
 
-## 07. Q7: ⎫ Q04: Hoisting & Temporal Dead Zone
+## Q04: Hoisting & Temporal Dead Zone
 
-### P1: Tên câu hỏi: ⎫ Q04: Hoisting & Temporal Dead Zone
-
-### P2: Trả lời (Senior):
-
-## 08. Q8: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (1-2 phút):**
 
@@ -376,45 +266,25 @@ const example = 42;
 - Hoisted + initialized với `undefined`.
 - Access trước khai báo → `undefined` (không error).
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 2. **`let/const` Hoisting + TDZ**:
 - Hoisted nhưng NOT initialized → Temporal Dead Zone.
 - Access trong TDZ → `ReferenceError`.
 - TDZ = từ đầu block scope đến dòng khai báo.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 3. **Function Declaration Hoisting**:
 - Entire function hoisted → gọi trước khai báo OK.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 4. **Function Expression**:
 - Variable hoisted nhưng function không.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **⚠️ Common Pitfalls:**
 - **`typeof` trong TDZ**: `typeof x` với `let x` → ReferenceError (không safe như `var`).
 - **Loop variables**: `var` trong loop → function scope, `let` → block scope per iteration.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **💡 Senior Insights:**
 - **Why TDZ exists**: Force developers khai báo trước khi dùng → catch bugs sớm.
@@ -444,26 +314,7 @@ const example = 42;
 - **Ưu điểm**: Function hoisting cho phép tổ chức code linh hoạt
 - **Nhược điểm**: var hoisting gây confusion, TDZ errors khó debug
 
-**Code Example:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-**Best Practices:**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-**Common Mistakes:**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **So Sánh:**
 
@@ -485,13 +336,12 @@ const example = 42;
 - **Luôn dùng const/let**, tránh var
 ---
 
-## 09. Q9: 🗂️ Q05: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References
+## Q05: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References
 
-### P1: Tên câu hỏi: 🗂️ Q05: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Collections & Weak References
+### Trả lời (Senior):
 
-### P2: Trả lời (Senior):
 
-## 10. Q10: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -564,10 +414,6 @@ const example = 42;
 
 **Code Example:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🎯 Best Practices:**
 
@@ -582,10 +428,6 @@ const example = 42;
 
 **⚠️ Common Mistakes:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **📊 Performance & Memory Considerations:**
 
@@ -595,13 +437,12 @@ const example = 42;
 - **FinalizationRegistry**: Minimal overhead, callback chạy async trong idle time
 ---
 
-## 11. Q11: 🔄 Q06: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)
+## Q06: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)
 
-### P1: Tên câu hỏi: 🔄 Q06: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)
+### Trả lời (Senior):
 
-### P2: Trả lời (Senior):
 
-## 12. Q12: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -616,10 +457,6 @@ const example = 42;
 
 **♻️ Luồng Hoạt Động Event Loop (Chi Tiết):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🔑 Điểm Khác Biệt Quan Trọng:**
 - **Microtask vs Macrotask**:
@@ -633,20 +470,12 @@ const example = 42;
 **⚠️ Lỗi Thường Gặp:**
 - **Làm đói UI**: Microtasks vô hạn chặn rendering → UI đóng băng.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 - **setTimeout(fn, 0) ≠ Tức thì**: Vẫn phải chờ Call Stack trống + Microtasks hoàn thành.
 - **Race Conditions**: Callbacks bất đồng bộ có thể thực thi không theo thứ tự mong đợi.
 
 **🎯 Ví Dụ Thực Tế:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **💡 Kiến Thức Senior:**
 - **Hiệu năng**: Tránh chặn Call Stack với tính toán nặng → dùng Web Workers hoặc chia thành chunks với `setTimeout`.
@@ -670,10 +499,6 @@ Giải thích chi tiết cơ chế hoạt động của JavaScript Engine với 
 
 **🏗️ KIẾN TRÚC TỔNG QUAN:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -704,17 +529,9 @@ const example = 42;
 
 **Hoạt động:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Stack Overflow:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -727,10 +544,6 @@ const example = 42;
 
 **Các Web APIs phổ biến:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -743,10 +556,6 @@ const example = 42;
 
 **Các Microtasks:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -759,10 +568,6 @@ const example = 42;
 
 **Các Macrotasks:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -770,19 +575,11 @@ const example = 42;
 
 **Thuật toán Event Loop:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **🔢 THỨ TỰ ƯU TIÊN:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -802,38 +599,18 @@ const example = 42;
 
 **🔍 Ví dụ 1: Phân biệt Microtask vs Macrotask**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🔍 Ví dụ 2: Microtask Starvation (Đói macrotask)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🔍 Ví dụ 3: Call Stack với Async/Await**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🔍 Ví dụ 4: Thực Tế trong Trading App**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Best Practices:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **📋 Tóm tắt Best Practices:**
 
@@ -845,10 +622,6 @@ const example = 42;
 
 **Common Mistakes:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **📋 Chú thích về các lỗi thường gặp:**
 
@@ -860,13 +633,10 @@ const example = 42;
 ---
 ---
 
-## 13. Q13: 💬 Q07: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường
+## Q07: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường
 
-### P1: Tên câu hỏi: 💬 Q07: Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường
 
-### P2: Trả lời (Senior):
-
-## 14. Q14: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -979,10 +749,6 @@ Bạn check xem:
 
 **🎬 VÍ DỤ CỤ THỂ VỚI CODE:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -1001,10 +767,6 @@ const example = 42;
 
 **🍕 VÍ DỤ THỰC TẾ: ĐẶT PIZZA**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Giải thích:**
 1. Bạn làm hết việc đang làm (xem TV, ăn bỏng ngô)
@@ -1015,19 +777,11 @@ const example = 42;
 
 **🚗 VÍ DỤ: ĐI SIÊU THỊ**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **⚠️ TÌNH HUỐNG XẤU: KHÁCH VIP VÔ HẠN (Microtask Starvation)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -1071,21 +825,14 @@ const example = 42;
 
 **💡 Nhớ công thức:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 ---
 
-## 15. Q15: 🔐 Q08: Closure & Data Privacy
+## Q08: Closure & Data Privacy
 
-### P1: Tên câu hỏi: 🔐 Q08: Closure & Data Privacy
 
-### P2: Trả lời (Senior):
-
-## 16. Q16: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (1-2 phút):**
 
@@ -1105,18 +852,8 @@ const example = 42;
 
 **⚠️ Common Pitfalls:**
 - **Memory Leaks**: Closure giữ reference → biến không bị GC → memory leak nếu không cleanup.
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
 - **Loop + Closures**: `var` trong loop → mọi closure chia sẻ cùng biến.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **💡 Senior Insights:**
 - **Performance**: Closures có overhead nhỏ (memory + lookup time), nhưng negligible trong hầu hết cases.
@@ -1142,14 +879,7 @@ const example = 42;
 - **Hoạt động**: Inner function giữ reference đến outer scope
 - **Ưu điểm**: Encapsulation, data privacy, module pattern
 - **Nhược điểm**: Có thể gây memory leaks nếu không quản lý tốt
-
-**Code Example:**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
+- **Use Cases**: Factory functions, module pattern, event handlers, partial application, memoization
 **Best Practices:**
 
 - Sử dụng closure cho data privacy
@@ -1157,41 +887,16 @@ const example = 42;
 - Tránh memory leaks
 - Sử dụng TypeScript cho type safety
 
-**Mistakes:**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 #### Vì sao Redux/Zustand dùng closure để lưu trạng thái?
 
-- **Encapsulation (đóng gói state an toàn)**: State sống trong phạm vi từ vựng (lexical scope) của store, không thể bị thay đổi trực tiếp từ bên ngoài nếu không đi qua API công khai (getState, setState, subscribe). Tránh lộ biến toàn cục và hạn chế đột biến ngoài ý muốn.
-- **API nhỏ gọn, không cần lớp/phụ trợ**: Một factory function tạo store trả về các hàm thao tác; closure giữ state và danh sách listeners. Không bắt buộc dùng class/this, giảm rủi ro context.
-- **Hiệu năng dự đoán được**: Không cần Proxy hay getter/setter; cập nhật state là thao tác thuần (immutable/mutable tùy chiến lược), thông báo qua danh sách subscribers trong cùng closure → chi phí thấp, dễ tối ưu.
-- **Khả năng multiple store độc lập**: Mỗi lần gọi factory tạo một scope mới với state riêng, không rò rỉ chéo. Dễ tạo nhiều store, test theo từng instance.
+Redux/Zustand dùng closure để lưu state vì closure tạo ra vùng nhớ riêng nằm ngoài React, không bị reset khi component re-render, tránh render dư thừa, giữ state private, và cho phép subscription-based rendering rất nhanh. Nếu dùng React state, state sẽ mất khi unmount và gây re-render toàn bộ subtree.
 
-Ví dụ mô phỏng (đơn giản hóa theo phong cách Zustand):
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
+## Q09: Arrow vs Regular Functions & this Binding (call, apply, bind)
 
-So với lựa chọn khác:
 
-- **Class + this**: Cần ràng buộc ngữ cảnh, dễ lỗi khi truyền phương thức; khó tree-shake hơn nếu không cẩn thận.
-- **Proxy**: Tiện reactive nhưng tốn chi phí bẫy (traps), phức tạp debug, không cần thiết khi chỉ cần pub/sub đơn giản.
-- **Global singleton**: Dễ rò rỉ state giữa tests/SSR, khó tạo nhiều instance độc lập.
----
-
-## 17. Q17: ➡️ Q09: Arrow vs Regular Functions & this Binding (call, apply, bind)
-
-### P1: Tên câu hỏi: ➡️ Q09: Arrow vs Regular Functions & this Binding (call, apply, bind)
-
-### P2: Trả lời (Senior):
-
-## 18. Q18: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -1216,25 +921,9 @@ So với lựa chọn khác:
 
 **🔧 `this` Binding Methods (call, apply, bind):**
 - **`call(thisArg, arg1, arg2)`**: Invoke ngay với arguments riêng lẻ.
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
 - **`apply(thisArg, [args])`**: Invoke ngay với arguments array.
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
 - **`bind(thisArg)`**: Return function mới với `this` cố định (không invoke).
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🎯 `this` Binding Rules (4 Rules - Priority Order):**
 1. **`new` Binding**: `new Fn()` → `this` = new object.
@@ -1244,30 +933,15 @@ const example = 42;
 
 **⚠️ Common Mistakes:**
 - **Arrow trong object methods**: `this` không point to object!
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
 - **Event handlers**: Regular function → `this` = event target. Arrow → `this` = outer scope.
 - **Class methods as callbacks**: Mất context → dùng arrow hoặc bind.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **💡 Senior Insights:**
 - **React Class Components**: Arrow class fields = auto-bind `this` (babel transform).
 - **Performance**: Arrow functions trong render → tạo new reference mỗi lần → child re-render. Dùng `useCallback`.
 - **call vs apply**: `apply` hữu ích khi arguments đã là array (e.g., `Math.max.apply(null, [1,2,3])`).
 - **Polyfill bind**: Implement bind manually để hiểu cơ chế:
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -1281,90 +955,7 @@ const example = 42;
 - 📋 **apply**: `fn.apply(thisArg, [args])` - invoke ngay với array
 - 🔗 **bind**: `fn.bind(thisArg)` - return function mới với this cố định
 
-### **1. Arrow vs Regular Functions - Sự Khác Biệt Quan Trọng**
 
-#### **1.1. Syntax & Declaration**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **1.2. this Binding - Khác Biệt QUAN TRỌNG Nhất**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-**💡 Quy tắc this:**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **1.3. arguments Object**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **1.4. Constructor & new**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **1.5. Hoisting**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **1.6. Methods & Prototype**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
----
-
-### **2. this Binding - call, apply, bind**
-
-#### **2.1. Understanding `this` Context**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **2.2. call() - Gọi ngay với arguments riêng lẻ**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **2.3. apply() - Gọi ngay với array of arguments**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **2.4. bind() - Tạo function mới với this cố định**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
----
 
 ### **3. So Sánh Tổng Quan**
 
@@ -1389,34 +980,7 @@ const example = 42;
 | **apply** | `fn.apply(thisArg, [args])` | ✅ Có | Arguments là array |
 | **bind** | `fn.bind(thisArg, arg1)` | ❌ Không | Event handlers, partial application |
 
----
-
-### **4. Best Practices & Common Mistakes**
-
-#### **4.1. Best Practices**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **4.2. Common Mistakes**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
----
-
-### **5. Real-World Examples**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
----
+--
 
 ### **💡 Key Takeaways**
 
@@ -1441,13 +1005,10 @@ const example = 42;
 > "Arrow function = lexical this (từ outer scope). Regular function = dynamic this (runtime). Dùng call/apply khi cần gọi ngay, bind khi cần function mới với this cố định!" 🎯
 ---
 
-## 19. Q19: 🎯 Q10: IIFE (Immediately Invoked Function Expression) & Functional Programming
+## Q10: IIFE (Immediately Invoked Function Expression) & Functional Programming
 
-### P1: Tên câu hỏi: 🎯 Q10: IIFE (Immediately Invoked Function Expression) & Functional Programming
 
-### P2: Trả lời (Senior):
-
-## 20. Q20: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -1509,24 +1070,12 @@ IIFE (đọc là "iffy") là một function được **gọi ngay lập tức** 
 
 **🔥 Cú Pháp:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **💡 Tại Sao Cần IIFE?**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🎯 Use Cases của IIFE:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **✅ Ưu Điểm của IIFE:**
 
@@ -1564,10 +1113,6 @@ Pure function là hàm thỏa mãn 2 điều kiện:
 1. **Same Input → Same Output**: Cùng input luôn cho cùng output
 2. **No Side Effects**: Không thay đổi state bên ngoài (global variables, database, file, etc.)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🎯 Ưu Điểm của Pure Functions:**
 
@@ -1584,17 +1129,9 @@ const example = 42;
 
 Currying là kỹ thuật **chuyển đổi** một function nhận **nhiều tham số** thành **chuỗi các functions**, mỗi function nhận **1 tham số**.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🎯 Use Cases của Currying:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -1607,17 +1144,9 @@ HOF là function thỏa mãn 1 trong 2 điều kiện:
 1. **Nhận function làm argument** (tham số)
 2. **Trả về function** (return function)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🎯 Practical Example - Data Processing:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -1631,10 +1160,6 @@ const example = 42;
 
 **❌ Common Mistakes:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **📝 Tóm Tắt:**
 
@@ -1647,13 +1172,10 @@ const example = 42;
 | **Functional** | Paradigm tập trung vào pure functions, compose | Clean code, maintainable      |
 ---
 
-## 21. Q21: 🎪 Q11: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)
+## Q11: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)
 
-### P1: Tên câu hỏi: 🎪 Q11: DOM Events - Event Flow, Delegation & Event Properties (Bubbling, Capturing, target vs currentTarget)
 
-### P2: Trả lời (Senior):
-
-## 22. Q22: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2 phút):**
 
@@ -1668,10 +1190,6 @@ const example = 42;
 - **Mặc định**: Event listeners chạy trong **Bubbling phase** (useCapture = false).
 - **Capturing**: Đặt `useCapture: true` → listener chạy trong Capturing phase.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 - **Dừng Lan Truyền**: `event.stopPropagation()` → ngừng bubbling/capturing.
 - **Ngăn Hành Vi Mặc Định**: `event.preventDefault()` → ngăn hành vi mặc định (vd: form submit, chuyển link).
@@ -1683,20 +1201,12 @@ const example = 42;
 - Nội dung động: Không cần gắn lại listeners khi thêm/xóa con.
 - **Ví dụ**:
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🔍 `target` vs `currentTarget`:**
 - **`event.target`**: Phần tử thực sự được click (phần tử gốc kích hoạt sự kiện).
 - **`event.currentTarget`**: Phần tử có listener gắn vào (đang xử lý sự kiện).
 - **Trường hợp**: Delegation → `currentTarget` = cha, `target` = con được click.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **⚠️ Common Pitfalls:**
 - **stopPropagation() overuse**: Ngăn cả analytics tracking, global handlers → dùng thận trọng.
@@ -1707,10 +1217,6 @@ const example = 42;
 - **Performance**: Event delegation giảm memory usage (1 listener vs 1000) và faster DOM manipulation.
 - **Passive listeners**: `{ passive: true }` → improve scroll performance (không block scroll while waiting for preventDefault).
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 - **once option**: `{ once: true }` → auto remove listener sau 1 lần fire.
 - **Capture for debugging**: Dùng capturing phase để intercept events trước khi children handle.
@@ -1740,10 +1246,6 @@ Giải thích chi tiết cơ chế hoạt động của DOM Events trong JavaScr
 
 Khi một event xảy ra trên DOM element, nó đi qua 3 phases (giai đoạn):
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **💡 Giải Thích Tiếng Việt:**
 
@@ -1753,10 +1255,6 @@ const example = 42;
 
 **🎯 Code Example với Chú Thích Tiếng Việt:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -1775,10 +1273,6 @@ Event Delegation là kỹ thuật thay vì gắn event listener cho từng eleme
 
 **🎯 Code Example với Chú Thích Chi Tiết:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -1791,10 +1285,6 @@ const example = 42;
 
 **🎯 Code Example:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **📌 So Sánh:**
 
@@ -1823,13 +1313,10 @@ const example = 42;
 5. Mix capturing và bubbling không rõ ràng
 ---
 
-## 23. Q23: 🌐 Q12: DOM API & Query Methods
+## Q12: DOM API & Query Methods
 
-### P1: Tên câu hỏi: 🌐 Q12: DOM API & Query Methods
 
-### P2: Trả lời (Senior):
-
-## 24. Q24: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -1890,10 +1377,6 @@ const example = 42;
 
 **Code Example:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Best Practices:**
 
@@ -1904,20 +1387,13 @@ const example = 42;
 
 **Mistakes:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
-## 25. Q25: ⚙️ Q13: Async/Await vs Promises vs Callbacks & Promise.all/any/race
+## Q13: Async/Await vs Promises vs Callbacks & Promise.all/any/race
 
-### P1: Tên câu hỏi: ⚙️ Q13: Async/Await vs Promises vs Callbacks & Promise.all/any/race
 
-### P2: Trả lời (Senior):
-
-## 26. Q26: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -1961,19 +1437,11 @@ const example = 42;
 
 **🎯 Practical Examples:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **⚠️ Common Mistakes:**
 - **Forgot `await`**: Promise không execute → return Promise object, không phải value.
 - **Sequential khi có thể parallel**: `await` trong loop → chậm. Dùng `Promise.all()`.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 - **Unhandled rejections**: Missing `.catch()` hoặc `try/catch` → silent failures.
 - **Promise.all fail-fast**: 1 promise fail → tất cả fail. Dùng `allSettled` nếu cần.
@@ -2012,10 +1480,6 @@ const example = 42;
 
 **Code Example:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Best Practices:**
 
@@ -2034,17 +1498,9 @@ const example = 42;
 
 **🔹 Problem: Async errors không bị catch**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🔹 Problem: Mixed sync/async errors**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -2052,17 +1508,9 @@ const example = 42;
 
 **🔹 Problem: Multiple concurrent requests**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🔹 Problem: Concurrent updates to shared state**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -2070,17 +1518,9 @@ const example = 42;
 
 **🔹 Problem: Requests hang forever**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🔹 Problem: Network failures**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -2088,10 +1528,6 @@ const example = 42;
 
 **🔹 Problem: Too many concurrent requests**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -2099,10 +1535,6 @@ const example = 42;
 
 **🔹 Problem: Promise.all chạy SONG SONG, không theo thứ tự**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -2110,65 +1542,33 @@ const example = 42;
 
 #### **1. For...of Loop (Đơn giản nhất - Khuyến nghị) ⭐**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 #### **2. Reduce Pattern**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 #### **3. Generator Pattern**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 #### **4. Batched (Cân bằng Speed + Server Load)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 ### **📊 So Sánh Performance**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Bảng So Sánh:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 ### **🎯 Real-World Examples**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 ### **🚨 Common Mistakes**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -2176,10 +1576,6 @@ const example = 42;
 
 **Khi nào dùng gì?**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -2187,19 +1583,11 @@ const example = 42;
 
 **🔹 Problem: Process large datasets**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **🎯 Advanced Patterns - Tổng Hợp**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -2236,23 +1624,16 @@ Async programming phức tạp hơn sync nhiều do:
 
 **📌 Promise Combinators Examples:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Nhưng với đúng patterns và tools, bạn có thể xử lý mọi tình huống async một cách hiệu quả! 🚀
 
 ---
 ---
 
-## 27. Q27: 🔌 Q14: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa
+## Q14: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa
 
-### P1: Tên câu hỏi: 🔌 Q14: Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa
 
-### P2: Trả lời (Senior):
-
-## 28. Q28: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -2332,10 +1713,6 @@ Nhưng với đúng patterns và tools, bạn có thể xử lý mọi tình hu�
 
 **Code Example - Comprehensive Implementation:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🎯 Best Practices - Tối Ưu Hóa:**
 
@@ -2354,10 +1731,6 @@ const example = 42;
 
 **⚠️ Common Mistakes - Lỗi Thường Gặp:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **📊 Performance Considerations:**
 
@@ -2368,166 +1741,15 @@ const example = 42;
 - **Caching**: Cache GET requests trong interceptors để reduce server load
 ---
 
-## 29. Q29: ⏱️ Q15: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao
+## Q15: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao
 
-### P1: Tên câu hỏi: ⏱️ Q15: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao
 
-### P2: Trả lời (Senior):
+### Trả lời (Senior):
 
-## 30. Q30: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## Q31: 🔀 Q16: Compare Data Types - Objects, Strings, Big Numbers & Decimals
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"Deferring execution là kỹ thuật trì hoãn chạy code để optimize performance, bao gồm debounce, throttle, requestIdleCallback, và lazy loading."**
-
-**🔑 5 Kỹ Thuật Chính:**
-
-**1. Debounce:**
-- **Chờ user ngừng action** rồi mới execute (delay reset sau mỗi call)
-- Use case: search input (chờ user gõ xong), window resize
-- Ví dụ: `debounce(fn, 300)` → user gõ → chờ 300ms không gõ nữa → chạy
-
-**2. Throttle:**
-- **Execute tối đa 1 lần trong X ms**, bỏ qua calls giữa interval
-- Use case: scroll events, mouse move, API rate limiting
-- Ví dụ: `throttle(fn, 1000)` → chạy ngay, ignore calls trong 1s tiếp theo
-
-**3. requestIdleCallback:**
-- Chạy task khi browser **idle** (không busy với rendering/user input)
-- Use case: analytics, non-critical updates, prefetching data
-- Fallback: `setTimeout(fn, 1)` cho browsers không support
-
-**4. requestAnimationFrame:**
-- Execute **trước next repaint** (~60fps = 16.67ms)
-- Use case: animations, smooth scrolling, visual updates
-- Better than `setTimeout` vì sync với browser refresh rate
-
-**5. Lazy Loading / Code Splitting:**
-- Load code/assets **only when needed** (dynamic import)
-- Use case: route-based splitting, below-fold images, modals
-- React: `React.lazy(() => import('./Component'))`
-
-**⚠️ Lỗi Thường Gặp:**
-- Debounce search mà không **cancel previous request** → race condition
-- Throttle scroll mà không check `passive: true` → jank
-- requestIdleCallback cho critical tasks → user thấy lag
-- Không cleanup timers khi unmount → memory leak
-
-**💡 Kiến Thức Senior:**
-- **Debounce vs Throttle**: Debounce = "chờ xong hẳn", Throttle = "giới hạn tần suất"
-- Leading vs Trailing edge: Leading chạy ngay lần đầu, Trailing chạy sau delay
-- **IntersectionObserver** hiệu quả hơn scroll throttle cho lazy loading (native API)
-- Web Workers cho **heavy computations** không block main thread
-- Priority scheduling: `scheduler.postTask()` API (Chrome) với priorities (user-blocking, user-visible, background)
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **1.2. Axios vs Fetch API - So Sánh Chi Tiết**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-### **2. Axios Instance & Configuration**
-
-#### **2.1. Create Custom Instance**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **2.2. Full Request Configuration**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
----
-
-### **3. Request Cancellation - Hủy Request**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
----
-
-### **4. File Upload & Download**
-
-#### **4.1. File Upload with Progress**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **4.2. File Download**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
----
-
-### **5. Error Handling - Xử Lý Lỗi Chi Tiết**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
----
-
-### **6. Advanced Features**
-
-#### **6.1. Retry Logic**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **6.2. Request Deduplication**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
-#### **6.3. Response Caching**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
----
-
-### **💡 Best Practices**
-
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
-
----
----
-
-## 31. Q31: 🔀 Q16: Compare Data Types - Objects, Strings, Big Numbers & Decimals
-
-### P1: Tên câu hỏi: 🔀 Q16: Compare Data Types - Objects, Strings, Big Numbers & Decimals
-
-### P2: Trả lời (Senior):
-
-## 32. Q32: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -2587,13 +1809,9 @@ const example = 42;
 ---
 ---
 
-## 33. Q33: 🔄 Q17: React Query (TanStack Query) - Data Fetching, Caching & State Management
+## Q17: React Query (TanStack Query) - Data Fetching, Caching & State Management
 
-### P1: Tên câu hỏi: 🔄 Q17: React Query (TanStack Query) - Data Fetching, Caching & State Management
-
-### P2: Trả lời (Senior):
-
-## 34. Q34: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -2640,13 +1858,10 @@ const example = 42;
 ---
 ---
 
-## 35. Q35: 🎨 Q18: Browser Rendering (Paint, Repaint, Reflow)
+## Q18: Browser Rendering (Paint, Repaint, Reflow)
 
-### P1: Tên câu hỏi: 🎨 Q18: Browser Rendering (Paint, Repaint, Reflow)
 
-### P2: Trả lời (Senior):
-
-## 36. Q36: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (1-2 phút):**
 
@@ -2681,31 +1896,15 @@ const example = 42;
 **🚀 Kỹ Thuật Tối Ưu:**
 1. **Gộp Thay Đổi DOM**:
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 2. **Dùng transform/opacity (Chỉ Composite):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 3. **Tránh Đọc Thuộc Tính Layout Trong Vòng Lặp**:
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 4. **requestAnimationFrame Cho Animation:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 5. **Virtualize Long Lists**: Chỉ render visible items (react-window, react-virtualized).
 
@@ -2743,10 +1942,6 @@ const example = 42;
 
 **Code Example:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Best Practices:**
 
@@ -2756,13 +1951,10 @@ const example = 42;
 - Batch DOM changes
 ---
 
-## 37. Q37: 🔁 Q19: Loop Performance & Async Loops
+## Q19: Loop Performance & Async Loops
 
-### P1: Tên câu hỏi: 🔁 Q19: Loop Performance & Async Loops
 
-### P2: Trả lời (Senior):
-
-## 38. Q38: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -2798,28 +1990,16 @@ const example = 42;
 
 **1. Sequential (chờ từng cái):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 - Chậm nhưng **controlled**, preserve order
 
 **2. Parallel (chạy cùng lúc):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 - **Nhanh nhất** nhưng không control order, có thể overload server
 
 **3. Batched (nhóm nhỏ):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 - **Best practice** - balance speed vs resource usage
 
@@ -2887,10 +2067,6 @@ Có nhiều cách để loop qua array/object trong JavaScript, mỗi cách có 
 
 **Hoạt động:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Ưu điểm:**
 
@@ -2932,10 +2108,6 @@ const example = 42;
 
 **Code Example (TypeScript):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -2943,38 +2115,18 @@ const example = 42;
 
 1. **Chọn Loop Type đúng Use Case**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 2. **Cache Array Length**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 3. **Async/Await đúng cách**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 4. **Avoid Nested Loops (O(n²))**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 5. **Error Handling trong Async Loops**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -2982,49 +2134,26 @@ const example = 42;
 
 1. **❌ forEach với async/await**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 2. **❌ for...in với Arrays**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 3. **❌ Không Cache Length**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 4. **❌ Nested Loops O(n²)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 5. **❌ Promise.all mà không handle errors**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 ---
 
-## 39. Q39: 💾 Q20: Handle Caching - HTTP Caching & Browser Cache Strategies
+## Q20: Handle Caching - HTTP Caching & Browser Cache Strategies
 
-### P1: Tên câu hỏi: 💾 Q20: Handle Caching - HTTP Caching & Browser Cache Strategies
 
-### P2: Trả lời (Senior):
-
-## 40. Q40: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
 
@@ -3128,17 +2257,9 @@ const example = 42;
 
 **🎯 HTTP Cache Headers & Directives:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Code Example:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // RHF dùng Proxy để:
@@ -3148,10 +2269,6 @@ typescript
 4. **Hỗ trợ object lồng nhau**: Proxy đệ quy cho nested fields.
 5. **Hiệu năng**: Chỉ render lại fields bị thay đổi (reactivity chi tiết).
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Basic class
@@ -3239,10 +2356,6 @@ console.log(circle.area); // Chú giải: 78.54
 circle.radius = 10;
 console.log(circle.area); // Chú giải: 314.16
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Basic Generator Function
@@ -3359,10 +2472,6 @@ console.log(fib.next().value); // Chú giải: 1
 console.log(fib.next().value); // Chú giải: 2
 console.log(fib.next().value); // Chú giải: 3
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ Sai: Không hiểu generator state
@@ -3376,10 +2485,6 @@ const gen = numberGenerator();
 const values = [...gen]; // Chú giải: [1, 2, 3]
  // Chú giải: Generator is exhausted after iteration
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Array.flat() - Flatten nested arrays
@@ -3492,10 +2597,6 @@ function createIndexMap(data: any[]): Map<string, any[]> {
   return indexMap;
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ Sai: Không hiểu flat depth
@@ -3505,10 +2606,6 @@ const flattened = nested.flat(); // Chú giải: [1, 2, [3, [4]]] - only 1 level
 // ✅ Đúng: Specify depth
 const deeplyFlattened = nested.flat(Infinity); // Chú giải: [1, 2, 3, 4]
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Nguyên mẫu (prototype): cơ chế kế thừa theo chuỗi trong JS; `class` chỉ là cú pháp sugar trên prototype.
@@ -3711,10 +2808,6 @@ withLogging(User.prototype);
 const user = new User('John');
 user.log('Hello'); // Chú giải: "John: Hello"
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ Sai: Không hiểu shallow vs deep freeze
@@ -3725,10 +2818,6 @@ obj.a.b = 2; // Chú giải: Still works!
 const obj = deepFreeze({ a: { b: 1 } });
 obj.a.b = 2; // Chú giải: Error in strict mode
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 const [state, setState] = useState(initialValue);
@@ -3741,10 +2830,6 @@ const [state, setState] = useState(initialValue);
 // 5. Reconciliation: React so sánh old state vs new state
 // 6. Nếu khác (Object.is comparison) → re-render component
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -3907,10 +2992,6 @@ function TodoList() {
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ 1. Không dùng functional update khi cần previous state
@@ -3940,10 +3021,6 @@ useEffect(() => {
   setCount(1);
 }, []);
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 useEffect(() => {
@@ -3963,10 +3040,6 @@ useEffect(() => {
  // Chú giải: - Effect function chạy lại
 // 6. Khi component unmount: Cleanup chạy cuối cùng
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -4177,10 +3250,6 @@ function Settings() {
   return <button onClick={() => setTheme('dark')}>Dark Mode</button>;
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ 1. Không cleanup subscriptions/timers
@@ -4232,10 +3301,6 @@ useEffect(() => {
   return () => { cancelled = true; };
 }, [userId]);
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // useState: Trigger re-render khi thay đổi
@@ -4250,10 +3315,6 @@ countRef.current = 1; // → Component KHÔNG re-render
  // Chú giải: useState: Change state → Schedule re-render → Re-render → Paint
  // Chú giải: useRef: Change ref.current → (Nothing happens, no re-render)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -4403,10 +3464,6 @@ function MeasureElement() {
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ 1. Expect re-render khi thay đổi ref
@@ -4436,10 +3493,6 @@ inputRef.current.focus(); // ❌ Có thể null!
 // ✅ Fix: Check null hoặc dùng optional chaining
 inputRef.current?.focus();
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: useEffect:
@@ -4454,10 +3507,6 @@ typescript
  // Chú giải: 3. useLayoutEffect runs (BEFORE paint - BLOCKS UI)
 // 4. Browser paints (user thấy UI đã updated)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -4543,10 +3592,6 @@ function AnimatedBox() {
   return <div ref={boxRef}>Animated Box</div>;
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ Data fetching (không cần sync)
@@ -4575,10 +3620,6 @@ useEffect(() => {
  // Chú giải: - useEffect: 99% cases (default choice)
 // - useLayoutEffect: Chỉ khi có visual bugs (flicker, jump, wrong position)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -4746,10 +3787,6 @@ function Counter() {
  // Chú giải: state.count = 20 (10 * 2)
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: useState: Simple state
@@ -4765,10 +3802,6 @@ const [state, dispatch] = useReducer(formReducer, initialState);
  // Chú giải: - 1-3 related values → useState
  // Chú giải: - 4+ related values OR complex logic → useReducer
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Context flow:
@@ -4782,10 +3815,6 @@ typescript
 // - Không có selector mechanism (khác Redux)
 // - Cần optimize bằng React.memo hoặc useMemo
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -4987,10 +4016,6 @@ const Component1 = React.memo(function Component1() {
   return <div>{user?.name}</div>;
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -5087,10 +4112,6 @@ function TodoList({ todos }) {
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Heap lưu object và mảng; được runtime quản lý bởi trình thu gom rác.
@@ -5112,10 +4133,6 @@ const data = useMemo(() => transform(props.data), [props.data]);
  // Chú giải: - Computation thực sự expensive (>10ms)
  // Chú giải: - Prevent child re-renders (với React.memo)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: useCallback: Memoize FUNCTION
@@ -5131,10 +4148,6 @@ const memoizedCallback = useMemo(() => {
  // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -5265,10 +4278,6 @@ function Search() {
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ 1. useCallback without React.memo (vô ích)
@@ -5306,10 +4315,6 @@ const handleClick = () => {
   setCount(c => c + 1);
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -5413,10 +4418,6 @@ function Parent() {
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ Don't expose entire DOM node
@@ -5435,10 +4436,6 @@ useImperativeHandle(ref, () => ({
 vs
 inputRef.current.focus(); // Chú giải: Imperative
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -5534,10 +4531,6 @@ function Counter() {
   return <button onClick={increment}>{count}</button>;
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 class MyComponent extends React.Component {
@@ -5666,10 +4659,6 @@ class MyComponent extends React.Component {
   }
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 MOUNTING:
 constructor → getDerivedStateFromProps → render → componentDidMount
@@ -5684,10 +4673,6 @@ componentWillUnmount
 ERROR:
 getDerivedStateFromError → componentDidCatch
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 function MyComponent(props) {
@@ -5789,10 +4774,6 @@ export default React.memo(MyComponent, (prevProps, nextProps) => {
   return prevProps.id === nextProps.id;
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: 1. Initial render
@@ -5813,10 +4794,6 @@ const newVdom = { type: 'div', props: { className: 'box' }, children: ['World'] 
  // Chú giải: 5. Commit phase: Update real DOM
 element.textContent = 'World'; // Chỉ update text, không re-create div
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ KHÔNG DÙNG INDEX làm key
@@ -5832,10 +4809,6 @@ typescript
 {items.map(item => <Item key={item.id} data={item} />)}
 // React biết chính xác item nào added/removed/moved
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Sao chép nông: chỉ sao chép thuộc tính cấp trên; object lồng bên trong vẫn giữ tham chiếu chung.
@@ -5857,10 +4830,6 @@ class MyComponent extends React.Component {
 // { a: 1 } !== { a: 1 } → re-render (mặc dù giống nhau)
  // Chú giải: [1,2,3] !== [1,2,3] → re-render
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Sao chép nông: chỉ sao chép thuộc tính cấp trên; object lồng bên trong vẫn giữ tham chiếu chung.
@@ -5898,10 +4867,6 @@ const Child = React.memo(({ config, onClick }) => {
   return <button onClick={onClick}>{config.theme}</button>;
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Mutable (có thể thay đổi): thuộc tính object hoặc phần tử mảng có thể bị sửa trực tiếp; nếu cần bất biến, dùng `Object.freeze()` (chỉ nông) hoặc pattern/ thư viện bất biến.
@@ -5919,10 +4884,6 @@ function Parent() {
   return <Child count={count} />; // Chú giải: Pass state as props
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ✅ YES: Default behavior
@@ -5964,10 +4925,6 @@ function Parent() {
   return <div>{child}</div>;
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Trong arrow function với block `{ }` phải dùng `return` để trả giá trị; với expression có thể trả ngầm (implicit return).
@@ -5991,10 +4948,6 @@ function withAuth(Component) {
   };
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Component với function as child
@@ -6034,10 +4987,6 @@ function UserList() {
   return <ul>{data.map(user => <li key={user.id}>{user.name}</li>)}</ul>;
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // Components hoạt động cùng nhau qua Context
@@ -6083,10 +5032,6 @@ function TabPanel({ id, children }) {
   <TabPanel id="profile">Profile content</TabPanel>
 </Tabs>
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: React 17: Chỉ batch trong event handlers
@@ -6117,10 +5062,6 @@ flushSync(() => {
 }); // Chú giải: Render immediately
 setFlag(f => !f); // Chú giải: Render again
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Route-based splitting
@@ -6160,10 +5101,6 @@ const { TabPanel } = lazy(() =>
   import('./Tabs').then(module => ({ default: module.TabPanel }))
 );
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // Render children vào DOM node khác (ngoài parent hierarchy)
@@ -6189,10 +5126,6 @@ function Modal({ children, isOpen }) {
  // Chú giải: - Tooltips, Popovers
  // Chú giải: - Notifications (toast)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // Chỉ có thể dùng Class Component (chưa có hook)
@@ -6226,10 +5159,6 @@ class ErrorBoundary extends React.Component {
  // Chú giải: - Server-side rendering
  // Chú giải: - Errors trong Error Boundary itself
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Suspense-enabled data fetching
@@ -6250,10 +5179,6 @@ function App() {
 
  // Chú giải: Libraries hỗ trợ: React Query, SWR, Relay
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Server Component (.server.jsx)
@@ -6274,10 +5199,6 @@ function Counter() {
  // Chú giải: - Direct backend access (DB, filesystem)
  // Chú giải: - Automatic code splitting
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: useTransition: Mark updates as non-urgent
@@ -6315,10 +5236,6 @@ function App() {
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Server-side: Generate HTML
@@ -6334,10 +5251,6 @@ hydrateRoot(document.getElementById('root'), <App />);
 </Suspense>
 // User có thể interact với page khác ngay lập tức
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import { BrowserRouter, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
@@ -6373,10 +5286,6 @@ function User() {
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Avoid extra DOM nodes
@@ -6397,10 +5306,6 @@ function List() {
   </React.Fragment>
 ))}
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import { startTransition } from 'react';
@@ -6418,10 +5323,6 @@ function TabContainer() {
  // Chú giải: Input stays responsive even if TabPanel render is slow
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 const OtherComponent = lazy(() => import('./OtherComponent'));
@@ -6441,10 +5342,6 @@ function MyComponent() {
 </Suspense>
  // Chú giải: Waits for BOTH before showing (avoid cascading spinners)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -6534,10 +5431,6 @@ function Profile() {
 // ✅ Khi nào dùng: Private pages, dashboards, user-specific data
 // ⚠️ Nhược điểm: Không tốt cho SEO, slower initial load
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: pages/index.tsx → /
@@ -6573,10 +5466,6 @@ router.push({ pathname: '/post/[id]', query: { id: '1' } });
 router.replace('/login'); // Chú giải: Replace history
 router.back(); // Chú giải: Go back
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: pages/api/user.ts
@@ -6609,10 +5498,6 @@ export default function handler(req, res) {
 
  // Chú giải: ✅ Use cases: Backend logic, database queries, authentication
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import Image from 'next/image';
@@ -6649,10 +5534,6 @@ function Avatar() {
  // Chú giải: - Responsive images (srcset)
  // Chú giải: - Prevent layout shift (width/height required)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: middleware.ts (root level)
@@ -6686,10 +5567,6 @@ export const config = {
   matcher: ['/dashboard/:path*', '/api/:path*'],
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: app/layout.tsx - Root layout
@@ -6732,10 +5609,6 @@ export default function Counter() {
   return <button onClick={() => setCount(count + 1)}>{count}</button>;
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Fetch with caching
@@ -6772,10 +5645,6 @@ export default async function Page() {
   return <div>{user.name} - {posts.length} posts</div>;
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: pages/index.tsx (Pages Router)
@@ -6827,10 +5696,6 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   };
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: 1. Sitemap Generation (pages/api/sitemap.xml.ts)
@@ -6869,10 +5734,6 @@ export default function Sitemap() {
 import Link from 'next/link';
 <Link href="/about">About</Link> // Chú giải: Prefetch on hover
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: 1. Dynamic Imports (Code Splitting)
@@ -6915,10 +5776,6 @@ export default function Page() {
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: 1. Turbopack (Beta) - Faster dev server
@@ -6962,10 +5819,6 @@ export const metadata = {
   },
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: 1. React 19 Support
@@ -7009,10 +5862,6 @@ function SubmitButton() {
   return <button disabled={pending}>Submit</button>;
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: 1. Turbopack Build (Production)
@@ -7057,10 +5906,6 @@ function Component({ items }) {
  // Chú giải: More Node.js APIs available in Edge Runtime
  // Chú giải: Better compatibility with existing packages
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ══════════════════════════════════════════════════════════
@@ -7112,10 +5957,6 @@ const callback = () => handleClick(); // Chú giải: Auto-memoized
   }
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 js
  // Chú giải: CJS file
@@ -7123,10 +5964,6 @@ js
     const esmModule = await import('./esm-file.mjs');
   })();
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 js
  // Chú giải: CJS
@@ -7136,10 +5973,6 @@ js
   import cjs from 'cjs-module'; // Chú giải: ✅ cjs = { foo: 1 }
   const { foo } = cjs;
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 js
  // Chú giải: CJS
@@ -7148,10 +5981,6 @@ js
   import { fileURLToPath } from 'url';
   const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -7237,10 +6066,6 @@ if (condition) {
  // Chú giải: BROWSER USAGE - Native ESM
  // Chú giải: ============================================
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 html
 <!-- index.html - Browser Native ESM -->
@@ -7290,10 +6115,6 @@ html
 </body>
 </html>
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -7608,10 +6429,6 @@ const esmModule = require('./esm-module.mjs'); // Chú giải: ❌ Error!
   "sideEffects": false
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ Sai: Mixing require trong ESM
@@ -7654,10 +6471,6 @@ export default { a };
   import lib from 'https: // Chú giải: cdn.skypack.dev/lib'; // Works!
 </script>
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Bundler speed comparison (1000 modules):
@@ -7671,10 +6484,6 @@ typescript
  // Chú giải: - ESM + CJS mixed: 150KB (some dead code)
  // Chú giải: - CJS only: 200KB (no tree-shaking)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
  // Chú giải: 1) Abort fetch với timeout
@@ -7718,18 +6527,10 @@ async function retry<T>(op: () => Promise<T>, tries = 3) {
   }
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
 // ❌ Retry vô hạn, không jitter → dồn tải (thundering herd)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
  // Chú giải: worker.ts
@@ -7751,18 +6552,10 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request)));
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
 // ❌ Dùng DOM API bên trong Worker → không có sẵn
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌────────────────────────────────────────────────────────────────────────┐
 │                    BROWSER STORAGE COMPARISON                          │
@@ -7784,10 +6577,6 @@ const example = 42;
 │  🗄️ IndexedDB:     Như kho chứa lớn (chứa cả thùng hàng)             │
 └────────────────────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -7863,10 +6652,6 @@ CookieManager.set('user', 'John', 30); // Lưu 30 ngày
 const user = CookieManager.get('user'); // Chú giải: "John"
 CookieManager.delete('user'); // Xóa
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -7991,10 +6776,6 @@ document.getElementById('themeBtn')?.addEventListener('click', () => {
   saveTheme(newTheme);
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -8088,10 +6869,6 @@ sessionStorage.setItem('draft', JSON.stringify(formData)); // Mất khi đóng t
 sessionStorage.setItem('filters', JSON.stringify(filters)); // Chú giải: Per-tab
 // → Mỗi tab có filter riêng, không conflict
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -8255,10 +7032,6 @@ await cache.cacheArticle(article);
 // Offline: Đọc từ cache
 const cached = await cache.getArticle(1);
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -8317,10 +7090,6 @@ function selectStorage(requirement: Requirement): Storage {
  // Chú giải: - Images, videos
  // Chú giải: - Full-text search indexes
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // 1️⃣ ALWAYS TRY-CATCH (storage có thể full hoặc disabled)
@@ -8427,10 +7196,6 @@ if (cached) {
   console.log('Cache expired, fetch new');
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ LỖI 1: Lưu object trực tiếp (không stringify)
@@ -8489,26 +7254,14 @@ try {
   db.close(); // Chú giải: Always close
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    getRowId: (params) => params.data.id // Chú giải: Phải unique & stable!
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    gridRef.current.api.applyTransactionAsync({ update: rows });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ===================================================
@@ -8558,10 +7311,6 @@ typescript
 // ✅ Latency: 1 file × 100ms = 100ms (vs 10 giây)
 // ✅ Có thể optimize (minify, compress, cache)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌──────────────────────────────────────────────────────────┐
 │               BUNDLING PROCESS (QUY TRÌNH GỘP FILE)      │
@@ -8623,10 +7372,6 @@ const example = 42;
 │  ✅ Giảm từ 5 HTTP requests → 1 request!               │
 └──────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ===================================================
@@ -8698,10 +7443,6 @@ main();
 // ✅ Modules được wrap trong function scope (tránh global pollution)
 // ✅ Dependencies được resolve (utils, api, index)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ===================================================
@@ -8755,10 +7496,6 @@ function c(a,b,d){let e=0;for(let f=0;f<a.length;f++){const g=a[f];e+=g.price*g.
 //
 // 📊 KẾT QUẢ: 10 KB → 3 KB (Giảm 70%!)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ===================================================
@@ -8868,10 +7605,6 @@ const user = {
 // ⚠️ NGUY HIỂM: Nếu external code access user.firstName → BỊ LỖI!
 // → Chỉ dùng khi chắc chắn property KHÔNG được access từ bên ngoài
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌──────────────────────────────────────────────────────────┐
 │           MINIFY IMPACT (Ảnh hưởng của Minify)          │
@@ -8902,10 +7635,6 @@ const example = 42;
 │  📈 Cải thiện: Nhanh hơn 8.5x!                          │
 └──────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ===================================================
@@ -8982,10 +7711,6 @@ console.log(result1, result2);
 
 // 📊 Giảm 80% kích thước! 🚀
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌──────────────────────────────────────────────────────────┐
 │         TREE SHAKING PROCESS (Quy trình rũ cây)          │
@@ -9023,10 +7748,6 @@ const example = 42;
 │  └── Chỉ chứa code THỰC SỰ được dùng                   │
 └──────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ===================================================
@@ -9142,10 +7863,6 @@ import { funcA } from './index.js'; // Chú giải: Import từ barrel
 import { funcA } from './moduleA.js';
 // ✅ Chỉ load moduleA, không load B và C
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ===================================================
@@ -9172,10 +7889,6 @@ const result = uniq([1, 2, 2, 3]);
 import { uniq } from 'lodash-es';
 // → Tree shaking tự động loại bỏ functions không dùng
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌─────────────────────────────────────────────────────────────┐
 │              COMPLETE TOOLING WORKFLOW                      │
@@ -9259,10 +7972,6 @@ const example = 42;
 │  - Initial load: 30 KB main.js - 94% smaller! 🚀         │
 └─────────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -10104,10 +8813,6 @@ export default function Analytics() {
 // - User vào /analytics → Load thêm charts.js (500KB) khi cần
  // Chú giải: - Faster initial render, better UX
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 bash
    # Install
@@ -10118,10 +8823,6 @@ bash
    npx husky install
    npx husky add .husky/pre-commit "npx lint-staged"
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 json
  // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
@@ -10131,10 +8832,6 @@ json
      }
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 json
  // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
@@ -10147,10 +8844,6 @@ json
      }
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ BAD: ESLint format rules conflict với Prettier
@@ -10167,10 +8860,6 @@ typescript
      extends: ['prettier'] // Tắt format rules
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ BAD: Public source maps → leak source code
@@ -10188,10 +8877,6 @@ typescript
      }
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    // ❌ BAD: CommonJS → tree-shaking KHÔNG work
@@ -10212,10 +8897,6 @@ typescript
    }
    import { add } from './utils'; // Chú giải: Chỉ bundle add()
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    // ❌ BAD: Split quá nhỏ → nhiều HTTP requests
@@ -10226,10 +8907,6 @@ typescript
    const Dashboard = lazy(() => import('./pages/Dashboard')); // ✅ Page nặng
    const ChartLibrary = lazy(() => import('./ChartLibrary')); // ✅ Library nặng (500KB+)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
@@ -10246,10 +8923,6 @@ typescript
    // ✅ GOOD: Import trực tiếp
    import { add } from '@utils/math'; // → import trực tiếp
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 json
    // ❌ BAD: Không set sideEffects
@@ -10261,10 +8934,6 @@ json
      "sideEffects": false // Hoặc ["*.css", "polyfills.ts"]
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    // ❌ BAD: Không handle error
@@ -10279,10 +8948,6 @@ typescript
  // Chú giải: Fallback logic
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌──────────────────────────────────────────────────────────────┐
 │                    OBSERVER APIs                              │
@@ -10310,10 +8975,6 @@ const example = 42;
 │  └─────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import { useEffect, useRef, useState } from 'react';
@@ -10582,18 +9243,10 @@ function Article() {
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    rootMargin: '50px' // Load trước khi vào viewport 50px → UX mượt
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    if (entry.isIntersecting) {
@@ -10601,26 +9254,14 @@ typescript
      observer.unobserve(entry.target); // Ngừng observe → tiết kiệm tài nguyên
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    threshold: [0, 0.25, 0.5, 0.75, 1] // Track ở 5 mức độ
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 html
    <img src="image.jpg" loading="lazy" /> <!-- Browser native lazy load -->
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ LỖI 1: Dùng scroll event + getBoundingClientRect() (chậm, gây layout thrashing)
@@ -10660,10 +9301,6 @@ useEffect(() => {
   };
 }, []);
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
 // Lazy load images khi vào viewport
@@ -10703,10 +9340,6 @@ if (sentinel) loadMoreObserver.observe(sentinel);
  // Chú giải: Cleanup
  // Chú giải: loadMoreObserver.disconnect();
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
 // ❌ Dùng scroll listener + getBoundingClientRect → chậm, layout thrashing
@@ -10728,10 +9361,6 @@ const observer = new IntersectionObserver((entries) => {
   });
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import { useEffect, useRef, useState } from 'react';
@@ -10915,10 +9544,6 @@ function AutoExpandTextarea() {
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    const resizeObserver = new ResizeObserver((entries) => {
@@ -10927,10 +9552,6 @@ typescript
      });
    });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    // ❌ SAI: Observe canvas trực tiếp
@@ -10939,10 +9560,6 @@ typescript
    // ✅ ĐÚNG: Observe parent container
    resizeObserver.observe(canvas.parentElement);
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    useEffect(() => {
@@ -10952,10 +9569,6 @@ typescript
      return () => observer.disconnect(); // Chú giải: ✅ Cleanup
    }, []);
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ LỖI 1: Infinite Loop - Resize chính element đang observe
@@ -11023,10 +9636,6 @@ function MyComponent() {
   }, []);
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import { useEffect, useRef } from 'react';
@@ -11201,10 +9810,6 @@ function DOMDebugger() {
   return <div>DOM Debugger active...</div>;
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    observer.observe(element, {
@@ -11213,10 +9818,6 @@ typescript
      // KHÔNG: attributes: true (quan sát TẤT CẢ attributes)
    });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    // ❌ Quan sát tất cả attributes → callback fire rất nhiều
@@ -11225,10 +9826,6 @@ typescript
    // ✅ Chỉ quan sát 1 attribute cụ thể
    { attributes: true, attributeFilter: ['data-theme'] }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    useEffect(() => {
@@ -11238,10 +9835,6 @@ typescript
      return () => observer.disconnect(); // Chú giải: ✅ Cleanup
    }, []);
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    let mutationQueue: MutationRecord[] = [];
@@ -11258,10 +9851,6 @@ typescript
      }, 100);
    });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ LỖI 1: Observe toàn document với subtree → Rất chậm
@@ -11335,10 +9924,6 @@ const asyncObserver = new MutationObserver((mutations) => {
   });
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌─────────────────────┬──────────────────────┬─────────────────────┬─────────────────────┐
 │ Tiêu Chí            │ Intersection         │ Resize              │ Mutation            │
@@ -11354,10 +9939,6 @@ const example = 42;
 │ Browser Support     │ Modern (IE11+)       │ Modern (IE11+)      │ Modern (IE11+)      │
 └─────────────────────┴──────────────────────┴─────────────────────┴─────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Map internal:
 buckets: [
@@ -11370,10 +9951,6 @@ buckets: [
 Hash('a') % buckets.length = 1 → bucket[1]
 Hash('x') % buckets.length = 1 → collision → chain với 'a'
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
  // Chú giải: ============================================
@@ -11679,10 +10256,6 @@ hashMap.set('cherry', 3);
 hashMap.visualize();
 // Output sẽ show collision nếu hash('apple') % 8 === hash('banana') % 8
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
 // ❌ Sai: Dùng Array.find() trong loop → O(n²)
@@ -11727,10 +10300,6 @@ for (let i = 0; i < arr.length; i++) {
 // ✅ Đúng: Filter → O(n)
 const filtered = arr.filter((item) => !condition); // Chú giải: O(n)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 http
    GET / HTTP/1.1
@@ -11740,10 +10309,6 @@ http
    Accept-Encoding: gzip, deflate, br
    Cookie: session=abc123
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 http
    HTTP/1.1 200 OK
@@ -11755,10 +10320,6 @@ http
    <!DOCTYPE html>
    <html>...</html>
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
    HTML: <div><p>Hello</p></div>
 
@@ -11770,10 +10331,6 @@ const example = 42;
                └── p
                    └── "Hello"
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
    CSS: div { color: red; }
 
@@ -11782,10 +10339,6 @@ const example = 42;
    └── div
        └── color: red
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 javascript
    // Khi gặp <script src="app.js">
@@ -11793,10 +10346,6 @@ javascript
  // Chú giải: 2. Parse & Compile JS
    // 3. Execute code (có thể modify DOM/CSSOM)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
     DOM + CSSOM → Render Tree
 
@@ -11804,20 +10353,12 @@ const example = 42;
 - Visible elements (không có display: none)
 - Với computed styles (font, color, position...)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
     Tính toán:
 - Vị trí (x, y) của mỗi element
 - Kích thước (width, height)
 - Box model (margin, padding, border)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Time →  0ms          200ms        400ms        600ms        800ms       1000ms
         │             │            │            │            │            │
@@ -11835,10 +10376,6 @@ Paint                                                     ██
         │             │            │            │            │            │
         └─ NETWORK ──┴── PARSING ──┴─────────── RENDERING ─────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 HTML → DOM Tree ─┐
                   ├─→ Render Tree → Layout → Paint → Composite → Display
@@ -11847,10 +10384,6 @@ CSS → CSSOM Tree ─┘
         │
     JS có thể modify DOM/CSSOM (triggering reflow/repaint)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 html
 <!DOCTYPE html>
@@ -11881,10 +10414,6 @@ FCP: ~900ms (after styles.css + scripts loaded)
 ❌ User sees blank white screen for ~900ms
 -->
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 html
 <!DOCTYPE html>
@@ -11961,10 +10490,6 @@ Scripts defer: download parallel, execute after DOM ready
 ✅ FCP: ~200-400ms (user sees content immediately!)
 -->
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // Đo các Web Vitals metrics
@@ -12039,10 +10564,6 @@ window.addEventListener('load', () => {
   }, 0);
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ BAD: Load tất cả chart libraries upfront
@@ -12140,10 +10661,6 @@ document.head.insertAdjacentHTML(
 - Load chart.js khi cần: +200ms
 */
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ✅ DO: Optimize Critical Rendering Path
@@ -12202,10 +10719,6 @@ const observer = new PerformanceObserver((list) => {
 
 observer.observe({ entryTypes: ['largest-contentful-paint'] });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ MISTAKE 1: Render-blocking CSS
@@ -12279,10 +10792,6 @@ getFCP(console.log);
 getLCP(console.log);
 getTTFB(console.log);
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 1. DNS Lookup       → Resolve domain → IP
 2. TCP Handshake    → Establish connection (SYN, SYN-ACK, ACK)
@@ -12297,10 +10806,6 @@ const example = 42;
 11. Layout          → Tính toán vị trí & kích thước
 12. Paint+Composite → Vẽ pixels lên màn hình → ✅ USER SEES UI!
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌──────────────────────────────────────────────────────────┐
 │              OOP Concepts Flow                           │
@@ -12348,10 +10853,6 @@ const example = 42;
 │  └─────────────────────────────────────┘                │
 └──────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
      interface ILogger {
@@ -12364,10 +10865,6 @@ typescript
 
      new Service(123); // ❌ Error: 123 không phải ILogger
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: Production
@@ -12376,10 +10873,6 @@ typescript
  // Chú giải: Testing
      const service = new UserService(new MockLogger(), new MockEmailService());
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
      class Animal {}
@@ -12389,10 +10882,6 @@ typescript
      class Cat extends Feline {}
      class PersianCat extends Cat {} // QUÁ SÂU! 6 tầng
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
      class UserService extends Logger {
@@ -12403,10 +10892,6 @@ typescript
 
      // Nếu Logger.log() đổi signature → UserService break!
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
      class Counter {
@@ -12434,10 +10919,6 @@ typescript
  // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
      // → KHÔNG gọi increment() nữa → SpecialCounter KHÔNG log!
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
      function User(name) {
@@ -12452,10 +10933,6 @@ typescript
      const user2 = new User('B');
      // user1.login !== user2.login (2 copies khác nhau!)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
      class User {
@@ -12471,10 +10948,6 @@ typescript
      // Tất cả instances share 1 login() trên prototype
      // user1.login === user2.login (cùng 1 method!)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
      class A {
@@ -12501,10 +10974,6 @@ typescript
  // Ngăn xếp gọi (call stack) thực thi mã đồng bộ theo nguyên tắc LIFO; tác vụ dài chặn UI.
      // Phải trace qua 3 tầng để hiểu flow
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
   constructor(name) {
@@ -12512,10 +10981,6 @@ typescript
     this.role = 'admin';
   }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ Inheritance: phụ thuộc parent
@@ -12526,10 +10991,6 @@ typescript
     constructor(private logger: Logger) {}
   }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -13558,10 +12019,6 @@ describe('TradingService', () => {
 // ✅ Predictable: mock return cố định → tests deterministic
  // Chú giải: ✅ Coverage: dễ test edge cases (validation fail, risk fail, errors...)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ BAD: Inheritance
@@ -13572,10 +12029,6 @@ typescript
      constructor(private logger: Logger) {}
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    class User {
@@ -13584,10 +12037,6 @@ typescript
  // `this` phụ thuộc cách gọi; hàm mũi tên dùng lexical `this` (kế thừa từ scope cha), các hàm thường có `this` thay đổi theo ngữ cảnh.
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ✅ GOOD: Inject dependencies
@@ -13595,10 +12044,6 @@ typescript
      constructor(private db: IDatabase, private logger: ILogger) {}
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    abstract class BaseRepository<T> {
@@ -13610,10 +12055,6 @@ typescript
      }
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    interface IPaymentGateway {
@@ -13621,10 +12062,6 @@ typescript
      refund(transactionId: string): Promise<void>;
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ✅ One class = one job
@@ -13638,20 +12075,12 @@ typescript
      register() {}
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    class Order {
      constructor(public readonly id: string, public readonly createdAt: Date) {}
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Sao chép sâu: sao chép đệ quy mọi cấp để tạo bản sao độc lập; có thể tốn hiệu suất.
@@ -13662,10 +12091,6 @@ typescript
 
  // Chú giải: ✅ Use composition instead
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    class User {
@@ -13678,10 +12103,6 @@ typescript
      }
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    class UserManager {
@@ -13692,10 +12113,6 @@ typescript
  // Chú giải: ❌ Too many jobs! Split into separate classes
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    class Service {
@@ -13705,10 +12122,6 @@ typescript
      constructor(private logger: ILogger) {}
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    class Child extends Parent {
@@ -13724,10 +12137,6 @@ typescript
      }
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    class Parent {
@@ -13739,10 +12148,6 @@ typescript
      protected method() {} // Chú giải: Can override
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    class User {
@@ -13757,10 +12162,6 @@ typescript
      }
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 jsx
  // Chú giải: ❌ Bad
@@ -13770,10 +12171,6 @@ jsx
   const data = useMemo(() => ({ id: 1 }), []);
   <Child onClick={handleClick} data={data} />
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌──────────────────────────────────────────────────────────────┐
 │           PERFORMANCE OPTIMIZATION LAYERS                     │
@@ -13820,10 +12217,6 @@ const example = 42;
 │  └─────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -14239,10 +12632,6 @@ function ResizableChart() {
 }
 // Kết quả cleanup đúng cách: Memory ổn định ~80MB thay vì leak đến 500MB
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌────────────────────────────────────────────────────────────────┐
 │           PERFORMANCE METRICS - BEFORE vs AFTER                 │
@@ -14258,10 +12647,6 @@ const example = 42;
 │  Re-renders/sec      │ 200+        │ 10-20       │ 90% less    │
 └────────────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ LỖI 1: Inline functions trong render
@@ -14344,10 +12729,6 @@ function OrderList({ orders }) {
   );
 } // ✅ Chỉ render ~12 items → mượt mà
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 js
  // Chú giải: ❌ Vulnerable
@@ -14356,19 +12737,11 @@ js
    import DOMPurify from 'dompurify';
    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userInput) }} />
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 js
  // Chú giải: Server (Express)
    app.use(cors({ origin: 'https: // Chú giải: trusted-domain.com' }));
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌──────────────────────────────────────────────────────────────┐
 │              WEB SECURITY LAYERS                              │
@@ -14382,10 +12755,6 @@ const example = 42;
 │  7️⃣ Security Headers                                        │
 └──────────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ============================================
@@ -15158,10 +13527,6 @@ referrer-policy: no-referrer
 strict-transport-security: max-age=31536000; includeSubDomains; preload
 */
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ✅ Security Checklist cho Trading Platform
@@ -15215,10 +13580,6 @@ const securityChecklist = {
   },
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ LỖI 1: Lưu tokens trong localStorage
@@ -15345,10 +13706,6 @@ app.use(
   })
 );
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ✅ Security Event Logging System
@@ -15563,10 +13920,6 @@ setInterval(() => {
   console.log('📊 Security Metrics:', metrics);
 }, 60000); // Mỗi phút
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 INPUT (bất kỳ độ dài) → HASH FUNCTION → OUTPUT (fixed length)
 
@@ -15574,38 +13927,22 @@ INPUT (bất kỳ độ dài) → HASH FUNCTION → OUTPUT (fixed length)
 "myfile.pdf"      →  SHA-256 →  "e3b0c44298fc1c..." (64 hex chars)
 "Hello World"     →  SHA-256 →  "a591a6d40bf420..." (64 hex chars)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    hash('password123') === hash('password123'); // ✅ Luôn giống nhau
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    hash("password123")  → "e3b0c44298fc1c..."
    hash("password124")  → "92cf3b8ec0a8d7..."  // Hoàn toàn khác!
    // Chỉ thay đổi 1 ký tự → hash hoàn toàn khác
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
    hash("Hi")           → 64 hex chars (SHA-256)
    hash("Very long...") → 64 hex chars (SHA-256)
    // Input bất kỳ → output luôn 64 chars
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ VẤN ĐỀ: Lưu plaintext password
@@ -15623,10 +13960,6 @@ const storedHash = "$2b$10$N9qo8uLO...";
 // So sánh: hash(userInput) === storedHash?
 const isValid = bcrypt.compare(userInput, storedHash);  // ✅ true nếu đúng
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ KHÔNG DÙNG SALT:
@@ -15640,10 +13973,6 @@ hash("password123" + "randomSalt2") → "$2b$10$xyz..."
 // Mỗi user có salt khác nhau → cùng password cũng khác hash
 // Rainbow Table KHÔNG dùng được! (vì phải tạo bảng cho mỗi salt)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 PLAINTEXT + KEY → [ENCRYPT] → CIPHERTEXT
 CIPHERTEXT + KEY → [DECRYPT] → PLAINTEXT
@@ -15652,10 +13981,6 @@ Ví dụ:
 "Hello World" + key123 → [AES Encrypt] → "6Kq8z3Xp..."
 "6Kq8z3Xp..." + key123 → [AES Decrypt] → "Hello World"
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ALICE (Sender):
@@ -15672,10 +13997,6 @@ const secretKey = 'shared-secret-key-123'; // ⚠️ Bob phải có CÙNG key
 const decrypted = AES.decrypt(received, secretKey); // Chú giải: "Meet me at 3pm"
 console.log(decrypted); // ✅ Bob đọc được message
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Alice và Bob cách nhau 1000km, làm sao chia sẻ secretKey an toàn?
 - Gửi qua email? ❌ Email có thể bị intercept
@@ -15684,10 +14005,6 @@ Alice và Bob cách nhau 1000km, làm sao chia sẻ secretKey an toàn?
 
 → Giải pháp: Dùng ASYMMETRIC ENCRYPTION để trao đổi symmetric key!
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 AES-256:  Encrypt 1GB file trong ~1 giây
 RSA-2048: Encrypt 1GB file trong ~10 phút!
@@ -15696,10 +14013,6 @@ RSA-2048: Encrypt 1GB file trong ~10 phút!
 1. Handshake: Dùng RSA trao đổi AES key (chỉ ~32 bytes)
 2. Data Transfer: Dùng AES encrypt data (nhanh!)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 2 KEYS: Public Key (công khai) + Private Key (bí mật)
 
@@ -15707,10 +14020,6 @@ ENCRYPT với PUBLIC KEY → Decrypt với PRIVATE KEY
 PLAINTEXT + Public Key  → [ENCRYPT] → CIPHERTEXT
 CIPHERTEXT + Private Key → [DECRYPT] → PLAINTEXT
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: BOB tạo key pair:
@@ -15733,10 +14042,6 @@ const encrypted = RSA.encrypt(message, bobKeys.publicKey); // Dùng Bob's PUBLIC
 const decrypted = RSA.decrypt(encrypted, bobKeys.privateKey); // Dùng Bob's PRIVATE KEY
 console.log(decrypted); // Chú giải: "Meet me at 3pm" ✅
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Alice muốn gửi message cho Bob:
 
@@ -15756,10 +14061,6 @@ CÁCH MỚI (Asymmetric):
 ✅ KHÔNG cần trao đổi secret key!
 ✅ Public key bị lộ cũng KHÔNG sao!
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ENCRYPTION (Mã hóa - Protect Confidentiality):
@@ -15778,10 +14079,6 @@ Ví dụ: Alice ký document
 Alice:  sign(document, Alice's PRIVATE KEY)   → signature
 Bob:    verify(document, signature, Alice's PUBLIC KEY) → ✅ valid
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 SIGN (Ký):
 1. Hash document với SHA-256 → hash
@@ -15795,10 +14092,6 @@ VERIFY (Xác thực):
 - ✅ Match → Document valid, không bị tamper
 - ❌ Not match → Document bị thay đổi hoặc signature giả
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ALICE tạo key pair:
@@ -15838,10 +14131,6 @@ if (hash1 === hash2) {
   console.log('❌ Contract bị tamper hoặc signature giả!');
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 RSA SLOW:
 - Sign toàn bộ contract (10 pages) → 10 giây
@@ -15852,10 +14141,6 @@ Hash UNIQUE:
 - 1 document thay đổi 1 ký tự → hash hoàn toàn khác
 → Verify hash = verify toàn bộ document!
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ENCRYPTION (Mã hóa):
@@ -15878,10 +14163,6 @@ Ví dụ: Alice ký contract
 Alice:  sign(contract, Alice's PRIVATE)   → Bob verify với Alice's PUBLIC
         ↑ Dùng Alice's keys!
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: SERVER (Sign JWT):
@@ -15905,10 +14186,6 @@ try {
   // ❌ Token bị tamper hoặc signature giả
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: HS256 (HMAC with SHA-256):
@@ -15926,10 +14203,6 @@ typescript
 ✅ Client KHÔNG thể forge tokens (không có private key)
 ✅ Microservices verify được (share public key)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import bcrypt from 'bcrypt';
@@ -16003,10 +14276,6 @@ async function changePassword(
   });
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import crypto from 'crypto';
@@ -16063,10 +14332,6 @@ function verifyWebhook(
   );
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: SYMMETRIC (AES): 1 key cho cả encrypt & decrypt
@@ -16081,10 +14346,6 @@ const encrypted = RSA.encrypt('data', publicKey); // Chú giải: Encrypt với 
 const decrypted = RSA.decrypt(encrypted, privateKey); // Trường private (ví dụ `#field`) chỉ truy cập được trong class, không thể truy cập từ bên ngoài.
 // ✅ Giải pháp: Public key share thoải mái, chỉ private key giữ bí mật!
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import crypto from 'crypto';
@@ -16180,10 +14441,6 @@ async function getUser(userId: string, encryptionKey: string): Promise<User> {
   };
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import crypto from 'crypto';
@@ -16256,10 +14513,6 @@ console.log('Decrypted:', decryptedMessage); // Chú giải: "Secret meeting at 
 
 // ⚠️ Alice KHÔNG thể decrypt (không có Bob's private key)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // DIGITAL SIGNATURE: Đảo ngược Encryption!
@@ -16284,10 +14537,6 @@ const hash1 = SHA256(document);
 const hash2 = RSA.decrypt(signature, publicKey); // Chú giải: Verify = Decrypt với PUBLIC key
 if (hash1 === hash2) console.log("✅ Valid signature!");
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import jwt from 'jsonwebtoken';
@@ -16400,10 +14649,6 @@ const payload = {
  // Chú giải: 3. Compare với signature trong JWT
 // 4. Nếu match → valid, không match → tampered
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import crypto from 'crypto';
@@ -16514,10 +14759,6 @@ console.log('Signature:', signature);
 const isValid = verifyAPIRequest(request, signature, publicKey);
 console.log('Valid?', isValid); // Chú giải: true
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 `
 1. Field-Level (App-Level) ⭐ RECOMMENDED
@@ -16537,10 +14778,6 @@ const example = 42;
 
 **🔐 Implementation - Encryption Service**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 `
 
@@ -16548,64 +14785,36 @@ const example = 42;
 
 **🔐 User Service - Real Example**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **🔐 Database Schema**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **🔑 Key Management**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **🔍 Searchable Encryption Pattern**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **🔄 Key Rotation**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **✅ Best Practices**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **⚠️ Common Mistakes**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 1. ❌ Encrypting passwords (use hashing!)
 2. ❌ Storing keys in database
@@ -16644,65 +14853,33 @@ const example = 42;
 
 **❌ Mistake 1: Dùng SHA-256 cho passwords**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **✅ Correction:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **❌ Mistake 2: Reuse IV trong AES**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **✅ Correction:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **❌ Mistake 3: Hardcode encryption keys**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **✅ Correction:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **❌ Mistake 4: Không verify JWT signature**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **✅ Correction:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -16730,13 +14907,10 @@ const example = 42;
 - Never roll your own crypto!
 ---
 
-## 41. Q41: ⏰ Q41: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách
+## Q41: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách
 
-### P1: Tên câu hỏi: ⏰ Q41: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách
 
-### P2: Trả lời (Senior):
-
-## 42. Q42: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -16784,10 +14958,6 @@ Làm thế nào xử lý Date/Time trong JavaScript không bị ảnh hưởng b
 
 #### **⚠️ Vấn Đề Core**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -16795,33 +14965,17 @@ const example = 42;
 
 **Timestamp = Số milliseconds từ 1970-01-01 00:00:00 UTC (Unix Epoch)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **So Sánh Trực Quan:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Kết Luận:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **💡 Nguyên Tắc Vàng**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -16829,31 +14983,15 @@ const example = 42;
 
 **1. Store UTC:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **2. Display Local:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **3. Compare Timestamps:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **4. Date Arithmetic:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -16861,33 +14999,17 @@ const example = 42;
 
 **date-fns (Functional, Tree-shakeable):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Luxon (OOP, Timezone-aware):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Day.js (Lightweight 2KB):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **🚀 Temporal API (Future)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -16895,17 +15017,9 @@ const example = 42;
 
 **✅ DO:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **❌ DON'T:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **💡 Key Takeaway:**
 - **Store UTC** → **Display Local**
@@ -16951,13 +15065,10 @@ const example = 42;
 - Use proven libraries - NEVER roll your own crypto or date handling!
 ---
 
-## 43. Q43: 🖥️ Q42: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết
+## Q42: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết
 
-### P1: Tên câu hỏi: 🖥️ Q42: Client-Side Rendering (CSR) vs Server-Side Rendering (SSR) - Phân Biệt & Cách Hoạt Động Chi Tiết
 
-### P2: Trả lời (Senior):
-
-## 44. Q44: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -17039,31 +15150,15 @@ const example = 42;
 
 **1. Navigation Cực Nhanh (Fast SPA Navigation)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **2. Rich Interactions (Tương Tác Phong Phú)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **3. Server Load Thấp (Less Server Load)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **4. Dễ Deploy & Scale**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17071,31 +15166,15 @@ const example = 42;
 
 **1. Initial Load Chậm (Slow First Load)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **2. SEO Nghèo Nàn (Poor SEO)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **3. Blank Screen Problem**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **4. Phụ Thuộc JavaScript**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17103,31 +15182,15 @@ const example = 42;
 
 **1. Initial Load Cực Nhanh (Fast Time to Content)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **2. SEO Xuất Sắc (SEO-Friendly)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **3. Better Performance (Đặc biệt cho slow devices)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **4. Không Blank Screen**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17135,47 +15198,23 @@ const example = 42;
 
 **1. Server Load Cao (High Server Cost)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **2. Navigation Chậm Hơn (Slower Navigation)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **3. Complexity Cao (Complex Setup)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **4. TTFB Cao Hơn (Time to First Byte)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **5. Hydration Issues**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **📊 So Sánh Trực Quan**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17183,24 +15222,12 @@ const example = 42;
 
 **Dùng CSR khi:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Dùng SSR khi:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Dùng SSG (Hybrid) khi:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17227,10 +15254,6 @@ const example = 42;
 
 #### **📊 Sơ Đồ So Sánh CSR vs SSR**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17238,17 +15261,9 @@ const example = 42;
 
 **Timeline:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Code Example (React CSR):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17256,26 +15271,14 @@ const example = 42;
 
 **Timeline:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Code Example (Next.js SSR):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **📊 So Sánh Chi Tiết CSR vs SSR**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17283,17 +15286,9 @@ const example = 42;
 
 **✅ Dùng CSR khi:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **✅ Dùng SSR khi:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17301,10 +15296,6 @@ const example = 42;
 
 Next.js còn có SSG (Static Site Generation) - best of both worlds:
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17312,60 +15303,32 @@ const example = 42;
 
 **1. CSR Optimization:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **2. SSR Optimization:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **3. Hybrid Strategy:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **🔍 Debugging & Measuring**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **❌ Common Mistakes**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **📊 Real-world Performance Comparison**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **🎯 Decision Tree**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17391,10 +15354,6 @@ const example = 42;
 
 **Modern Approach:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Key Takeaway:**
 
@@ -17404,20 +15363,13 @@ const example = 42;
 - SEO + Performance = SSR/SSG
 - Interactivity + Simple = CSR
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
-## 45. Q45: 🎫 Q43: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security
+## Q43: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security
 
-### P1: Tên câu hỏi: 🎫 Q43: Authentication Flow An Toàn Cho Hệ Thống Ngân Hàng/Chứng Khoán - Access Token, Refresh Token, Cookie Security
 
-### P2: Trả lời (Senior):
-
-## 46. Q46: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
 
@@ -17439,10 +15391,6 @@ const example = 42;
 
 **3. Authentication Flow:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **4. Security Measures:**
 - **Token Rotation**: Refresh token thay đổi mỗi lần dùng (detect stolen tokens)
@@ -17470,10 +15418,6 @@ Hệ thống authentication cho ngân hàng/chứng khoán yêu cầu **bảo m�
 
 #### **📊 Tổng Quan Authentication Flow**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17481,24 +15425,12 @@ const example = 42;
 
 **Access Token (Token Truy Cập):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Refresh Token (Token Làm Mới):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Tại Sao Cần 2 Token?**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17506,37 +15438,21 @@ const example = 42;
 
 **A. Login Flow (Đăng Nhập):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **B. API Call Flow (Gọi API với Access Token):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **C. Refresh Token Flow (Làm Mới Access Token):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 **D. Logout Flow (Đăng Xuất):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17544,24 +15460,12 @@ const example = 42;
 
 **A. Cookie Security:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **B. Token Storage:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **C. Token Rotation (Xoay Vòng Token):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17569,49 +15473,25 @@ const example = 42;
 
 **A. Concurrent Requests (Nhiều Request Cùng Lúc):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **B. Inactivity Timeout (Tự Động Logout Khi Không Hoạt Động):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **C. Device Fingerprinting (Nhận Diện Thiết Bị):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **D. Logout All Devices (Đăng Xuất Tất Cả Thiết Bị):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **⚠️ 5. Common Security Mistakes (Lỗi Bảo Mật Thường Gặp)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
 #### **📊 6. Complete Flow Diagram**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ---
 
@@ -17659,13 +15539,10 @@ const example = 42;
 - **Multi-factor** everything (MFA, device fingerprint, inactivity timeout)
 ---
 
-## 47. Q47: 🧱 Q44: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns
+## Q44: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns
 
-### P1: Tên câu hỏi: 🧱 Q44: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns
 
-### P2: Trả lời (Senior):
-
-## 48. Q48: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -17679,24 +15556,12 @@ const example = 42;
 **🔧 Module Federation (Webpack 5 / Vite):**
 - **Expose**: MFE expose components/modules.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 - **Consume**: Host import remote modules.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 - **Shared Dependencies**: Share React, libraries → load once (not duplicate).
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **♻️ Communication Patterns:**
 1. **Props/Callbacks**: Parent pass props to child MFE → simple, tightly coupled.
@@ -17708,10 +15573,6 @@ const example = 42;
 - **React + Vue + Angular**: Mỗi MFE dùng framework khác nhau.
 - **Web Components**: Wrap MFEs trong custom elements → framework-agnostic.
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **🔑 Monorepo (Nx / Turborepo):**
 - **Concept**: 1 repo chứa multiple projects → shared tooling, dependencies.
@@ -17742,10 +15603,6 @@ const example = 42;
 
 **🚀 Real-World Example (E-commerce):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 - Team A deploy catalog update → không ảnh hưởng Teams B, C, D.
 - Shared: React, UI library (button, input) via Module Federation.
@@ -17772,38 +15629,18 @@ Giải thích chi tiết kiến trúc Microfrontend và Monorepo, bao gồm Modu
 
 **💔 Vấn Đề Của Monolithic Frontend (The Problem):**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **❌ Vấn Đề 1: DEPLOYMENT HELL (Địa Ngục Deploy)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **❌ Vấn Đề 2: TEAM CONFLICTS (Xung Đột Giữa Teams)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **❌ Vấn Đề 3: SLOW BUILD TIME (Build Chậm)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **❌ Vấn Đề 4: MERGE CONFLICTS (Xung Đột Merge)**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 // ❌ REST API Polling - KHÔNG hiệu quả
@@ -17848,10 +15685,6 @@ ws.onmessage = (event) => {
  * ✅ True real-time: Không có polling delay
  */
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: 1. CONNECTING (readyState = 0)
@@ -17915,10 +15748,6 @@ useEffect(() => {
   };
 }, [url]);
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 /**
@@ -18003,10 +15832,6 @@ class LiveDataManager {
  * T5   | Component C unmounts     | 1 → 0     | 🗑️ Unsubscribe, close
  */
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: File: lib/live-data-manager/stores/useLiveDataStore.ts
@@ -18059,10 +15884,6 @@ ws.onmessage = (event) => {
   }
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: File: lib/live-data-manager/hooks/useLiveMarketData.ts
@@ -18138,10 +15959,6 @@ const StockWatchlist = () => {
   );
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 /**
@@ -18192,10 +16009,6 @@ const useThrottledWebSocket = () => {
  * ✅ After: 60 updates/giây → Smooth, low CPU
  */
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ BAD: Update entire store → All components re-render
@@ -18227,10 +16040,6 @@ const StockRow = ({ symbol }) => {
   // ❌ Không re-render khi symbols khác update
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ BAD: Render all 1000 rows
@@ -18265,10 +16074,6 @@ const Watchlist = ({ data }) => {
  * ✅ Virtual scrolling: 20 rows → 16ms render (60fps)
  */
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: ❌ BAD: Update từng ticker một
@@ -18297,10 +16102,6 @@ ws.onmessage = (event) => {
 
  // Chú giải: 100 updates → 1 batch update → 1 re-render
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 class ResilientWebSocket {
@@ -18417,10 +16218,6 @@ class ResilientWebSocket {
  * T0 + 31s: Attempt 5 (baseDelay * 2^4 = 16s) - Final
  */
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 const ConnectionStatus = () => {
@@ -18477,10 +16274,6 @@ const ConnectionStatus = () => {
   );
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 /**
@@ -18557,10 +16350,6 @@ socket.emit('upload-chart', imageBlob);
  // Chú giải: Cleanup
 socket.disconnect();
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 import { Server } from 'socket.io';
@@ -18619,10 +16408,6 @@ io.on('connection', (socket) => {
   });
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 /**
@@ -18711,10 +16496,6 @@ subscription.on('presence', (ctx) => {
 subscription.unsubscribe();
 centrifuge.disconnect();
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 json
  // Dùng `JSON.parse(JSON.stringify(obj))` là hack sao chép sâu nhưng sẽ mất hàm, `Date`, `undefined`, symbol, v.v.
@@ -18735,10 +16516,6 @@ json
   ]
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 /**
@@ -18774,10 +16551,6 @@ typescript
  *   → Centrifuge (with Redis/KeyDB)
  */
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
 /**
@@ -18848,10 +16621,6 @@ setTimeout(flushBatch, 16); // Chú giải: 60fps
  // Chú giải: 6. Don't use == for subscription checking
  // Chú giải: Use Set or Map!
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ┌──────────────────────────────────────────────────────────────────────┐
 │                    BUILD TOOLS LANDSCAPE 2024                        │
@@ -18881,10 +16650,6 @@ const example = 42;
 │  └────────────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 javascript
  // Chú giải: webpack.config.js
@@ -18961,10 +16726,6 @@ module.exports = {
   },
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Dev Server Start:  ~10 giây (cold start - lần đầu chạy)
 - Bundle toàn bộ app trước
@@ -18979,10 +16740,6 @@ Production Build:  ~10-30 giây (tuỳ kích thước app)
 - Minify, optimize, tree-shake
 - Generate source maps
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 javascript
  // Chú giải: rollup.config.js
@@ -19044,10 +16801,6 @@ export default defineConfig({
   // Không nên bundle React vào library → tăng size, conflict version
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Production Build:  ~5 giây
 - Nhanh hơn Webpack (~10-30s)
@@ -19061,10 +16814,6 @@ Example:
   Webpack: 150KB (minified)
   Rollup:  105KB (minified) ← Nhỏ hơn 30%
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: vite.config.ts
@@ -19099,19 +16848,11 @@ export default defineConfig({
   },
 });
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Dev Server Start:  ~500ms ⚡ (instant!)
 HMR:               ~50ms ⚡
 Production Build:  ~2-5 seconds (Rollup)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: TRADITIONAL BUNDLER (Webpack)
@@ -19139,10 +16880,6 @@ typescript
 │ ✅ Native ESM (no bundling in dev)     │
 └────────────────────────────────────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: esbuild.config.js
@@ -19162,18 +16899,10 @@ esbuild.build({
   external: ['react', 'react-dom'],
 }).catch(() => process.exit(1));
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Production Build:  ~500ms ⚡⚡⚡ (10x faster than Webpack!)
 Bundle Size:       Similar to Rollup
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 javascript
  // Chú giải: next.config.js
@@ -19191,10 +16920,6 @@ const nextConfig = {
 
 module.exports = nextConfig;
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Dev Server (Next.js):
 - Webpack:  ~10 seconds
@@ -19204,10 +16929,6 @@ HMR:
 - Webpack:  ~1-2 seconds
 - Turbopack: ~50ms ⚡⚡⚡
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 javascript
  // Chú giải: babel.config.js
@@ -19227,10 +16948,6 @@ module.exports = {
   ],
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 json
  // Chú giải: .swcrc
@@ -19253,19 +16970,11 @@ json
   "minify": true
 }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Transpile 1000 files:
 - Babel: ~10 seconds
 - SWC:   ~500ms ⚡⚡⚡ (20x faster!)
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: =====================================
@@ -19323,10 +17032,6 @@ const selectTranspiler = (project: Project): Transpiler => {
   return 'SWC';
 };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 Project: React app (500 components, 2MB source)
 
@@ -19361,10 +17066,6 @@ HMR (Hot Module Replacement):
 │ Turbopack    │ 50ms ⚡    │
 └──────────────┴───────────┘
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 typescript
  // Chú giải: 1. Install Vite
@@ -19408,21 +17109,14 @@ export default defineConfig({
  // Chú giải: - require.context() → import.meta.glob()
  // Chú giải: - process.env → import.meta.env
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 bash
 ---
 
-## 49. Q49: 🌿 Q47: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase, Conflict Resolution
+## Q47: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase, Conflict Resolution
 
-### P1: Tên câu hỏi: 🌿 Q47: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase, Conflict Resolution
 
-### P2: Trả lời (Senior):
-
-## 50. Q50: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
 
@@ -19481,17 +17175,9 @@ bash
 
 #### **1.1. Git Flow - Mô hình phổ biến cho dự án lớn**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 **Chi tiết các nhánh:**
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
         ╭─────╮
        ╱ E2E  ╲     10% - Chậm, expensive, critical paths only
@@ -19501,10 +17187,6 @@ const example = 42;
    ╱   Unit    ╲  60% - Fast, pure functions, business logic
   ╰───────────╯
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 javascript
  // Hiệu suất: tránh chặn main thread; dùng Web Worker, chia nhỏ tác vụ, tối ưu reflow/repaint.
@@ -19515,10 +17197,6 @@ performance.measure('checkout', 'checkout-start', 'checkout-end');
 const measure = performance.getEntriesByName('checkout')[0];
  // Chú giải: Send to APM: Sentry, DataDog
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
@@ -19527,10 +17205,6 @@ ts
    const user = { name: 'Alice', age: 30 };
    getProperty(user, 'name'); // Chú giải: Type: string
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    type User = { id: number; name: string; email: string };
@@ -19538,38 +17212,22 @@ ts
    type UserName = Pick<User, 'id' | 'name'>; // Chú giải: Only id, name
    type NoEmail = Omit<User, 'email'>; // Chú giải: Exclude email
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    type Readonly<T> = { readonly [K in keyof T]: T[K] };
    type Optional<T> = { [K in keyof T]?: T[K] };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    type IsString<T> = T extends string ? true : false;
    type A = IsString<string>; // Chú giải: true
    type B = IsString<number>; // Chú giải: false
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    type EventName<T extends string> = `on${Capitalize<T>}`;
    type ClickEvent = EventName<'click'>; // Chú giải: "onClick"
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    function isString(value: unknown): value is string {
@@ -19579,10 +17237,6 @@ ts
      value.toUpperCase(); // Chú giải: TS knows value is string
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    type State =
@@ -19598,10 +17252,6 @@ ts
      }
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    type ApiResponse<T> =
@@ -19612,10 +17262,6 @@ ts
  // Chú giải: ...
    }
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    type FormState<T> = {
@@ -19624,10 +17270,6 @@ ts
      touched: Partial<Record<keyof T, boolean>>;
    };
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
    type UserId = string & { __brand: 'UserId' };
@@ -19638,18 +17280,10 @@ ts
    getUser(userId); // Chú giải: OK
  // Chú giải: getUser('456'); // Error: string not assignable to UserId
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
   type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
 
-```js
-// Ví dụ rút gọn
-const example = 42;
-```
 
 ts
   const colors = ['red', 'blue'] as const; // Chú giải: Type: readonly ["red", "blue"]
@@ -19666,13 +17300,10 @@ ts
 ---
 ---
 
-## 51. Q51: 🚀 Q53: CI/CD Pipeline - GitHub Actions, Deployment Automation
+## Q53: CI/CD Pipeline - GitHub Actions, Deployment Automation
 
-### P1: Tên câu hỏi: 🚀 Q53: CI/CD Pipeline - GitHub Actions, Deployment Automation
 
-### P2: Trả lời (Senior):
-
-## 52. Q52: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -19732,13 +17363,10 @@ ts
 ---
 ---
 
-## 53. Q53: 📏 Q54: Code Quality & Standards - ESLint, Prettier, Code Review
+## Q54: Code Quality & Standards - ESLint, Prettier, Code Review
 
-### P1: Tên câu hỏi: 📏 Q54: Code Quality & Standards - ESLint, Prettier, Code Review
 
-### P2: Trả lời (Senior):
-
-## 54. Q54: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -19796,13 +17424,10 @@ ts
 ---
 ---
 
-## 55. Q55: 🔄 Q55: GraphQL vs REST - API Design, Apollo Client
+## Q55: GraphQL vs REST - API Design, Apollo Client
 
-### P1: Tên câu hỏi: 🔄 Q55: GraphQL vs REST - API Design, Apollo Client
 
-### P2: Trả lời (Senior):
-
-## 56. Q56: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -19858,78 +17483,15 @@ ts
 ---
 ---
 
-## 57. Q57: ♿ Q56: Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers
+## Q56: Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers
 
-### P1: Tên câu hỏi: ♿ Q56: Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers
 
-### P2: Trả lời (Senior):
+### Trả lời (Senior):
 
-## 58. Q58: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## Q59: 🗂️ Q57: State Management Comparison - Redux vs Zustand vs Jotai
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"A11y đảm bảo mọi người dùng được web. WCAG 2.1 levels: A (minimum), AA (legal requirement), AAA (ideal). ARIA: roles, states, properties. Keyboard nav, color contrast, screen reader support. Tools: axe, Lighthouse."**
-
-**🔑 WCAG 2.1 Compliance:**
-
-**Level AA (Recommended - legal trong nhiều nước):**
-- **Color contrast**: ≥ 4.5:1 (text), ≥ 3:1 (large text 18pt+)
-- **Keyboard accessible**: All functionality với keyboard (no mouse-only)
-- **Alt text**: Tất cả images có alt (decorative = alt="")
-- **Form labels**: `<label>` cho mọi `<input>`
-- **Touch targets**: ≥ 44×44px (mobile)
-- **Focus indicators**: Rõ ràng khi tab (không `outline: none`)
-
-**🔑 ARIA Attributes:**
-
-**1. Roles:**
-- `role="button"` - custom button (div click → button semantics)
-- `role="navigation"`, `role="main"`, `role="complementary"`
-- **Rule**: Dùng semantic HTML trước (`<button>` > `<div role="button">`)
-
-**2. States:**
-- `aria-expanded="true/false"` - dropdown, accordion
-- `aria-checked="true/false"` - custom checkbox
-- `aria-disabled="true"` - disabled state
-
-**3. Properties:**
-- `aria-label="Close"` - label cho icon buttons
-- `aria-describedby="help-text"` - liên kết help text
-- `aria-live="polite"` - announce dynamic content (alerts)
-
-**🔑 Best Practices:**
-
-- **Semantic HTML**: `<button>`, `<nav>`, `<main>` thay vì divs
-- **Keyboard nav**: Tab order logic, Enter/Space activate, Esc close
-- **Screen reader testing**: NVDA (Windows), VoiceOver (Mac/iOS), TalkBack (Android)
-- **Skip links**: "Skip to main content" cho skip navigation
-
-**⚠️ Lỗi Thường Gặp:**
-- `outline: none` không custom focus indicator → keyboard users lost
-- Images không alt → screen readers "image"
-- Color-only info (red = error) → colorblind users miss
-- Auto-playing videos/carousels → disorienting
-
-**💡 Kiến Thức Senior:**
-- **Focus management**: Trap focus trong modals, restore sau close
-- **Live regions**: `aria-live="polite"` (wait), `"assertive"` (interrupt)
-- **Automated testing**: axe-core, jest-axe, Lighthouse CI
-- **Manual testing**: Tab navigation, zoom 200%, screen reader walkthrough
-
-> **Câu hỏi phỏng vấn Senior Frontend Developer**
-> **Độ khó:** ⭐⭐⭐⭐ (Advanced)
-> **Thời gian trả lời:** 12-15 phút
-
----
----
-
-## 59. Q59: 🗂️ Q57: State Management Comparison - Redux vs Zustand vs Jotai
-
-### P1: Tên câu hỏi: 🗂️ Q57: State Management Comparison - Redux vs Zustand vs Jotai
-
-### P2: Trả lời (Senior):
-
-## 60. Q60: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
@@ -19986,13 +17548,10 @@ ts
 ---
 ---
 
-## 61. Q61: 🌐 Q58: Networking & Browser Internals - Mạng & Nội Tế Trình Duyệt
+## Q58: Networking & Browser Internals - Mạng & Nội Tế Trình Duyệt
 
-### P1: Tên câu hỏi: 🌐 Q58: Networking & Browser Internals - Mạng & Nội Tế Trình Duyệt
 
-### P2: Trả lời (Senior):
-
-## 62. Q62: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
 
@@ -20046,77 +17605,15 @@ ts
 > **Thời gian trả lời:** 15-25 phút---
 ---
 
-## 63. Q63: 🎨 Q59: CSS Architecture & Modern Styling Approaches
+## Q59: CSS Architecture & Modern Styling Approaches
 
-### P1: Tên câu hỏi: 🎨 Q59: CSS Architecture & Modern Styling Approaches
 
-### P2: Trả lời (Senior):
+### Trả lời (Senior):
 
-## 64. Q64: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## Q65: 🏗️ Q60: JavaScript Design Patterns for Frontend Development
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"CSS approaches: BEM (naming convention), CSS Modules (scoped), CSS-in-JS (dynamic, colocated), Tailwind (utility-first). Chọn based on: team size, dynamic needs, performance priority. Critical CSS = above-fold styles inline."**
-
-**🔑 4 Modern Approaches:**
-
-**1. BEM (Block Element Modifier):**
-- **Naming**: `.block__element--modifier`
-- Ưu: Clear, không conflicts, team-friendly
-- Nhược: Verbose (dài), manually maintain
-- Use case: Large teams, design systems
-
-**2. CSS Modules:**
-- **Scoped**: `import styles from './Button.module.css'`
-- Ưu: Auto-scoped, no naming conflicts, works with existing CSS
-- Nhược: Không dynamic (can't change based on props easily)
-- Use case: Component libraries, gradual migration
-
-**3. CSS-in-JS (Styled Components, Emotion):**
-- **Syntax**: `const Button = styled.button\`color: ${props => props.color}\``
-- Ưu: **Dynamic**, colocated, scoped, TypeScript support
-- Nhược: Runtime overhead (~10-20ms), bundle size
-- Use case: Highly dynamic UIs, design tokens
-
-**4. Tailwind CSS:**
-- **Utility-first**: `className="bg-blue-500 hover:bg-blue-700 px-4 py-2"`
-- Ưu: **Fast development**, small final bundle (PurgeCSS), consistent design
-- Nhược: HTML "bloat", learning curve (utility names)
-- Use case: Rapid prototyping, startups, landing pages
-
-**🔑 Critical CSS:**
-
-- **Inline above-fold CSS** trong `<head>` để render nhanh
-- Defer non-critical CSS (`<link rel="preload" as="style">`)
-- Tools: Critters (Next.js), Critical (npm package)
-- **FCP improvement**: ~30-50% faster First Contentful Paint
-
-**⚠️ Lỗi Thường Gặp:**
-- CSS-in-JS trong SSR không extract styles → FOUC (Flash of Unstyled Content)
-- Tailwind không purge → 300KB+ CSS bundle
-- BEM không consistent naming → mất ưu điểm
-- Global CSS specificity wars → `!important` hell
-
-**💡 Kiến Thức Senior:**
-- **Zero-runtime CSS-in-JS**: Linaria, Vanilla Extract - extract CSS build time
-- **Atomic CSS**: Tailwind, StyleX (Meta) - share utility classes
-- **Design tokens**: CSS variables cho themes, dùng với Tailwind/CSS-in-JS
-- **Container queries**: Style based on parent size (không phải viewport)
-
-**❓ Câu Hỏi:**
-
-So sánh các phương pháp styling hiện đại: CSS-in-JS (Styled Components, Emotion), Tailwind CSS, CSS Modules, BEM methodology. Khi nào nên dùng approach nào? Critical CSS là gì?
-
----
----
-
-## 65. Q65: 🏗️ Q60: JavaScript Design Patterns for Frontend Development
-
-### P1: Tên câu hỏi: 🏗️ Q60: JavaScript Design Patterns for Frontend Development
-
-### P2: Trả lời (Senior):
-
-## 66. Q66: **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+### Trả lời (Senior):
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
 

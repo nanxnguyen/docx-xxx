@@ -1,7 +1,7 @@
 # 📚 MỤC LỤC CÂU HỎI FRONTEND - INTERVIEW QUESTIONS
 
-> **Tổng hợp 60 câu hỏi phỏng vấn Frontend từ cơ bản đến nâng cao** *(Updated with Q59-Q61)*  
-> Cập nhật: November 23, 2025
+> **Tổng hợp 30+ câu hỏi phỏng vấn Frontend từ cơ bản đến nâng cao** *(Được đồng bộ từ SUMMARY file)*  
+> Cập nhật: November 27, 2025
 
 ---
 
@@ -24,48 +24,48 @@
 
 | # | Câu hỏi | Độ khó | Nội dung chính |
 |---|---------|--------|----------------|
-| **Q01** | [Primitive vs Reference Values](Q01-primitive-vs-reference-values-giá-trị-nguyên-thủy-vs-tham-chiếu.md) | ⭐ | Stack vs Heap, Pass by value/reference |
-| **Q02** | [Falsy/Truthy Values](Q02-falsytruthy-values.md) | ⭐ | Boolean coercion, truthy/falsy list |
-| **Q03** | [== vs === (Type Coercion)](Q03-==-vs-===-(type-coercion).md) | ⭐ | Loose vs Strict equality, coercion rules |
-| **Q04** | [null vs undefined](Q04-null-vs-undefined.md) | ⭐ | Differences, use cases, typeof behavior |
-| **Q05** | [&& và Optional Chaining](Q05-&&-và-optional-chaining.md) | ⭐⭐ | Short-circuit, `?.`, `??` operators |
-| **Q06** | [Immutable vs Mutable](Q06-immutable-vs-mutable.md) | ⭐⭐ | Primitive immutability, object mutation |
-| **Q07** | [Deep Copy vs Shallow Copy](Q07-deep-copy-vs-shallow-copy.md) | ⭐⭐ | Spread, structuredClone, lodash cloneDeep |
-| **Q08** | [Type Checking](Q08-type-checking-kiểm-tra-kiểu-dữ-liệu.md) | ⭐⭐ | typeof, instanceof, Object.prototype.toString |
+| **Q01** | [JavaScript Fundamentals Overview - Tổng Quan Nền Tảng](Q01-javascript-fundamentals-overview-tổng-quan-nền-tảng.md) | ⭐ | JavaScript core concepts, execution context, memory management |
+| **Q02** | [Data Types & Memory Management - Tổng Hợp Toàn Diện](Q02-data-types-memory-management-tổng-hợp-toàn-diện.md) | ⭐⭐ | Primitive vs Reference, Stack vs Heap, GC |
+| **Q03** | [ES5 vs ES6+ Features - So Sánh Chi Tiết & Cách Hoạt Động](Q03-es5-vs-es6+-features-so-sánh-chi-tiết-&-cách-hoạt-động.md) | ⭐⭐ | let/const, arrow functions, classes, modules, destructuring |
+| **Q04** | [Hoisting & Temporal Dead Zone](Q04-hoisting-&-temporal-dead-zone.md) | ⭐⭐⭐ | var/let/const hoisting, TDZ, execution context |
+| **Q05** | [Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry](Q05-setmap,-weaksetweakmap,-weakref-&-finalizationregistry.md) | ⭐⭐⭐ | Collections, Weak references, Garbage collection |
+| **Q06** | [Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)](Q06-event-loop-cơ-chế-hoạt-động-javascript.md) | ⭐⭐⭐⭐⭐ | Call stack, Task queue, Microtask queue |
+| **Q07** | [Event Loop - Giải Thích Theo Cách Nói Chuyện Đời Thường](Q07-event-loop-giải-thích-theo-cách-nói-chuyện-đời-thường.md) | ⭐⭐ | Analogy, real-world examples |
+| **Q08** | [Closure & Data Privacy](Q08-closure-&-data-privacy.md) | ⭐⭐⭐ | Lexical scope, private variables, module pattern |
 | **Q22** | [Compare Data Types](Q22-compare-data-types-objects,-strings,-big-numbers-&-decimals.md) | ⭐⭐⭐ | Objects, Strings, Big Numbers, Decimals |
 
 ### **🚀 ES5 vs ES6+ Features**
 
 | # | Câu hỏi | Độ khó | Nội dung chính |
 |---|---------|--------|----------------|
-| **Q09** | [ES5 vs ES6+ Features](Q09-es5-vs-es6+-features-so-sánh-chi-tiết-&-cách-hoạt-động.md) | ⭐⭐ | let/const, arrow functions, template literals |
-| **Q10** | [Hoisting & Temporal Dead Zone](Q10-hoisting-&-temporal-dead-zone.md) | ⭐⭐⭐ | var/let/const hoisting, TDZ |
-| **Q11** | [Set/Map, WeakSet/WeakMap, WeakRef](Q11-setmap,-weaksetweakmap,-weakref-&-finalizationregistry-collections-&-weak-refere.md) | ⭐⭐⭐ | Collections, Weak references, Garbage collection |
+| **Q09** | [Arrow vs Regular Functions & this Binding](Q09-arrow-vs-regular-functions-&-this-binding.md) | ⭐⭐⭐ | this binding, call/apply/bind |
+| **Q10** | [IIFE (Immediately Invoked Function Expression) & Functional Programming](Q10-iife-&-functional-programming.md) | ⭐⭐⭐ | IIFE pattern, scope isolation |
+| **Q11** | [DOM Events - Event Flow, Delegation & Event Properties](Q11-dom-events-event-flow,-delegation-&-event-properties.md) | ⭐⭐⭐ | Bubbling, Capturing, Event delegation |
 
 ### **⚡ Event Loop & Async**
 
 | # | Câu hỏi | Độ khó | Nội dung chính |
 |---|---------|--------|----------------|
-| **Q12** | [Event Loop (Technical Deep Dive)](Q12-event-loop-cơ-chế-hoạt-động-javascript-(technical-deep-dive).md) | ⭐⭐⭐⭐⭐ | Call stack, Task queue, Microtask queue |
-| **Q13** | [Event Loop (Giải thích đời thường)](Q13-event-loop-giải-thích-theo-cách-nói-chuyện-đời-thường.md) | ⭐⭐ | Analogy, real-world examples |
-| **Q19** | [Async/Await vs Promises vs Callbacks](Q19-asyncawait-vs-promises-vs-callbacks-&-promise.allanyrace.md) | ⭐⭐⭐⭐ | Sequential execution, Promise.all/any/race |
-| **Q21** | [Advanced Deferring Execution](Q21-advanced-deferring-execution-techniques-kỹ-thuật-trì-hoãn-thực-thi-nâng-cao.md) | ⭐⭐⭐⭐ | setTimeout, requestAnimationFrame, queueMicrotask |
+| **Q12** | [DOM API & Query Methods](Q12-dom-api-&-query-methods.md) | ⭐⭐ | querySelector, getElementById, traversal |
+| **Q13** | [Async/Await vs Promises vs Callbacks & Promise.all/any/race](Q13-asyncawait-vs-promises-vs-callbacks.md) | ⭐⭐⭐⭐ | Sequential execution, Promise.all/any/race |
+| **Q19** | [Loop Performance & Async Loops](Q19-loop-performance-&-async-loops.md) | ⭐⭐⭐ | for vs forEach, async iterations |
+| **Q21** | [Advanced Deferring Execution Techniques](Q21-advanced-deferring-execution-techniques-kỹ-thuật-trì-hoãn-thực-thi-nâng-cao.md) | ⭐⭐⭐⭐ | setTimeout, requestAnimationFrame, queueMicrotask |
 | **Q38** | [Cancellation, Concurrency & Retry](Q38-cancellation,-concurrency-&-retry.md) | ⭐⭐⭐⭐ | AbortController, p-limit, retry strategies |
 
 ### **🔒 Closures & Functions**
 
 | # | Câu hỏi | Độ khó | Nội dung chính |
 |---|---------|--------|----------------|
-| **Q14** | [Closure & Data Privacy](Q14-closure-&-data-privacy.md) | ⭐⭐⭐ | Lexical scope, private variables, module pattern |
-| **Q15** | [Arrow vs Regular Functions](Q15-arrow-vs-regular-functions-&-this-binding-(call,-apply,-bind).md) | ⭐⭐⭐ | this binding, call/apply/bind |
-| **Q16** | [IIFE & Functional Programming](Q16-iife-(immediately-invoked-function-expression)-&-functional-programming.md) | ⭐⭐⭐ | IIFE pattern, scope isolation |
+| **Q14** | [Axios Interceptors - Phân Tích Chi Tiết & Tối Ưu Hóa](Q14-axios-interceptors.md) | ⭐⭐⭐ | Request/Response interceptors, auth tokens |
+| **Q15** | [Advanced Deferring Execution Techniques](Q15-advanced-deferring-execution-techniques.md) | ⭐⭐⭐⭐ | setTimeout, requestAnimationFrame, queueMicrotask |
+| **Q16** | [Compare Data Types - Objects, Strings, Big Numbers & Decimals](Q16-compare-data-types.md) | ⭐⭐⭐ | Objects, Strings, Big Numbers, Decimals |
 
 ### **🌐 DOM & Browser Events**
 
 | # | Câu hỏi | Độ khó | Nội dung chính |
 |---|---------|--------|----------------|
-| **Q17** | [DOM Events](Q17-dom-events-event-flow,-delegation-&-event-properties-(bubbling,-capturing,-targe.md) | ⭐⭐⭐ | Bubbling, Capturing, Event delegation |
-| **Q18** | [DOM API & Query Methods](Q18-dom-api-&-query-methods.md) | ⭐⭐ | querySelector, getElementById, traversal |
+| **Q17** | [React Query (TanStack Query) - Data Fetching, Caching & State Management](Q17-react-query.md) | ⭐⭐⭐⭐ | Caching, stale-while-revalidate, mutations |
+| **Q18** | [Browser Rendering (Paint, Repaint, Reflow)](Q18-browser-rendering.md) | ⭐⭐⭐⭐ | Paint, Repaint, Reflow optimization |
 
 ---
 
@@ -73,11 +73,15 @@
 
 | # | Câu hỏi | Độ khó | Nội dung chính |
 |---|---------|--------|----------------|
-| **Q20** | [Axios Interceptors](Q20-axios-interceptors-phân-tích-chi-tiết-&-tối-ưu-hóa.md) | ⭐⭐⭐ | Request/Response interceptors, auth tokens |
+| **Q20** | [Handle Caching - HTTP Caching & Browser Cache Strategies](Q20-handle-caching.md) | ⭐⭐⭐⭐ | Cache-Control, ETag, Service Worker |
 | **Q23** | [React Query (TanStack Query)](Q23-react-query-(tanstack-query)-data-fetching,-caching-&-state-management.md) | ⭐⭐⭐⭐ | Caching, stale-while-revalidate, mutations |
 | **Q24** | [Browser Rendering](Q24-browser-rendering-(paint,-repaint,-reflow).md) | ⭐⭐⭐⭐ | Paint, Repaint, Reflow optimization |
 | **Q25** | [Loop Performance & Async Loops](Q25-loop-performance-&-async-loops.md) | ⭐⭐⭐ | for vs forEach, async iterations |
-| **Q26** | [HTTP Caching & Browser Cache](Q26-handle-caching-http-caching-&-browser-cache-strategies.md) | ⭐⭐⭐⭐ | Cache-Control, ETag, Service Worker |
+| **Q20** | [Handle Caching - HTTP Caching & Browser Cache Strategies](Q20-handle-caching.md) | ⭐⭐⭐⭐ | Cache-Control, ETag, Service Worker |
+| **Q41** | [Date & Time Handling - Xử Lý Múi Giờ Đúng Cách](Q41-date-time-handling.md) | ⭐⭐⭐ | Timezone handling, Date objects, libraries |
+| **Q42** | [Client-Side Rendering (CSR) vs Server-Side Rendering (SSR)](Q42-csr-vs-ssr.md) | ⭐⭐⭐⭐ | Rendering strategies, performance comparison |
+| **Q43** | [Authentication Flow An Toàn](Q43-authentication-flow.md) | ⭐⭐⭐⭐⭐ | Access Token, Refresh Token, Cookie Security |
+| **Q44** | [Microfrontend & Monorepo](Q44-microfrontend-monorepo.md) | ⭐⭐⭐⭐⭐ | Module Federation, Multi-Framework, Communication |
 
 ---
 
@@ -91,7 +95,15 @@
 | **Q28** | [JavaScript Classes](Q28-javascript-classes.md) | ⭐⭐⭐ | Class syntax, inheritance, static methods |
 | **Q30** | [Generator Functions](Q30-generator-functions-&-async-generators.md) | ⭐⭐⭐⭐ | yield, async generators, iterators |
 | **Q31** | [Memory Management](Q31-memory-management-&-garbage-collection.md) | ⭐⭐⭐⭐⭐ | Garbage collection, memory leaks (10 cases) |
-| **Q34** | [Advanced Array & Object Methods](Q34-advanced-array-&-object-methods,-object-concepts-&-immutability.md) | ⭐⭐⭐ | map/filter/reduce, Object methods, immutability |
+| **Q47** | [Git Workflow & Team Collaboration](Q47-git-workflow.md) | ⭐⭐⭐ | Branching Strategy, Merge vs Rebase, Conflict Resolution |
+| **Q53** | [CI/CD Pipeline - GitHub Actions, Deployment Automation](Q53-cicd-pipeline.md) | ⭐⭐⭐⭐⭐ | GitHub Actions, Build Optimization, Deployment |
+| **Q54** | [Code Quality & Standards](Q54-code-quality.md) | ⭐⭐⭐⭐ | ESLint, Prettier, Code Review |
+| **Q55** | [GraphQL vs REST - API Design, Apollo Client](Q55-graphql-vs-rest.md) | ⭐⭐⭐⭐ | API Design, Apollo Client, Queries/Mutations |
+| **Q56** | [Web Accessibility (a11y)](Q56-web-accessibility.md) | ⭐⭐⭐⭐ | WCAG 2.1, ARIA, Screen Readers |
+| **Q57** | [State Management Comparison](Q57-state-management.md) | ⭐⭐⭐⭐ | Redux vs Zustand vs Jotai |
+| **Q58** | [Networking & Browser Internals](Q58-networking-browser.md) | ⭐⭐⭐⭐ | Mạng & Nội Tế Trình Duyệt |
+| **Q59** | [CSS Architecture & Modern Styling Approaches](Q59-css-architecture.md) | ⭐⭐⭐⭐ | BEM, CSS Modules, Styled Components, Tailwind |
+| **Q60** | [JavaScript Design Patterns for Frontend](Q60-js-design-patterns.md) | ⭐⭐⭐⭐⭐ | Singleton, Observer, Factory, Module, Dependency Injection |
 
 ---
 
@@ -99,8 +111,8 @@
 
 | # | Câu hỏi | Độ khó | Nội dung chính |
 |---|---------|--------|----------------|
-| **Q35** | [React Hooks & Advanced Patterns](Q35-react-hooks-&-advanced-patterns-lifecycle,-performance,-architecture.md) | ⭐⭐⭐⭐⭐ | useState, useEffect, useMemo, custom hooks |
-| **Q36** | [Next.js - React Framework](Q36-next.js-react-framework-for-production.md) | ⭐⭐⭐⭐ | SSR, SSG, ISR, App Router, Server Components |
+| **Q35** | [React Hooks & Advanced Patterns](Q35-react-hooks.md) | ⭐⭐⭐⭐⭐ | useState, useEffect, useMemo, custom hooks |
+| **Q36** | [Next.js - React Framework](Q36-nextjs.md) | ⭐⭐⭐⭐ | SSR, SSG, ISR, App Router, Server Components |
 
 ---
 
@@ -173,16 +185,11 @@
 ┌─────────────────────┬────────┬────────────┐
 │ Category            │ Count  │ Percentage │
 ├─────────────────────┼────────┼────────────┤
-│ JavaScript Core     │ 22     │ 37%        │
-│ Async & Fetching    │ 5      │ 8%         │
-│ Advanced JS         │ 8      │ 13%        │
-│ React & Frameworks  │ 2      │ 3%         │
-│ Build Tools         │ 2      │ 3%         │
-│ Browser & Security  │ 2      │ 3%         │
-│ UI Libraries        │ 7      │ 12%        │
-│ Senior Topics       │ 12     │ 20%        │
+│ JavaScript Core     │ 20     │ 64%        │
+│ Async & Fetching    │ 5      │ 16%        │
+│ Advanced JS/Tools   │ 6      │ 19%        │
 ├─────────────────────┼────────┼────────────┤
-│ TOTAL               │ 60     │ 100%       │
+│ TOTAL               │ 31     │ 100%       │
 └─────────────────────┴────────┴────────────┘
 ```
 
@@ -346,17 +353,21 @@ Nếu phát hiện lỗi hoặc muốn bổ sung nội dung:
 - **v1.0** (Nov 2025) - Initial release với 48 câu hỏi
 - **v1.1** - Thêm AG Grid, React Query, Memory Management
 - **v1.2** - Merge Q22+Q23, Q31+Q32, optimize Q42
-- **v2.0** (Nov 23, 2025) - ✨ **MAJOR UPDATE:** Thêm 9 Senior-level topics:
-  - Q49: System Design & Architecture
-  - Q50: Testing Strategy (Test Pyramid, E2E)
-  - Q51: Performance Monitoring (APM)
-  - Q52: TypeScript Advanced Patterns
+- **v2.0** (Nov 23, 2025) - ✨ **MAJOR UPDATE:** Thêm nhiều Senior-level topics:
+  - Q41: Date & Time Handling
+  - Q42: CSR vs SSR
+  - Q43: Authentication Flow
+  - Q44: Microfrontend & Monorepo
+  - Q47: Git Workflow
   - Q53: CI/CD Pipeline & Deployment
   - Q54: Code Quality & Standards
   - Q55: GraphQL vs REST
   - Q56: Web Accessibility (a11y)
   - Q57: State Management Comparison
-  - **Total: 57 câu hỏi**
+  - Q58: Networking & Browser Internals
+  - Q59: CSS Architecture
+  - Q60: JavaScript Design Patterns
+  - **Total: 30+ câu hỏi theo thứ tự từ summary file**
 
 ---
 
