@@ -2890,15 +2890,16 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 ### 📦 Phân Loại Cache:
 
 **3 Tầng Cache trong Browser:**
+
 - **Memory Cache** (Bộ nhớ RAM): Nhanh nhất, mất khi đóng tab, dùng cho session hiện tại
 - **Disk Cache** (Ổ cứng): Persistent (giữ lại sau khi đóng browser), chậm hơn Memory nhưng lâu dài
 - **Service Worker Cache**: Lập trình được, hỗ trợ offline, kiểm soát hoàn toàn chiến lược cache
 
 ### 🔑 HTTP Cache Headers (Quan Trọng):
 
-| Header        | Mục Đích                              | Ví Dụ                       |
-| ------------- | ------------------------------------- | --------------------------- |
-| Cache-Control | Chỉ thị caching chính (ưu tiên cao)  | `max-age=3600, public`      |
+| Header        | Mục Đích                            | Ví Dụ                       |
+| ------------- | ----------------------------------- | --------------------------- |
+| Cache-Control | Chỉ thị caching chính (ưu tiên cao) | `max-age=3600, public`      |
 | ETag          | Token kiểm tra nội dung có thay đổi | `"abc123"` (content hash)   |
 | Last-Modified | Timestamp cập nhật lần cuối         | `Thu, 01 Jan 2024 00:00:00` |
 | Expires       | Ngày hết hạn (cũ, ít dùng)          | `Thu, 01 Jan 2025 00:00:00` |
@@ -2915,18 +2916,21 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 ### ♻️ Service Worker Caching Strategies (Chiến Lược Cache):
 
 1. **Cache First** (Ưu tiên Cache trước):
+
    - Kiểm tra cache → trả về nếu có → fetch network nếu không có
    - **Dùng cho**: Static assets (fonts, images, CSS/JS có version)
    - **Ưu điểm**: Siêu nhanh, tiết kiệm bandwidth
    - **Nhược điểm**: Có thể serve nội dung cũ nếu không có versioning
 
 2. **Network First** (Ưu tiên Network trước):
+
    - Fetch network → trả về data mới → fallback to cache nếu network fail
    - **Dùng cho**: Dynamic data (APIs, user-generated content)
    - **Ưu điểm**: Luôn có data mới nhất
    - **Nhược điểm**: Chậm nếu network chậm
 
 3. **Stale-While-Revalidate** (Trả cache cũ + update background):
+
    - Trả cache ngay lập tức + fetch network ở background → update cache
    - **Dùng cho**: News feeds, social media, data thay đổi vừa phải
    - **Ưu điểm**: Nhanh + có data mới (best of both worlds)
@@ -2975,25 +2979,30 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 **6 Use Cases Phổ Biến:**
 
 1. **Validation (Xác thực dữ liệu)**:
+
    - Validate giá trị trước khi set vào property
    - Ví dụ: Kiểm tra `age` phải là số dương
-   
+
 2. **Reactivity (Tính phản ứng)**:
+
    - Tự động trigger UI updates khi data thay đổi
    - **Vue 3 reactivity system** dùng Proxy (thay thế `Object.defineProperty` của Vue 2)
-   
+
 3. **Logging/Debugging**:
+
    - Track property access (ai đọc property nào, khi nào)
    - Log mutations (thay đổi dữ liệu) cho debugging
-   
+
 4. **Access Control (Kiểm soát truy cập)**:
+
    - Restrict access to private properties (properties bắt đầu bằng `_`)
    - Throw error nếu access unauthorized
-   
+
 5. **Default Values (Giá trị mặc định)**:
+
    - Return defaults cho undefined properties thay vì `undefined`
    - Ví dụ: `obj.unknownKey` → trả về `null` thay vì `undefined`
-   
+
 6. **Type Coercion (Ép kiểu tự động)**:
    - Auto-convert types (strings → numbers, dates, etc.)
 
@@ -3037,11 +3046,13 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 ### 🔄 So Sánh Classes vs Prototypes:
 
 **ES6 Class (Modern):**
+
 - Syntax clean, dễ đọc hơn
 - Built-in inheritance với `extends`
 - Private fields với `#` syntax
 
 **ES5 Prototypes (Legacy):**
+
 - Function constructors + `prototype`
 - Manual inheritance phức tạp
 - No true private (dùng closures)
@@ -3091,17 +3102,20 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 **4 Use Cases Chính:**
 
 1. **Lazy Evaluation (Đánh giá lười)**:
+
    - Generate values theo nhu cầu → tiết kiệm memory
    - Ví dụ: Đọc file lớn từng chunk thay vì load hết vào RAM
-   
+
 2. **Infinite Sequences (Dãy vô hạn)**:
+
    - `function* fibonacci()` - không có điều kiện dừng
    - Tạo số Fibonacci vô hạn mà không crash memory
-   
+
 3. **State Machines (Máy trạng thái)**:
+
    - Maintain state giữa các lần yield (không cần biến global)
    - Ví dụ: Traffic light (red → yellow → green → red...)
-   
+
 4. **Async Iteration**:
    - `for await (const item of asyncGen())` - iterate async values
    - Stream processing: Xử lý data từng phần khi data đến
@@ -3165,11 +3179,13 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 ### 🔄 Immutability Patterns (Patterns Bất Biến):
 
 **Shallow Copy (Copy nông - 1 level):**
+
 - Spread operator: `{...obj}`, `[...arr]`
 - `Object.assign({}, obj)`
 - ⚠️ **Chú ý**: Nested objects vẫn share reference
 
 **Deep Copy (Copy sâu - all levels):**
+
 - `structuredClone(obj)` (ES2022 - native, handle Date/RegExp/circular refs)
 - `JSON.parse(JSON.stringify(obj))` (legacy, mất functions/undefined/Date)
 - Immer library (simplify immutable updates)
@@ -3205,28 +3221,33 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 ### 🪝 Essential Hooks (6 Hooks Quan Trọng Nhất):
 
 1. **useState** (Quản lý state cục bộ):
+
    - State management trong functional components
    - Functional updates: `setState(prev => prev + 1)` (dùng prev state)
-   
+
 2. **useEffect** (Side effects):
+
    - Side effects: API calls, subscriptions, DOM manipulation
    - Cleanup function ngăn memory leaks (return function chạy khi unmount)
    - Dependency array `[deps]` controls khi nào re-run
-   
+
 3. **useRef** (Mutable value không trigger re-render):
+
    - Mutable value không gây re-render khi thay đổi
    - DOM access: `ref.current` → DOM element
    - Store previous values (compare old vs new)
-   
+
 4. **useMemo** (Cache expensive computations):
+
    - Cache kết quả tính toán nặng
    - Chỉ recompute khi dependencies change
    - ⚠️ Chỉ dùng cho computations nặng (>50ms)
-   
+
 5. **useCallback** (Cache function reference):
+
    - Cache function reference → prevent child re-renders
    - Dùng khi pass callbacks cho child components được memoized
-   
+
 6. **useReducer** (Complex state logic):
    - Alternative to useState cho state phức tạp (nhiều sub-values)
    - Pattern giống Redux: `(state, action) => newState`
@@ -3241,24 +3262,29 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 ### 🚀 Performance Optimization (6 Kỹ Thuật Chính):
 
 1. **React.memo()** (Memoize component):
+
    - Shallow compare props → skip re-render nếu props unchanged
    - Dùng cho expensive components, list items
-   
+
 2. **useMemo()** (Cache calculations):
+
    - Cache kết quả expensive calculations (filtering lớn, computations phức tạp)
-   
+
 3. **useCallback()** (Cache functions):
+
    - Stable function references cho memoized child components
-   
+
 4. **Code Splitting** (Lazy loading):
+
    - `React.lazy(() => import('./Page'))` + Suspense
    - Route-based: Mỗi route 1 chunk riêng
    - Component-based: Split heavy components (charts, editors)
-   
+
 5. **Virtualization** (Render visible items only):
+
    - `react-window` / `react-virtualized` cho long lists
    - 1000 items → render ~30 visible → 97% faster
-   
+
 6. **Avoid inline functions/objects**:
    - Inline functions/objects tạo new references mỗi render → children re-render
    - ✅ Extract to constants/variables outside render
@@ -3301,20 +3327,23 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 ### 🔑 4 Rendering Strategies (Chiến Lược Render):
 
 1. **SSR (Server-Side Rendering - Render phía server)**:
+
    - `getServerSideProps` - Fetch data mỗi request
    - **Dùng cho**: Dynamic content (user-specific data, real-time)
    - **Ưu**: SEO tốt, fresh data, **Nhược**: Chậm (wait server)
-   
+
 2. **SSG (Static Site Generation - Sinh tĩnh)**:
+
    - `getStaticProps` - Build-time generation (build 1 lần)
    - **Dùng cho**: Blog, documentation, marketing pages
    - **Ưu**: Blazing fast (serve static HTML), cacheable, **Nhược**: Data có thể cũ
-   
+
 3. **ISR (Incremental Static Regeneration - Regenerate dần dần)**:
+
    - `revalidate` option - Regenerate pages ở background sau N giây
    - **Dùng cho**: E-commerce products, news (balance giữa static + dynamic)
    - **Ưu**: Fast như SSG + fresh data như SSR
-   
+
 4. **CSR (Client-Side Rendering - Render phía client)**:
    - `useEffect` + `fetch` - Traditional SPA approach
    - **Dùng cho**: Admin dashboards, private pages (không cần SEO)
@@ -3322,22 +3351,26 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 ### 🚀 Key Features (Tính Năng Chính):
 
 - **File-System Routing** (Routing dựa trên files):
+
   - `pages/about.js` → `/about` route
   - App Router: `app/about/page.js` → `/about`
   - Nested routes: `app/blog/[slug]/page.js` → `/blog/:slug`
-  
+
 - **API Routes** (Backend trong frontend project):
+
   - `pages/api/*.js` → serverless functions
   - Ví dụ: `pages/api/users.js` → `/api/users` endpoint
-  
+
 - **Image Optimization** (Tối ưu ảnh tự động):
+
   - `<Image>` component: Auto WebP/AVIF, lazy loading, responsive sizes
   - Resize on-demand, optimize quality
-  
+
 - **Code Splitting** (Tách code tự động):
+
   - Mỗi page = 1 chunk riêng → load on-demand
   - Shared chunks optimization (vendor, common code)
-  
+
 - **Zero Config** (Không cần config):
   - Fast Refresh (HMR - hot module reload)
   - TypeScript support built-in
@@ -3346,17 +3379,20 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 ### 📱 App Router - Next.js 13+ (Modern Architecture):
 
 - **React Server Components** (RSC):
+
   - Server components = ZERO JS bundle gửi client
   - Chỉ HTML được gửi → faster, smaller bundle
-  
+
 - **Nested Layouts** (Layouts lồng nhau):
+
   - Shared layouts persist across page navigations
   - Layout không re-render khi navigate
-  
+
 - **Streaming SSR** (Progressive rendering):
+
   - Render từng phần với Suspense boundaries
   - User thấy content sớm hơn (không chờ toàn bộ page)
-  
+
 - **Server Actions** (Call server từ client):
   - Call server functions trực tiếp từ client (form actions)
   - Không cần viết API routes
@@ -3393,14 +3429,14 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 
 ### 📊 CommonJS vs ESM (So Sánh Chi Tiết):
 
-| Aspect           | CommonJS                     | ES Modules                           |
-| ---------------- | ---------------------------- | ------------------------------------ |
-| **Syntax**       | `require()`/`module.exports` | `import`/`export`                    |
-| **Loading**      | Synchronous (đồng bộ)        | Asynchronous (bất đồng bộ)           |
+| Aspect           | CommonJS                     | ES Modules                            |
+| ---------------- | ---------------------------- | ------------------------------------- |
+| **Syntax**       | `require()`/`module.exports` | `import`/`export`                     |
+| **Loading**      | Synchronous (đồng bộ)        | Asynchronous (bất đồng bộ)            |
 | **Analysis**     | Runtime (dynamic - lúc chạy) | **Static** (compile-time - lúc build) |
-| **Tree-shaking** | ❌ Khó (dynamic requires)     | ✅ Có (biết dependencies trước)      |
-| **Browser**      | ❌ Không (cần bundler)        | ✅ Native (`<script type="module">`) |
-| **Ecosystem**    | Node.js legacy (cũ)          | Modern standard (chuẩn hiện đại)     |
+| **Tree-shaking** | ❌ Khó (dynamic requires)    | ✅ Có (biết dependencies trước)       |
+| **Browser**      | ❌ Không (cần bundler)       | ✅ Native (`<script type="module">`)  |
+| **Ecosystem**    | Node.js legacy (cũ)          | Modern standard (chuẩn hiện đại)      |
 
 ### 🔑 Bundling Concepts (Khái Niệm Đóng Gói):
 
@@ -3465,18 +3501,21 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 ### 🔄 Concurrency Patterns (Patterns Đồng Thời):
 
 1. **Parallel Unlimited** (Song song không giới hạn):
+
    - `Promise.all([...])` - Tất cả requests cùng lúc
    - **Ưu**: Nhanh nhất, **Nhược**: Có thể overwhelm server, rate limit
-   
+
 2. **Sequential** (Tuần tự - từng cái một):
+
    - `for await (const item of items) { await process(item); }`
    - **Ưu**: An toàn (không quá tải server), **Nhược**: Chậm nhất
-   
+
 3. **Limited Concurrency** (Giới hạn đồng thời):
+
    - `p-limit` library - Tối đa N requests đồng thời
    - **Balance**: Speed + server load (ví dụ: 5 concurrent)
    - **Best practice**: Cho batch processing nhiều items
-   
+
 4. **Race** (Ai về trước thắng):
    - `Promise.race([...])` - First to complete wins
    - **Use case**: Timeout pattern (race với delay promise)
@@ -3492,11 +3531,13 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 - **Max attempts limit** (3-5 retries typical) → ngăn infinite loop
 
 **Khi Nào Retry:**
+
 - Network errors (connection failed)
 - 5xx server errors (server có vấn đề tạm thời)
 - 429 Too Many Requests (rate limit → wait longer)
 
 **Khi KHÔNG Retry:**
+
 - 4xx client errors (400 Bad Request, 401 Unauthorized - lỗi logic)
 - Business logic errors (validation failed)
 
@@ -3515,7 +3556,7 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 
 - **p-limit pattern**:
   ```
-  const limit = pLimit(5); 
+  const limit = pLimit(5);
   await Promise.all(urls.map(url => limit(() => fetch(url))))
   ```
   - Limit 5 concurrent fetches, queue phần còn lại
@@ -3528,121 +3569,172 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 
 ---
 
-## Q29: Web Workers, Service Worker & PWA Basics
+## Q29: Web Workers, Service Worker & PWA Basics (Workers & Ứng Dụng Web Tiến Bộ)
 
-### 🎯 Trả Lời Ngắn Gọn:
+### 🎯 Trả Lời Ngắn Gọn (3 phút):
 
-**"Web Workers = background threads for CPU-intensive tasks (no DOM access). Service Workers = proxy between app and network, enable offline, caching, push notifications (PWA). Shared Workers = shared across tabs/windows."**
+**"Web Workers = background threads cho CPU-intensive tasks (không có DOM access). Service Workers = proxy giữa app và network, enable offline, caching, push notifications (PWA core). Shared Workers = share across tabs/windows (ít dùng). Workers chạy background → không block UI thread."**
 
-### 🔑 Worker Types:
+### 🔑 3 Loại Workers:
 
-**1. Web Workers (Dedicated):**
+**1. Web Workers (Dedicated - Dành riêng):**
 
-- Offload heavy computation to background thread (image processing, data parsing)
-- `new Worker('worker.js')` - create worker
-- `postMessage()` / `onmessage` - communication (structured clone, no shared memory)
-- **Limitation**: No DOM, no `window`, separate global scope
+- **Mục đích**: Offload heavy computation sang background thread
+- **Use cases**: Image processing, data parsing, complex calculations, encryption
+- **API**:
+  - `new Worker('worker.js')` - Tạo worker
+  - `postMessage()` / `onmessage` - Communication (structured clone, no shared memory)
+- **Limitations** (Giới hạn):
+  - Không có DOM access (không thể manipulate DOM)
+  - Không có `window` object
+  - Separate global scope (biến global riêng)
 
-**2. Service Workers (PWA Core):**
+**2. Service Workers (PWA Core - Trung tâm PWA):**
 
-- Intercept network requests → cache responses, offline support
-- Lifecycle: Install → Activate → Fetch → Terminate (event-driven)
-- Caching strategies: Cache First, Network First, Stale-While-Revalidate
-- **Features**: Offline, push notifications, background sync
+- **Mục đích**: Proxy giữa app và network → enable offline, caching
+- **Lifecycle** (Vòng đời):
+  1. **Install** (Cài đặt): Download worker file, cache assets
+  2. **Activate** (Kích hoạt): Cleanup old caches
+  3. **Fetch** (Lắng nghe requests): Intercept network requests
+  4. **Terminate** (Tắt): Event-driven (tắt khi không dùng)
+- **Caching Strategies** (đã nói ở Q20):
+  - Cache First, Network First, Stale-While-Revalidate
+- **Features PWA**:
+  - Offline functionality (làm việc offline)
+  - Push notifications (thông báo push)
+  - Background sync (đồng bộ khi online trở lại)
 
-**3. Shared Workers:**
+**3. Shared Workers (Share Across Tabs):**
 
-- Shared across multiple tabs/windows (same origin)
-- Use case: Shared WebSocket connection, shared state
-- Less common, limited browser support
+- **Mục đích**: Share across multiple tabs/windows (same origin)
+- **Use cases**:
+  - Shared WebSocket connection (1 connection cho nhiều tabs)
+  - Shared state (sync state between tabs)
+- **Limitations**: Less common, limited browser support (~70%)
 
-### 📱 PWA (Progressive Web App):
+### 📱 PWA (Progressive Web App - Ứng Dụng Web Tiến Bộ):
 
-**Requirements:**
+**3 Requirements (Yêu cầu):**
 
-- HTTPS (Service Worker requirement)
-- Manifest file (`manifest.json`) - app metadata, icons, theme
-- Service Worker for offline support
+1. **HTTPS** (Service Worker chỉ chạy trên HTTPS)
+2. **Manifest file** (`manifest.json`):
+   - App metadata (tên, icons, màu theme)
+   - Display mode (standalone, fullscreen)
+   - Start URL, orientation
+3. **Service Worker** cho offline support
 
-**Benefits:**
+**4 Benefits (Lợi ích):**
 
-- Install to home screen (app-like experience)
-- Offline functionality (cached assets + data)
-- Push notifications (re-engagement)
-- Fast, reliable, engaging
+1. **Install to home screen** (Cài đặt như native app)
+2. **Offline functionality** (Làm việc offline với cached assets + data)
+3. **Push notifications** (Thông báo push để re-engage users)
+4. **Fast, reliable, engaging** (Nhanh, ổn định, hấp dẫn như native app)
 
-### ⚠️ Common Mistakes:
+### ⚠️ Lỗi Thường Gặp:
 
-- Heavy computation on main thread → UI freeze (move to Web Worker)
-- Service Worker không update → users see stale app (implement update logic)
-- Aggressive caching → users never see updates (balance cache duration)
-- Debug Service Worker issues → use Chrome DevTools Application tab
+- **Heavy computation trên main thread** → UI freeze (lag, không responsive)
+  - ✅ Move sang Web Worker (offload computation)
+- **Service Worker không update** → users thấy app cũ mãi
+  - ✅ Implement update logic (`skipWaiting()`, show "New version available")
+- **Aggressive caching** → users không thấy updates
+  - ✅ Balance cache duration (không cache quá lâu)
+- **Debug Service Worker khó** → không biết cache gì
+  - ✅ Chrome DevTools Application tab → Service Workers, Cache Storage
 
-### 💡 Senior Insights:
+### 💡 Kiến Thức Senior:
 
-- **Workbox**: Google library for Service Worker strategies (simplify caching)
-- **Comlink**: RPC library for Workers (call functions like local, handles serialization)
-- **Shared Array Buffer**: Shared memory between threads (requires COOP/COEP headers)
-- **Performance**: Workers have overhead (~50-100ms startup), use for tasks >100ms
+- **Workbox** (Google library):
+  - Simplify Service Worker strategies
+  - Pre-caching, runtime caching, background sync built-in
+- **Comlink** (RPC library cho Workers):
+  - Call functions như local (không cần postMessage manually)
+  - Handles serialization tự động
+- **Shared Array Buffer** (Shared memory):
+  - Share memory giữa threads (zero-copy performance)
+  - **Requires**: `Cross-Origin-Opener-Policy` + `Cross-Origin-Embedder-Policy` headers
+- **Performance**: Workers có overhead (~50-100ms startup)
+  - Chỉ dùng cho tasks >100ms (không đáng cho tasks nhỏ)
 
 ---
 
-## Q30: Browser Storage - LocalStorage, SessionStorage, Cookie & IndexedDB
+## Q30: Browser Storage - LocalStorage, SessionStorage, Cookie & IndexedDB (Lưu Trữ Trình Duyệt)
 
-### 🎯 Trả Lời Ngắn Gọn:
+### 🎯 Trả Lời Ngắn Gọn (3 phút):
 
-**"Browser storage: Cookie (4KB, sent to server), LocalStorage (5-10MB, persistent), SessionStorage (5-10MB, tab-scoped), IndexedDB (50MB+, async database). Security: NEVER store sensitive data in localStorage (XSS risk), use HttpOnly cookies for tokens."**
+**"Browser có 4 loại storage: Cookie (4KB, tự động gửi server), LocalStorage (5-10MB, persistent mãi mãi), SessionStorage (5-10MB, tab-scoped - mất khi đóng tab), IndexedDB (50MB+, async database). Security quan trọng: KHÔNG BAO GIỜ store sensitive data trong localStorage (XSS risk - hacker đánh cắp được), dùng HttpOnly cookies cho tokens."**
 
-### 🔑 Storage Comparison:
+### 🔑 So Sánh 4 Loại Storage:
 
-| Criteria    | Cookie        | LocalStorage  | SessionStorage | IndexedDB           |
-| ----------- | ------------- | ------------- | -------------- | ------------------- |
-| **Size**    | 4KB           | 5-10MB        | 5-10MB         | 50MB-unlimited      |
-| **Persist** | Expiry date   | Forever       | Tab close      | Forever             |
-| **API**     | Sync (string) | Sync (string) | Sync (string)  | **Async** (objects) |
-| **Server**  | ✅ Auto-sent  | ❌            | ❌             | ❌                  |
-| **Use**     | Auth tokens   | Settings      | Form data      | Large datasets      |
+| Criteria    | Cookie                     | LocalStorage       | SessionStorage       | IndexedDB               |
+| ----------- | -------------------------- | ------------------ | -------------------- | ----------------------- |
+| **Size**    | 4KB (nhỏ)                  | 5-10MB             | 5-10MB               | 50MB-unlimited (lớn)    |
+| **Persist** | Expiry date (set)          | Forever (mãi mãi)  | Tab close (đóng tab) | Forever                 |
+| **API**     | Sync (string only)         | Sync (string only) | Sync (string only)   | **Async** (objects OK)  |
+| **Server**  | ✅ Auto-sent (mỗi request) | ❌ Không gửi       | ❌ Không gửi         | ❌ Không gửi            |
+| **Use**     | Auth tokens                | Settings, theme    | Form data tạm        | Large datasets, offline |
 
-### 🔑 Details:
+### 🔑 Chi Tiết Từng Loại:
 
-**Cookie:**
+**Cookie (4KB - Dùng cho Authentication):**
 
-- Auto-sent with HTTP requests (authentication)
-- Flags: `HttpOnly` (JS can't read - XSS protection), `Secure` (HTTPS only), `SameSite` (CSRF protection)
-- Bandwidth cost (sent every request) → keep small
+- **Auto-sent** với HTTP requests → server nhận được tự động
+- **3 Flags quan trọng**:
+  - `HttpOnly`: JS không đọc được → **XSS protection** (hacker inject script không lấy được cookie)
+  - `Secure`: Chỉ gửi qua HTTPS → không gửi qua HTTP (ngăn man-in-the-middle)
+  - `SameSite`: **CSRF protection** (ngăn requests từ domains khác)
+    - `SameSite=Strict`: Strict nhất (chỉ same-site)
+    - `SameSite=Lax`: Cho phép top-level navigation
+    - `SameSite=None`: Cho phép cross-site (phải có `Secure`)
+- **Bandwidth cost**: Gửi mỗi request → giữ nhỏ (≤ 1KB ideal)
 
-**LocalStorage:**
+**LocalStorage (5-10MB - Dùng cho Settings):**
 
-- Persistent (survives tab close), synchronous API
-- Use case: User preferences, theme, language, cached data
-- ⚠️ Never store sensitive data (tokens) - XSS vulnerable
+- **Persistent**: Tồn tại mãi mãi (survive tab close, browser restart)
+- **Synchronous API**: `localStorage.setItem()`, `localStorage.getItem()` (blocking)
+- **Use cases**: User preferences (theme, language), settings, cached data
+- ⚠️ **KHÔNG BAO GIỜ** store sensitive data (tokens, passwords):
+  - XSS vulnerable (hacker inject script → `localStorage.getItem('token')` → stolen)
+  - ✅ **Giải pháp**: HttpOnly cookies (JS không access được)
 
-**SessionStorage:**
+**SessionStorage (5-10MB - Dùng cho Temporary Data):**
 
-- Tab-scoped (each tab separate), cleared on tab close
-- Use case: Form wizards, temporary shopping cart, session-specific state
-- Duplicate tab = duplicate storage
+- **Tab-scoped**: Mỗi tab có storage riêng (not shared across tabs)
+- **Cleared khi đóng tab**: Data mất khi đóng tab (không survive)
+- **Use cases**: Form wizards (multi-step forms), temporary shopping cart, session-specific state
+- **Duplicate tab** = duplicate storage (mỗi tab độc lập)
 
-**IndexedDB:**
+**IndexedDB (50MB+ - Dùng cho Large Data):**
 
-- Async database (transactions, indexes, queries)
-- Store objects, files, blobs (not just strings)
-- Use case: Offline apps, large datasets, binary files
-- Libraries: Dexie.js, localForage (simplified API)
+- **Async database**: Transactions, indexes, queries (như real database)
+- **Store objects**: Store objects, files, blobs (không chỉ strings như localStorage)
+- **Use cases**: Offline apps, large datasets (thousands of items), binary files (images, videos)
+- **Libraries**: Dexie.js (simplified API), localForage (localStorage-like API for IndexedDB)
 
-### ⚠️ Common Mistakes:
+### ⚠️ Lỗi Thường Gặp:
 
-- Store tokens trong localStorage → XSS steals tokens (use HttpOnly cookies)
-- Stringify/parse localStorage every access → performance hit (cache parsed value)
-- No `QuotaExceededError` handling → app crash when storage full
-- Synchronous IndexedDB API → use Promises/async (modern pattern)
+- **Store tokens trong localStorage** → XSS steals tokens dễ dàng
+  - ✅ **Giải pháp**: HttpOnly cookies (`Set-Cookie` header từ server)
+- **Stringify/parse localStorage mỗi lần access** → performance hit
+  - ✅ **Giải pháp**: Cache parsed value trong memory, chỉ parse 1 lần
+- **Không handle `QuotaExceededError`** → app crash khi storage full
+  - ✅ **Giải pháp**: Try-catch + fallback logic (clear old data)
+- **Dùng sync IndexedDB API** (cũ) → blocking
+  - ✅ **Giải pháp**: Dùng Promises/async API (modern pattern)
 
-### 💡 Senior Insights:
+### 💡 Kiến Thức Senior:
 
-- **Security**: Access tokens → HttpOnly cookies, Refresh tokens → HttpOnly cookies
-- **Storage events**: `window.addEventListener('storage')` → sync across tabs (localStorage only)
+- **Security best practices**:
+  - Access tokens → HttpOnly cookies (`HttpOnly; Secure; SameSite=Strict`)
+  - Refresh tokens → HttpOnly cookies (tương tự)
+  - Non-sensitive data (theme, language) → localStorage OK
+- **Storage events**: `window.addEventListener('storage')` → sync data across tabs
+  - Chỉ work với localStorage (không work với sessionStorage)
+  - Trigger khi localStorage thay đổi ở tab khác
 - **Quota API**: `navigator.storage.estimate()` → check available space
-- **Cache API**: Different from localStorage, for HTTP response caching (Service Workers)
+  - Biết còn bao nhiêu space trước khi lưu data lớn
+- **Cache API**: Khác localStorage, dùng cho HTTP response caching (Service Workers)
+  - Cache API cho full HTTP responses (headers, body)
+  - localStorage chỉ cho key-value strings
 
 ---
 
