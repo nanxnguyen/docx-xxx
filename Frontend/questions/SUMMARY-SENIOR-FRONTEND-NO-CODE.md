@@ -31,15 +31,23 @@
 
 ## Q01: JavaScript Fundamentals Overview - Tổng Quan Nền Tảng JavaScript
 
+> **🇻🇳 Chú Thích:** JavaScript là ngôn ngữ lập trình cho web, chạy trên trình duyệt và server (Node.js). Đơn luồng nghĩa là chỉ làm 1 việc tại 1 thời điểm, nhưng vẫn xử lý được nhiều việc cùng lúc nhờ Event Loop (vòng lặp sự kiện). Giống như 1 nhân viên phục vụ bàn nhưng có thể phục vụ nhiều bàn bằng cách xử lý xen kẽ.
+
 ### 🎯 Trả Lời Interviewer (30 giây):
 
 **"JavaScript là ngôn ngữ đơn luồng (single-threaded) nhưng hỗ trợ xử lý bất đồng bộ (async) nhờ Event Loop. Engine phổ biến: V8 (Chrome/Node.js), SpiderMonkey (Firefox). JavaScript có 8 kiểu dữ liệu (7 primitives + 1 object), quản lý bộ nhớ tự động qua Garbage Collection (mark-and-sweep), và hỗ trợ OOP qua prototype chain."**
 
+> **🇻🇳 Giải Thích:** V8 là "động cơ" chạy JavaScript trong Chrome và Node.js. Garbage Collection giống như nhân viên dọn dẹp tự động - tự động xóa biến không dùng nữa. Prototype chain là cách JavaScript kế thừa thuộc tính từ object cha.
+
 ### 📖 Giải Thích Cốt Lõi (Dành cho Technical Discussion):
+
+> **🇻🇳 Giải Thích Kỹ Thuật:**
 
 **Tại sao single-threaded nhưng vẫn xử lý được async?**
 
 JavaScript chỉ có **1 Call Stack** (ngăn xếp thực thi code đồng bộ), nhưng browser cung cấp **Web APIs** chạy trên threads riêng (setTimeout, fetch, DOM events). **Event Loop** điều phối giữa Call Stack và các Task Queues (Microtask Queue cho Promises, Macrotask Queue cho setTimeout/I/O).
+
+**🇻🇳 Dễ Hiểu:** Call Stack như 1 nhân viên làm việc tuần tự (xong việc A mới làm B). Web APIs như các bộ phận khác giúp làm việc phụ (như bộ phận giao hàng). Event Loop như quản lý điều phối công việc - khi nhân viên rảnh thì giao việc tiếp theo.
 
 ### 🔑 5 Trụ Cột Kỹ Thuật (Technical Pillars):
 
@@ -141,9 +149,13 @@ JavaScript chỉ có **1 Call Stack** (ngăn xếp thực thi code đồng bộ)
 
 ## Q02: Data Types & Memory Management - Kiểu Dữ Liệu & Quản Lý Bộ Nhớ
 
+> **🇻🇳 Chú Thích:** JavaScript có 8 loại dữ liệu: 7 loại đơn giản (primitives - số, chữ, true/false...) và 1 loại phức tạp (object - mảng, hàm, object...). Primitives giống như giấy note ghi giá trị trực tiếp, objects giống như địa chỉ trỏ đến nơi lưu dữ liệu thật. Bộ nhớ tự động dọn dẹp nhờ Garbage Collector.
+
 ### 🎯 Trả Lời Interviewer (30 giây):
 
 **"JavaScript có 8 kiểu dữ liệu: 7 primitives (immutable - không thay đổi được: `number`, `string`, `boolean`, `null`, `undefined`, `symbol`, `bigint`) + 1 reference type (mutable: `object`). Primitives lưu trong Stack by value, objects lưu trong Heap by reference. Bộ nhớ được quản lý tự động qua Garbage Collection (mark-and-sweep algorithm)."**
+
+> **🇻🇳 Giải Thích:** Primitives immutable nghĩa là không thay đổi được giá trị gốc (tạo giá trị mới thay vì sửa). Stack là vùng nhớ nhanh lưu dữ liệu nhỏ, Heap là vùng nhớ lớn lưu object. Mark-and-sweep giống như đánh dấu đồ đang dùng, xóa đồ không dùng nữa.
 
 ### 📖 Giải Thích Cốt Lõi:
 
@@ -1593,13 +1605,6 @@ function attachListener(element) {
   listenerData.set(element, handler); // Weak reference → element có thể GC
 }
 
-// Element removed → GC → WeakMap entry tự xóa → NO LEAK
-```
-
----
-
-> **💡 Tổng hợp**: Set (unique values, O(1) operations) vs Array (indexed, duplicates OK) | Map (any keys, insertion order) vs Object (string keys, prototype) | WeakMap/WeakSet (weak refs, no iteration, prevent leaks) | WeakRef (direct weak ref to object) | FinalizationRegistry (cleanup callback, non-deterministic) | Use WeakMap cho DOM metadata, private data | SameValueZero: NaN === NaN trong Set/Map
-
 ---
 
 ## Q06: Event Loop - Cơ Chế Hoạt Động JavaScript
@@ -1649,7 +1654,9 @@ JavaScript có 1 Call Stack (ngăn xếp thực thi) → chỉ chạy 1 function
 ### ♻️ Thuật Toán Event Loop (Step by Step):
 
 ```
+
 VÒNG LẶP VÔ HẠN:
+
 1. Chạy HẾT sync code trong Call Stack
 2. Chạy HẾT Microtasks (ALL - không giới hạn)
    - Nếu microtask tạo microtask mới → chạy luôn
@@ -1657,7 +1664,8 @@ VÒNG LẶP VÔ HẠN:
 3. Render UI (nếu cần - chỉ browser, ~60fps = 16.67ms/frame)
 4. Chạy 1 Macrotask (ONE - chỉ 1 cái)
 5. Quay lại bước 1
-```
+
+````
 
 **Priority:**
 `Sync Code` > `Microtasks` (ALL) > `Render` > `1 Macrotask`
@@ -1681,7 +1689,7 @@ Promise.resolve().then(() => {
 });
 
 console.log('6-sync'); // Sync
-```
+````
 
 **Output:** `1-sync` → `6-sync` → `3-micro` → `5-micro` → `2-macro` → `4-macro`
 
@@ -4572,78 +4580,148 @@ Secure auth flow: Access Token (short-lived, 15min, memory) + Refresh Token (lon
 
 ## Q44: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns
 
+> **🇻🇳 Chú Thích:** Microfrontend là cách chia một ứng dụng web lớn thành nhiều ứng dụng nhỏ độc lập. Giống như xây chung cư: mỗi team làm 1 căn hộ riêng, có thể sửa chữa riêng mà không ảnh hưởng người khác. Monorepo là để 1 kho code chứa nhiều dự án, dễ quản lý và chia sẻ code chung.
+
 ### 🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):
 
-Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Federation = runtime integration (share code, no rebuild).
+**"Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Federation = runtime integration (share code, no rebuild). Monorepo = 1 repo chứa nhiều projects, dễ quản lý + chia sẻ code."**
+
+> **🇻🇳 Giải Thích:** Module Federation cho phép các app nhỏ chia sẻ code với nhau khi chạy (runtime), không cần build lại. Monorepo giúp nhiều dự án trong 1 repo dùng chung config, thư viện, dễ maintain hơn nhiều repo riêng lẻ.
 
 ### 🏗️ Microfrontend Architecture:
 
-- **Concept**: Mỗi team sở hữu 1 microfrontend (MFE) → deploy độc lập → tech stack riêng.
-- **Runtime Integration**: MFEs load at runtime (không phải build time) → independent releases.
-- **Shell App (Host)**: Container app load remote MFEs.
+> **🇻🇳 Kiến Trúc Microfrontend:**
+
+- **Concept (Khái niệm)**: Mỗi team sở hữu 1 microfrontend (MFE) → deploy độc lập → dùng tech stack riêng (team A dùng React, team B dùng Vue).
+- **Runtime Integration (Tích hợp lúc chạy)**: MFEs load khi app đang chạy (không phải build time) → các team release độc lập không ảnh hưởng nhau.
+- **Shell App (Host - App vỏ)**: App chính chứa và load các MFE từ xa vào, giống như khung nhà chứa các phòng.
 
 ### 🔧 Module Federation (Webpack 5 / Vite):
 
-**Expose**: MFE expose components/modules.
+> **🇻🇳 Module Federation:** Công nghệ cho phép chia sẻ code giữa các app độc lập khi đang chạy.
+
+**Expose (Xuất ra)**: MFE xuất ra components/modules cho app khác dùng.
 
 - Config: `exposes: { './Button': './src/components/Button' }`
+- **Giải thích VN:** Cho phép app khác import component Button của mình
 
-**Consume**: Host import remote modules.
+**Consume (Tiêu thụ)**: Host import modules từ MFE từ xa.
 
 - Config: `remotes: { mfe1: 'mfe1@http://localhost:3001/remoteEntry.js' }`
+- **Giải thích VN:** Kết nối đến app mfe1 ở địa chỉ localhost:3001 để lấy components của nó
 
-**Shared Dependencies**: Share React, libraries → load once (not duplicate).
+**Shared Dependencies (Thư viện dùng chung)**: Chia sẻ React, thư viện → chỉ load 1 lần (không bị trùng lặp).
 
 - Config: `shared: { react: { singleton: true } }`
+- **Giải thích VN:** React chỉ load 1 lần duy nhất (singleton), tất cả MFE dùng chung → tiết kiệm dung lượng
 
-### ♻️ Communication Patterns:
+### ♻️ Communication Patterns (Cách giao tiếp giữa các MFE):
 
-1. **Props/Callbacks**: Parent pass props to child MFE → simple, tightly coupled.
-2. **Custom Events**: `window.dispatchEvent()` → loose coupling.
-3. **State Management**: Shared Zustand/Redux store → sync state across MFEs.
-4. **PubSub**: Event bus (RxJS) → publish/subscribe pattern.
+> **🇻🇳 Các cách để các microfrontend giao tiếp với nhau:**
 
-### 🎯 Multi-Framework Support:
+1. **Props/Callbacks (Truyền props)**: Parent truyền props xuống child MFE → đơn giản nhưng phụ thuộc chặt chẽ (tightly coupled).
 
-- **React + Vue + Angular**: Mỗi MFE dùng framework khác nhau.
-- **Web Components**: Wrap MFEs trong custom elements → framework-agnostic.
+   - **VN:** Giống như cha truyền tiền cho con, đơn giản nhưng con phụ thuộc cha.
+
+2. **Custom Events (Sự kiện tùy chỉnh)**: `window.dispatchEvent()` → ít phụ thuộc (loose coupling).
+
+   - **VN:** Như radio phát sóng, ai muốn nghe thì nghe, không cần biết ai đang phát.
+
+3. **State Management (Quản lý state chung)**: Shared Zustand/Redux store → đồng bộ state giữa các MFEs.
+
+   - **VN:** Giống như bảng thông báo chung, ai cũng thấy và cập nhật được.
+
+4. **PubSub (Publish-Subscribe)**: Event bus (RxJS) → pattern xuất bản/đăng ký.
+   - **VN:** Giống như kênh YouTube: người đăng video không biết ai subscribe, subscriber không biết ai khác đang xem.
+
+### 🎯 Multi-Framework Support (Hỗ trợ nhiều Framework):
+
+> **🇻🇳 Cho phép mỗi team dùng công nghệ khác nhau:**
+
+- **React + Vue + Angular**: Mỗi MFE dùng framework khác nhau (team A React, team B Vue, team C Angular).
+
+  - **VN:** Giống như trong công ty, mỗi phòng ban dùng công cụ khác nhau nhưng vẫn làm việc được với nhau.
+
+- **Web Components**: Bọc MFEs trong custom elements → framework-agnostic (không phụ thuộc framework cụ thể).
+  - **VN:** Giống như ổ cắm điện chuẩn quốc tế, thiết bị nào cũng cắm được.
 
 ### 🔑 Monorepo (Nx / Turborepo):
 
-- **Concept**: 1 repo chứa multiple projects → shared tooling, dependencies.
-- **Benefits**:
-  - Atomic commits across projects.
-  - Shared libraries, utilities.
-  - Consistent tooling (ESLint, Prettier, TypeScript configs).
-  - Dependency graph → build chỉ affected projects.
-- **Tools**: Nx (Angular ecosystem), Turborepo (Vercel), Lerna (legacy).
+> **🇻🇳 Monorepo:** Một kho code chứa nhiều dự án/package, dễ quản lý và chia sẻ.
 
-### ⚠️ Trade-offs:
+- **Concept (Khái niệm)**: 1 repo chứa nhiều projects → dùng chung tooling, dependencies.
 
-| Aspect                   | Monolith              | Microfrontend                       |
-| ------------------------ | --------------------- | ----------------------------------- |
-| **Complexity**           | Low                   | High (orchestration, communication) |
-| **Build Time**           | Slow (1 large app)    | Fast (parallel builds)              |
-| **Deploy**               | All-or-nothing        | Independent per MFE                 |
-| **Team Autonomy**        | Low (shared codebase) | High (own tech stack)               |
-| **Bundle Size**          | Optimized             | Risk of duplication                 |
-| **Developer Experience** | Simple                | Complex (tooling, debugging)        |
+  - **VN:** Giống như 1 tòa nhà chứa nhiều công ty, dùng chung điện nước, bảo vệ, tiện ích.
 
-### 💡 Senior Insights:
+- **Benefits (Lợi ích)**:
 
-- **When to use MFE**: Large teams (10+ devs), independent releases critical, different domains (e-commerce: catalog, checkout, profile).
-- **When NOT to use**: Small teams, simple apps, tight coupling between features.
-- **Module Federation vs Iframe**: MF = shared dependencies, better performance. Iframe = total isolation but clunky UX.
-- **Styling Isolation**: CSS Modules, Shadow DOM, CSS-in-JS (styled-components) → prevent style conflicts.
-- **Routing**: Each MFE handle own routes + Shell sync URL state.
+  - **Atomic commits** across projects: Commit 1 lần thay đổi nhiều projects cùng lúc.
+    - **VN:** Sửa bug ảnh hưởng 3 projects, commit 1 lần xong hết, không sợ quên.
+  - **Shared libraries, utilities**: Chia sẻ code chung (utils, components, configs).
+    - **VN:** Viết 1 lần, tất cả dự án dùng được, không copy-paste.
+  - **Consistent tooling**: ESLint, Prettier, TypeScript configs giống nhau toàn bộ.
+    - **VN:** Mọi dự án format code giống nhau, không lộn xộn.
+  - **Dependency graph**: Build chỉ những projects bị ảnh hưởng (affected projects).
+    - **VN:** Sửa project A, chỉ build A và projects phụ thuộc A, tiết kiệm thời gian.
+
+- **Tools (Công cụ)**: Nx (hệ sinh thái Angular/React), Turborepo (của Vercel), Lerna (cũ, ít dùng).
+
+### ⚠️ Trade-offs (Đánh đổi):
+
+> **🇻🇳 So sánh Monolith (app nguyên khối) vs Microfrontend:**
+
+| Khía cạnh                        | Monolith (Nguyên khối)             | Microfrontend (Chia nhỏ)          |
+| -------------------------------- | ---------------------------------- | --------------------------------- |
+| **Complexity (Độ phức tạp)**     | Thấp (đơn giản)                    | Cao (phải điều phối, giao tiếp)   |
+| **Build Time (Thời gian build)** | Chậm (1 app lớn)                   | Nhanh (build song song nhiều MFE) |
+| **Deploy (Triển khai)**          | Tất cả hoặc không (all-or-nothing) | Độc lập từng MFE                  |
+| **Team Autonomy (Tự chủ team)**  | Thấp (cùng codebase)               | Cao (tech stack riêng)            |
+| **Bundle Size (Kích thước)**     | Tối ưu                             | Rủi ro trùng lặp code             |
+| **Developer Experience**         | Đơn giản                           | Phức tạp (nhiều tool, debug khó)  |
+
+**🇻🇳 Giải Thích:** Monolith đơn giản nhưng chậm và khó scale team. Microfrontend phức tạp nhưng team độc lập, deploy nhanh hơn.
+
+### 💡 Senior Insights (Kinh nghiệm Senior):
+
+> **🇻🇳 Lời khuyên từ Senior Developers:**
+
+- **Khi nào dùng MFE**:
+
+  - Team lớn (10+ devs): Nhiều người làm cùng lúc không conflict.
+  - Cần release độc lập: Team A deploy không cần đợi team B.
+  - Các domain khác nhau: E-commerce có catalog (danh mục), checkout (thanh toán), profile (tài khoản) - mỗi phần độc lập.
+
+- **Khi KHÔNG nên dùng MFE**:
+
+  - Team nhỏ (<5 devs): Overkill, phức tạp thừa.
+  - App đơn giản: Landing page, blog không cần chia nhỏ.
+  - Features phụ thuộc chặt chẽ: Nếu mọi thứ liên quan nhau thì chia ra phức tạp hơn.
+
+- **Module Federation vs Iframe**:
+
+  - MF = chia sẻ dependencies (React load 1 lần), performance tốt hơn.
+  - Iframe = cách ly hoàn toàn nhưng UX kém (scroll lỗi, share state khó).
+
+- **Styling Isolation (Cách ly CSS)**:
+
+  - Dùng CSS Modules, Shadow DOM, hoặc CSS-in-JS để tránh CSS của MFE này ảnh hưởng MFE khác.
+  - **VN:** Giống như mỗi căn hộ sơn màu riêng, không ảnh hưởng nhau.
+
+- **Routing (Điều hướng URL)**:
+  - Mỗi MFE xử lý routes riêng + Shell app đồng bộ URL state chung.
+  - **VN:** Mỗi phòng có cửa riêng, nhưng địa chỉ tòa nhà thống nhất.
 
 ---
 
 ## Q45: WebSocket & Real-Time Streaming - WebSocket, Socket.IO, Centrifuge
 
+> **🇻🇳 Chú Thích:** WebSocket là công nghệ để truyền dữ liệu thời gian thực 2 chiều giữa client-server. Giống như một đường dây điện thoại luôn mở, không cần gọi lại nhiều lần như HTTP thông thường. Thường dùng cho chat, thông báo real-time, dashboard cập nhật trực tiếp.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"WebSocket = persistent bidirectional TCP connection cho real-time data. Socket.IO = WebSocket wrapper với auto-reconnect + rooms. Centrifuge = scalable pub/sub với Redis for enterprise."**
+
+> **🇻🇳 Giải Thích:** WebSocket giữ kết nối liên tục (như gọi điện thoại), Socket.IO giúp tự động kết nối lại khi mất mạng và quản lý phòng chat, Centrifuge là giải pháp cho ứng dụng lớn với hàng nghìn kết nối đồng thời.
 
 ### 🔑 3 Technologies Comparison:
 
@@ -4702,9 +4780,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q46: Build Tools - Vite vs Webpack vs Rollup, SWC vs Babel, Turbopack, esbuild
 
+> **🇻🇳 Chú Thích:** Build tools là công cụ đóng gói và chuyển đổi code. Giống như một nhà máy chế biến: nhận code JavaScript mới nhất (ES2024) và biến thành code mà trình duyệt cũ hiểu được, đồng thời gộp nhiều file thành ít file để tải nhanh hơn.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"Build tools hiện đại chia 2 nhóm: Bundlers (đóng gói - Webpack, Vite, Rollup, esbuild, Turbopack) và Transpilers (chuyển đổi code - Babel, SWC)."**
+
+> **🇻🇳 Giải Thích:** Bundlers gộp nhiều file thành 1-2 file lớn, Transpilers dịch code mới (arrow function, async/await) thành code cũ. Công cụ mới (Vite, esbuild) nhanh hơn vì viết bằng Rust/Go thay vì JavaScript.
 
 ### 📦 Bundlers Comparison:
 
@@ -4772,9 +4854,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q47: Git Workflow & Team Collaboration - Branching Strategy, Merge vs Rebase
 
+> **🇻🇳 Chú Thích:** Git workflow là cách tổ chức làm việc nhóm với Git. Giống như quy tắc giao thông: ai đi đường nào, khi nào hợp nhất code, làm sao để tránh va chạm. Branching strategy là cách chia nhánh code cho hợp lý.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"Git workflow tốt = ít conflicts + dễ review + dễ rollback. Git Flow cho dự án lớn (release theo version), GitHub Flow cho CI/CD (deploy liên tục). Rebase tạo clean history, Merge giữ context. Feature flags deploy code chưa xong mà không ảnh hưởng production."**
+
+> **🇻🇳 Giải Thích:** Git Flow phù hợp app phát hành theo phiên bản (v1.0, v2.0), GitHub Flow cho web app deploy thường xuyên. Merge giữ lịch sử đầy đủ, Rebase làm lịch sử gọn gàng. Feature flags giúp deploy code nhưng tắt tính năng cho đến khi sẵn sàng.
 
 ### 🔑 2 Branching Strategies:
 
@@ -4829,9 +4915,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q48: React 19 Migration Guide - Upgrade từ React 18 sang 19
 
+> **🇻🇳 Chú Thích:** React 19 là phiên bản mới nhất của React (2024) với nhiều tính năng giúp code đơn giản hơn và xử lý async tốt hơn. Actions giúp tự động quản lý trạng thái loading/error khi gọi API, không cần viết tay như trước.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"React 19 thêm Actions (async transitions tự động handle pending/error), new hooks (useActionState, useOptimistic, use), ref as prop (no forwardRef). Breaking: PropTypes removed, createElement → jsx(), StrictMode double render. Migration: npx codemod + manual fixes."**
+
+> **🇻🇳 Giải Thích:** Actions tự động xử lý pending (đang chờ) và error khi gọi API. Hooks mới giúp code ngắn gọn hơn. PropTypes bị xóa - phải dùng TypeScript thay thế. Migration dùng codemod để tự động chuyển đổi phần lớn code.
 
 ### 🔑 New Features:
 
@@ -4899,9 +4989,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q49: System Design - Thiết Kế Hệ Thống Frontend Architecture
 
+> **🇻🇳 Chú Thích:** System Design Frontend là cách thiết kế kiến trúc ứng dụng lớn để đảm bảo mở rộng được, chạy nhanh, và ít lỗi. Giống như thiết kế một tòa nhà: phải tính đến nền móng, cách bố trí phòng, hệ thống điện nước, lối thoát hiểm.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"Frontend system design bao gồm: Architecture patterns (Microfrontends/Monorepo), API layer (BFF, GraphQL), State management (global/local/server), Performance (CDN, lazy load, code splitting), Resilience (error boundaries, circuit breakers, feature flags). Cần balance scalability vs complexity."**
+
+> **🇻🇳 Giải Thích:** Cần cân bằng giữa khả năng mở rộng và độ phức tạp. Microfrontends cho phép nhiều team độc lập nhưng phức tạp hơn. BFF là API gateway chỉ phục vụ frontend. Error boundaries ngăn 1 component lỗi làm sập cả app.
 
 ### 🔑 5 Pillars của Frontend System Design:
 
@@ -4959,9 +5053,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q50: Testing Strategy - Unit, Integration, E2E Testing
 
+> **🇻🇳 Chú Thích:** Testing là viết code để test code, đảm bảo app chạy đúng. Test Pyramid như kim tự tháp: nhiều test đơn giản nhanh ở dưới (Unit), ít test phức tạp chậm ở trên (E2E). Giúp phát hiện bug sớm trước khi user gặp phải.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"Test Pyramid: 60% Unit (fast, isolated - pure functions, hooks), 30% Integration (component interactions, API integration), 10% E2E (critical user flows only). Tools: Vitest/Jest (unit), React Testing Library (integration), Playwright/Cypress (E2E). TDD cho logic, BDD cho features."**
+
+> **🇻🇳 Giải Thích:** Unit test kiểm tra từng function riêng lẻ (nhanh ~1ms), Integration test kiểm tra nhiều component hoạt động cùng nhau (~50ms), E2E test kiểm tra toàn bộ flow người dùng (~30s). Nên có nhiều unit test vì chạy nhanh, ít E2E vì chạy chậm.
 
 ### 🔑 Test Pyramid:
 
@@ -5027,9 +5125,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q51: Performance Monitoring & APM - Application Performance Monitoring
 
+> **🇻🇳 Chú Thích:** Performance Monitoring là theo dõi tốc độ website có nhanh không, user có gặp lỗi gì không. Giống như lắp camera giám sát cửa hàng để biết khách hàng có khó khăn gì, chỗ nào cần cải thiện.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"Performance monitoring tracks Core Web Vitals (LCP, INP, CLS - Google ranking factors) + custom metrics. Tools: Sentry (error tracking + breadcrumbs), DataDog/New Relic (RUM - Real User Monitoring), Lighthouse CI (lab tests + budgets). Set performance budgets (JS < 200KB), alerts (LCP > 2.5s), optimize iteratively."**
+
+> **🇻🇳 Giải Thích:** Core Web Vitals là 3 chỉ số Google dùng để xếp hạng SEO: LCP (tốc độ tải), INP (tốc độ phản hồi click), CLS (độ ổn định hình ảnh không bị nhảy). Sentry bắt lỗi JavaScript, DataDog theo dõi user thật dùng website như thế nào.
 
 ### 🔑 Core Web Vitals (Google Ranking Factors):
 
@@ -5092,9 +5194,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q52: TypeScript Advanced Patterns - Generics, Utility Types, Advanced Patterns
 
+> **🇻🇳 Chú Thích:** TypeScript Advanced Patterns là các kỹ thuật nâng cao giúp code TypeScript linh hoạt và an toàn hơn. Giống như công thức nấu ăn có thể thay đổi nguyên liệu nhưng vẫn đảm bảo món ăn ngon (code vẫn đúng type).
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"TypeScript advanced = Generics (type-safe reusable code), Utility Types (Partial, Pick, Omit, Record...), Mapped Types (transform types), Conditional Types (type-level if-else), Template Literal Types (string manipulation), Type Guards (runtime narrowing), Discriminated Unions (type-safe state machines)."**
+
+> **🇻🇳 Giải Thích:** Generics giúp viết function hoạt động với nhiều kiểu dữ liệu khác nhau nhưng vẫn type-safe. Utility Types là những type có sẵn giúp biến đổi type (Partial làm tất cả field thành optional). Type Guards giúp TypeScript biết được kiểu dữ liệu chính xác trong runtime.
 
 ### 🔧 Core Advanced Concepts:
 
@@ -5171,9 +5277,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q53: CI/CD Pipeline - GitHub Actions, Deployment Automation
 
+> **🇻🇳 Chú Thích:** CI/CD là hệ thống tự động kiểm tra và deploy code. Giống như dây chuyền sản xuất ô tô: code vào → tự động kiểm tra chất lượng → đóng gói → đưa lên production. Giúp deploy nhanh và ít lỗi hơn.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"CI/CD pipeline tự động hóa: Code quality checks (lint, test, type-check) → Build (bundle, optimize) → Deploy (staging/production). GitHub Actions: workflows YAML, matrix builds (test multi Node versions), caching (faster builds). Deploy strategies: Blue-Green (zero downtime), Canary (gradual rollout), Rolling (phased). Secrets management: GitHub Secrets + environment variables."**
+
+> **🇻🇳 Giải Thích:** CI/CD tự động chạy test, kiểm tra code style, build, và deploy mỗi khi push code. Blue-Green deploy có 2 môi trường, chuyển đổi tức thì không downtime. Canary deploy bật dần dần (10% user → 50% → 100%) để giảm rủi ro.
 
 ### 🔑 CI/CD Stages:
 
@@ -5234,9 +5344,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q54: Code Quality & Standards - ESLint, Prettier, Code Review
 
+> **🇻🇳 Chú Thích:** Code Quality là đảm bảo code viết sạch đẹp, nhất quán, ít bug. Giống như quy tắc viết văn: đúng chính tả, dấu câu, trình bày rõ ràng. ESLint tìm lỗi code, Prettier tự động format code đẹp.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"Code quality stack: ESLint (catch bugs + enforce patterns), Prettier (auto-formatting), Husky (pre-commit hooks - run checks before commit), Commitlint (conventional commits - semantic versioning). Code review: Small PRs (<400 lines), clear descriptions (What/Why/How), constructive feedback (suggest alternatives), automated checks pass trước review."**
+
+> **🇻🇳 Giải Thích:** ESLint bắt lỗi tiềm ẩn (biến không dùng, thiếu dependencies). Prettier tự động format code (dấu cách, xuống dòng). Husky chạy check trước khi commit để không push code lỗi. Code review nên nhỏ (<400 dòng) để review kỹ hơn.
 
 ### 🔑 Tooling Stack:
 
@@ -5295,9 +5409,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q55: GraphQL vs REST - API Design, Apollo Client
 
+> **🇻🇳 Chú Thích:** GraphQL và REST là 2 cách thiết kế API. REST giống như menu nhà hàng cố định (endpoint /users trả về hết thông tin user), GraphQL giống như order tự chọn món (client nói rõ cần field nào, server trả đúng đó).
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"GraphQL = single endpoint (`/graphql`), client-driven queries (chỉ lấy fields cần), exact data (no over/under-fetching). REST = multiple endpoints (`/users`, `/posts`), server-driven (backend quyết định response shape). Apollo Client: normalized caching (auto-dedupe), optimistic updates (instant UI), subscriptions (real-time WebSocket). GraphQL tốt cho complex/nested data, REST tốt cho simple CRUD + caching HTTP standard."**
+
+> **🇻🇳 Giải Thích:** GraphQL chỉ cần 1 endpoint, client query fields cần thiết (không thừa không thiếu). REST có nhiều endpoint, dễ cache nhưng hay bị over-fetching (lấy dư data) hoặc under-fetching (phải gọi nhiều lần). Apollo Client tự động cache thông minh.
 
 ### 🔑 GraphQL vs REST:
 
@@ -5353,9 +5471,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q56: Web Accessibility (a11y) - WCAG 2.1, ARIA, Screen Readers
 
+> **🇻🇳 Chú Thích:** Accessibility (a11y - viết tắt) là làm web sử dụng được cho người khuyết tật (mù, điếc, khó vận động). Giống như xây dốc cho xe lăn vào tòa nhà. Quan trọng về pháp lý (ADA law Mỹ) và đạo đức.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"Accessibility đảm bảo mọi người (disabilities, elderly, situational - broken arm) dùng được web. WCAG 2.1 levels: A (minimum), AA (legal requirement - ADA compliance), AAA (ideal). ARIA: roles, states, properties cho custom widgets. Keyboard navigation (Tab, Enter, Esc), color contrast (≥4.5:1), screen reader support (semantic HTML, alt text). Tools: axe, Lighthouse, NVDA/VoiceOver."**
+
+> **🇻🇳 Giải Thích:** WCAG AA là yêu cầu pháp lý tối thiểu ở nhiều nước. Color contrast ≥4.5:1 để người kém thị lực đọc được chữ. Keyboard navigation để người không dùng chuột được. Screen readers đọc website cho người mù, cần semantic HTML và alt text cho ảnh.
 
 ### 🔑 WCAG 2.1 Compliance Levels:
 
@@ -5413,9 +5535,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q57: State Management Comparison - Redux vs Zustand vs Jotai
 
+> **🇻🇳 Chú Thích:** State Management là cách quản lý dữ liệu trong app React. Giống như quản lý kho hàng: cần biết hàng ở đâu, update như thế nào, ai được truy cập. Redux/Zustand/Jotai là 3 thư viện phổ biến để làm việc này.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"State categories: Server state (React Query/SWR - cache, refetch), Global state (Redux/Zustand/Jotai - auth, theme), Local state (useState - forms, UI toggles), URL state (React Router - filters, pagination). Redux = mature + DevTools + middleware, Zustand = simple hooks-based (~1KB), Jotai = atomic granular (~3KB). Chọn based on app complexity + team experience."**
+
+> **🇻🇳 Giải Thích:** Nên phân loại state: Server state (data từ API) dùng React Query, Global state (auth, theme) dùng Redux/Zustand, Local state (form, toggle) dùng useState. Redux phức tạp nhưng mạnh, Zustand đơn giản nhẹ, Jotai linh hoạt cho update chi tiết.
 
 ### 🔑 So Sánh 3 Libraries:
 
@@ -5470,9 +5596,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q58: Networking & Browser Internals - Mạng Nội Bộ Trình Duyệt
 
+> **🇻🇳 Chú Thích:** Browser Networking là cách trình duyệt giao tiếp với server qua internet. Giống như gửi thư: phải tìm địa chỉ (DNS), bắt tay làm quen (TCP handshake), mã hóa (TLS), rồi mới gửi yêu cầu (HTTP request).
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"Browser networking: DNS lookup → TCP handshake → TLS negotiation → HTTP request/response. HTTP/2: Multiplexing (parallel requests 1 connection), Server Push. HTTP/3: QUIC (UDP-based, faster handshake). Browser cache: Memory → Service Worker → HTTP cache → Network. Connection pooling: Reuse TCP connections (6 parallel/domain HTTP/1.1)."**
+
+> **🇻🇳 Giải Thích:** Mỗi request qua 6 bước: DNS (domain → IP), TCP (bắt tay 3 bước), TLS (mã hóa HTTPS), HTTP (gửi request), Server xử lý, trả response. HTTP/2 gửi nhiều request cùng lúc 1 kết nối (nhanh hơn HTTP/1.1). HTTP/3 dùng QUIC nhanh hơn nữa.
 
 ### 🔑 Request Lifecycle:
 
@@ -5527,9 +5657,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q59: CSS Architecture & Modern Styling Approaches
 
+> **🇻🇳 Chú Thích:** CSS Architecture là cách tổ chức CSS cho dự án lớn. Giống như thiết kế nội thất tòa nhà: cần quy chuẩn về màu sắc, khoảng cách, cách đặt tên để nhiều người cùng làm không bị xung đột.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"CSS approaches: BEM (naming convention - `.block__element--modifier`), CSS Modules (scoped auto-generated classes), CSS-in-JS (Styled Components/Emotion - dynamic, colocated, runtime overhead), Tailwind (utility-first - fast dev, small bundle with PurgeCSS). Critical CSS = inline above-fold styles trong `<head>` để fast FCP. Chọn based on: team size, dynamic styling needs, performance priority."**
+
+> **🇻🇳 Giải Thích:** BEM là quy ước đặt tên class (.card\_\_title--active). CSS Modules tự động tạo tên class unique không trùng. CSS-in-JS viết CSS trong JavaScript, dễ làm động (theo props). Tailwind dùng class có sẵn (bg-blue-500) code nhanh, bundle nhỏ nếu dùng PurgeCSS.
 
 ### 🔑 4 Modern Approaches:
 
@@ -5586,9 +5720,13 @@ Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Fe
 
 ## Q60: JavaScript Design Patterns for Frontend Development
 
+> **🇻🇳 Chú Thích:** Design Patterns là các mẫu giải quyết vấn đề phổ biến trong lập trình. Giống như bản vẽ kiến trúc mẫu: có sẵn giải pháp cho các tình huống thường gặp, không cần phát minh lại bánh xe.
+
 ### 🎯 Trả Lời Ngắn Gọn:
 
 **"Essential design patterns: Singleton (1 instance - config, logger), Observer (subscribe changes - event listeners, state), Pub/Sub (decoupled events - analytics, cross-component), Factory (create objects - React.createElement), Module (encapsulation - ES6 modules), Dependency Injection (loose coupling - props, Context). Modern React: Hooks patterns (custom hooks), Compound Components (shared state), Render Props, HOCs."**
+
+> **🇻🇳 Giải Thích:** Singleton đảm bảo chỉ 1 instance (config toàn app). Observer cho phép subscribe thay đổi (giống addEventListener). Pub/Sub cho phép giao tiếp giữa các component không biết nhau. Custom hooks giúp tái sử dụng logic, Compound Components share state giữa parent-children.
 
 ### 🔑 6 Essential Patterns:
 
