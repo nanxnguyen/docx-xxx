@@ -31,349 +31,123 @@ zz# SUMMARY - Senior Frontend Interview Answers (Tiếng Việt)
 
 ## Q01: JavaScript Fundamentals Overview - Tổng Quan Nền Tảng JavaScript
 
-### 🎯 Trả Lời Ngắn Gọn (Cho Interviewer):
+### 🎯 Trả Lời Interviewer (30 giây):
 
-**"JavaScript là ngôn ngữ lập trình đơn luồng (single-threaded), chạy bất đồng bộ (asynchronous) nhờ Event Loop, được thực thi trên V8 engine (Chrome) hoặc SpiderMonkey (Firefox), cho phép xử lý I/O không chặn (non-blocking I/O)."**
+**"JavaScript là ngôn ngữ đơn luồng (single-threaded) nhưng hỗ trợ xử lý bất đồng bộ (async) nhờ Event Loop. Engine phổ biến: V8 (Chrome/Node.js), SpiderMonkey (Firefox). JavaScript có 8 kiểu dữ liệu (7 primitives + 1 object), quản lý bộ nhớ tự động qua Garbage Collection (mark-and-sweep), và hỗ trợ OOP qua prototype chain."**
 
-### 📖 Giải Thích Chi Tiết (Deep Dive):
+### 📖 Giải Thích Cốt Lõi (Dành cho Technical Discussion):
 
-JavaScript được thiết kế để chạy trên trình duyệt (browser) nhưng giờ cũng chạy trên server (Node.js). Dù là đơn luồng (chỉ có 1 Call Stack), JavaScript vẫn xử lý được nhiều tác vụ cùng lúc nhờ **Event Loop** phối hợp với **Web APIs** (setTimeout, fetch, DOM events).
+**Tại sao single-threaded nhưng vẫn xử lý được async?**
 
-**Tại sao single-threaded nhưng vẫn async?**
+JavaScript chỉ có **1 Call Stack** (ngăn xếp thực thi code đồng bộ), nhưng browser cung cấp **Web APIs** chạy trên threads riêng (setTimeout, fetch, DOM events). **Event Loop** điều phối giữa Call Stack và các Task Queues (Microtask Queue cho Promises, Macrotask Queue cho setTimeout/I/O).
 
-- **Main Thread**: Chỉ có 1 thread chạy JavaScript code.
-- **Web APIs**: Browser cung cấp APIs chạy trên threads riêng (C++ threads).
-- **Event Loop**: Điều phối giữa Call Stack và Task Queues.
+### 🔑 5 Trụ Cột Kỹ Thuật (Technical Pillars):
 
-### 🔑 5 Trụ Cột Nền Tảng:
+#### **1. Kiểu Dữ Liệu & Bộ Nhớ (Data Types & Memory)**
 
-#### **1. Kiểu Dữ Liệu & Quản Lý Bộ Nhớ (Data Types & Memory Management)**
+- **7 Primitives** (immutable): `number`, `string`, `boolean`, `null`, `undefined`, `symbol`, `bigint`
+- **1 Reference**: `object` (arrays, functions, dates...)
+- **Stack**: Lưu primitives và references (nhanh, auto cleanup)
+- **Heap**: Lưu objects thực tế (chậm hơn, Garbage Collector quản lý)
+- **GC**: Mark-and-sweep algorithm - đánh dấu objects reachable, xóa objects không reachable
 
-**Chú thích tiếng Việt:**
+#### **2. Execution Context & Scope (Ngữ Cảnh & Phạm Vi)**
 
-- **7 kiểu nguyên thủy (Primitives)**:
-  - `number` (số: 42, 3.14, NaN, Infinity)
-  - `string` (chuỗi ký tự: "hello", 'world')
-  - `boolean` (đúng/sai: true, false)
-  - `null` (rỗng có chủ đích - developer set)
-  - `undefined` (chưa gán giá trị - default)
-  - `symbol` (định danh duy nhất - ES6)
-  - `bigint` (số nguyên cực lớn - ES2020)
-- **1 kiểu phức tạp**: `object` (đối tượng: objects, arrays, functions, dates, RegExp...)
+- **Call Stack**: LIFO structure, track execution context
+- **Scope Chain**: Global → Function → Block scope (tìm biến từ trong ra ngoài)
+- **Hoisting**: Khai báo được "nâng" lên đầu scope
+  - `var`: hoisted + initialized = `undefined`
+  - `let/const`: hoisted nhưng **TDZ** (Temporal Dead Zone) → ReferenceError nếu access trước khai báo
+  - `function declaration`: hoisted cả khai báo lẫn implementation
+- **Closure**: Function nhớ lexical scope bên ngoài (private variables, factory functions)
 
-**Cách hoạt động bộ nhớ:**
+#### **3. Event Loop & Async (Vòng Lặp Sự Kiện)**
 
-- **Stack (Ngăn xếp)**:
+**Luồng xử lý:** Call Stack → Microtasks → Render → 1 Macrotask → lặp lại
 
-  - Lưu: Primitives và references (tham chiếu) đến objects.
-  - Đặc điểm: Nhanh, kích thước cố định, LIFO (Last In First Out - vào sau ra trước).
-  - Tự động quản lý (auto cleanup khi function return).
+- **Microtask Queue** (ưu tiên cao): `Promise.then/catch/finally`, `queueMicrotask()`, `MutationObserver`
+  - Chạy **HẾT** microtasks trước khi chuyển sang macrotask
+- **Macrotask Queue** (ưu tiên thấp): `setTimeout`, `setInterval`, I/O operations
+  - Chỉ chạy **1** macrotask mỗi vòng lặp
 
-- **Heap (Đống)**:
-  - Lưu: Objects thực tế (data structure phức tạp).
-  - Đặc điểm: Chậm hơn, kích thước động (dynamic), quản lý bởi Garbage Collector.
-  - Không tự động cleanup → cần GC.
+**Async Evolution:** Callbacks (ES5) → Promises (ES6) → Async/Await (ES2017)
 
-**Garbage Collection (Thu gom rác - Dọn dẹp bộ nhớ tự động):**
+#### **4. OOP & Prototypes (Lập Trình Hướng Đối Tượng)**
 
-- **Mark-and-Sweep Algorithm** (Thuật toán đánh dấu và quét):
-  1. **Mark phase (Giai đoạn đánh dấu)**: Đánh dấu tất cả objects còn "reachable" (có thể truy cập từ root - global scope, call stack).
-  2. **Sweep phase (Giai đoạn quét)**: Quét và giải phóng (free) các objects không được đánh dấu.
-- Tự động chạy khi heap gần đầy.
-- Không thể điều khiển trực tiếp (không có API để trigger GC).
+- **Prototype Chain**: Cơ chế kế thừa của JavaScript (mỗi object có `[[Prototype]]`)
+- **ES6 Classes**: Syntactic sugar cho prototypes (dễ đọc hơn, không phải class-based thực sự)
+- **`this` Binding** (4 quy tắc ưu tiên):
+  1. **new binding**: `new Fn()` → `this` = new object
+  2. **Explicit binding**: `.call()`, `.apply()`, `.bind()` → `this` = specified object
+  3. **Implicit binding**: `obj.method()` → `this` = obj
+  4. **Default binding**: standalone call → `this` = global/undefined (strict mode)
 
-#### **2. Execution Context & Scope (Ngữ cảnh thực thi & Phạm vi)**
-
-**Call Stack (Ngăn xếp gọi):**
-
-- Cấu trúc dữ liệu LIFO theo dõi vị trí thực thi code.
-- Mỗi lần gọi function → push execution context lên stack.
-- Function return → pop context ra khỏi stack.
-- **Stack Overflow**: Xảy ra khi recursion không có điểm dừng (infinite recursion).
-
-**Scope Chain (Chuỗi phạm vi - Nơi tìm biến):**
-
-- **Global Scope** (Phạm vi toàn cục): Biến khai báo ngoài tất cả functions.
-  - Browser: `window` object.
-  - Node.js: `global` object.
-- **Function Scope** (Phạm vi hàm): Biến trong function, chỉ truy cập được trong function đó (`var`).
-- **Block Scope** (Phạm vi khối): Biến trong `{}` (if, for, while...), chỉ truy cập trong block (`let`, `const`).
-
-**Hoisting (Nâng khai báo):**
-
-- JavaScript "nâng" (hoist) khai báo lên đầu scope trước khi execute.
-- **`var`**: Hoisted + initialized = `undefined` → có thể access trước khai báo (nhưng = undefined).
-- **`let/const`**: Hoisted nhưng KHÔNG initialized → **TDZ (Temporal Dead Zone)** → ReferenceError.
-- **`function declaration`**: Hoisted cả khai báo lẫn giá trị → có thể gọi trước khi khai báo.
-
-**Closure (Bao đóng - Hàm nhớ scope bên ngoài):**
-
-- Function "nhớ" và truy cập được biến từ outer scope ngay cả khi outer function đã return.
-- **Cơ chế**: Inner function giữ reference đến `[[Scope]]` (lexical environment) của outer function.
-- **Use case**: Private variables, factory functions, callbacks.
-
-#### **3. Bất Đồng Bộ (Asynchronous) - Event Loop**
-
-**Luồng xử lý: Call Stack → Web APIs → Task Queues → Event Loop**
-
-**Microtask Queue (Hàng đợi vi nhiệm vụ - ưu tiên cao):**
-
-- Các loại: `Promise.then()`, `Promise.catch()`, `Promise.finally()`, `queueMicrotask()`, `MutationObserver`.
-- Đặc điểm: Chạy **TẤT CẢ** microtasks trước khi chuyển sang macrotask.
-- Thứ tự: FIFO (First In First Out - vào trước ra trước).
-
-**Macrotask Queue (Hàng đợi vĩ nhiệm vụ - ưu tiên thấp):**
-
-- Các loại: `setTimeout()`, `setInterval()`, `setImmediate()` (Node.js), I/O operations, UI rendering events.
-- Đặc điểm: Chỉ chạy **1** macrotask mỗi vòng lặp Event Loop.
-- Thứ tự: FIFO.
-
-**Event Loop Algorithm (Thuật toán vòng lặp sự kiện):**
-
-```
-1. Execute all synchronous code in Call Stack (Chạy hết code đồng bộ)
-2. Execute ALL microtasks (Chạy HẾT microtasks)
-3. Render UI if needed (Browser only - Vẽ lại giao diện nếu cần)
-4. Execute ONE macrotask (Chỉ chạy 1 macrotask)
-5. Repeat từ bước 1 (Lặp lại mãi mãi)
-```
-
-**Async Patterns Evolution (Tiến hóa mẫu bất đồng bộ):**
-
-- **Callbacks** (ES5): Đơn giản nhưng → Callback Hell (kim tự tháp hủy diệt).
-- **Promises** (ES6): Chaining với `.then()`, xử lý lỗi tốt với `.catch()`.
-- **Async/Await** (ES2017): Syntax sugar của Promises, code đọc như đồng bộ (synchronous-like).
-
-#### **4. OOP & Prototypes (Lập trình hướng đối tượng & Nguyên mẫu)**
-
-**Prototype Chain (Chuỗi nguyên mẫu - Cơ chế kế thừa trong JS):**
-
-- Mỗi object có internal property `[[Prototype]]` (truy cập qua `__proto__` hoặc `Object.getPrototypeOf()`).
-- Khi truy cập property không có trong object → tìm trong prototype chain.
-- Chuỗi kết thúc tại `Object.prototype` (có `[[Prototype]]: null`).
-
-**Class (ES6) - Syntactic Sugar:**
-
-- `class` chỉ là cú pháp đẹp hơn cho prototype-based inheritance.
-- Internally vẫn dùng prototypes.
-- Support: `extends` (kế thừa), `super()` (gọi parent constructor), `static` methods, `#private` fields (ES2022).
-
-**`this` Binding (4 quy tắc - theo thứ tự ưu tiên):**
-
-1. **new Binding**: `new Fn()` → `this` = new object được tạo.
-2. **Explicit Binding**: `fn.call(obj)`, `fn.apply(obj)`, `fn.bind(obj)` → `this` = obj.
-3. **Implicit Binding**: `obj.method()` → `this` = obj.
-4. **Default Binding**: Standalone function call → `this` = global object (hoặc undefined trong strict mode).
-
-#### **5. Modern JavaScript (ES6+ Features)**
+#### **5. Modern JavaScript (ES6+)**
 
 **Key Features:**
 
-- **`let/const`**: Block scope, TDZ, không hoisting như `var`.
-- **Arrow Functions**: Lexical `this` (inherit từ outer scope), không có `arguments`, không dùng làm constructor.
-- **Destructuring**: `const {name, age} = user`, `const [a, b] = arr`.
-- **Spread/Rest**: `...` operator cho arrays/objects/function params.
-- **Template Literals**: `` `Hello ${name}` `` (multi-line, interpolation).
-- **Modules**: `import/export`, static analysis, tree-shaking.
-- **Classes**: OOP syntax (syntactic sugar).
-- **Promises & Async/Await**: Modern async programming.
-- **Default Parameters**: `function fn(a = 1, b = 2)`.
-- **Optional Chaining** (ES2020): `user?.address?.city` (safe navigation).
-- **Nullish Coalescing** (ES2020): `value ?? 'default'` (chỉ check null/undefined, khác `||`).
+- **Block scope**: `let/const` thay thế `var`
+- **Arrow functions**: Lexical `this`, không có `arguments`, không dùng làm constructor
+- **Destructuring**: `const {name} = obj`, `const [a, b] = arr`
+- **Spread/Rest**: `...` operator
+- **Template literals**: `` `Hello ${name}` ``
+- **Modules**: `import/export` (static analysis → tree-shaking)
+- **Optional Chaining**: `obj?.prop?.nested` (ES2020)
+- **Nullish Coalescing**: `value ?? 'default'` (chỉ check null/undefined, ES2020)
 
-### ✅ Best Practices (Thực hành tốt nhất):
+### ⚠️ Lỗi Thường Gặp (Common Mistakes):
 
-1. **Luôn dùng `const` by default, chỉ dùng `let` khi cần reassign, tránh `var`**.
+1. **Mutate React state trực tiếp**: `state.arr.push(item)` → không trigger re-render
+   - ✅ Dùng: `setState({arr: [...state.arr, item]})`
+2. **Quên return trong arrow function**: `() => { value }` → return undefined
+   - ✅ Dùng: `() => value` hoặc `() => ({ key: value })`
+3. **Không cleanup event listeners/timers** → memory leaks
+4. **`this` mất context khi pass method**: `setTimeout(obj.method, 1000)` → `this` undefined
+   - ✅ Dùng: `setTimeout(() => obj.method(), 1000)`
+5. **Dùng `==` thay vì `===`** → type coercion bugs (`"0" == 0` → true)
+6. **Không hiểu falsy values**: `0`, `""`, `null`, `undefined`, `false`, `NaN` đều là falsy
+7. **Blocking Event Loop** với sync operations nặng → UI freeze
+   - ✅ Dùng Web Workers hoặc chia nhỏ task với `setTimeout`
+8. **Không handle Promise rejections** → unhandled rejection warnings
 
-   - _Lý do_: `const` ngăn chặn reassignment vô tình, `let` có block scope an toàn hơn `var` (function scope).
-   - _Khi nào dùng `let`_: Counters trong loops, biến cần reassign.
+### 💡 Senior Insights (Kiến Thức Nâng Cao):
 
-2. **Dùng `===` thay vì `==` để so sánh**.
+**V8 Engine Optimization:**
 
-   - _Lý do_: `===` strict equality không chuyển đổi kiểu tự động → tránh bugs.
-   - _Exception_: `value == null` để check cả null và undefined cùng lúc.
+- **Hidden Classes**: V8 tạo hidden class cho objects có cùng "shape" → khởi tạo properties theo thứ tự nhất quán để optimize
+- **Inline Caching**: Cache property lookups cho faster access
+- **JIT Compilation**: Hot code (chạy nhiều lần) được compile thành machine code
 
-3. **Cleanup event listeners và timers khi component unmount**.
+**Memory Leak Patterns:**
 
-   - _Lý do_: Tránh memory leaks (rò rỉ bộ nhớ).
-   - _Cách làm_: Save reference → remove listener, clear timer.
+- Global variables không cần thiết (không bao giờ GC)
+- Detached DOM nodes (removed khỏi DOM nhưng còn reference trong JS)
+- Timers không clear (`setInterval` giữ reference mãi mãi)
+- Closures giữ large objects (closure reference toàn bộ outer scope)
 
-4. **Dùng immutable methods cho arrays/objects** (spread, map, filter thay vì push, splice).
+**Performance Tips:**
 
-   - _Lý do_: Dễ debug, tránh side effects, phù hợp với React/Redux.
-   - _Pattern_: `[...arr, item]` thay vì `arr.push(item)`.
+- `for` loop nhanh nhất, `for...of` readable, `forEach` chậm (function call overhead)
+- Avoid `delete` operator → deoptimize object trong V8 (dùng `obj.prop = undefined`)
+- String concatenation: Template literals optimize tốt trong modern browsers
 
-5. **Dùng arrow functions cho callbacks** để giữ `this` context.
+**Security:**
 
-   - _Lý do_: Arrow function không tạo `this` riêng, inherit từ outer scope.
-   - _Pattern_: `setTimeout(() => this.method(), 1000)`.
-
-6. **Tránh blocking main thread** - dùng Web Workers cho heavy computation.
-
-   - _Lý do_: Main thread bị block → UI freeze (đóng băng), UX tệ.
-   - _Use case_: Image processing, data parsing, complex calculations.
-
-7. **Dùng TypeScript** cho large projects để có type safety.
-
-   - _Lý do_: Catch lỗi lúc compile time, không phải runtime → ít bugs production.
-   - _Trade-off_: Learning curve, setup complexity.
-
-8. **Enable strict mode** (`'use strict';`) ở đầu file/function.
-
-   - _Lý do_: Bắt lỗi thường gặp sớm hơn (vd: gán giá trị cho undeclared variable).
-   - _Benefit_: Prevent accidental globals, eliminate silent errors.
-
-9. **Prefer declarative over imperative code**.
-
-   - _Declarative_: `arr.map(x => x * 2)` (WHAT you want).
-   - _Imperative_: `for` loop với mutations (HOW to do it).
-   - _Lý do_: Easier to read, test, maintain.
-
-10. **Use meaningful variable names** (không viết tắt quá mức).
-    - ❌ `const d = new Date()`, `const u = getUser()`.
-    - ✅ `const currentDate = new Date()`, `const currentUser = getUser()`.
-
-### ❌ Common Mistakes (Lỗi thường gặp - Chi tiết):
-
-1. **Mutate objects/arrays trực tiếp trong React state**.
-
-   - ❌ **Sai**: `state.arr.push(item); setState(state);`
-   - ✅ **Đúng**: `setState({arr: [...state.arr, item]});`
-   - _Vì sao sai_: React compare reference, cùng reference → không re-render.
-
-2. **Quên `return` trong arrow function khi dùng block `{}`**.
-
-   - ❌ **Sai**: `const fn = () => { value }` (không return gì, return undefined).
-   - ✅ **Đúng**: `const fn = () => value` hoặc `const fn = () => ({ value })`.
-   - _Note_: Dùng `()` để return object literal.
-
-3. **Closure memory leaks - không cleanup event listeners**.
-
-   - ❌ **Sai**: `element.addEventListener('click', handler);` mà không remove.
-   - ✅ **Đúng**: `element.removeEventListener('click', handler);` khi unmount.
-   - _Pattern_: Save handler reference để remove sau.
-
-4. **`this` mất context khi pass method làm callback**.
-
-   - ❌ **Sai**: `setTimeout(obj.method, 1000);` → `this` = undefined/window.
-   - ✅ **Đúng**: `setTimeout(() => obj.method(), 1000);` hoặc `obj.method.bind(obj)`.
-   - _Lý do_: Method không còn context của object khi pass alone.
-
-5. **Dùng `==` thay vì `===`**.
-
-   - ❌ **Sai**: `"0" == 0` → true (type coercion), `null == undefined` → true.
-   - ✅ **Đúng**: `"0" === 0` → false, `null === undefined` → false.
-   - _Exception_: `value == null` để check cả null và undefined.
-
-6. **Không hiểu falsy values**.
-
-   - **Falsy**: `0`, `""`, `null`, `undefined`, `false`, `NaN`, `0n` (BigInt zero), `-0`.
-   - **Truthy**: Tất cả giá trị khác (kể cả `"0"`, `"false"`, `[]`, `{}`).
-   - ❌ **Sai**: `if (value)` → false khi value = 0 (nhưng 0 có thể là valid value).
-   - ✅ **Đúng**: `if (value !== null && value !== undefined)` hoặc `if (value != null)`.
-
-7. **Quên async functions luôn return Promise**.
-
-   - ❌ **Sai**: `async function fn() { return 1; }; fn() === 1` → false.
-   - ✅ **Đúng**: `async function fn() { return 1; }; await fn() === 1` → true.
-   - _Note_: Phải `await` để lấy value, không await → nhận Promise object.
-
-8. **Blocking Event Loop với synchronous heavy operations**.
-
-   - ❌ **Sai**: Long-running loop trong main thread → UI freeze.
-   - ✅ **Đúng**: Chia nhỏ task với `setTimeout` hoặc dùng Web Worker.
-
-9. **Không handle Promise rejections**.
-
-   - ❌ **Sai**: `fetch(url).then(...)` không có `.catch()` → unhandled rejection.
-   - ✅ **Đúng**: `fetch(url).then(...).catch(err => handleError(err))`.
-
-10. **Global variables pollution**.
-    - ❌ **Sai**: Khai báo biến global không cần thiết.
-    - ✅ **Đúng**: Wrap trong IIFE, modules, hoặc dùng `const/let` trong scope.
-
-### 🔬 Deep Dive Insights (Kiến thức chuyên sâu):
-
-#### **1. V8 Engine Optimization (Tối ưu hóa của V8):**
-
-- **Hidden Classes (Lớp ẩn)**:
-
-  - V8 tạo hidden class cho objects có cùng "shape" (cùng properties theo thứ tự).
-  - Objects cùng hidden class → optimize property access.
-  - _Tip_: Khởi tạo object properties theo thứ tự nhất quán để V8 optimize.
-
-- **Inline Caching**:
-
-  - Cache kết quả property lookups.
-  - Lần sau access cùng property → dùng cached result (faster).
-
-- **JIT Compilation (Just-In-Time Compilation)**:
-  - Compile "hot code" (code chạy nhiều lần) thành machine code.
-  - **Ignition** (interpreter) → **TurboFan** (optimizing compiler).
-  - _Note_: Code run once → interpreted, code run nhiều → compiled.
-
-#### **2. Memory Leaks Patterns (Mẫu rò rỉ bộ nhớ):**
-
-- **Global variables không cần thiết**: Không bao giờ bị GC.
-- **Detached DOM nodes**: DOM nodes removed khỏi document nhưng vẫn có reference trong JS.
-- **Timers không clear**: `setInterval` không clear → callback giữ reference đến outer scope mãi.
-- **Closures giữ large objects**: Closure reference toàn bộ outer scope (kể cả biến không dùng).
-- **Event listeners không remove**: Giữ reference đến DOM nodes và handlers.
-
-**Cách detect memory leaks:**
-
-- Chrome DevTools → Memory tab → Take Heap Snapshot.
-- So sánh snapshots trước/sau action → xem objects nào tăng.
-
-#### **3. Performance Tips:**
-
-- **Object property access**: Faster với primitives, slower với nested objects.
-- **Array iteration**: `for` loop nhanh nhất, `for...of` readable, `forEach` chậm (function call overhead).
-- **String concatenation**: Template literals optimize tốt trong modern browsers, tránh `+` trong loop.
-- **Avoid `delete` operator**: Làm object deoptimize trong V8, prefer set `undefined`.
-
-#### **4. Security Considerations (Bảo mật):**
-
-- **XSS (Cross-Site Scripting)**:
-
-  - Sanitize user inputs trước khi render (dùng DOMPurify library).
-  - Không bao giờ dùng `innerHTML` với user input.
-
-- **CSP (Content Security Policy)**:
-
-  - HTTP headers hạn chế scripts được phép chạy.
-  - Prevent inline scripts, eval(), unsafe sources.
-
-- **eval() is evil**:
-  - Không bao giờ dùng `eval()` với user input → code injection risk.
-  - Alternatives: `JSON.parse()`, `Function()` constructor (safer).
-
-#### **5. Module System Evolution:**
-
-| System         | Year | Syntax                     | Load   | Browser | Use Case              |
-| -------------- | ---- | -------------------------- | ------ | ------- | --------------------- |
-| **IIFE**       | ES5  | `(function(){})()`         | Inline | ✅      | Private scope         |
-| **CommonJS**   | 2009 | `require()/module.exports` | Sync   | ❌      | Node.js               |
-| **AMD**        | 2010 | `define()/require()`       | Async  | ✅      | Browser (RequireJS)   |
-| **ES Modules** | ES6  | `import/export`            | Async  | ✅      | Modern (tree-shaking) |
-
-**ES Modules benefits:**
-
-- Static analysis → tree-shaking (remove unused code).
-- Native browser support (no bundler needed).
-- Better developer experience (named exports, clear dependencies).
+- **XSS**: Sanitize user input (DOMPurify), không dùng `innerHTML` với user data
+- **CSP**: Content Security Policy headers ngăn inline scripts
+- **eval() is evil**: Không bao giờ eval user input → code injection
 
 ---
 
 ## Q02: Data Types & Memory Management - Kiểu Dữ Liệu & Quản Lý Bộ Nhớ
 
-### 🎯 Trả Lời Ngắn Gọn:
+### 🎯 Trả Lời Interviewer (30 giây):
 
-**"JavaScript có 8 kiểu dữ liệu: 7 nguyên thủy (primitives - immutable/không thay đổi được) + 1 phức tạp (object - mutable/thay đổi được). Primitives lưu trong Stack theo giá trị (by value), Objects lưu trong Heap theo tham chiếu (by reference)."**
+**"JavaScript có 8 kiểu dữ liệu: 7 primitives (immutable - không thay đổi được: `number`, `string`, `boolean`, `null`, `undefined`, `symbol`, `bigint`) + 1 reference type (mutable: `object`). Primitives lưu trong Stack by value, objects lưu trong Heap by reference. Bộ nhớ được quản lý tự động qua Garbage Collection (mark-and-sweep algorithm)."**
 
-### 📖 Giải Thích Chi Tiết (Deep Dive):
+### 📖 Giải Thích Cốt Lõi:
 
-JavaScript là **dynamically typed language** (ngôn ngữ kiểu động) - không cần khai báo kiểu, kiểu được xác định lúc runtime. Điều này linh hoạt nhưng dễ gây bugs → nên dùng TypeScript cho large projects.
+JavaScript là **dynamically typed** - kiểu xác định lúc runtime, không cần khai báo trước. Điều này linh hoạt nhưng dễ bugs → dùng TypeScript cho large projects.
 
 #### **📦 Primitive vs Reference Types (Nguyên thủy vs Tham chiếu):**
 
@@ -779,12 +553,6 @@ JavaScript là **dynamically typed language** (ngôn ngữ kiểu động) - kh�
 - **Shallow Size**: Memory của object itself.
 - **Retained Size**: Memory sẽ được free nếu object bị GC (bao gồm references).
 - **Distance**: Số bước từ root đến object (càng xa càng có thể leak).
-
----
-
-> **💡 Tổng hợp**: Primitive (Stack, by value) vs Reference (Heap, by reference) | Falsy/Truthy values | `==` (coercion) vs `===` (strict) | `null` (intentional) vs `undefined` (default) | Immutable vs Mutable | Shallow (top-level) vs Deep Copy (recursive) | Type Checking methods | Mark-and-Sweep GC | Memory Leak patterns | WeakMap/WeakSet for auto cleanup
-
----
 
 ## Q03: ES5 vs ES6+ Features - Lịch Sử & Tiến Hóa JavaScript
 
@@ -3738,198 +3506,367 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 
 ---
 
-## Q31: Next.js Workflow & Version Comparison - Next.js 14 vs 15 vs 16
+## Q31: Next.js Workflow & Version Comparison - Next.js 14 vs 15 vs 16 (So Sánh Phiên Bản)
 
-### 🎯 Trả Lời Ngắn Gọn:
+### 🎯 Trả Lời Ngắn Gọn (2-3 phút):
 
-**"Next.js evolution: Pages Router (v12-) → App Router (v13+). Next.js 14: Stable App Router, Server Actions, Turbopack beta. Next.js 15: Turbopack stable, Partial Pre-rendering (PPR), React 19 support. Version 16: TBD future features."**
+**"Next.js evolution (tiến hóa): Pages Router (v12 trở về trước) → App Router (v13+). Next.js 14: Stable App Router, Server Actions, Turbopack beta (5x nhanh hơn). Next.js 15: Turbopack stable (ổn định), Partial Pre-rendering (PPR - render 1 phần), React 19 support. Version 16: TBD (chưa rõ - tương lai)."**
 
-### 📊 Version Comparison:
+### 📊 So Sánh Từng Phiên Bản (Timeline):
 
-**Next.js 13 (Oct 2022):**
+**Next.js 13 (Oct 2022 - Bước Ngoặt Lớn):**
 
-- App Router beta (React Server Components)
-- Nested layouts, streaming SSR
-- New `app/` directory structure
+- **App Router beta** - React Server Components (kiến trúc mới)
+- **Nested layouts** - Layouts lồng nhau (share UI across pages)
+- **Streaming SSR** - Render từng phần (progressive)
+- **New `app/` directory** - Cấu trúc thư mục mới (khác `pages/`)
 
-**Next.js 14 (Nov 2023):**
+**Next.js 14 (Nov 2023 - Cải Thiện Performance):**
 
-- Turbopack beta (Rust-based bundler, 5x faster HMR)
-- Server Actions stable (call server from client)
-- Partial Pre-rendering (PPR) experimental
+- **Turbopack beta** - Rust-based bundler, 5x faster HMR (Hot Module Replacement)
+- **Server Actions stable** - Call server functions từ client (không cần API routes)
+- **Partial Pre-rendering (PPR) experimental** - Hybrid static + dynamic
+- **Improved dev mode** - Faster refresh, better error messages
 
-**Next.js 15 (Oct 2024):**
+**Next.js 15 (Oct 2024 - Maturity & React 19):**
 
-- **Turbopack stable** (replace Webpack for dev)
-- **React 19 support** (Actions, useActionState, use())
-- PPR stable → hybrid static + dynamic rendering
-- Improved caching strategies
+- **Turbopack stable** ✅ - Replace Webpack hoàn toàn cho dev mode
+- **React 19 support** ✅ - Actions, `useActionState`, `use()` hook
+- **PPR stable** ✅ - Hybrid static shell + dynamic holes (best of both worlds)
+- **Improved caching strategies** - Fine-grained control, better revalidation
 
-### 🔑 Key Features:
+### 🔑 Key Features Chi Tiết:
 
-**App Router Advantages:**
+**App Router Advantages (Ưu Điểm App Router):**
 
-- **Server Components**: Zero JS bundle for non-interactive components
-- **Streaming**: Progressive rendering, faster TTFB
-- **Nested Layouts**: Shared UI persists across navigations
-- **Parallel Routes**: Render multiple pages in same layout
+- **Server Components** (RSC):
 
-**Pages Router (Legacy):**
+  - Zero JS bundle cho non-interactive components
+  - Chỉ HTML được gửi → faster load, smaller bundle
 
-- Simpler mental model
-- Wider ecosystem (older tutorials)
-- Migration path to App Router exists
+- **Streaming** (Render từng phần):
 
-### ⚠️ Common Mistakes:
+  - Progressive rendering với Suspense boundaries
+  - Faster TTFB (Time To First Byte) - user thấy content sớm hơn
 
-- Mix Pages + App Router haphazardly → confusion (plan migration strategy)
-- Use Client Components for everything → miss Server Component benefits
-- Aggressive caching without revalidation → stale data
-- Not understanding streaming → layout shifts (CLS issues)
+- **Nested Layouts** (Layouts lồng nhau):
 
-### 💡 Senior Insights:
+  - Shared UI persists across navigations (không re-render)
+  - Layout hierarchy: `app/layout.js` → `app/dashboard/layout.js`
 
-- **Turbopack**: 5-10x faster HMR than Webpack (large projects benefit most)
-- **PPR (Partial Pre-rendering)**: Static shell + dynamic holes → best of both worlds
-- **Migration**: Incremental (add `app/` alongside `pages/`), route-by-route
-- **React 19 alignment**: Next.js 15+ optimized for React 19 features (Actions, Suspense)
+- **Parallel Routes** (Routes song song):
+  - Render multiple pages simultaneously trong same layout
+  - Ví dụ: Dashboard sidebar + main content load independently
 
----
+**Pages Router (Legacy - Cũ nhưng vẫn support):**
 
-## Q32: AG Grid - Enterprise Data Grid Performance & Best Practices
+- **Simpler mental model** - Dễ hiểu hơn cho beginners
+- **Wider ecosystem** - Nhiều tutorials, examples cũ dùng Pages Router
+- **Migration path** exists - Có thể migrate từ từ sang App Router
 
-### 🎯 Trả Lời Ngắn Gọn:
+### ⚠️ Lỗi Thường Gặp:
 
-**"AG Grid = enterprise React data grid với 1000+ features. Performance keys: Row virtualization (render visible rows only), `getRowId` (stable row IDs), `applyTransactionAsync` (batch updates), Column virtualization. Handle 100k+ rows smoothly."**
+- **Mix Pages + App Router haphazardly** → confusion (rối loạn)
+  - ✅ Plan migration strategy: Migrate từng route một, không làm cùng lúc
+- **Dùng Client Components cho everything** → miss Server Component benefits
+  - ✅ Dùng Server Components mặc định, chỉ dùng Client Components khi cần (interactivity)
+- **Aggressive caching không revalidation** → stale data (dữ liệu cũ)
+  - ✅ Set `revalidate` phù hợp hoặc dùng `revalidatePath()` khi data thay đổi
+- **Không hiểu streaming** → layout shifts (CLS issues - content nhảy)
+  - ✅ Dùng Suspense boundaries đúng, set skeleton placeholders
 
-### 🚀 Performance Optimization:
+### 💡 Kiến Thức Senior:
 
-**Core Patterns:**
+- **Turbopack** (Rust-based):
 
-1. **Row Virtualization**: Render only visible rows (~30-50 rows) instead of all (10k+ rows)
-2. **`getRowId`**: Provide stable row IDs → efficient updates, no full re-render
-3. **`applyTransactionAsync`**: Batch add/update/remove operations → single render
-4. **Column Virtualization**: Render only visible columns (horizontal scrolling with 100+ cols)
-5. **Suppress Animations**: Disable animations for bulk updates (`suppressAnimationFrame`)
+  - 5-10x faster HMR than Webpack (projects lớn hưởng lợi nhất)
+  - Incremental compilation (chỉ rebuild phần thay đổi)
+  - Built-in CSS, image optimization
 
-**Real-Time Updates:**
+- **PPR (Partial Pre-rendering)**:
 
-- `applyTransaction({ add: [...], update: [...], remove: [...] })` - delta updates
-- Cell flashing on value change (visual feedback)
-- Server-Side Row Model for millions of rows (lazy loading chunks)
+  - Static shell (layout, navigation) + dynamic holes (user data)
+  - Best of both worlds: Fast static + fresh dynamic
+  - Auto-detect static vs dynamic parts
 
-### 🔑 Advanced Features:
+- **Migration strategy** (Chiến lược migrate):
 
-- **Row Grouping**: Group by categories, aggregates (sum, avg, min, max)
-- **Pivot Mode**: Excel-like pivot tables
-- **Master-Detail**: Expandable nested grids
-- **Context Menu**: Custom right-click menus
-- **Cell Rendering**: Custom components per cell (charts, buttons, badges)
+  - Incremental: Add `app/` directory alongside `pages/`
+  - Migrate từng route một (route-by-route)
+  - Test thoroughly trước khi xóa Pages Router
 
-### ⚠️ Common Mistakes:
-
-- No `getRowId` → grid can't track rows → full re-render on updates (slow)
-- Sync transactions in loop → multiple renders (use `applyTransactionAsync` batch)
-- Heavy cell renderers → slow rendering (keep components lightweight)
-- Not memoizing props → unnecessary grid re-initialization
-
-### 💡 Senior Insights:
-
-- **Server-Side Row Model**: Paginate + sort + filter on backend (handle millions of rows)
-- **Immutable Data**: `immutableData: true` + `getRowId` → optimal updates
-- **Memory**: AG Grid holds ~50-100 bytes per cell (10k rows × 10 cols = ~5-10MB)
-- **Theming**: CSS variables for custom themes, dark mode support
+- **React 19 alignment**:
+  - Next.js 15+ optimized cho React 19 features
+  - Server Actions integrate với React 19 Actions
+  - Better Suspense, improved hydration
 
 ---
 
-## Q33: Frontend Tooling & Build Optimization - Bundling, Minify, Tree-Shaking
+## Q32: AG Grid - Enterprise Data Grid Performance & Best Practices (Bảng Dữ Liệu Enterprise)
 
-### 🎯 Trả Lời Ngắn Gọn:
+### 🎯 Trả Lời Ngắn Gọn (2 phút):
 
-**"Build optimization: Bundling (combine files), Minification (remove whitespace/comments), Tree-shaking (remove unused code), Code splitting (chunks), Transpiling (Babel/SWC - ES6+ → ES5). Tools: Webpack, Rollup, Vite, esbuild. Result: ~60-80% bundle size reduction."**
+**"AG Grid = enterprise React data grid với 1000+ features (tính năng). Performance keys (chìa khóa hiệu năng): Row virtualization (chỉ render rows nhìn thấy - ~30-50 rows thay vì 10k+), `getRowId` (stable row IDs - tracking hiệu quả), `applyTransactionAsync` (batch updates - gộp cập nhật), Column virtualization (render visible columns only). Xử lý 100k+ rows smoothly (mượt mà)."**
 
-### 🔑 Optimization Techniques:
+### 🚀 5 Core Performance Patterns (Patterns Hiệu Năng Cốt Lõi):
 
-**1. Tree-Shaking (Dead Code Elimination):**
+1. **Row Virtualization** (Ảo hóa hàng):
 
-- Remove unused exports → smaller bundles
-- Requires ES Modules (static `import`/`export`)
-- Webpack `sideEffects: false` in package.json → aggressive shaking
+   - Render chỉ ~30-50 visible rows thay vì 10k+ rows
+   - Scroll → render new rows, unrender old rows (DOM recycling)
 
-**2. Code Splitting:**
+2. **`getRowId` Function** (Stable Row IDs):
 
-- **Route-based**: Each route = separate chunk (lazy load on navigation)
-- **Vendor splitting**: Separate vendor code (React, lodash) → cache separately
-- **Dynamic imports**: `import()` loads on-demand
+   - Provide stable IDs → grid track rows efficiently
+   - Update 1 row không re-render toàn bộ grid
+   - ✅ Dùng: `getRowId: (params) => params.data.id`
 
-**3. Minification:**
+3. **`applyTransactionAsync` (Batch Updates)**:
 
-- Remove whitespace, comments, shorten variable names
-- Tools: Terser (JS), cssnano (CSS)
-- ~30-40% size reduction
+   - Gộp nhiều add/update/remove operations → single render
+   - Thay vì 100 renders (slow) → 1 render (fast)
 
-**4. Compression:**
+4. **Column Virtualization** (Ảo hóa cột):
 
-- Gzip (standard, ~70% reduction)
-- Brotli (better, ~75-80% reduction, modern browsers)
-- Pre-compress at build time (serve `.br`, `.gz` files)
+   - Render chỉ visible columns (horizontal scroll với 100+ cols)
+   - Save memory + faster rendering
 
-### ⚠️ Common Mistakes:
+5. **Suppress Animations** (Tắt animations cho bulk updates):
+   - `suppressAnimationFrame` khi update lớn → no animation lag
 
-- Ship source maps to production publicly → expose source code (upload separately to error tracking)
-- Not code splitting → large initial bundle (>500KB) → slow load
-- Barrel exports (`index.js`) prevent tree-shaking → import directly from modules
-- Not analyzing bundle → unknown bloat (use `webpack-bundle-analyzer`)
+### 🔄 Real-Time Updates (Cập Nhật Real-Time):
 
-### 💡 Senior Insights:
+- **`applyTransaction()`** - Delta updates (chỉ update thay đổi):
+  ```
+  applyTransaction({
+    add: [newRows],    // Thêm rows mới
+    update: [changed], // Update rows đã thay đổi
+    remove: [deleted]  // Xóa rows
+  })
+  ```
+- **Cell flashing** - Visual feedback khi value thay đổi (màu flash)
+- **Server-Side Row Model** - Lazy loading chunks cho millions of rows
 
-- **Bundle analysis**: `webpack-bundle-analyzer`, `source-map-explorer` → visualize what's included
-- **Polyfills**: Ship modern + legacy bundles (differential loading) → smaller for modern browsers
-- **Performance budgets**: Fail builds if bundle exceeds thresholds (200KB JS, 3s LCP)
-- **Lazy hydration**: Hydrate components on interaction (not immediately) → faster TTI
+### 🔑 Advanced Features (Tính Năng Nâng Cao):
+
+- **Row Grouping** (Nhóm hàng): Group theo categories, tính aggregates (sum, avg, min, max)
+- **Pivot Mode** (Bảng tổng hợp): Excel-like pivot tables (cross-tab reports)
+- **Master-Detail** (Chi tiết lồng nhau): Expandable nested grids (expand row → show detail grid)
+- **Context Menu** (Menu chuột phải): Custom right-click menus per cell/row
+- **Cell Rendering** (Custom cell): Render custom components (charts, buttons, badges) trong cells
+
+### ⚠️ Lỗi Thường Gặp:
+
+- **Không provide `getRowId`** → grid không track rows → full re-render mỗi update (rất chậm)
+  - ✅ Always provide `getRowId` function
+- **Sync transactions trong loop** → multiple renders (100 updates = 100 renders)
+  - ✅ Dùng `applyTransactionAsync` để batch
+- **Heavy cell renderers** (components phức tạp) → slow rendering
+  - ✅ Keep cell components lightweight, memoize với `React.memo()`
+- **Không memoize props** → unnecessary grid re-initialization
+  - ✅ `useMemo` cho grid options, column defs
+
+### 💡 Kiến Thức Senior:
+
+- **Server-Side Row Model** (Cho millions of rows):
+
+  - Paginate + sort + filter trên backend
+  - Frontend chỉ render 1 page (~100 rows) tại 1 thời điểm
+  - Handle 10M+ rows không vấn đề
+
+- **Immutable Data Pattern**:
+
+  - `immutableData: true` + `getRowId` → optimal updates
+  - Grid so sánh object references thay vì deep compare
+
+- **Memory footprint**:
+
+  - AG Grid holds ~50-100 bytes per cell
+  - 10k rows × 10 cols = ~5-10MB memory (acceptable)
+
+- **Theming**:
+  - CSS variables cho custom themes
+  - Dark mode support built-in
+  - Custom cell styling với `cellClass`, `cellStyle`
 
 ---
 
-## Q34: Observer APIs - Intersection, Resize, Mutation Observer
+## Q33: Frontend Tooling & Build Optimization - Bundling, Minify, Tree-Shaking (Tối Ưu Build)
 
-### 🎯 Trả Lời Ngắn Gọn:
+### 🎯 Trả Lời Ngắn Gọn (2-3 phút):
 
-**"Browser Observer APIs: IntersectionObserver (element visibility - lazy loading), ResizeObserver (element size changes - responsive components), MutationObserver (DOM changes - custom elements, analytics). Performant alternative to scroll events polling."**
+**"Build optimization gồm: Bundling (gộp files), Minification (xóa whitespace/comments), Tree-shaking (loại bỏ unused code), Code splitting (tách chunks), Transpiling (Babel/SWC chuyển ES6+ → ES5). Tools: Webpack, Rollup, Vite, esbuild. Kết quả: ~60-80% giảm bundle size."**
 
-### 🔑 Three Observer APIs:
+### 🔑 4 Kỹ Thuật Optimization Chính:
 
-**1. IntersectionObserver (Visibility):**
+**1. Tree-Shaking (Loại Bỏ Dead Code):**
 
-- Detect when element enters/exits viewport
-- Use case: Lazy load images, infinite scroll, analytics (track viewed items)
-- **Better than scroll events**: Passive, async, performant (no layout thrashing)
-- Options: `threshold` (0-1, when to trigger), `rootMargin` (expand viewport area)
+- **Loại bỏ unused exports** → smaller bundles (~20-40% reduction)
+- **Yêu cầu ES Modules** (static `import`/`export` - không phải CommonJS)
+- **Webpack config**: `sideEffects: false` trong package.json → aggressive shaking
+- **Ví dụ**: Import `{add}` từ `math.js` → chỉ bundle hàm `add`, bỏ các hàm khác
 
-**2. ResizeObserver (Size Changes):**
+**2. Code Splitting (Tách Code Thành Chunks):**
 
-- Detect element size changes (not window resize)
-- Use case: Responsive components, charts adjust to container, textarea auto-height
-- **Better than window resize events**: Per-element, only fires when element resizes
+- **Route-based** (Theo route):
 
-**3. MutationObserver (DOM Changes):**
+  - Mỗi route = 1 chunk riêng (lazy load khi navigate)
+  - User chỉ load code cho page hiện tại
 
-- Watch DOM mutations (attributes, children, subtree)
-- Use case: Track third-party script changes, custom elements, undo/redo systems
-- Options: `attributes`, `childList`, `subtree`, `characterData`
+- **Vendor splitting** (Tách vendor code):
 
-### ⚠️ Common Mistakes:
+  - Separate vendor (React, lodash) → cache riêng
+  - Vendor thay đổi ít → user cache lâu dài
 
-- IntersectionObserver không disconnect → memory leak (cleanup on component unmount)
-- Excessive Mutation observations (entire document) → performance hit (narrow scope)
-- Resize calculations trigger more resizes → infinite loop (guard conditions)
-- Using scroll events when IntersectionObserver better → performance, battery drain
+- **Dynamic imports** (Import động):
+  - `import('./heavy-component')` loads on-demand
+  - Chỉ load khi cần (modal open, tab click)
 
-### 💡 Senior Insights:
+**3. Minification (Nén Code):**
 
-- **Lazy loading pattern**: `<img loading="lazy">` native OR IntersectionObserver + placeholder
-- **Performance**: Observers use async callback → don't block main thread (unlike scroll polling)
-- **React integration**: Wrap in custom hooks (`useIntersectionObserver`, `useResizeObserver`)
-- **Browser support**: Excellent modern support (95%+), polyfills available for legacy
+- **Remove**: Whitespace, comments, newlines
+- **Shorten**: Variable names (`myLongVariableName` → `a`)
+- **Tools**: Terser (JS), cssnano (CSS), HTMLMinifier (HTML)
+- **Result**: ~30-40% size reduction
+
+**4. Compression (Nén File):**
+
+- **Gzip** (standard): ~70% reduction, hỗ trợ tất cả browsers
+- **Brotli** (better): ~75-80% reduction, modern browsers only
+- **Pre-compress**: Build time compress → serve `.br`, `.gz` files (faster than runtime)
+
+### ⚠️ Lỗi Thường Gặp:
+
+- **Ship source maps publicly** → expose source code
+  - ✅ Upload separately to error tracking (Sentry), không serve public
+- **Không code splitting** → large initial bundle (>500KB) → slow load
+  - ✅ Split ít nhất theo routes
+- **Barrel exports** (`index.js` re-exports) prevent tree-shaking
+  - ✅ Import directly: `'lodash/get'` thay vì `'lodash'`
+- **Không analyze bundle** → không biết gì đang bloat
+  - ✅ Dùng `webpack-bundle-analyzer` định kỳ
+
+### 💡 Kiến Thức Senior:
+
+- **Bundle Analysis Tools**:
+
+  - `webpack-bundle-analyzer` - Visual treemap (xem gì chiếm nhiều)
+  - `source-map-explorer` - Analyze source maps
+  - Run sau mỗi major feature để catch bloat sớm
+
+- **Polyfills Strategy**:
+
+  - Ship 2 bundles: Modern (ES2017+) + Legacy (ES5)
+  - Modern browsers load smaller bundle (~30% smaller)
+  - Differential loading với `<script type="module">`
+
+- **Performance Budgets** (Ngân sách hiệu năng):
+
+  - Fail CI build nếu exceed thresholds
+  - Ví dụ: JS bundle > 200KB, LCP > 3s → build fails
+  - Enforce discipline, prevent bloat creep
+
+- **Lazy Hydration** (Hydrate lười):
+  - Hydrate components on interaction (không ngay lập tức)
+  - Faster TTI (Time To Interactive)
+  - Libraries: `react-lazy-hydration`, Islands Architecture
+
+---
+
+## Q34: Observer APIs - Intersection, Resize, Mutation Observer (APIs Quan Sát Trình Duyệt)
+
+### 🎯 Trả Lời Ngắn Gọn (2 phút):
+
+**"Browser có 3 Observer APIs mạnh mẽ: IntersectionObserver (quan sát element visibility - lazy loading), ResizeObserver (quan sát size changes - responsive components), MutationObserver (quan sát DOM changes - track modifications). Performant alternative to scroll events polling (không block main thread như scroll events)."**
+
+### 🔑 3 Observer APIs Chi Tiết:
+
+**1. IntersectionObserver (Quan Sát Visibility - Nhìn Thấy):**
+
+- **Mục đích**: Detect khi element enters/exits viewport (vào/ra khỏi màn hình)
+- **Use Cases**:
+
+  - **Lazy load images** - Load ảnh chỉ khi user scroll tới
+  - **Infinite scroll** - Load more content khi scroll gần bottom
+  - **Analytics** - Track viewed items (user đã xem items nào)
+  - **Animations** - Trigger animations khi element visible
+
+- **Better than scroll events**:
+
+  - **Passive** - Không block scrolling
+  - **Async** - Callback không chạy ngay, không lag UI
+  - **Performant** - No layout thrashing (không trigger reflow/repaint liên tục)
+
+- **Options**:
+  - `threshold`: 0-1 (khi nào trigger - 0 = 1px visible, 1 = 100% visible, 0.5 = 50%)
+  - `rootMargin`: Expand viewport area ("50px" = trigger sớm hơn 50px)
+
+**2. ResizeObserver (Quan Sát Size Changes - Thay Đổi Kích Thước):**
+
+- **Mục đích**: Detect element size changes (không phải window resize)
+- **Use Cases**:
+
+  - **Responsive components** - Components adjust khi container resize
+  - **Charts** - Charts resize theo container size
+  - **Textarea auto-height** - Textarea tự động grow khi type
+  - **Masonry layouts** - Re-layout khi items resize
+
+- **Better than window resize events**:
+  - **Per-element** - Chỉ fire khi element đó resize (không phải mọi element)
+  - **Precise** - Detect element resize, không chỉ window resize
+
+**3. MutationObserver (Quan Sát DOM Changes - Thay Đổi DOM):**
+
+- **Mục đích**: Watch DOM mutations (attributes, children, subtree)
+- **Use Cases**:
+
+  - **Track third-party scripts** - Detect khi third-party thay đổi DOM
+  - **Custom elements** - React to DOM changes trong custom web components
+  - **Undo/redo systems** - Track all DOM changes để undo/redo
+  - **Analytics** - Track user interactions modify DOM
+
+- **Options**:
+  - `attributes`: Watch attribute changes (`class`, `style`, etc.)
+  - `childList`: Watch add/remove child nodes
+  - `subtree`: Watch toàn bộ subtree (nested children)
+  - `characterData`: Watch text content changes
+
+### ⚠️ Lỗi Thường Gặp:
+
+- **IntersectionObserver không disconnect** → memory leak
+  - ✅ Always `observer.disconnect()` trong cleanup (useEffect cleanup)
+- **Excessive Mutation observations** (observe entire document) → performance hit
+  - ✅ Narrow scope - observe specific subtree thay vì `document.body`
+- **Resize calculations trigger more resizes** → infinite loop
+  - ✅ Guard conditions, debounce calculations
+- **Dùng scroll events khi có IntersectionObserver** → performance worse, battery drain
+  - ✅ Always prefer IntersectionObserver cho visibility detection
+
+### 💡 Kiến Thức Senior:
+
+- **Lazy Loading Pattern**:
+
+  - **Native**: `<img loading="lazy">` - built-in browser support (easiest)
+  - **Custom**: IntersectionObserver + placeholder → more control
+  - Combine: Native fallback + IntersectionObserver cho custom behaviors
+
+- **Performance**:
+
+  - Observers dùng **async callbacks** → không block main thread
+  - Scroll events = synchronous → block scrolling if heavy calculations
+  - Observers = passive by default → better scrolling performance
+
+- **React Integration**:
+
+  - Wrap trong custom hooks: `useIntersectionObserver`, `useResizeObserver`
+  - Cleanup automatically với useEffect cleanup
+  - Share observer instances (1 observer cho nhiều elements → efficient)
+
+- **Browser Support**:
+  - IntersectionObserver: 95%+ (IE11 cần polyfill)
+  - ResizeObserver: 95%+ (IE11 cần polyfill)
+  - MutationObserver: 98%+ (IE11 support với prefix)
+  - Polyfills available từ `intersection-observer`, `resize-observer-polyfill`
 
 ---
 
