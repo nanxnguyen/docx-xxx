@@ -1,4 +1,4 @@
-zz# SUMMARY - Senior Frontend Interview Answers (Tiếng Việt)
+## SUMMARY - Senior Frontend Interview Answers (Tiếng Việt)
 
 - **Hoisting**: "nâng" khai báo lên đầu phạm vi (scope). `var` được khởi tạo là `undefined`; `let/const` nằm trong TDZ (Temporal Dead Zone) trước khi khởi tạo.
 - **TDZ (Temporal Dead Zone)**: vùng từ đầu block đến khi khai báo `let/const` — truy cập trong vùng này gây `ReferenceError`.
@@ -1247,202 +1247,166 @@ fn(); // ReferenceError
 
 ## Q05: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry - Modern Collections
 
-### 🎯 Trả Lời Ngắn Gọn:
+### 🎯 Trả Lời Interviewer (30 giây):
 
-**"Set lưu unique values (O(1) operations), Map lưu key-value pairs với keys bất kỳ type. WeakMap/WeakSet dùng weak references → không ngăn GC → prevent memory leaks. WeakRef/FinalizationRegistry cho advanced memory management (rarely needed)."**
+**"Set lưu giá trị duy nhất (unique values) với O(1) operations. Map lưu cặp key-value, keys có thể là bất kỳ kiểu nào (khác Object chỉ dùng string/symbol). WeakMap/WeakSet dùng weak references (tham chiếu yếu) - không ngăn Garbage Collection - dùng để tránh memory leaks. WeakRef/FinalizationRegistry là advanced memory management (ít dùng)."**
 
-### 📖 Giải Thích Chi Tiết:
+### 📖 Giải Thích Cốt Lõi (Bằng Tiếng Việt):
 
-#### **1. Set - Unique Values Collection (Tập hợp giá trị duy nhất):**
+#### **1. Set - Tập Hợp Giá Trị Duy Nhất:**
 
-**Định nghĩa:**
+**Khái niệm:** Collection lưu unique values (không trùng lặp), values có thể là bất kỳ type nào, giữ thứ tự insertion.
 
-- Collection chứa **unique values** (giá trị duy nhất, không trùng lặp).
-- Values có thể là **bất kỳ type nào** (primitives, objects).
-- **Maintain insertion order** (theo thứ tự thêm vào).
+**API chính:**
 
-**API Methods:**
+- `.add(value)` - Thêm giá trị (O(1))
+- `.has(value)` - Kiểm tra tồn tại (O(1) - nhanh hơn `array.includes()` là O(n))
+- `.delete(value)` - Xóa giá trị (O(1))
+- `.size` - Số lượng phần tử (property, không phải method)
 
-- `.add(value)`: Thêm value (return Set object → chainable).
-- `.has(value)`: Check exists (return boolean) - **O(1)**.
-- `.delete(value)`: Xóa value (return boolean) - **O(1)**.
-- `.clear()`: Xóa tất cả.
-- `.size`: Property (NOT method) → số lượng elements.
-- `.forEach(callback)`, `.values()`, `.keys()` (alias), `.entries()`: Iteration.
+**So sánh Set vs Array:**
 
-**Set vs Array:**
+- Set: Không trùng lặp, `.has()` = O(1), không có index access
+- Array: Cho phép trùng, `.includes()` = O(n), có index access `arr[0]`
 
-| Aspect                        | Set                | Array                 |
-| ----------------------------- | ------------------ | --------------------- |
-| **Duplicates**                | ❌ Auto removed    | ✅ Allowed            |
-| **`.has()` / `.includes()`**  | O(1) - hash table  | O(n) - linear search  |
-| **`.add()` / `.push()`**      | O(1)               | O(1) amortized        |
-| **`.delete()` / `.splice()`** | O(1)               | O(n) - shift elements |
-| **Order**                     | ✅ Insertion order | ✅ Index order        |
-| **Indexed access**            | ❌ No `set[0]`     | ✅ `arr[0]`           |
+**Use cases:**
 
-**Use Cases:**
+- Loại bỏ trùng lặp: `[...new Set(arr)]`
+- Kiểm tra membership nhanh: `set.has(value)` thay vì `arr.includes(value)`
+- Lưu IDs, tags duy nhất
 
-- **Deduplicate arrays**: `[...new Set(arr)]`.
-- **Fast membership check**: `set.has(value)` faster than `arr.includes(value)`.
-- **Unique tags/IDs**: Lưu unique user IDs, tags, categories.
-- **Remove duplicates from primitives**: Works với primitives và object references.
+#### **2. Map - Ánh Xạ Key-Value Linh Hoạt:**
 
-**Chú thích tiếng Việt:**
+**Khái niệm:** Collection lưu key-value pairs, keys có thể là **bất kỳ type nào** (objects, functions, primitives) - khác Object chỉ dùng string/symbol.
 
-- Set = "tập hợp" (toán học) - không trùng lặp.
-- Operations nhanh vì internally dùng **hash table** (bảng băm).
+**API chính:**
 
-#### **2. Map - Key-Value Pairs với Keys Bất Kỳ:**
-
-**Định nghĩa:**
-
-- Collection chứa **key-value pairs**.
-- Keys có thể là **bất kỳ type nào** (objects, functions, primitives) - khác Object (chỉ string/symbol).
-- **Maintain insertion order** (iterate theo thứ tự thêm).
-
-**API Methods:**
-
-- `.set(key, value)`: Set key-value (return Map → chainable).
-- `.get(key)`: Get value by key (return value hoặc `undefined`) - **O(1)**.
-- `.has(key)`: Check key exists - **O(1)**.
-- `.delete(key)`: Delete entry - **O(1)**.
-- `.clear()`: Xóa tất cả.
-- `.size`: Property → số lượng entries.
-- `.forEach(callback)`, `.keys()`, `.values()`, `.entries()`: Iteration.
+- `.set(key, value)` - Set cặp key-value (O(1))
+- `.get(key)` - Lấy value (O(1))
+- `.has(key)` - Kiểm tra key tồn tại (O(1))
+- `.delete(key)` - Xóa entry (O(1))
+- `.size` - Số lượng entries
 
 **Map vs Object:**
 
-| Aspect          | Map                                       | Object                                          |
-| --------------- | ----------------------------------------- | ----------------------------------------------- |
-| **Key types**   | Any type (objects, functions, primitives) | String / Symbol only                            |
-| **Key order**   | ✅ Insertion order (predictable)          | ⚠️ Complex (integer keys first, then insertion) |
-| **Size**        | `.size` property (O(1))                   | `Object.keys(obj).length` (O(n))                |
-| **Iteration**   | `.forEach()`, `for...of` (direct)         | `for...in`, `Object.keys()` (helpers needed)    |
-| **Performance** | Optimized for frequent add/delete         | Better for static structure                     |
-| **Prototype**   | ❌ No prototype pollution                 | ⚠️ Has `__proto__`, `constructor`               |
-| **JSON**        | ❌ Not serializable                       | ✅ `JSON.stringify()` works                     |
+- **Key types**: Map (any type) vs Object (chỉ string/symbol)
+- **Order**: Map (insertion order) vs Object (phức tạp - integer keys trước)
+- **Size**: Map `.size` (O(1)) vs Object `Object.keys().length` (O(n))
+- **Performance**: Map tối ưu cho add/delete thường xuyên
 
-**Use Cases:**
+**Use cases:**
 
-- **Cache với object keys**: `map.set(domElement, data)`.
-- **Counting occurrences**: `map.set(item, (map.get(item) || 0) + 1)`.
-- **Ordered data**: Iterate theo thứ tự insert (predictable).
-- **Metadata storage**: Associate data với objects mà không modify objects.
+- Cache với object keys: `map.set(domElement, cachedData)`
+- Đếm số lần xuất hiện: `map.set(item, (map.get(item) || 0) + 1)`
+- Lưu metadata cho objects mà không modify objects
 
-**Chú thích tiếng Việt:**
+#### **3. WeakMap - Tham Chiếu Yếu (Weak References):**
 
-- Map = "ánh xạ" (key → value).
-- Mạnh hơn Object vì keys flexible (không bị coerce to string).
+**Khái niệm:** Giống Map nhưng keys **PHẢI là objects**, keys là weak references (không ngăn GC), **không iterable**, không có `.size`.
 
-#### **3. WeakMap - Weak References cho Keys (Tham chiếu yếu):**
+**Tại sao "Weak"?**
 
-**Định nghĩa:**
+- **Normal Map**: Giữ strong reference → object không bị GC dù không dùng → **memory leak**
+- **WeakMap**: Giữ weak reference → object bị GC khi không còn strong reference khác → **no leak**
 
-- Giống Map nhưng:
-  - **Keys PHẢI là objects** (không được primitives).
-  - Keys là **weak references** → không ngăn GC.
-  - **Không iterable** (không có `.forEach()`, `.keys()`, `.values()`).
-  - **Không có `.size`** property.
+**API (giới hạn):**
 
-**Why "Weak"?**
+- `.set(key, value)`, `.get(key)`, `.has(key)`, `.delete(key)`
+- ❌ KHÔNG có: `.clear()`, `.size`, `.forEach()`, iteration
 
-- Normal Map: Giữ **strong reference** → object không bị GC nếu còn trong Map.
-- WeakMap: Giữ **weak reference** → object có thể bị GC nếu không có strong reference khác.
+**Use cases quan trọng:**
 
-**API Methods (Limited):**
+1. **Private data** (trước khi có `#private` fields):
 
-- `.set(key, value)`: Set key-value (key MUST be object).
-- `.get(key)`: Get value.
-- `.has(key)`: Check key exists.
-- `.delete(key)`: Delete entry.
-- ❌ NO `.clear()`, `.size`, `.forEach()`, iteration methods.
+   - Lưu private properties bên ngoài class
+   - Auto cleanup khi instance bị GC
 
-**Use Cases:**
+2. **DOM metadata** (tránh memory leaks):
 
-1. **Private data pattern** (trước khi có `#private` fields):
+   - `weakMap.set(domNode, metadata)`
+   - Khi node removed → metadata tự cleanup
 
-```javascript
-const privateData = new WeakMap();
+3. **Caching** (cache tự cleanup):
+   - Cache kết quả expensive operations
+   - Khi object không dùng nữa → cache tự xóa
 
-class User {
-  constructor(name) {
-    privateData.set(this, { password: 'secret' });
-    this.name = name;
-  }
+#### **4. WeakSet - Weak References Cho Values:**
 
-  getPassword() {
-    return privateData.get(this).password; // Access private data
-  }
-}
+**Khái niệm:** Giống Set nhưng values PHẢI là objects, weak references, không iterable.
 
-// privateData auto cleanup khi User instance bị GC
-```
+**Use case:** Mark objects đã xử lý mà không prevent GC.
 
-2. **DOM node metadata** (auto cleanup khi node removed):
+#### **5. WeakRef & FinalizationRegistry (ES2021 - Advanced):**
 
-```javascript
-const domMetadata = new WeakMap();
+**WeakRef:** Tạo weak reference thủ công đến object. Dùng `.deref()` để access object (có thể return `undefined` nếu đã GC).
 
-function attachMetadata(element, data) {
-  domMetadata.set(element, data); // No memory leak!
-}
+**FinalizationRegistry:** Register callbacks chạy khi objects bị GC (cleanup tasks).
 
-// Khi element removed from DOM và không còn reference → GC → metadata tự xóa
-```
+**⚠️ Chú ý:** Non-deterministic (không biết khi nào GC chạy), tránh dùng nếu không thực sự cần.
 
-3. **Caching** (prevent memory leaks):
+### ⚠️ Lỗi Thường Gặp:
 
-```javascript
-const cache = new WeakMap();
+1. **Dùng Array thay vì Set** cho membership checks → O(n) thay vì O(1)
 
-function expensiveOperation(obj) {
-  if (cache.has(obj)) return cache.get(obj);
+   - ✅ Dùng Set khi cần `.has()` thường xuyên
 
-  const result = /* ... heavy computation ... */;
-  cache.set(obj, result);
-  return result;
-}
+2. **Dùng Object thay vì Map** với non-string keys → keys bị coerce to string
 
-// Cache auto cleanup khi obj không còn dùng
-```
+   - ✅ Dùng Map khi keys là objects/numbers
 
-**Memory Leak Prevention:**
+3. **Dùng Map thay vì WeakMap** cho DOM metadata → memory leaks
 
-- Normal Map: `map.set(domNode, data)` → domNode không bị GC dù đã remove → **memory leak**.
-- WeakMap: `weakMap.set(domNode, data)` → domNode bị GC khi remove → **no leak**.
+   - ✅ WeakMap cho DOM nodes, objects có lifecycle ngắn
 
-#### **4. WeakSet - Weak References cho Values:**
+4. **Quên WeakMap không iterable** → cố iterate qua entries
 
-**Định nghĩa:**
+   - WeakMap không có `.forEach()`, `.keys()`, `.values()`
 
-- Giống Set nhưng:
-  - **Values PHẢI là objects**.
-  - Values là **weak references**.
-  - **Không iterable**, không có `.size`.
+5. **Dùng primitives làm WeakMap keys** → TypeError
 
-**API Methods:**
+   - WeakMap/WeakSet keys/values PHẢI là objects
 
-- `.add(value)`: Add object.
-- `.has(value)`: Check exists.
-- `.delete(value)`: Delete.
-- ❌ NO `.clear()`, `.size`, iteration.
+6. **Rely on FinalizationRegistry timing** → non-deterministic
+   - GC chạy khi nào không đoán được, đừng depend vào timing
 
-**Use Cases:**
+### 💡 Senior Insights (Kiến Thức Nâng Cao):
 
-1. **Mark objects** without preventing GC:
+**Performance:**
+
+- Set/Map internally dùng **hash tables** → O(1) average case
+- Worst case O(n) với hash collisions (rất hiếm)
+- Modern engines optimize heavily
+
+**Memory:**
+
+- WeakMap/WeakSet không calculate được `.size` vì entries có thể biến mất bất kỳ lúc nào (GC)
+- Overhead: Set/Map ~50-100 bytes/entry (acceptable cho most cases)
+
+**When to use:**
+
+- **Set**: Unique values, fast lookups, deduplication
+- **Map**: Non-string keys, ordered data, frequent add/delete
+- **WeakMap**: DOM metadata, private data, caching with auto-cleanup
+- **WeakSet**: Track objects processed, prevent re-processing
+- **Object**: Static structure, JSON serialization, simple key-value
+
+**WeakMap private data pattern:**
+Trước ES2022 `#private`, WeakMap là cách phổ biến tạo private properties:
+
+- Store private data bên ngoài class
+- Cannot access từ bên ngoài (no iteration)
+- Auto cleanup khi instance GC
+
+**DOM metadata best practice:**
 
 ```javascript
-const processedNodes = new WeakSet();
+// ❌ BAD - Memory leak
+const nodeData = new Map();
+nodeData.set(domNode, {...}); // domNode never GC'd
 
-function processNode(node) {
-  if (processedNodes.has(node)) return; // Already processed
-
-  // Process node...
-  processedNodes.add(node); // Mark as processed
-}
-
-// Auto cleanup khi nodes không còn reference
+// ✅ GOOD - Auto cleanup
+const nodeData = new WeakMap();
+nodeData.set(domNode, {...}); // Auto cleanup when node removed
 ```
 
 2. **Private flags** (check if object "tagged"):
@@ -1638,11 +1602,156 @@ function attachListener(element) {
 
 ---
 
-## Q06: Event Loop - Cơ Chế Hoạt Động JavaScript (Technical Deep Dive)
+## Q06: Event Loop - Cơ Chế Hoạt Động JavaScript
 
-### 🎯 Trả Lời Ngắn Gọn:
+### 🎯 Trả Lời Interviewer (45 giây):
 
-**"JavaScript là single-threaded (đơn luồng) với 1 Call Stack, nhưng xử lý async nhờ Event Loop phối hợp giữa Call Stack, Web APIs, Microtask Queue (Promise - ưu tiên cao), và Macrotask Queue (setTimeout - ưu tiên thấp). Thuật toán Event Loop: 1) Execute ALL sync code trong Call Stack, 2) Execute ALL microtasks, 3) UI Render (nếu cần - browser only), 4) Execute ONE macrotask, 5) Repeat vô hạn."**
+**"JavaScript là single-threaded (đơn luồng) với 1 Call Stack, nhưng xử lý được async nhờ Event Loop điều phối giữa Call Stack, Web APIs, Microtask Queue (Promises - ưu tiên cao), và Macrotask Queue (setTimeout - ưu tiên thấp). Thuật toán: 1) Chạy HẾT sync code trong Call Stack, 2) Chạy HẾT microtasks, 3) UI Render (browser only), 4) Chạy 1 macrotask, 5) Lặp lại vô hạn."**
+
+### 📖 Giải Thích Cốt Lõi (Bằng Tiếng Việt):
+
+**Tại sao JavaScript là single-threaded nhưng vẫn xử lý async?**
+
+JavaScript có 1 Call Stack (ngăn xếp thực thi) → chỉ chạy 1 function tại 1 thời điểm. Nhưng các async operations (setTimeout, fetch, events) được offload sang **Web APIs** (browser threads riêng) hoặc **libuv** (Node.js C++ library). Khi done, callbacks được đưa vào Task Queues, và **Event Loop** điều phối khi nào đưa vào Call Stack.
+
+### 🏗️ 5 Thành Phần Chính:
+
+#### **1. Call Stack (Ngăn Xếp Gọi):**
+
+- Nơi thực thi code đồng bộ
+- Cấu trúc LIFO (Last In First Out - vào sau ra trước)
+- Single-threaded → 1 function tại 1 thời điểm
+- Stack Overflow: Recursion không có base case → `Maximum call stack size exceeded`
+
+#### **2. Heap (Vùng Nhớ Động):**
+
+- Lưu objects, arrays, functions
+- Không cấu trúc (random access)
+- Managed bởi Garbage Collector
+
+#### **3. Web APIs (Browser) / libuv (Node.js):**
+
+- Chạy trên threads riêng (không phải main thread)
+- Examples: `setTimeout`, `fetch`, DOM events, I/O
+- Khi done → push callback vào Task Queues
+
+#### **4. Microtask Queue (Ưu tiên cao):**
+
+- Tasks priority cao: `Promise.then/catch/finally`, `queueMicrotask()`, `MutationObserver`
+- **Chạy HẾT** microtasks trước khi chuyển sang macrotask
+- Node.js: `process.nextTick()` có priority CAO NHẤT (trước microtasks)
+
+#### **5. Macrotask Queue (Ưu tiên thấp):**
+
+- Tasks priority thấp: `setTimeout`, `setInterval`, I/O, UI rendering
+- **Chỉ chạy 1** macrotask mỗi vòng lặp
+
+### ♻️ Thuật Toán Event Loop (Step by Step):
+
+```
+VÒNG LẶP VÔ HẠN:
+1. Chạy HẾT sync code trong Call Stack
+2. Chạy HẾT Microtasks (ALL - không giới hạn)
+   - Nếu microtask tạo microtask mới → chạy luôn
+   - Có thể starve macrotasks nếu microtasks vô hạn
+3. Render UI (nếu cần - chỉ browser, ~60fps = 16.67ms/frame)
+4. Chạy 1 Macrotask (ONE - chỉ 1 cái)
+5. Quay lại bước 1
+```
+
+**Priority:**
+`Sync Code` > `Microtasks` (ALL) > `Render` > `1 Macrotask`
+
+### 📊 Ví Dụ Execution Order:
+
+```javascript
+console.log('1-sync'); // Sync
+
+setTimeout(() => console.log('2-macro'), 0); // Macrotask
+
+Promise.resolve().then(() => {
+  // Microtask
+  console.log('3-micro');
+  setTimeout(() => console.log('4-macro'), 0); // Macrotask (added later)
+});
+
+Promise.resolve().then(() => {
+  // Microtask
+  console.log('5-micro');
+});
+
+console.log('6-sync'); // Sync
+```
+
+**Output:** `1-sync` → `6-sync` → `3-micro` → `5-micro` → `2-macro` → `4-macro`
+
+**Giải thích:**
+
+1. Chạy sync: `1-sync`, `6-sync`
+2. Chạy HẾT microtasks: `3-micro` (tạo macro `4-macro`), `5-micro`
+3. Chạy 1 macro: `2-macro`
+4. Chạy 1 macro: `4-macro`
+
+### ⚠️ Lỗi Thường Gặp:
+
+1. **Blocking Event Loop với sync operations nặng** → UI freeze
+
+   - ✅ Chia nhỏ task với `setTimeout` hoặc dùng Web Workers
+
+2. **Không hiểu Microtasks chạy HẾT** → infinite loop
+
+   - `Promise.resolve().then(() => Promise.resolve().then(...))` → starve macrotasks
+
+3. **`setTimeout(fn, 0)` không phải "ngay lập tức"**
+
+   - Chạy sau sync code + microtasks
+   - Minimum delay ~4ms (browser throttling)
+
+4. **Quên render happens giữa microtasks và macrotasks**
+
+   - Heavy microtasks → delay rendering → jank
+
+5. **Node.js `process.nextTick()` khác `setImmediate()`**
+   - `nextTick`: Trước microtasks (priority cao nhất)
+   - `setImmediate`: Macrotask (sau I/O)
+
+### 💡 Senior Insights:
+
+**Microtask Starvation:**
+
+- Microtasks tạo microtasks mới liên tục → macrotasks không chạy được
+- Browser có protection: Giới hạn số microtasks/vòng (~1000)
+- Node.js: Không giới hạn → có thể infinite loop
+
+**Render Timing:**
+
+- Browser: 60fps → 16.67ms/frame
+- Render chỉ xảy ra khi có DOM/CSS changes
+- `requestAnimationFrame` callback chạy TRƯỚC render (tối ưu cho animations)
+
+**Performance:**
+
+- Long tasks (>50ms) → jank, poor UX
+- Break up tasks: `setTimeout` chunks hoặc `requestIdleCallback`
+- Chrome DevTools Performance tab: Visualize Event Loop
+
+**Node.js Event Loop khác Browser:**
+
+- Node.js có 6 phases: timers, pending callbacks, idle, poll, check, close callbacks
+- `setImmediate()` vs `setTimeout()`: Order depends on context
+- `process.nextTick()` không phải part of Event Loop (chạy giữa phases)
+
+**`queueMicrotask()` API:**
+
+- Explicit way tạo microtask (thay vì `Promise.resolve().then()`)
+- Cleaner intent, better performance
+- Use case: Schedule work ngay sau sync code
+
+**Debugging Event Loop:**
+
+- Chrome DevTools → Performance → Record
+- See: Call Stack, Task Queue, Render frames
+- Identify: Long tasks, layout thrashing, memory leaks
 
 ### 📖 Giải Thích Chi Tiết - Cách JavaScript Engine Hoạt Động:
 
