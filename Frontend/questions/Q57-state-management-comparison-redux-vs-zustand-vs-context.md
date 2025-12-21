@@ -1,54 +1,279 @@
-# 🗂️ Q57: State Management Comparison - Redux vs Zustand vs Jotai
+# 🗂️ Q57: So Sánh State Management - Redux vs Zustand vs Context API
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## **⭐ PHIÊN BẢN TRẢ LỜI 1 PHÚT (Cho Phỏng Vấn Nhanh)**
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+**"State management chia làm 4 loại: Server state (React Query/SWR), Global state (Redux/Zustand/Jotai), Local state (useState), URL state (Router). 
 
-**"State management: Server state (React Query/SWR), Global state (Redux/Zustand/Jotai), Local state (useState). Redux = mature, boilerplate, DevTools. Zustand = simple, hooks-based. Jotai = atomic, granular. Chọn based on complexity."**
+Chọn tool dựa vào độ phức tạp: **Redux Toolkit** cho app lớn cần DevTools, time-travel debugging, strict patterns. **Zustand** cho app nhỏ/vừa cần minimal boilerplate, bundle 1KB. **Context API** chỉ dùng dependency injection, KHÔNG dùng làm state manager (re-render toàn tree). **Jotai** cho atomic updates, React Suspense.
 
-**🔑 So Sánh 3 Libraries:**
+Lỗi hay gặp: Dùng Redux cho server state (nên dùng React Query), Context API cho global state (performance issue), không normalize Redux state (nested updates khó).
 
-| **Aspect** | **Redux Toolkit** | **Zustand** | **Jotai** |
-|-----------|------------------|------------|----------|
-| **Philosophy** | Centralized store | Simple hooks | Atomic state |
-| **Boilerplate** | Medium (RTK giảm) | Low | Very low |
-| **Bundle size** | ~20KB | **~1KB** | **~3KB** |
-| **Learning curve** | High | Low | Medium |
-| **DevTools** | ✅ Best | ✅ Basic | ✅ Basic |
-| **Async** | createAsyncThunk | Manual | Async atoms |
-| **Use case** | Large apps, complex | Simple global state | Granular, React Suspense |
+Đã từng migrate project từ Redux sang Zustand, giảm bundle 12KB → 1KB, code ngắn hơn 60%, team onboard nhanh hơn. Key lesson: Không có silver bullet, chọn tool phù hợp với team size, app complexity."**
 
-**🔑 Khi nào dùng cái gì:**
+---
 
-**1. Redux Toolkit:**
-- **Large apps** với complex state logic
-- Cần **time-travel debugging**, state persistence
-- Team quen Redux patterns
-- Middleware (logging, analytics)
+## **📋 TÓM TẮT CHO SENIOR/STAFF (3-4 phút)**
 
-**2. Zustand:**
-- **Simple global state** (theme, auth status)
-- Muốn **minimal boilerplate** + hooks-based
-- Small-medium apps
-- Dễ migrate từ Context API
+### **🎯 Câu Trả Lời Đầy Đủ:**
 
-**3. Jotai:**
-- **Atomic/granular updates** - chỉ re-render affected components
-- **React Suspense** integration
-- Derived state (computed values)
-- Bottom-up approach (atoms compose)
+**"State management là pattern tổ chức data flow trong React app. Critical decision vì ảnh hưởng bundle size, performance, developer experience, maintainability."**
 
-**⚠️ Lỗi Thường Gặp:**
-- Dùng Redux cho server state → dùng React Query/SWR (cache, refetch, optimistic)
-- Mọi state vào global store → unnecessary, dùng local state cho forms/UI
-- Không normalize Redux state → nested updates phức tạp
-- Zustand không immer → mutate state trực tiếp, dùng `immer` middleware
+**🔑 Bảng So Sánh Chi Tiết:**
 
-**💡 Kiến Thức Senior:**
-- **State categories**: Server (React Query) | Global (Zustand) | Local (useState) | URL (React Router)
-- **Redux Toolkit Query**: Built-in data fetching (alternative to React Query)
-- **Jotai atoms**: Làm việc với React.lazy, Suspense boundaries
-- **Zustand middleware**: persist (localStorage), immer (immutable updates), devtools
+| **Khía Cạnh** | **Redux Toolkit** | **Zustand** |  **Context API** |
+|---------------|-------------------|-------------|-----------|-----------------|
+| **Triết lý** | Centralized store, predictable | Simple hooks-based | Atomic state | Dependency injection |
+| **Bundle size** | ~12KB | **~1KB ⭐** | **~3KB** | 0KB (built-in) |
+| **Boilerplate** | Medium | **Minimal ⭐** | **Minimal** | Low |
+| **Performance** | Good (manual optimization) | **Excellent ⭐** | **Excellent ⭐** | Poor (re-render tree) |
+| **DevTools** | **Best-in-class ⭐** | Good | Good | No |
+| **Learning curve** | Steep | **Gentle ⭐** | Medium | Easy |
+| **Use case** | Large apps, complex logic | Small-medium apps | Granular updates | Theme, i18n, auth |
+
+**🎯 KHI NÀO DÙNG GÌ?**
+
+**1. Redux Toolkit - "Pháo Đài Vững Chãi":**
+```typescript
+// ✅ DÙNG KHI:
+- App lớn (100+ components, 10+ developers)
+- Cần time-travel debugging (replay bugs)
+- Cần strict patterns (onboarding team lớn)
+- Complex workflows (multi-step forms, undo/redo)
+- Middleware ecosystem (logging, analytics, persistence)
+
+// ❌ KHÔNG DÙNG KHI:
+- App nhỏ (MVP, prototype) → overkill
+- Bundle size critical (mobile-first) → quá nặng
+- Team nhỏ, move fast → quá nhiều boilerplate
+```
+
+**2. Zustand - "Dao Thụy Sĩ":**
+```typescript
+// ✅ DÙNG KHI:
+- App nhỏ/vừa (< 50 components)
+- Cần minimal boilerplate + fast iteration
+- Bundle size quan trọng (1KB vs 12KB Redux)
+- Performance critical (automatic selective subscriptions)
+- Team nhỏ, cần onboard nhanh
+
+// ❌ KHÔNG DÙNG KHI:
+- Cần time-travel debugging phức tạp
+- Cần strict patterns cho team lớn
+- Cần middleware ecosystem như Redux Saga
+```
+
+**4. Context API - "MÂM CƠM CHUNG" (KHÔNG phải State Manager!):**
+```typescript
+// ✅ CHỈ DÙNG CHO:
+- Dependency injection (theme, i18n, auth instance)
+- Props drilling shallow (2-3 levels)
+- Static/rarely-changing values
+
+// ❌ TUYỆT ĐỐI KHÔNG DÙNG CHO:
+- Global state thường xuyên thay đổi
+- State phức tạp → re-render toàn tree → performance disaster
+```
+
+---
+
+**⚠️ LỖI PHỔ BIẾN & CÁCH FIX:**
+
+**1. Dùng Redux cho Server State:**
+```typescript
+// ❌ SAI: Dùng Redux để cache API data
+const usersSlice = createSlice({
+  name: 'users',
+  initialState: { data: [], loading: false },
+  reducers: {
+    fetchUsersStart: (state) => { state.loading = true },
+    fetchUsersSuccess: (state, action) => { state.data = action.payload },
+  },
+});
+
+// ✅ ĐÚNG: Dùng React Query/SWR (cache, refetch, optimistic updates tự động)
+const { data: users, isLoading } = useQuery({
+  queryKey: ['users'], // 🔑 Key để identify query (cache key)
+  queryFn: fetchUsers, // 📡 Hàm fetch data
+  staleTime: 5 * 60 * 1000, // ⏱️ Cache time: Data được coi là fresh trong 5 phút
+});
+```
+
+**2. Context API cho Global State:**
+```typescript
+// ❌ SAI: Context + useState → re-render toàn tree
+const AppContext = createContext();
+
+function App() {
+  const [state, setState] = useState({ user: null, cart: [], theme: 'light' });
+  // 💥 Mỗi lần setState → TOÀN BỘ tree re-render! (performance disaster)
+  
+  return <AppContext.Provider value={state}>...</AppContext.Provider>;
+}
+
+// ✅ ĐÚNG: Dùng Zustand → selective subscriptions
+const useStore = create((set) => ({
+  user: null,
+  cart: [],
+  theme: 'light',
+  setUser: (user) => set({ user }), // 🎯 Chỉ update user field
+}));
+
+// 🎯 Chỉ component dùng `user` mới re-render (không re-render khi cart/theme thay đổi)
+const user = useStore((state) => state.user);
+```
+
+**3. Không Normalize Redux State:**
+```typescript
+// ❌ SAI: Nested objects → updates khó
+const state = {
+  posts: [
+    { id: 1, author: { id: 10, name: 'John' }, comments: [...] },
+    { id: 2, author: { id: 10, name: 'John' }, comments: [...] },
+  ],
+};
+
+// 😱 Update author.name → phải loop qua tất cả posts (O(n) complexity)
+
+// ✅ ĐÚNG: Normalized state với Entity Adapter
+const postsAdapter = createEntityAdapter();
+const state = {
+  // 📊 Flat structure: dễ update, không duplicate
+  posts: { ids: [1, 2], entities: { 1: {...}, 2: {...} } },
+  users: { ids: [10], entities: { 10: { id: 10, name: 'John' } } },
+};
+
+// 🚀 Update user.name → O(1) lookup (tìm thẳng theo ID)
+```
+
+**4. Zustand Không Dùng Immer:**
+```typescript
+// ❌ SAI: Mutate state trực tiếp (bug khó debug)
+const useStore = create((set) => ({
+  users: [],
+  addUser: (user) => set((state) => {
+    state.users.push(user); // 🐛 MUTATE! Bug tiềm ẩn (thay đổi object gốc)
+    return state;
+  }),
+}));
+
+// ✅ ĐÚNG: Dùng Immer middleware hoặc immutable updates
+const useStore = create(immer((set) => ({
+  users: [],
+  addUser: (user) => set((state) => {
+    state.users.push(user); // ✅ Immer handle immutability (tự động tạo copy)
+  }),
+})));
+
+// 🔄 Hoặc không Immer - manual immutable update
+addUser: (user) => set((state) => ({
+  users: [...state.users, user], // ✅ Immutable (tạo array mới)
+}))
+```
+
+---
+
+**💡 KIẾN THỨC SENIOR/STAFF:**
+
+**1. Phân Loại State Rõ Ràng:**
+```typescript
+const STATE_CATEGORIES = {
+  // 🌐 Server State: Data từ backend
+  serverState: {
+    tool: 'React Query / SWR / Apollo', // 🛠️ Công cụ chuyên dụng
+    examples: ['User profile', 'Products', 'Comments'], // 📋 Ví dụ
+    why: 'Auto cache, refetch, optimistic updates, pagination', // 💡 Lý do
+  },
+  
+  // 🌍 Global Client State: Shared across app
+  globalClientState: {
+    tool: 'Zustand / Redux / Jotai', // 🛠️ Quản lý state global
+    examples: ['Theme', 'Auth status', 'Shopping cart'], // 📋 State dùng chung
+    why: 'Cross-component communication', // 💡 Giao tiếp giữa components
+  },
+  
+  // 📍 Local State: Component-specific
+  localState: {
+    tool: 'useState / useReducer', // 🛠️ React hooks built-in
+    examples: ['Form inputs', 'Modal open', 'Hover state'], // 📋 State riêng
+    why: 'Không cần share → keep local', // 💡 Giữ trong component
+  },
+  
+  // 🔗 URL State: Synced with navigation
+  urlState: {
+    tool: 'React Router / Next.js router', // 🛠️ Router libraries
+    examples: ['Search params', 'Filters', 'Active tab'], // 📋 State trong URL
+    why: 'Shareable links, browser back/forward', // 💡 Chia sẻ được link
+  },
+};
+  urlState: {
+    tool: 'React Router / Next.js router',
+    examples: ['Search params', 'Filters', 'Active tab'],
+    why: 'Shareable links, browser back/forward',
+  },
+};
+```
+
+**2. Redux Toolkit Query (RTK Query):**
+```typescript
+// 📡 Built-in data fetching (alternative to React Query)
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+const api = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }), // ⚙️ Base config cho API
+  endpoints: (builder) => ({
+    getUsers: builder.query<User[], void>({
+      query: () => 'users', // 🔗 Endpoint URL
+    }),
+  }),
+});
+
+// 🎣 Auto-generated hooks - tự động tạo hooks
+const { data, isLoading, error } = api.useGetUsersQuery();
+// ✅ Cache, refetch, polling, optimistic updates tự động
+```
+
+**3. Jotai với React Suspense:**
+```typescript
+// ⚛️ Async atom + Suspense boundary
+const userAtom = atom(async () => {
+  const res = await fetch('/api/user'); // 📡 Fetch data
+  return res.json();
+});
+
+function UserProfile() {
+  const user = useAtomValue(userAtom); // 💧 Suspend while loading (tự động suspend)
+  return <div>{user.name}</div>;
+}
+
+function App() {
+  return (
+    <Suspense fallback={<Spinner />}> {/* 🔄 Hiển thị loading */}
+      <UserProfile />
+    </Suspense>
+  );
+}
+// ✅ No loading state needed, Suspense handles it (không cần useState loading)
+```
+
+**4. Zustand Middleware Stack:**
+```typescript
+const useStore = create(
+  devtools(           // 1️⃣ Layer 1: Redux DevTools (debug)
+    persist(          // 2️⃣ Layer 2: LocalStorage persistence (lưu state)
+      subscribeWithSelector( // 3️⃣ Layer 3: Selective subscriptions (chọn lọc re-render)
+        immer((set) => ({ // 4️⃣ Layer 4: Immutable updates (update an toàn)
+          count: 0,
+          increment: () => set((s) => { s.count++ }),
+        }))
+      ),
+      { name: 'app-store' } // 💾 Tên key trong localStorage
+    ),
+    { name: 'AppStore' } // 🔧 Tên hiển thị trong DevTools
+  )
+);
+```
+
+---
 
 > **Câu hỏi phỏng vấn Senior Frontend Developer**  
 > **Độ khó:** ⭐⭐⭐⭐ (Advanced)  
@@ -150,7 +375,7 @@ function chooseStateManager(requirements: Requirements) {
 import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
-// ✅ Define slice
+// ✅ Define slice (tạo slice - 1 phần của store)
 interface CounterState {
   value: number;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -162,11 +387,11 @@ const initialState: CounterState = {
 };
 
 const counterSlice = createSlice({
-  name: 'counter',
-  initialState,
-  reducers: {
+  name: 'counter', // 🏷️ Tên slice
+  initialState, // 📊 State khởi tạo
+  reducers: { // 🔧 Các actions để update state
     increment: (state) => {
-      state.value += 1; // ✅ Immer allows direct mutation
+      state.value += 1; // ✅ Immer allows direct mutation (có thể mutate trực tiếp)
     },
     
     decrement: (state) => {
@@ -174,11 +399,11 @@ const counterSlice = createSlice({
     },
     
     incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload;
+      state.value += action.payload; // 📦 Nhận payload (data) từ action
     },
     
     reset: (state) => {
-      state.value = 0;
+      state.value = 0; // 🔄 Reset về 0
     },
   },
 });
@@ -186,28 +411,28 @@ const counterSlice = createSlice({
 export const { increment, decrement, incrementByAmount, reset } = counterSlice.actions;
 
 // ===================================================
-// 🏪 **CONFIGURE STORE**
+// 🏪 **CONFIGURE STORE** - Tạo Redux store
 // ===================================================
 
 export const store = configureStore({
-  reducer: {
+  reducer: { // 🎯 Combine reducers (ghép các slices lại)
     counter: counterSlice.reducer,
     user: userSlice.reducer,
     cart: cartSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['user/login'],
+      serializableCheck: { // ⚠️ Check serializable (data phải JSON-able)
+        ignoredActions: ['user/login'], // 🚫 Bỏ qua check cho action này
       },
     }),
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: process.env.NODE_ENV !== 'production', // 🔧 Enable DevTools trong dev mode
 });
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>; // 📊 Type cho toàn bộ state
+export type AppDispatch = typeof store.dispatch; // 🎯 Type cho dispatch function
 
-// ✅ Typed hooks
+// ✅ Typed hooks - Custom hooks với TypeScript types
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -218,13 +443,13 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchUserById = createAsyncThunk(
-  'user/fetchById',
-  async (userId: string, { rejectWithValue }) => {
+  'user/fetchById', // 🏷️ Tên action
+  async (userId: string, { rejectWithValue }) => { // 📡 Async function
     try {
       const response = await fetch(`/api/users/${userId}`);
-      return await response.json();
+      return await response.json(); // ✅ Return data khi thành công
     } catch (error) {
-      return rejectWithValue('Failed to fetch user');
+      return rejectWithValue('Failed to fetch user'); // ❌ Return error khi thất bại
     }
   }
 );
@@ -237,36 +462,36 @@ const userSlice = createSlice({
     error: null,
   },
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: (builder) => { // 🔧 Handle async actions
     builder
       .addCase(fetchUserById.pending, (state) => {
-        state.loading = true;
+        state.loading = true; // ⏳ Bắt đầu loading
       })
       .addCase(fetchUserById.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data = action.payload;
+        state.loading = false; // ✅ Kết thúc loading
+        state.data = action.payload; // 📦 Lưu data
       })
       .addCase(fetchUserById.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        state.loading = false; // ❌ Kết thúc loading
+        state.error = action.payload as string; // 💥 Lưu error
       });
   },
 });
 
 // ===================================================
-// 🎯 **USAGE IN COMPONENT**
+// 🎯 **USAGE IN COMPONENT** - Sử dụng trong component
 // ===================================================
 
 function Counter() {
-  const count = useAppSelector((state) => state.counter.value);
-  const dispatch = useAppDispatch();
+  const count = useAppSelector((state) => state.counter.value); // 📊 Lấy state
+  const dispatch = useAppDispatch(); // 🎯 Lấy dispatch function
   
   return (
     <div>
       <h1>{count}</h1>
-      <button onClick={() => dispatch(increment())}>+</button>
-      <button onClick={() => dispatch(decrement())}>-</button>
-      <button onClick={() => dispatch(incrementByAmount(5))}>+5</button>
+      <button onClick={() => dispatch(increment())}>+</button> {/* 🔼 Tăng */}
+      <button onClick={() => dispatch(decrement())}>-</button> {/* 🔽 Giảm */}
+      <button onClick={() => dispatch(incrementByAmount(5))}>+5</button> {/* ➕ Tăng 5 */}
     </div>
   );
 }
@@ -287,38 +512,38 @@ import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
-// ✅ Define store
+// ✅ Define store - Tạo Zustand store
 interface CounterStore {
-  count: number;
-  increment: () => void;
+  count: number; // 📊 State
+  increment: () => void; // 🔧 Actions
   decrement: () => void;
   incrementByAmount: (amount: number) => void;
   reset: () => void;
 }
 
 export const useCounterStore = create<CounterStore>()(
-  devtools(
-    immer((set) => ({
-      count: 0,
+  devtools( // 🔧 Layer 1: DevTools (debug với Redux DevTools)
+    immer((set) => ({ // 💧 Layer 2: Immer (immutable updates tự động)
+      count: 0, // 📊 Initial state
       
       increment: () =>
         set((state) => {
-          state.count += 1;
+          state.count += 1; // ✅ Direct mutation (Immer handle)
         }),
       
       decrement: () =>
         set((state) => {
-          state.count -= 1;
+          state.count -= 1; // 🔽 Giảm
         }),
       
       incrementByAmount: (amount) =>
         set((state) => {
-          state.count += amount;
+          state.count += amount; // ➕ Tăng theo amount
         }),
       
       reset: () =>
         set((state) => {
-          state.count = 0;
+          state.count = 0; // 🔄 Reset về 0
         }),
     }))
   )
@@ -371,29 +596,29 @@ export const useUserStore = create<UserStore>()((set, get) => ({
   error: null,
   
   fetchUsers: async () => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null }); // ⏳ Bắt đầu loading
     
     try {
-      const response = await fetch('/api/users');
-      const users = await response.json();
-      set({ users, loading: false });
+      const response = await fetch('/api/users'); // 📡 Gọi API
+      const users = await response.json(); // 📦 Parse JSON
+      set({ users, loading: false }); // ✅ Lưu data, tắt loading
     } catch (error) {
-      set({ error: 'Failed to fetch users', loading: false });
+      set({ error: 'Failed to fetch users', loading: false }); // ❌ Lưu error
     }
   },
 }));
 
 // ===================================================
-// 🎯 **USAGE IN COMPONENT**
+// 🎯 **USAGE IN COMPONENT** - Sử dụng trong component
 // ===================================================
 
 function Counter() {
-  // ✅ Subscribe to specific state (auto-rerenders)
-  const count = useCounterStore((state) => state.count);
-  const increment = useCounterStore((state) => state.increment);
+  // ✅ Subscribe to specific state (auto-rerenders) - Chỉ subscribe field cụ thể
+  const count = useCounterStore((state) => state.count); // 📊 Chỉ re-render khi count thay đổi
+  const increment = useCounterStore((state) => state.increment); // 🔧 Lấy action
   
-  // ✅ Or destructure (less optimal - subscribes to all)
-  // const { count, increment } = useCounterStore();
+  // ⚠️ Or destructure (less optimal - subscribes to all) - Kém tối ưu hơn
+  // const { count, increment } = useCounterStore(); // 💥 Re-render khi BẤT KỲ field nào đổi
   
   return (
     <div>
@@ -404,24 +629,24 @@ function Counter() {
 }
 
 // ===================================================
-// 🔄 **COMPUTED VALUES** (Selectors)
+// 🔄 **COMPUTED VALUES** (Selectors) - Giá trị tính toán
 // ===================================================
 
 const useCartStore = create<CartStore>((set, get) => ({
-  items: [],
+  items: [], // 🛒 Danh sách items
   
-  total: () => {
+  total: () => { // 💰 Tính tổng tiền
     return get().items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   },
   
   addItem: (item) =>
     set((state) => ({
-      items: [...state.items, item],
+      items: [...state.items, item], // ➕ Thêm item mới
     })),
 }));
 
 function CartTotal() {
-  const total = useCartStore((state) => state.total());
+  const total = useCartStore((state) => state.total()); // 💰 Lấy total
   return <div>Total: ${total}</div>;
 }
 ```
@@ -434,41 +659,41 @@ function CartTotal() {
 
 ```typescript
 // ===================================================
-// ⚛️ **JOTAI** (Atomic State Management)
+// ⚛️ **JOTAI** (Atomic State Management) - Quản lý state nguyên tử
 // ===================================================
 
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
-// ✅ Primitive atom
-export const countAtom = atom(0);
+// ✅ Primitive atom - Atom đơn giản
+export const countAtom = atom(0); // 📊 State = 0
 
-// ✅ Derived atom (computed)
-export const doubleCountAtom = atom((get) => get(countAtom) * 2);
+// ✅ Derived atom (computed) - Atom tính toán từ atom khác
+export const doubleCountAtom = atom((get) => get(countAtom) * 2); // 🔢 = count * 2
 
-// ✅ Write-only atom (action)
+// ✅ Write-only atom (action) - Atom chỉ ghi (không đọc)
 export const incrementAtom = atom(
-  null, // no read
+  null, // ⛔ no read - không cho phép đọc
   (get, set) => {
-    set(countAtom, get(countAtom) + 1);
+    set(countAtom, get(countAtom) + 1); // 🔼 Tăng countAtom lên 1
   }
 );
 
-// ✅ Read-write atom
+// ✅ Read-write atom - Atom vừa đọc vừa ghi
 export const counterAtom = atom(
-  (get) => get(countAtom), // read
+  (get) => get(countAtom), // 📖 read - đọc giá trị
   (get, set, amount: number) => {
-    set(countAtom, get(countAtom) + amount); // write
+    set(countAtom, get(countAtom) + amount); // ✍️ write - ghi giá trị mới
   }
 );
 
 // ===================================================
-// 💾 **PERSISTENT ATOM** (LocalStorage)
+// 💾 **PERSISTENT ATOM** (LocalStorage) - Lưu vào localStorage
 // ===================================================
 
 export const themeAtom = atomWithStorage<'light' | 'dark'>(
-  'theme',
-  'light'
+  'theme', // 🔑 LocalStorage key
+  'light' // 🌟 Default value
 );
 
 // ===================================================

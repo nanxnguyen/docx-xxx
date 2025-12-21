@@ -1596,3 +1596,129 @@ export default async function BlogPost({ params }) {
 **💡 Remember:**
 > "Default Server Components. Add 'use client' chỉ khi cần interactive. Keep client boundary nhỏ nhất. Hydration = HTML tĩnh → Interactive React app!" 🚀
 
+---
+
+## 🔍 Giải thích Next.js Workflow & Version Comparison (mức Senior/Tech Lead, tiếng Việt)
+
+### 1. Trả lời nhanh kiểu phỏng vấn (4–5 phút)
+
+> **“Về workflow, với Next.js (App Router) mình đi theo pipeline: định nghĩa route/layout → chọn chiến lược render (SSR/SSG/ISR/CSR) cho từng trang → quyết định data fetching ở Server Components hay Client Components → cấu hình cache/revalidate → build & deploy (thường lên Vercel/Edge). Về version: 14 ổn định App Router + Server Actions + Turbopack dev; 15 chuyển các request APIs (cookies/headers/params) sang async và đổi default caching; 16 tập trung hoàn thiện Partial Prerendering, Turbopack build và caching ở mức hệ thống.”**
+
+Ý là bạn không chỉ thuộc API, mà hiểu **dòng chảy từ request → render → data → cache → deploy**, và **cách các version thay đổi behavior** đó.
+
+---
+
+### 2. Next.js workflow – nói theo góc nhìn kiến trúc
+
+**Bước 1 – Routing & Layout (thiết kế cây UI):**
+
+- Dùng **App Router** (`app/`) với `layout.tsx`, `page.tsx`, route groups `(marketing)`, `(dashboard)`…
+- Ở level kiến trúc, mình quyết định:
+  - Layout nào dùng chung (header/footer/sidebar) và được **persist** khi chuyển route.
+  - Chia app theo **feature segments** (marketing vs authenticated dashboard) để tách concerns.
+
+**Bước 2 – Chọn chiến lược render per-route:**
+
+- Với mỗi route, mình hỏi:
+  - Trang này **SEO-critical** không?
+  - Dữ liệu **thay đổi tần suất** thế nào (giây, phút, giờ, ngày)?
+  - Có phụ thuộc **session/user hiện tại** không?
+- Từ đó chọn:
+  - **SSG** cho content tĩnh (blog/docs/landing) → build time + CDN.
+  - **ISR** cho content bán-động (product, listing) → `revalidate`.
+  - **SSR** cho trang phụ thuộc session, data real-time hoặc khó cache.
+  - **CSR** cho trang private/dashboard, không cần SEO.
+
+**Bước 3 – Data fetching & component boundary:**
+
+- Default: **Server Components** cho phần hiển thị, data fetching gần DB/API.
+- Chỉ đánh dấu `'use client'` ở những nơi cần:
+  - `useState/useEffect`, event handlers, browser APIs, lib thuần client (charts, maps…).
+- Tư duy: **island architecture** – page là server-rendered shell, gắn các "interactive island" nhỏ.
+
+**Bước 4 – Cache, revalidate, streaming:**
+
+- Quyết định **cache mode** cho từng loại request:
+  - Config/danh mục: `force-cache`/`revalidate` dài.
+  - Dữ liệu kinh doanh: `revalidate` ngắn hoặc `no-store`.
+- Với App Router:
+  - `fetch(..., { cache: 'force-cache' })`, `next: { revalidate: N, tags: [...] }`.
+  - Dùng `revalidatePath`, `revalidateTag` trong Server Actions/route handlers sau mutation.
+- Dùng **Suspense + streaming SSR** cho trang lớn: shell trả ngay, phần nặng được stream dần (reviews, charts…).
+
+**Bước 5 – Build & Deploy:**
+
+- `next build` sinh static assets + server bundle (hoặc edge bundle).
+- Thường deploy lên **Vercel** để tận dụng:
+  - Edge Runtime, serverless functions.
+  - Built-in image/font optimization.
+  - Analytics, logs, ISR infra.
+- Hoặc Docker/Node server on-prem nếu yêu cầu hạ tầng riêng.
+
+Khi phỏng vấn, bạn có thể mô tả như vậy để thể hiện **tư duy pipeline** từ code → runtime.
+
+---
+
+### 3. So sánh Next.js 14 vs 15 vs 16 – nói ngắn, tập trung behavior
+
+**Next.js 14 – "App Router trưởng thành, Server Actions dùng được"**
+
+- Điểm chính:
+  - App Router đủ ổn để dùng production.
+  - **Server Actions** stable → form/mutation không cần API routes riêng.
+  - **Turbopack dev**: tăng tốc experience dev, nhưng build prod vẫn dùng Webpack.
+  - Partial Prerendering mới ở mức preview.
+- Góc nhìn kiến trúc:
+  - Đây là version hợp lý để **bắt đầu migrate từ Pages → App Router**.
+  - Có thể áp dụng Server Components + Actions với ít rủi ro.
+
+**Next.js 15 – "Async request APIs, caching đổi default" (nơi hay dính bẫy)**
+
+- Breaking chính:
+  - `cookies()`, `headers()`, `params`… chuyển sang **async** trong App Router.
+  - `fetch()` **không còn cache by default**; muốn cache phải **opt-in** (`cache: 'force-cache'` hoặc `revalidate`).
+- Tác động thực tế:
+  - Phải **sửa function signatures** sang async/await, đặc biệt trong layout/page.
+  - Phải **rà lại tất cả các chỗ fetch** để không vô tình mất cache (tăng load backend, giảm performance).
+- Thêm vào đó: support tốt hơn cho **React 19/Compiler**, error messages dễ debug hydration.
+
+**Next.js 16 (dự kiến) – "Production Turbopack + PPR stable"**
+
+- Mục tiêu chính:
+  - **Turbopack cho build production**: build nhanh, tree-shaking tốt hơn, DX/CI cải thiện.
+  - **Partial Prerendering stable**: shell tĩnh + vùng nội dung động stream → cải thiện TTFB nhưng vẫn flexible.
+  - Caching/Edge Runtime mature hơn, phù hợp hệ thống lớn.
+- Góc nhìn chiến lược:
+  - 16 là bước củng cố idea: **ít JS client hơn, nhiều việc trên server hơn, streaming & cache mạnh hơn**.
+
+Khi trả lời, bạn có thể gói gọn: **14: ổn định App Router + Actions, 15: thay đổi APIs & cache behavior, 16: hoàn thiện PPR/Turbopack & caching.**
+
+---
+
+### 4. Những lỗi & quyết định kiến trúc mà Senior/Lead cần nêu
+
+- **Lạm dụng `'use client'`**:
+  - Khiến toàn bộ subtree thành Client Component → bundle phình to, hydration chậm.
+  - Cách sửa: đẩy logic render/data lên Server, chỉ để interactive island là client.
+
+- **Không để ý cache/revalidate khi lên Next 15+**:
+  - `fetch` default no-cache → backend ăn traffic nhiều, mất lợi ích ISR.
+  - Cần có quy ước trong team: loại data nào cache bao lâu, tag/invalidation thế nào.
+
+- **Mix Pages Router & App Router không rõ ranh giới**:
+  - Middleware, headers, cookies có behavior khác nhau.
+  - Quyết định rõ: hoặc giữ Pages cho legacy, hoặc dần chuyển toàn bộ sang App Router.
+
+- **Không tận dụng streaming/Suspense** cho trang phức tạp:
+  - Đợi đủ mọi data rồi mới trả HTML → TTFB chậm, UX kém.
+  - Pattern tốt hơn: shell + skeleton trả trước, phần nặng stream dần.
+
+Nếu bạn nêu được **các lỗi này + cách tổ chức team để tránh** (coding guideline, lint rule, review checklist), đó là điểm cộng lớn ở vai trò Lead.
+
+---
+
+### 5. Câu chốt để kết bài trả lời
+
+> "Khi thiết kế với Next.js, mình luôn bắt đầu từ **flow tổng thể**: route/layout tree → chọn chiến lược render per-page → boundary Server/Client Components → chiến lược cache & revalidation → cuối cùng mới đến build & deploy. Về phiên bản, từ 14 đến 16 là hành trình đẩy mạnh App Router + Server Components, chuyển từ 'SPA with SSR' sang **server-centric, streaming-first framework**, nơi client chỉ nhận lượng JS tối thiểu cần thiết để tương tác. Vai trò của mình là **định nghĩa các guideline** để cả team dùng đúng SSR/SSG/ISR, cache và 'use client', tránh bẫy khi upgrade version."
+
+

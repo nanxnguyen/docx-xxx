@@ -99,13 +99,13 @@ Trình duyệt chặn request hoặc truy cập tài nguyên cross-origin (domai
 
 ### 2.3 Ví dụ header server
 ```http
-# Server phản hồi cho request cross-origin
+# 🌐 Server phản hồi cho request cross-origin
 HTTP/1.1 200 OK
-Access-Control-Allow-Origin: https://example.com   # hoặc '*'
-Access-Control-Allow-Methods: GET, POST, OPTIONS
-Access-Control-Allow-Headers: Content-Type, Authorization
-Access-Control-Allow-Credentials: true            # nếu gửi cookie/credentials
-Access-Control-Max-Age: 86400                    # cache preflight (s)
+Access-Control-Allow-Origin: https://example.com   # 🌍 Domain được phép (hoặc '*' cho tất cả)
+Access-Control-Allow-Methods: GET, POST, OPTIONS   # 🔧 HTTP methods được phép
+Access-Control-Allow-Headers: Content-Type, Authorization  # 📋 Headers được phép
+Access-Control-Allow-Credentials: true            # 🔐 Cho phép gửi cookie/credentials
+Access-Control-Max-Age: 86400                    # ⏱️ Cache preflight response (86400s = 24h)
 ```
 
 ### 2.4 Important notes
@@ -115,17 +115,17 @@ Access-Control-Max-Age: 86400                    # cache preflight (s)
 
 ### 2.5 Ví dụ Express.js middleware
 ```js
-// Express middleware đơn giản cho CORS
+// 🔧 Express middleware đơn giản cho CORS
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowed = ['https://app.example.com', 'https://admin.example.com'];
+  const origin = req.headers.origin; // 🌍 Lấy origin từ request header
+  const allowed = ['https://app.example.com', 'https://admin.example.com']; // 📋 Whitelist domains
   if (allowed.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Origin', origin); // ✅ Cho phép origin này
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS'); // 🔧 Methods được phép
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // 📋 Headers được phép
+    res.setHeader('Access-Control-Allow-Credentials', 'true'); // 🔐 Cho phép credentials
   }
-  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  if (req.method === 'OPTIONS') return res.sendStatus(204); // ✋ Preflight request trả 204
   next();
 });
 ```
@@ -139,14 +139,14 @@ CSP giúp giảm XSS bằng cách kiểm soát nguồn của script, styles, ima
 
 ### 3.2 Ví dụ header CSP
 ```http
-Content-Security-Policy: default-src 'self';
-  script-src 'self' https://cdn.example.com 'sha256-abc123...';
-  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: https://images.example.com;
-  connect-src 'self' https://api.example.com;
-  frame-ancestors 'none';
-  object-src 'none';
-  base-uri 'self';
+Content-Security-Policy: default-src 'self';  # 🔒 Default: chỉ từ same origin
+  script-src 'self' https://cdn.example.com 'sha256-abc123...';  # 📜 Scripts: self + CDN + hash
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;  # 💅 Styles: self + inline + fonts
+  img-src 'self' data: https://images.example.com;  # 🖼️ Images: self + data URIs + CDN
+  connect-src 'self' https://api.example.com;  # 🔌 Fetch/XHR: self + API domain
+  frame-ancestors 'none';  # 🚫 Không cho phép embed trong iframe
+  object-src 'none';  # 🚫 Không cho phép <object>/<embed>
+  base-uri 'self';  # 🔗 Base URL chỉ từ same origin
 ```
 
 ### 3.3 Ghi chú quan trọng
@@ -170,15 +170,15 @@ Content-Security-Policy: default-src 'self';
 
 ### 4.2 Ví dụ header
 ```http
-# 1) Immutable static asset versioned
-Cache-Control: public, max-age=31536000, immutable
+# 1) 📦 Immutable static asset versioned (file có hash trong tên)
+Cache-Control: public, max-age=31536000, immutable  # ⏱️ Cache 1 năm, không thay đổi
 
-# 2) API response cần revalidate
-Cache-Control: public, max-age=60, must-revalidate
-ETag: "abc123"
+# 2) 🔄 API response cần revalidate (check server mỗi lần)
+Cache-Control: public, max-age=60, must-revalidate  # ⏱️ Cache 60s, sau đó phải revalidate
+ETag: "abc123"  # 🔖 Version identifier cho conditional request
 
-# 3) Stale-while-revalidate pattern
-Cache-Control: public, max-age=60, stale-while-revalidate=30
+# 3) ⚡ Stale-while-revalidate pattern (fast serve + background update)
+Cache-Control: public, max-age=60, stale-while-revalidate=30  # ⏱️ Fresh 60s, stale 30s thêm
 ```
 
 ### 4.3 Giải thích nhanh
@@ -210,7 +210,9 @@ Cache-Control: public, max-age=60, stale-while-revalidate=30
 
 Example:
 ```html
+<!-- 🔍 DNS prefetch: Resolve DNS sớm (không tốn nhiều tài nguyên) -->
 <link rel="dns-prefetch" href="//fonts.gstatic.com">
+<!-- 🔗 Preconnect: DNS + TCP + TLS handshake sớm (full connection) -->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 ```
 
@@ -229,18 +231,18 @@ fetch('/api/data')
 - `response.body` là một `ReadableStream` có thể đọc từng chunk khi server stream data (useful for large files, server-sent events, or progressive rendering).
 
 ```js
-// Ví dụ đọc streaming text
+// 📥 Ví dụ đọc streaming text (progressive data loading)
 const resp = await fetch('/stream-endpoint');
-const reader = resp.body.getReader();
-const decoder = new TextDecoder();
+const reader = resp.body.getReader(); // 🔍 Lấy ReadableStream reader
+const decoder = new TextDecoder(); // 🔤 Decode binary → text
 let result = '';
 while (true) {
-  const { done, value } = await reader.read();
-  if (done) break;
-  result += decoder.decode(value, { stream: true });
-  console.log('Chunk:', result);
+  const { done, value } = await reader.read(); // 📦 Đọc từng chunk
+  if (done) break; // ✅ Stream kết thúc
+  result += decoder.decode(value, { stream: true }); // 🔤 Decode chunk
+  console.log('Chunk:', result); // 📊 Log progressive data
 }
-console.log('Complete:', result);
+console.log('Complete:', result); // ✅ Data đầy đủ
 ```
 
 ### 6.3 Streaming JSON (ndjson) hoặc server-side render progressive
@@ -248,12 +250,13 @@ console.log('Complete:', result);
 
 ### 6.4 AbortController
 ```js
+// 🛑 AbortController - Cancel fetch requests
 const controller = new AbortController();
-fetch('/api/long', { signal: controller.signal })
+fetch('/api/long', { signal: controller.signal }) // 🔗 Attach abort signal
   .then(r => r.json())
-  .catch(err => { if (err.name === 'AbortError') console.log('Aborted'); });
+  .catch(err => { if (err.name === 'AbortError') console.log('Aborted'); }); // ❌ Handle abort error
 
-// Cancel when needed
+// 🛑 Cancel when needed (user navigate away, timeout, etc.)
 controller.abort();
 ```
 
@@ -267,12 +270,12 @@ controller.abort();
 
 ### 7.2 Server response header
 ```http
-Content-Encoding: br        # brotli
+Content-Encoding: br        # 🗜️ Brotli compression (better ratio)
 # hoặc
-Content-Encoding: gzip
+Content-Encoding: gzip      # 🗜️ Gzip compression (faster, universal)
 
-# Vary header quan trọng để cache proxies biết
-Vary: Accept-Encoding
+# ⚠️ Vary header quan trọng để cache proxies biết phân biệt theo encoding
+Vary: Accept-Encoding       # 🔄 Cache riêng cho br vs gzip
 ```
 
 ### 7.3 Best practice

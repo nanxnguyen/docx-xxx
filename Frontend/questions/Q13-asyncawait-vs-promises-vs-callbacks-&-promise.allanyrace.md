@@ -1,4 +1,4 @@
-# ⚙️ Q13: Async/Await vs Promises vs Callbacks & Promise.all/any/race
+# ⚙️ Q13: Async/Await vs Promises vs Callbacks & Promise.all/any/race/allsettled
 
 ## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 

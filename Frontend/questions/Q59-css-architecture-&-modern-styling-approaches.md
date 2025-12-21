@@ -98,18 +98,18 @@ So sánh các phương pháp styling hiện đại: CSS-in-JS (Styled Components
 
 ```css
 /* ===================================================
-   🎯 BEM NAMING CONVENTION
+   🎯 BEM NAMING CONVENTION - Quy ước đặt tên
    =================================================== */
 
-/* Block: Standalone component */
+/* 📦 Block: Standalone component (thành phần độc lập) */
 .card { }
 
-/* Element: Part of a block (connected with __) */
+/* 🧩 Element: Part of a block (phần của block, kết nối với __) */
 .card__header { }
 .card__body { }
 .card__footer { }
 
-/* Modifier: Variant of block or element (connected with --) */
+/* ⚙️ Modifier: Variant of block or element (biến thể, kết nối với --) */
 .card--highlighted { }
 .card__header--large { }
 
@@ -117,51 +117,51 @@ So sánh các phương pháp styling hiện đại: CSS-in-JS (Styled Components
    ✅ GOOD: Proper BEM Structure
    =================================================== */
 
-/* Component: ProductCard */
+/* 📦 Component: ProductCard */
 .product-card {
   display: flex;
-  flex-direction: column;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  flex-direction: column;  /* 🔽 Layout dọc */
+  border: 1px solid #ddd;  /* 🔲 Viền xám nhạt */
+  border-radius: 8px;      /* ➿ Bo góc 8px */
 }
 
 .product-card__image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
+  width: 100%;           /* 🖼️ Chiều rộng 100% */
+  height: 200px;         /* 📏 Chiều cao cố định */
+  object-fit: cover;     /* ✏️ Crop image để fit khung */
 }
 
 .product-card__title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin: 16px 0 8px;
+  font-size: 1.25rem;    /* 🔤 Font size 20px */
+  font-weight: 600;      /* ⚖️ Font weight semi-bold */
+  margin: 16px 0 8px;    /* 📏 Khoảng cách trên/dưới */
 }
 
 .product-card__price {
-  color: #e74c3c;
-  font-size: 1.5rem;
-  font-weight: 700;
+  color: #e74c3c;        /* 🔴 Màu đỏ (giá) */
+  font-size: 1.5rem;     /* 🔤 Font size 24px */
+  font-weight: 700;      /* ⚖️ Font weight bold */
 }
 
 .product-card__button {
-  padding: 12px 24px;
-  background: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 12px 24px;    /* 📍 Padding trong/ngoài */
+  background: #3498db;   /* 🔵 Background xanh */
+  color: white;          /* ⚪ Chữ trắng */
+  border: none;          /* 🚫 Không viền */
+  border-radius: 4px;    /* ➿ Bo góc 4px */
+  cursor: pointer;       /* 🖌️ Con trỏ pointer khi hover */
 }
 
-/* Modifiers for variants */
+/* ⚙️ Modifiers for variants (Biến thể) */
 .product-card--featured {
-  border-color: #f39c12;
-  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+  border-color: #f39c12;  /* 🟡 Viền vàng (nổi bật) */
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);  /* ✨ Bóng vàng */
 }
 
 .product-card__button--disabled {
-  background: #95a5a6;
-  cursor: not-allowed;
-  opacity: 0.6;
+  background: #95a5a6;   /* ⚪ Background xám (disabled) */
+  cursor: not-allowed;   /* 🚫 Con trỏ not-allowed */
+  opacity: 0.6;          /* 🔅 Mờ 60% */
 }
 
 /* ===================================================
@@ -224,69 +224,69 @@ So sánh các phương pháp styling hiện đại: CSS-in-JS (Styled Components
 
 ```typescript
 // ===================================================
-// 🎯 CSS MODULES - Scoped Styles
+// 🎯 CSS MODULES - Scoped Styles (Styles có phạm vi)
 // ===================================================
 
-// Button.module.css
+// 📄 Button.module.css
 .button {
-  padding: 12px 24px;
-  background: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s ease;
+  padding: 12px 24px;        /* 📍 Padding trong/ngoài */
+  background: #3498db;       /* 🔵 Background xanh */
+  color: white;              /* ⚪ Chữ trắng */
+  border: none;              /* 🚫 Không viền */
+  border-radius: 4px;        /* ➿ Bo góc */
+  cursor: pointer;           /* 🖌️ Pointer cursor */
+  font-size: 1rem;           /* 🔤 Font size 16px */
+  transition: background 0.3s ease;  /* ⏱️ Hiệu ứng chuyển đổi */
 }
 
 .button:hover {
-  background: #2980b9;
+  background: #2980b9;  /* 🔵 Màu xanh tối hơn khi hover */
 }
 
 .button:disabled {
-  background: #95a5a6;
-  cursor: not-allowed;
-  opacity: 0.6;
+  background: #95a5a6;   /* ⚪ Background xám khi disabled */
+  cursor: not-allowed;   /* 🚫 Not-allowed cursor */
+  opacity: 0.6;          /* 🔅 Mờ 60% */
 }
 
-/* Modifier: Primary variant */
+/* ⚙️ Modifier: Primary variant (Biến thể primary) */
 .primary {
-  background: #2ecc71;
+  background: #2ecc71;  /* 🟢 Background xanh lá */
 }
 
 .primary:hover {
-  background: #27ae60;
+  background: #27ae60;  /* 🟢 Xanh lá tối hơn khi hover */
 }
 
-/* Modifier: Danger variant */
+/* ⚙️ Modifier: Danger variant (Biến thể danger) */
 .danger {
-  background: #e74c3c;
+  background: #e74c3c;  /* 🔴 Background đỏ */
 }
 
 .danger:hover {
-  background: #c0392b;
+  background: #c0392b;  /* 🔴 Đỏ tối hơn khi hover */
 }
 
 // ===================================================
-// Button.tsx (React Component)
+// ⚛️ Button.tsx (React Component)
 // ===================================================
 
-import styles from './Button.module.css';
-import classNames from 'classnames'; // npm install classnames
+import styles from './Button.module.css';  // 📥 Import CSS module
+import classNames from 'classnames'; // 📦 npm install classnames - Thư viện kết hợp className
 
 type ButtonProps = {
-  children: React.ReactNode;
-  variant?: 'primary' | 'danger';
-  disabled?: boolean;
-  onClick?: () => void;
+  children: React.ReactNode;       // 📝 Nội dung button
+  variant?: 'primary' | 'danger';  // ⚙️ Kiểu button
+  disabled?: boolean;              // 🚫 Trạng thái disabled
+  onClick?: () => void;            // 🖌️ Handler khi click
 };
 
 export function Button({ children, variant, disabled, onClick }: ButtonProps) {
   return (
     <button
-      className={classNames(styles.button, {
-        [styles.primary]: variant === 'primary',
-        [styles.danger]: variant === 'danger'
+      className={classNames(styles.button, {  // 🎯 Kết hợp base class + variants
+        [styles.primary]: variant === 'primary',  // ✅ Nếu variant = primary
+        [styles.danger]: variant === 'danger'     // ✅ Nếu variant = danger
       })}
       disabled={disabled}
       onClick={onClick}
@@ -296,10 +296,10 @@ export function Button({ children, variant, disabled, onClick }: ButtonProps) {
   );
 }
 
-// Usage
-<Button variant="primary">Save</Button>
-<Button variant="danger">Delete</Button>
-<Button disabled>Loading...</Button>
+// 📝 Usage
+<Button variant="primary">Save</Button>     // 🟢 Button xanh lá
+<Button variant="danger">Delete</Button>    // 🔴 Button đỏ
+<Button disabled>Loading...</Button>       // ⚪ Button disabled xám
 
 // ===================================================
 // 🔍 Generated HTML (CSS Modules output)
@@ -321,27 +321,27 @@ export function Button({ children, variant, disabled, onClick }: ButtonProps) {
  */
 
 // ===================================================
-// 🎯 COMPOSITION (Reusing Styles)
+// 🎯 COMPOSITION (Reusing Styles - Tái sử dụng styles)
 // ===================================================
 
-// base.module.css
+// 📄 base.module.css
 .heading {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  color: #2c3e50;
+  font-family: 'Inter', sans-serif;  // 🔤 Font chữ
+  font-weight: 700;                  // ⚖️ Độ dày chữ
+  color: #2c3e50;                    // 🎨 Màu chữ
 }
 
-// Article.module.css
+// 📄 Article.module.css
 .title {
-  composes: heading from './base.module.css';
-  font-size: 2rem;
-  margin-bottom: 16px;
+  composes: heading from './base.module.css';  // 🔄 Tái sử dụng heading styles
+  font-size: 2rem;                            // 🔤 Thêm font size 32px
+  margin-bottom: 16px;                        // 📏 Thêm margin dưới
 }
 
 .subtitle {
-  composes: heading from './base.module.css';
-  font-size: 1.5rem;
-  color: #7f8c8d;
+  composes: heading from './base.module.css';  // 🔄 Tái sử dụng heading styles
+  font-size: 1.5rem;                          // 🔤 Font size 24px
+  color: #7f8c8d;                             // 🎨 Màu xám nhạt hơn
 }
 
 // Article.tsx
@@ -403,85 +403,85 @@ function Article() {
 // 🎨 STYLED COMPONENTS - CSS in JavaScript
 // ===================================================
 
-import styled from 'styled-components';
+import styled from 'styled-components';  // 📦 npm install styled-components
 
-// Basic styled component
+// ⚙️ Basic styled component (Component cơ bản)
 const Button = styled.button`
-  padding: 12px 24px;
-  background: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s ease;
+  padding: 12px 24px;         /* 📍 Padding trong/ngoài */
+  background: #3498db;        /* 🔵 Background xanh */
+  color: white;               /* ⚪ Chữ trắng */
+  border: none;               /* 🚫 Không viền */
+  border-radius: 4px;         /* ➿ Bo góc */
+  cursor: pointer;            /* 🖌️ Pointer cursor */
+  font-size: 1rem;            /* 🔤 Font size 16px */
+  transition: background 0.3s ease;  /* ⏱️ Hiệu ứng chuyển đổi */
 
   &:hover {
-    background: #2980b9;
+    background: #2980b9;  /* 🔵 Màu tối hơn khi hover */
   }
 
   &:disabled {
-    background: #95a5a6;
-    cursor: not-allowed;
-    opacity: 0.6;
+    background: #95a5a6;   /* ⚪ Xám khi disabled */
+    cursor: not-allowed;   /* 🚫 Not-allowed cursor */
+    opacity: 0.6;          /* 🔅 Mờ 60% */
   }
 `;
 
 // ===================================================
-// 🎯 PROPS-BASED DYNAMIC STYLES
+// 🎯 PROPS-BASED DYNAMIC STYLES (Styles động dựa trên props)
 // ===================================================
 
 type ButtonProps = {
-  $variant?: 'primary' | 'danger';
-  $size?: 'small' | 'medium' | 'large';
+  $variant?: 'primary' | 'danger';  // ⚙️ Kiểu button
+  $size?: 'small' | 'medium' | 'large';  // 📍 Kích thước button
 };
 
 const Button = styled.button<ButtonProps>`
-  padding: ${(props) => {
+  padding: ${(props) => {  // 📍 Padding dựa trên size
     switch (props.$size) {
       case 'small':
-        return '8px 16px';
+        return '8px 16px';   // 🔹 Small button
       case 'large':
-        return '16px 32px';
+        return '16px 32px';  // 🔷 Large button
       default:
-        return '12px 24px';
+        return '12px 24px';  // 🔸 Medium button (default)
     }
   }};
 
-  background: ${(props) => {
+  background: ${(props) => {  // 🎨 Background dựa trên variant
     switch (props.$variant) {
       case 'primary':
-        return '#2ecc71';
+        return '#2ecc71';  // 🟢 Xanh lá (primary)
       case 'danger':
-        return '#e74c3c';
+        return '#e74c3c';  // 🔴 Đỏ (danger)
       default:
-        return '#3498db';
+        return '#3498db';  // 🔵 Xanh (default)
     }
   }};
 
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  color: white;               /* ⚪ Chữ trắng */
+  border: none;               /* 🚫 Không viền */
+  border-radius: 4px;         /* ➿ Bo góc */
+  cursor: pointer;            /* 🖌️ Pointer cursor */
+  font-size: 1rem;            /* 🔤 Font size */
+  transition: all 0.3s ease;  /* ⏱️ Hiệu ứng chuyển đổi */
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);  /* ⬆️ Nâng lên 2px */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);  /* ✨ Thêm bóng */
   }
 
   &:disabled {
-    background: #95a5a6;
-    cursor: not-allowed;
-    opacity: 0.6;
-    transform: none;
+    background: #95a5a6;   /* ⚪ Xám khi disabled */
+    cursor: not-allowed;   /* 🚫 Not-allowed cursor */
+    opacity: 0.6;          /* 🔅 Mờ 60% */
+    transform: none;       /* 🚫 Không hiệu ứng hover */
   }
 `;
 
-// Usage
-<Button $variant="primary" $size="large">Save</Button>
-<Button $variant="danger">Delete</Button>
+// 📝 Usage
+<Button $variant="primary" $size="large">Save</Button>  // 🟢 Button xanh lá lớn
+<Button $variant="danger">Delete</Button>  // 🔴 Button đỏ medium
 
 // ===================================================
 // 🔗 EXTENDING STYLES
@@ -515,47 +515,47 @@ const OutlineButton = styled(Button)`
 `;
 
 // ===================================================
-// 🎨 THEMING (Global Theme Provider)
+// 🎨 THEMING (Global Theme Provider - Theme toàn cục)
 // ===================================================
 
 import { ThemeProvider } from 'styled-components';
 
-// Define theme
+// 🎨 Define theme (Definition theme)
 const theme = {
-  colors: {
-    primary: '#3498db',
-    secondary: '#2ecc71',
-    danger: '#e74c3c',
-    text: '#2c3e50',
-    background: '#ecf0f1'
+  colors: {                     // 🎨 Bảng màu
+    primary: '#3498db',         // 🔵 Màu chính
+    secondary: '#2ecc71',       // 🟢 Màu phụ
+    danger: '#e74c3c',          // 🔴 Màu nguy hiểm
+    text: '#2c3e50',            // 📝 Màu chữ
+    background: '#ecf0f1'       // 🗄️ Màu nền
   },
-  spacing: {
-    small: '8px',
-    medium: '16px',
-    large: '24px'
+  spacing: {                    // 📏 Khoảng cách
+    small: '8px',               // 🔹 Nhỏ
+    medium: '16px',             // 🔸 Trung bình
+    large: '24px'               // 🔷 Lớn
   },
-  breakpoints: {
-    mobile: '480px',
-    tablet: '768px',
-    desktop: '1024px'
+  breakpoints: {                // 📱 Responsive breakpoints
+    mobile: '480px',            // 📱 Mobile
+    tablet: '768px',            // 📱 Tablet
+    desktop: '1024px'           // 💻 Desktop
   }
 };
 
-// Styled component using theme
+// ⚙️ Styled component using theme (Sử dụng theme)
 const ThemedButton = styled.button`
-  padding: ${(props) => props.theme.spacing.medium};
-  background: ${(props) => props.theme.colors.primary};
-  color: white;
-  border: none;
-  border-radius: 4px;
+  padding: ${(props) => props.theme.spacing.medium};  // 📏 Lấy spacing từ theme
+  background: ${(props) => props.theme.colors.primary};  // 🎨 Lấy color từ theme
+  color: white;                                       // ⚪ Chữ trắng
+  border: none;                                       // 🚫 Không viền
+  border-radius: 4px;                                 // ➿ Bo góc
 
   &:hover {
-    background: ${(props) => props.theme.colors.secondary};
+    background: ${(props) => props.theme.colors.secondary};  // 🟢 Đổi màu khi hover
   }
 
-  @media (max-width: ${(props) => props.theme.breakpoints.mobile}) {
-    padding: ${(props) => props.theme.spacing.small};
-    font-size: 0.875rem;
+  @media (max-width: ${(props) => props.theme.breakpoints.mobile}) {  // 📱 Responsive mobile
+    padding: ${(props) => props.theme.spacing.small};  // 🔹 Padding nhỏ hơn trên mobile
+    font-size: 0.875rem;                              // 🔤 Font nhỏ hơn
   }
 `;
 
@@ -615,28 +615,28 @@ const GlobalStyles = createGlobalStyle`
 // 💫 EMOTION - Alternative to Styled Components
 // ===================================================
 
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
+/** @jsxImportSource @emotion/react */  // 🔧 Enable JSX pragma cho Emotion
+import { css } from '@emotion/react';  // 📦 Import css function
+import styled from '@emotion/styled';  // 📦 Import styled (tương tự styled-components)
 
 // ===================================================
-// 🎯 CSS PROP (Inline CSS-in-JS)
+// 🎯 CSS PROP (Inline CSS-in-JS - CSS inline)
 // ===================================================
 
 function Button({ variant, children }) {
   return (
     <button
-      css={css`
-        padding: 12px 24px;
-        background: ${variant === 'primary' ? '#2ecc71' : '#3498db'};
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
+      css={css`  /* 🎨 CSS prop - Viết CSS trực tiếp trong JSX */
+        padding: 12px 24px;  /* 📍 Padding */
+        background: ${variant === 'primary' ? '#2ecc71' : '#3498db'};  /* 🎨 Màu dựa trên variant */
+        color: white;        /* ⚪ Chữ trắng */
+        border: none;        /* 🚫 Không viền */
+        border-radius: 4px;  /* ➿ Bo góc */
+        cursor: pointer;     /* 🖌️ Pointer cursor */
 
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        &:hover {  /* 🖌️ Hiệu ứng hover */
+          transform: translateY(-2px);  /* ⬆️ Nâng lên */
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);  /* ✨ Bóng */
         }
       `}
     >

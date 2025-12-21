@@ -8,131 +8,131 @@
 
 **🔧 Core Advanced Concepts:**
 
-1. **Generics**:
-   - **Purpose**: Type-safe reusable functions/components.
-   - **Constraints**: `<T extends Type>` → limit T to specific types.
+1. **Generics** (📦 Kiểu dữ liệu tổng quát):
+   - **Purpose**: Type-safe reusable functions/components (Tái sử dụng an toàn).
+   - **Constraints**: `<T extends Type>` → limit T to specific types (Giới hạn T chỉ cho kiểu cụ thể).
    ```ts
    function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
-     return obj[key]; // Type-safe property access
+     return obj[key]; // ✅ Type-safe property access (Truy cập thuộc tính an toàn)
    }
-   const user = { name: 'Alice', age: 30 };
-   getProperty(user, 'name'); // Type: string
+   const user = { name: 'Alice', age: 30 };  // 👤 User object
+   getProperty(user, 'name'); // 🎯 Type: string - TS biết chính xác kiểu!
    ```
 
-2. **Utility Types** (Built-in):
-   - **`Partial<T>`**: Tất cả properties optional.
-   - **`Required<T>`**: Tất cả properties required.
-   - **`Pick<T, K>`**: Lấy subset properties.
-   - **`Omit<T, K>`**: Loại bỏ properties.
-   - **`Record<K, V>`**: Object với keys K, values V.
-   - **`Readonly<T>`**: Immutable properties.
+2. **Utility Types** (🛠️ Công cụ built-in của TypeScript):
+   - **`Partial<T>`**: Tất cả properties optional (❔ Tất cả thuộc tính optional).
+   - **`Required<T>`**: Tất cả properties required (⚠️ Bắt buộc tất cả).
+   - **`Pick<T, K>`**: Lấy subset properties (🎯 Chọn một số thuộc tính).
+   - **`Omit<T, K>`**: Loại bỏ properties (🗑️ Loại bỏ thuộc tính).
+   - **`Record<K, V>`**: Object với keys K, values V (📋 Tạo object map).
+   - **`Readonly<T>`**: Immutable properties (🔒 Không thể thay đổi).
    ```ts
-   type User = { id: number; name: string; email: string };
-   type PartialUser = Partial<User>; // All optional
-   type UserName = Pick<User, 'id' | 'name'>; // Only id, name
-   type NoEmail = Omit<User, 'email'>; // Exclude email
+   type User = { id: number; name: string; email: string };  // 👤 User type
+   type PartialUser = Partial<User>; // ❔ All optional - Tất cả optional
+   type UserName = Pick<User, 'id' | 'name'>; // 🎯 Only id, name - Chỉ lấy 2 field
+   type NoEmail = Omit<User, 'email'>; // 🗑️ Exclude email - Loại bỏ email
    ```
 
-3. **Mapped Types**:
-   - Transform existing types.
+3. **Mapped Types** (🗺️ Biến đổi types):
+   - Transform existing types (Biến đổi type cũ thành type mới).
    ```ts
-   type Readonly<T> = { readonly [K in keyof T]: T[K] };
-   type Optional<T> = { [K in keyof T]?: T[K] };
+   type Readonly<T> = { readonly [K in keyof T]: T[K] };  // 🔒 Tất cả readonly
+   type Optional<T> = { [K in keyof T]?: T[K] };  // ❔ Tất cả optional
    ```
 
-4. **Conditional Types**:
-   - `T extends U ? X : Y` → type-level if-else.
+4. **Conditional Types** (❓ Type có điều kiện - if/else cho types):
+   - `T extends U ? X : Y` → type-level if-else (If/else ở level type).
    ```ts
-   type IsString<T> = T extends string ? true : false;
-   type A = IsString<string>; // true
-   type B = IsString<number>; // false
+   type IsString<T> = T extends string ? true : false;  // ❓ Kiểm tra có phải string?
+   type A = IsString<string>; // ✅ true - Là string
+   type B = IsString<number>; // ❌ false - Không phải string
    ```
 
-5. **Template Literal Types** (TS 4.1+):
-   - String manipulation at type level.
+5. **Template Literal Types** (📝 TS 4.1+ - Xử lý chuỗi ở type level):
+   - String manipulation at type level (Thao tác chuỗi trên type).
    ```ts
-   type EventName<T extends string> = `on${Capitalize<T>}`;
-   type ClickEvent = EventName<'click'>; // "onClick"
+   type EventName<T extends string> = `on${Capitalize<T>}`;  // 🏷️ Tạo tên event handler
+   type ClickEvent = EventName<'click'>; // 👆 "onClick" - Viết hoa chữ đầu
    ```
 
-6. **Type Guards**:
-   - Runtime type checking → narrow types.
+6. **Type Guards** (🛡️ Bảo vệ type - Kiểm tra runtime):
+   - Runtime type checking → narrow types (Kiểm tra kiểu lúc runtime, thu hẹp type).
    ```ts
-   function isString(value: unknown): value is string {
-     return typeof value === 'string';
+   function isString(value: unknown): value is string {  // 🛡️ Type guard function
+     return typeof value === 'string';  // ❓ Kiểm tra runtime
    }
-   if (isString(value)) {
-     value.toUpperCase(); // TS knows value is string
+   if (isString(value)) {  // ✅ Nếu là string
+     value.toUpperCase(); // 🎯 TS biết value là string - An toàn!
    }
    ```
 
-7. **Discriminated Unions**:
-   - Type-safe state machines.
+7. **Discriminated Unions** (🎭 Tagged Unions - State machine an toàn):
+   - Type-safe state machines (Quản lý state an toàn).
    ```ts
-   type State = 
-     | { status: 'loading' }
-     | { status: 'success'; data: string }
-     | { status: 'error'; error: Error };
+   type State =   // 🎭 3 trạng thái khác nhau
+     | { status: 'loading' }  // ⏳ Đang loading
+     | { status: 'success'; data: string }  // ✅ Thành công + có data
+     | { status: 'error'; error: Error };  // ❌ Lỗi + có error object
    
    function handle(state: State) {
-     switch (state.status) {
-       case 'loading': return 'Loading...';
-       case 'success': return state.data; // TS knows data exists
-       case 'error': return state.error.message;
+     switch (state.status) {  // 🎯 Switch theo discriminator
+       case 'loading': return 'Loading...';  // ⏳ Chỉ có status
+       case 'success': return state.data; // ✅ TS biết data tồn tại!
+       case 'error': return state.error.message;  // ❌ TS biết error tồn tại!
      }
    }
    ```
 
 **🎯 Real-World Use Cases:**
 
-1. **API Response Typing**:
+1. **API Response Typing** (🌐 Type hóa API response):
    ```ts
-   type ApiResponse<T> = 
-     | { success: true; data: T }
-     | { success: false; error: string };
+   type ApiResponse<T> =   // 📦 Generic response wrapper
+     | { success: true; data: T }  // ✅ Thành công + data
+     | { success: false; error: string };  // ❌ Thất bại + error message
    
-   async function fetchUser(): Promise<ApiResponse<User>> {
-     // ...
+   async function fetchUser(): Promise<ApiResponse<User>> {  // 👤 Fetch user
+     // ... (Gọi API và trả về ApiResponse<User>)
    }
    ```
 
-2. **Form State**:
+2. **Form State** (📝 Quản lý state của form):
    ```ts
-   type FormState<T> = {
-     values: T;
-     errors: Partial<Record<keyof T, string>>;
-     touched: Partial<Record<keyof T, boolean>>;
+   type FormState<T> = {  // 📦 Generic form state
+     values: T;  // 📋 Giá trị của các field
+     errors: Partial<Record<keyof T, string>>;  // ❌ Lỗi validation (optional)
+     touched: Partial<Record<keyof T, boolean>>;  // 👆 Field đã touch (optional)
    };
    ```
 
-3. **Branded Types** (Nominal Typing):
-   - Prevent mixing similar types.
+3. **Branded Types** (🏷️ Nominal Typing - Ngăn trộn lẫn types giống nhau):
+   - Prevent mixing similar types (Ngăn chặn dùng lẫn types giống nhau).
    ```ts
-   type UserId = string & { __brand: 'UserId' };
-   type ProductId = string & { __brand: 'ProductId' };
+   type UserId = string & { __brand: 'UserId' };  // 🏷️ Brand UserId
+   type ProductId = string & { __brand: 'ProductId' };  // 🏷️ Brand ProductId
    
-   function getUser(id: UserId) { /*...*/ }
-   const userId = '123' as UserId;
-   getUser(userId); // OK
-   // getUser('456'); // Error: string not assignable to UserId
+   function getUser(id: UserId) { /*...*/ }  // 👤 Chỉ nhận UserId
+   const userId = '123' as UserId;  // 🏷️ Cast thành UserId
+   getUser(userId); // ✅ OK - Đúng kiểu
+   // getUser('456'); // ❌ Error: string not assignable to UserId - Sai kiểu!
    ```
 
-**⚠️ Common Mistakes:**
-- **any overuse**: Defeat purpose of TypeScript → dùng `unknown` + type guards.
-- **Type assertions abuse**: `as` bypass type checking → dùng type guards instead.
-- **Missing generic constraints**: `<T>` too broad → dùng `<T extends Type>`.
+**⚠️ Common Mistakes** (Lỗi thường gặp):
+- **any overuse** (❌ Lạm dụng `any`): Defeat purpose of TypeScript → dùng `unknown` + type guards (Phá hủy mục đích của TS, hãy dùng `unknown`).
+- **Type assertions abuse** (❌ Lạm dụng `as`): `as` bypass type checking → dùng type guards instead (`as` bỏ qua kiểm tra, dùng type guards).
+- **Missing generic constraints** (❌ Thiếu constraints): `<T>` too broad → dùng `<T extends Type>` (`<T>` quá rộng, cần giới hạn).
 
-**💡 Senior Insights:**
-- **infer keyword**: Extract types from other types.
+**💡 Senior Insights** (Kiến thức nâng cao cho Senior):
+- **infer keyword** (🔍 Trích xuất types): Extract types from other types (Rút type ra từ type khác).
   ```ts
-  type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
+  type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;  // 🔍 Rút return type
   ```
-- **Const assertions**: `as const` → literal types instead of widening.
+- **Const assertions** (🔒 `as const`): `as const` → literal types instead of widening (Giữ nguyên literal type, không mở rộng).
   ```ts
-  const colors = ['red', 'blue'] as const; // Type: readonly ["red", "blue"]
+  const colors = ['red', 'blue'] as const; // 🔒 Type: readonly ["red", "blue"] - Không mở rộng thành string[]
   ```
-- **tsconfig strict mode**: Enable all strict checks (`strict: true`) → catch bugs early.
-- **Declaration files**: `.d.ts` for third-party libraries không có types.
+- **tsconfig strict mode** (⚠️ Chế độ nghiêm ngặt): Enable all strict checks (`strict: true`) → catch bugs early (Bắt lỗi sớm).
+- **Declaration files** (📝 `.d.ts`): `.d.ts` for third-party libraries không có types (Cho thư viện bên thứ 3 không có types).
 
 ---
 
@@ -251,44 +251,44 @@ type ReadonlyConfig = DeepReadonly<Config>;
 
 ```typescript
 // ===================================================
-// 🎨 **DISTRIBUTIVE CONDITIONAL TYPES**
+// 🎨 **DISTRIBUTIVE CONDITIONAL TYPES** (Conditional Types phân phối)
 // ===================================================
 
-type ToArray<T> = T extends any ? T[] : never;
+type ToArray<T> = T extends any ? T[] : never;  // 📦 Biến mỗi type thành array
 
-type StrOrNum = string | number;
-type ArrOfStrOrNum = ToArray<StrOrNum>; // string[] | number[] (distributive)
+type StrOrNum = string | number;  // 🔀 Union type
+type ArrOfStrOrNum = ToArray<StrOrNum>; // 🎨 string[] | number[] (distributive - Phân phối!)
 
-// ✅ Non-distributive version
-type ToArrayNonDist<T> = [T] extends [any] ? T[] : never;
-type ArrOfStrOrNumNonDist = ToArrayNonDist<StrOrNum>; // (string | number)[]
+// ✅ Non-distributive version (Không phân phối - Giữ nguyên union)
+type ToArrayNonDist<T> = [T] extends [any] ? T[] : never;  // 📦 Wrap trong tuple để ngăn distribute
+type ArrOfStrOrNumNonDist = ToArrayNonDist<StrOrNum>; // 🎯 (string | number)[] - Giữ nguyên union!
 
 // ===================================================
-// 🔍 **INFER KEYWORD** (Extract types)
+// 🔍 **INFER KEYWORD** (Extract types - Rút types ra)
 // ===================================================
 
-// Extract function parameters
-type Parameters<T> = T extends (...args: infer P) => any ? P : never;
+// Extract function parameters (Rút parameters từ function)
+type Parameters<T> = T extends (...args: infer P) => any ? P : never;  // 🔍 infer P = rút parameters
 
-type Params = Parameters<(a: string, b: number) => void>; // [string, number]
+type Params = Parameters<(a: string, b: number) => void>; // 🎯 [string, number] - Rút được params!
 
-// Extract first array element type
-type FirstElement<T> = T extends [infer F, ...any[]] ? F : never;
+// Extract first array element type (Lấy type của phần tử đầu tiên)
+type FirstElement<T> = T extends [infer F, ...any[]] ? F : never;  // 🔍 infer F = rút phần tử đầu
 
-type First = FirstElement<[string, number, boolean]>; // string
+type First = FirstElement<[string, number, boolean]>; // 🎯 string - Phần tử đầu!
 
-// Extract object property types
-type ExtractPropType<T, K extends keyof T> = T[K];
+// Extract object property types (Truy cập type của property)
+type ExtractPropType<T, K extends keyof T> = T[K];  // 🎯 Lấy type của property K
 
-interface User {
-  id: number;
-  profile: {
-    name: string;
-    avatar: string;
+interface User {  // 👤 User interface
+  id: number;  // 🔢 ID
+  profile: {  // 📋 Nested profile
+    name: string;  // 📝 Name
+    avatar: string;  // 🖼️ Avatar URL
   };
 }
 
-type ProfileType = ExtractPropType<User, 'profile'>; // { name: string; avatar: string }
+type ProfileType = ExtractPropType<User, 'profile'>; // 🎯 { name: string; avatar: string } - Rút được profile type!
 ```
 
 ---
@@ -299,139 +299,139 @@ type ProfileType = ExtractPropType<User, 'profile'>; // { name: string; avatar: 
 
 ```typescript
 // ===================================================
-// 🛠️ **BUILT-IN UTILITY TYPES**
+// 🛠️ **BUILT-IN UTILITY TYPES** (Công cụ built-in của TS)
 // ===================================================
 
-interface Todo {
-  id: number;
-  title: string;
-  description: string;
-  completed: boolean;
-  createdAt: Date;
+interface Todo {  // 📋 Todo interface
+  id: number;  // 🔢 ID
+  title: string;  // 📝 Tiêu đề
+  description: string;  // 📖 Mô tả
+  completed: boolean;  // ✅ Đã hoàn thành?
+  createdAt: Date;  // 📅 Ngày tạo
 }
 
-// ✅ Partial<T> - All properties optional
-type PartialTodo = Partial<Todo>;
-const updateTodo = (id: number, updates: Partial<Todo>) => { /* ... */ };
+// ✅ Partial<T> - All properties optional (Tất cả thuộc tính thành optional)
+type PartialTodo = Partial<Todo>;  // ❔ Tất cả field có thể undefined
+const updateTodo = (id: number, updates: Partial<Todo>) => { /* ... */ };  // ✏️ Cập nhật một vài field
 
-// ✅ Required<T> - All properties required
-type RequiredTodo = Required<Partial<Todo>>;
+// ✅ Required<T> - All properties required (Bắt buộc tất cả)
+type RequiredTodo = Required<Partial<Todo>>;  // ⚠️ Biến tất cả thành required
 
-// ✅ Readonly<T> - All properties readonly
-type ReadonlyTodo = Readonly<Todo>;
+// ✅ Readonly<T> - All properties readonly (Không thể thay đổi)
+type ReadonlyTodo = Readonly<Todo>;  // 🔒 Immutable - Không thể modify
 
-// ✅ Pick<T, K> - Select specific properties
-type TodoPreview = Pick<Todo, 'id' | 'title' | 'completed'>;
+// ✅ Pick<T, K> - Select specific properties (Chọn một số properties)
+type TodoPreview = Pick<Todo, 'id' | 'title' | 'completed'>;  // 🎯 Chỉ lấy 3 field
 
-// ✅ Omit<T, K> - Exclude specific properties
-type TodoWithoutDates = Omit<Todo, 'createdAt'>;
+// ✅ Omit<T, K> - Exclude specific properties (Loại bỏ properties)
+type TodoWithoutDates = Omit<Todo, 'createdAt'>;  // 🗑️ Bo qua createdAt
 
-// ✅ Record<K, T> - Object with specific keys and value type
-type TodoMap = Record<number, Todo>;
+// ✅ Record<K, T> - Object with specific keys and value type (Tạo object map)
+type TodoMap = Record<number, Todo>;  // 📋 Map ID → Todo
 const todos: TodoMap = {
-  1: { id: 1, title: 'Learn TS', /* ... */ },
-  2: { id: 2, title: 'Build App', /* ... */ },
+  1: { id: 1, title: 'Learn TS', /* ... */ },  // 🔑 Key 1
+  2: { id: 2, title: 'Build App', /* ... */ },  // 🔑 Key 2
 };
 
-// ✅ Exclude<T, U> - Exclude types from union
-type Primitive = string | number | boolean | null | undefined;
-type NonNullable = Exclude<Primitive, null | undefined>; // string | number | boolean
+// ✅ Exclude<T, U> - Exclude types from union (Loại bỏ types từ union)
+type Primitive = string | number | boolean | null | undefined;  // 📦 Tất cả primitive types
+type NonNullable = Exclude<Primitive, null | undefined>; // 🎯 string | number | boolean - Loại null/undefined
 
-// ✅ Extract<T, U> - Extract types from union
-type StringOrNumber = Extract<string | number | boolean, string | number>; // string | number
+// ✅ Extract<T, U> - Extract types from union (Lấy ra types từ union)
+type StringOrNumber = Extract<string | number | boolean, string | number>; // 🎯 string | number - Chỉ lấy 2 kiểu này
 
-// ✅ NonNullable<T> - Remove null and undefined
-type MaybeString = string | null | undefined;
-type DefiniteString = NonNullable<MaybeString>; // string
+// ✅ NonNullable<T> - Remove null and undefined (Loại bỏ null và undefined)
+type MaybeString = string | null | undefined;  // ❓ Có thể null/undefined
+type DefiniteString = NonNullable<MaybeString>; // 🎯 string - Chắc chắn là string!
 
-// ✅ ReturnType<T> - Get function return type
-const getUser = () => ({ id: 1, name: 'Alice' });
-type User = ReturnType<typeof getUser>; // { id: number; name: string }
+// ✅ ReturnType<T> - Get function return type (Lấy kiểu trả về của function)
+const getUser = () => ({ id: 1, name: 'Alice' });  // 🛠️ Function trả về object
+type User = ReturnType<typeof getUser>; // 🎯 { id: number; name: string } - Rút type từ function!
 
-// ✅ Parameters<T> - Get function parameters
-const createUser = (name: string, age: number) => ({ name, age });
-type CreateUserParams = Parameters<typeof createUser>; // [string, number]
+// ✅ Parameters<T> - Get function parameters (Lấy parameters của function)
+const createUser = (name: string, age: number) => ({ name, age });  // 🛠️ Function có 2 params
+type CreateUserParams = Parameters<typeof createUser>; // 🎯 [string, number] - Rút params!
 
-// ✅ InstanceType<T> - Get instance type of constructor
-class Product {
-  constructor(public name: string, public price: number) {}
+// ✅ InstanceType<T> - Get instance type of constructor (Lấy instance type của class)
+class Product {  // 🏭 Product class
+  constructor(public name: string, public price: number) {}  // 🛠️ Constructor
 }
-type ProductInstance = InstanceType<typeof Product>; // Product
+type ProductInstance = InstanceType<typeof Product>; // 🎯 Product - Instance type!
 ```
 
 ### **2.2. Custom Utility Types**
 
 ```typescript
 // ===================================================
-// 🎨 **CUSTOM UTILITY TYPES**
+// 🎨 **CUSTOM UTILITY TYPES** (Tạo utility types riêng)
 // ===================================================
 
-// ✅ DeepPartial - Recursive partial
+// ✅ DeepPartial - Recursive partial (Partial đệ quy cho nested objects)
 type DeepPartial<T> = {
-  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];  // 🔄 Đệ quy nếu là object
 };
 
-interface Config {
-  server: {
-    port: number;
-    host: string;
-    ssl: {
-      enabled: boolean;
-      cert: string;
+interface Config {  // ⚙️ Config có nested objects
+  server: {  // 🌐 Server config
+    port: number;  // 🔌 Port
+    host: string;  // 🏠 Host
+    ssl: {  // 🔒 SSL config
+      enabled: boolean;  // ✅ Bật/tắt SSL
+      cert: string;  // 📜 Certificate
     };
   };
 }
 
-const updateConfig = (config: DeepPartial<Config>) => {
-  // Can update any nested property
+const updateConfig = (config: DeepPartial<Config>) => {  // 📝 Tất cả properties (kể cả nested) đều optional!
+  // Can update any nested property (Có thể update bất kỳ property nào)
 };
 
-updateConfig({ server: { ssl: { enabled: true } } }); // ✅ Valid
+updateConfig({ server: { ssl: { enabled: true } } }); // ✅ Valid - Chỉ update 1 nested field!
 
-// ✅ Nullable - Add null to all properties
+// ✅ Nullable - Add null to all properties (Thêm null cho tất cả properties)
 type Nullable<T> = {
-  [K in keyof T]: T[K] | null;
+  [K in keyof T]: T[K] | null;  // ❓ Mỗi property có thể null
 };
 
-type NullableUser = Nullable<{ name: string; age: number }>;
-// { name: string | null; age: number | null }
+type NullableUser = Nullable<{ name: string; age: number }>;  // 👤 User có thể có field null
+// { name: string | null; age: number | null } (Tất cả đều nullable!)
 
-// ✅ Optional - Specific properties optional
-type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+// ✅ Optional - Specific properties optional (Chọn properties nào optional)
+type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;  // 🎯 Omit rồi Partial
 
 type UserWithOptionalEmail = Optional<
-  { name: string; email: string; age: number },
-  'email'
+  { name: string; email: string; age: number },  // 📋 Original type
+  'email'  // 📧 Chỉ email là optional
 >;
-// { name: string; age: number; email?: string }
+// { name: string; age: number; email?: string } (Chỉ email optional!)
 
-// ✅ RequireAtLeastOne - At least one property required
+// ✅ RequireAtLeastOne - At least one property required (Ít nhất 1 property bắt buộc)
 type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
-  {
+  {  // 🎯 Complex type: Ít nhất 1 trong các Keys phải có
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
 
-type ContactInfo = {
-  email?: string;
-  phone?: string;
-  address?: string;
+type ContactInfo = {  // 📞 Contact info
+  email?: string;  // 📧 Email (optional)
+  phone?: string;  // 📱 Phone (optional)
+  address?: string;  // 🏠 Address (optional)
 };
 
-type ValidContact = RequireAtLeastOne<ContactInfo>;
-// Must have at least one of email, phone, or address
+type ValidContact = RequireAtLeastOne<ContactInfo>;  // ⚠️ PHẢI có ít nhất 1 trong 3!
+// Must have at least one of email, phone, or address (Phải có ít nhất 1 cách liên lạc)
 
-// ✅ Mutable - Remove readonly
+// ✅ Mutable - Remove readonly (Bỏ readonly modifier)
 type Mutable<T> = {
-  -readonly [K in keyof T]: T[K];
+  -readonly [K in keyof T]: T[K];  // 🔓 Bỏ readonly bằng dấu trừ (-)
 };
 
-type MutableConfig = Mutable<ReadonlyConfig>;
+type MutableConfig = Mutable<ReadonlyConfig>;  // 📝 Biến readonly thành mutable!
 
-// ✅ PromiseType - Extract Promise value type
-type PromiseType<T> = T extends Promise<infer U> ? U : T;
+// ✅ PromiseType - Extract Promise value type (Lấy type bên trong Promise)
+type PromiseType<T> = T extends Promise<infer U> ? U : T;  // 🔍 Unwrap Promise
 
-type ApiResponse = Promise<{ data: string }>;
-type Data = PromiseType<ApiResponse>; // { data: string }
+type ApiResponse = Promise<{ data: string }>;  // 📦 Promise chứa object
+type Data = PromiseType<ApiResponse>; // 🎯 { data: string } - Lấy được type bên trong!
 ```
 
 ---
@@ -442,108 +442,108 @@ type Data = PromiseType<ApiResponse>; // { data: string }
 
 ```typescript
 // ===================================================
-// 🗺️ **MAPPED TYPES**
+// 🗺️ **MAPPED TYPES** (Biến đổi types bằng mapping)
 // ===================================================
 
-// ✅ Basic mapped type
-type Readonly<T> = {
-  readonly [K in keyof T]: T[K];
+// ✅ Basic mapped type (Mapped type cơ bản)
+type Readonly<T> = {  // 🔒 Readonly utility
+  readonly [K in keyof T]: T[K];  // 🔑 Loop qua tất cả keys, thêm readonly
 };
 
-// ✅ Add prefix to keys
-type Getters<T> = {
-  [K in keyof T as `get${Capitalize<string & K>}`]: () => T[K];
+// ✅ Add prefix to keys (Thêm prefix vào tên keys)
+type Getters<T> = {  // 🔧 Tạo getters tự động
+  [K in keyof T as `get${Capitalize<string & K>}`]: () => T[K];  // 🏷️ Rename key: name → getName
 };
 
-interface User {
-  name: string;
-  age: number;
+interface User {  // 👤 User interface
+  name: string;  // 📝 Name
+  age: number;  // 🔢 Age
 }
 
-type UserGetters = Getters<User>;
-// {
-//   getName: () => string;
-//   getAge: () => number;
+type UserGetters = Getters<User>;  // 🔧 Auto-generate getters
+// {  // 🎯 Kết quả:
+//   getName: () => string;  // 📝 name → getName
+//   getAge: () => number;   // 🔢 age → getAge
 // }
 
-// ✅ Filter properties by type
-type FilterByType<T, ValueType> = {
-  [K in keyof T as T[K] extends ValueType ? K : never]: T[K];
+// ✅ Filter properties by type (Lọc properties theo type)
+type FilterByType<T, ValueType> = {  // 🔍 Chỉ giữ properties có type = ValueType
+  [K in keyof T as T[K] extends ValueType ? K : never]: T[K];  // ❓ Conditional: giữ K nếu đúng type
 };
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
+interface Product {  // 🏭 Product interface
+  id: number;  // 🔢 ID
+  name: string;  // 📝 Name
+  price: number;  // 💰 Price
+  description: string;  // 📖 Description
 }
 
-type StringProperties = FilterByType<Product, string>;
-// { name: string; description: string }
+type StringProperties = FilterByType<Product, string>;  // 🎯 Chỉ lấy string properties
+// { name: string; description: string } (Chỉ có 2 fields string!)
 
-type NumberProperties = FilterByType<Product, number>;
-// { id: number; price: number }
+type NumberProperties = FilterByType<Product, number>;  // 🎯 Chỉ lấy number properties
+// { id: number; price: number } (Chỉ có 2 fields number!)
 
-// ✅ Transform property types
-type Stringify<T> = {
-  [K in keyof T]: string;
+// ✅ Transform property types (Biến đổi type của properties)
+type Stringify<T> = {  // 🔄 Biến tất cả thành string
+  [K in keyof T]: string;  // 📝 Mọi property đều thành string
 };
 
-type StringifiedProduct = Stringify<Product>;
-// { id: string; name: string; price: string; description: string }
+type StringifiedProduct = Stringify<Product>;  // 📝 All properties → string
+// { id: string; name: string; price: string; description: string } (Tất cả đều string!)
 ```
 
 ### **3.2. Template Literal Types**
 
 ```typescript
 // ===================================================
-// 📝 **TEMPLATE LITERAL TYPES** (TypeScript 4.1+)
+// 📝 **TEMPLATE LITERAL TYPES** (TypeScript 4.1+ - Xử lý chuỗi ở type level)
 // ===================================================
 
-// ✅ Basic template literals
-type Color = 'red' | 'blue' | 'green';
-type Quantity = 'one' | 'two' | 'three';
+// ✅ Basic template literals (Template literals cơ bản)
+type Color = 'red' | 'blue' | 'green';  // 🎨 3 màu
+type Quantity = 'one' | 'two' | 'three';  // 🔢 3 số lượng
 
-type ColoredQuantity = `${Quantity} ${Color}`;
-// 'one red' | 'one blue' | 'one green' | 'two red' | ...
+type ColoredQuantity = `${Quantity} ${Color}`;  // 🎯 Kết hợp 2 unions
+// 'one red' | 'one blue' | 'one green' | 'two red' | ... (🎨 3x3 = 9 combinations!)
 
-// ✅ Event handler types
-type EventNames = 'click' | 'focus' | 'blur';
-type EventHandlers = {
-  [K in EventNames as `on${Capitalize<K>}`]: (event: Event) => void;
+// ✅ Event handler types (Tạo event handlers tự động)
+type EventNames = 'click' | 'focus' | 'blur';  // 👆 3 events
+type EventHandlers = {  // 🛠️ Auto-generate handlers
+  [K in EventNames as `on${Capitalize<K>}`]: (event: Event) => void;  // 🏷️ Viết hoa chữ đầu
 };
 
-// {
-//   onClick: (event: Event) => void;
-//   onFocus: (event: Event) => void;
-//   onBlur: (event: Event) => void;
+// {  // 🎯 Kết quả:
+//   onClick: (event: Event) => void;  // 👆 click → onClick
+//   onFocus: (event: Event) => void;  // 🎯 focus → onFocus
+//   onBlur: (event: Event) => void;   // 🎯 blur → onBlur
 // }
 
-// ✅ CSS properties
-type CSSProp = 'margin' | 'padding';
-type Direction = 'top' | 'right' | 'bottom' | 'left';
+// ✅ CSS properties (Tạo CSS properties tự động)
+type CSSProp = 'margin' | 'padding';  // 📏 2 properties
+type Direction = 'top' | 'right' | 'bottom' | 'left';  // 🧭 4 hướng
 
-type CSSProperties = `${CSSProp}-${Direction}`;
-// 'margin-top' | 'margin-right' | ... | 'padding-left'
+type CSSProperties = `${CSSProp}-${Direction}`;  // 🎯 Kết hợp
+// 'margin-top' | 'margin-right' | ... | 'padding-left' (🎨 2x4 = 8 properties!)
 
-// ✅ API routes
-type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
-type Resource = 'users' | 'products' | 'orders';
+// ✅ API routes (Tạo API routes type-safe)
+type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';  // 🌐 4 HTTP methods
+type Resource = 'users' | 'products' | 'orders';  // 📦 3 resources
 
-type APIRoute = `${Lowercase<HTTPMethod>} /api/${Resource}`;
-// 'get /api/users' | 'post /api/users' | ...
+type APIRoute = `${Lowercase<HTTPMethod>} /api/${Resource}`;  // 🔡 Viết thường method
+// 'get /api/users' | 'post /api/users' | ... (🎯 4x3 = 12 routes!)
 
-// ✅ Type-safe path builder
-type Join<T extends string[], D extends string = '/'> = T extends [
-  infer F extends string,
-  ...infer R extends string[]
+// ✅ Type-safe path builder (Nối chuỗi thành path an toàn)
+type Join<T extends string[], D extends string = '/'> = T extends [  // 🔗 Join array of strings
+  infer F extends string,  // 🔍 Lấy phần tử đầu
+  ...infer R extends string[]  // 📦 Lấy phần còn lại
 ]
-  ? R extends []
-    ? F
-    : `${F}${D}${Join<R, D>}`
-  : '';
+  ? R extends []  // ❓ Nếu không còn phần tử nào
+    ? F  // ✅ Trả về phần tử đầu
+    : `${F}${D}${Join<R, D>}`  // 🔁 Recursive: F + delimiter + Join phần còn lại
+  : '';  // 🎯 Empty string nếu array rỗng
 
-type Path = Join<['api', 'v1', 'users', 'profile']>; // 'api/v1/users/profile'
+type Path = Join<['api', 'v1', 'users', 'profile']>; // 🎯 'api/v1/users/profile' - Nối bằng /!
 ```
 
 ---
@@ -554,122 +554,122 @@ type Path = Join<['api', 'v1', 'users', 'profile']>; // 'api/v1/users/profile'
 
 ```typescript
 // ===================================================
-// 🛡️ **TYPE GUARDS**
+// 🛡️ **TYPE GUARDS** (Bảo vệ type - Kiểm tra runtime)
 // ===================================================
 
-// ✅ User-defined type guard
-interface Cat {
-  meow: () => void;
+// ✅ User-defined type guard (Type guard tự định nghĩa)
+interface Cat {  // 🐱 Cat interface
+  meow: () => void;  // 🔊 Phương thức keu meo meo
 }
 
-interface Dog {
-  bark: () => void;
+interface Dog {  // 🐶 Dog interface
+  bark: () => void;  // 🔊 Phương thức sủa gậm gậm
 }
 
-function isCat(animal: Cat | Dog): animal is Cat {
-  return 'meow' in animal;
+function isCat(animal: Cat | Dog): animal is Cat {  // 🛡️ Type guard function - "animal is Cat" là type predicate
+  return 'meow' in animal;  // ❓ Kiểm tra có method meow không?
 }
 
-function makeSound(animal: Cat | Dog) {
-  if (isCat(animal)) {
-    animal.meow(); // TypeScript knows it's Cat
-  } else {
-    animal.bark(); // TypeScript knows it's Dog
+function makeSound(animal: Cat | Dog) {  // 🔊 Function nhận Cat hoặc Dog
+  if (isCat(animal)) {  // ❓ Nếu là Cat
+    animal.meow(); // 🎯 TypeScript biết chắc chắn là Cat - Có meow()!
+  } else {  // 🐶 Không thì là Dog
+    animal.bark(); // 🎯 TypeScript biết chắc chắn là Dog - Có bark()!
   }
 }
 
-// ✅ Type predicate with generics
-function isOfType<T>(
-  value: unknown,
-  check: (val: any) => boolean
-): value is T {
-  return check(value);
+// ✅ Type predicate with generics (Type guard với generics)
+function isOfType<T>(  // 📦 Generic type guard
+  value: unknown,  // ❓ Giá trị cần kiểm tra (unknown type)
+  check: (val: any) => boolean  // 🔍 Hàm kiểm tra
+): value is T {  // 🛡️ Type predicate - "value is T"
+  return check(value);  // 🎯 Trả về kết quả kiểm tra
 }
 
-const isString = (val: unknown): val is string => typeof val === 'string';
-const isNumber = (val: unknown): val is number => typeof val === 'number';
+const isString = (val: unknown): val is string => typeof val === 'string';  // 📝 Kiểm tra string
+const isNumber = (val: unknown): val is number => typeof val === 'number';  // 🔢 Kiểm tra number
 
-// ✅ Array type guard
-function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every(item => typeof item === 'string');
+// ✅ Array type guard (Kiểm tra array và type của elements)
+function isStringArray(value: unknown): value is string[] {  // 📋 Kiểm tra array of strings
+  return Array.isArray(value) && value.every(item => typeof item === 'string');  // ❓ Là array và mọi item là string?
 }
 
-// ✅ Non-null assertion guard
-function assertDefined<T>(value: T | null | undefined): asserts value is T {
-  if (value === null || value === undefined) {
-    throw new Error('Value is null or undefined');
-  }
+// ✅ Non-null assertion guard (Assertion function - Throw nếu null/undefined)
+function assertDefined<T>(value: T | null | undefined): asserts value is T {  // 🛡️ "asserts value is T" - Assert type
+  if (value === null || value === undefined) {  // ❓ Nếu là null hoặc undefined
+    throw new Error('Value is null or undefined');  // ❌ Throw error!
+  }  // ✅ Nếu không throw, TS biết value không null/undefined
 }
 
-const user: User | null = getUser();
-assertDefined(user);
-user.name; // ✅ TypeScript knows user is not null
+const user: User | null = getUser();  // 👤 User có thể null
+assertDefined(user);  // 🛡️ Assert user không null (throw nếu null)
+user.name; // ✅ TypeScript biết chắc chắn user không null - An toàn!
 ```
 
 ### **4.2. Discriminated Unions**
 
 ```typescript
 // ===================================================
-// 🎭 **DISCRIMINATED UNIONS** (Tagged Unions)
+// 🎭 **DISCRIMINATED UNIONS** (Tagged Unions - Union với discriminator)
 // ===================================================
 
-// ✅ API Response types
-interface SuccessResponse {
-  type: 'success';
-  data: { id: number; name: string };
+// ✅ API Response types (Các kiểu response khác nhau)
+interface SuccessResponse {  // ✅ Success response
+  type: 'success';  // 🏷️ Discriminator - Đánh dấu kiểu là success
+  data: { id: number; name: string };  // 📦 Data khi thành công
 }
 
-interface ErrorResponse {
-  type: 'error';
-  error: { code: string; message: string };
+interface ErrorResponse {  // ❌ Error response
+  type: 'error';  // 🏷️ Discriminator - Đánh dấu kiểu là error
+  error: { code: string; message: string };  // 🚨 Error info
 }
 
-interface LoadingResponse {
-  type: 'loading';
+interface LoadingResponse {  // ⏳ Loading response
+  type: 'loading';  // 🏷️ Discriminator - Đánh dấu kiểu là loading
 }
 
-type APIResponse = SuccessResponse | ErrorResponse | LoadingResponse;
+type APIResponse = SuccessResponse | ErrorResponse | LoadingResponse;  // 🔀 Union của 3 kiểu
 
-function handleResponse(response: APIResponse) {
-  switch (response.type) {
-    case 'success':
-      console.log(response.data); // ✅ TypeScript knows data exists
+function handleResponse(response: APIResponse) {  // 🛠️ Xử lý response
+  switch (response.type) {  // 🎯 Switch theo discriminator "type"
+    case 'success':  // ✅ Nếu thành công
+      console.log(response.data); // 🎯 TS biết response.data tồn tại!
       break;
-    case 'error':
-      console.error(response.error); // ✅ TypeScript knows error exists
+    case 'error':  // ❌ Nếu lỗi
+      console.error(response.error); // 🎯 TS biết response.error tồn tại!
       break;
-    case 'loading':
-      console.log('Loading...'); // ✅ No extra properties
+    case 'loading':  // ⏳ Nếu đang loading
+      console.log('Loading...'); // 🎯 TS biết không có properties khác!
       break;
-    default:
-      const _exhaustive: never = response; // ✅ Exhaustiveness check
+    default:  // 🛡️ Exhaustiveness check
+      const _exhaustive: never = response; // ✅ Đảm bảo xử lý hết các cases!
       return _exhaustive;
   }
 }
 
-// ✅ State machine with discriminated unions
-type State =
-  | { status: 'idle' }
-  | { status: 'loading'; startTime: number }
-  | { status: 'success'; data: string }
-  | { status: 'error'; error: Error };
+// ✅ State machine with discriminated unions (State machine an toàn với discriminated unions)
+type State =  // 🎭 4 states khác nhau
+  | { status: 'idle' }  // 💭 Idle state - Chỉ có status
+  | { status: 'loading'; startTime: number }  // ⏳ Loading state - Có thêm startTime
+  | { status: 'success'; data: string }  // ✅ Success state - Có data
+  | { status: 'error'; error: Error };  // ❌ Error state - Có error object
 
-function reducer(state: State, action: Action): State {
-  switch (state.status) {
-    case 'idle':
-      if (action.type === 'FETCH_START') {
-        return { status: 'loading', startTime: Date.now() };
+function reducer(state: State, action: Action): State {  // 🔄 Reducer function
+  switch (state.status) {  // 🎯 Switch theo discriminator "status"
+    case 'idle':  // 💭 Nếu đang idle
+      if (action.type === 'FETCH_START') {  // 🚀 Nếu action là bắt đầu fetch
+        return { status: 'loading', startTime: Date.now() };  // ⏳ Chuyển sang loading
       }
-      return state;
-    case 'loading':
-      if (action.type === 'FETCH_SUCCESS') {
-        return { status: 'success', data: action.payload };
+      return state;  // 🔄 Giữ nguyên state
+    case 'loading':  // ⏳ Nếu đang loading
+      if (action.type === 'FETCH_SUCCESS') {  // ✅ Nếu fetch thành công
+        return { status: 'success', data: action.payload };  // ✅ Chuyển sang success
       }
-      if (action.type === 'FETCH_ERROR') {
-        return { status: 'error', error: action.error };
+      if (action.type === 'FETCH_ERROR') {  // ❌ Nếu fetch lỗi
+        return { status: 'error', error: action.error };  // ❌ Chuyển sang error
       }
-      return state;
-    // ... other cases
+      return state;  // 🔄 Giữ nguyên state
+    // ... other cases (Các cases khác)
   }
 }
 ```
@@ -682,74 +682,74 @@ function reducer(state: State, action: Action): State {
 
 ```typescript
 // ===================================================
-// 📄 **DECLARATION FILES**
+// 📄 **DECLARATION FILES** (File .d.ts - Khai báo types)
 // ===================================================
 
-// types/global.d.ts
-declare global {
-  interface Window {
-    dataLayer: any[];
-    gtag: (...args: any[]) => void;
-    Stripe?: any;
+// types/global.d.ts (Khai báo global types)
+declare global {  // 🌐 Global namespace
+  interface Window {  // 💻 Mở rộng Window interface
+    dataLayer: any[];  // 📦 Google Analytics dataLayer
+    gtag: (...args: any[]) => void;  // 📊 Google Analytics gtag function
+    Stripe?: any;  // 💳 Stripe SDK (optional)
   }
 
-  namespace NodeJS {
-    interface ProcessEnv {
-      VITE_API_URL: string;
-      VITE_SENTRY_DSN: string;
-      NODE_ENV: 'development' | 'production' | 'test';
+  namespace NodeJS {  // 🟢 Node.js namespace
+    interface ProcessEnv {  // 🔑 Environment variables types
+      VITE_API_URL: string;  // 🌐 API URL (required)
+      VITE_SENTRY_DSN: string;  // 🚨 Sentry DSN (required)
+      NODE_ENV: 'development' | 'production' | 'test';  // 🎯 Môi trường (literal types)
     }
   }
 }
 
-export {}; // Make this a module
+export {}; // ⚠️ Make this a module (Để file này là module, không phải script)
 
 // ===================================================
-// 🔧 **MODULE AUGMENTATION**
+// 🔧 **MODULE AUGMENTATION** (Mở rộng module có sẵn)
 // ===================================================
 
-// types/react-query.d.ts
-import '@tanstack/react-query';
+// types/react-query.d.ts (Mở rộng react-query)
+import '@tanstack/react-query';  // 📦 Import module cần mở rộng
 
-declare module '@tanstack/react-query' {
-  interface Register {
-    defaultError: { message: string; code: string };
+declare module '@tanstack/react-query' {  // 🔧 Declare module để mở rộng
+  interface Register {  // 📝 Mở rộng Register interface
+    defaultError: { message: string; code: string };  // 🚨 Thêm default error type
   }
 }
 
 // ===================================================
-// 📦 **THIRD-PARTY LIBRARY TYPES**
+// 📦 **THIRD-PARTY LIBRARY TYPES** (Types cho thư viện bên thứ 3)
 // ===================================================
 
-// types/legacy-lib.d.ts
-declare module 'legacy-lib' {
-  export function doSomething(value: string): number;
+// types/legacy-lib.d.ts (Khai báo types cho library không có types)
+declare module 'legacy-lib' {  // 📦 Module không có types built-in
+  export function doSomething(value: string): number;  // 🛠️ Khai báo function
   
-  export interface Config {
-    apiKey: string;
-    timeout: number;
+  export interface Config {  // ⚙️ Khai báo interface
+    apiKey: string;  // 🔑 API key
+    timeout: number;  // ⏱️ Timeout
   }
   
-  export class Client {
-    constructor(config: Config);
-    request<T>(endpoint: string): Promise<T>;
+  export class Client {  // 🏭 Khai báo class
+    constructor(config: Config);  // 🛠️ Constructor
+    request<T>(endpoint: string): Promise<T>;  // 🌐 Method
   }
 }
 
 // ===================================================
-// 🌐 **AMBIENT DECLARATIONS**
+// 🌐 **AMBIENT DECLARATIONS** (Khai báo môi trường)
 // ===================================================
 
-// types/env.d.ts
-/// <reference types="vite/client" />
+// types/env.d.ts (Types cho environment variables)
+/// <reference types="vite/client" />  // 🔗 Reference Vite types
 
-interface ImportMetaEnv {
-  readonly VITE_API_URL: string;
-  readonly VITE_APP_TITLE: string;
+interface ImportMetaEnv {  // 🔑 Vite environment variables
+  readonly VITE_API_URL: string;  // 🌐 API URL (readonly)
+  readonly VITE_APP_TITLE: string;  // 🏷️ App title (readonly)
 }
 
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
+interface ImportMeta {  // 📦 ImportMeta interface
+  readonly env: ImportMetaEnv;  // 🔑 Env object
 }
 ```
 
@@ -833,62 +833,62 @@ interface ImportMeta {
 
 ```typescript
 // ===================================================
-// 🏷️ **BRANDED TYPES** (Nominal Typing Simulation)
+// 🏷️ **BRANDED TYPES** (Nominal Typing Simulation - Ngăn trộn lẫn types)
 // ===================================================
 
-// ✅ Create branded types
-type Brand<K, T> = K & { __brand: T };
+// ✅ Create branded types (Tạo branded types)
+type Brand<K, T> = K & { __brand: T };  // 🏷️ Thêm brand property ảo
 
-type UserId = Brand<string, 'UserId'>;
-type ProductId = Brand<string, 'ProductId'>;
-type Email = Brand<string, 'Email'>;
+type UserId = Brand<string, 'UserId'>;  // 🏷️ String nhưng có brand 'UserId'
+type ProductId = Brand<string, 'ProductId'>;  // 🏷️ String nhưng có brand 'ProductId'
+type Email = Brand<string, 'Email'>;  // 🏷️ String nhưng có brand 'Email'
 
-// ✅ Constructor functions
-function createUserId(id: string): UserId {
-  return id as UserId;
+// ✅ Constructor functions (Hàm tạo branded types)
+function createUserId(id: string): UserId {  // 🛠️ Tạo UserId
+  return id as UserId;  // 🎯 Cast thành UserId
 }
 
-function createEmail(email: string): Email {
-  if (!email.includes('@')) {
-    throw new Error('Invalid email');
+function createEmail(email: string): Email {  // 📧 Tạo Email
+  if (!email.includes('@')) {  // ❓ Validate có @
+    throw new Error('Invalid email');  // ❌ Throw nếu không hợp lệ
   }
-  return email as Email;
+  return email as Email;  // 🎯 Cast thành Email
 }
 
-// ✅ Type-safe functions
-function getUser(id: UserId): Promise<User> {
-  return fetch(`/api/users/${id}`).then(r => r.json());
+// ✅ Type-safe functions (Hàm an toàn với branded types)
+function getUser(id: UserId): Promise<User> {  // 👤 Chỉ nhận UserId, KHÔNG nhận string thường!
+  return fetch(`/api/users/${id}`).then(r => r.json());  // 🌐 Fetch user
 }
 
-function getProduct(id: ProductId): Promise<Product> {
-  return fetch(`/api/products/${id}`).then(r => r.json());
+function getProduct(id: ProductId): Promise<Product> {  // 🏭 Chỉ nhận ProductId
+  return fetch(`/api/products/${id}`).then(r => r.json());  // 🌐 Fetch product
 }
 
-// ✅ Usage
-const userId = createUserId('user-123');
-const productId = 'product-456' as ProductId;
+// ✅ Usage (Sử dụng)
+const userId = createUserId('user-123');  // 🏷️ Tạo UserId hợp lệ
+const productId = 'product-456' as ProductId;  // 🏷️ Cast thành ProductId
 
-getUser(userId); // ✅ OK
-// getUser(productId); // ❌ Error: Type 'ProductId' is not assignable to type 'UserId'
+getUser(userId); // ✅ OK - Đúng type!
+// getUser(productId); // ❌ Error: Type 'ProductId' is not assignable to type 'UserId' - Không thể dùng nhầm!
 
-// ✅ Numeric branded types
-type PositiveNumber = Brand<number, 'Positive'>;
-type Percentage = Brand<number, 'Percentage'>;
+// ✅ Numeric branded types (Branded types cho số)
+type PositiveNumber = Brand<number, 'Positive'>;  // 🔢 Số dương
+type Percentage = Brand<number, 'Percentage'>;  // 📊 Phần trăm (0-100)
 
-function createPercentage(value: number): Percentage {
-  if (value < 0 || value > 100) {
-    throw new Error('Percentage must be between 0 and 100');
+function createPercentage(value: number): Percentage {  // 🛠️ Tạo Percentage
+  if (value < 0 || value > 100) {  // ❓ Validate 0-100
+    throw new Error('Percentage must be between 0 and 100');  // ❌ Throw nếu ngoài phạm vi
   }
-  return value as Percentage;
+  return value as Percentage;  // 🎯 Cast thành Percentage
 }
 
-function applyDiscount(price: number, discount: Percentage): number {
-  return price * (1 - discount / 100);
+function applyDiscount(price: number, discount: Percentage): number {  // 💰 Áp dụng giảm giá
+  return price * (1 - discount / 100);  // 📊 Tính giá sau giảm
 }
 
-const discount = createPercentage(15);
-applyDiscount(100, discount); // ✅ OK
-// applyDiscount(100, 15); // ❌ Error
+const discount = createPercentage(15);  // 🏷️ Tạo 15% discount
+applyDiscount(100, discount); // ✅ OK - Đúng type!
+// applyDiscount(100, 15); // ❌ Error - Phải là Percentage, không phải number thường!
 ```
 
 ---
@@ -899,98 +899,98 @@ applyDiscount(100, discount); // ✅ OK
 
 ```typescript
 // ===================================================
-// 🌐 **TYPE-SAFE API CLIENT**
+// 🌐 **TYPE-SAFE API CLIENT** (API client an toàn với types)
 // ===================================================
 
-// Define API schema
-interface APISchema {
-  'GET /users': {
-    request: { limit?: number; offset?: number };
-    response: { users: User[]; total: number };
+// Define API schema (Khai báo schema cho API)
+interface APISchema {  // 📋 API schema - Map endpoint → request/response types
+  'GET /users': {  // 👥 Endpoint: GET /users
+    request: { limit?: number; offset?: number };  // ❓ Request params (optional)
+    response: { users: User[]; total: number };  // 📦 Response type
   };
-  'POST /users': {
-    request: { name: string; email: string };
-    response: { user: User };
+  'POST /users': {  // ➕ Endpoint: POST /users
+    request: { name: string; email: string };  // 📝 Request body (required)
+    response: { user: User };  // 👤 Response type
   };
-  'GET /users/:id': {
-    request: { id: string };
-    response: { user: User };
+  'GET /users/:id': {  // 🔍 Endpoint: GET /users/:id
+    request: { id: string };  // 🔑 Request params
+    response: { user: User };  // 👤 Response type
   };
 }
 
-// Extract method and path
-type APIEndpoint = keyof APISchema;
-type Method<E extends APIEndpoint> = E extends `${infer M} ${string}` ? M : never;
-type Path<E extends APIEndpoint> = E extends `${string} ${infer P}` ? P : never;
+// Extract method and path (Rút method và path từ endpoint string)
+type APIEndpoint = keyof APISchema;  // 🔑 'GET /users' | 'POST /users' | ...
+type Method<E extends APIEndpoint> = E extends `${infer M} ${string}` ? M : never;  // 🔍 Rút method
+type Path<E extends APIEndpoint> = E extends `${string} ${infer P}` ? P : never;  // 🗺️ Rút path
 
-// Type-safe API client
-class APIClient {
-  async request<E extends APIEndpoint>(
-    endpoint: E,
-    params: APISchema[E]['request']
-  ): Promise<APISchema[E]['response']> {
-    const [method, path] = endpoint.split(' ');
-    // ... implementation
+// Type-safe API client (API client với type safety hoàn toàn!)
+class APIClient {  // 🛠️ API Client class
+  async request<E extends APIEndpoint>(  // 🎯 Generic method
+    endpoint: E,  // 🌐 Endpoint (VD: 'GET /users')
+    params: APISchema[E]['request']  // 📝 Params phải đúng type!
+  ): Promise<APISchema[E]['response']> {  // 📦 Response type tự động suy luận!
+    const [method, path] = endpoint.split(' ');  // 🔊 Tách method và path
+    // ... implementation (Thực thi gọi API)
   }
 }
 
-// ✅ Usage
-const api = new APIClient();
+// ✅ Usage (Sử dụng)
+const api = new APIClient();  // 🛠️ Tạo instance
 
-const { users } = await api.request('GET /users', { limit: 10 }); // ✅ Type-safe
-// await api.request('GET /users', { invalidParam: true }); // ❌ Error
+const { users } = await api.request('GET /users', { limit: 10 }); // ✅ Type-safe - TS biết users là User[]!
+// await api.request('GET /users', { invalidParam: true }); // ❌ Error - invalidParam không tồn tại trong schema!
 ```
 
 ### **8.2. Type-Safe Event Emitter**
 
 ```typescript
 // ===================================================
-// 📡 **TYPE-SAFE EVENT EMITTER**
+// 📡 **TYPE-SAFE EVENT EMITTER** (Event emitter an toàn)
 // ===================================================
 
-interface EventMap {
-  'user:login': { userId: string; timestamp: number };
-  'user:logout': { userId: string };
-  'cart:add': { productId: string; quantity: number };
-  'cart:remove': { productId: string };
+interface EventMap {  // 📋 Event map - Map event name → data type
+  'user:login': { userId: string; timestamp: number };  // 🔐 Login event
+  'user:logout': { userId: string };  // 🚪 Logout event
+  'cart:add': { productId: string; quantity: number };  // 🛒 Add to cart event
+  'cart:remove': { productId: string };  // 🗑️ Remove from cart event
 }
 
-class TypedEventEmitter<Events extends Record<string, any>> {
-  private listeners = new Map<keyof Events, Set<Function>>();
+class TypedEventEmitter<Events extends Record<string, any>> {  // 📦 Generic EventEmitter
+  private listeners = new Map<keyof Events, Set<Function>>();  // 📋 Map lưu listeners
 
-  on<K extends keyof Events>(
-    event: K,
-    callback: (data: Events[K]) => void
-  ): () => void {
-    if (!this.listeners.has(event)) {
-      this.listeners.set(event, new Set());
+  on<K extends keyof Events>(  // 🎯 Đăng ký listener
+    event: K,  // 🏷️ Event name (type-safe!)
+    callback: (data: Events[K]) => void  // 🔔 Callback với data type chính xác!
+  ): () => void {  // 🔄 Trả về unsubscribe function
+    if (!this.listeners.has(event)) {  // ❓ Nếu chưa có Set cho event này
+      this.listeners.set(event, new Set());  // 🆕 Tạo Set mới
     }
-    this.listeners.get(event)!.add(callback);
+    this.listeners.get(event)!.add(callback);  // ➕ Thêm callback vào Set
 
-    return () => this.off(event, callback);
+    return () => this.off(event, callback);  // 🔄 Trả về hàm unsubscribe
   }
 
-  off<K extends keyof Events>(
-    event: K,
-    callback: (data: Events[K]) => void
+  off<K extends keyof Events>(  // 🗑️ Hủy đăng ký listener
+    event: K,  // 🏷️ Event name
+    callback: (data: Events[K]) => void  // 🔔 Callback cần xóa
   ): void {
-    this.listeners.get(event)?.delete(callback);
+    this.listeners.get(event)?.delete(callback);  // 🗑️ Xóa callback
   }
 
-  emit<K extends keyof Events>(event: K, data: Events[K]): void {
-    this.listeners.get(event)?.forEach(callback => callback(data));
+  emit<K extends keyof Events>(event: K, data: Events[K]): void {  // 📢 Phát event
+    this.listeners.get(event)?.forEach(callback => callback(data));  // 🔔 Gọi tất cả callbacks
   }
 }
 
-// ✅ Usage
-const emitter = new TypedEventEmitter<EventMap>();
+// ✅ Usage (Sử dụng)
+const emitter = new TypedEventEmitter<EventMap>();  // 🛠️ Tạo emitter với EventMap
 
-emitter.on('user:login', (data) => {
-  console.log(data.userId, data.timestamp); // ✅ Autocomplete works!
+emitter.on('user:login', (data) => {  // 🔔 Đăng ký listener
+  console.log(data.userId, data.timestamp); // ✅ Autocomplete works! - TS biết data.userId và data.timestamp!
 });
 
-emitter.emit('user:login', { userId: '123', timestamp: Date.now() }); // ✅ Type-safe
-// emitter.emit('user:login', { invalidProp: true }); // ❌ Error
+emitter.emit('user:login', { userId: '123', timestamp: Date.now() }); // ✅ Type-safe - Phải đúng structure!
+// emitter.emit('user:login', { invalidProp: true }); // ❌ Error - invalidProp không tồn tại!
 ```
 
 ---
@@ -999,37 +999,37 @@ emitter.emit('user:login', { userId: '123', timestamp: Date.now() }); // ✅ Typ
 
 ```typescript
 // ===================================================
-// ✅ **TYPESCRIPT BEST PRACTICES**
+// ✅ **TYPESCRIPT BEST PRACTICES** (Thực hành tốt nhất)
 // ===================================================
 
-const TYPESCRIPT_BEST_PRACTICES = {
-  strictMode: [
-    '✅ Enable all strict flags in tsconfig.json',
-    '✅ Use "noImplicitAny" to catch type errors',
-    '✅ Enable "strictNullChecks" for null safety',
-    '✅ Use "noUncheckedIndexedAccess" for array safety',
+const TYPESCRIPT_BEST_PRACTICES = {  // 📋 Danh sách best practices
+  strictMode: [  // ⚠️ Chế độ nghiêm ngặt
+    '✅ Enable all strict flags in tsconfig.json',  // 🔧 Bật tất cả strict flags
+    '✅ Use "noImplicitAny" to catch type errors',  // 🚫 Bắt lỗi any ngầm định
+    '✅ Enable "strictNullChecks" for null safety',  // 🛡️ Kiểm tra null/undefined
+    '✅ Use "noUncheckedIndexedAccess" for array safety',  // 📋 An toàn khi truy cập array
   ],
 
-  typeDesign: [
-    '✅ Prefer interfaces for object shapes',
-    '✅ Use type aliases for unions/intersections',
-    '✅ Leverage discriminated unions for state machines',
-    '✅ Use branded types for domain primitives',
-    '✅ Avoid "any" - use "unknown" instead',
+  typeDesign: [  // 🎨 Thiết kế types
+    '✅ Prefer interfaces for object shapes',  // 📝 Dùng interfaces cho objects
+    '✅ Use type aliases for unions/intersections',  // 🔀 Dùng type cho unions
+    '✅ Leverage discriminated unions for state machines',  // 🎭 Dùng discriminated unions cho states
+    '✅ Use branded types for domain primitives',  // 🏷️ Dùng branded types cho domain
+    '✅ Avoid "any" - use "unknown" instead',  // ❌ Tránh any - dùng unknown
   ],
 
-  generics: [
-    '✅ Constrain generics with "extends"',
-    '✅ Infer types with conditional types',
-    '✅ Use utility types (Partial, Pick, Omit)',
-    '✅ Create custom utility types for common patterns',
+  generics: [  // 📦 Generics
+    '✅ Constrain generics with "extends"',  // 🔒 Ràng buộc generics
+    '✅ Infer types with conditional types',  // 🔍 Dùng infer để rút types
+    '✅ Use utility types (Partial, Pick, Omit)',  // 🛠️ Dùng utility types built-in
+    '✅ Create custom utility types for common patterns',  // 🎨 Tạo utility types riêng
   ],
 
-  performance: [
-    '✅ Use "skipLibCheck" for faster compilation',
-    '✅ Use "incremental" builds',
-    '✅ Split large types into smaller composable ones',
-    '✅ Avoid deep recursion in mapped types',
+  performance: [  // ⚡ Hiệu suất
+    '✅ Use "skipLibCheck" for faster compilation',  // 🚀 Compile nhanh hơn
+    '✅ Use "incremental" builds',  // 🔄 Build tăng dần
+    '✅ Split large types into smaller composable ones',  // 🧩 Chia nhỏ types
+    '✅ Avoid deep recursion in mapped types',  // ⚠️ Tránh đệ quy sâu
   ],
 };
 ```

@@ -1,4 +1,4 @@
-# 🔄 Q23: Generator Functions & Async Generators
+# 🔄 Q23: Generator Functions & Async Generators & Áp dụng Async Generator trong React
 
 ## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 

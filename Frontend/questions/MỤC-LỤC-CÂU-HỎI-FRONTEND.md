@@ -374,3 +374,27 @@ Nếu phát hiện lỗi hoặc muốn bổ sung nội dung:
 **Happy Learning! 🚀**
 
 > "The only way to learn a new programming language is by writing programs in it." - Dennis Ritchie
+>
+> 
+PROMPT FULL – “Senior Technical Answer Generator”
+Câu hỏi: # 🗂️ Bảo Mật Security trên Web Application Frontend  (**"Web security = 7 layers: HTTPS, XSS, CSRF, Auth, Storage, API, Headers)
+"Từ bây giờ, hãy trả lời mọi câu hỏi phỏng vấn Frontend ở cấp Senior/Technical Lead.
+Mỗi câu trả lời phải bao gồm đầy đủ các phần sau bằng tiếng việt:
+
+Tóm tắt 1–2 câu (để trả lời nhanh trong phỏng vấn).
+
+Giải thích chi tiết ở cấp Senior/Staff, bao gồm kiến trúc, cơ chế, cách hoạt động.
+
+Ví dụ code thực tế (React/JS/TS hoặc tùy ngữ cảnh).
+
+Best Practices theo ngành.
+
+Các pitfalls/lỗi phổ biến mà dev hay gặp
+
+So sánh với các kỹ thuật/công nghệ khác nếu phù hợp.
+
+Scenario thực tế trong dự án lớn để chứng minh hiểu biết.
+
+Cách tối ưu hóa / nâng cấp giải pháp nếu được hỏi tiếp.
+
+Phiên bản trả lời 1 phút cho phỏng vấn (đủ ý và sắc nét)

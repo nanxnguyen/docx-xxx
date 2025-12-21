@@ -89,157 +89,157 @@ import importPlugin from 'eslint-plugin-import';
 import prettier from 'eslint-plugin-prettier';
 
 export default [
-  js.configs.recommended,
+  js.configs.recommended, // ✅ ESLint recommended rules (cấu hình mặc định)
   
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx}'], // 📁 Apply cho file TypeScript/TSX
     languageOptions: {
-      parser: tsParser,
+      parser: tsParser, // 🔧 Parser cho TypeScript
       parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
+        ecmaVersion: 'latest', // 🆕 Sử dụng ES version mới nhất
+        sourceType: 'module', // 📦 ES Modules
         ecmaFeatures: {
-          jsx: true,
+          jsx: true, // ⚛️ Enable JSX parsing
         },
-        project: './tsconfig.json',
+        project: './tsconfig.json', // 📋 TypeScript config file
       },
-      globals: {
-        window: 'readonly',
-        document: 'readonly',
-        navigator: 'readonly',
+      globals: { // 🌐 Global variables (không cần import)
+        window: 'readonly', // 🪟 Browser window object
+        document: 'readonly', // 📄 DOM document
+        navigator: 'readonly', // 🧭 Browser navigator
       },
     },
     
-    plugins: {
-      '@typescript-eslint': typescript,
-      'react': react,
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-      'jsx-a11y': jsxA11y,
-      'import': importPlugin,
-      'prettier': prettier,
+    plugins: { // 🔌 ESLint plugins
+      '@typescript-eslint': typescript, // 📘 TypeScript rules
+      'react': react, // ⚛️ React rules
+      'react-hooks': reactHooks, // 🪝 React Hooks rules
+      'react-refresh': reactRefresh, // 🔄 Vite HMR rules
+      'jsx-a11y': jsxA11y, // ♿ Accessibility rules
+      'import': importPlugin, // 📦 Import/export rules
+      'prettier': prettier, // 💅 Prettier formatting
     },
     
     rules: {
       // ===================================================
-      // ✅ TYPESCRIPT RULES
+      // ✅ TYPESCRIPT RULES - Kiểm tra lỗi TypeScript
       // ===================================================
-      '@typescript-eslint/no-unused-vars': ['error', {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
+      '@typescript-eslint/no-unused-vars': ['error', { // ❌ Báo lỗi biến không dùng
+        argsIgnorePattern: '^_', // 🚫 Ignore args bắt đầu bằng _
+        varsIgnorePattern: '^_', // 🚫 Ignore vars bắt đầu bằng _
       }],
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/explicit-function-return-type': ['warn', {
-        allowExpressions: true,
-        allowTypedFunctionExpressions: true,
+      '@typescript-eslint/no-explicit-any': 'warn', // ⚠️ Cảnh báo khi dùng any
+      '@typescript-eslint/explicit-function-return-type': ['warn', { // 🔤 Yêu cầu khai báo return type
+        allowExpressions: true, // ✅ Cho phép arrow functions không cần type
+        allowTypedFunctionExpressions: true, // ✅ Cho phép typed function expressions
       }],
-      '@typescript-eslint/no-floating-promises': 'error',
-      '@typescript-eslint/await-thenable': 'error',
-      '@typescript-eslint/no-misused-promises': 'error',
-      '@typescript-eslint/strict-boolean-expressions': 'off',
+      '@typescript-eslint/no-floating-promises': 'error', // ❌ Promise phải await hoặc .catch
+      '@typescript-eslint/await-thenable': 'error', // ❌ Chỉ await những gì thenable
+      '@typescript-eslint/no-misused-promises': 'error', // ❌ Không dùng Promise sai cách
+      '@typescript-eslint/strict-boolean-expressions': 'off', // 🔓 Cho phép truthy/falsy
       
       // ===================================================
-      // ⚛️ REACT RULES
+      // ⚛️ REACT RULES - Kiểm tra React best practices
       // ===================================================
-      'react/react-in-jsx-scope': 'off', // Not needed in React 17+
-      'react/prop-types': 'off', // Using TypeScript
-      'react/jsx-no-target-blank': 'error',
-      'react/jsx-key': ['error', {
-        checkFragmentShorthand: true,
+      'react/react-in-jsx-scope': 'off', // 🔓 Not needed in React 17+ (auto import)
+      'react/prop-types': 'off', // 🔓 Using TypeScript (không cần PropTypes)
+      'react/jsx-no-target-blank': 'error', // ❌ <a target="_blank"> phải có rel="noreferrer"
+      'react/jsx-key': ['error', { // ❌ Bắt buộc key khi map array
+        checkFragmentShorthand: true, // ✅ Check cả <> fragment
       }],
-      'react/no-array-index-key': 'warn',
-      'react/no-unescaped-entities': 'warn',
+      'react/no-array-index-key': 'warn', // ⚠️ Không dùng index làm key
+      'react/no-unescaped-entities': 'warn', // ⚠️ Escape quotes trong JSX
       
       // ===================================================
-      // 🪝 REACT HOOKS RULES
+      // 🪝 REACT HOOKS RULES - Kiểm tra Hooks
       // ===================================================
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/rules-of-hooks': 'error', // ❌ Hooks phải gọi ở top level
+      'react-hooks/exhaustive-deps': 'warn', // ⚠️ Check dependencies đầy đủ
       
       // ===================================================
-      // ♿ ACCESSIBILITY RULES
+      // ♿ ACCESSIBILITY RULES - Kiểm tra khả năng tiếp cận
       // ===================================================
-      'jsx-a11y/alt-text': 'error',
-      'jsx-a11y/anchor-is-valid': 'error',
-      'jsx-a11y/aria-props': 'error',
-      'jsx-a11y/aria-role': 'error',
-      'jsx-a11y/click-events-have-key-events': 'warn',
-      'jsx-a11y/no-static-element-interactions': 'warn',
+      'jsx-a11y/alt-text': 'error', // ❌ <img> phải có alt text
+      'jsx-a11y/anchor-is-valid': 'error', // ❌ <a> phải có href hợp lệ
+      'jsx-a11y/aria-props': 'error', // ❌ ARIA props phải hợp lệ
+      'jsx-a11y/aria-role': 'error', // ❌ ARIA role phải đúng
+      'jsx-a11y/click-events-have-key-events': 'warn', // ⚠️ onClick cần onKeyDown
+      'jsx-a11y/no-static-element-interactions': 'warn', // ⚠️ Div onClick cần role
       
       // ===================================================
-      // 📦 IMPORT RULES
+      // 📦 IMPORT RULES - Sắp xếp imports
       // ===================================================
-      'import/order': ['error', {
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
+      'import/order': ['error', { // ❌ Bắt buộc sắp xếp imports
+        groups: [ // 📋 Thứ tự nhóm imports
+          'builtin',   // 🏗️ Node.js built-in (fs, path)
+          'external',  // 📦 npm packages (react, lodash)
+          'internal',  // 🏠 Internal aliases (@/components)
+          'parent',    // ⬆️ Parent imports (../)
+          'sibling',   // ➡️ Sibling imports (./)
+          'index',     // 📁 Index imports (./index)
         ],
-        pathGroups: [
+        pathGroups: [ // 🎯 Custom grouping
           {
-            pattern: 'react',
+            pattern: 'react', // ⚛️ React luôn đầu tiên
             group: 'builtin',
             position: 'before',
           },
           {
-            pattern: '@/**',
+            pattern: '@/**', // 🏠 Internal paths (@/...)
             group: 'internal',
           },
         ],
-        pathGroupsExcludedImportTypes: ['react'],
-        'newlines-between': 'always',
-        alphabetize: {
-          order: 'asc',
-          caseInsensitive: true,
+        pathGroupsExcludedImportTypes: ['react'], // 🚫 Exclude react khỏi sorting
+        'newlines-between': 'always', // 📏 Dòng trống giữa các nhóm
+        alphabetize: { // 🔤 Sắp xếp alphabet
+          order: 'asc', // ⬆️ A → Z
+          caseInsensitive: true, // 🔓 Không phân biệt hoa thường
         },
       }],
-      'import/no-duplicates': 'error',
-      'import/no-unused-modules': 'warn',
+      'import/no-duplicates': 'error', // ❌ Không import trùng
+      'import/no-unused-modules': 'warn', // ⚠️ File không được import
       
       // ===================================================
-      // 💅 PRETTIER INTEGRATION
+      // 💅 PRETTIER INTEGRATION - Tích hợp Prettier
       // ===================================================
-      'prettier/prettier': 'error',
+      'prettier/prettier': 'error', // ❌ Formatting sai theo Prettier
       
       // ===================================================
-      // 🚀 REACT REFRESH (Vite HMR)
+      // 🚀 REACT REFRESH (Vite HMR) - Hot Module Replacement
       // ===================================================
-      'react-refresh/only-export-components': ['warn', {
-        allowConstantExport: true,
+      'react-refresh/only-export-components': ['warn', { // ⚠️ File chỉ export components
+        allowConstantExport: true, // ✅ Cho phép export const
       }],
     },
     
-    settings: {
+    settings: { // ⚙️ Cấu hình bổ sung
       react: {
-        version: 'detect',
+        version: 'detect', // 🔍 Auto detect React version
       },
-      'import/resolver': {
+      'import/resolver': { // 📦 Resolve TypeScript paths
         typescript: {
-          project: './tsconfig.json',
+          project: './tsconfig.json', // 📋 TypeScript config
         },
       },
     },
   },
   
   {
-    files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
+    files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'], // 🧪 Test files
+    rules: { // 🔓 Relax rules cho test files
+      '@typescript-eslint/no-explicit-any': 'off', // ✅ Cho phép any trong tests
+      '@typescript-eslint/no-non-null-assertion': 'off', // ✅ Cho phép ! assertion
     },
   },
   
   {
-    ignores: [
-      'dist/',
-      'build/',
-      'coverage/',
-      'node_modules/',
-      '*.config.js',
-      '*.config.ts',
+    ignores: [ // 🚫 Files/folders bỏ qua
+      'dist/', // 📦 Build output
+      'build/', // 📦 Build folder
+      'coverage/', // 📊 Test coverage
+      'node_modules/', // 📦 Dependencies
+      '*.config.js', // ⚙️ Config files
+      '*.config.ts', // ⚙️ TS config files
     ],
   },
 ];
@@ -316,60 +316,60 @@ export default [
 
 ```javascript
 // ===================================================
-// 💅 **.PRETTIERRC.MJS**
+// 💅 **.PRETTIERRC.MJS** - Cấu hình Prettier
 // ===================================================
 
 export default {
-  // ✅ Basic formatting
-  printWidth: 100,
-  tabWidth: 2,
-  useTabs: false,
-  semi: true,
-  singleQuote: true,
-  quoteProps: 'as-needed',
+  // ✅ Basic formatting - Định dạng cơ bản
+  printWidth: 100, // 📏 Độ rộng tối đa 1 dòng (100 ký tự)
+  tabWidth: 2, // 🔢 Kích thước tab = 2 spaces
+  useTabs: false, // 🚫 Dùng spaces thay vì tabs
+  semi: true, // ✅ Thêm semicolon (;) cuối dòng
+  singleQuote: true, // '' Dùng single quotes thay vì double
+  quoteProps: 'as-needed', // 🔑 Chỉ quote object keys khi cần
   
-  // ✅ JSX formatting
-  jsxSingleQuote: false,
-  jsxBracketSameLine: false,
+  // ✅ JSX formatting - Định dạng JSX
+  jsxSingleQuote: false, // "" JSX dùng double quotes
+  jsxBracketSameLine: false, // 📐 Đóng tag JSX xuống dòng mới
   
-  // ✅ Trailing commas
-  trailingComma: 'es5',
+  // ✅ Trailing commas - Dấu phẩy cuối
+  trailingComma: 'es5', // , Thêm dấu phẩy cuối (tương thích ES5)
   
-  // ✅ Spacing
-  bracketSpacing: true,
-  arrowParens: 'avoid',
+  // ✅ Spacing - Khoảng trắng
+  bracketSpacing: true, // { } Có space trong brackets
+  arrowParens: 'avoid', // 🏹 x => x (không có parens nếu 1 param)
   
-  // ✅ Line endings
-  endOfLine: 'lf',
+  // ✅ Line endings - Kết thúc dòng
+  endOfLine: 'lf', // 🐧 Unix line endings (LF)
   
-  // ✅ Import sorting (with plugin)
-  importOrder: [
-    '^react',
-    '^@?\\w',
-    '^@/(.*)$',
-    '^[./]',
+  // ✅ Import sorting (with plugin) - Sắp xếp imports
+  importOrder: [ // 📋 Thứ tự imports
+    '^react', // 1️⃣ React đầu tiên
+    '^@?\\w', // 2️⃣ External packages (npm)
+    '^@/(.*)$', // 3️⃣ Internal paths (@/...)
+    '^[./]', // 4️⃣ Relative imports (./ ../)
   ],
-  importOrderSeparation: true,
-  importOrderSortSpecifiers: true,
+  importOrderSeparation: true, // 📏 Dòng trống giữa nhóm
+  importOrderSortSpecifiers: true, // 🔤 Sort named imports
   
-  // ✅ Plugins
+  // ✅ Plugins - Prettier plugins
   plugins: [
-    '@trivago/prettier-plugin-sort-imports',
-    'prettier-plugin-tailwindcss',
+    '@trivago/prettier-plugin-sort-imports', // 📦 Sắp xếp imports
+    'prettier-plugin-tailwindcss', // 🎨 Format Tailwind classes
   ],
   
-  // ✅ File-specific overrides
+  // ✅ File-specific overrides - Cấu hình riêng cho từng loại file
   overrides: [
     {
-      files: '*.json',
+      files: '*.json', // 📄 JSON files
       options: {
-        printWidth: 80,
+        printWidth: 80, // 📏 Rút ngắn độ rộng cho JSON
       },
     },
     {
-      files: '*.md',
+      files: '*.md', // 📝 Markdown files
       options: {
-        proseWrap: 'always',
+        proseWrap: 'always', // 📖 Wrap text trong markdown
       },
     },
   ],
@@ -378,26 +378,27 @@ export default {
 
 ```json
 // ===================================================
-// 🚫 **.PRETTIERIGNORE**
+// 🚫 **.PRETTIERIGNORE** - Files không format
 // ===================================================
 
-# Build outputs
-dist/
-build/
-coverage/
+# Build outputs - Thư mục build
+dist/ # 📦 Production build
+build/ # 📦 Build folder
+coverage/ # 📊 Test coverage reports
 
-# Dependencies
-node_modules/
+# Dependencies - Dependencies
+node_modules/ # 📦 npm packages
 
-# Logs
-*.log
+# Logs - File logs
+*.log # 📝 Log files
 
-# Auto-generated files
-*.generated.ts
-*.d.ts
+# Auto-generated files - Files tự động tạo
+*.generated.ts # 🤖 Generated TypeScript
+*.d.ts # 📘 TypeScript declarations
 
-# Config files
-pnpm-lock.yaml
+# Config files - Lock files
+pnpm-lock.yaml # 🔒 pnpm lock
+package-lock.json # 🔒 npm lock
 package-lock.json
 ```
 
@@ -450,19 +451,19 @@ npx commitlint --edit $1
 
 ```bash
 # ===================================================
-# 🚀 **.husky/pre-push**
+# 🚀 **.husky/pre-push** - Chạy trước khi push
 # ===================================================
 
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# ✅ Run full test suite
+# ✅ Run full test suite - Chạy tất cả tests
 npm run test
 
-# ✅ Build check
+# ✅ Build check - Kiểm tra build có lỗi không
 npm run build
 
-# ✅ Bundle size check
+# ✅ Bundle size check - Kiểm tra kích thước bundle
 npm run size-limit
 ```
 
@@ -470,26 +471,26 @@ npm run size-limit
 
 ```json
 // ===================================================
-// 🎯 **LINT-STAGED** (package.json)
+// 🎯 **LINT-STAGED** (package.json) - Chạy cho staged files
 // ===================================================
 
 {
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write",
-      "vitest related --run"
+    "*.{ts,tsx}": [ // 📘 TypeScript/TSX files
+      "eslint --fix", // 🔧 Auto-fix lỗi ESLint
+      "prettier --write", // 💅 Format code
+      "vitest related --run" // 🧪 Chạy tests liên quan
     ],
-    "*.{js,jsx}": [
-      "eslint --fix",
-      "prettier --write"
+    "*.{js,jsx}": [ // 📄 JavaScript/JSX files
+      "eslint --fix", // 🔧 Auto-fix lỗi
+      "prettier --write" // 💅 Format code
     ],
-    "*.{json,md,yml,yaml}": [
-      "prettier --write"
+    "*.{json,md,yml,yaml}": [ // 📝 Config/doc files
+      "prettier --write" // 💅 Format only
     ],
-    "*.css": [
-      "prettier --write",
-      "stylelint --fix"
+    "*.css": [ // 🎨 CSS files
+      "prettier --write", // 💅 Format CSS
+      "stylelint --fix" // 🔧 Fix CSS linting
     ]
   }
 }
@@ -503,50 +504,62 @@ npm run size-limit
 
 ```javascript
 // ===================================================
-// 📋 **COMMITLINT.CONFIG.MJS**
+// 📋 **COMMITLINT.CONFIG.MJS** - Kiểm tra commit message
 // ===================================================
 
 export default {
-  extends: ['@commitlint/config-conventional'],
+  extends: ['@commitlint/config-conventional'], // 📏 Dùng conventional commits
   
   rules: {
-    // ✅ Type enum
+    // ✅ Type enum - Các loại commit hợp lệ
     'type-enum': [
-      2,
-      'always',
+      2, // ❌ Error level (bắt buộc)
+      'always', // 🔒 Luôn check
       [
-        'feat',     // New feature
-        'fix',      // Bug fix
-        'docs',     // Documentation
-        'style',    // Formatting
-        'refactor', // Code restructuring
-        'perf',     // Performance improvement
-        'test',     // Tests
-        'chore',    // Maintenance
-        'ci',       // CI/CD changes
-        'revert',   // Revert commit
+        'feat',     // ✨ New feature - Tính năng mới
+        'fix',      // 🐛 Bug fix - Sửa lỗi
+        'docs',     // 📝 Documentation - Tài liệu
+        'style',    // 💄 Formatting - Format code
+        'refactor', // ♻️ Code restructuring - Tái cấu trúc
+        'perf',     // ⚡ Performance improvement - Cải thiện performance
+        'test',     // 🧪 Tests - Viết tests
+        'chore',    // 🔧 Maintenance - Bảo trì
+        'ci',       // 👷 CI/CD changes - Thay đổi CI/CD
+        'revert',   // ⏪ Revert commit - Hoàn tác commit
       ],
     ],
     
-    // ✅ Subject rules
-    'subject-case': [2, 'never', ['upper-case']],
-    'subject-empty': [2, 'never'],
-    'subject-full-stop': [2, 'never', '.'],
-    'subject-max-length': [2, 'always', 100],
+    // ✅ Subject rules - Quy tắc cho subject (tiêu đề)
+    'subject-case': [2, 'never', ['upper-case']], // 🔡 Không viết hoa đầu
+    'subject-empty': [2, 'never'], // ❌ Subject không được rỗng
+    'subject-full-stop': [2, 'never', '.'], // 🚫 Không dấu chấm cuối
+    'subject-max-length': [2, 'always', 100], // 📏 Tối đa 100 ký tự
     
-    // ✅ Body rules
-    'body-leading-blank': [2, 'always'],
-    'body-max-line-length': [2, 'always', 100],
+    // ✅ Body rules - Quy tắc cho body (nội dung)
+    'body-leading-blank': [2, 'always'], // 📏 Dòng trống trước body
+    'body-max-line-length': [2, 'always', 100], // 📏 Tối đa 100 ký tự/dòng
     
-    // ✅ Footer rules
-    'footer-leading-blank': [2, 'always'],
+    // ✅ Footer rules - Quy tắc cho footer
+    'footer-leading-blank': [2, 'always'], // 📏 Dòng trống trước footer
     
-    // ✅ Scope enum (optional)
+    // ✅ Scope enum (optional) - Các scope hợp lệ (không bắt buộc)
     'scope-enum': [
-      1,
-      'always',
+      1, // ⚠️ Warning level (khuyến nghị)
+      'always', // 🔓 Luôn check nếu có scope
       [
-        'core',
+        'core',       // 🏗️ Core functionality
+        'ui',         // 🎨 UI components
+        'api',        // 📡 API changes
+        'auth',       // 🔐 Authentication
+        'components', // 🧩 React components
+        'hooks',      // 🪝 Custom hooks
+        'utils',      // 🛠️ Utility functions
+        'config',     // ⚙️ Configuration
+        'deps',       // 📦 Dependencies
+      ],
+    ],
+  },
+};
         'ui',
         'api',
         'auth',
@@ -563,24 +576,25 @@ export default {
 
 ```bash
 # ===================================================
-# ✅ **VALID COMMIT MESSAGES**
+# ✅ **VALID COMMIT MESSAGES** - Commit messages đúng
 # ===================================================
 
-feat(auth): add OAuth2 login support
-fix(ui): resolve button hover state bug
-docs(readme): update installation instructions
-refactor(api): simplify user service logic
-perf(core): optimize bundle size with code splitting
-test(hooks): add tests for useDebounce
-chore(deps): upgrade React to 18.3.0
+feat(auth): add OAuth2 login support # ✨ Thêm tính năng mới
+fix(ui): resolve button hover state bug # 🐛 Sửa lỗi
+docs(readme): update installation instructions # 📝 Cập nhật docs
+refactor(api): simplify user service logic # ♻️ Refactor code
+perf(core): optimize bundle size with code splitting # ⚡ Tối ưu performance
+test(hooks): add tests for useDebounce # 🧪 Thêm tests
+chore(deps): upgrade React to 18.3.0 # 🔧 Update dependencies
 
-# ❌ **INVALID COMMIT MESSAGES**
+# ===================================================
+# ❌ **INVALID COMMIT MESSAGES** - Commit messages sai
 # ===================================================
 
-Fixed bug              # Missing type
-FEAT: new feature      # Wrong case
-feat add feature       # Missing colon
-feat: Add new feature. # Full stop at end
+Fixed bug              # ❌ Missing type (thiếu type)
+FEAT: new feature      # ❌ Wrong case (viết hoa sai)
+feat add feature       # ❌ Missing colon (thiếu dấu :)
+feat: Add new feature. # ❌ Full stop at end (có dấu chấm cuối)
 ```
 
 ---
@@ -594,67 +608,67 @@ feat: Add new feature. # Full stop at end
 # 📊 **SONARQUBE WORKFLOW** (.github/workflows/sonar.yml)
 # ===================================================
 
-name: SonarQube Analysis
+name: SonarQube Analysis # 📏 Tên workflow
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop] # 🌿 Chạy khi push vào main/develop
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened] # 🔄 Chạy khi tạo/update PR
 
 jobs:
   sonar:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # 🐧 Chạy trên Ubuntu
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4 # 📥 Checkout code
         with:
-          fetch-depth: 0 # Full history for better analysis
+          fetch-depth: 0 # 🔍 Full history for better analysis (lịch sử đầy đủ)
       
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4 # ⚙️ Setup Node.js
         with:
-          node-version: 20
+          node-version: 20 # 🔢 Node version 20
       
-      - run: npm ci
-      - run: npm run test:coverage
+      - run: npm ci # 📦 Install dependencies (clean install)
+      - run: npm run test:coverage # 🧪 Chạy tests + coverage
       
-      - name: SonarQube Scan
+      - name: SonarQube Scan # 🔍 Scan code quality
         uses: SonarSource/sonarqube-scan-action@master
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # 🔑 SonarQube token
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # 🌐 SonarQube server URL
       
-      - name: SonarQube Quality Gate
+      - name: SonarQube Quality Gate # 🚦 Check quality gate
         uses: SonarSource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
+        timeout-minutes: 5 # ⏱️ Timeout 5 phút
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # 🔑 Token
 ```
 
 ```properties
 # ===================================================
-# ⚙️ **SONAR-PROJECT.PROPERTIES**
+# ⚙️ **SONAR-PROJECT.PROPERTIES** - Cấu hình SonarQube
 # ===================================================
 
-sonar.projectKey=my-frontend-app
-sonar.organization=my-org
+sonar.projectKey=my-frontend-app # 🔑 Project key (unique)
+sonar.organization=my-org # 🏢 Organization name
 
-# ✅ Source configuration
-sonar.sources=src
-sonar.tests=src
-sonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx
-sonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**
+# ✅ Source configuration - Cấu hình source code
+sonar.sources=src # 📁 Thư mục source code
+sonar.tests=src # 🧪 Thư mục tests (cùng folder với src)
+sonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx # 🎯 Test files pattern
+sonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/** # 🚫 Bỏ qua folders
 
-# ✅ Coverage report
-sonar.javascript.lcov.reportPaths=coverage/lcov.info
-sonar.testExecutionReportPaths=coverage/test-report.xml
+# ✅ Coverage report - Báo cáo coverage
+sonar.javascript.lcov.reportPaths=coverage/lcov.info # 📊 LCOV coverage file
+sonar.testExecutionReportPaths=coverage/test-report.xml # 📄 Test execution report
 
-# ✅ Code quality settings
-sonar.sourceEncoding=UTF-8
-sonar.javascript.node.maxspace=4096
+# ✅ Code quality settings - Cài đặt chất lượng code
+sonar.sourceEncoding=UTF-8 # 🔤 Encoding UTF-8
+sonar.javascript.node.maxspace=4096 # 💾 Max memory cho Node.js (MB)
 
-# ✅ Quality gates
-sonar.qualitygate.wait=true
-sonar.qualitygate.timeout=300
+# ✅ Quality gates - Ngưỡng chất lượng
+sonar.qualitygate.wait=true # ⏳ Chờ quality gate check xong
+sonar.qualitygate.timeout=300 # ⏱️ Timeout 300s (5 phút)
 ```
 
 ---
@@ -665,27 +679,27 @@ sonar.qualitygate.timeout=300
 
 ```json
 // ===================================================
-// 📦 **SIZE-LIMIT** (.size-limit.json)
+// 📦 **SIZE-LIMIT** (.size-limit.json) - Giới hạn kích thước bundle
 // ===================================================
 
 [
   {
-    "name": "Main Bundle",
-    "path": "dist/assets/index-*.js",
-    "limit": "200 KB",
-    "gzip": true,
-    "webpack": false
+    "name": "Main Bundle", // 📄 Tên bundle
+    "path": "dist/assets/index-*.js", // 📁 Đường dẫn file
+    "limit": "200 KB", // ⚠️ Giới hạn 200 KB
+    "gzip": true, // 🗜️ Tính gzip size
+    "webpack": false // 🚫 Không dùng webpack
   },
   {
-    "name": "Vendor Bundle",
+    "name": "Vendor Bundle", // 📦 Bundle libraries
     "path": "dist/assets/vendor-*.js",
-    "limit": "150 KB",
+    "limit": "150 KB", // ⚠️ Giới hạn 150 KB
     "gzip": true
   },
   {
-    "name": "CSS Bundle",
+    "name": "CSS Bundle", // 🎨 Bundle CSS
     "path": "dist/assets/index-*.css",
-    "limit": "50 KB",
+    "limit": "50 KB", // ⚠️ Giới hạn 50 KB
     "gzip": true
   }
 ]
@@ -702,35 +716,35 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   plugins: [
-    react(),
+    react(), // ⚛️ React plugin
     
-    // ✅ Bundle analyzer
+    // ✅ Bundle analyzer - Phân tích bundle size
     visualizer({
-      open: true,
-      filename: 'dist/stats.html',
-      gzipSize: true,
-      brotliSize: true,
-      template: 'treemap', // sunburst, treemap, network
+      open: true, // 🌐 Tự động mở browser
+      filename: 'dist/stats.html', // 📄 File output
+      gzipSize: true, // 🗜️ Hiển thị gzip size
+      brotliSize: true, // 🗜️ Hiển thị brotli size
+      template: 'treemap', // 📊 treemap, sunburst, network (kiểu hiển thị)
     }),
   ],
   
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          // ✅ Split vendor chunks
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+        manualChunks: { // 📦 Chia nhỏ chunks thủ công
+          // ✅ Split vendor chunks - Tách riêng vendors
+          vendor: ['react', 'react-dom'], // ⚛️ React core
+          router: ['react-router-dom'], // 🛤️ Router
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'], // 🎨 UI libs
         },
       },
     },
     
-    // ✅ Report compressed size
-    reportCompressedSize: true,
+    // ✅ Report compressed size - Báo cáo size nén
+    reportCompressedSize: true, // 📊 Hiển thị gzip size khi build
     
-    // ✅ Chunk size warning limit
-    chunkSizeWarningLimit: 500,
+    // ✅ Chunk size warning limit - Cảnh báo chunk quá lớn
+    chunkSizeWarningLimit: 500, // ⚠️ Cảnh báo nếu > 500 KB
   },
 });
 ```

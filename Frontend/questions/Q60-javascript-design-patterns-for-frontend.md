@@ -136,99 +136,100 @@ const api2 = new ApiClient('https://api.example.com');
 // ===================================================
 
 class ApiClient {
-  private static instance: ApiClient;
+  private static instance: ApiClient;  // 👉 Static instance (duy nhất)
   private baseUrl: string;
 
-  // Private constructor (cannot use `new` outside class)
+  // 🔒 Private constructor (cannot use `new` outside class - Không thể new từ bên ngoài)
   private constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
   }
 
-  // Public method to get the single instance
+  // 🎯 Public method to get the single instance (Lấy instance duy nhất)
   public static getInstance(baseUrl: string = 'https://api.example.com'): ApiClient {
-    if (!ApiClient.instance) {
-      ApiClient.instance = new ApiClient(baseUrl);
+    if (!ApiClient.instance) {  // ❓ Chưa có instance
+      ApiClient.instance = new ApiClient(baseUrl);  // ✅ Tạo instance mới
     }
-    return ApiClient.instance;
+    return ApiClient.instance;  // 🔁 Trả về instance hiện tại
   }
 
-  public async get(endpoint: string) {
+  public async get(endpoint: string) {  // 📥 GET request
     const response = await fetch(`${this.baseUrl}${endpoint}`);
     return response.json();
   }
 
-  public async post(endpoint: string, data: any) {
+  public async post(endpoint: string, data: any) {  // 📤 POST request
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      headers: { 'Content-Type': 'application/json' },  // 📝 JSON header
+      body: JSON.stringify(data)  // 📦 Serialize data
     });
     return response.json();
   }
 }
 
-// Usage
+// 📝 Usage
 const api1 = ApiClient.getInstance();
 const api2 = ApiClient.getInstance();
-console.log(api1 === api2); // ✅ true (same instance!)
+console.log(api1 === api2); // ✅ true (same instance - Cùng 1 instance!)
 
 // ===================================================
 // ✅ MODERN: Singleton with Module (ES6 Modules)
 // ===================================================
 
-// apiClient.ts
+// 📄 apiClient.ts
 class ApiClient {
-  constructor(private baseUrl: string) {}
+  constructor(private baseUrl: string) {}  // 🎯 Constructor đơn giản
 
-  async get(endpoint: string) {
+  async get(endpoint: string) {  // 📥 GET request
     const response = await fetch(`${this.baseUrl}${endpoint}`);
     return response.json();
   }
 }
 
-// Export single instance (Singleton via module caching)
+// 📦 Export single instance (Singleton via module caching)
+// ES modules được cache tự động, nên chỉ có 1 instance
 export const apiClient = new ApiClient('https://api.example.com');
 
-// app.ts
-import { apiClient } from './apiClient';
+// 📄 app.ts
+import { apiClient } from './apiClient';  // 📥 Import instance
 
-// Always the same instance (ES modules cached by default)
-apiClient.get('/users');
+// ✅ Always the same instance (ES modules cached by default)
+apiClient.get('/users');  // 👥 Lấy danh sách users
 
 // ===================================================
 // 🔥 REAL-WORLD EXAMPLE: Logger Singleton
 // ===================================================
 
-type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';  // 🏷️ Các mức log
 
 class Logger {
-  private static instance: Logger;
-  private logs: Array<{ level: LogLevel; message: string; timestamp: Date }> = [];
+  private static instance: Logger;  // 👉 Static instance
+  private logs: Array<{ level: LogLevel; message: string; timestamp: Date }> = [];  // 📊 Lưu tất cả logs
 
-  private constructor() {}
+  private constructor() {}  // 🔒 Private constructor
 
-  public static getInstance(): Logger {
+  public static getInstance(): Logger {  // 🎯 Lấy instance
     if (!Logger.instance) {
       Logger.instance = new Logger();
     }
     return Logger.instance;
   }
 
-  private log(level: LogLevel, message: string) {
+  private log(level: LogLevel, message: string) {  // 📝 Log function chính
     const logEntry = {
       level,
       message,
-      timestamp: new Date()
+      timestamp: new Date()  // ⏱️ Thời gian log
     };
 
-    this.logs.push(logEntry);
+    this.logs.push(logEntry);  // 📥 Lưu vào array
 
-    // Console output with colors
+    // 🎨 Console output with colors (In ra console với màu sắc)
     const colors = {
-      debug: '\x1b[36m', // Cyan
-      info: '\x1b[32m', // Green
-      warn: '\x1b[33m', // Yellow
-      error: '\x1b[31m' // Red
+      debug: '\x1b[36m', // 💙 Cyan - Màu xanh nhạt
+      info: '\x1b[32m', // 🟢 Green - Màu xanh lá
+      warn: '\x1b[33m', // 🟡 Yellow - Màu vàng
+      error: '\x1b[31m' // 🔴 Red - Màu đỏ
     };
 
     console.log(
@@ -236,32 +237,32 @@ class Logger {
     );
   }
 
-  public debug(message: string) {
+  public debug(message: string) {  // 💙 Debug level
     this.log('debug', message);
   }
 
-  public info(message: string) {
+  public info(message: string) {  // 🟢 Info level
     this.log('info', message);
   }
 
-  public warn(message: string) {
+  public warn(message: string) {  // 🟡 Warning level
     this.log('warn', message);
   }
 
-  public error(message: string) {
+  public error(message: string) {  // 🔴 Error level
     this.log('error', message);
   }
 
-  public getLogs() {
+  public getLogs() {  // 📊 Lấy tất cả logs
     return this.logs;
   }
 }
 
-// Usage
+// 📝 Usage
 const logger = Logger.getInstance();
-logger.info('App started');
-logger.error('Failed to fetch data');
-logger.getLogs(); // All logs from entire app
+logger.info('App started');  // 🟢 [INFO] App started
+logger.error('Failed to fetch data');  // 🔴 [ERROR] Failed to fetch data
+logger.getLogs(); // 📊 All logs from entire app
 ```
 
 ---
@@ -286,38 +287,38 @@ logger.getLogs(); // All logs from entire app
 // ===================================================
 
 interface Observer {
-  update(data: any): void;
+  update(data: any): void;  // 🔄 Phương thức nhận update
 }
 
 class Subject {
-  private observers: Observer[] = [];
+  private observers: Observer[] = [];  // 📊 Danh sách observers
 
-  // Subscribe to changes
+  // 🔔 Subscribe to changes (Đăng ký nhận thông báo)
   public subscribe(observer: Observer): void {
-    this.observers.push(observer);
+    this.observers.push(observer);  // 📥 Thêm vào danh sách
   }
 
-  // Unsubscribe
+  // 🚫 Unsubscribe (Hủy đăng ký)
   public unsubscribe(observer: Observer): void {
     const index = this.observers.indexOf(observer);
     if (index > -1) {
-      this.observers.splice(index, 1);
+      this.observers.splice(index, 1);  // 🗑️ Xóa khỏi danh sách
     }
   }
 
-  // Notify all observers
+  // 📢 Notify all observers (Thông báo cho tất cả observers)
   protected notify(data: any): void {
-    this.observers.forEach((observer) => observer.update(data));
+    this.observers.forEach((observer) => observer.update(data));  // 🔁 Gọi update cho từng observer
   }
 }
 
 // ===================================================
-// 🔥 REAL-WORLD EXAMPLE: Stock Price Tracker
+// 🔥 REAL-WORLD EXAMPLE: Stock Price Tracker (Theo dõi giá cổ phiếu)
 // ===================================================
 
 class Stock extends Subject {
-  private price: number = 0;
-  private name: string;
+  private price: number = 0;  // 💵 Giá hiện tại
+  private name: string;       // 🏷️ Tên cổ phiếu
 
   constructor(name: string, initialPrice: number) {
     super();
@@ -325,44 +326,44 @@ class Stock extends Subject {
     this.price = initialPrice;
   }
 
-  public setPrice(newPrice: number): void {
+  public setPrice(newPrice: number): void {  // 💰 Đổi giá
     console.log(`${this.name} price changed: $${this.price} → $${newPrice}`);
     this.price = newPrice;
-    this.notify({ name: this.name, price: newPrice });
+    this.notify({ name: this.name, price: newPrice });  // 📢 Thông báo cho observers
   }
 
-  public getPrice(): number {
+  public getPrice(): number {  // 📊 Lấy giá
     return this.price;
   }
 }
 
-// Observer 1: Display widget
+// 📺 Observer 1: Display widget (Hiển thị)
 class PriceDisplay implements Observer {
-  constructor(private elementId: string) {}
+  constructor(private elementId: string) {}  // 🎯 Element ID để hiển thị
 
   update(data: { name: string; price: number }): void {
     const element = document.getElementById(this.elementId);
     if (element) {
-      element.textContent = `${data.name}: $${data.price}`;
+      element.textContent = `${data.name}: $${data.price}`;  // 📝 Cập nhật text
     }
   }
 }
 
-// Observer 2: Alert service
+// 🔔 Observer 2: Alert service (Cảnh báo)
 class PriceAlert implements Observer {
-  constructor(private threshold: number) {}
+  constructor(private threshold: number) {}  // 🚨 Ngưỡng giá
 
   update(data: { name: string; price: number }): void {
-    if (data.price > this.threshold) {
-      alert(`${data.name} exceeded $${this.threshold}!`);
+    if (data.price > this.threshold) {  // ❗ Vượt ngưỡng
+      alert(`${data.name} exceeded $${this.threshold}!`);  // 🔔 Cảnh báo
     }
   }
 }
 
-// Observer 3: Logger
+// 📝 Observer 3: Logger (Ghi log)
 class PriceLogger implements Observer {
   update(data: { name: string; price: number }): void {
-    console.log(`[LOG] ${new Date().toISOString()} - ${data.name}: $${data.price}`);
+    console.log(`[LOG] ${new Date().toISOString()} - ${data.name}: $${data.price}`);  // 📊 Ghi log với timestamp
   }
 }
 
@@ -408,77 +409,77 @@ appleStock.setPrice(220); // Only display and logger notified
  */
 
 // ===================================================
-// ✅ IMPLEMENTATION: Event Bus (Pub/Sub Mediator)
+// ✅ IMPLEMENTATION: Event Bus (Pub/Sub Mediator - Trung gian sự kiện)
 // ===================================================
 
-type EventCallback = (data?: any) => void;
+type EventCallback = (data?: any) => void;  // 🔗 Callback function cho sự kiện
 
 class EventBus {
-  private events: Map<string, EventCallback[]> = new Map();
+  private events: Map<string, EventCallback[]> = new Map();  // 📊 Lưu danh sách events và callbacks
 
-  // Subscribe to event
+  // 🔔 Subscribe to event (Đăng ký lắng nghe sự kiện)
   public on(event: string, callback: EventCallback): () => void {
-    if (!this.events.has(event)) {
-      this.events.set(event, []);
+    if (!this.events.has(event)) {  // ❓ Chưa có event này
+      this.events.set(event, []);  // 🆕 Tạo array mới
     }
 
-    this.events.get(event)!.push(callback);
+    this.events.get(event)!.push(callback);  // 📥 Thêm callback vào danh sách
 
-    // Return unsubscribe function
+    // 🔁 Return unsubscribe function (Trả về hàm hủy đăng ký)
     return () => this.off(event, callback);
   }
 
-  // Unsubscribe from event
+  // 🚫 Unsubscribe from event (Hủy đăng ký)
   public off(event: string, callback: EventCallback): void {
     const callbacks = this.events.get(event);
     if (callbacks) {
       const index = callbacks.indexOf(callback);
       if (index > -1) {
-        callbacks.splice(index, 1);
+        callbacks.splice(index, 1);  // 🗑️ Xóa callback
       }
     }
   }
 
-  // Publish event
+  // 📢 Publish event (Phát sự kiện)
   public emit(event: string, data?: any): void {
     const callbacks = this.events.get(event);
     if (callbacks) {
-      callbacks.forEach((callback) => callback(data));
+      callbacks.forEach((callback) => callback(data));  // 🔁 Gọi tất cả callbacks
     }
   }
 
-  // Subscribe once (auto-unsubscribe after first call)
+  // 1️⃣ Subscribe once (auto-unsubscribe after first call - Tự động hủy sau lần đầu)
   public once(event: string, callback: EventCallback): void {
     const onceCallback = (data?: any) => {
       callback(data);
-      this.off(event, onceCallback);
+      this.off(event, onceCallback);  // 🚫 Tự động hủy sau khi chạy
     };
     this.on(event, onceCallback);
   }
 }
 
 // ===================================================
-// 🔥 REAL-WORLD EXAMPLE: Shopping Cart
+// 🔥 REAL-WORLD EXAMPLE: Shopping Cart (Giỏ hàng)
 // ===================================================
 
-// Global event bus
+// 🌐 Global event bus
 const eventBus = new EventBus();
 
-// Publisher: ProductCard component
+// 📤 Publisher: ProductCard component
 class ProductCard {
   addToCart(product: { id: string; name: string; price: number }) {
-    eventBus.emit('product:added', product);
+    eventBus.emit('product:added', product);  // 📢 Phát sự kiện
   }
 }
 
-// Subscriber 1: CartWidget
+// 📥 Subscriber 1: CartWidget (Widget giỏ hàng)
 class CartWidget {
-  private itemCount: number = 0;
+  private itemCount: number = 0;  // 📊 Số lượng sản phẩm
 
   constructor() {
-    eventBus.on('product:added', (product) => {
-      this.itemCount++;
-      this.updateUI();
+    eventBus.on('product:added', (product) => {  // 🔔 Lắng nghe sự kiện
+      this.itemCount++;  // ➡️ Tăng số lượng
+      this.updateUI();   // 🔄 Cập nhật UI
       console.log(`Cart updated: ${this.itemCount} items`);
     });
   }
@@ -486,16 +487,16 @@ class CartWidget {
   private updateUI() {
     const badge = document.getElementById('cart-badge');
     if (badge) {
-      badge.textContent = String(this.itemCount);
+      badge.textContent = String(this.itemCount);  // 📝 Cập nhật badge
     }
   }
 }
 
-// Subscriber 2: Analytics
+// 📊 Subscriber 2: Analytics (Phân tích)
 class Analytics {
   constructor() {
-    eventBus.on('product:added', (product) => {
-      this.trackEvent('add_to_cart', {
+    eventBus.on('product:added', (product) => {  // 🔔 Lắng nghe
+      this.trackEvent('add_to_cart', {  // 📊 Theo dõi sự kiện
         product_id: product.id,
         product_name: product.name,
         price: product.price
@@ -505,21 +506,21 @@ class Analytics {
 
   private trackEvent(eventName: string, data: any) {
     console.log(`[Analytics] ${eventName}:`, data);
-    // Send to Google Analytics, Mixpanel, etc.
+    // 📤 Send to Google Analytics, Mixpanel, etc.
   }
 }
 
-// Subscriber 3: Toast Notification
+// 🔔 Subscriber 3: Toast Notification (Thông báo)
 class ToastNotifier {
   constructor() {
-    eventBus.on('product:added', (product) => {
-      this.showToast(`${product.name} added to cart!`);
+    eventBus.on('product:added', (product) => {  // 🔔 Lắng nghe
+      this.showToast(`${product.name} added to cart!`);  // 🔔 Hiển thị thông báo
     });
   }
 
   private showToast(message: string) {
     console.log(`🔔 ${message}`);
-    // Show toast UI
+    // 💬 Show toast UI
   }
 }
 
@@ -606,42 +607,42 @@ function createButton(type: string) {
 }
 
 // ===================================================
-// ✅ GOOD: Factory Pattern
+// ✅ GOOD: Factory Pattern (Mẫu Factory)
 // ===================================================
 
 interface Button {
-  render(): string;
-  onClick(): void;
+  render(): string;   // 🎨 Render HTML
+  onClick(): void;    // 🖌️ Xử lý click
 }
 
 class PrimaryButton implements Button {
-  render(): string {
+  render(): string {  // 🟢 Button xanh lá (primary)
     return '<button class="btn-primary">Click</button>';
   }
 
-  onClick(): void {
+  onClick(): void {  // 🖌️ Primary action
     console.log('Primary action');
   }
 }
 
 class SecondaryButton implements Button {
-  render(): string {
+  render(): string {  // 🔵 Button xanh (secondary)
     return '<button class="btn-secondary">Click</button>';
   }
 
-  onClick(): void {
+  onClick(): void {  // 🖌️ Secondary action
     console.log('Secondary action');
   }
 }
 
 class DangerButton implements Button {
-  render(): string {
+  render(): string {  // 🔴 Button đỏ (danger)
     return '<button class="btn-danger">Delete</button>';
   }
 
-  onClick(): void {
-    if (confirm('Are you sure?')) {
-      console.log('Deleted!');
+  onClick(): void {  // ⚠️ Danger action - cần confirm
+    if (confirm('Are you sure?')) {  // ❓ Xác nhận
+      console.log('Deleted!');  // 🗑️ Xóa
     }
   }
 }

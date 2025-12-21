@@ -9,65 +9,70 @@
 **🔑 8 Kỹ Thuật Chính:**
 
 **1. Bundling (Webpack, Vite, Rollup):**
+
 - Gộp nhiều files thành 1-2 bundles → giảm HTTP requests
 - Resolve dependencies, handle imports/exports
 - Ví dụ: 100 files → 1 `bundle.js` (10 requests → 1 request)
 
 **2. Minification:**
+
 - Xóa whitespace, shorten variable names, remove comments
 - **Terser** (JS), **cssnano** (CSS) - giảm 40-60% file size
 - `const myVariableName = 123` → `const a=123`
 
 **3. Tree-shaking:**
+
 - **Loại unused exports** - chỉ bundle code thực sự dùng
 - Cần ES modules (`import/export`), không work với CommonJS
 - Ví dụ: `import {add} from 'utils'` → chỉ bundle `add`, không bundle `subtract`
 
 **4. Code Splitting:**
+
 - Tách code thành nhiều chunks, **lazy load** khi cần
 - Route-based: mỗi route 1 bundle riêng
 - Dynamic imports: `const module = await import('./heavy.js')`
 
 **5. Polyfills:**
+
 - Thêm **missing features** cho old browsers (IE11, Safari cũ)
 - Core-js, Babel polyfills - support Promise, async/await, Array.includes...
 - **Differential serving**: modern bundle (ESM) + legacy bundle (polyfilled)
 
 **6. Transpiling (Babel, SWC):**
+
 - Convert **modern JS → old JS** (ES2022 → ES5)
 - JSX → JS, TypeScript → JS
 - `const arrow = () => {}` → `var arrow = function() {}`
 
 **7. ESLint/Prettier:**
+
 - **ESLint**: Find bugs, enforce code patterns (unused vars, no-console...)
 - **Prettier**: Auto-format code (spacing, quotes, semicolons)
 - Pre-commit hooks (Husky) để enforce
 
 **8. Source Maps:**
+
 - Map minified code → original source cho debugging
 - DevTools show **original code** thay vì minified
 - Types: `inline`, `hidden`, `eval` (dev), `source-map` (production)
 
 **⚠️ Lỗi Thường Gặp:**
+
 - Ship polyfills cho modern browsers → waste bandwidth (dùng differential serving)
 - Không tree-shake → bundle lodash toàn bộ (570KB) thay vì 1 function
 - Source maps trong production → expose source code (dùng `hidden-source-map`)
 - Over-splitting code → quá nhiều requests, worse than bundling
 
 **💡 Kiến Thức Senior:**
+
 - **Vite** nhanh hơn Webpack vì: ESBuild (Go) transpile, native ESM trong dev (không bundle)
 - **Module Federation** (Webpack 5): Share code giữa apps runtime (microfrontends)
 - **Turbopack** (Next.js 14): Rust-based, 700x faster than Webpack dev mode
 - Performance budget: Set limits (JS < 200KB, CSS < 50KB), fail build nếu vượt
 
-
-
-
 **❓ Câu Hỏi:**
 
 Giải thích chi tiết các công cụ và kỹ thuật tối ưu hóa trong frontend development: Bundling (gộp file), Minify (nén code), Tree-shaking (loại bỏ code thừa), Code splitting (tách code), Polyfill (thêm features cho old browsers), Transpiling (convert modern → old JS), ESLint/Prettier, và Source Maps. Bao gồm cách hoạt động, ưu nhược điểm, và ứng dụng thực tế.
-
-
 
 **📚 Phần 1: Bundling (Gộp File) - Từ Nhiều Files → 1 File**
 
@@ -82,48 +87,57 @@ Giải thích chi tiết các công cụ và kỹ thuật tối ưu hóa trong f
 // ❌ KHÔNG DÙNG BUNDLING - Website có 100 files
 // ===================================================
 
-// index.html
+// 📄 index.html - File HTML chính của website
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- ❌ Load 100 files riêng biệt! -->
-  <script src="/js/utils.js"></script>
-  <script src="/js/api.js"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/components/Button.js"></script>
-  <script src="/js/components/Input.js"></script>
+  <!-- ❌ Load 100 files riêng biệt!
+       💡 Mỗi file = 1 HTTP request riêng → RẤT CHẬM! -->
+  <script src="/js/utils.js"></script>        <!-- 📦 File tiện ích -->
+  <script src="/js/api.js"></script>          <!-- 🌐 File gọi API -->
+  <script src="/js/auth.js"></script>          <!-- 🔐 File xác thực -->
+  <script src="/js/components/Button.js"></script>  <!-- 🎨 Component nút -->
+  <script src="/js/components/Input.js"></script>   <!-- 📝 Component input -->
   <!-- ...95 files khác -->
 </head>
 </html>
 
 // 🚨 VẤN ĐỀ:
-// ❌ 100 HTTP requests → CỰC CHẬM! (mỗi request có latency ~50-100ms)
-// ❌ Total latency: 100 files × 100ms = 10 giây chỉ để load files! 😱
-// ❌ HTTP/1.1: Chỉ 6-8 connections đồng thời → phải chờ từng wave
+// ❌ 100 HTTP requests → CỰC CHẬM!
+//    💡 Mỗi request có độ trễ (latency) ~50-100ms
+//    💡 Tổng thời gian: 100 files × 100ms = 10 giây chỉ để load files! 😱
+// ❌ HTTP/1.1: Chỉ 6-8 connections đồng thời → phải chờ từng đợt (wave)
+//    💡 Browser không thể tải tất cả cùng lúc, phải xếp hàng
 // ❌ Không optimize được (không minify, tree-shake được)
+//    💡 Mỗi file riêng lẻ → không thể nén và loại code thừa hiệu quả
 
 // ===================================================
 // ✅ DÙNG BUNDLING - Gộp thành 1 file
 // ===================================================
 
-// index.html
+// 📄 index.html - File HTML sau khi dùng bundling
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- ✅ Load 1 file duy nhất! -->
+  <!-- ✅ Load 1 file duy nhất!
+       💡 Tất cả code đã được gộp vào bundle.js -->
   <script src="/js/bundle.js"></script>
 </head>
 </html>
 
-// bundle.js (gộp 100 files thành 1)
-// - Chứa tất cả code từ 100 files
-// - Đã minify (nén nhỏ hơn)
-// - Đã tree-shake (loại code thừa)
+// 📦 bundle.js (gộp 100 files thành 1)
+// 💡 File này chứa:
+// - Chứa tất cả code từ 100 files (đã gộp lại)
+// - Đã minify (nén nhỏ hơn - xóa khoảng trắng, rút ngắn tên biến)
+// - Đã tree-shake (loại code thừa - chỉ giữ code thực sự dùng)
 
 // ✅ LỢI ÍCH:
 // ✅ 1 HTTP request → NHANH HƠN 100x!
+//    💡 Thay vì 100 requests, chỉ cần 1 request duy nhất
 // ✅ Latency: 1 file × 100ms = 100ms (vs 10 giây)
+//    💡 Giảm thời gian tải từ 10 giây xuống còn 0.1 giây!
 // ✅ Có thể optimize (minify, compress, cache)
+//    💡 Dễ dàng nén file, nén gzip, và cache lâu dài
 ```
 
 **🎯 Cách Hoạt Động Của Bundler:**
@@ -232,29 +246,33 @@ main();
 // ===================================================
 
 // dist/bundle.js (Simplified version - thực tế phức tạp hơn)
-(function() {
+(function () {
   // Module: utils.js
   const utils = {
-    add: function(a, b) { return a + b; },
-    subtract: function(a, b) { return a - b; }
+    add: function (a, b) {
+      return a + b;
+    },
+    subtract: function (a, b) {
+      return a - b;
+    },
   };
-  
+
   // Module: api.js
   const api = {
-    fetchData: async function() {
+    fetchData: async function () {
       const response = await fetch('/api/data');
       const data = await response.json();
       return utils.add(data.count, 10);
-    }
+    },
   };
-  
+
   // Module: index.js (Entry)
   async function main() {
     const result = await api.fetchData();
     const final = utils.subtract(result, 5);
     console.log(final);
   }
-  
+
   main();
 })();
 
@@ -278,52 +296,67 @@ main();
 // 📝 TRƯỚC MINIFY - Code dễ đọc (10 KB)
 // ===================================================
 
-// Original code (readable - dễ đọc)
+// 💡 Code gốc (readable - dễ đọc, có comment, khoảng trắng)
+// 🎯 Mục đích: Tính tổng giá sau khi áp dụng giảm giá và thuế
 function calculateTotalPrice(items, taxRate, discount) {
-  // Calculate subtotal - Tính tổng tiền hàng
-  let subtotal = 0;
-  
+  // 💬 Comment: Tính tổng tiền hàng (subtotal)
+  let subtotal = 0; // 💡 Biến lưu tổng tiền trước giảm giá
+
+  // 🔄 Vòng lặp: Duyệt qua từng sản phẩm
   for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-    subtotal += item.price * item.quantity;
+    const item = items[i]; // 💡 Lấy từng sản phẩm
+    subtotal += item.price * item.quantity; // 💰 Cộng dồn: giá × số lượng
   }
-  
-  // Apply discount - Áp dụng giảm giá
+
+  // 💬 Comment: Áp dụng giảm giá
   const discountedPrice = subtotal * (1 - discount / 100);
-  
-  // Add tax - Thêm thuế
-  const tax = discountedPrice * (taxRate / 100);
-  const total = discountedPrice + tax;
-  
-  return total;
+  // 💡 Công thức: Giá sau giảm = Giá gốc × (1 - % giảm/100)
+
+  // 💬 Comment: Thêm thuế
+  const tax = discountedPrice * (taxRate / 100); // 💰 Tính thuế
+  const total = discountedPrice + tax; // 💰 Tổng cuối = Giá sau giảm + Thuế
+
+  return total; // 📤 Trả về tổng tiền cuối cùng
 }
 
-// Exported function for external use
+// 📤 Export function để dùng ở file khác
 export { calculateTotalPrice };
 
 // ===================================================
 // 🗜️ SAU MINIFY - Code khó đọc nhưng NHỎ (3 KB)
 // ===================================================
 
-// Minified code (unreadable - khó đọc nhưng nhỏ)
-function c(a,b,d){let e=0;for(let f=0;f<a.length;f++){const g=a[f];e+=g.price*g.quantity}const h=e*(1-d/100),i=h*(b/100);return h+i}export{c};
+// 💡 Code sau khi minify (unreadable - khó đọc nhưng NHỎ HƠN 70%!)
+// ⚠️ Lưu ý: Code này khó đọc nhưng browser vẫn chạy bình thường
+function c(a, b, d) {
+  let e = 0;
+  for (let f = 0; f < a.length; f++) {
+    const g = a[f];
+    e += g.price * g.quantity;
+  }
+  const h = e * (1 - d / 100),
+    i = h * (b / 100);
+  return h + i;
+}
+export { c };
 
 // 🎯 NHỮNG GÌ ĐÃ THAY ĐỔI:
-// ✅ Remove comments (// Calculate subtotal, etc.) → Tiết kiệm ~200 bytes
-// ✅ Remove whitespace (spaces, tabs) → Tiết kiệm ~500 bytes
-// ✅ Remove newlines → Tiết kiệm ~300 bytes
-// ✅ Shorten variable names:
-//    - calculateTotalPrice → c
-//    - items → a
-//    - taxRate → b
-//    - discount → d
-//    - subtotal → e
-//    - item → g
-//    - discountedPrice → h
-//    - tax → i
-// ✅ Remove unnecessary semicolons, braces → Tiết kiệm ~50 bytes
+// ✅ Remove comments (// Calculate subtotal, etc.)
+//    💡 Xóa tất cả comment → Tiết kiệm ~200 bytes
+// ✅ Remove whitespace (spaces, tabs)
+//    💡 Xóa khoảng trắng, tab → Tiết kiệm ~500 bytes
+// ✅ Remove newlines
+//    💡 Xóa xuống dòng → Tiết kiệm ~300 bytes
+// ✅ Shorten variable names (Rút ngắn tên biến):
+//    💡 calculateTotalPrice → c (1 ký tự thay vì 19 ký tự!)
+//    💡 items → a, taxRate → b, discount → d
+//    💡 subtotal → e, item → g, discountedPrice → h, tax → i
+//    💡 Tiết kiệm ~400 bytes
+// ✅ Remove unnecessary semicolons, braces
+//    💡 Xóa dấu chấm phẩy, ngoặc nhọn không cần → Tiết kiệm ~50 bytes
 //
 // 📊 KẾT QUẢ: 10 KB → 3 KB (Giảm 70%!)
+//    💡 File nhỏ hơn → Tải nhanh hơn → UX tốt hơn!
 ```
 
 **🔧 Các Kỹ Thuật Minify Chi Tiết:**
@@ -340,7 +373,9 @@ function add(a, b) {
 }
 
 // After (remove whitespace, comments)
-function add(a,b){return a+b}
+function add(a, b) {
+  return a + b;
+}
 
 // Tiết kiệm: ~50 bytes
 
@@ -360,7 +395,15 @@ function calculateUserTotalScore(userAnswers, correctAnswers) {
 }
 
 // After (tên biến ngắn - 1 ký tự)
-function c(a,b){let d=0;for(let e=0;e<a.length;e++){if(a[e]===b[e]){d+=10}}return d}
+function c(a, b) {
+  let d = 0;
+  for (let e = 0; e < a.length; e++) {
+    if (a[e] === b[e]) {
+      d += 10;
+    }
+  }
+  return d;
+}
 
 // Tiết kiệm: ~100 bytes
 
@@ -377,7 +420,7 @@ if (user.isActive === true) {
 }
 
 // After
-if(user.isActive)console.log('Active')
+if (user.isActive) console.log('Active');
 
 // Before
 const value = condition ? true : false;
@@ -397,7 +440,9 @@ function process(data) {
 }
 
 // After (remove unused variable)
-function process(a){return a+10}
+function process(a) {
+  return a + 10;
+}
 
 // ===================================================
 // 🔧 KỸ THUẬT 5: Constant Folding (Gộp hằng số)
@@ -423,14 +468,18 @@ const area = 78.53981633974483; // Tính sẵn lúc build
 const user = {
   firstName: 'John',
   lastName: 'Doe',
-  calculateAge: function() { return 2024 - this.birthYear; }
+  calculateAge: function () {
+    return 2024 - this.birthYear;
+  },
 };
 
 // After (mangle property names - CẨN THẬN!)
 const user = {
-  a: 'John',    // firstName → a
-  b: 'Doe',     // lastName → b
-  c: function() { return 2024 - this.d; } // calculateAge → c
+  a: 'John', // firstName → a
+  b: 'Doe', // lastName → b
+  c: function () {
+    return 2024 - this.d;
+  }, // calculateAge → c
 };
 
 // ⚠️ NGUY HIỂM: Nếu external code access user.firstName → BỊ LỖI!
@@ -485,43 +534,56 @@ const user = {
 // 📦 LIBRARY: math-utils.js (Thư viện toán học)
 // ===================================================
 
-// Export 10 functions (nhưng app chỉ dùng 2)
+// 💡 Thư viện này export 10 functions toán học
+// ⚠️ NHƯNG app chỉ dùng 2 functions (add, subtract)
+// 🎯 Tree-shaking sẽ loại bỏ 8 functions không dùng!
+
+// ➕ Function cộng
 export function add(a, b) {
-  return a + b;
+  return a + b; // 💡 Trả về tổng 2 số
 }
 
+// ➖ Function trừ
 export function subtract(a, b) {
-  return a - b;
+  return a - b; // 💡 Trả về hiệu 2 số
 }
 
+// ✖️ Function nhân (KHÔNG DÙNG - sẽ bị tree-shake)
 export function multiply(a, b) {
   return a * b;
 }
 
+// ➗ Function chia (KHÔNG DÙNG - sẽ bị tree-shake)
 export function divide(a, b) {
   return a / b;
 }
 
+// 🔢 Function lũy thừa (KHÔNG DÙNG - sẽ bị tree-shake)
 export function power(a, b) {
   return Math.pow(a, b);
 }
 
+// √ Function căn bậc 2 (KHÔNG DÙNG - sẽ bị tree-shake)
 export function sqrt(a) {
   return Math.sqrt(a);
 }
 
+// |x| Function giá trị tuyệt đối (KHÔNG DÙNG - sẽ bị tree-shake)
 export function abs(a) {
   return Math.abs(a);
 }
 
+// 🔢 Function làm tròn (KHÔNG DÙNG - sẽ bị tree-shake)
 export function round(a) {
   return Math.round(a);
 }
 
+// ⬇️ Function làm tròn xuống (KHÔNG DÙNG - sẽ bị tree-shake)
 export function floor(a) {
   return Math.floor(a);
 }
 
+// ⬆️ Function làm tròn lên (KHÔNG DÙNG - sẽ bị tree-shake)
 export function ceil(a) {
   return Math.ceil(a);
 }
@@ -530,30 +592,37 @@ export function ceil(a) {
 // 📱 APP: index.js (Chỉ dùng 2 functions)
 // ===================================================
 
+// 💡 Import CHỈ 2 functions cần dùng
 import { add, subtract } from './math-utils.js';
 //       ↑      ↑
-//       Chỉ import 2 functions (add, subtract)
-//       8 functions còn lại KHÔNG import
+//       ✅ Chỉ import 2 functions (add, subtract)
+//       ❌ 8 functions còn lại KHÔNG import → Tree-shaking sẽ loại bỏ!
 
-const result1 = add(10, 20);        // ✅ Dùng add
-const result2 = subtract(50, 30);   // ✅ Dùng subtract
+// 🧮 Sử dụng function add
+const result1 = add(10, 20); // ✅ Dùng add → 10 + 20 = 30
+// 🧮 Sử dụng function subtract
+const result2 = subtract(50, 30); // ✅ Dùng subtract → 50 - 30 = 20
 
-console.log(result1, result2);
+console.log(result1, result2); // 📤 In ra: 30 20
 
 // ===================================================
 // 🌲 TREE SHAKING RESULT (Kết quả sau tree shake)
 // ===================================================
 
 // ❌ KHÔNG DÙNG Tree Shaking:
-// Bundle chứa TẤT CẢ 10 functions (kể cả 8 functions không dùng)
-// Bundle size: ~2 KB
+// 📦 Bundle chứa TẤT CẢ 10 functions (kể cả 8 functions không dùng)
+//    💡 Bundle size: ~2 KB
+//    ⚠️ Lãng phí: Tải code không cần thiết → Chậm hơn!
 
 // ✅ DÙNG Tree Shaking:
-// Bundle CHỈ chứa 2 functions (add, subtract)
-// 8 functions còn lại bị LOẠI BỎ hoàn toàn
-// Bundle size: ~400 bytes
+// 📦 Bundle CHỈ chứa 2 functions (add, subtract)
+//    💡 8 functions còn lại bị LOẠI BỎ hoàn toàn
+//    💡 Bundle size: ~400 bytes
+//    ✅ Tiết kiệm: Chỉ tải code thực sự dùng → Nhanh hơn!
 
 // 📊 Giảm 80% kích thước! 🚀
+//    💡 2 KB → 400 bytes = Giảm 1.6 KB (80%)
+//    💡 User tải nhanh hơn, tiết kiệm bandwidth!
 ```
 
 **🔍 Tree Shaking Deep Dive - Phân Tích Chi Tiết:**
@@ -604,65 +673,94 @@ console.log(result1, result2);
 // ===================================================
 
 // ✅ GOOD: ES Modules - Tree shaking hoạt động
+// 💡 Dùng cú pháp: export / import (ES6+)
 export function add(a, b) {
-  return a + b;
+  return a + b;  // 💡 Export function add
 }
 
+// 💡 Import function add từ file utils.js
 import { add } from './utils.js';
+//    ↑
+//    ✅ Bundler biết CHÍNH XÁC function nào được import
+//    ✅ Có thể tree-shake các exports không dùng
 
 // ❌ BAD: CommonJS - Tree shaking KHÔNG hoạt động
+// 💡 Dùng cú pháp: module.exports / require (Node.js style)
 module.exports = {
-  add: function(a, b) { return a + b; }
+  add: function(a, b) { return a + b; }  // 💡 Export object chứa function
 };
 
+// 💡 Require toàn bộ module
 const { add } = require('./utils.js');
+//    ↑
+//    ❌ Bundler KHÔNG biết function nào được dùng
+//    ❌ Phải include TOÀN BỘ module.exports
 
 // 🔍 TẠI SAO?
-// ES Modules: Static imports (biết lúc build time exports nào được dùng)
-// CommonJS: Dynamic requires (chỉ biết lúc runtime → không tree shake được)
+// ✅ ES Modules: Static imports (biết lúc build time exports nào được dùng)
+//    💡 Bundler đọc code → Thấy import { add } → Chỉ bundle add
+//    💡 Phân tích tĩnh (static analysis) → Tree-shaking hoạt động
+// ❌ CommonJS: Dynamic requires (chỉ biết lúc runtime → không tree shake được)
+//    💡 require() có thể gọi động: require(moduleName) → Không biết trước
+//    💡 Phân tích động (dynamic analysis) → Tree-shaking KHÔNG hoạt động
 
 // ===================================================
 // ✅ YÊU CẦU 2: sideEffects: false trong package.json
 // ===================================================
 
-// package.json
+// 📦 package.json
+// 💡 File cấu hình của npm package
 {
   "name": "my-library",
-  "sideEffects": false, // ✅ Báo: "Safe to remove unused exports"
+  // ✅ Báo cho bundler: "Safe to remove unused exports"
+  // 💡 sideEffects: false = Không có tác dụng phụ → An toàn để tree-shake
+  "sideEffects": false
 }
 
-// Hoặc chỉ định files có side-effects:
+// 💡 Hoặc chỉ định files có side-effects (nếu có):
 {
   "sideEffects": [
-    "*.css",           // CSS files có side-effects (apply styles globally)
-    "*.scss",
-    "./src/polyfills.ts" // Polyfills có side-effects (modify globals)
+    "*.css",           // 💡 CSS files có side-effects (apply styles globally)
+    //                  ⚠️ Khi import CSS → Styles được apply ngay → Có side-effect
+    "*.scss",          // 💡 SCSS files cũng vậy
+    "./src/polyfills.ts" // 💡 Polyfills có side-effects (modify globals)
+    //                    ⚠️ Polyfills thay đổi global objects → Có side-effect
   ]
 }
 
 // 🔍 SIDE-EFFECTS LÀ GÌ?
-// Code có tác dụng phụ khi import (không chỉ export functions/classes)
+// 💡 Code có tác dụng phụ khi import (không chỉ export functions/classes)
+// ⚠️ Side-effect = Code chạy ngay khi import, không chỉ export
 
 // ❌ Code có side-effects (KHÔNG tree shake được):
-// logger.js
-console.log('Logger initialized'); // ⚠️ Side-effect: console.log khi import
-window.logger = { log: (msg) => console.log(msg) }; // ⚠️ Modify global
+// 📄 logger.js
+// ⚠️ Side-effect 1: console.log khi import
+console.log('Logger initialized');
+// 💡 Dòng này chạy NGAY KHI import → Có side-effect!
+
+// ⚠️ Side-effect 2: Modify global object
+window.logger = { log: (msg) => console.log(msg) };
+// 💡 Thay đổi window object → Có side-effect!
 
 export function log(message) {
-  console.log(message);
+  console.log(message);  // 💡 Function này không có side-effect
 }
 
-// App import logger:
+// 📱 App import logger:
 import { log } from './logger.js';
 // → logger.js được execute ngay lập tức
-// → console.log('Logger initialized') chạy
-// → window.logger được tạo
+// → console.log('Logger initialized') chạy ✅
+// → window.logger được tạo ✅
 // → Bundler KHÔNG DÁM xóa code này (vì có side-effects)
+//    ⚠️ Nếu xóa → console.log và window.logger sẽ không chạy → LỖI!
 
 // ✅ Code KHÔNG có side-effects (tree shake được):
-// math.js
+// 📄 math.js
 export function add(a, b) {
-  return a + b; // ✅ Pure function - không side-effects
+  return a + b;
+  // ✅ Pure function - không side-effects
+  // 💡 Chỉ tính toán và trả về kết quả, không thay đổi gì bên ngoài
+  // 💡 Bundler có thể an toàn tree-shake nếu không dùng
 }
 
 // ===================================================
@@ -670,28 +768,38 @@ export function add(a, b) {
 // ===================================================
 
 // ❌ BAD: Default export + destructuring → Tree shake KÉM
-// utils.js
+// 📄 utils.js
+// ⚠️ Export default = Export 1 object chứa nhiều functions
 export default {
-  add: (a, b) => a + b,
-  subtract: (a, b) => a - b,
-  multiply: (a, b) => a * b,
+  add: (a, b) => a + b,        // ➕ Function cộng
+  subtract: (a, b) => a - b,   // ➖ Function trừ
+  multiply: (a, b) => a * b,   // ✖️ Function nhân
 };
 
-// app.js
+// 📱 app.js
+// ⚠️ Import TOÀN BỘ object
 import utils from './utils.js';
-const result = utils.add(1, 2);
+const result = utils.add(1, 2);  // 💡 Chỉ dùng add
 // 🚨 Bundler phải include TOÀN BỘ object (vì không biết property nào được dùng)
+//    ⚠️ Bundle chứa cả subtract và multiply (dù không dùng!)
+//    💡 Lý do: Bundler không biết utils.add, utils.subtract, utils.multiply
+//              → Phải include tất cả để an toàn
 
 // ✅ GOOD: Named exports → Tree shake TỐT
-// utils.js
-export const add = (a, b) => a + b;
-export const subtract = (a, b) => a - b;
-export const multiply = (a, b) => a * b;
+// 📄 utils.js
+// ✅ Export từng function riêng lẻ (named exports)
+export const add = (a, b) => a + b;           // ➕ Export add
+export const subtract = (a, b) => a - b;       // ➖ Export subtract
+export const multiply = (a, b) => a * b;       // ✖️ Export multiply
 
-// app.js
+// 📱 app.js
+// ✅ Import CHỈ function cần dùng
 import { add } from './utils.js';
-const result = add(1, 2);
+//    ↑
+//    💡 Chỉ import add, không import subtract và multiply
+const result = add(1, 2);  // 💡 Sử dụng add
 // ✅ Bundler chỉ include add, loại bỏ subtract và multiply
+//    💡 Bundle nhỏ hơn → Tải nhanh hơn!
 
 // ===================================================
 // ❌ ANTI-PATTERN: Barrel Exports (Re-exports)
@@ -721,24 +829,42 @@ import { funcA } from './moduleA.js';
 // ===================================================
 
 // ❌ BAD: Import toàn bộ Lodash (~70 KB!)
+// 💡 Lodash là thư viện JavaScript phổ biến với 300+ functions
 import _ from 'lodash';
+//    ↑
+//    ⚠️ Import TOÀN BỘ thư viện Lodash → Rất nặng!
 
+// 🧮 Chỉ dùng function uniq (loại bỏ phần tử trùng lặp)
 const result = _.uniq([1, 2, 2, 3]);
+//                  ↑
+//                  💡 Chỉ dùng 1 function (uniq)
 // 🚨 Bundle bao gồm TOÀN BỘ Lodash (300+ functions)
-// → Bundle size: +70 KB
+//    ⚠️ Bundle size: +70 KB
+//    💡 Lãng phí: Tải 299 functions không dùng!
 
 // ✅ GOOD: Import chỉ function cần dùng
-import uniq from 'lodash/uniq'; // Chỉ import uniq function
+// 💡 Import trực tiếp từ file uniq.js trong lodash
+import uniq from 'lodash/uniq';
+//              ↑
+//              ✅ Chỉ import uniq function
 
-const result = uniq([1, 2, 2, 3]);
+const result = uniq([1, 2, 2, 3]); // 💡 Sử dụng uniq
 // ✅ Bundle chỉ bao gồm uniq function (~2 KB)
-// → Bundle size: +2 KB
+//    💡 Bundle size: +2 KB
+//    ✅ Tiết kiệm: Chỉ tải code cần thiết!
 
 // 📊 Tiết kiệm: 68 KB! (97% nhỏ hơn)
+//    💡 70 KB → 2 KB = Giảm 68 KB (97%)
+//    💡 User tải nhanh hơn rất nhiều!
 
 // ✅ BETTER: Dùng lodash-es (ES Modules version)
+// 💡 lodash-es = Lodash được viết lại bằng ES Modules
 import { uniq } from 'lodash-es';
+//    ↑
+//    ✅ Import từ ES Modules version
 // → Tree shaking tự động loại bỏ functions không dùng
+//    💡 Bundler tự động tree-shake → Chỉ bundle uniq
+//    💡 Tự động và tiện lợi hơn!
 ```
 
 ---
@@ -1093,22 +1219,42 @@ import { funcA } from './moduleA'; // ✅ Chỉ load moduleA
 // ============================================
 
 // 📍 A. Route-based Code Splitting (React Router)
+// 💡 Tách code theo routes → Mỗi route là 1 chunk riêng
 import { lazy, Suspense } from 'react';
+//    ↑      ↑
+//    💡 lazy() = Lazy load component (chỉ load khi cần)
+//    💡 Suspense = Hiển thị loading khi đang tải component
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // ✅ Lazy load route components
-const Home = lazy(() => import('./pages/Home'));        // home.chunk.js
-const Dashboard = lazy(() => import('./pages/Dashboard')); // dashboard.chunk.js
-const Profile = lazy(() => import('./pages/Profile'));  // profile.chunk.js
+// 💡 React.lazy() + dynamic import() = Code splitting tự động
+const Home = lazy(() => import('./pages/Home'));
+//    ↑
+//    💡 Home page → Tạo file home.chunk.js riêng
+//    💡 Chỉ load khi user vào route "/"
+
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+//    ↑
+//    💡 Dashboard page → Tạo file dashboard.chunk.js riêng
+//    💡 Chỉ load khi user vào route "/dashboard"
+
+const Profile = lazy(() => import('./pages/Profile'));
+//    ↑
+//    💡 Profile page → Tạo file profile.chunk.js riêng
+//    💡 Chỉ load khi user vào route "/profile"
 
 function App() {
   return (
     <BrowserRouter>
+      {/* 💡 Suspense: Hiển thị "Loading..." khi đang tải chunk */}
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<Home />} />
+          {/* 💡 Route "/" → Load Home chunk */}
           <Route path="/dashboard" element={<Dashboard />} />
+          {/* 💡 Route "/dashboard" → Load Dashboard chunk */}
           <Route path="/profile" element={<Profile />} />
+          {/* 💡 Route "/profile" → Load Profile chunk */}
         </Routes>
       </Suspense>
     </BrowserRouter>
@@ -1116,9 +1262,14 @@ function App() {
 }
 
 // 🎯 Kết quả:
-// - Initial load: Chỉ load main.js + home.chunk.js
-// - User vào /dashboard → Load dashboard.chunk.js on-demand
-// - User vào /profile → Load profile.chunk.js on-demand
+// ✅ Initial load: Chỉ load main.js + home.chunk.js
+//    💡 User vào trang chủ → Chỉ tải code cần thiết
+//    💡 Nhanh hơn vì không tải Dashboard và Profile
+// ✅ User vào /dashboard → Load dashboard.chunk.js on-demand
+//    💡 Chỉ tải khi user thực sự vào route này
+// ✅ User vào /profile → Load profile.chunk.js on-demand
+//    💡 Chỉ tải khi user thực sự vào route này
+// 💡 Lợi ích: Initial load nhanh hơn, chỉ tải code khi cần!
 
 // 📦 B. Component-based Code Splitting
 // Heavy component (Chart library)
@@ -1192,10 +1343,10 @@ module.exports = {
 
 /**
  * 🔐 CONTENT HASHING LÀ GÌ? (What is Content Hashing?)
- * 
+ *
  * Content Hashing là kỹ thuật thêm HASH (chuỗi ký tự duy nhất) vào tên file
  * dựa trên NỘI DUNG của file. Khi nội dung thay đổi → hash thay đổi → tên file mới.
- * 
+ *
  * 🎯 MỤC ĐÍCH:
  * ✅ Cache Busting: Bắt buộc browser tải file mới khi code thay đổi
  * ✅ Long-term Caching: Cache files không đổi vô thời hạn (1 năm)
@@ -1206,96 +1357,134 @@ module.exports = {
 // 🔥 VẤN ĐỀ: KHÔNG DÙNG HASH (The Problem)
 // ===================================================
 
-// Build #1 (Version 1.0 - Thứ 2)
+// 📦 Build #1 (Version 1.0 - Thứ 2)
+// 💡 Build đầu tiên của ứng dụng
 // dist/
 //   ├── main.js        (100 KB) ← Tên file KHÔNG ĐỔI
+//   │   💡 File chứa code ứng dụng chính
 //   └── vendor.js      (300 KB) ← Tên file KHÔNG ĐỔI
+//       💡 File chứa thư viện (React, Lodash, etc.)
 
-// index.html
+// 📄 index.html
 /*
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="/main.js"></script>     ← Browser cache file này
-  <script src="/vendor.js"></script>   ← Browser cache file này
+  <script src="/main.js"></script>
+  <!-- 💡 Browser tải và cache file này với tên "main.js" -->
+  <script src="/vendor.js"></script>
+  <!-- 💡 Browser tải và cache file này với tên "vendor.js" -->
 </head>
 </html>
 */
 
-// 🚨 SCENARIO:
-// 1. User A visit website → Download main.js, vendor.js
-// 2. Browser cache với header: Cache-Control: max-age=31536000 (1 năm)
-// 3. Developer deploy version mới (Thứ 3)
-//    → main.js code mới (fix bug)
+// 🚨 SCENARIO (Kịch bản):
+// 1. 👤 User A visit website → Download main.js, vendor.js
+//    💡 Browser lưu vào cache với tên "main.js" và "vendor.js"
+// 2. 💾 Browser cache với header: Cache-Control: max-age=31536000 (1 năm)
+//    💡 Browser sẽ dùng file từ cache trong 1 năm
+// 3. 👨‍💻 Developer deploy version mới (Thứ 3)
+//    → main.js code mới (fix bug quan trọng)
 //    → Nhưng TÊN FILE VẪN LÀ main.js ❌
+//    ⚠️ VẤN ĐỀ: Tên file không đổi → Browser nghĩ là file cũ!
 
-// Build #2 (Version 1.1 - Thứ 3 - FIX BUG)
+// 📦 Build #2 (Version 1.1 - Thứ 3 - FIX BUG)
+// 💡 Build mới với bug fix
 // dist/
 //   ├── main.js        (105 KB) ← Nội dung MỚI, tên file CŨ ❌
+//   │   💡 Code đã được sửa (fix bug) nhưng tên file vẫn là "main.js"
 //   └── vendor.js      (300 KB) ← Không đổi
+//       💡 Vendor code không thay đổi
 
-// 4. User A quay lại website
+// 4. 👤 User A quay lại website
+//    → Browser kiểm tra cache: "Có file main.js rồi!" ✅
 //    → Browser dùng main.js từ CACHE (version cũ) ❌
 //    → User KHÔNG thấy bug fix! 😱
 //    → Phải Ctrl+F5 (hard refresh) để tải file mới
+//    ⚠️ VẤN ĐỀ: User phải tự refresh → Không tự động!
 
 // ❌ VẤN ĐỀ:
-// - User thấy version cũ (có bug)
-// - Phải hard refresh manually
-// - Không kiểm soát được cache
+// - 👤 User thấy version cũ (có bug) → Trải nghiệm xấu
+// - 🔄 Phải hard refresh manually → Không tiện
+// - 🎛️ Không kiểm soát được cache → Khó quản lý
 
 // ===================================================
 // ✅ GIẢI PHÁP: CONTENT HASHING
 // ===================================================
 
-// Build #1 (Version 1.0 - Thứ 2)
+// 📦 Build #1 (Version 1.0 - Thứ 2)
+// 💡 Build đầu tiên với Content Hashing
 // dist/
 //   ├── main.a3f8b2c1.js     (100 KB) ← Hash từ NỘI DUNG
+//   │   💡 Hash "a3f8b2c1" được tạo từ nội dung file
+//   │   💡 Nếu nội dung không đổi → Hash không đổi
 //   └── vendor.9d4e7f1a.js   (300 KB) ← Hash từ NỘI DUNG
+//       💡 Hash "9d4e7f1a" được tạo từ nội dung file
 
-// index.html (auto-generated)
+// 📄 index.html (auto-generated - tự động tạo)
+// 💡 Bundler tự động inject tên file có hash vào HTML
 /*
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="/main.a3f8b2c1.js"></script>     ← Tên file có hash
-  <script src="/vendor.9d4e7f1a.js"></script>   ← Tên file có hash
+  <script src="/main.a3f8b2c1.js"></script>
+  <!-- 💡 Tên file có hash: main.a3f8b2c1.js -->
+  <script src="/vendor.9d4e7f1a.js"></script>
+  <!-- 💡 Tên file có hash: vendor.9d4e7f1a.js -->
 </head>
 </html>
 */
 
-// Browser cache:
+// 💾 Browser cache:
 // - main.a3f8b2c1.js: cached 1 năm ✅
+//   💡 Browser lưu file này với tên "main.a3f8b2c1.js"
 // - vendor.9d4e7f1a.js: cached 1 năm ✅
+//   💡 Browser lưu file này với tên "vendor.9d4e7f1a.js"
 
-// Build #2 (Version 1.1 - Thứ 3 - FIX BUG)
+// 📦 Build #2 (Version 1.1 - Thứ 3 - FIX BUG)
+// 💡 Build mới với bug fix
 // dist/
 //   ├── main.f7c5d3a9.js     (105 KB) ← HASH MỚI vì nội dung đổi! ✅
+//   │   💡 Nội dung file đổi (fix bug) → Hash mới: "f7c5d3a9"
+//   │   💡 Tên file mới → Browser biết là file mới!
 //   └── vendor.9d4e7f1a.js   (300 KB) ← HASH CŨ vì nội dung KHÔNG đổi ✅
+//       💡 Nội dung file không đổi → Hash giữ nguyên: "9d4e7f1a"
+//       💡 Tên file cũ → Browser dùng từ cache!
 
-// index.html (auto-generated)
+// 📄 index.html (auto-generated)
 /*
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="/main.f7c5d3a9.js"></script>     ← Tên file MỚI! ✅
-  <script src="/vendor.9d4e7f1a.js"></script>   ← Tên file CŨ (from cache) ✅
+  <script src="/main.f7c5d3a9.js"></script>
+  <!-- 💡 Tên file MỚI! Hash đổi: a3f8b2c1 → f7c5d3a9 -->
+  <script src="/vendor.9d4e7f1a.js"></script>
+  <!-- 💡 Tên file CŨ (from cache) Hash không đổi -->
 </head>
 </html>
 */
 
-// User A quay lại website:
-// 1. Browser fetch index.html (luôn fresh, không cache)
-// 2. Browser thấy main.f7c5d3a9.js (tên MỚI!)
+// 👤 User A quay lại website:
+// 1. 🌐 Browser fetch index.html (luôn fresh, không cache)
+//    💡 index.html luôn được tải mới để lấy tên file mới nhất
+// 2. 🔍 Browser thấy main.f7c5d3a9.js (tên MỚI!)
+//    💡 Browser kiểm tra cache: "Không có file main.f7c5d3a9.js"
 //    → Tải file mới (vì chưa có trong cache) ✅
-// 3. Browser thấy vendor.9d4e7f1a.js (tên CŨ)
+//    💡 User nhận được version mới với bug fix!
+// 3. 🔍 Browser thấy vendor.9d4e7f1a.js (tên CŨ)
+//    💡 Browser kiểm tra cache: "Có file vendor.9d4e7f1a.js rồi!"
 //    → Dùng từ cache (tiết kiệm 300 KB bandwidth) ✅
+//    💡 Không cần tải lại vendor.js → Nhanh hơn!
 
 // ✅ LỢI ÍCH:
-// - User LUÔN thấy version mới (tự động)
-// - Không cần hard refresh
-// - Cache files không đổi vô thời hạn (vendor.js)
-// - Chỉ download files đã thay đổi (main.js)
+// - 👤 User LUÔN thấy version mới (tự động)
+//   💡 Không cần hard refresh, tự động cập nhật
+// - 🔄 Không cần hard refresh
+//   💡 Browser tự động tải file mới khi có hash mới
+// - 💾 Cache files không đổi vô thời hạn (vendor.js)
+//   💡 Files không đổi → Hash không đổi → Cache mãi mãi
+// - 📥 Chỉ download files đã thay đổi (main.js)
+//   💡 Tiết kiệm bandwidth, tải nhanh hơn
 
 // ===================================================
 // 🔧 CÁCH HOẠT ĐỘNG CỦA CONTENT HASHING
@@ -1303,7 +1492,7 @@ module.exports = {
 
 /**
  * QUY TRÌNH TẠO HASH:
- * 
+ *
  * 1. Bundler đọc NỘI DUNG file (main.js)
  * 2. Chạy hashing algorithm (MD5, SHA-256, etc.) trên nội dung
  * 3. Tạo hash string (VD: a3f8b2c1d5e9f7a2)
@@ -1339,11 +1528,11 @@ const newFileName = `main.${hash}.js`; // "main.a3f8b2c1.js"
  * 1️⃣ [contenthash] - RECOMMENDED (Khuyên dùng)
  *    Hash dựa trên NỘI DUNG file
  *    → File không đổi → hash không đổi → cache hiệu quả
- * 
+ *
  * 2️⃣ [chunkhash]
  *    Hash dựa trên CHUNK (group of modules)
  *    → Modules trong cùng chunk share hash
- * 
+ *
  * 3️⃣ [hash] (fullhash)
  *    Hash dựa trên TOÀN BỘ build
  *    → Build mới → TẤT CẢ files đổi hash (không tối ưu)
@@ -1353,25 +1542,25 @@ const newFileName = `main.${hash}.js`; // "main.a3f8b2c1.js"
 module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
-    
+
     // ✅ RECOMMENDED: [contenthash] - hash theo nội dung
     filename: '[name].[contenthash:8].js',
     //                ↑            ↑
     //             name chunk    8 ký tự hash
-    
+
     // Output: main.a3f8b2c1.js, vendor.9d4e7f1a.js
-    
+
     // Alternative strategies:
     // filename: '[name].[chunkhash:8].js',  // Hash theo chunk
     // filename: '[name].[fullhash:8].js',   // Hash toàn bộ build (không khuyên)
   },
-  
+
   optimization: {
     // ⚠️ QUAN TRỌNG: moduleIds: 'deterministic'
     // → Đảm bảo module IDs không đổi giữa các builds
     // → vendor.js hash KHÔNG đổi nếu code không đổi
     moduleIds: 'deterministic',
-    
+
     splitChunks: {
       chunks: 'all',
       cacheGroups: {
@@ -1407,12 +1596,12 @@ export default defineConfig({
 
 /**
  * 🏢 SCENARIO: E-commerce Website
- * 
+ *
  * BEFORE Content Hashing:
  * ❌ Deploy version mới → Users vẫn thấy version cũ (cached)
  * ❌ Phải đợi cache expire (1 tuần) hoặc user hard refresh
  * ❌ Bug fix không đến users ngay lập tức
- * 
+ *
  * AFTER Content Hashing:
  * ✅ Deploy version mới → Users TỰ ĐỘNG thấy version mới
  * ✅ Vendor files (React, libraries) cached vô thời hạn
@@ -1470,14 +1659,14 @@ export default defineConfig({
 server {
   location / {
     root /var/www/html;
-    
+
     # ⚠️ index.html: KHÔNG cache (luôn fresh)
     location = /index.html {
       add_header Cache-Control "no-cache, no-store, must-revalidate";
       add_header Pragma "no-cache";
       add_header Expires "0";
     }
-    
+
     # ✅ Hashed files: Cache vô thời hạn (1 năm)
     location ~* \.(js|css|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$ {
       # Nếu file có hash trong tên (VD: main.a3f8b2c1.js)
@@ -1548,7 +1737,7 @@ module.exports = {
  * 4. Dùng moduleIds: 'deterministic' (Webpack)
  * 5. Split vendor code (React, libraries) ra riêng
  * 6. Tên file: [name].[contenthash:8].js (8 ký tự hash)
- * 
+ *
  * ❌ DON'T (KHÔNG NÊN):
  * 1. Dùng [hash] (fullhash) → tất cả files đổi hash
  * 2. Cache index.html → users không thấy version mới
@@ -1562,13 +1751,13 @@ module.exports = {
 
 /**
  * 🎯 REAL APP EXAMPLE (Ứng dụng thực tế):
- * 
+ *
  * WITHOUT Content Hashing:
  * ├── Build #1: Users download 1.2 MB
  * ├── Build #2 (1 tuần sau): Users download 1.2 MB (lại!) ❌
  * ├── Build #3 (1 tuần sau): Users download 1.2 MB (lại!) ❌
  * └── Total: 3.6 MB trong 3 tuần
- * 
+ *
  * WITH Content Hashing:
  * ├── Build #1: Users download 1.2 MB
  * │   ├── main.js: 200 KB
@@ -1586,7 +1775,7 @@ module.exports = {
  * │   └── styles.css: 150 KB (changed - hash mới)
  * │
  * └── Total: 1.57 MB trong 3 tuần
- * 
+ *
  * 📊 Bandwidth Saved: 2.03 MB (56% nhỏ hơn!) 🚀
  * ⚡ Load Time: Nhanh hơn 3-5x (từ cache)
  */
@@ -1636,28 +1825,28 @@ optimization: {
 
 /**
  * 🔐 CONTENT HASHING:
- * 
+ *
  * ✅ LÀ GÌ?
  *    - Thêm hash vào tên file dựa trên nội dung
  *    - File thay đổi → hash mới → tên file mới
- * 
+ *
  * ✅ HOẠT ĐỘNG SAO?
  *    1. Bundler hash nội dung file (MD5/SHA-256)
  *    2. Tạo string hash (a3f8b2c1)
  *    3. Rename: main.js → main.a3f8b2c1.js
  *    4. Update index.html với tên mới
- * 
+ *
  * ✅ DÙNG ĐỂ LÀM GÌ?
  *    - Cache Busting: Users luôn thấy version mới
  *    - Long-term Caching: Cache files không đổi vô thời hạn
  *    - Performance: Chỉ download files đã thay đổi
  *    - Bandwidth Saving: Tiết kiệm 50-80% bandwidth
- * 
+ *
  * ✅ KHI NÀO DÙNG?
  *    - LUÔN LUÔN dùng cho production builds!
  *    - Kết hợp với vendor splitting
  *    - Kết hợp với aggressive caching (1 năm)
- * 
+ *
  * ✅ CÔNG CỤ:
  *    - Webpack: output.filename = '[name].[contenthash:8].js'
  *    - Vite: Tự động enable
