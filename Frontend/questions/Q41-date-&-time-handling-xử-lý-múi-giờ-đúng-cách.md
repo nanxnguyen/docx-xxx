@@ -257,7 +257,520 @@ const startOfDay = new Date(Date.UTC(
 
 ---
 
-#### **📚 Libraries (Recommend)**
+#### **� Native Date API Deep Dive - Hiểu Rõ Để Tránh Lỗi**
+
+**🎯 Date Constructor - 4 Cách Tạo Date Object:**
+
+```typescript
+/**
+ * 🏗️ CONSTRUCTOR #1: new Date() - Current time
+ */
+
+// 📅 Tạo Date object với thời gian hiện tại
+const now = new Date();
+// 💡 Lấy thời gian từ system clock của máy (browser hoặc server)
+// 💡 Timezone = local timezone của máy đang chạy code
+// 💡 Internal value = timestamp (milliseconds từ 1970-01-01 UTC)
+
+console.log(now.toString());
+// "Mon Dec 22 2025 14:30:45 GMT+0700 (Indochina Time)"
+// 💡 toString() tự động format theo local timezone
+
+console.log(now.toISOString());
+// "2025-12-22T07:30:45.123Z"
+// 💡 toISOString() LUÔN trả về UTC (Z suffix)
+// 💡 Chênh 7 giờ so với toString() ở Vietnam (UTC+7)
+
+console.log(now.getTime());
+// 1734858645123
+// 💡 Timestamp = milliseconds từ Unix Epoch (1970-01-01 00:00:00 UTC)
+// 💡 Giá trị này GIỐNG NHAU trên mọi timezone
+
+/**
+ * 🏗️ CONSTRUCTOR #2: new Date(timestamp) - From milliseconds
+ */
+
+const fromTimestamp = new Date(1705329000000);
+// 💡 timestamp = 1705329000000 = "2024-01-15 14:30:00 UTC"
+// 💡 Tạo Date object từ absolute time point
+// 💡 KHÔNG phụ thuộc timezone (timestamp là universal)
+
+console.log(fromTimestamp.toString());
+// Vietnam: "Mon Jan 15 2024 21:30:00 GMT+0700"
+// US:      "Mon Jan 15 2024 09:30:00 GMT-0500"
+// 💡 Cùng timestamp, display khác nhau theo local timezone
+// 💡 Nhưng getTime() trả về cùng 1 số: 1705329000000
+
+// ✅ BEST PRACTICE: Dùng timestamp cho storage/comparison
+const serverTime = 1705329000000;
+const clientDate = new Date(serverTime);
+// 🚀 Không bị lỗi timezone, luôn đúng trên mọi máy
+
+/**
+ * 🏗️ CONSTRUCTOR #3: new Date(dateString) - Parse string
+ * ⚠️ NGUY HIỂM: Kết quả phụ thuộc browser implementation!
+ */
+
+// ❌ ISO 8601 WITHOUT timezone → Browser-dependent!
+const date1 = new Date('2024-01-15');
+// 💡 Spec không rõ ràng: Là UTC hay local timezone?
+// 🐛 Chrome/Firefox: Parse as UTC → "2024-01-15T00:00:00Z"
+// 🐛 Safari (older): Parse as local → "2024-01-15T00:00:00+07:00"
+// 💥 KHÁC NHAU giữa browsers!
+
+console.log(date1.toISOString());
+// Chrome: "2024-01-15T00:00:00.000Z" (UTC)
+// Safari: "2024-01-14T17:00:00.000Z" (UTC, converted from local)
+// 💡 Cùng code, khác kết quả!
+
+// ✅ CORRECT: ISO 8601 WITH timezone (Z = UTC)
+const date2 = new Date('2024-01-15T14:30:00.000Z');
+// 💡 'Z' suffix = UTC explicit
+// 💡 Tất cả browsers parse giống nhau
+// 🚀 LUÔN dùng format này cho API responses
+
+// ✅ CORRECT: ISO 8601 WITH offset
+const date3 = new Date('2024-01-15T21:30:00+07:00');
+// 💡 +07:00 = Vietnam timezone offset
+// 💡 Browser convert về UTC: "2024-01-15T14:30:00.000Z"
+// 💡 getTime() = 1705329000000 (giống date2)
+
+// ❌ Non-ISO format → VERY RISKY!
+const date4 = new Date('01/15/2024');
+// 🐛 US browsers: MM/DD/YYYY (Jan 15)
+// 🐛 VN browsers: DD/MM/YYYY? (May 01?) → Invalid!
+// 💥 TUYỆT ĐỐI TRÁNH!
+
+const date5 = new Date('15 Jan 2024');
+// 💡 Có thể work, nhưng kết quả không đảm bảo
+// 💡 Timezone handling không rõ ràng
+// ⚠️ Chỉ dùng nếu bắt buộc, luôn test kỹ
+
+/**
+ * 🏗️ CONSTRUCTOR #4: new Date(year, month, day, ...) - Components
+ * ⚠️ PITFALL: Month zero-indexed!
+ */
+
+const date6 = new Date(2024, 0, 15);  // January 15, 2024
+// 💡 Params: (year, month, day, hour, minute, second, millisecond)
+// 🐛 month = 0-indexed: 0=Jan, 1=Feb, ..., 11=Dec
+// 💡 KHÔNG có timezone param → tạo theo LOCAL timezone
+
+console.log(date6.toString());
+// "Mon Jan 15 2024 00:00:00 GMT+0700 (Indochina Time)"
+// 💡 Tạo midnight local time (00:00 Vietnam)
+
+// ❌ COMMON MISTAKE: Month 1-indexed
+const wrongDate = new Date(2024, 1, 15);  // ❌ Không phải Jan 15!
+console.log(wrongDate.toString());
+// "Thu Feb 15 2024 00:00:00 GMT+0700"
+// 💡 month=1 là FEBRUARY, không phải January!
+
+// ✅ CORRECT: Nhớ month zero-indexed
+const correctDate = new Date(2024, 0, 15);  // ✅ January 15
+
+// 💡 Day, hour, minute, second, ms đều 1-indexed (bình thường)
+const fullDate = new Date(2024, 0, 15, 14, 30, 45, 123);
+// → "Mon Jan 15 2024 14:30:45.123 GMT+0700"
+
+// ✅ Dùng Date.UTC() để tạo UTC time
+const utcDate = new Date(Date.UTC(2024, 0, 15, 14, 30));
+console.log(utcDate.toISOString());
+// "2024-01-15T14:30:00.000Z"
+// 💡 Date.UTC() returns timestamp (number)
+// 💡 new Date(timestamp) converts to Date object
+```
+
+---
+
+**🔧 Date Methods - Get/Set và UTC vs Local:**
+
+```typescript
+/**
+ * 📖 GET METHODS - 2 Versions: Local vs UTC
+ */
+
+const date = new Date('2024-01-15T14:30:45.123Z');  // UTC time
+
+// 🌍 LOCAL timezone methods (Vietnam UTC+7)
+console.log(date.getFullYear());   // 2024
+console.log(date.getMonth());      // 0 (January, zero-indexed!)
+console.log(date.getDate());       // 15 (day of month)
+console.log(date.getDay());        // 1 (Monday, 0=Sunday)
+console.log(date.getHours());      // 21 (14 + 7 = 21:30 Vietnam)
+console.log(date.getMinutes());    // 30
+console.log(date.getSeconds());    // 45
+console.log(date.getMilliseconds()); // 123
+
+// 💡 get*() methods trả về LOCAL timezone values
+// 💡 Vietnam UTC+7: 14:30 UTC → 21:30 local
+
+// 🌐 UTC methods (always UTC, không phụ thuộc local timezone)
+console.log(date.getUTCFullYear());  // 2024
+console.log(date.getUTCMonth());     // 0 (January)
+console.log(date.getUTCDate());      // 15
+console.log(date.getUTCDay());       // 1 (Monday)
+console.log(date.getUTCHours());     // 14 (giữ nguyên UTC)
+console.log(date.getUTCMinutes());   // 30
+console.log(date.getUTCSeconds());   // 45
+console.log(date.getUTCMilliseconds()); // 123
+
+// 💡 getUTC*() methods luôn trả về UTC values
+// 💡 Kết quả GIỐNG NHAU trên mọi timezone
+// ✅ BEST PRACTICE: Dùng getUTC*() cho logic, get*() cho display
+
+// 📊 COMPARISON:
+// ┌─────────────────┬──────────────┬──────────────┐
+// │ Method          │ Vietnam      │ New York     │
+// ├─────────────────┼──────────────┼──────────────┤
+// │ getHours()      │ 21 (local)   │ 9 (local)    │ ← KHÁC NHAU
+// │ getUTCHours()   │ 14 (UTC)     │ 14 (UTC)     │ ← GIỐNG NHAU
+// └─────────────────┴──────────────┴──────────────┘
+
+/**
+ * 🔧 SET METHODS - Mutable (Thay đổi object gốc!)
+ * ⚠️ NGUY HIỂM: Side effects!
+ */
+
+const original = new Date('2024-01-15T14:30:00.000Z');
+console.log(original.toISOString());
+// "2024-01-15T14:30:00.000Z"
+
+// ❌ setMonth() mutates original object!
+original.setMonth(2);  // Set to March (month=2)
+console.log(original.toISOString());
+// "2024-03-15T14:30:00.000Z"  ← Original đã BỊ THAY ĐỔI!
+
+// 💥 PROBLEM: Unexpected side effects
+function displayNextMonth(date: Date) {
+  date.setMonth(date.getMonth() + 1);  // ❌ Mutate input!
+  return date.toISOString();
+}
+
+const myDate = new Date('2024-01-15T14:30:00.000Z');
+console.log(displayNextMonth(myDate));
+// "2024-02-15T14:30:00.000Z"
+
+console.log(myDate.toISOString());
+// "2024-02-15T14:30:00.000Z"  ← myDate ĐÃ BỊ THAY ĐỔI!
+// 💡 Caller không expect myDate thay đổi → BUG!
+
+// ✅ SOLUTION 1: Clone trước khi modify
+function displayNextMonthSafe(date: Date) {
+  const clone = new Date(date.getTime());  // 📋 Clone
+  clone.setMonth(clone.getMonth() + 1);
+  return clone.toISOString();
+}
+
+const myDate2 = new Date('2024-01-15T14:30:00.000Z');
+console.log(displayNextMonthSafe(myDate2));
+// "2024-02-15T14:30:00.000Z"
+
+console.log(myDate2.toISOString());
+// "2024-01-15T14:30:00.000Z"  ← myDate2 KHÔNG thay đổi ✅
+
+// ✅ SOLUTION 2: Immutable approach (recommended)
+function addMonths(date: Date, months: number): Date {
+  const result = new Date(date.getTime());  // Clone
+  result.setMonth(result.getMonth() + months);
+  return result;  // Return new object
+}
+
+const myDate3 = new Date('2024-01-15T14:30:00.000Z');
+const nextMonth = addMonths(myDate3, 1);
+console.log(nextMonth.toISOString());  // "2024-02-15T14:30:00.000Z"
+console.log(myDate3.toISOString());    // "2024-01-15T14:30:00.000Z" ✅
+
+// ✅ SOLUTION 3: Dùng library (date-fns, Luxon) - immutable by default
+// import { addMonths } from 'date-fns';
+// const result = addMonths(date, 1);  // date không bị thay đổi
+```
+
+---
+
+**⏰ Timezone Offset và Daylight Saving Time (DST):**
+
+```typescript
+/**
+ * 🌍 getTimezoneOffset() - Offset giữa UTC và local
+ */
+
+const date = new Date('2024-01-15T14:30:00.000Z');
+
+// 📏 getTimezoneOffset() returns minutes BEHIND UTC
+const offset = date.getTimezoneOffset();
+// Vietnam (UTC+7): -420 (negative = ahead of UTC)
+// New York (UTC-5): 300 (positive = behind UTC)
+// 💡 Counterintuitive: Positive = behind, Negative = ahead
+
+console.log(offset);  // Vietnam: -420 minutes
+console.log(offset / 60);  // Vietnam: -7 hours
+
+// 💡 Convert offset to string
+function formatOffset(offset: number): string {
+  const hours = Math.floor(Math.abs(offset) / 60);
+  const minutes = Math.abs(offset) % 60;
+  const sign = offset <= 0 ? '+' : '-';  // Inverted!
+  return `UTC${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
+
+console.log(formatOffset(offset));  // "UTC+07:00" (Vietnam)
+
+/**
+ * 🌞 DAYLIGHT SAVING TIME (DST) - Thay đổi offset theo mùa
+ * 
+ * 💡 KHÁ I NIỆM:
+ * - DST = Giờ mùa hè (Summer Time)
+ * - Một số quốc gia chỉnh đồng hồ:
+ *   + Mùa hè: +1 giờ (tiết kiệm điện)
+ *   + Mùa đông: -1 giờ (về giờ chuẩn)
+ * - Vietnam KHÔNG có DST
+ * - US, Europe CÓ DST
+ */
+
+// 📅 New York timezone:
+// - Winter (Standard Time): UTC-5
+// - Summer (Daylight Time): UTC-4
+
+const winterDate = new Date('2024-01-15T12:00:00Z');  // January (winter)
+const summerDate = new Date('2024-07-15T12:00:00Z');  // July (summer)
+
+// 💡 Giả sử chạy trên máy New York:
+// winterDate.getTimezoneOffset() = 300 (UTC-5)
+// summerDate.getTimezoneOffset() = 240 (UTC-4)
+// 💥 CÙNG timezone nhưng offset KHÁC NHAU!
+
+// 🐛 COMMON BUG: Hardcode offset
+const VIETNAM_OFFSET_HOURS = 7;  // ❌ Giả định offset luôn +7
+
+function toVietnamTime(utcDate: Date): Date {
+  // ❌ SAI: Không xét DST (nếu có)
+  return new Date(utcDate.getTime() + VIETNAM_OFFSET_HOURS * 60 * 60 * 1000);
+}
+
+// 💡 Vietnam không có DST nên OK, nhưng US sẽ SAI!
+
+// ✅ CORRECT: Dùng timezone database (IANA)
+function toTimezone(utcDate: Date, timezone: string): Date {
+  // Dùng Intl.DateTimeFormat hoặc library (date-fns-tz, Luxon)
+  const formatted = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }).format(utcDate);
+  
+  // Parse formatted string back to Date
+  // (Simplified, production code cần robust parsing)
+  return new Date(formatted);
+}
+
+// ✅ Handle DST automatically
+const nyTime = toTimezone(winterDate, 'America/New_York');
+// 💡 Intl.DateTimeFormat tự động xét DST rules
+
+/**
+ * 🗓️ DST TRANSITION - Edge cases nguy hiểm
+ */
+
+// 🌅 DST begins: 2:00 AM → 3:00 AM (spring forward)
+// 💥 2:30 AM KHÔNG TỒN TẠI (skipped)!
+
+const springForward = new Date('2024-03-10T07:30:00Z');  // 2:30 AM EST
+// 💡 Thời gian này bị skip do DST
+// 💡 Browser/library tự động điều chỉnh
+
+// 🌇 DST ends: 2:00 AM → 1:00 AM (fall back)
+// 💥 1:30 AM XẢY RA 2 LẦN!
+
+const fallBack1 = new Date('2024-11-03T05:30:00Z');  // 1:30 AM EDT (first)
+const fallBack2 = new Date('2024-11-03T06:30:00Z');  // 1:30 AM EST (second)
+
+// 💡 Cùng local time "1:30 AM" nhưng khác UTC!
+// 💡 Ambiguous: Không biết lần nào
+
+// ✅ BEST PRACTICE:
+// 1. Lưu UTC (timestamp/ISO) → Không ambiguous
+// 2. Dùng timezone database (IANA) → Auto-handle DST
+// 3. Test với DST transition dates
+// 4. Hiển thị timezone rõ ràng: "1:30 AM EST" vs "1:30 AM EDT"
+```
+
+---
+
+**🧮 Date Arithmetic - Cộng/Trừ Thời Gian:**
+
+```typescript
+/**
+ * ➕ ADD/SUBTRACT Days, Hours, Minutes...
+ */
+
+const date = new Date('2024-01-15T14:30:00.000Z');
+
+// ✅ Add days (timestamp arithmetic)
+function addDays(date: Date, days: number): Date {
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;  // 86,400,000 ms
+  return new Date(date.getTime() + days * MS_PER_DAY);
+}
+
+const tomorrow = addDays(date, 1);
+console.log(tomorrow.toISOString());
+// "2024-01-16T14:30:00.000Z"
+
+const yesterday = addDays(date, -1);
+console.log(yesterday.toISOString());
+// "2024-01-14T14:30:00.000Z"
+
+// ✅ Add hours
+function addHours(date: Date, hours: number): Date {
+  const MS_PER_HOUR = 60 * 60 * 1000;  // 3,600,000 ms
+  return new Date(date.getTime() + hours * MS_PER_HOUR);
+}
+
+// ✅ Add minutes
+function addMinutes(date: Date, minutes: number): Date {
+  const MS_PER_MINUTE = 60 * 1000;  // 60,000 ms
+  return new Date(date.getTime() + minutes * MS_PER_MINUTE);
+}
+
+// ⚠️ PITFALL: Add months (không đơn giản!)
+function addMonthsNaive(date: Date, months: number): Date {
+  const result = new Date(date.getTime());
+  result.setMonth(result.getMonth() + months);  // ❌ Có thể sai!
+  return result;
+}
+
+// 🐛 PROBLEM: Month lengths khác nhau
+const jan31 = new Date('2024-01-31T14:30:00.000Z');
+const feb = addMonthsNaive(jan31, 1);
+console.log(feb.toISOString());
+// "2024-03-02T14:30:00.000Z"  ← Feb 31 không tồn tại → rolled to Mar 2!
+// 💡 Jan 31 + 1 month = Feb 31 → overflow → Mar 2
+
+// ✅ CORRECT: Clamp to last day of month
+function addMonthsSafe(date: Date, months: number): Date {
+  const result = new Date(date.getTime());
+  const originalDay = result.getDate();
+  
+  result.setMonth(result.getMonth() + months);
+  
+  // Nếu ngày bị thay đổi (overflow), set về ngày cuối tháng
+  if (result.getDate() !== originalDay) {
+    result.setDate(0);  // Set to last day of previous month
+  }
+  
+  return result;
+}
+
+const feb2 = addMonthsSafe(jan31, 1);
+console.log(feb2.toISOString());
+// "2024-02-29T14:30:00.000Z"  ← Clamped to Feb 29 (leap year)
+
+// 💡 Library handle edge cases này tốt hơn!
+// import { addMonths } from 'date-fns';
+// const result = addMonths(jan31, 1);  // Feb 29 ✅
+
+/**
+ * 📊 DIFFERENCE Between Dates
+ */
+
+const date1 = new Date('2024-01-15T14:30:00.000Z');
+const date2 = new Date('2024-01-20T18:45:00.000Z');
+
+// ✅ Difference in milliseconds
+const diffMs = date2.getTime() - date1.getTime();
+console.log(diffMs);  // 450900000 ms
+
+// ✅ Difference in days
+const diffDays = diffMs / (1000 * 60 * 60 * 24);
+console.log(diffDays);  // 5.177083333... days
+console.log(Math.floor(diffDays));  // 5 days (rounded down)
+
+// ✅ Difference in hours
+const diffHours = diffMs / (1000 * 60 * 60);
+console.log(diffHours);  // 124.25 hours
+
+// ✅ Business days (exclude weekends)
+function getBusinessDays(start: Date, end: Date): number {
+  let count = 0;
+  const current = new Date(start.getTime());
+  
+  while (current <= end) {
+    const dayOfWeek = current.getDay();
+    // 0 = Sunday, 6 = Saturday
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      count++;
+    }
+    current.setDate(current.getDate() + 1);
+  }
+  
+  return count;
+}
+
+const businessDays = getBusinessDays(date1, date2);
+console.log(businessDays);  // Số ngày làm việc (exclude Sat/Sun)
+
+/**
+ * 🗓️ START/END of Period
+ */
+
+const now = new Date('2024-01-15T14:30:45.123Z');
+
+// ✅ Start of day (UTC)
+const startOfDayUTC = new Date(Date.UTC(
+  now.getUTCFullYear(),
+  now.getUTCMonth(),
+  now.getUTCDate(),
+  0, 0, 0, 0  // 00:00:00.000
+));
+console.log(startOfDayUTC.toISOString());
+// "2024-01-15T00:00:00.000Z"
+
+// ✅ End of day (UTC)
+const endOfDayUTC = new Date(Date.UTC(
+  now.getUTCFullYear(),
+  now.getUTCMonth(),
+  now.getUTCDate(),
+  23, 59, 59, 999  // 23:59:59.999
+));
+console.log(endOfDayUTC.toISOString());
+// "2024-01-15T23:59:59.999Z"
+
+// ✅ Start of month (UTC)
+const startOfMonthUTC = new Date(Date.UTC(
+  now.getUTCFullYear(),
+  now.getUTCMonth(),
+  1,  // First day
+  0, 0, 0, 0
+));
+console.log(startOfMonthUTC.toISOString());
+// "2024-01-01T00:00:00.000Z"
+
+// ✅ End of month (UTC)
+const endOfMonthUTC = new Date(Date.UTC(
+  now.getUTCFullYear(),
+  now.getUTCMonth() + 1,  // Next month
+  0,  // Day 0 = last day of previous month
+  23, 59, 59, 999
+));
+console.log(endOfMonthUTC.toISOString());
+// "2024-01-31T23:59:59.999Z"
+
+// 💡 Day 0 trick: Month N, Day 0 = Last day of Month N-1
+const lastDayOfJan = new Date(Date.UTC(2024, 1, 0));  // Feb 0 = Jan 31
+console.log(lastDayOfJan.getUTCDate());  // 31
+
+const lastDayOfFeb = new Date(Date.UTC(2024, 2, 0));  // Mar 0 = Feb 29 (leap)
+console.log(lastDayOfFeb.getUTCDate());  // 29
+```
+
+---
+
+#### **�📚 Libraries (Recommend)**
 
 **date-fns (Functional, Tree-shakeable):**
 
@@ -295,6 +808,534 @@ dayjs.extend(timezone);
 dayjs('2024-01-15T14:30:00.000Z')
   .tz('Asia/Ho_Chi_Minh')
   .format('YYYY-MM-DD HH:mm:ss');
+```
+
+---
+
+#### **🌍 Real-World Scenarios - Tình Huống Thực Tế**
+
+**Scenario 1: E-Commerce Flash Sale - Xử Lý Giờ Khuyến Mãi:**
+
+```typescript
+/**
+ * 🛍️ REQUIREMENT:
+ * - Flash sale bắt đầu: 21:00 ngày 15/01/2024 (Vietnam time)
+ * - Hiển thị countdown cho users ở nhiều timezone
+ * - Server lưu UTC, client display local time
+ */
+
+// 🏛️ SERVER-SIDE: Lưu flash sale time
+interface FlashSale {
+  id: string;
+  name: string;
+  startTime: string;  // 💡 ISO 8601 UTC
+  endTime: string;
+  timezone: string;   // 💡 Timezone nơi tổ chức (reference)
+}
+
+// Admin tạo flash sale (Vietnam timezone)
+const createFlashSale = (localStartTime: string) => {
+  // 💡 localStartTime = "2024-01-15 21:00" (Vietnam time input)
+  
+  // 🔄 Convert Vietnam time → UTC
+  const vietnamTime = new Date(`${localStartTime}+07:00`);
+  // → "2024-01-15T21:00:00+07:00"
+  
+  const utcTime = vietnamTime.toISOString();
+  // → "2024-01-15T14:00:00.000Z" (UTC)
+  // 💡 21:00 Vietnam = 14:00 UTC (21 - 7 = 14)
+  
+  const flashSale: FlashSale = {
+    id: 'sale123',
+    name: 'Tết Sale',
+    startTime: utcTime,  // ✅ Lưu UTC vào database
+    endTime: new Date(vietnamTime.getTime() + 3 * 60 * 60 * 1000).toISOString(),
+    // ← +3 hours = 24:00 Vietnam = 17:00 UTC
+    timezone: 'Asia/Ho_Chi_Minh'  // 💡 Reference timezone
+  };
+  
+  return flashSale;
+};
+
+// 📱 CLIENT-SIDE: Hiển thị cho users
+const FlashSaleCountdown = ({ sale }: { sale: FlashSale }) => {
+  const [timeLeft, setTimeLeft] = useState('');
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();  // 💡 Current timestamp (UTC-based)
+      const startTime = new Date(sale.startTime).getTime();
+      const diff = startTime - now;
+      
+      if (diff <= 0) {
+        setTimeLeft('Flash sale đã bắt đầu!');
+        clearInterval(interval);
+        return;
+      }
+      
+      // 📊 Calculate hours, minutes, seconds
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [sale.startTime]);
+  
+  // 📋 Display local time cho user
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  // 💡 Auto-detect user's timezone
+  
+  const localStartTime = new Date(sale.startTime).toLocaleString('vi-VN', {
+    timeZone: userTimezone,
+    dateStyle: 'long',
+    timeStyle: 'short'
+  });
+  
+  return (
+    <div>
+      <h2>{sale.name}</h2>
+      <p>Bắt đầu: {localStartTime}</p>
+      {/* 💡 Vietnam user thấy: "21:00, 15 tháng 1, 2024"
+           US user thấy: "9:00 AM, January 15, 2024" */}
+      <p>Còn lại: {timeLeft}</p>
+      {/* 💡 Countdown giống nhau cho mọi user (dựa trên UTC) */}
+    </div>
+  );
+};
+
+/**
+ * 💡 KẾT QUẢ:
+ * - Database: "2024-01-15T14:00:00.000Z" (UTC, universal)
+ * - Vietnam user: "21:00" (UTC+7)
+ * - Singapore user: "22:00" (UTC+8)
+ * - US user: "9:00 AM" (UTC-5)
+ * - Countdown giống nhau: Countdown to same timestamp
+ */
+```
+
+---
+
+**Scenario 2: Meeting Scheduler - Nhiều Timezone:**
+
+```typescript
+/**
+ * 💼 REQUIREMENT:
+ * - Boss ở New York schedule meeting: "9:00 AM my time"
+ * - Dev ở Vietnam nhận invite
+ * - Auto-convert và hiển thị đúng giờ local
+ */
+
+interface Meeting {
+  id: string;
+  title: string;
+  startTime: string;  // UTC ISO
+  duration: number;   // minutes
+  organizerTimezone: string;
+  participants: Array<{
+    email: string;
+    timezone: string;
+  }>;
+}
+
+// 👔 Boss tạo meeting (New York)
+const scheduleMeeting = () => {
+  // Boss input: "9:00 AM" (New York time)
+  const localTime = '2024-01-15 09:00';
+  
+  // 🔄 Convert New York time → UTC
+  // New York winter: UTC-5
+  const nyTime = new Date(`${localTime}-05:00`);
+  // → "2024-01-15T09:00:00-05:00"
+  
+  const utcTime = nyTime.toISOString();
+  // → "2024-01-15T14:00:00.000Z" (UTC)
+  // 💡 9:00 AM NY = 14:00 UTC (9 + 5 = 14)
+  
+  const meeting: Meeting = {
+    id: 'meet123',
+    title: 'Sprint Planning',
+    startTime: utcTime,  // ✅ UTC
+    duration: 60,
+    organizerTimezone: 'America/New_York',
+    participants: [
+      { email: 'dev@vn.com', timezone: 'Asia/Ho_Chi_Minh' },
+      { email: 'pm@sg.com', timezone: 'Asia/Singapore' }
+    ]
+  };
+  
+  return meeting;
+};
+
+// 📧 Send calendar invites
+const sendInvites = (meeting: Meeting) => {
+  meeting.participants.forEach(participant => {
+    // 🔄 Convert UTC → participant's timezone
+    const localTime = new Date(meeting.startTime).toLocaleString('en-US', {
+      timeZone: participant.timezone,
+      dateStyle: 'full',
+      timeStyle: 'short'
+    });
+    
+    // 💡 Vietnam dev nhận:
+    // "Monday, January 15, 2024 at 9:00 PM"
+    // (14:00 UTC + 7 = 21:00 Vietnam)
+    
+    // 💡 Singapore PM nhận:
+    // "Monday, January 15, 2024 at 10:00 PM"
+    // (14:00 UTC + 8 = 22:00 Singapore)
+    
+    sendEmail(participant.email, {
+      subject: `Meeting: ${meeting.title}`,
+      body: `
+        Meeting time: ${localTime}
+        Duration: ${meeting.duration} minutes
+        
+        Join link: https://meet.example.com/${meeting.id}
+      `
+    });
+  });
+};
+
+// 📅 iCalendar format (for Outlook, Google Calendar)
+const generateICS = (meeting: Meeting, participantTimezone: string) => {
+  const start = new Date(meeting.startTime);
+  const end = new Date(start.getTime() + meeting.duration * 60 * 1000);
+  
+  // 💡 iCalendar format: YYYYMMDDTHHMMSSZ (UTC)
+  const formatICS = (date: Date) => {
+    return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  };
+  
+  return `
+BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+DTSTART:${formatICS(start)}
+DTEND:${formatICS(end)}
+SUMMARY:${meeting.title}
+DESCRIPTION:Meeting scheduled by organizer
+END:VEVENT
+END:VCALENDAR
+  `.trim();
+  
+  // 💡 Calendar app tự động convert UTC → user's local timezone
+};
+```
+
+---
+
+**Scenario 3: Subscription Renewal - Handle Exact Time:**
+
+```typescript
+/**
+ * 💳 REQUIREMENT:
+ * - User mua subscription: 15/01/2024 21:30 (Vietnam)
+ * - Renewal sau 30 ngày: 14/02/2024 21:30 (Vietnam)
+ * - Lưu exact time để charge vào đúng giờ
+ */
+
+interface Subscription {
+  userId: string;
+  planId: string;
+  startDate: string;  // UTC ISO
+  renewalDate: string;  // UTC ISO
+  timezone: string;  // User's timezone khi mua
+}
+
+// 🛍️ User mua subscription
+const purchaseSubscription = (userId: string, planId: string) => {
+  const now = new Date();  // Current time (local)
+  
+  // 🔐 Lưu user's timezone
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  // → "Asia/Ho_Chi_Minh"
+  
+  // 📊 Calculate renewal date (30 days later, same time)
+  const renewalDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+  // 💡 Add 30 days to timestamp (handles DST automatically)
+  
+  const subscription: Subscription = {
+    userId,
+    planId,
+    startDate: now.toISOString(),  // ✅ UTC
+    renewalDate: renewalDate.toISOString(),  // ✅ UTC
+    timezone: userTimezone  // 💡 Lưu timezone cho reference
+  };
+  
+  return subscription;
+};
+
+// ⏰ Cron job: Check renewals mỗi 5 phút
+const processRenewals = async () => {
+  const now = Date.now();
+  
+  // 🔍 Query subscriptions cần renew
+  const dueSubscriptions = await db.subscriptions.find({
+    renewalDate: { $lte: new Date(now) }  // ≤ current time
+  });
+  
+  for (const sub of dueSubscriptions) {
+    try {
+      // 💳 Charge user
+      await chargeUser(sub.userId, sub.planId);
+      
+      // 🔄 Update next renewal (30 days later)
+      const nextRenewal = new Date(
+        new Date(sub.renewalDate).getTime() + 30 * 24 * 60 * 60 * 1000
+      );
+      
+      await db.subscriptions.updateOne(
+        { _id: sub._id },
+        { 
+          $set: { 
+            renewalDate: nextRenewal.toISOString(),
+            lastChargedAt: new Date().toISOString()
+          } 
+        }
+      );
+      
+      // 📧 Send notification to user
+      const localRenewalTime = nextRenewal.toLocaleString('vi-VN', {
+        timeZone: sub.timezone,
+        dateStyle: 'long',
+        timeStyle: 'short'
+      });
+      
+      await sendEmail(sub.userId, {
+        subject: 'Subscription Renewed',
+        body: `Your subscription has been renewed.
+Next renewal: ${localRenewalTime}`
+      });
+      
+    } catch (error) {
+      console.error(`Failed to renew subscription ${sub._id}:`, error);
+      // 🚨 Log và retry sau
+    }
+  }
+};
+
+// 💡 Run every 5 minutes
+setInterval(processRenewals, 5 * 60 * 1000);
+
+/**
+ * ✅ ADVANTAGES:
+ * - Lưu UTC → Không bị lỗi timezone khi server/database migrate
+ * - Timestamp arithmetic → Handle DST automatically
+ * - Lưu user timezone → Display thông báo đúng giờ local
+ */
+```
+
+---
+
+**Scenario 4: Logging & Debugging - Timestamp Everything:**
+
+```typescript
+/**
+ * 📝 REQUIREMENT:
+ * - Log mọi hành động của user với timestamp
+ * - Admin xem logs với timezone của họ
+ * - Filter logs theo time range
+ */
+
+interface LogEntry {
+  id: string;
+  userId: string;
+  action: string;
+  timestamp: number;  // 💡 Unix milliseconds (không phải ISO string)
+  metadata: Record<string, any>;
+}
+
+// 📝 Logger service
+class Logger {
+  static log(userId: string, action: string, metadata: Record<string, any> = {}) {
+    const entry: LogEntry = {
+      id: generateId(),
+      userId,
+      action,
+      timestamp: Date.now(),  // ✅ Timestamp (universal)
+      metadata
+    };
+    
+    // 💾 Save to database
+    db.logs.insert(entry);
+    
+    // 🖨️ Console log (for debugging)
+    const localTime = new Date(entry.timestamp).toLocaleString('vi-VN', {
+      timeZone: 'Asia/Ho_Chi_Minh'
+    });
+    console.log(`[${localTime}] User ${userId}: ${action}`);
+  }
+}
+
+// Usage
+Logger.log('user123', 'LOGIN', { ip: '1.2.3.4', userAgent: '...' });
+Logger.log('user123', 'PLACE_ORDER', { orderId: 'order456', amount: 1000000 });
+
+// 🔍 Admin query logs
+const getLogsInRange = async (startTime: number, endTime: number) => {
+  // 💡 Query với timestamp (efficient, indexed)
+  const logs = await db.logs.find({
+    timestamp: { $gte: startTime, $lte: endTime }
+  }).sort({ timestamp: -1 });  // Newest first
+  
+  return logs;
+};
+
+// 📊 Admin UI: Display logs
+const LogsTable = ({ logs, adminTimezone }: { logs: LogEntry[], adminTimezone: string }) => {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>User</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {logs.map(log => {
+          // 🔄 Convert timestamp → admin's local time
+          const localTime = new Date(log.timestamp).toLocaleString('en-US', {
+            timeZone: adminTimezone,
+            dateStyle: 'short',
+            timeStyle: 'medium'
+          });
+          
+          return (
+            <tr key={log.id}>
+              <td>{localTime}</td>
+              {/* 💡 Admin ở Vietnam: "15/01/2024, 21:30:45"
+                   Admin ở US: "1/15/2024, 9:30:45 AM" */}
+              <td>{log.userId}</td>
+              <td>{log.action}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+};
+
+/**
+ * ✅ BENEFITS:
+ * - Timestamp (number) → Fast query, efficient index
+ * - Universal → Không bị lỗi timezone khi admin ở nơi khác
+ * - Convert on display → Mỗi admin thấy giờ local của họ
+ */
+```
+
+---
+
+**Scenario 5: Recurring Events - Weekly Meeting:**
+
+```typescript
+/**
+ * 🔄 REQUIREMENT:
+ * - Weekly standup: Mỗi thứ 2 lúc 9:00 AM (Vietnam)
+ * - Generate 10 occurrences tiếp theo
+ * - Handle DST (nếu user ở timezone có DST)
+ */
+
+interface RecurringEvent {
+  id: string;
+  title: string;
+  startTime: string;  // UTC ISO (first occurrence)
+  recurrence: {
+    frequency: 'daily' | 'weekly' | 'monthly';
+    interval: number;  // Every N days/weeks/months
+    dayOfWeek?: number;  // 0=Sun, 1=Mon, ..., 6=Sat
+    endAfter?: number;  // Stop after N occurrences
+  };
+  timezone: string;  // Timezone event được định nghĩa
+}
+
+// 📋 Tạo recurring event
+const createRecurringEvent = () => {
+  // First occurrence: Next Monday 9:00 AM Vietnam
+  const firstOccurrence = getNextMonday(new Date());
+  firstOccurrence.setHours(9, 0, 0, 0);  // 9:00 AM local
+  
+  const event: RecurringEvent = {
+    id: 'recurring123',
+    title: 'Weekly Standup',
+    startTime: firstOccurrence.toISOString(),  // UTC
+    recurrence: {
+      frequency: 'weekly',
+      interval: 1,  // Every week
+      dayOfWeek: 1,  // Monday
+      endAfter: 10   // 10 occurrences
+    },
+    timezone: 'Asia/Ho_Chi_Minh'
+  };
+  
+  return event;
+};
+
+function getNextMonday(from: Date): Date {
+  const result = new Date(from.getTime());
+  const currentDay = result.getDay();
+  const daysUntilMonday = (1 - currentDay + 7) % 7 || 7;
+  result.setDate(result.getDate() + daysUntilMonday);
+  return result;
+}
+
+// 📊 Generate occurrences
+const generateOccurrences = (event: RecurringEvent): Date[] => {
+  const occurrences: Date[] = [];
+  let current = new Date(event.startTime);
+  
+  for (let i = 0; i < (event.recurrence.endAfter || 10); i++) {
+    occurrences.push(new Date(current));
+    
+    // 🔄 Add interval (weeks)
+    current = new Date(current.getTime() + 
+      event.recurrence.interval * 7 * 24 * 60 * 60 * 1000
+    );
+    // 💡 Add 7 days * interval weeks
+  }
+  
+  return occurrences;
+};
+
+// 📌 Display occurrences
+const RecurringEventCalendar = ({ event }: { event: RecurringEvent }) => {
+  const occurrences = generateOccurrences(event);
+  
+  return (
+    <div>
+      <h3>{event.title}</h3>
+      <p>Every {event.recurrence.frequency}</p>
+      <ul>
+        {occurrences.map((date, index) => {
+          const localTime = date.toLocaleString('vi-VN', {
+            timeZone: event.timezone,
+            dateStyle: 'full',
+            timeStyle: 'short'
+          });
+          
+          return (
+            <li key={index}>
+              Occurrence {index + 1}: {localTime}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+/**
+ * 💡 NOTES:
+ * - Vietnam KHÔNG có DST → 9:00 AM luôn là 9:00 AM
+ * - Nếu user ở US (có DST):
+ *   + Winter: 9:00 AM EST (UTC-5)
+ *   + Summer: 9:00 AM EDT (UTC-4)
+ *   + UTC time KHÁC NHAU giữa winter/summer!
+ * - Library (dayjs, Luxon) handle DST tốt hơn manual calculation
+ */
 ```
 
 ---
@@ -1066,6 +2107,785 @@ date1.getTime() > date2.getTime()
 // Use library
 import { format, parseISO } from 'date-fns';
 ```
+
+**❌ DON'T:**
+
+```typescript
+// ❌ Store without timezone
+{ date: "2024-01-15" } // Ambiguous!
+
+// ❌ Use local Date
+new Date() // Timezone-dependent!
+
+// ❌ Compare dates with ===
+date1 === date2 // Always false
+
+// ❌ Mutate
+date.setMonth(2) // Side effect!
+```
+
+**💡 Key Takeaway:**
+- **Store UTC** → **Display Local**
+- Dùng **timestamp** cho comparison
+- Dùng **library** (date-fns/Luxon/Day.js)
+- **Temporal API** = future standard
+
+---
+
+## **🏛️ PRODUCTION PATTERNS - CÁC MẪu THIẾT KẾ SẢN XUẤT**
+
+### **📦 Pattern 1: API Date Transfer Object (DTO)**
+
+```typescript
+/**
+ * 🎯 GOAL: Chuẩn hóa date format giữa client-server
+ * - Client gửi: ISO 8601 UTC
+ * - Server trả về: ISO 8601 UTC
+ * - Client convert → local timezone để hiển thị
+ */
+
+// 🔗 Backend API Response (NestJS)
+class OrderResponseDto {
+  id: string;
+  
+  @ApiProperty({ 
+    type: String, 
+    format: 'date-time',
+    example: '2024-01-15T14:30:00.000Z'
+  })
+  createdAt: string;  // 💡 ISO 8601 UTC string
+  
+  @ApiProperty({ type: String, format: 'date-time' })
+  updatedAt: string;
+  
+  @ApiProperty({ type: String, format: 'date-time', nullable: true })
+  completedAt?: string;  // 💡 Optional: Chưa hoàn thành = null
+}
+
+// 🌐 Frontend Type
+interface Order {
+  id: string;
+  createdAt: Date;  // 💡 Convert string → Date object
+  updatedAt: Date;
+  completedAt?: Date;
+}
+
+// 🔄 Transform API response → Domain model
+const parseOrderFromAPI = (dto: OrderResponseDto): Order => {
+  return {
+    id: dto.id,
+    createdAt: new Date(dto.createdAt),  // 💡 Parse ISO string
+    updatedAt: new Date(dto.updatedAt),
+    completedAt: dto.completedAt ? new Date(dto.completedAt) : undefined
+  };
+};
+
+// 🔄 Transform Domain model → API request
+const serializeOrderForAPI = (order: Order): OrderResponseDto => {
+  return {
+    id: order.id,
+    createdAt: order.createdAt.toISOString(),  // 💡 Date → ISO string
+    updatedAt: order.updatedAt.toISOString(),
+    completedAt: order.completedAt?.toISOString()
+  };
+};
+
+// 🚀 Axios interceptor: Auto-parse dates
+axios.interceptors.response.use((response) => {
+  // 🔍 Find all ISO date strings in response
+  const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
+  
+  const parseDates = (obj: any): any => {
+    if (obj === null || obj === undefined) return obj;
+    
+    if (typeof obj === 'string' && isoDateRegex.test(obj)) {
+      return new Date(obj);  // 🔄 Convert ISO string → Date
+    }
+    
+    if (Array.isArray(obj)) {
+      return obj.map(parseDates);
+    }
+    
+    if (typeof obj === 'object') {
+      return Object.fromEntries(
+        Object.entries(obj).map(([key, value]) => [key, parseDates(value)])
+      );
+    }
+    
+    return obj;
+  };
+  
+  response.data = parseDates(response.data);
+  return response;
+});
+
+/**
+ * ✅ BENEFITS:
+ * - Tự động parse tất cả ISO strings → Date objects
+ * - Không cần parse thủ công ở mỗi API call
+ * - Type-safe: Response luôn có Date objects
+ */
+```
+
+---
+
+### **🔐 Pattern 2: Date Validation Schema (Zod)**
+
+```typescript
+/**
+ * 🎯 GOAL: Validate date inputs từ user
+ * - Check format
+ * - Check range (min/max)
+ * - Check business rules
+ */
+
+import { z } from 'zod';
+
+// 📋 Date schema basics
+const DateSchema = z.string()
+  .datetime({ message: 'Phải là ISO 8601 format' })
+  .transform(val => new Date(val));  // 🔄 Auto-convert to Date
+
+// 📊 Date range schema
+const BirthdateSchema = z.string()
+  .datetime()
+  .transform(val => new Date(val))
+  .refine(
+    (date) => {
+      const age = (Date.now() - date.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
+      return age >= 18 && age <= 120;  // 💡 18-120 tuổi
+    },
+    { message: 'Tuổi phải từ 18-120' }
+  );
+
+// 📋 Booking schema (start < end)
+const BookingSchema = z.object({
+  checkIn: z.string().datetime().transform(val => new Date(val)),
+  checkOut: z.string().datetime().transform(val => new Date(val))
+}).refine(
+  (data) => data.checkOut.getTime() > data.checkIn.getTime(),
+  { 
+    message: 'Ngày check-out phải sau check-in',
+    path: ['checkOut']  // 💡 Error vào field checkOut
+  }
+).refine(
+  (data) => {
+    const daysDiff = (data.checkOut.getTime() - data.checkIn.getTime()) 
+                     / (24 * 60 * 60 * 1000);
+    return daysDiff <= 30;  // 💡 Tối đa 30 ngày
+  },
+  { message: 'Đặt phòng tối đa 30 ngày' }
+);
+
+// 📝 Meeting schema (future date only)
+const MeetingSchema = z.object({
+  title: z.string().min(1),
+  scheduledAt: z.string()
+    .datetime()
+    .transform(val => new Date(val))
+    .refine(
+      (date) => date.getTime() > Date.now(),
+      { message: 'Phải là thời gian tương lai' }
+    )
+    .refine(
+      (date) => {
+        const hour = date.getHours();
+        return hour >= 8 && hour < 18;  // 💡 8 AM - 6 PM
+      },
+      { message: 'Giờ họp phải trong 8h-18h' }
+    )
+});
+
+// 🚀 Usage in React Hook Form
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const BookingForm = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(BookingSchema)
+  });
+  
+  const onSubmit = (data: z.infer<typeof BookingSchema>) => {
+    // 💡 data.checkIn, data.checkOut là Date objects (validated)
+    console.log('Check-in:', data.checkIn.toISOString());
+    console.log('Check-out:', data.checkOut.toISOString());
+  };
+  
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input 
+        type="datetime-local" 
+        {...register('checkIn')} 
+      />
+      {errors.checkIn && <span>{errors.checkIn.message}</span>}
+      
+      <input 
+        type="datetime-local" 
+        {...register('checkOut')} 
+      />
+      {errors.checkOut && <span>{errors.checkOut.message}</span>}
+      
+      <button type="submit">Đặt phòng</button>
+    </form>
+  );
+};
+```
+
+---
+
+### **⏰ Pattern 3: Time-based Feature Flags**
+
+```typescript
+/**
+ * 🎯 GOAL: Bật/tắt features theo thời gian
+ * - Tết sale: Từ 01/02 → 15/02
+ * - Beta feature: Từ 01/01 → vô hạn
+ * - Deprecated feature: Dừng từ 01/03
+ */
+
+interface FeatureFlag {
+  id: string;
+  enabled: boolean;
+  startDate?: string;  // UTC ISO
+  endDate?: string;    // UTC ISO
+}
+
+// 🚩 Feature flag service
+class FeatureFlagService {
+  private flags: Map<string, FeatureFlag> = new Map();
+  
+  constructor(flags: FeatureFlag[]) {
+    flags.forEach(flag => this.flags.set(flag.id, flag));
+  }
+  
+  isEnabled(flagId: string): boolean {
+    const flag = this.flags.get(flagId);
+    if (!flag) return false;
+    if (!flag.enabled) return false;
+    
+    const now = Date.now();
+    
+    // 💡 Check start date
+    if (flag.startDate) {
+      const start = new Date(flag.startDate).getTime();
+      if (now < start) return false;  // Chưa đến giờ
+    }
+    
+    // 💡 Check end date
+    if (flag.endDate) {
+      const end = new Date(flag.endDate).getTime();
+      if (now > end) return false;  // Đã quá giờ
+    }
+    
+    return true;
+  }
+}
+
+// 📊 Setup flags
+const featureFlags = new FeatureFlagService([
+  {
+    id: 'tet-sale-2024',
+    enabled: true,
+    startDate: '2024-02-01T00:00:00.000Z',  // 01/02 00:00 UTC
+    endDate: '2024-02-15T23:59:59.999Z'      // 15/02 23:59 UTC
+  },
+  {
+    id: 'new-checkout-flow',
+    enabled: true,
+    startDate: '2024-01-01T00:00:00.000Z',  // Bắt đầu từ 01/01
+    // No endDate = permanent
+  },
+  {
+    id: 'old-payment-gateway',
+    enabled: false,  // ❌ Disabled manually
+    endDate: '2024-03-01T00:00:00.000Z'  // Dừng từ 01/03
+  }
+]);
+
+// 🚀 Usage in React
+const CheckoutPage = () => {
+  const showTetSale = featureFlags.isEnabled('tet-sale-2024');
+  const useNewCheckout = featureFlags.isEnabled('new-checkout-flow');
+  
+  return (
+    <div>
+      {showTetSale && (
+        <Banner>
+          🎉 Tết Sale - Giảm đến 50%!
+        </Banner>
+      )}
+      
+      {useNewCheckout ? (
+        <NewCheckoutFlow />
+      ) : (
+        <OldCheckoutFlow />
+      )}
+    </div>
+  );
+};
+
+/**
+ * ✅ BENEFITS:
+ * - Tự động bật/tắt features theo thời gian
+ * - Không cần deploy để enable/disable
+ * - A/B testing theo thời gian
+ */
+```
+
+---
+
+### **🔍 Pattern 4: Date Caching & Memoization**
+
+```typescript
+/**
+ * 🎯 GOAL: Cache expensive date calculations
+ * - Format dates (Intl.DateTimeFormat)
+ * - Relative time ("2 hours ago")
+ * - Business days calculation
+ */
+
+import { useMemo } from 'react';
+
+// 📊 Expensive: Format date
+const ExpensiveComponent = ({ dates }: { dates: Date[] }) => {
+  // ❌ BAD: Format mỗi render
+  return (
+    <ul>
+      {dates.map(date => (
+        <li key={date.getTime()}>
+          {new Intl.DateTimeFormat('vi-VN', {
+            dateStyle: 'long',
+            timeStyle: 'short'
+          }).format(date)}
+          {/* 💡 Tạo Intl.DateTimeFormat mới mỗi item! */}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+// ✅ GOOD: Cache formatter
+const OptimizedComponent = ({ dates }: { dates: Date[] }) => {
+  // 💡 Tầo formatter 1 lần, reuse cho tất cả
+  const formatter = useMemo(
+    () => new Intl.DateTimeFormat('vi-VN', {
+      dateStyle: 'long',
+      timeStyle: 'short'
+    }),
+    []  // Empty deps = tạo 1 lần duy nhất
+  );
+  
+  return (
+    <ul>
+      {dates.map(date => (
+        <li key={date.getTime()}>
+          {formatter.format(date)}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+// 📊 Cache relative time
+const useRelativeTime = (date: Date, updateInterval = 60000) => {
+  const [relativeTime, setRelativeTime] = useState('');
+  
+  useEffect(() => {
+    const updateTime = () => {
+      const now = Date.now();
+      const diff = now - date.getTime();
+      const minutes = Math.floor(diff / 60000);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      
+      if (minutes < 1) {
+        setRelativeTime('Vừa xong');
+      } else if (minutes < 60) {
+        setRelativeTime(`${minutes} phút trước`);
+      } else if (hours < 24) {
+        setRelativeTime(`${hours} giờ trước`);
+      } else if (days < 7) {
+        setRelativeTime(`${days} ngày trước`);
+      } else {
+        setRelativeTime(date.toLocaleDateString('vi-VN'));
+      }
+    };
+    
+    updateTime();  // Initial
+    const interval = setInterval(updateTime, updateInterval);
+    // 💡 Update mỗi 60s (hoặc custom interval)
+    
+    return () => clearInterval(interval);
+  }, [date, updateInterval]);
+  
+  return relativeTime;
+};
+
+// Usage
+const CommentItem = ({ comment }: { comment: { createdAt: Date; text: string } }) => {
+  const relativeTime = useRelativeTime(comment.createdAt);
+  
+  return (
+    <div>
+      <p>{comment.text}</p>
+      <span>{relativeTime}</span>
+      {/* 💡 "2 giờ trước" → auto-update mỗi 60s */}
+    </div>
+  );
+};
+```
+
+---
+
+## **🧪 TESTING DATE/TIME CODE - KIỂM THỬ**
+
+### **⏰ Mock Current Time (Jest/Vitest)**
+
+```typescript
+/**
+ * 🎯 GOAL: Test code phụ thuộc vào current time
+ * - Mock Date.now()
+ * - Mock new Date()
+ * - Test time-based logic
+ */
+
+// 📋 Code to test
+const isWeekend = (date: Date = new Date()): boolean => {
+  const day = date.getDay();
+  return day === 0 || day === 6;  // Sunday = 0, Saturday = 6
+};
+
+const getGreeting = (): string => {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Chào buổi sáng';
+  if (hour < 18) return 'Chào buổi chiều';
+  return 'Chào buổi tối';
+};
+
+// 🧪 Test with mocked time
+describe('Date utilities', () => {
+  beforeEach(() => {
+    // 🔐 Enable fake timers
+    vi.useFakeTimers();
+  });
+  
+  afterEach(() => {
+    // 🔓 Restore real timers
+    vi.useRealTimers();
+  });
+  
+  it('should detect weekend', () => {
+    // 💡 Mock: Saturday, Jan 13, 2024
+    vi.setSystemTime(new Date('2024-01-13T10:00:00.000Z'));
+    
+    expect(isWeekend()).toBe(true);  // ✅ Saturday
+  });
+  
+  it('should detect weekday', () => {
+    // 💡 Mock: Monday, Jan 15, 2024
+    vi.setSystemTime(new Date('2024-01-15T10:00:00.000Z'));
+    
+    expect(isWeekend()).toBe(false);  // ✅ Monday
+  });
+  
+  it('should greet morning', () => {
+    // 💡 Mock: 9:00 AM
+    vi.setSystemTime(new Date('2024-01-15T02:00:00.000Z'));  // 9 AM Vietnam (UTC+7)
+    
+    expect(getGreeting()).toBe('Chào buổi sáng');
+  });
+  
+  it('should greet evening', () => {
+    // 💡 Mock: 8:00 PM
+    vi.setSystemTime(new Date('2024-01-15T13:00:00.000Z'));  // 8 PM Vietnam
+    
+    expect(getGreeting()).toBe('Chào buổi tối');
+  });
+});
+
+// 📊 Test time progression
+describe('Countdown timer', () => {
+  it('should countdown correctly', () => {
+    vi.useFakeTimers();
+    
+    const targetTime = Date.now() + 10000;  // +10 seconds
+    const callback = vi.fn();
+    
+    // Start countdown
+    const interval = setInterval(() => {
+      const timeLeft = targetTime - Date.now();
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        callback();
+      }
+    }, 1000);
+    
+    // 💡 Fast-forward 5 seconds
+    vi.advanceTimersByTime(5000);
+    expect(callback).not.toHaveBeenCalled();  // Chưa hết 10s
+    
+    // 💡 Fast-forward thêm 5 seconds (total 10s)
+    vi.advanceTimersByTime(5000);
+    expect(callback).toHaveBeenCalled();  // ✅ Đã hết 10s
+    
+    vi.useRealTimers();
+  });
+});
+```
+
+---
+
+### **🌍 Test Timezone-dependent Code**
+
+```typescript
+/**
+ * 🎯 GOAL: Test code với nhiều timezones
+ * - Mock timezone
+ * - Test DST transitions
+ * - Test edge cases
+ */
+
+// 📋 Code to test
+const formatLocalTime = (date: Date): string => {
+  return date.toLocaleString('vi-VN', {
+    timeZone: 'Asia/Ho_Chi_Minh',
+    dateStyle: 'short',
+    timeStyle: 'short'
+  });
+};
+
+const getBusinessHours = (date: Date): { start: Date; end: Date } => {
+  const start = new Date(date);
+  start.setHours(9, 0, 0, 0);  // 9 AM
+  
+  const end = new Date(date);
+  end.setHours(18, 0, 0, 0);  // 6 PM
+  
+  return { start, end };
+};
+
+// 🧪 Tests
+describe('Timezone handling', () => {
+  it('should format Vietnam time correctly', () => {
+    const utcDate = new Date('2024-01-15T14:30:00.000Z');  // 14:30 UTC
+    
+    const formatted = formatLocalTime(utcDate);
+    expect(formatted).toContain('21:30');  // 14:30 UTC + 7 = 21:30 Vietnam
+  });
+  
+  it('should handle business hours in Vietnam timezone', () => {
+    // 💡 Input: Jan 15, 2024 (any time)
+    const date = new Date('2024-01-15T10:00:00.000Z');
+    
+    const { start, end } = getBusinessHours(date);
+    
+    // 💡 Expected: 9 AM and 6 PM same day (local time)
+    expect(start.getHours()).toBe(9);
+    expect(end.getHours()).toBe(18);
+    expect(start.getDate()).toBe(date.getDate());
+  });
+  
+  it('should handle DST transition (US timezone)', () => {
+    // 💡 DST start: March 10, 2024 2:00 AM → 3:00 AM (US)
+    const beforeDST = new Date('2024-03-10T06:59:00.000Z');  // 1:59 AM EST (UTC-5)
+    const afterDST = new Date('2024-03-10T07:01:00.000Z');   // 3:01 AM EDT (UTC-4)
+    
+    // 💡 Test: 2:00-3:00 AM không tồn tại!
+    const missing = new Date('2024-03-10T07:00:00.000Z');  // Should be 3:00 AM
+    expect(missing.getHours()).toBe(3);  // Skipped 2:00 AM
+  });
+});
+
+// 💡 Test with different locales
+describe('Locale formatting', () => {
+  const testCases = [
+    { locale: 'vi-VN', expected: '15/01/2024' },
+    { locale: 'en-US', expected: '1/15/2024' },
+    { locale: 'en-GB', expected: '15/01/2024' }
+  ];
+  
+  testCases.forEach(({ locale, expected }) => {
+    it(`should format date in ${locale}`, () => {
+      const date = new Date('2024-01-15T00:00:00.000Z');
+      const formatted = date.toLocaleDateString(locale);
+      expect(formatted).toBe(expected);
+    });
+  });
+});
+```
+
+---
+
+### **💡 Test Best Practices**
+
+```typescript
+/**
+ * ✅ DO:
+ */
+
+// 1. Always use fake timers for time-dependent tests
+vi.useFakeTimers();
+vi.setSystemTime(new Date('2024-01-15'));
+
+// 2. Test edge cases
+- Midnight (00:00)
+- End of day (23:59)
+- DST transitions
+- Leap years (Feb 29)
+- Month boundaries (Jan 31 + 1 month)
+
+// 3. Use UTC for test fixtures
+const testDate = new Date('2024-01-15T14:30:00.000Z');  // ✅ Explicit UTC
+
+// 4. Clean up timers
+afterEach(() => {
+  vi.useRealTimers();
+});
+
+/**
+ * ❌ DON'T:
+ */
+
+// ❌ Rely on system time
+const now = new Date();  // Flaky! Depends on test run time
+
+// ❌ Hardcode timezone offsets
+const vietnamTime = utcTime + 7 * 60 * 60 * 1000;  // ❌ Wrong approach
+
+// ❌ Use sleep/delays in tests
+await new Promise(resolve => setTimeout(resolve, 1000));  // ❌ Slow!
+vi.advanceTimersByTime(1000);  // ✅ Fast!
+```
+
+---
+
+## **🚨 COMMON PITFALLS & SOLUTIONS - LỐI THƯỜNG GẶP**
+
+### **🐛 Pitfall 1: Month is Zero-indexed**
+
+```typescript
+// ❌ WRONG
+const january = new Date(2024, 1, 15);  // 💡 Tháng 2 (February)!
+console.log(january.getMonth());  // 1 (February)
+
+// ✅ CORRECT
+const january = new Date(2024, 0, 15);  // Tháng 1 (January)
+console.log(january.getMonth());  // 0 (January)
+
+// 💡 GHI NHỌ: Months: 0-11, Days: 1-31
+```
+
+---
+
+### **🐛 Pitfall 2: Date Parsing is Browser-dependent**
+
+```typescript
+// ❌ RISKY
+const date1 = new Date('2024-01-15');  
+// Chrome: Jan 15, 2024 00:00 UTC
+// Safari: Jan 15, 2024 00:00 LOCAL (khác nhau!)
+
+const date2 = new Date('01/15/2024');
+// Chrome: Jan 15, 2024 (US format)
+// Some browsers: Invalid Date
+
+// ✅ SAFE
+const date = new Date('2024-01-15T00:00:00.000Z');  // ISO 8601 UTC
+const date = new Date(2024, 0, 15);  // Constructor
+const date = dayjs('2024-01-15').toDate();  // Library
+```
+
+---
+
+### **🐛 Pitfall 3: Mutable Date Objects**
+
+```typescript
+// ❌ WRONG
+const original = new Date('2024-01-15');
+const modified = original;
+modified.setDate(20);  // Mutate!
+
+console.log(original.getDate());  // 20 (🚨 Original bị thay đổi!)
+
+// ✅ CORRECT
+const original = new Date('2024-01-15');
+const modified = new Date(original.getTime());  // Clone
+modified.setDate(20);
+
+console.log(original.getDate());  // 15 (✅ Original không đổi)
+```
+
+---
+
+### **🐛 Pitfall 4: Comparing Dates with === **
+
+```typescript
+// ❌ WRONG
+const date1 = new Date('2024-01-15');
+const date2 = new Date('2024-01-15');
+
+console.log(date1 === date2);  // false (💡 Khác object reference!)
+
+// ✅ CORRECT
+console.log(date1.getTime() === date2.getTime());  // true
+console.log(+date1 === +date2);  // true (unary +)
+console.log(dayjs(date1).isSame(date2, 'day'));  // true (library)
+```
+
+---
+
+### **🐛 Pitfall 5: UTC vs Local Confusion**
+
+```typescript
+// ❌ WRONG
+const date = new Date('2024-01-15T21:00:00.000Z');  // 21:00 UTC
+console.log(date.getHours());  // 💡 4 (Vietnam: UTC+7 → 21+7=28 → 4 AM next day)
+
+// ✅ CORRECT
+const date = new Date('2024-01-15T21:00:00.000Z');
+console.log(date.getUTCHours());  // 21 (UTC time)
+console.log(date.getHours());      // 4 (Local time Vietnam)
+
+// 💡 ALWAYS use UTC methods for server timestamps
+const year = date.getUTCFullYear();
+const month = date.getUTCMonth();
+const day = date.getUTCDate();
+```
+
+---
+
+## **📊 PERFORMANCE TIPS**
+
+```typescript
+/**
+ * ✅ FAST:
+ */
+
+// 1. Use timestamps for comparison (fastest)
+const isAfter = date1.getTime() > date2.getTime();
+
+// 2. Cache Intl.DateTimeFormat
+const formatter = new Intl.DateTimeFormat('vi-VN');
+const formatted = formatter.format(date);  // Reuse formatter
+
+// 3. Avoid repeated date creation
+const now = Date.now();  // ✅ Timestamp (fast)
+const now = new Date();  // ❌ Object creation (slower)
+
+/**
+ * ❌ SLOW:
+ */
+
+// ❌ Creating new formatter every time
+list.map(date => 
+  new Intl.DateTimeFormat('vi-VN').format(date)  // 🐌 Slow!
+);
+
+// ❌ Using string operations
+const month = dateString.split('-')[1];  // ❌ Error-prone
+```
+
+---
 
 **❌ DON'T:**
 

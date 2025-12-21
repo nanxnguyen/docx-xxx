@@ -76,32 +76,36 @@
 // 🔄 **REST vs GRAPHQL COMPARISON**
 // ===================================================
 
-// ❌ REST: Multiple endpoints, over-fetching
-// GET /api/users/123
-// GET /api/users/123/posts
-// GET /api/users/123/friends
+// ❌ REST: Multiple endpoints, over-fetching (Nhiều endpoints, lấy thừa data)
+// 📍 GET /api/users/123          → Lấy user info
+// 📍 GET /api/users/123/posts    → Lấy posts của user
+// 📍 GET /api/users/123/friends  → Lấy friends của user
 
 const userData = await fetch('/api/users/123').then(r => r.json());
-// Returns: { id, name, email, phone, address, ... } ← Over-fetching
+// 📦 Returns: { id, name, email, phone, address, ... } ← ❌ Over-fetching
+// Server trả về TẤT CẢ fields (phone, address) dù client chỉ cần id, name, email
+// → Lãng phí bandwidth, chậm trên mobile
 
 const userPosts = await fetch('/api/users/123/posts').then(r => r.json());
 const userFriends = await fetch('/api/users/123/friends').then(r => r.json());
-// Total: 3 HTTP requests
+// 📊 Total: 3 HTTP requests (3 round-trips → slow)
+// → Under-fetching problem: Cần nhiều requests để lấy đủ data
 
-// ✅ GraphQL: Single endpoint, exact data
+// ✅ GraphQL: Single endpoint, exact data (1 endpoint, chính xác data cần)
+// 🎯 POST /graphql → Chỉ 1 endpoint duy nhất
 const { data } = await apolloClient.query({
   query: gql`
-    query GetUserProfile($userId: ID!) {
-      user(id: $userId) {
-        id
-        name
+    query GetUserProfile($userId: ID!) {  # 📝 Query name + variables
+      user(id: $userId) {  # 🔍 Root field: lấy user theo ID
+        id          # ✅ Chỉ lấy fields cần thiết
+        name        # ✅ Không lấy phone, address (không cần)
         email
-        posts(limit: 5) {
+        posts(limit: 5) {  # 🔗 Nested field: lấy 5 posts mới nhất
           id
           title
           createdAt
         }
-        friends(limit: 10) {
+        friends(limit: 10) {  # 🔗 Nested field: lấy 10 friends
           id
           name
           avatar
@@ -109,9 +113,11 @@ const { data } = await apolloClient.query({
       }
     }
   `,
-  variables: { userId: '123' },
+  variables: { userId: '123' },  // 📌 Truyền biến userId
 });
-// Total: 1 HTTP request, no over-fetching
+// 📊 Total: 1 HTTP request (1 round-trip) ✅
+// 🎯 No over-fetching: Client chỉ định CHÍNH XÁC fields cần
+// 🎯 No under-fetching: Lấy tất cả data cần trong 1 request
 
 // ===================================================
 // 📊 **COMPARISON TABLE**
@@ -191,114 +197,125 @@ import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 
-// ✅ HTTP Link
+// ✅ HTTP Link (Kết nối HTTP tới GraphQL server)
 const httpLink = new HttpLink({
-  uri: import.meta.env.VITE_GRAPHQL_ENDPOINT,
+  uri: import.meta.env.VITE_GRAPHQL_ENDPOINT,  // 🌐 GraphQL endpoint (VD: https://api.example.com/graphql)
+  // → Chỉ có 1 endpoint duy nhất (khác REST có nhiều endpoints)
 });
 
-// ✅ Auth Link (add JWT token)
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('auth_token');
+// ✅ Auth Link (Thêm JWT token vào mỗi request)
+const authLink = setContext((_, { headers }) => {  // 🔧 Middleware chạy TRƯỚC mỗi request
+  const token = localStorage.getItem('auth_token');  // 🔑 Lấy JWT token từ localStorage
   return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
+    headers: {  // 📝 Merge headers
+      ...headers,  // 📦 Giữ lại headers hiện có
+      authorization: token ? `Bearer ${token}` : '',  // 🔑 Thêm Authorization header
+      // Nếu có token → "Bearer eyJhbG..."
+      // Nếu không → "" (empty string)
     },
   };
 });
 
-// ✅ Error Link (global error handling)
+// ✅ Error Link (Xử lý lỗi toàn cục)
 const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
-  if (graphQLErrors) {
+  if (graphQLErrors) {  // 🚨 GraphQL errors (lỗi từ server GraphQL)
     graphQLErrors.forEach(({ message, locations, path, extensions }) => {
       console.error(
-        `[GraphQL error]: Message: ${message}, Path: ${path}`,
-        extensions
+        `[GraphQL error]: Message: ${message}, Path: ${path}`,  // 📍 Đường dẫn query bị lỗi
+        extensions  // 📦 Thêm info (code, timestamp, etc.)
       );
       
-      // Handle authentication errors
+      // 🔑 Handle authentication errors (Lỗi xác thực)
       if (extensions?.code === 'UNAUTHENTICATED') {
-        localStorage.removeItem('auth_token');
-        window.location.href = '/login';
+        localStorage.removeItem('auth_token');  // 🗄️ Xóa token hết hạn
+        window.location.href = '/login';  // 🔄 Redirect về login
       }
     });
   }
   
-  if (networkError) {
+  if (networkError) {  // 🌐 Network errors (lỗi kết nối)
     console.error(`[Network error]: ${networkError}`);
+    // VD: 500 Internal Server Error, timeout, no internet
   }
 });
 
-// ✅ Retry Link (retry failed requests)
+// ✅ Retry Link (Tự động retry khi request fail)
 const retryLink = new RetryLink({
-  delay: {
-    initial: 300,
-    max: 5000,
-    jitter: true,
+  delay: {  // ⏰ Thời gian chờ giữa các lần retry
+    initial: 300,  // 🔹 Lần đầu: 300ms
+    max: 5000,     // 🔹 Tối đa: 5s (exponential backoff)
+    jitter: true,  // 🎲 Thêm random để tránh thundering herd
   },
-  attempts: {
-    max: 3,
-    retryIf: (error, operation) => {
+  attempts: {  // 🔢 Số lần retry
+    max: 3,  // 🔹 Tối đa 3 lần
+    retryIf: (error, operation) => {  // ❓ Kiểm tra có nên retry không
       // Retry on network errors, not on GraphQL errors
-      return !!error && !error.result;
+      return !!error && !error.result;  // ✅ Chỉ retry network errors (không retry GraphQL errors)
+      // GraphQL errors (VD: validation) không cần retry (chắc chắn fail)
     },
   },
 });
 
-// ✅ Apollo Client
+// ✅ Apollo Client (Main client instance)
 export const apolloClient = new ApolloClient({
-  link: ApolloLink.from([
-    errorLink,
-    retryLink,
-    authLink,
-    httpLink,
+  link: ApolloLink.from([  // 🔗 Chain các links (chạy theo thứ tự)
+    errorLink,    // 1️⃣ Xử lý lỗi đầu tiên
+    retryLink,    // 2️⃣ Retry nếu cần
+    authLink,     // 3️⃣ Thêm auth token
+    httpLink,     // 4️⃣ Cuối cùng: Gửi HTTP request
   ]),
   
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          // ✅ Pagination merge function
+  cache: new InMemoryCache({  // 💾 Normalized cache (cache chuẩn hóa)
+    typePolicies: {  // 📖 Cấu hình cache cho từng type
+      Query: {  // 🔍 Root Query type
+        fields: {  // 📋 Các fields trong Query
+          // ✅ Pagination merge function (Hàm merge cho infinite scroll)
           posts: {
-            keyArgs: ['filter'],
-            merge(existing = { edges: [] }, incoming) {
+            keyArgs: ['filter'],  // 🔑 Các args quyết định cache key
+            // Nếu filter khác → cache entry khác
+            merge(existing = { edges: [] }, incoming) {  // 🔀 Merge data mới với cũ
               return {
                 ...incoming,
-                edges: [...existing.edges, ...incoming.edges],
+                edges: [...existing.edges, ...incoming.edges],  // 📦 Nối edges (append)
+                // → Infinite scroll: giữ posts cũ + thêm posts mới
               };
             },
           },
         },
       },
       
-      // ✅ Custom cache ID
-      User: {
-        keyFields: ['id'],
+      // ✅ Custom cache ID (ID chuẩn hóa)
+      User: {  // 👤 User type
+        keyFields: ['id'],  // 🔑 Dùng field 'id' làm cache key
+        // Cache key = "User:123" (User:${id})
       },
       
-      Post: {
-        keyFields: ['id'],
-        fields: {
-          // ✅ Normalize nested objects
-          author: {
-            merge: true,
+      Post: {  // 📝 Post type
+        keyFields: ['id'],  // 🔑 Dùng 'id' làm cache key
+        fields: {  // 📋 Fields config
+          // ✅ Normalize nested objects (Chuẩn hóa objects lồng nhau)
+          author: {  // 👤 Author là nested User object
+            merge: true,  // ✅ Merge thay vì replace (giữ data cũ)
+            // Nếu author đã có trong cache → reference tới User object đó
           },
         },
       },
     },
   }),
   
-  defaultOptions: {
-    watchQuery: {
-      fetchPolicy: 'cache-and-network',
-      errorPolicy: 'all',
+  defaultOptions: {  // ⚙️ Tùy chọn mặc định cho tất cả queries/mutations
+    watchQuery: {  // 👁️ useQuery hook options
+      fetchPolicy: 'cache-and-network',  // 💾 Trả về cache ngay + fetch network
+      // → UX nhanh (hiển cache trước) + data mới nhất (fetch sau)
+      errorPolicy: 'all',  // 🚨 Trả về data + errors (không throw)
     },
-    query: {
-      fetchPolicy: 'network-only',
-      errorPolicy: 'all',
+    query: {  // 🔍 client.query() options
+      fetchPolicy: 'network-only',  // 🌐 Luôn fetch từ network (bỏ qua cache)
+      // → Luôn lấy data mới nhất
+      errorPolicy: 'all',  // 🚨 Trả về data + errors
     },
-    mutate: {
-      errorPolicy: 'all',
+    mutate: {  // ✏️ useMutation hook options
+      errorPolicy: 'all',  // 🚨 Trả về data + errors
     },
   },
 });
@@ -361,33 +378,35 @@ const GET_USER_QUERY: TypedDocumentNode<
   }
 `;
 
-// ✅ Component using query
+// ✅ Component using query (Component dùng query)
 function UserProfile({ userId }: { userId: string }) {
-  const { data, loading, error, refetch } = useQuery(GET_USER_QUERY, {
-    variables: { userId },
+  const { data, loading, error, refetch } = useQuery(GET_USER_QUERY, {  // 🎯 Hook query data
+    variables: { userId },  // 📌 Biến truyền vào query ($userId)
     
-    // ✅ Fetch policy options:
-    // - cache-first: Check cache first (default)
-    // - cache-and-network: Return cache immediately, then fetch
-    // - network-only: Always fetch from network
-    // - cache-only: Only use cache, don't fetch
-    // - no-cache: Fetch but don't cache
-    fetchPolicy: 'cache-and-network',
+    // ✅ Fetch policy options (Chiến lược fetch):
+    // - cache-first: Kiểm tra cache trước (default) → nhanh nhưng có thể stale
+    // - cache-and-network: Trả cache ngay + fetch network → UX tốt nhất
+    // - network-only: Luôn fetch từ network → luôn mới nhất
+    // - cache-only: Chỉ dùng cache, không fetch → offline mode
+    // - no-cache: Fetch nhưng không cache → dùng cho sensitive data
+    fetchPolicy: 'cache-and-network',  // 💾+🌐 Hiển cache + fetch mới
     
-    // ✅ Poll every 30 seconds
-    pollInterval: 30000,
+    // ✅ Poll every 30 seconds (Tự động refetch mỗi 30s)
+    pollInterval: 30000,  // ⏰ 30000ms = 30s
+    // → Auto-refresh data (VD: dashboard, live data)
     
-    // ✅ Skip query conditionally
-    skip: !userId,
+    // ✅ Skip query conditionally (Bỏ qua query nếu điều kiện)
+    skip: !userId,  // ⚠️ Nếu userId không có → không chạy query
+    // → Tránh query với biến invalid
     
-    // ✅ On complete callback
+    // ✅ On complete callback (Callback khi query thành công)
     onCompleted: (data) => {
-      console.log('User loaded:', data.user.name);
+      console.log('User loaded:', data.user.name);  // 📝 Log success
     },
     
-    // ✅ On error callback
+    // ✅ On error callback (Callback khi query lỗi)
     onError: (error) => {
-      console.error('Failed to load user:', error);
+      console.error('Failed to load user:', error);  // 🚨 Log error
     },
   });
   
@@ -431,47 +450,50 @@ const CREATE_POST_MUTATION = gql`
 `;
 
 function CreatePostForm() {
-  const [createPost, { data, loading, error }] = useMutation(
+  const [createPost, { data, loading, error }] = useMutation(  // ✏️ Hook mutation
     CREATE_POST_MUTATION,
     {
-      // ✅ Update cache after mutation
-      update(cache, { data: { createPost } }) {
-        // Read existing posts from cache
-        const existing: any = cache.readQuery({
+      // ✅ Update cache after mutation (Cập nhật cache sau khi mutation)
+      update(cache, { data: { createPost } }) {  // 💾 Callback nhận cache + data mới
+        // 🔹 Đọc existing posts từ cache
+        const existing: any = cache.readQuery({  // 💾 Đọc query cũ
           query: GET_POSTS_QUERY,
         });
         
-        // Write updated posts to cache
-        cache.writeQuery({
+        // 🔹 Ghi updated posts vào cache
+        cache.writeQuery({  // ✏️ Ghi vào cache
           query: GET_POSTS_QUERY,
           data: {
             posts: {
               ...existing.posts,
-              edges: [createPost, ...existing.posts.edges],
+              edges: [createPost, ...existing.posts.edges],  // 📦 Thêm post mới vào đầu list
+              // → UI tự động cập nhật (không cần refetch)
             },
           },
         });
       },
       
-      // ✅ Refetch queries after mutation
-      refetchQueries: [
-        { query: GET_POSTS_QUERY },
-        { query: GET_USER_POSTS_QUERY, variables: { userId: currentUserId } },
+      // ✅ Refetch queries after mutation (Refetch queries sau mutation)
+      refetchQueries: [  // 🔄 Danh sách queries cần refetch
+        { query: GET_POSTS_QUERY },  // 🔄 Refetch all posts
+        { query: GET_USER_POSTS_QUERY, variables: { userId: currentUserId } },  // 🔄 Refetch user posts
       ],
+      // → Đảm bảo data mới nhất sau mutation
       
-      // ✅ Await refetch queries
-      awaitRefetchQueries: true,
+      // ✅ Await refetch queries (Chờ refetch hoàn thành)
+      awaitRefetchQueries: true,  // ⏳ Chờ refetch xong mới resolve mutation
+      // → Đảm bảo UI cập nhật trước khi tiếp tục
       
       // ✅ On completed callback
       onCompleted: (data) => {
-        toast.success(`Post "${data.createPost.title}" created!`);
-        navigate(`/posts/${data.createPost.id}`);
+        toast.success(`Post "${data.createPost.title}" created!`);  // 🎉 Hiển thông báo
+        navigate(`/posts/${data.createPost.id}`);  // 🔀 Navigate đến post mới
       },
       
       // ✅ On error callback
       onError: (error) => {
-        toast.error('Failed to create post');
-        console.error(error);
+        toast.error('Failed to create post');  // ❌ Hiển lỗi
+        console.error(error);  // 🚨 Log error
       },
     }
   );
@@ -514,13 +536,13 @@ function CreatePostForm() {
 import { useApolloClient } from '@apollo/client';
 
 function UserActions({ userId }: { userId: string }) {
-  const client = useApolloClient();
+  const client = useApolloClient();  // 🔧 Lấy Apollo client instance
   
-  // ✅ Read from cache
+  // ✅ Read from cache (Đọc từ cache)
   const readUser = () => {
-    const user = client.readFragment({
-      id: `User:${userId}`,
-      fragment: gql`
+    const user = client.readFragment({  // 💾 Đọc fragment từ cache
+      id: `User:${userId}`,  // 🔑 Cache ID (Type:id format)
+      fragment: gql`  // 📝 Fragment định nghĩa fields cần đọc
         fragment MyUser on User {
           id
           name
@@ -528,47 +550,51 @@ function UserActions({ userId }: { userId: string }) {
         }
       `,
     });
-    console.log('Cached user:', user);
+    console.log('Cached user:', user);  // 💾 In ra user từ cache
   };
   
-  // ✅ Write to cache
+  // ✅ Write to cache (Ghi vào cache)
   const updateUserName = (newName: string) => {
-    client.writeFragment({
-      id: `User:${userId}`,
-      fragment: gql`
+    client.writeFragment({  // ✏️ Ghi fragment vào cache
+      id: `User:${userId}`,  // 🔑 Cache ID
+      fragment: gql`  // 📝 Fragment định nghĩa fields cần ghi
         fragment UpdatedUser on User {
           name
         }
       `,
-      data: {
-        name: newName,
+      data: {  // 📦 Data mới
+        name: newName,  // ✏️ Cập nhật name
       },
     });
+    // → UI tự động re-render (React hooks lắng nghe cache)
   };
   
-  // ✅ Evict from cache
+  // ✅ Evict from cache (Xóa khỏi cache)
   const removeUser = () => {
-    client.cache.evict({
-      id: `User:${userId}`,
+    client.cache.evict({  // 🗄️ Xóa object khỏi cache
+      id: `User:${userId}`,  // 🔑 Cache ID cần xóa
     });
-    client.cache.gc(); // Garbage collect
+    client.cache.gc();  // 🧹 Garbage collect (dọn dẹp cache)
+    // → Xóa các references không còn dùng
   };
   
-  // ✅ Reset entire cache
+  // ✅ Reset entire cache (Reset toàn bộ cache)
   const clearCache = () => {
-    client.cache.reset();
+    client.cache.reset();  // 🗄️ Xóa TẤT CẢ cache
+    // → Mọi queries sẽ refetch lại
   };
   
-  // ✅ Modify cache field
+  // ✅ Modify cache field (Sửa field trong cache)
   const incrementLikes = (postId: string) => {
-    client.cache.modify({
-      id: `Post:${postId}`,
-      fields: {
-        likes(existing = 0) {
-          return existing + 1;
+    client.cache.modify({  // ✏️ Sửa đổi cache
+      id: `Post:${postId}`,  // 🔑 Cache ID
+      fields: {  // 📋 Fields cần sửa
+        likes(existing = 0) {  // 🔹 Nhận giá trị hiện tại
+          return existing + 1;  // 🔼 Tăng lên 1
         },
       },
     });
+    // → UI tự động cập nhật số likes
   };
   
   return (
@@ -617,27 +643,29 @@ const GET_POSTS_QUERY = gql`
 `;
 
 function InfinitePostList() {
-  const { data, loading, fetchMore } = useQuery(GET_POSTS_QUERY, {
-    variables: { limit: 20 },
+  const { data, loading, fetchMore } = useQuery(GET_POSTS_QUERY, {  // 🔍 Query posts
+    variables: { limit: 20 },  // 🔢 Lấy 20 posts mỗi lần
   });
   
-  const loadMore = () => {
-    fetchMore({
+  const loadMore = () => {  // 📥 Hàm load thêm posts
+    fetchMore({  // 🔄 Fetch thêm data (không refetch from scratch)
       variables: {
-        after: data?.posts.pageInfo.endCursor,
+        after: data?.posts.pageInfo.endCursor,  // 🔹 Cursor: Vị trí cuối cùng
+        // → Lấy posts SAU cursor này (pagination)
       },
     });
+    // → Apollo tự động merge với data cũ (theo merge function trong cache config)
   };
   
   return (
     <div>
-      {data?.posts.edges.map(({ node }) => (
-        <PostCard key={node.id} post={node} />
+      {data?.posts.edges.map(({ node }) => (  // 📋 Map qua edges
+        <PostCard key={node.id} post={node} />  // 📦 Hiển thị mỗi post
       ))}
       
-      {data?.posts.pageInfo.hasNextPage && (
-        <button onClick={loadMore} disabled={loading}>
-          {loading ? 'Loading...' : 'Load More'}
+      {data?.posts.pageInfo.hasNextPage && (  // ❓ Nếu còn trang tiếp theo
+        <button onClick={loadMore} disabled={loading}>  // 📥 Nút load more
+          {loading ? 'Loading...' : 'Load More'}  // ⏳ Hiển trạng thái
         </button>
       )}
     </div>
@@ -645,7 +673,7 @@ function InfinitePostList() {
 }
 
 // ===================================================
-// 🔢 **OFFSET PAGINATION**
+// 🔢 **OFFSET PAGINATION** (Phân trang theo offset)
 // ===================================================
 
 const GET_PRODUCTS_QUERY = gql`
@@ -662,26 +690,28 @@ const GET_PRODUCTS_QUERY = gql`
 `;
 
 function PaginatedProducts() {
-  const [page, setPage] = useState(1);
-  const limit = 20;
+  const [page, setPage] = useState(1);  // 📌 State: Trang hiện tại
+  const limit = 20;  // 🔢 Số items mỗi trang
   
-  const { data, loading } = useQuery(GET_PRODUCTS_QUERY, {
+  const { data, loading } = useQuery(GET_PRODUCTS_QUERY, {  // 🔍 Query products
     variables: {
-      offset: (page - 1) * limit,
-      limit,
+      offset: (page - 1) * limit,  // 📍 Offset: Bỏ qua bao nhiêu items
+      // VD: Page 1 → offset = 0, Page 2 → offset = 20, Page 3 → offset = 40
+      limit,  // 🔢 Lấy bao nhiêu items
     },
   });
   
-  const totalPages = Math.ceil((data?.products.total ?? 0) / limit);
+  const totalPages = Math.ceil((data?.products.total ?? 0) / limit);  // 📊 Tính tổng số trang
+  // VD: Total 95 items, limit 20 → 95/20 = 4.75 → ceil = 5 trang
   
   return (
     <div>
-      <ProductGrid products={data?.products.items ?? []} />
+      <ProductGrid products={data?.products.items ?? []} />  // 📋 Hiển thị products
       
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
+      <Pagination  // 🔢 Component pagination
+        currentPage={page}  // 📍 Trang hiện tại
+        totalPages={totalPages}  // 📊 Tổng số trang
+        onPageChange={setPage}  // 🔄 Callback khi chuyển trang
       />
     </div>
   );
@@ -710,42 +740,45 @@ const LIKE_POST_MUTATION = gql`
 `;
 
 function LikeButton({ postId, likes, isLiked }: LikeButtonProps) {
-  const [likePost] = useMutation(LIKE_POST_MUTATION, {
-    // ✅ Optimistic response (instant UI update)
-    optimisticResponse: {
-      likePost: {
-        __typename: 'Post',
-        id: postId,
-        likes: likes + (isLiked ? -1 : 1),
-        isLikedByMe: !isLiked,
+  const [likePost] = useMutation(LIKE_POST_MUTATION, {  // ✏️ Mutation like post
+    // ✅ Optimistic response (Cập nhật UI NGAY - giả định thành công)
+    optimisticResponse: {  // 🚀 Instant UI update (không chờ server response)
+      likePost: {  // 📦 Fake response (giống thật)
+        __typename: 'Post',  // 🏷️ Type name
+        id: postId,  // 🔑 Post ID
+        likes: likes + (isLiked ? -1 : 1),  // 🔢 Tăng/giảm likes ngay lập tức
+        // Nếu đang liked → giảm 1 (unlike), ngược lại → tăng 1 (like)
+        isLikedByMe: !isLiked,  // 👤 Đảo trạng thái liked
       },
     },
+    // → UI cập nhật NGAY (trước khi server response) → UX tuyệt vời!
     
-    // ✅ Update cache optimistically
-    update(cache, { data: { likePost } }) {
-      cache.modify({
-        id: cache.identify({ __typename: 'Post', id: postId }),
-        fields: {
-          likes() {
-            return likePost.likes;
+    // ✅ Update cache optimistically (Cập nhật cache ngay)
+    update(cache, { data: { likePost } }) {  // 💾 Callback cập nhật cache
+      cache.modify({  // ✏️ Sửa cache
+        id: cache.identify({ __typename: 'Post', id: postId }),  // 🔑 Tìm Post trong cache
+        fields: {  // 📋 Cập nhật fields
+          likes() {  // 🔢 Update likes
+            return likePost.likes;  // ✅ Giá trị mới
           },
-          isLikedByMe() {
-            return likePost.isLikedByMe;
+          isLikedByMe() {  // 👤 Update isLikedByMe
+            return likePost.isLikedByMe;  // ✅ Giá trị mới
           },
         },
       });
     },
     
-    // ✅ Rollback on error
-    onError: (error) => {
-      console.error('Like failed, rolling back...', error);
-      toast.error('Failed to like post');
+    // ✅ Rollback on error (Rollback nếu thất bại)
+    onError: (error) => {  // 🚨 Nếu server trả lỗi
+      console.error('Like failed, rolling back...', error);  // 🚨 Log error
+      toast.error('Failed to like post');  // ❌ Hiển thông báo lỗi
+      // → Apollo tự động ROLLBACK optimistic update (trả về giá trị cũ)
     },
   });
   
   return (
-    <button onClick={() => likePost({ variables: { postId } })}>
-      {isLiked ? '❤️' : '🤍'} {likes}
+    <button onClick={() => likePost({ variables: { postId } })}>  // 💆 Click để like
+      {isLiked ? '❤️' : '🤍'} {likes}  // 📊 Hiển trạng thái + số likes
     </button>
   );
 }
@@ -765,39 +798,40 @@ function LikeButton({ postId, likes, isLiked }: LikeButtonProps) {
 import { ApolloError } from '@apollo/client';
 
 function GraphQLErrorHandler({ error }: { error: ApolloError }) {
-  // ✅ Handle GraphQL errors
-  if (error.graphQLErrors.length > 0) {
+  // ✅ Handle GraphQL errors (Xử lý lỗi GraphQL)
+  if (error.graphQLErrors.length > 0) {  // 🚨 Nếu có GraphQL errors
     return (
       <div>
-        {error.graphQLErrors.map((err, i) => {
-          // Check error code
-          switch (err.extensions?.code) {
-            case 'UNAUTHENTICATED':
-              return <LoginPrompt key={i} />;
+        {error.graphQLErrors.map((err, i) => {  // 🔄 Loop qua tất cả errors
+          // ❓ Check error code (Mã lỗi từ server)
+          switch (err.extensions?.code) {  // 📌 extensions.code = custom error code
+            case 'UNAUTHENTICATED':  // 🔑 Chưa đăng nhập
+              return <LoginPrompt key={i} />;  // → Hiển form login
             
-            case 'FORBIDDEN':
-              return <AccessDenied key={i} />;
+            case 'FORBIDDEN':  // 🚫 Không có quyền
+              return <AccessDenied key={i} />;  // → Hiển thông báo không có quyền
             
-            case 'NOT_FOUND':
-              return <NotFound key={i} />;
+            case 'NOT_FOUND':  // 🔍 Không tìm thấy
+              return <NotFound key={i} />;  // → Hiển 404 page
             
-            case 'VALIDATION_ERROR':
-              return <ValidationErrors key={i} errors={err.extensions.errors} />;
+            case 'VALIDATION_ERROR':  // ✅ Lỗi validation
+              return <ValidationErrors key={i} errors={err.extensions.errors} />;  // → Hiển chi tiết lỗi
             
-            default:
-              return <GenericError key={i} message={err.message} />;
+            default:  // 🚨 Lỗi khác
+              return <GenericError key={i} message={err.message} />;  // → Hiển lỗi chung
           }
         })}
       </div>
     );
   }
   
-  // ✅ Handle network errors
-  if (error.networkError) {
-    return <NetworkErrorMessage />;
+  // ✅ Handle network errors (Xử lý lỗi network)
+  if (error.networkError) {  // 🌐 Nếu có network error
+    return <NetworkErrorMessage />;  // → Hiển thông báo lỗi kết nối
+    // VD: 500 Internal Server Error, timeout, no internet
   }
   
-  return <GenericError message={error.message} />;
+  return <GenericError message={error.message} />;  // 🚨 Lỗi không xác định
 }
 ```
 

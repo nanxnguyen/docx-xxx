@@ -1005,107 +1005,125 @@ class InactivityTimer {  // 🕒 Class quản lý inactivity
     // ⚠️ Hiển thị warning dialog
     showWarningDialog('Bạn đã không hoạt động trong 5 phút. Vui lòng đăng nhập lại.');
     
-    // Logout
-    logout();
+    // 🚪 Logout user (gọi hàm logout)
+    logout();  // ✅ Xóa tokens, redirect về login
   }
   
-  private clearTimer() {
+  private clearTimer() {  // 🧹 Xóa timer hiện tại
     if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
+      clearTimeout(this.timer);  // ❌ Hủy timeout
+      this.timer = null;  // 🗄️ Set null
     }
   }
 }
 
-// Usage:
-const inactivityTimer = new InactivityTimer();
+// 🚀 Usage: Khởi tạo khi app start
+const inactivityTimer = new InactivityTimer();  // ✅ Bắt đầu theo dõi
+// → Tự động logout sau 5 phút không hoạt động
+
+// 📊 Lợi ích:
+// ✅ 🔒 Bảo mật: Nếu user quên logout, tự động đăng xuất
+// ✅ 💼 Compliance: Banking/Trading regulations yêu cầu
+// ✅ 👀 Prevent shoulder surfing: Không ai nhìn được màn hình khi user đi khỏi
+// ✅ 🏢 Public computers: An toàn khi dùng máy công cộng
 ```
 
 **C. Device Fingerprinting (Nhận Diện Thiết Bị):**
 
 ```typescript
 // ============================================
-// DEVICE FINGERPRINTING
+// 🖥️ DEVICE FINGERPRINTING (Vân tay thiết bị)
 // ============================================
 
-function getDeviceFingerprint(): string {
-  const data = {
-    userAgent: navigator.userAgent,
-    language: navigator.language,
-    platform: navigator.platform,
-    screenResolution: `${screen.width}x${screen.height}`,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    colorDepth: screen.colorDepth,
-    cpuCores: navigator.hardwareConcurrency,
+function getDeviceFingerprint(): string {  // 🔍 Tạo unique ID cho thiết bị
+  const data = {  // 📦 Thu thập thông tin thiết bị
+    userAgent: navigator.userAgent,  // 🌐 Browser + OS (Chrome/Windows, Safari/Mac, etc.)
+    language: navigator.language,  // 🇺🇸 Ngôn ngữ (en-US, vi-VN)
+    platform: navigator.platform,  // 🖥️ Nền tảng (Win32, MacIntel, Linux)
+    screenResolution: `${screen.width}x${screen.height}`,  // 📺 Độ phân giải (1920x1080)
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,  // ⏰ Múi giờ (Asia/Ho_Chi_Minh)
+    colorDepth: screen.colorDepth,  // 🎨 Độ sâu màu (24-bit, 32-bit)
+    cpuCores: navigator.hardwareConcurrency,  // 🔧 Số nhân CPU (4, 8, 16)
   };
   
-  // Hash fingerprint
-  const fingerprint = hashSHA256(JSON.stringify(data));
-  return fingerprint;
+  // 🔐 Hash fingerprint (tạo unique ID từ data)
+  const fingerprint = hashSHA256(JSON.stringify(data));  // SHA256 hash
+  return fingerprint;  // "a3f8b9..." (unique cho mỗi thiết bị)
 }
 
-// Backend: Verify device
+// 🔧 Backend: Verify device (kiểm tra thiết bị lạ)
 app.post('/auth/login', async (req, res) => {
-  const { deviceId } = req.body;
-  const user = await db.findUser(...);
+  const { deviceId } = req.body;  // 🖥️ Device fingerprint từ client
+  const user = await db.findUser(...);  // 🔍 Tìm user
   
-  // Check device đã đăng ký chưa
+  // 🔹 Check device đã đăng ký chưa (known device?)
   const knownDevice = await db.findDevice(user.id, deviceId);
   
-  if (!knownDevice) {
-    // Thiết bị mới → send OTP/email verification
-    await sendOTPEmail(user.email);
+  if (!knownDevice) {  // ❌ Thiết bị mới (chưa từng login)
+    // 📧 Gửi OTP/email verification (2FA)
+    await sendOTPEmail(user.email);  // 📧 "Mã xác thực: 123456"
     
-    return res.status(403).json({
-      error: 'Unknown device',
-      requireOTP: true,
+    return res.status(403).json({  // ⚠️ 403 Forbidden
+      error: 'Unknown device',  // ❌ Thiết bị lạ
+      requireOTP: true,  // 🔑 Yêu cầu OTP
     });
   }
   
-  // Device OK → proceed login
-  // ...
+  // ✅ Device OK (thiết bị quen thuộc) → proceed login
+  // ... tiếp tục login flow
 });
+
+// 📊 Lợi ích:
+// ✅ 🚨 Detect unusual login locations (login từ nước ngoài bất thường)
+// ✅ 🔒 Require OTP cho thiết bị mới (2FA)
+// ✅ 📊 Track device usage (user dùng bao nhiêu thiết bị)
+// ✅ 🚨 Fraud detection (bot, automated attacks)
 ```
 
 **D. Logout All Devices (Đăng Xuất Tất Cả Thiết Bị):**
 
 ```typescript
 // ============================================
-// LOGOUT ALL DEVICES
+// 📱 LOGOUT ALL DEVICES (Revoke tất cả sessions)
 // ============================================
 
-// Frontend: Trigger logout all
+// 🌐 Frontend: Trigger logout all (User bấm nút "Logout all devices")
 async function logoutAllDevices() {
   await fetch('https://api.bank.com/auth/logout-all', {
-    method: 'POST',
-    credentials: 'include',
+    method: 'POST',  // 📮 HTTP POST
+    credentials: 'include',  // 🍪 Gửi cookies
   });
   
-  // Redirect to login
-  window.location.href = '/login';
+  // 🔄 Redirect to login
+  window.location.href = '/login';  // ✅ Redirect hiện tại về login
 }
 
-// Backend: Revoke all refresh tokens
+// 🔧 Backend: Revoke all refresh tokens (thu hồi tất cả)
 app.post('/auth/logout-all', authenticateToken, async (req, res) => {
+  // 👤 Lấy User ID từ access token (authenticateToken middleware)
   const userId = req.user.sub;
   
-  // Revoke tất cả refresh tokens của user
-  await db.revokeAllRefreshTokens(userId);
+  // 🗄️ Revoke tất cả refresh tokens của user
+  await db.revokeAllRefreshTokens(userId);  // Set isRevoked = true cho tất cả
+  // → Tất cả devices sẽ không refresh được token mới
+  // → Phải login lại ở tất cả devices
   
-  // Log event
+  // 📝 Log event (audit trail)
   await logEvent({
-    type: 'LOGOUT_ALL_DEVICES',
-    userId,
-    timestamp: new Date(),
+    type: 'LOGOUT_ALL_DEVICES',  // 📝 Event type
+    userId,  // 👤 User ID
+    timestamp: new Date(),  // ⏰ Thời gian
   });
   
-  res.json({ message: 'Logged out from all devices' });
+  res.json({ message: 'Logged out from all devices' });  // ✅ Success
 });
 
-// Use case:
-// - User nghi ngờ account bị hack
-// - Change password → logout all devices
-// - Admin revoke access
+// 📝 Use cases (Khi nào dùng?):
+// ✅ 🚨 User nghi ngờ account bị hack (thấy hoạt động lạ)
+// ✅ 🔑 Change password → logout all devices (force re-login)
+// ✅ 👨‍💻 Admin revoke access (suspend account, security breach)
+// ✅ 📱 User mất thiết bị (phone/laptop stolen)
+// ✅ 🛡️ Compliance requirement (logout sau khi thay đổi quyền)
 ```
 
 ---
@@ -1113,86 +1131,101 @@ app.post('/auth/logout-all', authenticateToken, async (req, res) => {
 #### **⚠️ 5. Common Security Mistakes (Lỗi Bảo Mật Thường Gặp)**
 
 ```typescript
-// ❌ LỖI 1: Lưu token trong localStorage
-localStorage.setItem('accessToken', token);  // XSS risk!
+// ❌ LỖI 1: Lưu token trong localStorage (XSS RISK - Cực kỳ nguy hiểm!)
+localStorage.setItem('accessToken', token);  // ❌ XSS có thể đọc qua localStorage.getItem()
+// → Hacker inject <script> có thể đánh cắp token
 
-// ✅ ĐÚNG: Lưu trong memory
-let accessToken: string | null = null;
-
-// ────────────────────────────────────────
-
-// ❌ LỖI 2: Access Token thời hạn quá dài
-jwt.sign(payload, secret, { expiresIn: '30d' });  // Quá lâu!
-
-// ✅ ĐÚNG: 5-15 phút
-jwt.sign(payload, secret, { expiresIn: '15m' });
+// ✅ ĐÚNG: Lưu trong memory (biến toàn cục)
+let accessToken: string | null = null;  // 💾 Lưu trong RAM, mất khi refresh
 
 // ────────────────────────────────────────
 
-// ❌ LỖI 3: Không verify token signature
-const decoded = jwt.decode(token);  // ❌ Chỉ decode, không verify!
+// ❌ LỖI 2: Access Token thời hạn quá dài (Tăng thiệt hại nếu leak)
+jwt.sign(payload, secret, { expiresIn: '30d' });  // ❌ Quá lâu! (30 ngày)
+// → Nếu token bị leak, hacker dùng được 30 ngày!
 
-// ✅ ĐÚNG: Verify signature
-jwt.verify(token, secret, (err, decoded) => { ... });
+// ✅ ĐÚNG: 5-15 phút (ngắn - giảm window of attack)
+jwt.sign(payload, secret, { expiresIn: '15m' });  // ✅ 15 phút
 
 // ────────────────────────────────────────
 
-// ❌ LỖI 4: Không revoke refresh token khi logout
-// User logout → token vẫn valid → hacker dùng được
+// ❌ LỖI 3: Không verify token signature (Tin client blindly)
+const decoded = jwt.decode(token);  // ❌ Chỉ decode Base64, KHÔNG verify signature!
+// → Hacker có thể tự tạo token giả (sửa payload, fake signature)
+
+// ✅ ĐÚNG: Verify signature (kiểm tra chữ ký)
+jwt.verify(token, secret, (err, decoded) => { ... });  // ✅ Xác thực chữ ký
+// → Chỉ accept token hợp lệ (signature đúng, chưa hết hạn)
+
+// ────────────────────────────────────────
+
+// ❌ LỖI 4: Không revoke refresh token khi logout (Token vẫn sống)
+// User logout → token vẫn valid → hacker có thể dùng được
+// → Không thể thu hồi token sau khi logout
 
 // ✅ ĐÚNG: Revoke token vào database blacklist
-await db.revokeRefreshToken(tokenId);
+await db.revokeRefreshToken(tokenId);  // 🗄️ Set isRevoked = true
+// → Token bị vô hiệu hóa, không dùng lại được
 
 // ────────────────────────────────────────
 
-// ❌ LỖI 5: Gửi sensitive data trong token
+// ❌ LỖI 5: Gửi sensitive data trong token (Payload KHÔNG mã hóa!)
 jwt.sign({
-  password: user.password,  // ❌ NEVER!
-  creditCard: user.creditCard,  // ❌ NEVER!
+  password: user.password,  // ❌ NEVER! (Password trong token - cực nguy hiểm)
+  creditCard: user.creditCard,  // ❌ NEVER! (Credit card info)
+  ssn: user.ssn,  // ❌ NEVER! (Social Security Number)
 }, secret);
+// → Payload chỉ Base64 encode (ai cũng decode được!)
 
-// ✅ ĐÚNG: Chỉ non-sensitive data
+// ✅ ĐÚNG: Chỉ non-sensitive data (ID, name, role)
 jwt.sign({
-  sub: user.id,
-  name: user.name,
-  role: user.role,
+  sub: user.id,  // ✅ User ID (public identifier)
+  name: user.name,  // ✅ Tên (đã public trên UI)
+  role: user.role,  // ✅ Role (cần cho phân quyền)
 }, secret);
 
 // ────────────────────────────────────────
 
-// ❌ LỖI 6: Không check token blacklist
-// Token bị revoke nhưng vẫn accept
+// ❌ LỖI 6: Không check token blacklist (Tin JWT blindly)
+// Token bị revoke nhưng vẫn accept (JWT vẫn valid signature)
+// → User logout nhưng token vẫn dùng được
 
-// ✅ ĐÚNG: Check blacklist
-const tokenRecord = await db.findRefreshToken(tokenId);
-if (!tokenRecord || tokenRecord.isRevoked) {
+// ✅ ĐÚNG: Check blacklist trong database
+const tokenRecord = await db.findRefreshToken(tokenId);  // 🔍 Tìm token
+if (!tokenRecord || tokenRecord.isRevoked) {  // ❌ Token bị revoke
   return res.status(403).json({ error: 'Token revoked' });
 }
+// → Chỉ accept token chưa bị revoke
 
 // ────────────────────────────────────────
 
-// ❌ LỖI 7: Không rate limit refresh endpoint
-// Hacker brute force refresh endpoint
+// ❌ LỖI 7: Không rate limit refresh endpoint (Brute force attack)
+// Hacker brute force refresh endpoint (spam requests)
+// → DDoS, resource exhaustion
 
-// ✅ ĐÚNG: Rate limit
-app.use('/auth/refresh', rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 phút
-  max: 10,  // Max 10 requests
+// ✅ ĐÚNG: Rate limit (giới hạn số requests)
+app.use('/auth/refresh', rateLimit({  // 🛡️ Middleware rate limit
+  windowMs: 15 * 60 * 1000,  // ⏰ 15 phút window
+  max: 10,  // 🔢 Max 10 requests / 15 phút
+  message: 'Too many refresh requests, please try again later',
 }));
+// → Block brute force, DDoS attacks
 
 // ────────────────────────────────────────
 
-// ❌ LỖI 8: Không log security events
-// Không biết khi nào bị attack
+// ❌ LỖI 8: Không log security events (Không track security incidents)
+// Không biết khi nào bị attack, không audit trail
+// → Không phát hiện breach, không compliance
 
-// ✅ ĐÚNG: Log everything
-await logEvent({
-  type: 'LOGIN_FAILED',
-  username,
-  ipAddress: req.ip,
-  reason: 'Invalid password',
-  timestamp: new Date(),
+// ✅ ĐÚNG: Log everything (mọi security events)
+await logEvent({  // 📝 Audit logging
+  type: 'LOGIN_FAILED',  // 🚨 Event type (LOGIN_SUCCESS, LOGIN_FAILED, etc.)
+  username,  // 👤 Username attempt
+  ipAddress: req.ip,  // 🌐 IP address (geo-location)
+  reason: 'Invalid password',  // 📋 Lý do fail
+  timestamp: new Date(),  // ⏰ Thời gian
 });
+// → Detect brute force, track suspicious activities, compliance audit trail
 ```
 
 ---

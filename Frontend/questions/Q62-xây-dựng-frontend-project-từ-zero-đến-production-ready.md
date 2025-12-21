@@ -70,43 +70,45 @@ GIAI ĐOẠN 8: SCALABILITY (Ongoing)
 # =====================================
 # TẠI SAO DÙNG NX?
 # =====================================
-# ✅ Monorepo support - Quản lý multiple apps/libs
-# ✅ Built-in code generators
-# ✅ Dependency graph visualization
-# ✅ Affected commands - Chỉ test/build code thay đổi
-# ✅ Caching layer - Build/test nhanh hơn 10x
+# ✅🏗️ Monorepo support - Quản lý multiple apps/libs trong 1 repo (tránh dependency hell)
+# ✅⚙️ Built-in code generators (nx g component, nx g library - tự động tạo boilerplate)
+# ✅📊 Dependency graph visualization (nx graph - xem quan hệ giữa apps/libs)
+# ✅🎯 Affected commands - Chỉ test/build code thay đổi (nx affected:test - tiết kiệm CI time 80%)
+# ✅💾⚡ Caching layer - Build/test nhanh hơn 10x nhờ local + remote cache (Nx Cloud)
+# ✅🔧 Task orchestration - Chạy parallel tasks với dependency resolution tự động
+# ✅📦 Plugin ecosystem - React, Angular, Next.js, Vite, Jest, Cypress, Storybook...
 
-# Install Nx CLI
-npm install -g nx@latest
+# 🔹 Install Nx CLI globally
+npm install -g nx@latest  # 🌐 CLI tool để run nx commands
 
-# Create workspace
+# 🔹 Create workspace với preset
 npx create-nx-workspace@latest my-app \
-  --preset=react-monorepo \
-  --packageManager=pnpm \
-  --nx-cloud=true
+  --preset=react-monorepo \       # 📦⚛️ React monorepo template (apps + libs)
+  --packageManager=pnpm \         # 📦💾 pnpm - nhanh hơn npm 2x, tiết kiệm disk space
+  --nx-cloud=true                 # ☁️⚡ Enable remote caching (free tier 500 hours/month)
 
-# Structure sau khi tạo:
+# 🏗️📂 Structure sau khi tạo:
 # my-app/
-# ├── apps/
-# │   ├── web/              # Main web app
-# │   ├── admin/            # Admin dashboard
-# │   └── mobile/           # React Native (optional)
-# ├── libs/
-# │   ├── shared/
-# │   │   ├── ui/           # Shared components
-# │   │   ├── utils/        # Helper functions
-# │   │   ├── types/        # TypeScript types
-# │   │   └── api/          # API client
-# │   └── features/
-# │       ├── auth/         # Authentication feature
-# │       ├── dashboard/    # Dashboard feature
-# │       └── settings/     # Settings feature
-# ├── tools/                # Custom scripts
+# ├── apps/                       # 📱 Applications (deployable)
+# │   ├── web/                    # 🌐 Main web app (customer-facing)
+# │   ├── admin/                  # 🔐 Admin dashboard (internal tool)
+# │   └── mobile/                 # 📱 React Native app (optional)
+# ├── libs/                       # 📚 Shared libraries (reusable code)
+# │   ├── shared/                 # 🔄 Shared code across all apps
+# │   │   ├── ui/                 # 🎨 Shared UI components (Button, Input, Modal...)
+# │   │   ├── utils/              # 🔧 Helper functions (formatDate, validateEmail...)
+# │   │   ├── types/              # 📋 TypeScript types & interfaces
+# │   │   └── api/                # 🌐 API client (axios instance, interceptors)
+# │   └── features/               # 🎯 Feature modules (business logic)
+# │       ├── auth/               # 🔐 Authentication feature (login, register, tokens)
+# │       ├── dashboard/          # 📊 Dashboard feature (charts, stats)
+# │       └── settings/           # ⚙️ Settings feature (profile, preferences)
+# ├── tools/                      # 🔧 Custom scripts (generators, migrations)
 # ├── .github/
-# │   └── workflows/        # GitHub Actions
-# ├── nx.json
-# ├── tsconfig.base.json
-# └── package.json
+# │   └── workflows/              # 🤖 GitHub Actions CI/CD
+# ├── nx.json                     # ⚙️ Nx configuration (caching, tasks)
+# ├── tsconfig.base.json          # 📋 Base TypeScript config (paths, compiler options)
+# └── package.json                # 📦 Dependencies & scripts
 ```
 
 #### **Step 1.2: TypeScript Configuration (Strict Mode)**
@@ -115,49 +117,51 @@ npx create-nx-workspace@latest my-app \
 // tsconfig.base.json
 {
   "compilerOptions": {
-    // ✅ STRICT MODE - Bắt lỗi sớm nhất
-    "strict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "noImplicitThis": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // ✅🔒 STRICT MODE - Bắt lỗi sớm nhất (bắt buộc cho production)
+    "strict": true,                           // 🔒 Enable tất cả strict checks
+    "strictNullChecks": true,                // 🔒❌ Không cho null/undefined nếu không khai báo
+    "strictFunctionTypes": true,             // 🔒🔧 Check function parameter types chặt chẽ
+    "strictBindCallApply": true,             // 🔒📞 Check bind/call/apply arguments
+    "strictPropertyInitialization": true,    // 🔒🏗️ Class properties phải init trong constructor
+    "noImplicitThis": true,                  // 🔒❓ Không cho 'this' kiểu any
+    "noImplicitAny": true,                   // 🔒❓ Không cho type any tự động (phải khai báo rõ)
+    "noImplicitReturns": true,               // 🔒↩️ Function phải return ở tất cả code paths
+    "noFallthroughCasesInSwitch": true,      // 🔒🔀 Switch case phải có break hoặc return
+    "noUncheckedIndexedAccess": true,        // 🔒📋 Array/object access trả về T | undefined (safety)
+    "noUnusedLocals": true,                  // 🔒🗑️ Cảnh báo biến khai báo nhưng không dùng
+    "noUnusedParameters": true,              // 🔒🗑️ Cảnh báo parameter không dùng (prefix _ để ignore)
     
-    // ✅ MODULE RESOLUTION
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    // ✅📦 MODULE RESOLUTION (chuẩn hiện đại)
+    "module": "ESNext",                      // 📦 ES modules (import/export)
+    "moduleResolution": "bundler",           // 🔧 Bundler resolution (Vite, Webpack, esbuild)
+    "resolveJsonModule": true,               // 📄 Cho phép import .json files
+    "esModuleInterop": true,                 // 🔄 Tương thích CommonJS & ES modules
+    "allowSyntheticDefaultImports": true,    // 🔄 Cho phép import default từ modules không có export default
     
-    // ✅ PATH ALIASES - Import rõ ràng
-    "baseUrl": ".",
+    // ✅🗺️ PATH ALIASES - Import rõ ràng, dễ refactor
+    "baseUrl": ".",                          // 🏠 Base directory cho path resolution
     "paths": {
-      "@app/*": ["apps/web/src/*"],
-      "@libs/shared/ui": ["libs/shared/ui/src/index.ts"],
-      "@libs/shared/utils": ["libs/shared/utils/src/index.ts"],
-      "@libs/shared/types": ["libs/shared/types/src/index.ts"],
-      "@libs/shared/api": ["libs/shared/api/src/index.ts"],
-      "@libs/features/*": ["libs/features/*/src/index.ts"]
+      "@app/*": ["apps/web/src/*"],                      // 🌐 App code (pages, features...)
+      "@libs/shared/ui": ["libs/shared/ui/src/index.ts"],          // 🎨 Shared UI components
+      "@libs/shared/utils": ["libs/shared/utils/src/index.ts"],    // 🔧 Shared utilities
+      "@libs/shared/types": ["libs/shared/types/src/index.ts"],    // 📋 Shared TypeScript types
+      "@libs/shared/api": ["libs/shared/api/src/index.ts"],        // 🌐 API client
+      "@libs/features/*": ["libs/features/*/src/index.ts"]          // 🎯 Feature modules
     },
+    // 💡 Sử dụng: import { Button } from '@libs/shared/ui';
+    // ❌ Thay vì: import { Button } from '../../../libs/shared/ui/src/Button';
     
-    // ✅ OUTPUT
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "jsx": "react-jsx",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    // ✅🎯 OUTPUT CONFIGURATION
+    "target": "ES2022",                      // 🎯 Target modern browsers (Chrome 90+, Firefox 88+)
+    "lib": ["ES2022", "DOM", "DOM.Iterable"], // 📚 Include ES2022 + DOM APIs (fetch, Promise, etc.)
+    "jsx": "react-jsx",                      // ⚛️ React 17+ JSX transform (không cần import React)
+    "declaration": true,                     // 📋 Generate .d.ts declaration files
+    "declarationMap": true,                  // 🗺️ Generate .d.ts.map for IDE navigation
+    "sourceMap": true,                       // 🗺️ Generate source maps cho debugging
+    "skipLibCheck": true,                    // ⏩ Skip type check .d.ts files (faster build)
+    "forceConsistentCasingInFileNames": true // 🔠 Case-sensitive imports (Linux/Mac compatibility)
   },
-  "exclude": ["node_modules", "dist", "build", ".next"]
+  "exclude": ["node_modules", "dist", "build", ".next"]  // 🚫 Không compile các folder này
 }
 ```
 
@@ -214,58 +218,58 @@ module.exports = {
   },
   rules: {
     // ===================================
-    // TYPESCRIPT RULES
+    // 📋 TYPESCRIPT RULES - Type safety
     // ===================================
-    '@typescript-eslint/no-unused-vars': ['error', { 
-      argsIgnorePattern: '^_',
-      varsIgnorePattern: '^_',
+    '@typescript-eslint/no-unused-vars': ['error', {  // ❌🗑️ Không cho unused variables (code smell)
+      argsIgnorePattern: '^_',                       // ✅ Cho phép args bắt đầu bằng _ (unused bằng cố ý)
+      varsIgnorePattern: '^_',                       // ✅ Cho phép vars bắt đầu bằng _ (tương tự)
     }],
-    '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/explicit-function-return-type': ['warn', {
-      allowExpressions: true,
-      allowTypedFunctionExpressions: true,
+    '@typescript-eslint/no-explicit-any': 'error',   // ❌❓ Cấm type 'any' (mất type safety)
+    '@typescript-eslint/explicit-function-return-type': ['warn', {  // ⚠️🔙 Khuyến nghị khai báo return type
+      allowExpressions: true,                        // ✅ Cho phép arrow function không cần
+      allowTypedFunctionExpressions: true,           // ✅ Cho phép nếu function đã có type từ biến
     }],
-    '@typescript-eslint/consistent-type-imports': ['error', {
-      prefer: 'type-imports',
+    '@typescript-eslint/consistent-type-imports': ['error', {  // 📥📋 Bắt buộc dùng 'import type' cho types
+      prefer: 'type-imports',                        // 💡 Giúp tree-shaking, tách types ra khỏi runtime code
     }],
-    '@typescript-eslint/no-floating-promises': 'error',
-    '@typescript-eslint/await-thenable': 'error',
-    '@typescript-eslint/no-misused-promises': 'error',
+    '@typescript-eslint/no-floating-promises': 'error',  // ❌⌛ Promise phải await hoặc .catch (tránh unhandled rejection)
+    '@typescript-eslint/await-thenable': 'error',        // ❌⌛ Chỉ await promises, không await non-promise values
+    '@typescript-eslint/no-misused-promises': 'error',   // ❌⌛ Không dùng Promise ở nơi không phù hợp (if, &&, ||)
     
     // ===================================
-    // REACT RULES
+    // ⚛️ REACT RULES - Component best practices
     // ===================================
-    'react/react-in-jsx-scope': 'off', // React 17+
-    'react/prop-types': 'off', // TypeScript handles this
-    'react/jsx-no-target-blank': ['error', { 
-      allowReferrer: false,
-      enforceDynamicLinks: 'always',
+    'react/react-in-jsx-scope': 'off',               // ✅⚛️ Không cần import React (React 17+ JSX transform)
+    'react/prop-types': 'off',                       // ✅📋 TypeScript xử lý props validation rồi
+    'react/jsx-no-target-blank': ['error', {         // ❌🔗 Bảo mật: <a target="_blank"> cần rel="noopener"
+      allowReferrer: false,                          // 🚫 Không gửi referrer (bảo mật)
+      enforceDynamicLinks: 'always',                 // ✅ Apply cho cả dynamic href
     }],
-    'react/jsx-key': ['error', { 
-      checkFragmentShorthand: true,
+    'react/jsx-key': ['error', {                     // ❌🔑 Bắt buộc key trong .map() (React performance)
+      checkFragmentShorthand: true,                  // ✅ Check cả <> fragment shorthand
     }],
-    'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn',
+    'react-hooks/rules-of-hooks': 'error',           // ❌🎣 Chỉ gọi hooks trong component/custom hooks
+    'react-hooks/exhaustive-deps': 'warn',           // ⚠️📋 useEffect dependencies phải đầy đủ (tránh stale closure)
     
     // ===================================
-    // IMPORT RULES
+    // 📦 IMPORT RULES - Clean imports
     // ===================================
-    'import/no-unresolved': 'error',
-    'import/no-cycle': 'error', // Ngăn circular dependencies
-    'import/no-duplicates': 'error',
-    'simple-import-sort/imports': 'error',
-    'simple-import-sort/exports': 'error',
-    'unused-imports/no-unused-imports': 'error',
+    'import/no-unresolved': 'error',                 // ❌🔍 Tất cả imports phải resolve được
+    'import/no-cycle': 'error',                      // ❌🔄 Ngăn circular dependencies (A import B, B import A)
+    'import/no-duplicates': 'error',                 // ❌🔁 Không import duplicate từ cùng 1 module
+    'simple-import-sort/imports': 'error',           // 🔢 Auto sort imports (external → internal → relative)
+    'simple-import-sort/exports': 'error',           // 🔢 Auto sort exports
+    'unused-imports/no-unused-imports': 'error',     // 🗑️❌ Auto remove unused imports
     
     // ===================================
-    // GENERAL RULES
+    // 🔧 GENERAL RULES - Code quality
     // ===================================
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
-    'no-debugger': 'error',
-    'no-alert': 'error',
-    'prefer-const': 'error',
-    'no-var': 'error',
-    'eqeqeq': ['error', 'always'],
+    'no-console': ['warn', { allow: ['warn', 'error'] }],  // ⚠️💬 console.log cảnh báo (dùng logger thay thế)
+    'no-debugger': 'error',                          // ❌🐛 Cấm debugger statement (quên xóa khi commit)
+    'no-alert': 'error',                             // ❌⚠️ Cấm alert/confirm/prompt (dùng Modal component)
+    'prefer-const': 'error',                         // ✅🔒 Dùng const thay vì let nếu không reassign
+    'no-var': 'error',                               // ❌🚫 Cấm var (dùng const/let - block scope)
+    'eqeqeq': ['error', 'always'],                   // ❌=== Bắt buộc === thay vì == (type safety)
   },
 };
 ```
@@ -307,12 +311,19 @@ module.exports = {
 #### **Step 1.5: Git Hooks với Husky + lint-staged**
 
 ```bash
-# Install
+# 🎣🔐 Install Husky + lint-staged + commitlint
 pnpm add -D husky lint-staged @commitlint/cli @commitlint/config-conventional
+# husky: Git hooks framework (đăng ký hooks vào .git/hooks)
+# lint-staged: Chạy linters chỉ trên staged files (🚀 nhanh hơn full repo)
+# commitlint: Validate commit messages theo chuẩn (Conventional Commits)
 
-# Setup husky
+# 🔹 Setup husky (tạo .husky/ folder)
 npx husky install
+# ➡️ Tạo .husky/pre-commit, .husky/commit-msg hooks
+
+# 🔹 Thêm prepare script vào package.json
 npm pkg set scripts.prepare="husky install"
+# 💡 'prepare' chạy tự động sau npm install (setup hooks cho team members)
 ```
 
 ```javascript
@@ -320,8 +331,10 @@ npm pkg set scripts.prepare="husky install"
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Run lint-staged
+# 🎣🔍 Run lint-staged - Check code quality trước khi commit
 pnpm lint-staged
+# ➡️ Nếu lint/format fail → commit bị block ❌
+# 💡 Chỉ check staged files (🚀 nhanh), không check toàn bộ repo
 ```
 
 ```javascript
@@ -329,71 +342,112 @@ pnpm lint-staged
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Validate commit message
+# 💬✅ Validate commit message format
 npx --no -- commitlint --edit ${1}
+# ➡️ ${1} = .git/COMMIT_EDITMSG (commit message file)
+# 💡 Nếu message không theo chuẩn Conventional Commits → reject ❌
+# ✅ Ví dụ hợp lệ: "feat: add login page", "fix: resolve CORS issue"
+# ❌ Ví dụ không hợp lệ: "update code", "FEAT: Add Feature" (uppercase)
 ```
 
 ```javascript
 // .lintstagedrc.cjs
 module.exports = {
-  // TypeScript files
+  // 📋🔍 TypeScript files - Full validation pipeline
   '*.{ts,tsx}': [
-    'eslint --fix',
-    'prettier --write',
-    () => 'tsc --noEmit', // Type check
+    'eslint --fix',                    // ✅🔧 Auto fix ESLint errors (imports, formatting, unused vars...)
+    'prettier --write',                // ✅🎨 Auto format code (indentation, quotes, spacing...)
+    () => 'tsc --noEmit',              // ✅📋 Type check toàn bộ project (không generate .js files)
+    // 💡 Lưu ý: tsc --noEmit check toàn bộ, không chỉ staged files (vì types có thể affect nhau)
   ],
   
-  // JavaScript files
+  // 📦 JavaScript files - Lint + Format
   '*.{js,jsx}': [
-    'eslint --fix',
-    'prettier --write',
+    'eslint --fix',                    // ✅🔧 Fix JS linting issues
+    'prettier --write',                // ✅🎨 Format JS code
   ],
   
-  // JSON, CSS, Markdown
+  // 📄🎨 JSON, CSS, Markdown - Format only
   '*.{json,css,scss,md}': [
-    'prettier --write',
+    'prettier --write',                // ✅🎨 Chỉ format, không lint (vì JSON/CSS không có ESLint rules)
   ],
   
-  // Test files - Run related tests
+  // 🧪🔍 Test files - Run related tests
   '*.{test,spec}.{ts,tsx}': [
-    'vitest related --run',
+    'vitest related --run',            // ✅🧪 Chạy tests liên quan đến file thay đổi
+    // 💡 'related' tìm tests import file này (không chạy toàn bộ test suite)
+    // 🚀 Nhanh hơn full test, vẫn đảm bảo không phá tests
   ],
 };
+
+// 💡 Workflow:
+// 1️⃣ git add file.ts         (💾 Stage file)
+// 2️⃣ git commit -m "..."     (👉 Trigger pre-commit hook)
+// 3️⃣ lint-staged chạy         (⚙️ ESLint, Prettier, TypeScript check)
+// 4️⃣ Nếu pass → commit ✅   / Nếu fail → block ❌
 ```
 
 ```javascript
 // commitlint.config.cjs
 module.exports = {
-  extends: ['@commitlint/config-conventional'],
+  extends: ['@commitlint/config-conventional'],  // 📋 Chuẩn Conventional Commits (Angular style)
   rules: {
+    // 🎯 TYPE ENUM - Danh sách types hợp lệ
     'type-enum': [
-      2,
-      'always',
+      2,           // ❌ Error level (2 = error, 1 = warning, 0 = off)
+      'always',    // ✅ Luôn bắt buộc
       [
-        'feat',     // New feature
-        'fix',      // Bug fix
-        'docs',     // Documentation
-        'style',    // Formatting, missing semicolons, etc.
-        'refactor', // Code change that neither fixes a bug nor adds a feature
-        'perf',     // Performance improvement
-        'test',     // Adding tests
-        'chore',    // Updating build tasks, package manager configs, etc.
-        'revert',   // Revert a previous commit
-        'ci',       // CI/CD changes
+        'feat',     // ✨🎉 New feature (thêm tính năng mới)
+        'fix',      // 🐛🔧 Bug fix (sửa lỗi)
+        'docs',     // 📚📝 Documentation (cập nhật docs)
+        'style',    // 🎨 Formatting, missing semicolons (không ảnh hưởng logic)
+        'refactor', // ♻️🔧 Code refactor (không fix bug, không thêm feature)
+        'perf',     // ⚡🚀 Performance improvement (tối ưu performance)
+        'test',     // 🧪✅ Adding tests (thêm/sửa tests)
+        'chore',    // 🔧📦 Build, dependencies, tooling (cập nhật config, packages)
+        'revert',   // ⏪❌ Revert a previous commit (rollback commit trước)
+        'ci',       // 🤖⚙️ CI/CD changes (cập nhật GitHub Actions, pipelines)
       ],
     ],
-    'subject-case': [2, 'never', ['upper-case']],
-    'subject-empty': [2, 'never'],
-    'subject-full-stop': [2, 'never', '.'],
-    'header-max-length': [2, 'always', 100],
+    'subject-case': [2, 'never', ['upper-case']],  // ❌ Subject không được viết hoa toàn bộ
+    'subject-empty': [2, 'never'],                 // ❌ Subject không được để trống
+    'subject-full-stop': [2, 'never', '.'],        // ❌ Subject không kết thúc bằng dấu chấm
+    'header-max-length': [2, 'always', 100],       // ❌ Header tối đa 100 ký tự (title line)
   },
 };
 
-// Example valid commits:
-// ✅ feat: add user authentication
-// ✅ fix: resolve memory leak in dashboard
-// ✅ docs: update API documentation
-// ❌ Added new feature (missing type)
+// 💬✅ Example valid commits:
+// ✅ feat: add user authentication with JWT tokens
+// ✅ fix: resolve memory leak in dashboard component
+// ✅ docs: update API documentation for auth endpoints
+// ✅ perf: optimize bundle size by lazy loading routes
+// ✅ test: add unit tests for UserService
+// ✅ chore: upgrade React to v18.2.0
+
+// ❌⚠️ Example INVALID commits:
+// ❌ Added new feature                    (missing type:)
+// ❌ FEAT: Add feature                    (uppercase type)
+// ❌ feat: Add Feature                    (uppercase subject)
+// ❌ feat: add user authentication.       (kết thúc bằng dấu chấm)
+// ❌ feat:add feature                     (thiếu space sau :)
+// ❌ update: something                    ('update' không nằm trong type-enum)
+
+// 💡 Commit message structure:
+// <type>(<scope>): <subject>
+// 
+// <body>
+// 
+// <footer>
+
+// 💬 Ví dụ full commit message:
+// feat(auth): add OAuth2 login with Google
+// 
+// - Implement Google OAuth2 flow
+// - Add AuthService with token management
+// - Create LoginButton component
+// 
+// Closes #123
+```
 // ❌ FEAT: Add feature (uppercase subject)
 ```
 

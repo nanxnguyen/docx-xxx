@@ -206,89 +206,119 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  mode: 'production', // Chế độ: 'development' hoặc 'production'
-  entry: './src/index.tsx', // File đầu vào (entry point)
+  mode: 'production',  // 🎯🏭 Chế độ: 'development' (fast, no optimize) | 'production' (minify, optimize)
+  entry: './src/index.tsx',  // 🚪📂 File đầu vào - entry point (nơi Webpack bắt đầu bundle)
   
   output: {
-    path: path.resolve(__dirname, 'dist'), // Thư mục output
-    filename: '[name].[contenthash].js', // Tên file output với hash (cache busting)
-    clean: true, // Xóa thư mục dist cũ trước khi build
+    path: path.resolve(__dirname, 'dist'),  // 📁🎯 Thư mục output (absolute path)
+    filename: '[name].[contenthash].js',    // 📦🔑 Tên file: main.abc123.js (hash cho cache busting)
+    // 💡 [name] = chunk name, [contenthash] = hash của nội dung (thay đổi khi code thay đổi)
+    clean: true,  // 🧹❌ Xóa thư mục dist cũ trước khi build (tránh file cũ tồn đọng)
   },
   
-  // LOADERS - Xử lý các loại file khác nhau
+  // 🔧📦 LOADERS - Xử lý các loại file khác nhau (transform trước khi bundle)
   module: {
     rules: [
-      // Rule 1: Xử lý TypeScript/TSX
+      // 🔹 Rule 1: Xử lý TypeScript/TSX
       {
-        test: /\.(ts|tsx)$/, // Regex: file nào match .ts hoặc .tsx
-        use: 'babel-loader', // Dùng babel-loader để transpile
-        exclude: /node_modules/, // Bỏ qua node_modules (không cần transpile)
+        test: /\.(ts|tsx)$/,  // 🔍📋 Regex: file nào match .ts hoặc .tsx
+        use: 'babel-loader',   // ⚙️🔄 Dùng babel-loader để transpile TS → JS (ES5/ES6)
+        exclude: /node_modules/,  // 🚫📦 Bỏ qua node_modules (đã được transpile rồi, tiết kiệm thời gian)
+        // 💡 babel-loader chạy Babel để transform TypeScript + React JSX → JavaScript
       },
-      // Rule 2: Xử lý CSS
+      // 🔹 Rule 2: Xử lý CSS
       {
-        test: /\.css$/, // File .css
-        use: [MiniCssExtractPlugin.loader, 'css-loader'], // Extract CSS ra file riêng
-        // Chạy từ phải → trái: css-loader → MiniCssExtractPlugin.loader
+        test: /\.css$/,  // 🔍🎨 File .css
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],  // ⚙️🎨 Extract CSS ra file riêng
+        // 💡 Chạy từ phải → trái:
+        // 1️⃣ css-loader: Parse CSS, resolve imports/url()
+        // 2️⃣ MiniCssExtractPlugin.loader: Extract CSS ra file .css riêng (thay vì inline trong JS)
+        // ✅ Kết quả: styles.abc123.css (thay vì CSS nằm trong main.js)
       },
-      // Rule 3: Xử lý Images
+      // 🔹 Rule 3: Xử lý Images
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i, // File ảnh
-        type: 'asset/resource', // Copy ảnh vào dist, return URL
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,  // 🔍🖼️ File ảnh (i = case-insensitive)
+        type: 'asset/resource',  // 📂🖼️ Copy ảnh vào dist/, return URL path
+        // 💡 Import logo from './logo.png' → logo = "/static/media/logo.abc123.png"
+        // ✅ Webpack auto optimize & hash filenames
       },
     ],
   },
   
-  // PLUGINS - Mở rộng chức năng Webpack
+  // 🔌⚡ PLUGINS - Mở rộng chức năng Webpack (hooks vào build process)
   plugins: [
-    // Plugin 1: Tạo HTML file tự động
+    // 🔌 Plugin 1: Tạo HTML file tự động
     new HtmlWebpackPlugin({
-      template: './public/index.html', // Template HTML
-      // Tự động inject <script> tag vào HTML
+      template: './public/index.html',  // 📄🎨 Template HTML source
+      // 💡 Tự động inject <script src="main.abc123.js"> và <link href="styles.abc123.css"> vào HTML
+      // ✅ Không cần manual update script tags khi filenames change
     }),
-    // Plugin 2: Extract CSS ra file riêng
+    // 🔌 Plugin 2: Extract CSS ra file riêng
     new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css', // Tên file CSS với hash
+      filename: '[name].[contenthash].css',  // 📦🎨 Tên file CSS với hash (main.abc123.css)
+      // 💡 Thay vì CSS inline trong JS → separate .css file (better caching, parallel download)
     }),
   ],
   
-  // OPTIMIZATION - Tối ưu hóa bundle
+  // 🎯⚡ OPTIMIZATION - Tối ưu hóa bundle (giảm size, tăng performance)
   optimization: {
     splitChunks: {
-      chunks: 'all', // Chia nhỏ tất cả chunks
+      chunks: 'all',  // 📦✂️ Chia nhỏ tất cả chunks (async + sync imports)
       cacheGroups: {
-        // Tạo vendor bundle riêng cho node_modules
+        // 📦🔹 Tạo vendor bundle riêng cho node_modules
         vendor: {
-          test: /[\\/]node_modules[\\/]/, // Match node_modules
-          name: 'vendors', // Tên chunk: vendors.js
-          priority: 10, // Ưu tiên cao hơn (chạy trước)
+          test: /[\\/]node_modules[\\/]/,  // 🔍📦 Match tất cả files trong node_modules
+          name: 'vendors',  // 📦🏷️ Tên chunk: vendors.js (chứa React, lodash, axios...)
+          priority: 10,  // 🎯⬆️ Ưu tiên cao hơn (chạy trước các cacheGroups khác)
+          // 💡 Tại sao split vendor?
+          // ✅ Libraries thay đổi ít → cache lâu hơn
+          // ✅ App code thay đổi nhiều → cache riêng
+          // ✅ Browser cache vendors.js, chỉ download app.js khi deploy
         },
-        // Result: app.js (code của bạn) + vendors.js (node_modules)
+        // 📊 Result: 
+        // - app.abc123.js (code của bạn - 50KB)
+        // - vendors.abc123.js (node_modules - 200KB)
+        // 🚀 Deploy lần sau: chỉ app.js thay đổi, vendors.js vẫn cached
       },
     },
   },
   
-  // RESOLVE - Cấu hình cách resolve modules
+  // 🔍📂 RESOLVE - Cấu hình cách resolve modules (tìm files)
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'], // Auto-resolve các extension này
-    // import './App' → tự tìm App.tsx, App.ts, App.js
+    extensions: ['.tsx', '.ts', '.js'],  // 📋✅ Auto-resolve các extension này
+    // 💡 import './App' → Webpack tự tìm App.tsx → App.ts → App.js (theo thứ tự)
+    // ✅ Không cần: import './App.tsx' (gõ ngắn hơn)
   },
 };
 ```
 
 **⏱️ Hiệu Suất Thực Tế (Performance):**
 ```
-Dev Server Start:  ~10 giây (cold start - lần đầu chạy)
-                   - Bundle toàn bộ app trước
-                   - Parse 1000+ files
-                   - Transform với Babel
+🔹 Dev Server Start:  ~10 giây (cold start - lần đầu chạy npm start)
+                     ⏱️ Bundle toàn bộ app trước khi chạy server
+                     📂 Parse 1000+ files (imports/exports)
+                     🔄 Transform với Babel (TS → JS, JSX → JS)
+                     💾 Generate source maps
+                     🌐 Start dev server
+                     💡 Lần sau nhanh hơn nhờ cache (~3-5 giây)
                    
-HMR:               ~1-2 giây (sau khi sửa code)
-                   - Re-bundle phần thay đổi
-                   - Inject vào browser
+🔹 HMR:               ~1-2 giây (sau khi sửa code)
+                     📝 Detect file change (watching)
+                     📦 Re-bundle phần thay đổi (không phải toàn bộ)
+                     🔄 Transform với Babel
+                     💉 Inject vào browser qua WebSocket
+                     🖥️ Browser refresh module (giữ state nếu có React Fast Refresh)
+                     ⚠️ Chậm hơn Vite (50ms) rất nhiều
                    
-Production Build:  ~10-30 giây (tuỳ kích thước app)
-                   - Minify, optimize, tree-shake
-                   - Generate source maps
+🔹 Production Build:  ~10-30 giây (tuỳ kích thước app)
+                     📦 Bundle tất cả modules
+                     🗜️ Minify code (terser - remove whitespace, shorten names)
+                     🌳 Tree-shake (loại bỏ unused code)
+                     ✂️ Code splitting (vendors, routes, async chunks)
+                     🎨 Optimize CSS (cssnano)
+                     🖼️ Optimize images (imagemin)
+                     🗺️ Generate source maps (.js.map files)
+                     💡 Large app (500 components) có thể mất 1-2 phút
 ```
 
 ---

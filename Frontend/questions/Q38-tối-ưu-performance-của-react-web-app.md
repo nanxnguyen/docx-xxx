@@ -154,8 +154,12 @@ Bạn là Senior Frontend Developer của một Trading Platform (React + TypeSc
 // ============================================
 // 1️⃣ BUILD-TIME OPTIMIZATION (TỐI ƯU LÚC BUILD)
 // ============================================
+// 💡 Giải thích: Tối ưu lúc build giúp giảm kích thước file JavaScript/CSS
+// mà trình duyệt cần tải về → trang web load nhanh hơn
+// Ví dụ thực tế: Giống như nén quần áo vào vali trước khi đi du lịch
 
 // 📦 A. Cấu Hình Vite (Công cụ build hiện đại - nhanh hơn Webpack)
+// 💡 Vite là gì? Công cụ giúp đóng gói (bundle) code React thành file tối ưu
 // File: vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -169,19 +173,27 @@ export default defineConfig({
 
   build: {
     // ✅ Code Splitting: Chia nhỏ bundle thành nhiều file
-    // Lý do: Browser chỉ tải file cần thiết → giảm Initial Load time
+    // 💡 Lý do: Browser chỉ tải file cần thiết → giảm Initial Load time
+    // 📚 Ví dụ: Thay vì đọc cả cuốn sách, chỉ đọc chương cần thiết
     rollupOptions: {
       output: {
         manualChunks: {
-          // Tách React libraries riêng (ít thay đổi → cache browser tốt)
-          // Khi update app code, React vendor vẫn dùng cache cũ
+          // 📦 Tách React libraries riêng (ít thay đổi → cache browser tốt)
+          // 💡 Giải thích: React ít khi cập nhật, nên tách riêng để browser
+          // lưu cache lâu dài. Khi update app, React vẫn dùng cache cũ
+          // → Chỉ tải code mới của app, không tải lại React
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
 
-          // Tách chart libraries (rất nặng - 500KB+)
-          // Chỉ load khi user vào trang có chart
+          // 📊 Tách chart libraries (rất nặng - 500KB+)
+          // 💡 Giải thích: Thư viện vẽ biểu đồ rất nặng, chỉ load khi cần
+          // 📈 Ví dụ: User vào trang Dashboard (không có chart) → không tải
+          // User vào trang Analytics (có chart) → mới tải chart library
           'chart-vendor': ['recharts', 'lightweight-charts'],
 
-          // Tách utilities thành bundle riêng
+          // 🛠️ Tách utilities (công cụ hỗ trợ) thành bundle riêng
+          // 💡 lodash-es: Thư viện helper functions (map, filter, reduce...)
+          // 💡 date-fns: Xử lý ngày tháng (format, parse...)
+          // 💡 axios: Gọi API
           utils: ['lodash-es', 'date-fns', 'axios'],
         },
       },
@@ -213,7 +225,9 @@ export default defineConfig({
 });
 
 // 📦 B. Lazy Loading Routes (Tải Trang Theo Route)
-// Giải thích: Thay vì load toàn bộ app lúc đầu, chỉ load trang user cần
+// 💡 Giải thích đơn giản: Thay vì load toàn bộ app lúc đầu, chỉ load trang user cần
+// 📚 Ví dụ thực tế: Giống như Netflix - chỉ load phim bạn chọn xem,
+// không load hết tất cả phim trong thư viện ngay từ đầu
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
@@ -258,8 +272,10 @@ export default function App() {
 import { memo, useMemo, useCallback } from 'react';
 
 // ✅ React.memo: Bọc component để SKIP re-render nếu props không đổi
-// Hoạt động: React so sánh props cũ vs mới (shallow comparison)
+// 💡 Hoạt động: React so sánh props cũ vs mới (shallow comparison)
 // → Nếu giống nhau → KHÔNG re-render → Tăng performance
+// 📚 Ví dụ thực tế: Giống như Excel - chỉ tính lại cell khi data thay đổi,
+// không tính lại tất cả cells mỗi lần bạn nhập liệu
 const OrderItem = memo(function OrderItem({ order, onDelete }) {
   console.log('OrderItem render'); // Log này CHỈ chạy khi props thay đổi
   return (
@@ -273,17 +289,22 @@ const OrderItem = memo(function OrderItem({ order, onDelete }) {
 
 // Component cha
 function OrderList({ orders }) {
-  // ✅ useCallback: Lưu lại function reference
-  // Vấn đề: Mỗi lần render → tạo function mới → OrderItem re-render vì onDelete khác
-  // Giải pháp: useCallback lưu function → reference giống nhau → OrderItem KHÔNG re-render
+  // ✅ useCallback: Lưu lại function reference (tham chiếu hàm)
+  // 🔴 Vấn đề: Mỗi lần render → tạo function mới → OrderItem re-render vì onDelete khác
+  // 💡 Giải thích: Trong JavaScript, mỗi lần tạo function mới = địa chỉ bộ nhớ khác
+  // → React nghĩ props thay đổi → re-render không cần thiết
+  // 🟢 Giải pháp: useCallback lưu function → địa chỉ giống nhau → OrderItem KHÔNG re-render
+  // 📚 Ví dụ: Giống như lưu số điện thoại - gọi cùng 1 số, không tạo số mới mỗi lần gọi
   const handleDelete = useCallback((id: string) => {
     console.log('Xóa order:', id);
     // Call API xóa order...
   }, []); // [] = function không đổi, tạo 1 lần duy nhất
 
-  // ✅ useMemo: Cache kết quả tính toán nặng
-  // Vấn đề: Mỗi render → sort lại 10,000 orders → chậm
-  // Giải pháp: useMemo cache kết quả → chỉ sort lại KHI orders thay đổi
+  // ✅ useMemo: Cache (lưu trữ) kết quả tính toán nặng
+  // 🔴 Vấn đề: Mỗi render → sort lại 10,000 orders → chậm (có thể mất 100-500ms)
+  // 💡 Giải thích: Sort 10,000 items giống như sắp xếp 10,000 tờ giấy - mất thời gian!
+  // 🟢 Giải pháp: useMemo lưu kết quả đã sort → chỉ sort lại KHI orders thay đổi
+  // 📚 Ví dụ: Giống như lưu kết quả tính toán vào bảng - chỉ tính lại khi số liệu đầu vào thay đổi
   const sortedOrders = useMemo(() => {
     console.log('Đang sort orders...'); // Chỉ log khi orders thay đổi
     return orders.sort((a, b) => b.timestamp - a.timestamp); // Sort theo thời gian mới nhất
@@ -304,8 +325,10 @@ function OrderList({ orders }) {
 // Kết quả: Re-render chỉ mất 20ms thay vì 500ms
 
 // 🎨 B. Virtual Scrolling (Cuộn Ảo cho 10K+ items)
-// Giải thích: Thay vì render 10,000 items → chỉ render items hiển thị trên màn hình
-// VD: Màn hình cao 600px, mỗi item 50px → chỉ render 12 items (600/50)
+// 💡 Giải thích đơn giản: Thay vì render 10,000 items → chỉ render items hiển thị trên màn hình
+// 📊 Ví dụ cụ thể: Màn hình cao 600px, mỗi item 50px → chỉ render 12 items (600/50)
+// 📚 Ví dụ thực tế: Giống như xem danh sách contact trong điện thoại -
+// chỉ hiển thị tên bạn đang nhìn thấy, không load hết 1000 contacts cùng lúc
 import { FixedSizeList as List } from 'react-window';
 
 interface Order {
@@ -352,11 +375,13 @@ function GoodOrderList({ orders }: { orders: Order[] }) {
 // 4️⃣ STATE MANAGEMENT OPTIMIZATION (TỐI ƯU QUẢN LÝ STATE)
 // ============================================
 
-// 🏪 Zustand: Thư viện state management nhẹ, nhanh hơn Redux
-// Ưu điểm:
-// - Không cần Provider wrapper
-// - Selective subscription (chỉ subscribe state cần thiết)
-// - API đơn giản, ít boilerplate
+// 🏪 Zustand: Thư viện quản lý state (trạng thái) nhẹ, nhanh hơn Redux
+// 💡 State là gì? Dữ liệu của app (VD: danh sách orders, giá cổ phiếu...)
+// ✨ Ưu điểm của Zustand:
+// - Không cần Provider wrapper (đơn giản hơn Context API)
+// - Selective subscription: Component chỉ re-render khi state nó dùng thay đổi
+// - API đơn giản, ít code boilerplate (code dài dòng không cần thiết)
+// 📚 Ví dụ: Giống như đăng ký nhận thông báo - chỉ nhận tin về chủ đề quan tâm
 import create from 'zustand';
 
 interface Order {
@@ -391,9 +416,11 @@ const useTradingStore = create<TradingStore>((set) => ({
     })),
 }));
 
-// ✅ Selective Subscription: Chỉ subscribe phần state cần thiết
-// Component này CHỈ re-render khi orders thay đổi
-// Khi prices update → component KHÔNG re-render (vì không subscribe prices)
+// ✅ Selective Subscription (Đăng ký chọn lọc): Chỉ subscribe phần state cần thiết
+// 💡 Giải thích: Component này CHỈ re-render khi orders thay đổi
+// 🎯 Lợi ích: Khi prices update → component KHÔNG re-render (vì không subscribe prices)
+// 📚 Ví dụ thực tế: Giống như đăng ký kênh YouTube - chỉ nhận thông báo từ kênh đã đăng ký,
+// không nhận từ tất cả kênh trên YouTube
 function OrderList() {
   // Selector function: state => state.orders
   // Zustand compare selector result → chỉ re-render nếu orders thay đổi
@@ -425,9 +452,13 @@ function PriceDisplay({ symbol }: { symbol: string }) {
 // ============================================
 // 5️⃣ MEMORY MANAGEMENT (QUẢN LÝ BỘ NHỚ)
 // ============================================
+// 💡 Giải thích: Quản lý bộ nhớ giúp tránh memory leak (rò rỉ bộ nhớ)
+// 🔴 Memory leak là gì? App chiếm dụng bộ nhớ không cần thiết → ngày càng chậm
+// 📚 Ví dụ thực tế: Giống như không tắt vòi nước sau khi dùng → nước tràn ra
 
-// 🧹 Cleanup useEffect: Dọn dẹp resources khi component unmount
-// Vấn đề: Không cleanup → memory leak (bộ nhớ tăng dần 50MB → 500MB)
+// 🧹 Cleanup useEffect: Dọn dẹp tài nguyên khi component unmount (bị gỡ bỏ)
+// 🔴 Vấn đề: Không cleanup → memory leak (bộ nhớ tăng dần 50MB → 500MB)
+// 💡 Unmount là gì? Khi user rời khỏi trang, component bị gỡ khỏi màn hình
 
 import { useEffect, useState, useRef } from 'react';
 
@@ -448,17 +479,19 @@ function TradingChart() {
       console.error('WebSocket error:', error);
     };
 
-    // ✅ QUAN TRỌNG: Cleanup function
-    // Chạy khi component unmount hoặc dependencies thay đổi
+    // ✅ QUAN TRỌNG: Cleanup function (Hàm dọn dẹp)
+    // 💡 Khi chạy? Khi component unmount hoặc dependencies thay đổi
+    // 📚 Ví dụ: User chuyển từ trang Chart sang trang Dashboard
     return () => {
       console.log('Dọn dẹp WebSocket...');
 
-      // Đóng WebSocket connection
+      // 🔌 Đóng kết nối WebSocket
+      // 💡 Giải thích: Giống như ngắt kết nối điện thoại sau khi gọi xong
       if (
         ws.readyState === WebSocket.OPEN ||
         ws.readyState === WebSocket.CONNECTING
       ) {
-        ws.close(); // Ngắt kết nối → giải phóng memory
+        ws.close(); // Ngắt kết nối → giải phóng bộ nhớ
       }
 
       // Nếu không cleanup:
@@ -470,12 +503,15 @@ function TradingChart() {
   return <div>Biểu đồ trading...</div>;
 }
 
-// 🧹 B. Cancel API Requests với AbortController
+// 🧹 B. Cancel API Requests (Hủy yêu cầu API) với AbortController
+// 💡 Tại sao cần cancel? User chuyển trang nhanh → API request cũ không cần nữa
+// 🎯 Lợi ích: Tiết kiệm băng thông, tránh memory leak
 function OrderHistory() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    // Tạo AbortController để cancel request
+    // 🛑 Tạo AbortController để hủy request khi cần
+    // 💡 Giống như nút "Cancel" khi download file
     const abortController = new AbortController();
     const signal = abortController.signal;
 
@@ -506,12 +542,15 @@ function OrderHistory() {
   return <div>Lịch sử orders...</div>;
 }
 
-// 🧹 C. Clear Timers & Intervals
+// 🧹 C. Clear Timers & Intervals (Xóa bộ đếm thời gian)
+// 💡 Timer/Interval là gì? Hàm tự động chạy sau một khoảng thời gian
+// 📚 Ví dụ: Báo thức đổ chuông mỗi 5 phút để nhắc uống nước
 function PriceRefresh() {
   const [price, setPrice] = useState(0);
 
   useEffect(() => {
-    // Refresh giá mỗi 5 giây
+    // ⏰ Refresh (làm mới) giá mỗi 5 giây
+    // 💡 setInterval: Chạy hàm lặp lại sau mỗi khoảng thời gian
     const intervalId = setInterval(() => {
       fetch('/api/price')
         .then((res) => res.json())
@@ -532,12 +571,15 @@ function PriceRefresh() {
   return <div>Giá hiện tại: ${price}</div>;
 }
 
-// 🧹 D. Remove Event Listeners
+// 🧹 D. Remove Event Listeners (Xóa bộ lắng nghe sự kiện)
+// 💡 Event Listener là gì? Hàm lắng nghe sự kiện như click, scroll, resize...
+// 📚 Ví dụ: Giống như đặt chuông cửa - cần gỡ chuông khi chuyển nhà
 function ResizableChart() {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Handler cho window resize
+    // 📐 Handler (hàm xử lý) cho sự kiện window resize (thay đổi kích thước cửa sổ)
+    // 💡 Khi nào chạy? Mỗi khi user phóng to/thu nhỏ cửa sổ browser
     const handleResize = () => {
       if (chartRef.current) {
         // Resize chart khi window thay đổi
@@ -672,6 +714,939 @@ function OrderList({ orders }) {
       )}
     </FixedSizeList>
   );
+} // ✅ Chỉ render ~12 items → mượt mà
+```
+
+---
+
+## **🔬 DEEP DIVE: Hiểu Sâu Cơ Chế React**
+
+### **⚛️ Phần 1: React Reconciliation - Thuật Toán Đối Chiếu**
+
+```typescript
+/**
+ * 🧠 REACT RECONCILIATION - Cách React quyết định render gì
+ * 
+ * Khi state/props thay đổi, React KHÔNG re-render toàn bộ app!
+ * Thay vào đó, React dùng thuật toán "Reconciliation" (Diffing) để:
+ * 1. So sánh Virtual DOM cũ vs mới
+ * 2. Tìm ra sự khác biệt (diff)
+ * 3. Chỉ update những phần khác biệt vào Real DOM
+ * 
+ * 📊 Complexity: O(n) thay vì O(n^3) (thuật toán diff chuẩn)
+ */
+
+// 🌳 VIRTUAL DOM TREE EXAMPLE:
+// Đây là cách React biểu diễn UI trong bộ nhớ (JavaScript objects)
+
+const virtualDOM_Before = {
+  type: 'div',
+  props: { className: 'container' },
+  children: [
+    {
+      type: 'h1',
+      props: { className: 'title' },
+      children: ['Hello']  // 💡 Text node
+    },
+    {
+      type: 'ul',
+      props: {},
+      children: [
+        { type: 'li', props: { key: '1' }, children: ['Item 1'] },
+        { type: 'li', props: { key: '2' }, children: ['Item 2'] }
+      ]
+    }
+  ]
+};
+
+// User click button → state thay đổi → React tạo Virtual DOM mới:
+const virtualDOM_After = {
+  type: 'div',
+  props: { className: 'container' },
+  children: [
+    {
+      type: 'h1',
+      props: { className: 'title active' },  // 🔄 className changed!
+      children: ['Hello World']  // 🔄 Text changed!
+    },
+    {
+      type: 'ul',
+      props: {},
+      children: [
+        { type: 'li', props: { key: '1' }, children: ['Item 1'] },  // ✅ Không đổi
+        { type: 'li', props: { key: '2' }, children: ['Item 2'] },  // ✅ Không đổi
+        { type: 'li', props: { key: '3' }, children: ['Item 3'] }   // ➕ Mới thêm
+      ]
+    }
+  ]
+};
+
+/**
+ * 🔍 DIFFING ALGORITHM - Thuật toán so sánh:
+ * 
+ * React duyệt 2 trees song song (old vs new):
+ */
+
+function diff(oldNode, newNode) {
+  // RULE 1: Nếu type khác nhau → XOÁ cũ , TẠO mới
+  if (oldNode.type !== newNode.type) {
+    // VD: <div> → <span> = Destroy <div> + Create <span>
+    return { action: 'REPLACE', node: newNode };
+    // 💡 XOÁ toàn bộ subtree cũ, tạo mới hoàn toàn
+    // 💥 Tốn kém! Nên tránh thay đổi type
+  }
+  
+  // RULE 2: Nếu type giống nhau → SO SÁNH PROPS
+  if (oldNode.type === newNode.type) {
+    const propsChanged = compareProps(oldNode.props, newNode.props);
+    
+    if (propsChanged) {
+      // VD: className="title" → className="title active"
+      return { action: 'UPDATE_PROPS', changes: propsChanged };
+      // 💡 CHỈ update attributes, GIỮ nguyên DOM node
+      // ✅ Hiệu quả! Chỉ tốn 1 DOM operation
+    }
+  }
+  
+  // RULE 3: So sánh CHILDREN (recursive)
+  const childrenChanges = diffChildren(oldNode.children, newNode.children);
+  return { action: 'UPDATE_CHILDREN', changes: childrenChanges };
+}
+
+function compareProps(oldProps, newProps) {
+  const changes = {};
+  
+  // Tìm props thay đổi
+  for (const key in newProps) {
+    if (oldProps[key] !== newProps[key]) {
+      changes[key] = newProps[key];
+      // VD: className changed → changes = { className: 'title active' }
+    }
+  }
+  
+  // Tìm props bị xoá
+  for (const key in oldProps) {
+    if (!(key in newProps)) {
+      changes[key] = null;  // Mark for removal
+    }
+  }
+  
+  return Object.keys(changes).length > 0 ? changes : null;
+}
+
+/**
+ * 🔑 KEY PROP - Tại sao KEY quan trọng?
+ * 
+ * Khi diff children list, React cần biết:
+ * - Item nào giữ nguyên?
+ * - Item nào mới thêm?
+ * - Item nào bị xoá?
+ * - Item nào thay đổi vị trí?
+ */
+
+// ❌ KHÔNG CÓ KEY - React không biết item nào là item nào:
+const oldList = [
+  <li>Apple</li>,   // index 0
+  <li>Banana</li>,  // index 1
+  <li>Cherry</li>   // index 2
+];
+
+const newList = [
+  <li>Avocado</li>,  // index 0 - 💥 React nghĩ "Apple" đổi thành "Avocado"
+  <li>Apple</li>,    // index 1 - 💥 React nghĩ "Banana" đổi thành "Apple"
+  <li>Banana</li>,   // index 2 - 💥 React nghĩ "Cherry" đổi thành "Banana"
+  <li>Cherry</li>    // index 3 - 💥 React tạo mới "Cherry"
+];
+// 💥 Kết quả: UPDATE 3 items + CREATE 1 item = 4 DOM operations!
+// 💥 Thực tế chỉ cần: CREATE 1 item (Avocado) = 1 operation
+
+// ✅ CÓ KEY - React biết chính xác item nào là item nào:
+const oldListWithKey = [
+  <li key="apple">Apple</li>,
+  <li key="banana">Banana</li>,
+  <li key="cherry">Cherry</li>
+];
+
+const newListWithKey = [
+  <li key="avocado">Avocado</li>,  // ➕ Mới - CREATE
+  <li key="apple">Apple</li>,      // ✅ Giữ nguyên - MOVE
+  <li key="banana">Banana</li>,    // ✅ Giữ nguyên - MOVE
+  <li key="cherry">Cherry</li>     // ✅ Giữ nguyên - MOVE
+];
+// ✅ Kết quả: CREATE 1 item + MOVE 3 items = Hiệu quả hơn nhiều!
+// 💡 DOM MOVE rẻ hơn DOM UPDATE (không cần re-render content)
+
+/**
+ * ⚠️ KEY ANTI-PATTERNS - Các lỗi thường gặp:
+ */
+
+// ❌ LỖI 1: Dùng index làm key
+items.map((item, index) => (
+  <li key={index}>{item.name}</li>  // 💥 Khi items thay đổi thứ tự = bug!
+));
+// Tại sao sai?
+// - Thêm item mới ở đầu list → tất cả index thay đổi
+// - React nghĩ tất cả items thay đổi → re-render tất cả!
+// - Input focus/state bị mất vì DOM node bị thay thế
+
+// ❌ LỖI 2: Dùng random/generated key
+items.map(item => (
+  <li key={Math.random()}>{item.name}</li>  // 💥 Key khác nhau mỗi render!
+));
+// Tại sao sai?
+// - Mỗi render = key mới → React nghĩ là item mới
+// - Xóa cũ + tạo mới tất cả → mất state, performance tồi
+
+// ✅ ĐÚNG: Dùng stable, unique ID từ data
+items.map(item => (
+  <li key={item.id}>{item.name}</li>  // ✅ ID từ database = stable + unique
+));
+// Tại sao đúng?
+// - item.id không thay đổi (stable)
+// - Mỗi item có ID khác nhau (unique)
+// - React track đúng item qua các lann render
+```
+
+---
+
+### **📊 Phần 2: React.memo Deep Dive - Hiểu Rõ Memoization**
+
+```typescript
+/**
+ * 🧠 REACT.MEMO - Shallow Comparison Explained
+ * 
+ * React.memo so sánh props bằng "shallow comparison":
+ * - Primitive values: So sánh giá trị (===)
+ * - Objects/Arrays: So sánh reference (===)
+ */
+
+// 🔍 Shallow Comparison Implementation:
+function shallowEqual(objA: any, objB: any): boolean {
+  // 1. Nếu cùng reference → giống nhau
+  if (objA === objB) return true;
+  
+  // 2. Nếu không phải object → khác nhau
+  if (typeof objA !== 'object' || typeof objB !== 'object') return false;
+  
+  // 3. So sánh số lượng keys
+  const keysA = Object.keys(objA);
+  const keysB = Object.keys(objB);
+  if (keysA.length !== keysB.length) return false;
+  
+  // 4. So sánh từng key (chỉ 1 level, không deep)
+  for (const key of keysA) {
+    if (objA[key] !== objB[key]) return false;
+    // 💡 Dùng !== = so sánh reference cho nested objects
+  }
+  
+  return true;
+}
+
+// 📊 VIỆC DỤ: Props comparison examples
+
+// Example 1: Primitive props
+const props1 = { name: 'John', age: 30 };
+const props2 = { name: 'John', age: 30 };
+shallowEqual(props1, props2);  // true - Values giống nhau
+// → React.memo SKIPs re-render ✅
+
+// Example 2: Different primitive
+const props3 = { name: 'John', age: 31 };  // age changed
+shallowEqual(props1, props3);  // false
+// → React.memo RE-RENDERS 🔄
+
+// Example 3: Nested object (reference)
+const props4 = { user: { name: 'John' } };
+const props5 = { user: { name: 'John' } };  // New object!
+shallowEqual(props4, props5);  // false - Khác reference!
+// 💡 Dù content giống nhau nhưng { } = new object = khác reference
+// → React.memo RE-RENDERS 🔄
+
+// Example 4: Same reference
+const userObj = { name: 'John' };
+const props6 = { user: userObj };
+const props7 = { user: userObj };  // Same reference!
+shallowEqual(props6, props7);  // true - Cùng reference
+// → React.memo SKIPs re-render ✅
+
+/**
+ * ⚡ TỐI ƯU VỚI USEMEMO - Giữ reference ổn định
+ */
+
+function ParentBad() {
+  const [count, setCount] = useState(0);
+  
+  // ❌ Mỗi render = tạo object mới
+  const config = { theme: 'dark', lang: 'vi' };
+  // 💡 Mỗi lần count thay đổi → ParentBad re-render → config mới
+  
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+      <ChildMemo config={config} />
+      {/* 💥 config luôn khác reference → ChildMemo luôn re-render! */}
+    </div>
+  );
+}
+
+function ParentGood() {
+  const [count, setCount] = useState(0);
+  
+  // ✅ useMemo lưu lại object, chỉ tạo mới khi dependencies thay đổi
+  const config = useMemo(
+    () => ({ theme: 'dark', lang: 'vi' }),
+    []  // Empty deps = tạo 1 lần duy nhất
+  );
+  // 💡 count thay đổi → config GIỮ NGUYÊN reference cũ
+  
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+      <ChildMemo config={config} />
+      {/* ✅ config cùng reference → ChildMemo SKIPs re-render! */}
+    </div>
+  );
+}
+
+const ChildMemo = memo(function Child({ config }) {
+  console.log('Child render');  // Chỉ log khi config thay đổi
+  return <div>Theme: {config.theme}</div>;
+});
+
+/**
+ * 📊 USECALLBACK - Memoize functions
+ */
+
+function ParentWithCallbacks() {
+  const [count, setCount] = useState(0);
+  const [items, setItems] = useState([1, 2, 3]);
+  
+  // ❌ Mỗi render = function mới
+  const handleClickBad = () => {
+    console.log('Clicked');
+  };
+  
+  // ✅ useCallback lưu function reference
+  const handleClickGood = useCallback(() => {
+    console.log('Clicked');
+  }, []);  // [] = function không đổi
+  
+  // 💡 Function với dependencies
+  const handleDelete = useCallback((id: number) => {
+    setItems(items => items.filter(item => item !== id));
+    // 💡 Dùng functional update → không cần items trong deps
+  }, []);  // [] vì dùng functional update
+  
+  // ⚠️ Nếu dùng items trực tiếp:
+  const handleDeleteBad = useCallback((id: number) => {
+    setItems(items.filter(item => item !== id));
+    // 💡 items = closure → PHẢI thêm vào deps
+  }, [items]);  // items thay đổi → function mới → child re-render
+  
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+      <ItemList items={items} onDelete={handleDelete} />
+    </div>
+  );
+}
+
+const ItemList = memo(function ItemList({ items, onDelete }) {
+  console.log('ItemList render');
+  return (
+    <ul>
+      {items.map(item => (
+        <li key={item}>
+          {item}
+          <button onClick={() => onDelete(item)}>Delete</button>
+        </li>
+      ))}
+    </ul>
+  );
+});
+
+/**
+ * 🪤 KHI NÀO DÙNG MEMO/USEMEMO/USECALLBACK?
+ * 
+ * ✅ NÊN DÙNG KHI:
+ * 1. Component render chậm (> 100ms)
+ * 2. Component render thường xuyên (parent re-render nhiều)
+ * 3. Props là large objects/arrays
+ * 4. Expensive calculations (sort 10k items, heavy math)
+ * 
+ * ❌ KHÔNG NÊN DÙNG KHI:
+ * 1. Component nhỏ, render nhanh (< 10ms)
+ * 2. Props đơn giản (strings, numbers)
+ * 3. Component hiếm khi re-render
+ * 4. Premature optimization (chưa đo được bottleneck)
+ * 
+ * 💡 REMEMBER:
+ * - useMemo/useCallback có overhead (memory + comparison cost)
+ * - Chỉ optimize khi thực sự cần (measure first!)
+ */
+```
+
+---
+
+### **🔍 Phần 3: Profiling & Performance Debugging**
+
+```typescript
+/**
+ * 🐛 CHROME DEVTOOLS - Performance Tab
+ * 
+ * Cách sử dụng:
+ * 1. Mở DevTools → Performance tab
+ * 2. Click Record ⏺
+ * 3. Tương tác với app (scroll, click, type)
+ * 4. Click Stop ⏹️
+ * 5. Phân tích flame chart
+ */
+
+// 📊 Tích hợp Performance Profiler trong code:
+import { Profiler, ProfilerOnRenderCallback } from 'react';
+
+// Callback function nhận thông tin timing
+const onRenderCallback: ProfilerOnRenderCallback = (
+  id,                  // "App" - Profiler ID
+  phase,               // "mount" hoặc "update"
+  actualDuration,      // Thời gian render component + children (ms)
+  baseDuration,        // Thời gian render estimate nếu không có memo
+  startTime,           // Timestamp bắt đầu render
+  commitTime,          // Timestamp commit changes to DOM
+  interactions         // Set of interactions tracked (experimental)
+) => {
+  // 📊 Log performance data
+  console.log('Profiler:', {
+    id,
+    phase,
+    actualDuration: `${actualDuration.toFixed(2)}ms`,
+    baseDuration: `${baseDuration.toFixed(2)}ms`,
+    improvement: `${((1 - actualDuration / baseDuration) * 100).toFixed(1)}%`
+  });
+  
+  // ⚠️ Cảnh báo nếu render quá chậm
+  if (actualDuration > 100) {
+    console.warn(`⚠️ Slow render detected: ${id} took ${actualDuration.toFixed(2)}ms`);
+  }
+  
+  // 📤 Gửi data đến analytics service
+  if (process.env.NODE_ENV === 'production') {
+    sendToAnalytics('performance', {
+      component: id,
+      duration: actualDuration,
+      phase
+    });
+  }
+};
+
+// Wrap component với Profiler
+function App() {
+  return (
+    <Profiler id="App" onRender={onRenderCallback}>
+      <Dashboard />
+      <TradingView />
+    </Profiler>
+  );
+}
+
+/**
+ * 📊 CUSTOM PERFORMANCE HOOKS
+ */
+
+// Hook đo thời gian render
+function useRenderTime(componentName: string) {
+  const renderStartTime = useRef<number>();
+  
+  // 🔜 Trước render
+  renderStartTime.current = performance.now();
+  
+  useEffect(() => {
+    // 🔚 Sau render (DOM updated)
+    const renderEndTime = performance.now();
+    const duration = renderEndTime - renderStartTime.current!;
+    
+    console.log(`${componentName} render time: ${duration.toFixed(2)}ms`);
+    
+    // Track trong production
+    if (duration > 50) {
+      reportSlowRender(componentName, duration);
+    }
+  });
+}
+
+// Usage:
+function Dashboard() {
+  useRenderTime('Dashboard');
+  // ... component logic
+}
+
+// Hook track re-renders count
+function useRenderCount(componentName: string) {
+  const renderCount = useRef(0);
+  
+  useEffect(() => {
+    renderCount.current++;
+    console.log(`${componentName} rendered ${renderCount.current} times`);
+  });
+  
+  return renderCount.current;
+}
+
+// Hook track props changes
+function useWhyDidYouUpdate(name: string, props: any) {
+  const previousProps = useRef<any>();
+  
+  useEffect(() => {
+    if (previousProps.current) {
+      // So sánh props cũ vs mới
+      const allKeys = Object.keys({ ...previousProps.current, ...props });
+      const changedProps: any = {};
+      
+      allKeys.forEach(key => {
+        if (previousProps.current[key] !== props[key]) {
+          changedProps[key] = {
+            from: previousProps.current[key],
+            to: props[key]
+          };
+        }
+      });
+      
+      if (Object.keys(changedProps).length > 0) {
+        console.log('[why-did-you-update]', name, changedProps);
+      }
+    }
+    
+    previousProps.current = props;
+  });
+}
+
+// Usage:
+function OrderItem({ order, onDelete }) {
+  useWhyDidYouUpdate('OrderItem', { order, onDelete });
+  // 💡 Log ra props nào thay đổi gây re-render
+  
+  return <div>...</div>;
+}
+
+/**
+ * 📈 WEB VITALS MONITORING
+ */
+
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
+
+// Track Core Web Vitals
+function setupWebVitals() {
+  // 📊 Largest Contentful Paint (LCP)
+  // Mục tiêu: < 2.5s
+  getLCP(metric => {
+    console.log('LCP:', metric.value, 'ms');
+    sendToAnalytics('web-vitals', {
+      name: 'LCP',
+      value: metric.value,
+      rating: metric.rating  // 'good', 'needs-improvement', 'poor'
+    });
+  });
+  
+  // 📊 First Input Delay (FID)
+  // Mục tiêu: < 100ms
+  getFID(metric => {
+    console.log('FID:', metric.value, 'ms');
+    sendToAnalytics('web-vitals', { name: 'FID', value: metric.value });
+  });
+  
+  // 📊 Cumulative Layout Shift (CLS)
+  // Mục tiêu: < 0.1
+  getCLS(metric => {
+    console.log('CLS:', metric.value);
+    sendToAnalytics('web-vitals', { name: 'CLS', value: metric.value });
+  });
+  
+  // 📊 First Contentful Paint (FCP)
+  // Mục tiêu: < 1.8s
+  getFCP(metric => {
+    console.log('FCP:', metric.value, 'ms');
+    sendToAnalytics('web-vitals', { name: 'FCP', value: metric.value });
+  });
+  
+  // 📊 Time to First Byte (TTFB)
+  // Mục tiêu: < 600ms
+  getTTFB(metric => {
+    console.log('TTFB:', metric.value, 'ms');
+    sendToAnalytics('web-vitals', { name: 'TTFB', value: metric.value });
+  });
+}
+
+// Initialize trong app
+if (typeof window !== 'undefined') {
+  setupWebVitals();
+}
+```
+
+---
+
+### **⚛️ Phần 4: React 18 Concurrent Features**
+
+```typescript
+/**
+ * 🚀 REACT 18 - Concurrent Rendering
+ * 
+ * Concurrent Mode cho phép React:
+ * - Bắt đầu render update
+ * - Tạm dừng giữa chừng (interruptible)
+ * - Quay lại render cái khác quan trọng hơn
+ * - Hủy bỏ render không còn cần thiết
+ * 
+ * → UI luôn responsive, không bị block!
+ */
+
+import { useTransition, useDeferredValue, startTransition } from 'react';
+
+/**
+ * 🔄 USETRANSITION - Mark updates as non-urgent
+ */
+
+function SearchComponent() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  
+  // isPending = true khi transition đang chạy
+  const [isPending, startTransition] = useTransition();
+  
+  const handleSearch = (value: string) => {
+    // ⚡ URGENT: Cập nhật input ngay lập tức (không delay)
+    setQuery(value);
+    // 💡 User thấy input update liền → responsive
+    
+    // 🐌 NON-URGENT: Cập nhật results có thể delay
+    startTransition(() => {
+      const filtered = heavySearch(value);  // Tính toán nặng (100ms+)
+      setResults(filtered);
+      // 💡 React có thể delay update này nếu có việc quan trọng hơn
+    });
+  };
+  
+  return (
+    <div>
+      <input
+        value={query}
+        onChange={(e) => handleSearch(e.target.value)}
+        placeholder="Search..."
+      />
+      
+      {/* Hiển thị loading state */}
+      {isPending && <Spinner />}
+      
+      {/* Results list (có thể delay update) */}
+      <ResultsList results={results} />
+    </div>
+  );
+}
+
+/**
+ * SO SÁNH: Without vs With Transition
+ */
+
+// ❌ WITHOUT TRANSITION:
+// User type "a" → "ab" → "abc" nhanh
+// 1. Update input "a" (1ms)
+// 2. Heavy search "a" (100ms) ← BLOCKS UI!
+// 3. Update input "ab" (phải đợi search "a" xong)
+// 4. Heavy search "ab" (100ms) ← BLOCKS UI!
+// 5. Update input "abc" (phải đợi...)
+// → Input lag, user thấy chậm
+
+// ✅ WITH TRANSITION:
+// User type "a" → "ab" → "abc" nhanh
+// 1. Update input "a" (1ms) → Hiển thị ngay!
+// 2. Start search "a" (interruptible)
+// 3. Update input "ab" (1ms) → Hiển thị ngay!
+// 4. Cancel search "a", start search "ab"
+// 5. Update input "abc" (1ms) → Hiển thị ngay!
+// 6. Cancel search "ab", start search "abc"
+// 7. Search "abc" finish → show results
+// → Input mượt mà, responsive!
+
+/**
+ * 📊 USEDEFERREDVALUE - Defer value updates
+ */
+
+function ProductList({ query }: { query: string }) {
+  const [products, setProducts] = useState([]);
+  
+  // deferredQuery = giá trị "delay" của query
+  const deferredQuery = useDeferredValue(query);
+  // 💡 Khi query thay đổi nhanh, deferredQuery update chậm hơn
+  
+  useEffect(() => {
+    // Tìm kiếm dựa trên deferredQuery
+    const results = searchProducts(deferredQuery);
+    setProducts(results);
+  }, [deferredQuery]);
+  
+  // Hiển thị loading khi query và deferredQuery khác nhau
+  const isStale = query !== deferredQuery;
+  
+  return (
+    <div>
+      {isStale && <div className="opacity-50">Updating...</div>}
+      
+      <div className={isStale ? 'opacity-50' : 'opacity-100'}>
+        {products.map(product => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 🎯 REAL-WORLD EXAMPLE: Tab Switching
+ */
+
+function TabsWithTransition() {
+  const [activeTab, setActiveTab] = useState('posts');
+  const [isPending, startTransition] = useTransition();
+  
+  const handleTabChange = (tab: string) => {
+    // ⚡ Update tab indicator ngay (urgent)
+    setActiveTab(tab);
+    
+    // 🐌 Render tab content có thể delay (non-urgent)
+    startTransition(() => {
+      // Tab content có thể nặng (1000+ posts)
+      // React có thể delay để giữ UI responsive
+    });
+  };
+  
+  return (
+    <div>
+      {/* Tab buttons - update instantly */}
+      <div className="tabs">
+        <button
+          className={activeTab === 'posts' ? 'active' : ''}
+          onClick={() => handleTabChange('posts')}
+        >
+          Posts {isPending && '...'}
+        </button>
+        <button
+          className={activeTab === 'comments' ? 'active' : ''}
+          onClick={() => handleTabChange('comments')}
+        >
+          Comments {isPending && '...'}
+        </button>
+      </div>
+      
+      {/* Tab content - can be deferred */}
+      <Suspense fallback={<Spinner />}>
+        {activeTab === 'posts' && <PostsList />}
+        {activeTab === 'comments' && <CommentsList />}
+      </Suspense>
+    </div>
+  );
+}
+
+/**
+ * 💡 CONCURRENT MODE BENEFITS:
+ * 
+ * 1. Responsive UI:
+ *    - Input, clicks, animations luôn instant
+ *    - Không bị block bởi heavy renders
+ * 
+ * 2. Better UX:
+ *    - Show loading states (isPending)
+ *    - Stale content visual feedback
+ * 
+ * 3. Performance:
+ *    - Skip unnecessary renders (hủy bỏ old work)
+ *    - Prioritize important updates
+ */
+```
+
+---
+
+### **🏭 Phần 5: Production Optimization Checklist**
+
+```typescript
+/**
+ * ✅ PRODUCTION CHECKLIST - Trước khi deploy
+ */
+
+// 1️⃣ BUNDLE ANALYSIS - Phân tích bundle size
+// File: package.json
+{
+  "scripts": {
+    "build": "vite build",
+    "analyze": "vite build && vite-bundle-visualizer"
+  }
+}
+// Chạy: npm run analyze
+// → Mở browser, xem các dependencies lớn nhất
+// 🎯 Tìm và thay thế libraries nặng:
+// - moment.js (288KB) → date-fns (78KB)
+// - lodash (72KB) → lodash-es + tree-shaking (10KB)
+// - material-ui (500KB+) → headlessui (50KB)
+
+// 2️⃣ CODE SPLITTING STRATEGY
+const routes = [
+  {
+    path: '/',
+    component: lazy(() => import('./pages/Dashboard'))
+  },
+  {
+    path: '/trading',
+    component: lazy(() => import('./pages/Trading'))
+  },
+  // ... tất cả routes lazy load
+];
+
+// Prefetch routes khi hover
+const prefetchRoute = (path: string) => {
+  const route = routes.find(r => r.path === path);
+  if (route) {
+    route.component.preload();  // Preload component
+  }
+};
+
+// Usage:
+<Link 
+  to="/trading" 
+  onMouseEnter={() => prefetchRoute('/trading')}
+>
+  Trading
+</Link>
+// 💡 Hover link → tải trước component → click instant!
+
+// 3️⃣ IMAGE OPTIMIZATION
+// - Dùng WebP format (30% nhỏ hơn JPEG)
+// - Responsive images
+<img
+  src="logo.webp"
+  srcSet="
+    logo-320.webp 320w,
+    logo-640.webp 640w,
+    logo-1280.webp 1280w
+  "
+  sizes="(max-width: 640px) 320px, (max-width: 1280px) 640px, 1280px"
+  loading="lazy"  // Native lazy loading
+  alt="Logo"
+/>
+
+// 4️⃣ FONT OPTIMIZATION
+// File: index.html
+<head>
+  {/* Preconnect đến Google Fonts */}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
+  
+  {/* Preload critical font */}
+  <link
+    rel="preload"
+    href="/fonts/inter-var.woff2"
+    as="font"
+    type="font/woff2"
+    crossOrigin
+  />
+  
+  {/* Font display swap - hiển thị fallback font trước */}
+  <style>
+    @font-face {{
+      font-family: 'Inter';
+      src: url('/fonts/inter-var.woff2') format('woff2');
+      font-display: swap;  /* Show fallback, swap khi font ready */
+    }}
+  </style>
+</head>
+
+// 5️⃣ SERVICE WORKER - Offline caching
+// File: sw.js (Service Worker)
+const CACHE_NAME = 'app-v1';
+const urlsToCache = [
+  '/',
+  '/static/css/main.css',
+  '/static/js/main.js',
+  '/logo.png'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        // Return cached version or fetch from network
+        return response || fetch(event.request);
+      })
+  );
+});
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('Service Worker registered'));
+}
+
+// 6️⃣ BUNDLE SIZE BUDGET - CI/CD check
+// File: .bundlewatch.config.json
+{
+  "files": [
+    {
+      "path": "dist/**/*.js",
+      "maxSize": "500kb",  // Fail nếu vượt 500KB
+      "compression": "gzip"
+    },
+    {
+      "path": "dist/**/*.css",
+      "maxSize": "50kb"
+    }
+  ]
+}
+
+// CI/CD script:
+// npm run build && bundlewatch
+// → Fail CI nếu bundle quá lớn!
+
+// 7️⃣ PERFORMANCE MONITORING
+import { onCLS, onFID, onLCP } from 'web-vitals';
+
+function sendToGoogleAnalytics({ name, delta, id }) {
+  gtag('event', name, {
+    event_category: 'Web Vitals',
+    value: Math.round(name === 'CLS' ? delta * 1000 : delta),
+    event_label: id,
+    non_interaction: true,
+  });
+}
+
+onCLS(sendToGoogleAnalytics);
+onFID(sendToGoogleAnalytics);
+onLCP(sendToGoogleAnalytics);
+
+/**
+ * 📊 KẾT QUẢ SAU TỐI ƯU:
+ * 
+ * Before:
+ * - Bundle: 2.5MB
+ * - Load time: 5-7s
+ * - LCP: 4.5s
+ * - FPS: 15
+ * - Memory: 500MB
+ * 
+ * After:
+ * - Bundle: 450KB (↓ 82%)
+ * - Load time: 1.5-2s (↓ 70%)
+ * - LCP: 1.2s (↓ 73%)
+ * - FPS: 60 (↑ 4x)
+ * - Memory: 80MB (↓ 84%)
+ */
+```
+
+---
+
 } // ✅ Chỉ render ~12 items → mượt mà
 ```
 
