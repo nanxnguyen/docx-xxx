@@ -228,41 +228,62 @@ interface DockerConcepts {
 # ===================================================
 
 # ✅ Stage 1: Build stage - Build ứng dụng
+# ✅ FROM: Chọn base image (node:20-alpine = Node.js 20 trên Alpine Linux)
+# ✅ AS builder: Đặt tên stage là "builder" để dùng ở stage sau
 FROM node:20-alpine AS builder
 
-# ✅ Set working directory - Thư mục làm việc
+# ✅ Set working directory - Thư mục làm việc trong container
+# ✅ Tất cả lệnh sau sẽ chạy trong thư mục /app
 WORKDIR /app
 
 # ✅ Copy package files first (layer caching) - Copy package.json trước
-COPY package*.json ./
-COPY yarn.lock ./
+# ✅ Tại sao copy package.json trước? → Để tận dụng Docker layer caching
+# ✅ package.json ít thay đổi → cache hit → không cần install lại dependencies mỗi lần code thay đổi
+COPY package*.json ./  # ✅ Copy package.json và package-lock.json
+COPY yarn.lock ./      # ✅ Copy yarn.lock (nếu dùng yarn)
 
 # ✅ Install dependencies - Cài đặt dependencies
+# ✅ --frozen-lockfile: Không update lockfile, đảm bảo version chính xác
 RUN yarn install --frozen-lockfile
 
 # ✅ Copy source code - Copy mã nguồn
+# ✅ Copy sau khi install deps → chỉ chạy lại build khi code thay đổi
 COPY . .
 
 # ✅ Build application - Build ứng dụng
+# ✅ Tạo production bundle (dist folder)
 RUN yarn build
 
 # ✅ Stage 2: Production stage - Stage production
+# ✅ FROM: Bắt đầu stage mới với base image nhẹ (nginx:alpine)
+# ✅ Chỉ cần nginx để serve static files, không cần Node.js
 FROM nginx:1.25-alpine
 
-# ✅ Copy built files from builder - Copy files đã build
+# ✅ Copy built files from builder - Copy files đã build từ stage builder
+# ✅ --from=builder: Copy từ stage "builder" đã định nghĩa ở trên
+# ✅ /app/dist: Thư mục build output từ stage builder
+# ✅ /usr/share/nginx/html: Thư mục nginx serve static files
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # ✅ Copy nginx configuration - Copy cấu hình nginx
+# ✅ nginx.conf: File cấu hình nginx (routing, headers, ...)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# ✅ Expose port - Mở port
+# ✅ Expose port - Mở port 80 để truy cập từ bên ngoài
 EXPOSE 80
 
 # ✅ Health check - Kiểm tra sức khỏe container
+# ✅ --interval=30s: Kiểm tra mỗi 30 giây
+# ✅ --timeout=3s: Timeout sau 3 giây nếu không response
+# ✅ --start-period=5s: Đợi 5 giây sau khi container start trước khi check
+# ✅ --retries=3: Retry 3 lần trước khi đánh dấu unhealthy
+# ✅ CMD: Lệnh kiểm tra (wget check HTTP response)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
 
 # ✅ Start nginx - Khởi động nginx
+# ✅ CMD: Lệnh mặc định khi container start
+# ✅ ["nginx", "-g", "daemon off;"]: Chạy nginx ở foreground (không chạy background)
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
@@ -274,63 +295,86 @@ CMD ["nginx", "-g", "daemon off;"]
 # ===================================================
 
 # ✅ Stage 1: Dependencies stage - Stage cài đặt dependencies
+# ✅ Tách riêng stage install deps để cache tốt hơn
 FROM node:20-alpine AS deps
 
 WORKDIR /app
 
 # ✅ Copy only package files - Chỉ copy package files
+# ✅ Chỉ copy package.json, yarn.lock → layer này ít thay đổi → cache tốt
 COPY package*.json yarn.lock ./
 
 # ✅ Install dependencies (cached layer) - Cài đặt dependencies (cache layer)
+# ✅ --frozen-lockfile: Không update lockfile
+# ✅ --production=false: Cài cả dev dependencies (cần cho build)
 RUN yarn install --frozen-lockfile --production=false
 
 # ✅ Stage 2: Builder stage - Stage build
+# ✅ Stage này chỉ copy node_modules từ stage deps → không cần install lại
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 # ✅ Copy dependencies from deps stage - Copy dependencies từ stage deps
+# ✅ Copy node_modules từ stage deps → tiết kiệm thời gian (không cần install lại)
 COPY --from=deps /app/node_modules ./node_modules
 
 # ✅ Copy source code - Copy mã nguồn
+# ✅ Copy source code sau khi đã có node_modules → chỉ rebuild khi code thay đổi
 COPY . .
 
-# ✅ Build arguments - Build arguments
-ARG VITE_API_URL
-ARG VITE_SENTRY_DSN
-ARG NODE_ENV=production
+# ✅ Build arguments - Build arguments (truyền vào khi build)
+# ✅ ARG: Chỉ tồn tại trong quá trình build, không có trong runtime
+ARG VITE_API_URL        # ✅ API URL cho Vite build
+ARG VITE_SENTRY_DSN     # ✅ Sentry DSN cho error tracking
+ARG NODE_ENV=production # ✅ Environment (default: production)
 
-# ✅ Set environment variables - Đặt biến môi trường
+# ✅ Set environment variables - Đặt biến môi trường (tồn tại trong runtime)
+# ✅ ENV: Tồn tại trong container khi chạy
+# ✅ $NODE_ENV: Lấy giá trị từ ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_SENTRY_DSN=$VITE_SENTRY_DSN
 
 # ✅ Build application - Build ứng dụng
+# ✅ Build với environment variables đã set ở trên
 RUN yarn build
 
 # ✅ Stage 3: Production stage - Stage production
 FROM nginx:1.25-alpine
 
 # ✅ Security: Update packages - Cập nhật packages
+# ✅ apk update: Cập nhật danh sách packages
+# ✅ apk upgrade: Upgrade packages lên version mới nhất (fix security vulnerabilities)
+# ✅ apk add --no-cache curl: Cài curl (cần cho health check) nhưng không cache package index
+# ✅ rm -rf /var/cache/apk/*: Xóa cache để giảm image size
 RUN apk update && apk upgrade && \
     apk add --no-cache curl && \
     rm -rf /var/cache/apk/*
 
 # ✅ Security: Create non-root user - Tạo user không phải root
+# ✅ addgroup: Tạo group "nginx-group" với GID 1001 (system group -S)
+# ✅ adduser: Tạo user "nginx-user" với UID 1001, thuộc group nginx-group
+# ✅ Tại sao? → Chạy container với non-root user → giảm security risk
 RUN addgroup -g 1001 -S nginx-group && \
     adduser -S nginx-user -u 1001 -G nginx-group
 
 # ✅ Copy built files with proper ownership - Copy files với quyền sở hữu đúng
+# ✅ --chown=nginx-user:nginx-group: Set ownership cho files → user nginx-user có quyền đọc
 COPY --from=builder --chown=nginx-user:nginx-group /app/dist /usr/share/nginx/html
 
 # ✅ Copy nginx configuration - Copy cấu hình nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# ✅ Health check - Kiểm tra sức khỏe
+# ✅ Health check - Kiểm tra sức khỏe container
+# ✅ curl -f: Fail nếu HTTP status code >= 400
+# ✅ http://localhost/: Check root endpoint
+# ✅ || exit 1: Exit với code 1 nếu fail → container đánh dấu unhealthy
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost/ || exit 1
 
 # ✅ Switch to non-root user - Chuyển sang user không phải root
+# ✅ USER: Tất cả lệnh sau sẽ chạy với user nginx-user (không phải root)
 USER nginx-user
 
 EXPOSE 80
@@ -469,12 +513,16 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # ✅ Build arguments (build-time only) - Build arguments (chỉ khi build)
-ARG NODE_ENV=production
-ARG VITE_API_URL
-ARG VITE_SENTRY_DSN
-ARG BUILD_VERSION
+# ✅ ARG: Chỉ tồn tại trong quá trình build, không có trong image layers
+# ✅ Có thể truyền từ command line: docker build --build-arg VITE_API_URL=...
+ARG NODE_ENV=production      # ✅ Environment (có default value)
+ARG VITE_API_URL             # ✅ API URL (không có default, phải truyền)
+ARG VITE_SENTRY_DSN          # ✅ Sentry DSN cho error tracking
+ARG BUILD_VERSION            # ✅ Version của build (git commit hash, ...)
 
 # ✅ Environment variables (runtime) - Biến môi trường (runtime)
+# ✅ ENV: Tồn tại trong container khi chạy, có thể override khi docker run
+# ✅ $NODE_ENV: Lấy giá trị từ ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_SENTRY_DSN=$VITE_SENTRY_DSN
@@ -487,7 +535,8 @@ COPY . .
 RUN yarn build
 
 # ✅ Build with arguments - Build với arguments
-# docker build --build-arg VITE_API_URL=https://api.example.com -t myapp:latest .
+# ✅ --build-arg: Truyền giá trị cho ARG trong Dockerfile
+# ✅ Ví dụ: docker build --build-arg VITE_API_URL=https://api.example.com -t myapp:latest .
 ```
 
 ```bash
@@ -496,22 +545,35 @@ RUN yarn build
 # ===================================================
 
 # ✅ Basic build - Build cơ bản
+# ✅ -t myapp:latest: Tag image với tên "myapp" và tag "latest"
+# ✅ . : Context (thư mục hiện tại) - Docker sẽ tìm Dockerfile trong thư mục này
 docker build -t myapp:latest .
 
 # ✅ Build with arguments - Build với arguments
+# ✅ --build-arg: Truyền giá trị cho ARG trong Dockerfile
+# ✅ NODE_ENV=production: Set ARG NODE_ENV = production
+# ✅ VITE_API_URL=...: Set ARG VITE_API_URL
+# ✅ BUILD_VERSION=1.0.0: Set ARG BUILD_VERSION
 docker build \
   --build-arg NODE_ENV=production \
   --build-arg VITE_API_URL=https://api.example.com \
   --build-arg BUILD_VERSION=1.0.0 \
   -t myapp:latest .
 
-# ✅ Build specific stage - Build stage cụ thể
+# ✅ Build specific stage - Build stage cụ thể (multi-stage build)
+# ✅ --target builder: Chỉ build đến stage "builder", không build stage production
+# ✅ Dùng khi chỉ cần build stage để test hoặc debug
 docker build --target builder -t myapp:builder .
 
-# ✅ Build with cache - Build với cache
+# ✅ Build with cache - Build với cache từ image khác
+# ✅ --cache-from: Sử dụng layers từ image myapp:latest làm cache
+# ✅ Giúp build nhanh hơn nếu có layers giống nhau
 docker build --cache-from myapp:latest -t myapp:new .
 
-# ✅ Multi-platform build - Build nhiều platform
+# ✅ Multi-platform build - Build cho nhiều platform (ARM64 + AMD64)
+# ✅ docker buildx: Build cho nhiều architectures cùng lúc
+# ✅ --platform linux/amd64,linux/arm64: Build cho cả x86_64 và ARM64
+# ✅ --push: Push image lên registry sau khi build xong
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -t myapp:latest \
@@ -535,22 +597,34 @@ services:
   # ✅ Frontend service - Service frontend
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        NODE_ENV: development
-        VITE_API_URL: http://backend:3000
+      context: . # ✅ Context: Thư mục chứa Dockerfile
+      dockerfile: Dockerfile # ✅ Dockerfile: Tên file Dockerfile (mặc định là Dockerfile)
+      args: # ✅ Build arguments: Truyền vào Dockerfile khi build
+        NODE_ENV: development # ✅ ARG NODE_ENV = development
+        VITE_API_URL: http://backend:3000 # ✅ ARG VITE_API_URL
     ports:
-      - '3000:80' # host:container
+      # ✅ Port mapping: host:container
+      # ✅ 3000:80 = Expose port 80 của container ra port 3000 của host
+      # ✅ Truy cập: http://localhost:3000 → container port 80
+      - '3000:80'
     volumes:
-      - ./src:/app/src # Hot reload trong dev
-      - /app/node_modules # Anonymous volume (override)
+      # ✅ Volume mapping: host:container
+      # ✅ ./src:/app/src = Mount thư mục ./src (local) vào /app/src (container)
+      # ✅ Hot reload: Code thay đổi trong ./src → tự động reload trong container
+      - ./src:/app/src
+      # ✅ Anonymous volume: Tạo volume ẩn danh cho /app/node_modules
+      # ✅ Override mount ./src:/app/src → node_modules không bị ghi đè bởi local
+      - /app/node_modules
     environment:
+      # ✅ Environment variables: Biến môi trường trong container
       - NODE_ENV=development
-      - VITE_API_URL=http://backend:3000
+      - VITE_API_URL=http://backend:3000 # ✅ backend = service name (Docker Compose DNS)
     depends_on:
+      # ✅ depends_on: Đợi service "backend" start trước khi start frontend
       - backend
     networks:
+      # ✅ networks: Kết nối vào network "app-network"
+      # ✅ Các services trong cùng network có thể giao tiếp qua service name
       - app-network
 
   # ✅ Backend service - Service backend
@@ -628,24 +702,26 @@ services:
       - ./ssl:/etc/nginx/ssl:ro # SSL certificates
     environment:
       - NODE_ENV=production
-    restart: unless-stopped
+    restart: unless-stopped # ✅ Restart policy: Tự động restart nếu container stop (trừ khi manually stop)
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost/']
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 10s
+      # ✅ Health check: Kiểm tra container có healthy không
+      test: ['CMD', 'curl', '-f', 'http://localhost/'] # ✅ Lệnh kiểm tra: curl check HTTP
+      interval: 30s # ✅ Kiểm tra mỗi 30 giây
+      timeout: 3s # ✅ Timeout sau 3 giây
+      retries: 3 # ✅ Retry 3 lần trước khi đánh dấu unhealthy
+      start_period: 10s # ✅ Đợi 10 giây sau khi start trước khi check
     networks:
       - app-network
     deploy:
-      replicas: 3
+      # ✅ Deploy configuration (Docker Swarm mode)
+      replicas: 3 # ✅ Chạy 3 instances của service
       resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
+        limits: # ✅ Giới hạn tài nguyên tối đa
+          cpus: '0.5' # ✅ Tối đa 0.5 CPU cores
+          memory: 512M # ✅ Tối đa 512MB RAM
+        reservations: # ✅ Tài nguyên đảm bảo (reserved)
+          cpus: '0.25' # ✅ Đảm bảo 0.25 CPU cores
+          memory: 256M # ✅ Đảm bảo 256MB RAM
 
   # ✅ Nginx reverse proxy - Nginx reverse proxy
   nginx-proxy:
@@ -717,78 +793,95 @@ docker-compose -f docker-compose.prod.yml up
 # │ 📦 IMAGE COMMANDS - Lệnh Quản Lý Image         │
 # └─────────────────────────────────────────────────┘
 
-# ✅ Build image - Build image
+# ✅ Build image - Build image từ Dockerfile
+# ✅ -t myapp:latest: Tag image với tên "myapp" và tag "latest"
+# ✅ . : Context (thư mục hiện tại)
 docker build -t myapp:latest .
+# ✅ -f Dockerfile.prod: Dùng Dockerfile.prod thay vì Dockerfile mặc định
 docker build -t myapp:v1.0.0 -f Dockerfile.prod .
 
-# ✅ List images - Liệt kê images
-docker images
-docker image ls
+# ✅ List images - Liệt kê tất cả images trên máy
+docker images        # ✅ Hiển thị: REPOSITORY, TAG, IMAGE ID, SIZE, CREATED
+docker image ls      # ✅ Tương tự docker images
 
 # ✅ Remove image - Xóa image
-docker rmi myapp:latest
-docker image rm myapp:latest
+docker rmi myapp:latest           # ✅ rmi = remove image
+docker image rm myapp:latest      # ✅ Tương tự docker rmi
 
 # ✅ Remove all unused images - Xóa tất cả images không dùng
+# ✅ -a: Xóa cả images không có tag (dangling images)
 docker image prune -a
 
-# ✅ Inspect image - Xem chi tiết image
+# ✅ Inspect image - Xem chi tiết image (metadata, config, layers, ...)
 docker inspect myapp:latest
 
-# ✅ Tag image - Gắn tag cho image
+# ✅ Tag image - Gắn tag mới cho image
+# ✅ Tạo tag "v1.0.0" cho image myapp:latest (không tạo image mới)
 docker tag myapp:latest myapp:v1.0.0
 
-# ✅ Push image to registry - Đẩy image lên registry
+# ✅ Push image to registry - Đẩy image lên registry (Docker Hub, ECR, ...)
+# ✅ myorg/myapp:latest: Format: registry/username/image:tag
 docker push myorg/myapp:latest
 
-# ✅ Pull image from registry - Kéo image từ registry
+# ✅ Pull image from registry - Kéo image từ registry về máy
 docker pull myorg/myapp:latest
 
 # ┌─────────────────────────────────────────────────┐
 # │ 🚀 CONTAINER COMMANDS - Lệnh Quản Lý Container │
 # └─────────────────────────────────────────────────┘
 
-# ✅ Run container - Chạy container
-docker run myapp:latest
+# ✅ Run container - Chạy container từ image
+docker run myapp:latest  # ✅ Chạy container ở foreground
+# ✅ -d: Detached mode (chạy ở background)
+# ✅ -p 3000:80: Port mapping (host:container)
+# ✅ --name myapp: Đặt tên container là "myapp"
 docker run -d -p 3000:80 --name myapp myapp:latest
-docker run -it --rm node:20-alpine sh  # Interactive shell
+# ✅ -it: Interactive + TTY (cho phép tương tác)
+# ✅ --rm: Tự động xóa container khi exit
+# ✅ sh: Chạy shell trong container
+docker run -it --rm node:20-alpine sh
 
 # ✅ List containers - Liệt kê containers
-docker ps              # Running containers
-docker ps -a           # All containers (including stopped)
-docker container ls    # Same as docker ps
+docker ps              # ✅ Chỉ hiển thị containers đang chạy
+docker ps -a           # ✅ Hiển thị tất cả containers (bao gồm đã stop)
+docker container ls    # ✅ Tương tự docker ps
 
 # ✅ Start/Stop container - Khởi động/Dừng container
-docker start myapp
-docker stop myapp
-docker restart myapp
+docker start myapp     # ✅ Start container đã tồn tại
+docker stop myapp      # ✅ Stop container (graceful shutdown)
+docker restart myapp   # ✅ Restart container (stop + start)
 
 # ✅ Remove container - Xóa container
-docker rm myapp
-docker container rm myapp
+docker rm myapp        # ✅ Xóa container (phải stop trước)
+docker container rm myapp  # ✅ Tương tự docker rm
 
 # ✅ Remove all stopped containers - Xóa tất cả containers đã dừng
 docker container prune
 
-# ✅ Execute command in container - Chạy lệnh trong container
+# ✅ Execute command in container - Chạy lệnh trong container đang chạy
+# ✅ -it: Interactive + TTY
+# ✅ sh: Chạy shell
 docker exec -it myapp sh
+# ✅ Chạy lệnh ls /app trong container
 docker exec myapp ls /app
 
-# ✅ View logs - Xem logs
-docker logs myapp
-docker logs -f myapp        # Follow logs (real-time)
-docker logs --tail 100 myapp # Last 100 lines
+# ✅ View logs - Xem logs của container
+docker logs myapp              # ✅ Xem tất cả logs
+docker logs -f myapp            # ✅ -f: Follow logs (real-time, như tail -f)
+docker logs --tail 100 myapp   # ✅ --tail 100: Chỉ hiển thị 100 dòng cuối
 
 # ✅ Inspect container - Xem chi tiết container
 docker inspect myapp
 
-# ✅ Copy files - Copy files
-docker cp myapp:/app/dist ./local-dist  # Container → Local
-docker cp ./local-file myapp:/app/      # Local → Container
+# ✅ Copy files - Copy files giữa container và host
+# ✅ Container → Local: Copy từ container ra máy local
+docker cp myapp:/app/dist ./local-dist
+# ✅ Local → Container: Copy từ máy local vào container
+docker cp ./local-file myapp:/app/
 
-# ✅ Container stats - Thống kê container
-docker stats myapp
-docker stats              # All containers
+# ✅ Container stats - Thống kê tài nguyên container (CPU, Memory, Network, I/O)
+docker stats myapp       # ✅ Stats của container "myapp"
+docker stats             # ✅ Stats của tất cả containers đang chạy
 
 # ┌─────────────────────────────────────────────────┐
 # │ 🧹 CLEANUP COMMANDS - Lệnh Dọn Dẹp              │
@@ -877,15 +970,15 @@ docker volume rm my-volume
 # └─────────────────────────────────────────────────┘
 
 # ✅ Start services - Khởi động services
-docker-compose up                    # Foreground
-docker-compose up -d                 # Background (detached)
-docker-compose up --build            # Build và start
-docker-compose up --build --force-recreate  # Force recreate
+docker-compose up                    # ✅ Foreground: Hiển thị logs, Ctrl+C để stop
+docker-compose up -d                 # ✅ Background (detached): Chạy ở background
+docker-compose up --build            # ✅ Build images trước khi start
+docker-compose up --build --force-recreate  # ✅ Force recreate: Tạo containers mới (không dùng cũ)
 
 # ✅ Stop services - Dừng services
-docker-compose stop                  # Stop (giữ containers)
-docker-compose down                  # Stop và remove containers
-docker-compose down -v               # Stop, remove containers + volumes
+docker-compose stop                  # ✅ Stop containers nhưng không xóa (có thể start lại)
+docker-compose down                  # ✅ Stop và remove containers (không xóa volumes)
+docker-compose down -v               # ✅ Stop, remove containers + volumes (xóa cả data)
 
 # ✅ Restart services - Khởi động lại services
 docker-compose restart               # Restart tất cả
@@ -928,13 +1021,13 @@ docker-compose top                   # Processes trong services
 # │ ⚙️ EXEC & RUN - Lệnh Thực Thi                   │
 # └─────────────────────────────────────────────────┘
 
-# ✅ Execute command - Chạy lệnh trong service
-docker-compose exec frontend sh      # Shell trong container
-docker-compose exec frontend ls /app # Chạy lệnh cụ thể
+# ✅ Execute command - Chạy lệnh trong service đang chạy
+docker-compose exec frontend sh      # ✅ Chạy shell trong container "frontend"
+docker-compose exec frontend ls /app # ✅ Chạy lệnh ls /app trong container
 
-# ✅ Run one-off command - Chạy lệnh một lần
-docker-compose run frontend npm test # Chạy test
-docker-compose run --rm frontend sh  # Chạy và xóa sau khi xong
+# ✅ Run one-off command - Chạy lệnh một lần (tạo container mới, chạy lệnh, xóa)
+docker-compose run frontend npm test # ✅ Tạo container mới, chạy npm test, xóa container
+docker-compose run --rm frontend sh  # ✅ --rm: Tự động xóa container sau khi exit
 
 # ┌─────────────────────────────────────────────────┐
 # │ 📁 FILE & CONFIG - Lệnh File & Cấu Hình         │
@@ -952,8 +1045,9 @@ docker-compose config --services     # Liệt kê services
 # │ 🔄 SCALE & UPDATE - Lệnh Scale & Cập Nhật       │
 # └─────────────────────────────────────────────────┘
 
-# ✅ Scale services - Scale services
-docker-compose up --scale frontend=3 # Scale frontend lên 3 instances
+# ✅ Scale services - Scale services (chạy nhiều instances)
+# ✅ --scale frontend=3: Chạy 3 containers của service "frontend"
+docker-compose up --scale frontend=3
 
 # ✅ Pull latest images - Kéo images mới nhất
 docker-compose pull                  # Pull tất cả
@@ -989,9 +1083,9 @@ docker-compose down -v               # Xóa volumes khi down
 docker build -t myapp:latest .
 
 # 💡 Giải thích:
-# - docker build: Lệnh build
-# - -t myapp:latest: Tag image (tên:phiên bản)
-# - . : Context (thư mục hiện tại)
+# - docker build: Lệnh build image từ Dockerfile
+# - -t myapp:latest: Tag image với tên "myapp" và tag "latest" (tên:phiên bản)
+# - . : Context (thư mục hiện tại) - Docker sẽ tìm Dockerfile trong thư mục này
 
 # ┌─────────────────────────────────────────────────┐
 # │ 🎯 CÔNG THỨC ĐẦY ĐỦ - Full Formula             │
@@ -999,14 +1093,14 @@ docker build -t myapp:latest .
 
 # 💡 Công thức đầy đủ với các options phổ biến:
 docker build \
-  --file Dockerfile.prod \           # -f: Dockerfile cụ thể
-  --tag myapp:v1.0.0 \               # -t: Tag image
-  --build-arg NODE_ENV=production \  # --build-arg: Build arguments
+  --file Dockerfile.prod \           # ✅ -f: Dùng Dockerfile.prod thay vì Dockerfile mặc định
+  --tag myapp:v1.0.0 \               # ✅ -t: Tag image với tên và version
+  --build-arg NODE_ENV=production \  # ✅ --build-arg: Truyền giá trị cho ARG trong Dockerfile
   --build-arg VITE_API_URL=https://api.example.com \
-  --target builder \                 # --target: Build stage cụ thể
-  --cache-from myapp:latest \        # --cache-from: Cache từ image
-  --progress=plain \                  # --progress: Hiển thị progress
-  --no-cache \                       # --no-cache: Không dùng cache
+  --target builder \                 # ✅ --target: Chỉ build đến stage "builder" (multi-stage)
+  --cache-from myapp:latest \        # ✅ --cache-from: Dùng layers từ image này làm cache
+  --progress=plain \                  # ✅ --progress: Hiển thị progress chi tiết (dễ debug)
+  --no-cache \                       # ✅ --no-cache: Không dùng cache (build từ đầu)
   .
 
 # ┌─────────────────────────────────────────────────┐
@@ -1187,20 +1281,26 @@ FROM node:20-alpine
 # 🔍 **SECURITY SCANNING** - Quét bảo mật
 # ===================================================
 
-# ✅ Docker Scout (built-in) - Docker Scout (tích hợp)
-docker scout cves myapp:latest
+# ✅ Docker Scout (built-in) - Docker Scout (tích hợp trong Docker Desktop)
+# ✅ Quét vulnerabilities trong image
+docker scout cves myapp:latest  # ✅ cves = Common Vulnerabilities and Exposures
 
-# ✅ Trivy scanner - Trivy scanner
+# ✅ Trivy scanner - Trivy scanner (open-source, phổ biến)
+# ✅ Quét vulnerabilities, misconfigurations, secrets
 trivy image myapp:latest
 
-# ✅ Snyk scanner - Snyk scanner
+# ✅ Snyk scanner - Snyk scanner (commercial, có free tier)
+# ✅ Quét vulnerabilities và suggest fixes
 snyk test --docker myapp:latest
 
-# ✅ Scan in CI/CD - Quét trong CI/CD
+# ✅ Scan in CI/CD - Quét trong CI/CD pipeline
+# ✅ Tự động quét image sau khi build → fail build nếu có HIGH/CRITICAL vulnerabilities
 # .github/workflows/security.yml
 - name: Scan image
   run: |
     docker build -t myapp:latest .
+    # ✅ --exit-code 1: Exit với code 1 nếu có vulnerabilities
+    # ✅ --severity HIGH,CRITICAL: Chỉ fail nếu có HIGH hoặc CRITICAL vulnerabilities
     trivy image --exit-code 1 --severity HIGH,CRITICAL myapp:latest
 ```
 
@@ -1212,20 +1312,27 @@ snyk test --docker myapp:latest
 # ===================================================
 
 # ✅ Docker Secrets (Docker Swarm) - Docker Secrets
+# ✅ Quản lý secrets an toàn trong Docker Swarm
 version: '3.8'
 services:
   frontend:
     secrets:
-      - api_key
+      - api_key # ✅ Mount secret "api_key" vào container
     environment:
-      - API_KEY_FILE=/run/secrets/api_key
+      - API_KEY_FILE=/run/secrets/api_key # ✅ Secret được mount tại /run/secrets/api_key
 
 secrets:
   api_key:
-    external: true
+    external: true # ✅ Secret được tạo bên ngoài (docker secret create)
+
 # ✅ Environment variables (not in Dockerfile) - Biến môi trường (không trong Dockerfile)
-# ❌ BAD: ARG API_KEY=secret123  # Exposed in image layers
+# ❌ BAD: ARG API_KEY=secret123
+# ❌ Vấn đề: ARG được lưu trong image layers → có thể xem bằng docker history
+# ❌ → Security risk: Secrets bị expose trong image
+
 # ✅ GOOD: docker run -e API_KEY=secret123 myapp
+# ✅ Environment variables được truyền khi chạy container → không lưu trong image
+# ✅ → An toàn hơn: Secrets không có trong image layers
 ```
 
 ---
@@ -1245,20 +1352,26 @@ FROM node:20-alpine
 WORKDIR /app
 
 # ✅ Step 1: Copy package files (changes rarely) - Copy package files (ít thay đổi)
+# ✅ Tại sao copy package.json trước?
+# ✅ → package.json ít thay đổi → Docker cache layer này → không cần install lại deps mỗi lần code thay đổi
 COPY package*.json yarn.lock ./
 
-# ✅ Step 2: Install dependencies (cached if package.json unchanged) - Cài đặt dependencies (cache nếu package.json không đổi)
+# ✅ Step 2: Install dependencies (cached if package.json unchanged) - Cài đặt dependencies
+# ✅ Nếu package.json không đổi → Docker dùng cache layer này → không chạy lại yarn install
+# ✅ → Tiết kiệm thời gian build (install deps mất 2-5 phút)
 RUN yarn install --frozen-lockfile
 
 # ✅ Step 3: Copy source code (changes frequently) - Copy mã nguồn (thay đổi thường xuyên)
+# ✅ Copy source code sau khi install deps → chỉ rebuild khi code thay đổi
 COPY . .
 
 # ✅ Step 4: Build (only runs if source changed) - Build (chỉ chạy nếu source thay đổi)
+# ✅ Nếu source code không đổi → Docker dùng cache → không chạy lại yarn build
 RUN yarn build
 
 # ❌ BAD ORDER - Thứ tự sai
-# COPY . .  # Changes every time → cache miss
-# RUN yarn install  # Runs every time
+# COPY . .  # ❌ Copy toàn bộ code trước → mỗi lần code thay đổi → cache miss
+# RUN yarn install  # ❌ Phải chạy lại yarn install mỗi lần → chậm
 ```
 
 ### **6.2. BuildKit Optimization**
@@ -1269,17 +1382,20 @@ RUN yarn build
 # ===================================================
 
 # ✅ Enable BuildKit - Bật BuildKit
+# ✅ DOCKER_BUILDKIT=1: Bật BuildKit (build engine mới, nhanh hơn)
 export DOCKER_BUILDKIT=1
 docker build -t myapp:latest .
 
 # ✅ Or in docker-compose - Hoặc trong docker-compose
+# ✅ COMPOSE_DOCKER_CLI_BUILD=1: Dùng Docker CLI build thay vì docker-compose build
+# ✅ DOCKER_BUILDKIT=1: Bật BuildKit
 COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
 
-# ✅ Benefits:
-# - Parallel builds: Build stages in parallel
-# - Better caching: More efficient cache
-# - Mount cache: Share cache between builds
-# - Secrets: Secure secret handling
+# ✅ Benefits (Lợi ích của BuildKit):
+# - Parallel builds: Build các stages song song (nhanh hơn)
+# - Better caching: Cache hiệu quả hơn (cache mount, inline cache, ...)
+# - Mount cache: Share cache giữa các builds (cache mount)
+# - Secrets: Xử lý secrets an toàn hơn (không lưu trong image layers)
 ```
 
 ### **6.3. Image Size Optimization**
@@ -1376,30 +1492,37 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
+        # ✅ Setup Docker Buildx: Build engine mới với nhiều tính năng hơn
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
+        # ✅ Build và push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          push: false
-          tags: myapp:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
+          context: . # ✅ Context: Thư mục chứa Dockerfile
+          push: false # ✅ Không push lên registry (chỉ build)
+          tags: myapp:${{ github.sha }} # ✅ Tag image với git commit SHA
+          cache-from: type=gha # ✅ Cache từ GitHub Actions cache
+          cache-to: type=gha,mode=max # ✅ Lưu cache vào GitHub Actions (mode=max = lưu tất cả layers)
+          build-args: | # ✅ Build arguments: Truyền vào Dockerfile
             NODE_ENV=production
-            VITE_API_URL=${{ secrets.VITE_API_URL }}
+            VITE_API_URL=${{ secrets.VITE_API_URL }}  # ✅ Lấy từ GitHub Secrets
 
       - name: Save Docker image
+        # ✅ Save image thành file tar.gz để lưu làm artifact
+        # ✅ docker save: Export image thành tar file
+        # ✅ gzip: Nén file để giảm kích thước
         run: |
           docker save myapp:${{ github.sha }} | gzip > myapp-image.tar.gz
 
       - name: Upload Docker image artifact
+        # ✅ Upload image file lên GitHub Actions artifacts
+        # ✅ Artifacts có thể download và sử dụng ở jobs khác
         uses: actions/upload-artifact@v3
         with:
-          name: docker-image
-          path: myapp-image.tar.gz
-          retention-days: 7
+          name: docker-image # ✅ Tên artifact
+          path: myapp-image.tar.gz # ✅ File cần upload
+          retention-days: 7 # ✅ Giữ artifact trong 7 ngày
 
   # Stage 4: E2E Tests với Docker
   e2e:
@@ -1418,10 +1541,17 @@ jobs:
           path: ./
 
       - name: Load Docker image
+        # ✅ Load image từ file tar.gz đã download
+        # ✅ gunzip: Giải nén file
+        # ✅ docker load: Import image từ tar file
         run: |
           gunzip -c myapp-image.tar.gz | docker load
 
       - name: Run container
+        # ✅ Chạy container từ image đã load
+        # ✅ -d: Detached mode (background)
+        # ✅ -p 3000:80: Port mapping (host:container)
+        # ✅ --name myapp-test: Đặt tên container
         run: |
           docker run -d -p 3000:80 --name myapp-test myapp:${{ github.sha }}
 
@@ -1467,11 +1597,17 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Tag and push image
+        # ✅ Tag image với registry URL và push lên registry
+        # ✅ docker tag: Tạo tag mới cho image (không tạo image mới)
+        # ✅ docker push: Đẩy image lên registry (Docker Hub, ECR, GCR, ...)
         run: |
           docker tag myapp:${{ github.sha }} ${{ secrets.REGISTRY_URL }}/myapp:staging
           docker push ${{ secrets.REGISTRY_URL }}/myapp:staging
 
       - name: Deploy to staging server
+        # ✅ Deploy lên staging server qua SSH
+        # ✅ docker pull: Kéo image mới nhất từ registry
+        # ✅ docker-compose up -d: Start services với docker-compose
         run: |
           ssh ${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_HOST }} \
             "docker pull ${{ secrets.REGISTRY_URL }}/myapp:staging && \
@@ -1527,49 +1663,61 @@ jobs:
 
 ### **7.2. GitHub Actions Docker Build & Push**
 
+```yaml
+# ===================================================
+# 🚀 **GITHUB ACTIONS DOCKER BUILD & PUSH**
+# ===================================================
+
+name: Docker Build and Push
+
 on:
-push:
-branches: [main]
-tags: - 'v\*'
+  push:
+    branches: [main] # ✅ Trigger khi push vào branch main
+    tags: # ✅ Trigger khi push tag
+      - 'v*' # ✅ Tag bắt đầu bằng "v" (v1.0.0, v2.1.3, ...)
 
 jobs:
-build-and-push:
-runs-on: ubuntu-latest
-steps: - uses: actions/checkout@v4
+  build-and-push:
+    runs-on: ubuntu-latest # ✅ Chạy trên Ubuntu runner
+    steps:
+      - uses: actions/checkout@v4 # ✅ Checkout code từ repository
 
       - name: Set up Docker Buildx
+        # ✅ Setup Docker Buildx: Build engine mới với nhiều tính năng
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
+        # ✅ Login vào Docker Hub để push image
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }} # ✅ Username từ GitHub Secrets
+          password: ${{ secrets.DOCKER_PASSWORD }} # ✅ Password từ GitHub Secrets
 
       - name: Extract metadata
+        # ✅ Extract metadata từ git (tags, labels, ...)
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: myorg/myapp
+          images: myorg/myapp # ✅ Image name
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha
+            type=semver,pattern={{version}}        # ✅ Tag: v1.0.0 → myorg/myapp:v1.0.0
+            type=semver,pattern={{major}}.{{minor}} # ✅ Tag: v1.0.0 → myorg/myapp:v1.0
+            type=sha                                # ✅ Tag: myorg/myapp:abc1234 (git commit SHA)
 
       - name: Build and push
+        # ✅ Build và push image lên registry
         uses: docker/build-push-action@v5
         with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=myorg/myapp:buildcache
-          cache-to: type=registry,ref=myorg/myapp:buildcache,mode=max
-          build-args: |
+          context: . # ✅ Context: Thư mục chứa Dockerfile
+          push: true # ✅ Push image lên registry sau khi build
+          tags: ${{ steps.meta.outputs.tags }} # ✅ Tags từ metadata action
+          labels: ${{ steps.meta.outputs.labels }} # ✅ Labels từ metadata action
+          cache-from: type=registry,ref=myorg/myapp:buildcache # ✅ Cache từ registry
+          cache-to: type=registry,ref=myorg/myapp:buildcache,mode=max # ✅ Lưu cache vào registry
+          build-args: | # ✅ Build arguments
             NODE_ENV=production
-            VITE_API_URL=${{ secrets.VITE_API_URL }}
-
-````
+            VITE_API_URL=${{ secrets.VITE_API_URL }}  # ✅ Lấy từ GitHub Secrets
+```
 
 ### **7.3. Docker Layer Caching in CI**
 
@@ -1579,18 +1727,22 @@ steps: - uses: actions/checkout@v4
 # ===================================================
 
 - name: Build with cache
+  # ✅ Build với cache để tăng tốc độ build
   uses: docker/build-push-action@v5
   with:
     context: .
-    push: false
+    push: false # ✅ Không push image (chỉ build)
     tags: myapp:latest
     cache-from: |
-      type=registry,ref=myorg/myapp:buildcache
-      type=gha  # GitHub Actions cache
+      # ✅ Cache từ 2 nguồn:
+      type=registry,ref=myorg/myapp:buildcache  # ✅ Cache từ registry (image buildcache)
+      type=gha                                   # ✅ Cache từ GitHub Actions cache
     cache-to: |
-      type=registry,ref=myorg/myapp:buildcache,mode=max
-      type=gha,mode=max
-````
+      # ✅ Lưu cache vào 2 nơi:
+      type=registry,ref=myorg/myapp:buildcache,mode=max  # ✅ Lưu vào registry
+      type=gha,mode=max                                    # ✅ Lưu vào GitHub Actions cache
+      # ✅ mode=max: Lưu tất cả layers (kể cả intermediate layers)
+```
 
 ### **7.4. Deployment Strategies with Docker**
 
@@ -1635,20 +1787,27 @@ jobs:
           cache-to: type=registry,ref=myorg/myapp:buildcache,mode=max
 
       - name: Deploy to ${{ inputs.target }} environment
+        # ✅ Deploy lên blue hoặc green environment
+        # ✅ inputs.target: "blue" hoặc "green" (từ workflow_dispatch)
         run: |
-          # Deploy to blue or green environment
+          # ✅ SSH vào server và deploy
+          # ✅ docker pull: Kéo image mới từ registry
+          # ✅ docker-compose up -d: Start services với docker-compose
           ssh ${{ secrets.SSH_USER }}@${{ secrets.HOST }} \
             "docker pull myorg/myapp:${{ inputs.target }} && \
              docker-compose -f /opt/app/docker-compose.${{ inputs.target }}.yml up -d"
 
       - name: Run smoke tests
+        # ✅ Chạy smoke tests để đảm bảo deployment thành công
+        # ✅ curl -f: Fail nếu HTTP status >= 400
         run: |
           TARGET_URL="https://${{ inputs.target }}.example.com"
-          curl -f $TARGET_URL/health || exit 1
+          curl -f $TARGET_URL/health || exit 1  # ✅ Check health endpoint
 
       - name: Switch traffic to ${{ inputs.target }}
+        # ✅ Switch traffic từ environment cũ sang environment mới
+        # ✅ Update load balancer config để route traffic đến environment mới
         run: |
-          # Update load balancer to point to new environment
           ssh ${{ secrets.SSH_USER }}@${{ secrets.LB_HOST }} \
             "update-lb-config --target ${{ inputs.target }}"
 ```
@@ -1695,28 +1854,38 @@ jobs:
              docker-compose -f /opt/app/docker-compose.canary.yml up -d"
 
       - name: Update traffic split
+        # ✅ Update traffic split: Chia traffic giữa canary và production
+        # ✅ Ví dụ: canary-percentage = 10 → 10% traffic đến canary, 90% đến production
         run: |
-          # Update load balancer traffic split
           curl -X POST ${{ secrets.LB_API }}/traffic-split \
             -H "Authorization: Bearer ${{ secrets.LB_TOKEN }}" \
             -d '{"canary": ${{ inputs.canary-percentage }}, "production": ${{ 100 - inputs.canary-percentage }}}'
+            # ✅ Gửi request đến Load Balancer API để update traffic split
 
       - name: Monitor canary for 10 minutes
+        # ✅ Monitor canary deployment trong 10 phút
+        # ✅ Kiểm tra error rate → nếu quá cao thì rollback
         run: |
-          sleep 600
+          sleep 600  # ✅ Đợi 10 phút (600 giây)
+          # ✅ Lấy error rate từ monitoring API
           ERROR_RATE=$(curl -s ${{ secrets.MONITORING_API }}/metrics | jq '.error_rate')
-          if [ "$ERROR_RATE" -gt "1" ]; then
+          if [ "$ERROR_RATE" -gt "1" ]; then  # ✅ Nếu error rate > 1%
             echo "Canary failed! Rolling back..."
-            exit 1
+            exit 1  # ✅ Exit với code 1 → workflow fail → trigger rollback
           fi
 
       - name: Promote canary to production
+        # ✅ Promote canary lên production khi canary-percentage = 100%
+        # ✅ Chỉ chạy khi đã chuyển 100% traffic sang canary
         if: inputs.canary-percentage == '100'
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.HOST }} \
             "docker tag myorg/myapp:canary myorg/myapp:latest && \
              docker push myorg/myapp:latest && \
              docker-compose -f /opt/app/docker-compose.prod.yml up -d"
+          # ✅ docker tag: Tag canary image thành latest
+          # ✅ docker push: Push latest image lên registry
+          # ✅ docker-compose up -d: Deploy production với image mới
 ```
 
 ### **7.5. Environment Management với Docker**
@@ -1746,16 +1915,21 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Set environment variables
+        # ✅ Set environment variables dựa trên matrix.environment
+        # ✅ $GITHUB_ENV: File để set environment variables cho các steps sau
         run: |
           if [ "${{ matrix.environment }}" == "production" ]; then
+            # ✅ Production environment
             echo "VITE_API_URL=https://api.example.com" >> $GITHUB_ENV
             echo "VITE_SENTRY_DSN=${{ secrets.SENTRY_DSN_PROD }}" >> $GITHUB_ENV
             echo "IMAGE_TAG=prod" >> $GITHUB_ENV
           elif [ "${{ matrix.environment }}" == "staging" ]; then
+            # ✅ Staging environment
             echo "VITE_API_URL=https://staging-api.example.com" >> $GITHUB_ENV
             echo "VITE_SENTRY_DSN=${{ secrets.SENTRY_DSN_STAGING }}" >> $GITHUB_ENV
             echo "IMAGE_TAG=staging" >> $GITHUB_ENV
           else
+            # ✅ Development environment
             echo "VITE_API_URL=http://localhost:3000" >> $GITHUB_ENV
             echo "VITE_SENTRY_DSN=" >> $GITHUB_ENV
             echo "IMAGE_TAG=dev" >> $GITHUB_ENV
@@ -1798,11 +1972,17 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Get previous deployment
+        # ✅ Lấy version của deployment trước đó để rollback nếu cần
         id: previous
         run: |
+          # ✅ SSH vào server và lấy tag của image (trừ "latest")
+          # ✅ docker images: Liệt kê images
+          # ✅ --format '{{.Tag}}': Chỉ hiển thị tag
+          # ✅ grep -v latest: Loại bỏ tag "latest"
+          # ✅ head -1: Lấy tag đầu tiên (version mới nhất)
           PREV_VERSION=$(ssh ${{ secrets.SSH_USER }}@${{ secrets.HOST }} \
             "docker images myorg/myapp --format '{{.Tag}}' | grep -v latest | head -1")
-          echo "version=$PREV_VERSION" >> $GITHUB_OUTPUT
+          echo "version=$PREV_VERSION" >> $GITHUB_OUTPUT  # ✅ Lưu vào output để dùng ở step sau
           echo "Previous version: $PREV_VERSION"
 
       - name: Build and push new version
@@ -1826,30 +2006,37 @@ jobs:
         run: sleep 60
 
       - name: Run health checks
+        # ✅ Chạy health checks sau khi deploy
         id: health
-        continue-on-error: true
+        continue-on-error: true # ✅ Tiếp tục workflow ngay cả khi step này fail
         run: |
-          # Health check
-          curl -f https://example.com/health || exit 1
+          # ✅ Health check: Kiểm tra endpoint /health
+          curl -f https://example.com/health || exit 1  # ✅ -f: Fail nếu HTTP status >= 400
 
-          # Check error rate
+          # ✅ Check error rate: Kiểm tra error rate từ monitoring API
           ERROR_RATE=$(curl -s ${{ secrets.MONITORING_API }}/metrics | jq '.error_rate')
-          if (( $(echo "$ERROR_RATE > 0.05" | bc -l) )); then
+          if (( $(echo "$ERROR_RATE > 0.05" | bc -l) )); then  # ✅ Nếu error rate > 5%
             echo "Error rate too high: $ERROR_RATE"
-            exit 1
+            exit 1  # ✅ Exit với code 1 → step fail
           fi
 
       - name: Rollback on failure
+        # ✅ Rollback nếu health checks fail
+        # ✅ Chỉ chạy khi step "health" có outcome = 'failure'
         if: steps.health.outcome == 'failure'
         run: |
           echo "Health checks failed! Rolling back to ${{ steps.previous.outputs.version }}"
 
+          # ✅ Rollback: Deploy lại version trước đó
           ssh ${{ secrets.SSH_USER }}@${{ secrets.HOST }} \
             "docker pull myorg/myapp:${{ steps.previous.outputs.version }} && \
              docker tag myorg/myapp:${{ steps.previous.outputs.version }} myorg/myapp:current && \
              docker-compose -f /opt/app/docker-compose.prod.yml up -d"
+          # ✅ docker pull: Kéo image version cũ từ registry
+          # ✅ docker tag: Tag thành "current"
+          # ✅ docker-compose up -d: Deploy lại với image cũ
 
-          # Notify team
+          # ✅ Notify team: Gửi thông báo đến Slack
           curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
             -d '{"text":"🚨 Deployment failed and rolled back to ${{ steps.previous.outputs.version }}"}'
 ```
@@ -1872,25 +2059,38 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Start services with Docker Compose
+        # ✅ Start services với docker-compose.test.yml
+        # ✅ -f: Dùng file docker-compose.test.yml (thay vì docker-compose.yml mặc định)
+        # ✅ up -d: Start ở background (detached)
         run: |
           docker-compose -f docker-compose.test.yml up -d
 
       - name: Wait for services
+        # ✅ Đợi services start xong trước khi chạy tests
+        # ✅ timeout 60: Timeout sau 60 giây
+        # ✅ until ... grep -q "Up": Đợi đến khi có service status "Up"
+        # ✅ sleep 2: Đợi 2 giây giữa mỗi lần check
         run: |
           timeout 60 bash -c 'until docker-compose -f docker-compose.test.yml ps | grep -q "Up"; do sleep 2; done'
 
       - name: Run tests
+        # ✅ Chạy integration tests và E2E tests
         run: |
-          npm ci
-          npm run test:integration
-          npm run test:e2e
+          npm ci                    # ✅ Install dependencies
+          npm run test:integration  # ✅ Chạy integration tests
+          npm run test:e2e          # ✅ Chạy E2E tests
 
       - name: View logs
+        # ✅ Xem logs của services (dùng để debug nếu tests fail)
+        # ✅ if: always(): Chạy ngay cả khi tests fail
         if: always()
         run: |
           docker-compose -f docker-compose.test.yml logs
 
       - name: Stop services
+        # ✅ Stop và xóa services sau khi tests xong
+        # ✅ down -v: Stop containers và xóa volumes
+        # ✅ if: always(): Chạy ngay cả khi tests fail (cleanup)
         if: always()
         run: |
           docker-compose -f docker-compose.test.yml down -v
@@ -1947,67 +2147,74 @@ services:
 # ☸️ **KUBERNETES DEPLOYMENT** - Deployment Kubernetes
 # ===================================================
 
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1 # ✅ API version của Kubernetes
+kind: Deployment # ✅ Loại resource: Deployment (quản lý pods)
 metadata:
-  name: frontend
+  name: frontend # ✅ Tên deployment
   labels:
-    app: frontend
+    app: frontend # ✅ Label để selector pods
 spec:
-  replicas: 3
+  replicas: 3 # ✅ Số lượng pods cần chạy (3 instances)
   selector:
     matchLabels:
-      app: frontend
+      app: frontend # ✅ Select pods có label app=frontend
   template:
     metadata:
       labels:
-        app: frontend
+        app: frontend # ✅ Label cho pods được tạo
     spec:
       containers:
         - name: frontend
-          image: myorg/myapp:latest
+          image: myorg/myapp:latest # ✅ Docker image để chạy
           ports:
-            - containerPort: 80
+            - containerPort: 80 # ✅ Port container expose (80)
           env:
+            # ✅ Environment variables
             - name: NODE_ENV
-              value: 'production'
+              value: 'production' # ✅ Giá trị trực tiếp
             - name: VITE_API_URL
               valueFrom:
-                configMapKeyRef:
-                  name: app-config
-                  key: api-url
+                configMapKeyRef: # ✅ Lấy từ ConfigMap
+                  name: app-config # ✅ Tên ConfigMap
+                  key: api-url # ✅ Key trong ConfigMap
           resources:
-            requests:
-              memory: '256Mi'
-              cpu: '250m'
-            limits:
-              memory: '512Mi'
-              cpu: '500m'
+            requests: # ✅ Tài nguyên đảm bảo (reserved)
+              memory: '256Mi' # ✅ Đảm bảo 256MB RAM
+              cpu: '250m' # ✅ Đảm bảo 0.25 CPU cores (250 millicores)
+            limits: # ✅ Giới hạn tài nguyên tối đa
+              memory: '512Mi' # ✅ Tối đa 512MB RAM
+              cpu: '500m' # ✅ Tối đa 0.5 CPU cores
           livenessProbe:
+            # ✅ Liveness probe: Kiểm tra container có còn sống không
+            # ✅ Nếu fail → Kubernetes kill và restart container
             httpGet:
-              path: /
+              path: / # ✅ Check endpoint /
               port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            initialDelaySeconds: 30 # ✅ Đợi 30 giây sau khi start trước khi check
+            periodSeconds: 10 # ✅ Check mỗi 10 giây
           readinessProbe:
+            # ✅ Readiness probe: Kiểm tra container đã sẵn sàng nhận traffic chưa
+            # ✅ Nếu fail → Kubernetes không route traffic đến pod này
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            initialDelaySeconds: 5 # ✅ Đợi 5 giây sau khi start
+            periodSeconds: 5 # ✅ Check mỗi 5 giây
 ---
 apiVersion: v1
-kind: Service
+kind: Service # ✅ Loại resource: Service (expose pods ra ngoài)
 metadata:
-  name: frontend-service
+  name: frontend-service # ✅ Tên service
 spec:
   selector:
-    app: frontend
+    app: frontend # ✅ Select pods có label app=frontend
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: LoadBalancer
+      port: 80 # ✅ Port của service (port bên ngoài)
+      targetPort: 80 # ✅ Port của container (port bên trong)
+  type:
+    LoadBalancer # ✅ LoadBalancer: Expose service ra ngoài cluster (có external IP)
+    # ✅ Các loại khác: ClusterIP (internal), NodePort (expose qua node port)
 ```
 
 ### **8.2. Kubernetes vs Docker Compose**

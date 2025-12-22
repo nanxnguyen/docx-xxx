@@ -1,4 +1,4 @@
-## **📝 FULL LIST - 63 QUESTIONS**
+## **📝 FULL LIST - 64 QUESTIONS**
 
 1. **Q01** - Common Mistakes and Best Practices
 2. **Q02** - Data Types & Memory Management - Tổng Hợp
@@ -63,6 +63,7 @@
 61. **Q61** - Keycloak
 62. **Q62** - Xây Dựng Frontend Project Từ Zero Đến Production-Ready
 63. **Q63** - Docker & Containerization for Frontend
+64. **Q64** - Form Handling & Validation - React Hook Form, Zod, Yup
 
 ---
 
@@ -115,9 +116,9 @@
 - Q58 - Networking and Browser Internals
 - Q05 - Collections & Weak References (WeakMap, WeakSet, WeakRef)
 
-### **4️⃣ REACT ECOSYSTEM** (6 câu)
+### **4️⃣ REACT ECOSYSTEM** (7 câu)
 
-**React, Next.js, State Management**
+**React, Next.js, State Management, Forms**
 
 - Q25 - React Deep Dive (Lifecycle, Performance)
 - Q26 - Next.js Framework
@@ -125,6 +126,7 @@
 - Q38 - Tối Ưu Performance React App
 - Q48 - React 19 Migration Guide
 - Q57 - State Management (Redux vs Zustand vs Context)
+- Q64 - Form Handling & Validation (React Hook Form, Zod, Yup)
 
 ### **5️⃣ PERFORMANCE & OPTIMIZATION** (7 câu)
 
@@ -241,14 +243,14 @@
 
 ## **📊 THỐNG KÊ TỔNG QUAN**
 
-- **Tổng số câu hỏi:** 63 câu (+ 2 files tổng hợp)
-- **JavaScript Core:** 15 câu (24%)
+- **Tổng số câu hỏi:** 64 câu (+ 2 files tổng hợp)
+- **JavaScript Core:** 15 câu (23%)
 - **Async & Data Fetching:** 8 câu (13%)
 - **Browser & Web APIs:** 9 câu (14%)
-- **React Ecosystem:** 6 câu (10%)
+- **React Ecosystem:** 7 câu (11%)
 - **Performance & Optimization:** 7 câu (11%)
 - **Security & Auth:** 5 câu (8%)
-- **Architecture & System Design:** 6 câu (10%)
+- **Architecture & System Design:** 6 câu (9%)
 - **Development Workflow:** 7 câu (11%)
 
 ## **🔥 CÂU HỎI PHỔ BIẾN NHẤT (TOP 20)**
@@ -304,7 +306,7 @@
 - Complex form patterns (multi-step, dynamic fields)
 - File uploads
 - Form state management
-- ❌ **Hiện tại**: Không có câu hỏi riêng
+- ✅ **Đã có**: Q64 - Form Handling & Validation (React Hook Form, Zod, Yup)
 
 **4. Progressive Web Apps (PWA)**
 
@@ -455,17 +457,16 @@
 
 ## **📊 ĐỀ XUẤT BỔ SUNG**
 
-### **Priority 1 (Q63-Q67)** - Critical
+### **Priority 1 (Q64-Q67)** - Critical
 
-- **Q63** - Form Handling & Validation (React Hook Form, Zod)
-- **Q64** - Error Handling & Error Boundaries
-- **Q65** - Progressive Web Apps (PWA) & Service Workers
-- **Q66** - Web Performance Metrics & Core Web Vitals
+- **Q64** - Form Handling & Validation (React Hook Form, Zod) ✅
+- **Q65** - Error Handling & Error Boundaries
+- **Q66** - Progressive Web Apps (PWA) & Service Workers
 - **Q67** - Internationalization (i18n) & Localization
 
 ### **Priority 2 (Q68-Q72)** - Important
 
-- **Q68** - Memory Leaks Detection & Debugging Tools
+- **Q68** - Error Handling & Error Boundaries
 - **Q69** - Web Workers & Multi-threading
 - **Q70** - Animation Libraries (Framer Motion, GSAP)
 - **Q71** - SEO Optimization & Meta Tags
@@ -482,8 +483,8 @@
 
 ## **📋 TÓM TẮT PHÂN TÍCH**
 
-**Hiện có:** 63 câu hỏi covering core topics
-**Đề xuất thêm:** 14 câu hỏi (Q64-Q77) covering missing gaps
+**Hiện có:** 64 câu hỏi covering core topics
+**Đề xuất thêm:** 13 câu hỏi (Q65-Q77) covering missing gaps
 
 **Tổng số sau khi bổ sung:** 77 câu hỏi → Coverage ~95% kiến thức Frontend Senior+
 

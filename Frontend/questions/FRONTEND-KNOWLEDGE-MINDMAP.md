@@ -846,20 +846,23 @@ Prototypes   Performance  React Patterns   Code Split       Architecture     Gra
     ├── ✅ Offline support with cache // Hỗ trợ offline với cache
     └── ❌ Client state (use Zustand/Redux) // KHÔNG dùng cho state client
         └── 💡 Client state: UI state, form state → dùng Zustand/Redux
+```
 
-📝 EXAMPLE
+**📝 EXAMPLE:**
+
+```javascript
 const { data, isLoading, error } = useQuery({
   queryKey: ['todos'],
   queryFn: fetchTodos,
   staleTime: 5 * 60 * 1000, // 5 minutes
-  cacheTime: 10 * 60 * 1000 // 10 minutes
+  cacheTime: 10 * 60 * 1000, // 10 minutes
 });
 
 const mutation = useMutation({
   mutationFn: createTodo,
   onSuccess: () => {
     queryClient.invalidateQueries(['todos']);
-  }
+  },
 });
 ```
 
@@ -929,17 +932,18 @@ const mutation = useMutation({
     └── Debounce filter changes // Debounce khi filter thay đổi
 ```
 
-📝 KEY CONFIG
-const gridOptions = {
-rowModelType: 'serverSide',
-pagination: true,
-paginationPageSize: 100,
-cacheBlockSize: 100,
-enableRangeSelection: true,
-suppressColumnVirtualisation: false,
-animateRows: true
-};
+**📝 KEY CONFIG:**
 
+```javascript
+const gridOptions = {
+  rowModelType: 'serverSide',
+  pagination: true,
+  paginationPageSize: 100,
+  cacheBlockSize: 100,
+  enableRangeSelection: true,
+  suppressColumnVirtualisation: false,
+  animateRows: true,
+};
 ```
 
 ---
@@ -998,25 +1002,27 @@ animateRows: true
 ├── Leverage theme.spacing()
 ├── Customize via theme overrides
 └── Use component prop for polymorphism
+```
 
-📝 THEMING EXAMPLE
+**📝 THEMING EXAMPLE:**
+
+```javascript
 const theme = createTheme({
-palette: {
-primary: { main: '#1976d2' },
-secondary: { main: '#dc004e' }
-},
-typography: {
-fontFamily: 'Roboto, Arial, sans-serif'
-},
-components: {
-MuiButton: {
-styleOverrides: {
-root: { textTransform: 'none' }
-}
-}
-}
+  palette: {
+    primary: { main: '#1976d2' },
+    secondary: { main: '#dc004e' },
+  },
+  typography: {
+    fontFamily: 'Roboto, Arial, sans-serif',
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: { textTransform: 'none' },
+      },
+    },
+  },
 });
-
 ```
 
 ---
@@ -1046,8 +1052,11 @@ root: { textTransform: 'none' }
 │
 └── Alternative: localStorage events // Giải pháp thay thế
 └── Less efficient, but universal support // Kém hiệu quả hơn, nhưng hỗ trợ rộng
+```
 
-📝 EXAMPLE
+**📝 EXAMPLE:**
+
+```javascript
 const channel = new BroadcastChannel('auth');
 
 // Tab 1: Broadcast logout
@@ -1055,11 +1064,10 @@ channel.postMessage({ type: 'logout' });
 
 // Tab 2: Listen for logout
 channel.onmessage = (event) => {
-if (event.data.type === 'logout') {
-// Logout current tab
-}
+  if (event.data.type === 'logout') {
+    // Logout current tab
+  }
 };
-
 ```
 
 ---
@@ -1097,16 +1105,18 @@ if (event.data.type === 'logout') {
 ├── Use Dexie.js to avoid callback hell // Dùng Dexie tránh callback hell
 ├── Version your schema // Đánh version schema
 └── Handle quota exceeded errors // Xử lý lỗi hết dung lượng
+```
 
-📝 DEXIE.JS EXAMPLE
+**📝 DEXIE.JS EXAMPLE:**
+
+```javascript
 const db = new Dexie('MyDatabase');
 db.version(1).stores({
-todos: '++id, text, completed'
+  todos: '++id, text, completed',
 });
 
 await db.todos.add({ text: 'Learn IndexedDB' });
 const todos = await db.todos.toArray();
-
 ```
 
 ---
@@ -1556,12 +1566,12 @@ const todos = await db.todos.toArray();
 │ └── 💡 Expand row → hiển thị detail component
 │
 └── 🔄 Real-time Updates (Cập Nhật Thời Gian Thực)
-├── WebSocket integration // Tích Hợp WebSocket
-│ └── 💡 Kết nối WebSocket → update data real-time (trading, chat...)
-├── Async transaction updates // Cập Nhật Giao Dịch Bất Đồng Bộ
-│ └── 💡 applyTransactionAsync() → update không block UI
-└── Cell flash on value change // Nhấp Nháy Ô Khi Giá Trị Thay Đổi
-└── 💡 Cell flash màu khi value thay đổi → user thấy thay đổi ngay
+    ├── WebSocket integration // Tích Hợp WebSocket
+    │   └── 💡 Kết nối WebSocket → update data real-time (trading, chat...)
+    ├── Async transaction updates // Cập Nhật Giao Dịch Bất Đồng Bộ
+    │   └── 💡 applyTransactionAsync() → update không block UI
+    └── Cell flash on value change // Nhấp Nháy Ô Khi Giá Trị Thay Đổi
+        └── 💡 Cell flash màu khi value thay đổi → user thấy thay đổi ngay
 
 ```
 
@@ -1733,4 +1743,3 @@ Q: "Design chat system?" → "Micro-frontend architecture?"
 - **v2.0** - Bổ sung Section 6: WebSocket, Browser APIs, CSS Architecture, Git Workflow, Accessibility, GraphQL, AG Grid, Design Patterns
 - **v2.1** - Bổ sung Q63: Docker & Containerization for Frontend (Multi-stage builds, Docker Compose, Kubernetes basics)
 - **Topics covered**: 63+ câu hỏi từ Junior đến Tech Lead
-```
