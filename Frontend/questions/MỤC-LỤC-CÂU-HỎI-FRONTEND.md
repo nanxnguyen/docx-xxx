@@ -1,6 +1,6 @@
 # 📚 MỤC LỤC CÂU HỎI FRONTEND - INTERVIEW QUESTIONS
 
-> **Tổng hợp 30+ câu hỏi phỏng vấn Frontend từ cơ bản đến nâng cao** *(Được đồng bộ từ SUMMARY file)*  
+> **Tổng hợp 30+ câu hỏi phỏng vấn Frontend từ cơ bản đến nâng cao** *(Được đồng bộ từ SUMMARY file)*
 > Cập nhật: November 27, 2025
 
 ---
@@ -141,7 +141,7 @@
 
 ---
 
-## **VIII. Senior-Level Topics** (Q49-Q57)
+## **VIII. Senior-Level Topics** (Q49-Q63)
 
 > **🎯 Các chủ đề nâng cao cho Senior Frontend Developer**
 
@@ -160,6 +160,7 @@
 | **Q52** | [TypeScript Advanced Patterns](Q52-typescript-advanced-patterns-generics,-utility-types,-advanced-patterns.md) | ⭐⭐⭐⭐⭐ | Generic Constraints, Utility Types, Mapped Types, Type Guards, Branded Types |
 | **Q53** | [CI/CD Pipeline - GitHub Actions, Deployment Automation](Q53-cicd-pipeline-github-actions,-deployment-automation.md) | ⭐⭐⭐⭐⭐ | GitHub Actions, Build Optimization, Blue-Green/Canary Deployment, Docker |
 | **Q54** | [Code Quality & Standards](Q54-code-quality-&-standards-eslint,-prettier,-code-review.md) | ⭐⭐⭐⭐ | ESLint Advanced Config, Prettier, Husky, Commitlint, SonarQube, Bundle Analysis |
+| **Q63** | [Docker & Containerization for Frontend](Q63-docker-&-containerization-for-frontend.md) | ⭐⭐⭐⭐ | Multi-stage Builds, Docker Compose, Security Hardening, Kubernetes Basics, Performance Optimization |
 
 ### **🌐 API & Accessibility**
 
@@ -300,7 +301,7 @@ START HERE:
 
 📍 Senior Interview (4+ years):
    Q12 → Q31 → Q49 → Q50 → Q52 → Q53
-   
+
 📍 Tech Lead Interview:
    Q49 (System Design) → Q50 (Testing) → Q53 (CI/CD) → Q56 (Accessibility) → Q57 (State Management)
 
@@ -375,7 +376,7 @@ Nếu phát hiện lỗi hoặc muốn bổ sung nội dung:
 
 > "The only way to learn a new programming language is by writing programs in it." - Dennis Ritchie
 >
-> 
+>
 PROMPT FULL – “Senior Technical Answer Generator”
 Câu hỏi: # 🗂️ Bảo Mật Security trên Web Application Frontend  (**"Web security = 7 layers: HTTPS, XSS, CSRF, Auth, Storage, API, Headers)
 "Từ bây giờ, hãy trả lời mọi câu hỏi phỏng vấn Frontend ở cấp Senior/Technical Lead.

@@ -179,40 +179,99 @@ Giải thích chi tiết cơ chế hoạt động của JavaScript Engine với 
 
 **Hoạt động:**
 ```typescript
+// 📚 CALL STACK - Minh họa cách thức hoạt động LIFO (Last In First Out)
+
+// 🔢 Hàm nhân 2 số - Level 3 (sâu nhất)
 function multiply(a: number, b: number): number {
-  return a * b; // ③ Pop
+  return a * b; // ③ 🔙 Tính toán xong → Pop ra khỏi stack
 }
 
+// 🔢 Hàm tính bình phương - Level 2
 function square(n: number): number {
-  return multiply(n, n); // ② Push multiply → Pop
+  return multiply(n, n); // ② ➡️ Push multiply lên stack → Gọi multiply(5, 5)
+  // Sau khi multiply return → Pop square ra
 }
 
+// 📝 Hàm in kết quả - Level 1  
 function printSquare(n: number): void {
-  const result = square(n); // ① Push square
-  console.log(result);
+  const result = square(n); // ① ➡️ Push square lên stack → Gọi square(5)
+  console.log(result); // 📤 In ra 25
 }
 
+// 🎬 Gọi hàm chính
 printSquare(5);
 
-// Call Stack Timeline:
-// → main() 
-// → main() → printSquare(5)
-// → main() → printSquare(5) → square(5)
-// → main() → printSquare(5) → square(5) → multiply(5, 5)
-// → main() → printSquare(5) → square(5)  [multiply returns]
-// → main() → printSquare(5)  [square returns]
-// → main()  [printSquare returns]
-// → [empty]
+/* 📊 CALL STACK TIMELINE (Theo thời gian):
+   
+   ⏰ Bước 1: Bắt đầu
+   → main() ← 📌 Script chính đang chạy
+   
+   ⏰ Bước 2: Gọi printSquare(5)
+   → main() → printSquare(5) ← 📌 Push printSquare lên stack
+   
+   ⏰ Bước 3: printSquare gọi square(5)
+   → main() → printSquare(5) → square(5) ← 📌 Push square lên stack
+   
+   ⏰ Bước 4: square gọi multiply(5, 5)
+   → main() → printSquare(5) → square(5) → multiply(5, 5) ← 📌 Stack cao nhất
+   
+   ⏰ Bước 5: multiply return 25
+   → main() → printSquare(5) → square(5) ← 🔙 Pop multiply ra
+   
+   ⏰ Bước 6: square return 25  
+   → main() → printSquare(5) ← 🔙 Pop square ra
+   
+   ⏰ Bước 7: printSquare in 25 và return
+   → main() ← 🔙 Pop printSquare ra
+   
+   ⏰ Bước 8: Hoàn thành
+   → [empty] ← ✅ Stack rỗng, chương trình kết thúc
+*/
 ```
 
-**Stack Overflow:**
+**⚠️ Stack Overflow - Tràn Stack:**
 ```typescript
-// ❌ Recursive function không có điều kiện dừng
+// ============================================
+// ❌ LỖI NGUY HIỂM: Recursive không có base case
+// ============================================
+
+// 🔁 Hàm đệ quy VÔ HẠN - KHÔNG CÓ ĐIỀU KIỆN DỪNG!
 function recursiveFunction() {
-  recursiveFunction(); // Tạo vô hạn stack frames
+  recursiveFunction(); // 💀 Gọi chính nó liên tục → Stack tăng mãi
+  // ⚠️ KHÔNG BAO GIỜ return → Stack không bao giờ giảm!
 }
 
-recursiveFunction(); // RangeError: Maximum call stack size exceeded
+recursiveFunction(); 
+// 💥 CRASH: RangeError: Maximum call stack size exceeded
+// 📊 Chrome: ~10,000 calls
+// 📊 Firefox: ~50,000 calls  
+// 📊 Node.js: ~15,000 calls
+
+/* 📚 STACK TIMELINE KHI CRASH:
+   recursiveFunction() ← Call 1
+   → recursiveFunction() ← Call 2
+   → → recursiveFunction() ← Call 3
+   → → → recursiveFunction() ← Call 4
+   ... (10,000+ calls)
+   💥 BOOM! Stack overflow!
+*/
+
+// ============================================  
+// ✅ CÁCH SỬA: Thêm điều kiện dừng (base case)
+// ============================================
+
+function safeRecursive(n: number): number {
+  // 🛑 BASE CASE: Điều kiện dừng
+  if (n <= 0) {
+    return 0; // 🔙 Dừng đệ quy, bắt đầu pop stack
+  }
+  
+  // 🔄 RECURSIVE CASE: Gọi đệ quy với n nhỏ hơn
+  return n + safeRecursive(n - 1); // ✅ Mỗi lần n giảm → cuối cùng sẽ = 0
+}
+
+console.log(safeRecursive(5)); // ✅ Output: 15 (5+4+3+2+1)
+// 📊 Stack: Tối đa 6 calls (0→1→2→3→4→5) → an toàn!
 ```
 
 ---
@@ -227,35 +286,94 @@ recursiveFunction(); // RangeError: Maximum call stack size exceeded
 **Các Web APIs phổ biến:**
 
 ```typescript
-// A. Timers
-setTimeout(() => console.log('Timer done'), 1000);
-setInterval(() => console.log('Tick'), 1000);
+// ============================================
+// 🌐 WEB APIs - Chạy BÊN NGOÀI JavaScript Engine
+// ============================================
 
-// B. DOM Events
+// 💡 Tất cả APIs này đều:
+// 1️⃣ Chạy ở background (không block main thread)
+// 2️⃣ Callback được đưa vào Task Queue khi xong
+// 3️⃣ Event Loop sẽ lấy callback vào Call Stack khi stack trống
+
+// ============================================
+// A. ⏰ TIMERS - Hẹn giờ thực thi
+// ============================================
+
+// 🕐 setTimeout: Chạy 1 LẦN sau delay
+setTimeout(() => console.log('⏰ Timer done'), 1000);
+// 📋 Cách hoạt động:
+// 1. Browser đặt timer 1000ms ở background
+// 2. Sau 1000ms → callback vào Macrotask Queue
+// 3. Event Loop lấy callback vào Call Stack
+
+// 🔄 setInterval: Chạy LẶP LẠI mỗi interval
+setInterval(() => console.log('🔔 Tick'), 1000);
+// ⚠️ Chú ý: Callback chạy MỖI 1000ms cho đến khi clearInterval()
+
+// ============================================
+// B. 🖱️ DOM EVENTS - Sự kiện người dùng
+// ============================================
+
 document.getElementById('btn').addEventListener('click', () => {
-  console.log('Button clicked');
+  console.log('🖱️ Button clicked');
 });
+// 📋 Cách hoạt động:
+// 1. Browser lắng nghe click event ở background
+// 2. User click → callback vào Macrotask Queue
+// 3. Event Loop lấy callback vào Call Stack
+// 💡 KHÔNG block code khác trong lúc chờ user click!
 
-// C. Network Requests
+// ============================================  
+// C. 🌍 NETWORK REQUESTS - Gọi API
+// ============================================
+
 fetch('https://api.example.com/data')
-  .then(response => response.json())
-  .then(data => console.log(data));
+  .then(response => response.json()) // ⚡ Microtask
+  .then(data => console.log('📥 Data:', data)); // ⚡ Microtask
+// 📋 Cách hoạt động:
+// 1. Browser gửi HTTP request ở background (không block!)
+// 2. Response về → .then() callback vào Microtask Queue
+// 3. Event Loop xử lý Microtasks (priority cao)
 
-// D. File APIs
+// ============================================
+// D. 📁 FILE APIs - Đọc file
+// ============================================
+
 const reader = new FileReader();
-reader.onload = (e) => console.log(e.target.result);
+reader.onload = (e) => console.log('📄 File content:', e.target.result);
 reader.readAsText(file);
+// 📋 Cách hoạt động:  
+// 1. Browser đọc file ở background (I/O operation)
+// 2. Đọc xong → onload callback vào Macrotask Queue
+// 3. Event Loop lấy callback vào Call Stack
+// 💡 Main thread KHÔNG BỊ BLOCK trong lúc đọc file!
 
-// E. Observers
+// ============================================
+// E. 👁️ OBSERVERS - Theo dõi thay đổi
+// ============================================
+
 const observer = new IntersectionObserver((entries) => {
-  console.log('Element intersected');
+  console.log('👁️ Element intersected:', entries);
 });
+observer.observe(document.querySelector('.target'));
+// 📋 Cách hoạt động:
+// 1. Browser theo dõi element position ở background
+// 2. Element vào viewport → callback vào Macrotask Queue
+// 💡 Dùng cho lazy loading, infinite scroll
 
-// F. Geolocation
+// ============================================
+// F. 📍 GEOLOCATION - Lấy vị trí GPS
+// ============================================
+
 navigator.geolocation.getCurrentPosition(
-  (position) => console.log(position.coords),
-  (error) => console.error(error)
+  (position) => console.log('📍 Location:', position.coords),
+  (error) => console.error('❌ Error:', error)
 );
+// 📋 Cách hoạt động:
+// 1. Browser request GPS data từ device (async!)
+// 2. Lấy được location → success callback vào Macrotask Queue
+// 3. Lỗi → error callback vào Macrotask Queue
+// 💡 KHÔNG block trong lúc chờ GPS (có thể mất vài giây!)
 ```
 
 ---
@@ -269,19 +387,94 @@ navigator.geolocation.getCurrentPosition(
 
 **Các Microtasks:**
 ```typescript
-// 1. Promise.then/catch/finally
-Promise.resolve().then(() => console.log('Microtask 1'));
+// ============================================
+// ⚡ MICROTASK QUEUE - Ưu tiên CAO NHẤT
+// ============================================
 
-// 2. queueMicrotask()
-queueMicrotask(() => console.log('Microtask 2'));
+// 💡 ĐẶC ĐIỂM QUAN TRỌNG:
+// 1. Event Loop xử lý TẤT CẢ microtasks trước khi chuyển sang macrotask
+// 2. Nếu microtask tạo thêm microtask → vẫn xử lý luôn (có thể gây starvation!)
+// 3. Ưu tiên: nextTick > Promise > queueMicrotask
 
-// 3. MutationObserver
-const observer = new MutationObserver(() => {
-  console.log('DOM mutated - Microtask 3');
+// ============================================
+// 1️⃣ Promise.then/catch/finally - Phổ biến nhất
+// ============================================
+
+Promise.resolve().then(() => console.log('⚡ Microtask 1'));
+// 📋 Khi resolve → callback vào Microtask Queue
+// ✅ Chạy TRƯỚC tất cả setTimeout, setInterval
+
+Promise.reject().catch(() => console.log('⚡ Microtask Error'));
+// 📋 Khi reject → catch callback vào Microtask Queue
+
+// 🔗 Promise chaining cũng là microtasks
+Promise.resolve()
+  .then(() => console.log('⚡ Step 1')) // Microtask 1
+  .then(() => console.log('⚡ Step 2')) // Microtask 2 (tạo từ Step 1)
+  .then(() => console.log('⚡ Step 3')); // Microtask 3 (tạo từ Step 2)
+// 💡 TẤT CẢ đều chạy trong cùng 1 Event Loop cycle!
+
+// ============================================
+// 2️⃣ queueMicrotask() - API mới (modern)
+// ============================================
+
+queueMicrotask(() => console.log('⚡ Microtask 2'));
+// 📋 Đưa callback trực tiếp vào Microtask Queue
+// ✅ Nhanh hơn Promise.resolve().then() (ít overhead hơn)
+// 💡 Dùng khi cần microtask thuần, không cần Promise
+
+// ============================================
+// 3️⃣ MutationObserver - Theo dõi DOM changes
+// ============================================
+
+const targetElement = document.querySelector('.target');
+const observer = new MutationObserver((mutations) => {
+  console.log('⚡ DOM mutated - Microtask 3:', mutations);
+  // 📋 Callback này là Microtask!
+  // 💡 React/Vue dùng pattern này để batch DOM updates
 });
 
-// 4. process.nextTick() - Node.js only (highest priority)
-process.nextTick(() => console.log('NextTick - Microtask 0'));
+observer.observe(targetElement, {
+  childList: true, // 👁️ Theo dõi children thay đổi
+  attributes: true, // 👁️ Theo dõi attributes thay đổi
+});
+
+// Khi DOM thay đổi → callback vào Microtask Queue
+targetElement.innerHTML = 'Changed!'; // 🔄 Trigger MutationObserver
+
+// ============================================  
+// 4️⃣ process.nextTick() - Node.js ONLY (ƯU TIÊN CAO NHẤT!)
+// ============================================
+
+process.nextTick(() => console.log('🚀 NextTick - Microtask 0'));
+// 📋 Chạy TRƯỚC TẤT CẢ microtasks khác (even Promise!)
+// ⚠️ CHỈ có trong Node.js, KHÔNG có trong Browser!
+// 💡 Dùng khi cần đảm bảo code chạy NGAY SAU Call Stack trống
+
+/* 📊 THỨ TỰ ƯU TIÊN (từ cao → thấp):
+   
+   1. 🚀 process.nextTick() ← CAO NHẤT (Node.js only)
+   2. ⚡ Promise microtasks
+   3. ⚡ queueMicrotask()
+   4. ⚡ MutationObserver
+   5. 🎯 Macrotasks (setTimeout, etc.) ← THẤP NHẤT
+*/
+
+// ============================================
+// ⚠️ NGUY HIỂM: Microtask Starvation
+// ============================================
+
+function dangerousMicrotask() {
+  queueMicrotask(() => {
+    console.log('⚡ Microtask running...');
+    dangerousMicrotask(); // 🔁 Tạo thêm microtask liên tục!
+  });
+}
+
+// dangerousMicrotask(); // ⚠️ ĐỪNG CHẠY!
+// 💀 Kết quả: Microtask Queue không bao giờ trống
+// 💀 Macrotasks (setTimeout, UI events) KHÔNG BAO GIỜ chạy!
+// 💀 UI đóng băng, app treo!
 ```
 
 ---
@@ -295,20 +488,78 @@ process.nextTick(() => console.log('NextTick - Microtask 0'));
 
 **Các Macrotasks:**
 ```typescript
-// 1. setTimeout / setInterval
-setTimeout(() => console.log('Macrotask 1'), 0);
-setInterval(() => console.log('Macrotask 2'), 1000);
+// ============================================
+// 🎯 MACROTASK QUEUE - Ưu tiên THẤP hơn Microtask
+// ============================================
 
-// 2. setImmediate - Node.js only
-setImmediate(() => console.log('Macrotask 3'));
+// 💡 ĐẶC ĐIỂM QUAN TRỌNG:
+// 1. Event Loop chỉ lấy MỘT macrotask mỗi lần
+// 2. Sau mỗi macrotask → xử lý HẾT TẤT CẢ microtasks
+// 3. Browser có thể render UI giữa các macrotasks
 
-// 3. I/O operations
+// ============================================
+// 1️⃣ setTimeout / setInterval - Timers
+// ============================================
+
+// ⏰ setTimeout: Chạy 1 LẦN sau delay
+setTimeout(() => console.log('🎯 Macrotask 1'), 0);
+// 📋 Delay 0ms KHÔNG có nghĩa là chạy ngay!
+// ✅ Vẫn phải chờ:
+//    - Call Stack trống
+//    - TẤT CẢ Microtasks xong
+// 💡 Thực tế: minimum ~4ms trong browser (HTML5 spec)
+
+// 🔄 setInterval: Chạy LẶP LẠI mỗi interval
+setInterval(() => console.log('🎯 Macrotask 2'), 1000);
+// ⚠️ Chú ý: Nếu callback chạy lâu > interval
+//          → callbacks có thể chồng chéo!
+// 💡 Nên dùng setTimeout recursive thay vì setInterval
+
+// ============================================
+// 2️⃣ setImmediate() - Node.js ONLY
+// ============================================
+
+setImmediate(() => console.log('🎯 Macrotask 3 - Node.js'));
+// 📋 Chạy trong CHECK phase của Node.js Event Loop
+// 💡 Trong I/O callbacks: setImmediate chạy TRƯỚC setTimeout!
+// ⚠️ CHỈ có trong Node.js, KHÔNG có trong Browser!
+
+// ============================================
+// 3️⃣ I/O Operations - File system, Network
+// ============================================
+
+const fs = require('fs'); // Node.js
+
 fs.readFile('file.txt', (err, data) => {
-  console.log('File read - Macrotask 4');
+  console.log('🎯 File read - Macrotask 4');
+  // 📋 Callback vào Macrotask Queue sau khi đọc xong
+  // 💡 Không block main thread trong lúc đọc file!
 });
 
-// 4. UI rendering events (Browser)
-requestAnimationFrame(() => console.log('RAF - Macrotask 5'));
+// ============================================
+// 4️⃣ UI Rendering / requestAnimationFrame - Browser ONLY
+// ============================================
+
+requestAnimationFrame(() => console.log('🎯 RAF - Macrotask 5'));
+// 📋 Chạy TRƯỚC KHI browser paint frame tiếp theo
+// 💡 Tối ưu cho animation: đồng bộ với refresh rate (60fps)
+// ✅ Dùng cho animation thay vì setTimeout → mượt hơn!
+
+/* 📊 SỰ KHÁC BIỆT GIỮA CÁC MACROTASKS:
+   
+   🔹 setTimeout/setInterval:
+      - Chạy trong TIMERS phase (Node.js)
+      - Không đồng bộ với screen refresh
+   
+   🔹 setImmediate (Node.js):
+      - Chạy trong CHECK phase
+      - Thường nhanh hơn setTimeout trong I/O callbacks
+   
+   🔹 requestAnimationFrame (Browser):
+      - Chạy TRƯỚC render
+      - Đồng bộ với screen refresh (60fps)
+      - Tối ưu cho animation
+*/
 ```
 
 ---
@@ -384,41 +635,90 @@ requestAnimationFrame(() => console.log('RAF - Macrotask 5'));
 **🔍 Ví dụ 1: Phân biệt Microtask vs Macrotask**
 
 ```typescript
-console.log('1: Sync code start'); // ① Call Stack
+// ============================================
+// 🎯 VÍ DỤ KINH ĐIỂN - Phân biệt thứ tự thực thi
+// ============================================
 
-setTimeout(() => console.log('2: Macrotask 1'), 0); // ④ Macrotask Queue
-setTimeout(() => console.log('3: Macrotask 2'), 0); // ④ Macrotask Queue
+// 📢 Bước 1: Code đồng bộ chạy TRƯỚC TIÊN
+console.log('1: Sync code start'); // ① Call Stack - chạy ngay lập tức
 
+// 🎯 Đăng ký Macrotasks (thứ tự thấp)
+setTimeout(() => console.log('2: Macrotask 1'), 0); // ④ Vào Macrotask Queue
+setTimeout(() => console.log('3: Macrotask 2'), 0); // ④ Vào Macrotask Queue
+// 💡 Delay 0ms KHÔNG có nghĩa chạy ngay! Vẫn phải chờ Microtasks xong
+
+// ⚡ Đăng ký Microtasks (thứ tự cao)
 Promise.resolve()
-  .then(() => console.log('4: Microtask 1')) // ② Microtask Queue
-  .then(() => console.log('5: Microtask 2')); // ② Microtask Queue (chained)
+  .then(() => console.log('4: Microtask 1')) // ② Vào Microtask Queue
+  .then(() => console.log('5: Microtask 2')); // ② Chained - cũng vào Microtask Queue
+// 💡 .then() chaining tạo thêm microtasks, nhưng vẫn chạy TRONG cùng 1 cycle!
 
 Promise.resolve().then(() => {
   console.log('6: Microtask 3');
 
-  // ⚠️ Tạo thêm microtask TRONG microtask
+  // ⚠️ Tạo thêm microtask BÊN TRONG microtask
   queueMicrotask(() => console.log('7: Microtask 4'));
+  // 💡 Microtask này cũng sẽ chạy NGAY trong cùng cycle!
 });
 
-console.log('8: Sync code end'); // ① Call Stack
+// 📢 Bước 2: Code đồng bộ tiếp theo
+console.log('8: Sync code end'); // ① Call Stack - chạy ngay lập tức
 
-/* 🎯 OUTPUT (theo thứ tự Event Loop):
-1: Sync code start          // ① Call Stack: đồng bộ
-8: Sync code end            // ① Call Stack: đồng bộ
-4: Microtask 1              // ② ALL Microtasks (xử lý HẾT)
-6: Microtask 3              // ② ALL Microtasks
-7: Microtask 4              // ② ALL Microtasks (tạo thêm trong microtask)
-5: Microtask 2              // ② ALL Microtasks (chained promise)
-2: Macrotask 1              // ④ ONE Macrotask (chỉ lấy 1 cái)
-3: Macrotask 2              // ④ ONE Macrotask (chu kỳ Event Loop tiếp theo)
+/* 📊 OUTPUT (theo THỨ TỰ EVENT LOOP):
 
-📋 Giải thích từng bước:
-1. Call Stack chạy hết code đồng bộ (1, 8)
-2. Event Loop xử lý HẾT TẤT CẢ microtasks (4, 6, 7, 5)
-3. Browser có thể render UI (nếu cần)
-4. Event Loop lấy MỘT macrotask (2)
-5. Quay lại bước 1, xử lý microtasks rồi lấy macrotask tiếp theo (3)
+   🔵 GIAI ĐOẠN 1: THỰC THI CALL STACK (đồng bộ)
+   ===============================================
+   1: Sync code start          // ➡️ Chạy ngay, in ra đầu tiên
+   8: Sync code end            // ➡️ Chạy ngay, in ra thứ 2
+   
+   ⚡ GIAI ĐOẠN 2: XỦ LÝ TẤT CẢ MICROTASKS
+   ===============================================
+   4: Microtask 1              // ➡️ Microtask đầu tiên
+   6: Microtask 3              // ➡️ Microtask thứ 2
+   7: Microtask 4              // ➡️ Microtask tạo từ bên trong Microtask 3
+   5: Microtask 2              // ➡️ Chained .then() từ Microtask 1
+   
+   🎯 GIAI ĐOẠN 3: XỦ LÝ MỘT MACROTASK
+   ===============================================  
+   2: Macrotask 1              // ➡️ Lấy 1 macrotask từ queue
+   
+   🔄 GIAI ĐOẠN 4: LẶP LẠI - Cycle mới
+   ===============================================
+   (Kiểm tra Microtasks - trống)
+   (Lấy tiếp 1 Macrotask)
+   3: Macrotask 2              // ➡️ Chu kỳ Event Loop tiếp theo
 */
+
+/* 📚 GIẢI THÍCH TỬNG BƯỚC CHI TIẾT:
+   
+   🔹 Bước 1: Call Stack thực thi code đồng bộ
+      - Chạy console.log('1...') → In ra "1: Sync code start"
+      - setTimeout đăng ký → callback vào Macrotask Queue
+      - Promise.then đăng ký → callback vào Microtask Queue  
+      - Chạy console.log('8...') → In ra "8: Sync code end"
+      - Call Stack TRỐNG! → Event Loop bắt đầu
+   
+   🔹 Bước 2: Event Loop kiểm tra Microtask Queue
+      - Có Microtasks! → Xử lý HẾT TẤT CẢ:
+        • Chạy Microtask 1 → In "4"
+        • Chạy Microtask 3 → In "6"
+          • Tạo thêm Microtask 4 → Thêm vào queue
+        • Chạy Microtask 4 → In "7"
+        • Chạy Microtask 2 (chained) → In "5"
+      - Microtask Queue TRỐNG! → Tiếp tục
+   
+   🔹 Bước 3: Browser có thể render UI (nếu cần)
+   
+   🔹 Bước 4: Event Loop kiểm tra Macrotask Queue
+      - Có Macrotask! → Lấy MỘT cái:
+        • Chạy Macrotask 1 → In "2"
+      - Quay lại Bước 2 (kiểm tra Microtasks)
+   
+   🔹 Bước 5: Chu kỳ mới - Lặp lại
+      - Microtask Queue trống → Skip
+      - Lấy tiếp 1 Macrotask → In "3"
+*/
+```
 ```
 
 **🔍 Ví dụ 2: Microtask Starvation (Đói macrotask)**
@@ -453,81 +753,171 @@ infiniteMicrotasks();
 **🔍 Ví dụ 3: Call Stack với Async/Await**
 
 ```typescript
+// ============================================
+// 🔄 ASYNC/AWAIT - Cách await hoạt động với Event Loop
+// ============================================
+
+// 📝 Async function - trả về Promise
 async function asyncFunction() {
   console.log('2: Inside async - before await');
-
+  // 📍 Code TRƯỚC await chạy ĐỒNG BỘ (trong Call Stack)
+  
   await Promise.resolve(); // ⚡ await tạo microtask
-
+  // 🔑 await làm 2 việc:
+  //    1. Đợi Promise resolve
+  //    2. Code phía SAU await → thành Microtask!
+  
   console.log('5: After await (microtask)');
+  // 📍 Code SAU await = Microtask (vào Microtask Queue)
 }
 
-console.log('1: Start');
-asyncFunction();
-console.log('3: After calling async');
+// 🎬 BẮT ĐẦU EXECUTION
+console.log('1: Start'); // ① Đồng bộ - in ngay
 
+asyncFunction(); // ② Gọi async function
+// 💡 asyncFunction() chạy ngay đến await, rồi tạm dừng
+
+console.log('3: After calling async'); // ③ Đồng bộ - in ngay
+
+// ⚡ Thêm 1 Microtask khác
 Promise.resolve().then(() => console.log('4: Promise.then (microtask)'));
 
+// 🎯 Thêm 1 Macrotask
 setTimeout(() => console.log('6: setTimeout (macrotask)'), 0);
 
-/* OUTPUT:
-1: Start
-2: Inside async - before await
-3: After calling async
-4: Promise.then (microtask)
-5: After await (microtask)
-6: setTimeout (macrotask)
+/* 📊 OUTPUT THEO THỨ TỰ:
+   ===============================================
+   
+   🔵 GIAI ĐOẠN 1: CALL STACK (Đồng bộ)
+   -----------------------------------------------
+   1: Start                        // ① console.log đồng bộ
+   2: Inside async - before await  // ② Code TRƯỚC await (đồng bộ)
+   3: After calling async          // ③ console.log đồng bộ
+   
+   ⚡ GIAI ĐOẠN 2: MICROTASK QUEUE
+   -----------------------------------------------
+   4: Promise.then (microtask)     // ④ Microtask đăng ký trước
+   5: After await (microtask)      // ⑤ Code SAU await (microtask)
+   
+   🎯 GIAI ĐOẠN 3: MACROTASK QUEUE
+   -----------------------------------------------
+   6: setTimeout (macrotask)       // ⑥ Macrotask cuối cùng
+*/
 
-📋 Giải thích:
-- `await` biến code phía sau thành microtask
-- Tất cả microtasks (4, 5) chạy trước macrotask (6)
+/* 📚 GIẢI THÍCH CHI TIẾT:
+   
+   🔹 Tại sao "2" in TRƯỚC "3"?
+      - asyncFunction() được gọi NGAY trong Call Stack
+      - Code TRƯỚC await chạy đồng bộ
+      - Gặp await → tạm dừng, tạo Microtask cho code sau await
+      - Return về main flow → tiếp tục chạy "3"
+   
+   🔹 Tại sao "4" in TRƯỚC "5"?
+      - Cả 2 đều là Microtasks
+      - "4" đăng ký trước (Promise.resolve().then)
+      - "5" đăng ký sau (code sau await)
+      - Microtasks chạy theo thứ tự FIFO (First In First Out)
+   
+   🔹 Tại sao "6" in SAU CÙNG?
+      - setTimeout là Macrotask (priority thấp)
+      - Event Loop xử lý HẾT Microtasks trước
+      - Sau đó mới lấy 1 Macrotask
+   
+   🎯 KEY TAKEAWAY:
+      - Code TRƯỚC await = Đồng bộ (Call Stack)
+      - Code SAU await = Microtask (Microtask Queue)
+      - await Promise.resolve() = tạo Microtask ngay lập tức
 */
 ```
 
 **🔍 Ví dụ 4: Thực Tế trong Trading App**
 
 ```typescript
+// ============================================
+// 📈 REAL-WORLD: Trading App Optimization
+// ============================================
+// 🎯 Bài toán: Nhận 100 order updates từ WebSocket cùng lúc
+// ❌ Render từng order → 100 DOM updates → LAG!
+// ✅ Batch tất cả → 1 DOM update → SMOOTH!
+
+// 📦 Interface định nghĩa cấu trúc order
 interface OrderUpdate {
-  orderId: string;
-  status: 'pending' | 'filled';
-  price: number;
+  orderId: string;              // 🆔 Mã lệnh: "ORD-001"
+  status: 'pending' | 'filled'; // 📊 Trạng thái: chờ/khớp
+  price: number;                // 💰 Giá khớp
 }
 
 class TradingUI {
+  // 🗂️ Mảng tạm chứa updates chờ render
   private pendingUpdates: OrderUpdate[] = [];
 
-  // ❌ BAD: Mỗi update render ngay (gây lag)
+  // ============================================
+  // ❌ CÁCH TỆ: Render từng update riêng lẻ
+  // ============================================
   updateOrderBad(order: OrderUpdate) {
-    this.renderOrder(order); // Render ngay lập tức
+    this.renderOrder(order); // 🐌 Render NGAY LẬP TỨC!
+    
+    // 💀 VẤN ĐỀ:
+    // - Mỗi render = 1 DOM update = 1 reflow/repaint
+    // - 100 orders = 100 reflows = BLOCKING UI!
+    // - User thấy UI giật lag, scroll không mượt
   }
 
-  // ✅ GOOD: Batch updates với microtask
+  // ============================================
+  // ✅ CÁCH TỐT: Batch updates với Microtask
+  // ============================================
   updateOrderGood(order: OrderUpdate) {
+    // ① Thêm order vào pending array (fast!)
     this.pendingUpdates.push(order);
+    // 💡 KHÔNG render ngay → chỉ lưu vào array
 
-    // queueMicrotask: Batch tất cả updates trong cùng 1 tick
+    // ② Schedule render trong Microtask
     queueMicrotask(() => {
+      // 🔍 Check xem còn pending updates không
       if (this.pendingUpdates.length > 0) {
+        // 🎨 Render TẤT CẢ updates cùng lúc
         this.renderBatch(this.pendingUpdates);
+        
+        // 🧹 Clear pending array
         this.pendingUpdates = [];
       }
     });
+    
+    // 🎯 MAGIC:
+    // - 100 calls updateOrderGood() → 100 queueMicrotask()
+    // - NHƯNG: Microtasks chạy SAU Call Stack trống
+    // - → pendingUpdates có 100 items
+    // - → Chỉ render 1 LẦN với 100 items!
   }
 
+  // 🐌 Render 1 order (chậm - nhiều DOM ops)
   private renderOrder(order: OrderUpdate) {
-    console.log(`Render single order: ${order.orderId}`);
-    // DOM update expensive
+    console.log(`🔴 Render single order: ${order.orderId}`);
+    // DOM operations:
+    // - document.createElement()
+    // - element.appendChild()
+    // - Trigger reflow/repaint
+    // ⏱️ ~5-10ms per render
   }
 
+  // ⚡ Render nhiều orders cùng lúc (nhanh!)
   private renderBatch(orders: OrderUpdate[]) {
-    console.log(`Render ${orders.length} orders in 1 batch`);
-    // DOM update once - HIỆU QUẢ HƠN!
+    console.log(`🟢 Render ${orders.length} orders in 1 batch`);
+    // Batch DOM operations:
+    // - DocumentFragment để tạo tất cả elements
+    // - 1 appendChild duy nhất
+    // - 1 reflow/repaint duy nhất
+    // ⏱️ ~10-15ms cho 100 orders!
   }
 }
 
-// Test
+// ============================================
+// 🧪 TEST: So sánh performance
+// ============================================
+
 const ui = new TradingUI();
 
-// Giả sử nhận 100 updates cùng lúc từ WebSocket
+// 📡 Giả sử WebSocket nhận 100 updates CÙNG LÚC
 for (let i = 0; i < 100; i++) {
   ui.updateOrderGood({
     orderId: `ORD-${i}`,
@@ -536,66 +926,234 @@ for (let i = 0; i < 100; i++) {
   });
 }
 
-/* 🎯 KẾT QUẢ:
-❌ updateOrderBad: Render 100 lần → LAG UI
-✅ updateOrderGood: Render 1 lần với 100 items → SMOOTH UI
+/* 📊 KẾT QUẢ SO SÁNH:
+   
+   ❌ updateOrderBad (render riêng lẻ):
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   🔴 Render single order: ORD-0
+   🔴 Render single order: ORD-1
+   🔴 Render single order: ORD-2
+   ... (100 lần!)
+   
+   💀 Performance:
+   - 100 DOM updates
+   - 100 reflows/repaints
+   - ⏱️ ~500-1000ms total
+   - 🐌 UI bị LAG, scroll giật
+   - ❌ FPS drop xuống 30-40
+   
+   ✅ updateOrderGood (batch render):
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   🟢 Render 100 orders in 1 batch
+   
+   ⚡ Performance:
+   - 1 DOM update duy nhất
+   - 1 reflow/repaint duy nhất  
+   - ⏱️ ~10-15ms total (NHANH GẤP 50 LẦN!)
+   - 🎯 UI mượt mà, scroll buttery smooth
+   - ✅ FPS stable 60
+   
+   🎯 TIMELINE:
+   ───────────────────────────────────────
+   0ms:  Call 100x updateOrderGood()
+         → Thêm 100 items vào pendingUpdates
+         → Đăng ký 100 microtasks (nhưng chỉ 1 chạy!)
+   
+   1ms:  Call Stack trống
+         → Event Loop kiểm tra Microtask Queue
+         → Chạy microtask → renderBatch(100 items)
+   
+   11ms: Render xong 100 items
+         → UI update mượt mà
+         → User vẫn scroll được!
+*/
 
-💡 Microtask giúp batch operations trong cùng 1 Event Loop tick
+/* 💡 TẠI SAO LẠI HOẠT ĐỘNG?
+   
+   🔹 Key Insight:
+      - queueMicrotask() chỉ ĐĂNG KÝ callback
+      - Callback chưa chạy ngay
+      - Chạy khi Call Stack TRỐNG
+   
+   🔹 Flow:
+      1. Loop 100 lần: updateOrderGood()
+         → 100 items vào pendingUpdates
+         → 100 queueMicrotask() (nhưng chưa chạy!)
+      
+      2. Call Stack trống
+         → Event Loop: "Aha! Có Microtasks!"
+         → Chạy microtask đầu tiên
+         → pendingUpdates.length = 100
+         → renderBatch(100 items)
+         → Clear pendingUpdates
+      
+      3. Microtasks còn lại chạy
+         → pendingUpdates.length = 0
+         → Skip render (đã render rồi!)
+   
+   🎯 Best Practice:
+      - Dùng Microtask để BATCH operations
+      - React, Vue dùng pattern này cho state updates
+      - Giảm DOM operations → tăng performance
 */
 ```
 
 **Best Practices:**
 
 ```typescript
-// ✅ DO: Sử dụng microtask cho batch operations
+// ============================================
+// ✅ BEST PRACTICE 1: Microtask cho Batch Operations
+// ============================================
+
 class StateManager {
+  // 🗂️ Set để tránh duplicate callbacks
   private updates: Set<() => void> = new Set();
+  // 🚦 Flag check xem đã schedule chưa
   private scheduled = false;
 
   scheduleUpdate(callback: () => void) {
+    // ① Thêm callback vào Set (auto dedupe)
     this.updates.add(callback);
+    // 💡 Set tự động loại bỏ duplicate
 
+    // ② Chỉ schedule 1 lần duy nhất
     if (!this.scheduled) {
       this.scheduled = true;
+      
+      // ③ Dùng queueMicrotask để batch
       queueMicrotask(() => {
+        // ④ Chạy TẤT CẢ callbacks
         this.updates.forEach((cb) => cb());
+        
+        // ⑤ Reset state
         this.updates.clear();
         this.scheduled = false;
       });
     }
+    
+    // 🎯 KẾT QUẢ:
+    // - Gọi 100 lần scheduleUpdate() → chỉ 1 microtask
+    // - Tất cả callbacks chạy cùng lúc trong 1 batch
   }
 }
 
-// ✅ DO: Sử dụng macrotask cho defer work
+// ============================================
+// ✅ BEST PRACTICE 2: Macrotask cho Defer Work
+// ============================================
+
+// 💡 Dùng setTimeout để CHO PHÉP UI render
 function deferExpensiveWork(work: () => void) {
-  setTimeout(work, 0); // Chạy sau khi UI render
+  setTimeout(work, 0); // Chạy SAU khi UI render
+  
+  // 🔹 Lý do:
+  // - setTimeout = Macrotask
+  // - Browser render GIỮA các Macrotasks
+  // - → UI có cơ hội update trước khi chạy work
 }
 
-// ❌ DON'T: Tạo vô hạn microtasks
+// 🎯 Use case: Heavy calculation không urgent
+function processLargeDataset(data: any[]) {
+  console.log('🟢 Start processing...');
+  
+  // 💡 Defer heavy work để UI không freeze
+  deferExpensiveWork(() => {
+    // Heavy calculation here
+    const result = data.map(item => complexCalculation(item));
+    console.log('✅ Done!', result.length);
+  });
+  
+  console.log('🟢 UI vẫn responsive!');
+}
+
+// ============================================
+// ❌ BAD PRACTICE: Vô hạn Microtasks (Starvation)
+// ============================================
+
 function badInfiniteMicrotask() {
-  Promise.resolve().then(() => badInfiniteMicrotask()); // CHẶN macrotasks!
+  Promise.resolve().then(() => badInfiniteMicrotask()); 
+  // 💀 CHẶN Macrotasks!
+  
+  // 🐎 VẤN ĐỀ:
+  // - Tạo microtask mới vô hạn
+  // - Microtask Queue không bao giờ trống
+  // - Event Loop KHÔNG BAO GIỞ chuyển sang Macrotask
+  // - → setTimeout, UI events, rendering BỊ CHẶN!
+  // - → UI FREEZE hoàn toàn!
 }
 
-// ✅ DO: Break vòng lặp với macrotask
+// ============================================
+// ✅ GOOD PRACTICE: Break vòng lặp với Macrotask
+// ============================================
+
 function goodDeferWork(count: number) {
   if (count > 0) {
-    setTimeout(() => goodDeferWork(count - 1), 0); // Cho phép UI render
+    // 💡 Dùng setTimeout thay vì Promise
+    setTimeout(() => goodDeferWork(count - 1), 0);
+    
+    // 🎯 Lợi ích:
+    // - Mỗi iteration = 1 Macrotask riêng
+    // - Browser render GIỮA các iterations
+    // - UI vẫn responsive!
+    // - User vẫn scroll/click được!
   }
 }
 
-// ✅ DO: Hiểu thứ tự execution để debug
+// ============================================
+// ✅ BEST PRACTICE 3: Hiểu thứ tự execution
+// ============================================
+
 async function debugEventLoop() {
+  // ① Sync code - chạy NGAY
   console.log('1: Sync');
 
+  // ② Đăng ký Microtask
   queueMicrotask(() => console.log('3: Microtask'));
 
+  // ③ Await = tạo Microtask cho code sau
   await Promise.resolve();
   console.log('4: After await (microtask)');
 
+  // ④ Đăng ký Macrotask
   setTimeout(() => console.log('5: Macrotask'), 0);
 
+  // ⑤ Sync code tiếp - chạy NGAY
   console.log('2: Sync end');
+  
+  /* 📊 OUTPUT:
+     1: Sync              ← ① Đồng bộ
+     2: Sync end          ← ⑤ Đồng bộ
+     3: Microtask         ← ② Microtask (đăng ký trước)
+     4: After await       ← ③ Microtask (await)
+     5: Macrotask         ← ④ Macrotask (cuối cùng)
+  */
 }
+
+// ============================================
+// 📚 KEY TAKEAWAYS
+// ============================================
+
+/*
+  ✅ KHI NÀO DÙNG MICROTASK?
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. State updates (React setState batching)
+  2. Batch DOM operations (FastDOM pattern)
+  3. Promise chains (data transformation)
+  4. Việc CẦN xử lý NGAY trong cùng 1 tick
+  
+  🎯 KHI NÀO DÙNG MACROTASK?
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Defer work (không urgent)
+  2. Animations (requestAnimationFrame)
+  3. Break heavy work thành chunks
+  4. Việc CẦN cho UI render giữa các tasks
+  
+  ⚠️ CẢNH BÁO:
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. KHÔNG tạo vô hạn Microtasks
+  2. Luôn có điều kiện dừng
+  3. Monitor performance (DevTools)
+  4. Hiểu thứ tự: Call Stack → Microtasks → Render → Macrotask
+*/
 ```
 
 **📋 Tóm tắt Best Practices:**
@@ -609,44 +1167,116 @@ async function debugEventLoop() {
 **Common Mistakes:**
 
 ```typescript
-// ❌ MISTAKE 1: Nghĩ setTimeout(fn, 0) chạy ngay lập tức
-console.log('1');
-setTimeout(() => console.log('2'), 0);
-console.log('3');
-// Output: 1, 3, 2 (KHÔNG phải 1, 2, 3!)
-// ⚠️ setTimeout là macrotask, chạy sau tất cả microtasks
+// ============================================
+// ❌ LỖI 1: Nghĩ setTimeout(fn, 0) chạy NGAY LẬP TỨC
+// ============================================
 
-// ❌ MISTAKE 2: Quên Promise.then là microtask
-setTimeout(() => console.log('1: Macro'), 0);
-Promise.resolve().then(() => console.log('2: Micro'));
-// Output: 2, 1 (microtask chạy TRƯỚC macrotask!)
+console.log('1'); // ① Đồng bộ - in NGAY
 
-// ❌ MISTAKE 3: Blocking Event Loop với synchronous heavy work
+setTimeout(() => console.log('2'), 0); // ② Macrotask - chờ
+// 💡 Delay 0ms KHÔNG CÓ NGHĨA là chạy ngay!
+// 🐎 Vẫn là Macrotask → vào Macrotask Queue
+
+console.log('3'); // ③ Đồng bộ - in NGAY
+
+// OUTPUT: 1, 3, 2 (KHÔNG PHẢI 1, 2, 3!)
+// ⚠️ LÝ do: setTimeout là Macrotask, chạy SAU tất cả code đồng bộ!
+
+/* 📚 GIẢI THÍCH CHI TIẾT:
+   
+   🔹 Thứ tự thực thi:
+      0ms:  console.log('1')        ← Call Stack
+      0ms:  setTimeout(...)         ← Đăng ký Macrotask (chưa chạy!)
+      0ms:  console.log('3')        ← Call Stack
+      1ms:  Call Stack trống      ← Check Microtask Queue (empty)
+      1ms:  console.log('2')        ← Chạy Macrotask
+   
+   🎯 Lưu ý:
+      - setTimeout(fn, 0) ≠ chạy ngay
+      - Nó vẫn phải ĐỢI:
+        1. Call Stack trống
+        2. Microtask Queue trống
+        3. Sau đó mới đến lượt
+*/
+
+// ============================================
+// ❌ LỖI 2: Quên Promise.then là Microtask
+// ============================================
+
+setTimeout(() => console.log('1: Macro'), 0); // Macrotask
+// 🎯 Macrotask Queue: [console.log('1: Macro')]
+
+Promise.resolve().then(() => console.log('2: Micro')); // Microtask
+// ⚡ Microtask Queue: [console.log('2: Micro')]
+
+// OUTPUT: 2, 1 (microtask chạy TRƯỚC macrotask!)
+
+/* 📊 TIMELINE:
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   0ms:  Đăng ký setTimeout  → Macrotask Queue
+   0ms:  Đăng ký Promise.then  → Microtask Queue
+   
+   1ms:  Call Stack trống
+   1ms:  Event Loop check:
+         ① Microtask Queue có gì? → console.log('2: Micro')
+         ② Microtask Queue trống chưa? → Rồi
+         ③ Lấy 1 Macrotask → console.log('1: Macro')
+   
+   🎯 QUY TẮC VÀNG:
+      - Microtasks LUÔN chạy trước Macrotasks
+      - Dù Macrotask đăng ký trước!
+*/
+
+// ============================================
+// ❌ LỖI 3: Blocking Event Loop với Heavy Work
+// ============================================
+
 function heavyCalculation() {
   const start = Date.now();
-  while (Date.now() - start < 5000) {} // Block 5 giây!
+  
+  // 💀 Vòng lặp block 5 giây!
+  while (Date.now() - start < 5000) {
+    // 🐎 Không làm gì, chỉ chờ thời gian trôi
+  }
+  
   console.log('Done');
 }
 
-heavyCalculation(); // UI đóng băng 5 giây!
+heavyCalculation(); // 💀 UI đóng băng 5 GIÂY!
+
+/* 🐎 VẤN ĐỀ:
+   - Vòng while chạy ĐỒNG BỘ trong Call Stack
+   - Call Stack KHÔNG BAO GIỞ trống trong 5 giây
+   - Event Loop KHÔNG thể chạy Microtasks/Macrotasks
+   - Browser KHÔNG thể render UI
+   - → User không scroll/click được!
+   - → UI FREEZE hoàn toàn!
+*/
 
 // ✅ FIX: Break thành chunks với setTimeout
 function heavyCalculationFixed(iterations: number, callback: () => void) {
-  const chunkSize = 100;
+  const chunkSize = 100; // ① Xử lý 100 items mỗi lần
   let current = 0;
 
   function processChunk() {
+    // ② Tính end cho chunk hiện tại
     const end = Math.min(current + chunkSize, iterations);
 
+    // ③ Xử lý chunk
     for (let i = current; i < end; i++) {
-      // Do heavy work
+      // Do heavy work here
+      // 💡 Chỉ 100 iterations → ~16ms → OK!
     }
 
     current = end;
 
+    // ④ Còn work chưa?
     if (current < iterations) {
-      setTimeout(processChunk, 0); // Cho UI render
+      // 💡 Dùng setTimeout để cho UI render
+      setTimeout(processChunk, 0); // ← Macrotask cho chunk tiếp theo
+      // 🎯 UI có cơ hội render GIỮA các chunks!
     } else {
+      // ⑤ Xong hết!
       callback();
     }
   }
@@ -654,21 +1284,85 @@ function heavyCalculationFixed(iterations: number, callback: () => void) {
   processChunk();
 }
 
-// ❌ MISTAKE 4: Microtask starvation
+/* ✅ LỢI ÍCH:
+   - Mỗi chunk = 1 Macrotask riêng
+   - Browser render GIỮA các Macrotasks
+   - UI vẫn responsive!
+   - Progress bar có thể update!
+*/
+
+// ============================================
+// ❌ LỖI 4: Microtask Starvation
+// ============================================
+
 let count = 0;
+
 function addMicrotask() {
   if (count++ < 1000000) {
-    Promise.resolve().then(addMicrotask); // Vô hạn microtasks!
+    // 💀 Tạo Microtask mới vô hạn!
+    Promise.resolve().then(addMicrotask);
   }
 }
-addMicrotask(); // Macrotasks bị chặn!
 
-// ✅ FIX: Giới hạn hoặc dùng macrotask
+addMicrotask(); // 💀 Macrotasks bị CHẶN!
+
+/* 🐎 VẤN ĐỀ:
+   
+   🔹 Flow:
+      1. addMicrotask() tạo Promise → Microtask Queue
+      2. Microtask chạy → gọi addMicrotask() lại
+      3. Lại tạo Microtask mới
+      4. Lặp lại 1,000,000 lần!
+   
+   💀 Hậu quả:
+      - Microtask Queue KHÔNG BAO GIỞ trống
+      - Event Loop KHÔNG BAO GIỞ chuyển sang Macrotask
+      - setTimeout, UI events, rendering BỊ CHẶN!
+      - UI FREEZE!
+*/
+
+// ✅ FIX: Giới hạn hoặc dùng Macrotask
 function addMicrotaskFixed() {
   if (count++ < 1000000) {
-    setTimeout(() => addMicrotaskFixed(), 0); // Cho phép macrotasks khác chạy
+    // 💡 Dùng setTimeout thay vì Promise
+    setTimeout(() => addMicrotaskFixed(), 0);
+    
+    // 🎯 Lợi ích:
+    // - Mỗi iteration = 1 Macrotask
+    // - Browser render GIỮA các Macrotasks
+    // - Macrotasks khác (UI events) vẫn chạy được
   }
 }
+
+// ============================================
+// 📚 TÓM TẮT CÁC LỐI THƯỜNG GẶP
+// ============================================
+
+/*
+  ❌ LỐI 1: setTimeout(fn, 0) ≠ chạy ngay
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  - Nó là Macrotask, chạy sau:
+    1. Tất cả code đồng bộ
+    2. Tất cả Microtasks
+    3. Browser rendering (nếu có)
+  
+  ❌ LỐI 2: Promise.then chạy TRƯỚC setTimeout
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  - Microtask LUÔN priority cao hơn Macrotask
+  - Event Loop xử lý HẾT Microtasks trước
+  
+  ❌ LỐI 3: Blocking code làm đóng băng UI
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  - Phải break heavy work thành chunks
+  - Dùng setTimeout giữa các chunks
+  - Cho phép UI render
+  
+  ❌ LỐI 4: Microtask starvation
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  - KHÔNG tạo vô hạn Microtasks
+  - Luôn có điều kiện dừng
+  - Hoặc dùng Macrotask (setTimeout) cho recursion
+*/
 ```
 
 **📋 Chú thích về các lỗi thường gặp:**
@@ -728,29 +1422,52 @@ function addMicrotaskFixed() {
 // ===================================================
 // 🎬 RAF vs setTimeout - TIMING COMPARISON
 // ===================================================
+// 🎯 Bài toán: Làm sao để animation mượt 60fps?
+// ❌ setTimeout: Không đồng bộ với frame → janky
+// ✅ RAF: Chạy ĐÚNG TRƯỚC khi browser paint → smooth
 
-console.log('1: Start');
+console.log('1: Start'); // ① Đồng bộ
 
-// ❌ setTimeout: Không đồng bộ với frame
+// ============================================
+// ❌ setTimeout: KHÔNG đồng bộ với refresh rate
+// ============================================
 setTimeout(() => {
   console.log('4: setTimeout - có thể chạy GIỮA frame → janky animation');
   document.body.style.transform = 'translateX(100px)';
-}, 16); // ~16ms ≈ 1 frame, nhưng không chính xác
+  // 🐎 VẤN ĐỀ:
+  // - setTimeout chạy không đúng lúc browser paint
+  // - Có thể chạy SAU khi paint → wasted work
+  // - Có thể skip frame → animation giật
+}, 16); // ~16ms ≈ 1 frame (60fps), nhưng không chính xác!
 
-// ✅ RAF: Chạy ĐÚNG TRƯỚC KHI browser paint
+// ============================================
+// ✅ RAF: Đồng bộ với browser refresh rate
+// ============================================
 requestAnimationFrame(() => {
   console.log('3: RAF - chạy NGAY TRƯỚC khi paint → smooth animation');
   document.body.style.transform = 'translateX(100px)';
+  // 🎯 Lợi ích:
+  // - Browser gọi RAF callbacks NGAY TRƯỚC khi paint
+  // - Đảm bảo DOM changes được paint trong frame hiện tại
+  // - Không wasted work, không skip frames
+  // - → Animation mượt 60fps!
 });
 
-console.log('2: Sync end');
+console.log('2: Sync end'); // ② Đồng bộ
 
-/* OUTPUT TIMELINE:
-0ms    → "1: Start"
-0ms    → "2: Sync end"
-~16ms  → "3: RAF" (chạy đúng trước next paint)
-~16ms  → Browser paint frame
-~16ms  → "4: setTimeout" (có thể chạy sau paint → wasted work)
+/* 📊 OUTPUT TIMELINE:
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   0ms    → "1: Start"                  (Đồng bộ)
+   0ms    → "2: Sync end"                (Đồng bộ)
+   
+   ~16ms  → "3: RAF"                    (CHẠY TRƯỚC PAINT)
+   ~16ms  → Browser paint frame         (🎨 RENDER)
+   ~16ms  → "4: setTimeout"             (Chạy SAU paint → wasted!)
+   
+   🎯 KEY INSIGHT:
+      - RAF chạy trong Render Phase (giữa Microtask và Macrotask)
+      - Browser tự động schedule RAF callbacks trước paint
+      - → DOM changes được apply NGAY trong frame hiện tại
 */
 
 // ===================================================
@@ -759,48 +1476,71 @@ console.log('2: Sync end');
 
 class SmoothAnimation {
   private startTime: number | null = null;
-  private duration = 1000; // 1 giây
+  private duration = 1000; // ⏱️ 1 giây
 
   animate(element: HTMLElement) {
+    // 🔄 Recursive RAF pattern
     const step = (timestamp: number) => {
-      // ① Khởi tạo startTime
+      // ① Khởi tạo startTime (chỉ 1 lần)
       if (!this.startTime) this.startTime = timestamp;
+      // 💡 timestamp = thời gian hiện tại (DOMHighResTimeStamp)
 
       // ② Tính progress (0 → 1)
-      const elapsed = timestamp - this.startTime;
-      const progress = Math.min(elapsed / this.duration, 1);
+      const elapsed = timestamp - this.startTime; // Thời gian đã trôi
+      const progress = Math.min(elapsed / this.duration, 1); // 0-1
+      // 💡 Clamp ở 1 khi đạt duration
 
-      // ③ Apply easing function
+      // ③ Apply easing function (smooth curve)
       const eased = this.easeOutCubic(progress);
+      // 🎯 easeOutCubic: Bắt đầu nhanh, cuối chậm lại
 
       // ④ Update DOM
       element.style.transform = `translateX(${eased * 500}px)`;
+      // 🎯 Đi từ 0px → 500px mượt mà
 
       // ⑤ Continue nếu chưa xong
       if (progress < 1) {
-        requestAnimationFrame(step);
+        requestAnimationFrame(step); // 🔄 Recursive call
+        // 💡 Browser tự động gọi step() mỗi frame
       }
     };
 
+    // 🚀 Start animation
     requestAnimationFrame(step);
   }
 
+  // 📊 Easing function: y = 1 - (1-x)^3
   private easeOutCubic(t: number): number {
     return 1 - Math.pow(1 - t, 3);
+    // 🎯 Bắt đầu nhanh (curve dốc), cuối chậm (curve thoải)
   }
 }
 
-// Usage
+// 🎬 Usage
 const animator = new SmoothAnimation();
 animator.animate(document.getElementById('box')!);
+
+/* 📊 TIMELINE (60fps):
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   0ms:    step(0)      → progress=0   → x=0px
+   16ms:   step(16)     → progress=0.016 → x=8px
+   32ms:   step(32)     → progress=0.032 → x=16px
+   ...
+   1000ms: step(1000)   → progress=1   → x=500px
+   
+   🎯 Kết quả: Animation chạy mượt 60fps!
+*/
 
 // ===================================================
 // ⚡ RAF + BATCH DOM READS/WRITES (FastDOM pattern)
 // ===================================================
 
 class FastDOM {
+  // 📏 Các callback đọc DOM (measure)
   private reads: Array<() => void> = [];
+  // ✏️ Các callback ghi DOM (mutate)
   private writes: Array<() => void> = [];
+  // 🚦 Flag check đã schedule chưa
   private scheduled = false;
 
   // ✅ Schedule read (measure)
@@ -816,41 +1556,66 @@ class FastDOM {
   }
 
   private scheduleFlush() {
-    if (this.scheduled) return;
+    if (this.scheduled) return; // Đã schedule rồi
     this.scheduled = true;
 
+    // 🎯 Dùng RAF để batch operations
     requestAnimationFrame(() => {
       // ① Execute ALL reads first (prevent layout thrashing)
       this.reads.forEach((fn) => fn());
       this.reads = [];
+      // 💡 Đọc HẾT trước → chỉ 1 layout calculation!
 
       // ② Then execute ALL writes
       this.writes.forEach((fn) => fn());
       this.writes = [];
+      // 💡 Ghi HẾT sau → chỉ 1 layout invalidation!
 
       this.scheduled = false;
     });
   }
 }
 
-// Usage - Tránh layout thrashing
+// 🎬 Usage - Tránh layout thrashing
 const fastdom = new FastDOM();
+const element = document.getElementById('box')!;
 
+// ============================================
 // ❌ BAD: Interleaved read/write → layout thrashing
+// ============================================
 for (let i = 0; i < 100; i++) {
-  const height = element.offsetHeight; // READ → force layout
-  element.style.height = height + 10 + 'px'; // WRITE → invalidate layout
+  const height = element.offsetHeight;        // 📏 READ → force layout
+  element.style.height = height + 10 + 'px';  // ✏️ WRITE → invalidate layout
+  // 💀 VẤN ĐỀ:
+  // - Mỗi READ sau WRITE → browser phải recalculate layout
+  // - 100 iterations = 100 layouts!
+  // - ⏱️ ~500-1000ms (CHẬM!)
 } // 100 layouts! 🐌
 
+// ============================================
 // ✅ GOOD: Batch reads, then writes
+// ============================================
 for (let i = 0; i < 100; i++) {
+  // 📏 Schedule READ
   fastdom.measure(() => {
     const height = element.offsetHeight; // READ
+    
+    // ✏️ Schedule WRITE
     fastdom.mutate(() => {
       element.style.height = height + 10 + 'px'; // WRITE
     });
   });
-} // 1 layout only! ⚡
+}
+
+/* 🎯 MAGIC:
+   ━━━━━━━━━━━━━━━━━━━━━━━━━
+   RAF callback chạy:
+   1. Execute 100 reads  → 1 layout calculation
+   2. Execute 100 writes → 1 layout invalidation
+   
+   🎯 Kết quả: 1 layout only! ⚡
+   ⏱️ ~10-20ms (NHANH GẤP 50 LẦN!)
+*/
 ```
 
 ---
@@ -863,28 +1628,64 @@ for (let i = 0; i < 100; i++) {
 // ===================================================
 // 🕐 requestIdleCallback - DEFERRED WORK
 // ===================================================
+// 🎯 Muc đích: Chạy low-priority work khi browser RẢNH
+// ⚠️ KHÔNG block main thread, UI rendering, high-priority tasks
 
+// 📋 Interface của IdleDeadline
 interface IdleDeadline {
-  didTimeout: boolean;
-  timeRemaining(): number; // ms còn lại trong frame
+  didTimeout: boolean;        // 🕑 Có timeout không?
+  timeRemaining(): number;    // ⏱️ ms còn lại trong frame
+  // 💡 Browser có ~16ms/frame (60fps)
+  // 💡 Nếu main work < 16ms → còn idle time
 }
 
-// ✅ Analytics tracking (không urgent)
+// ============================================
+// ✅ USE CASE 1: Analytics tracking (không urgent)
+// ============================================
+
+const analyticsQueue: any[] = [];
+
+function sendAnalytics(event: any) {
+  // Gửi event đến analytics server
+  console.log('📡 Sending analytics:', event);
+}
+
 requestIdleCallback((deadline: IdleDeadline) => {
+  // 🔄 Xử lý KHI còn thời gian VÀ còn events
   while (deadline.timeRemaining() > 0 && analyticsQueue.length > 0) {
     const event = analyticsQueue.shift();
     sendAnalytics(event);
+    // 💡 Chỉ xử lý khi browser rảnh → không làm chậm UI
   }
 
   // ⚠️ Nếu còn events, schedule lại
   if (analyticsQueue.length > 0) {
-    requestIdleCallback(processAnalytics);
+    requestIdleCallback(processAnalytics); // 🔄 Recursive
+    // 💡 Tiếp tục xử lý khi browser rảnh lần sau
   }
 });
 
-// ===================================================
-// 🎯 PRELOAD IMAGES khi browser rảnh
-// ===================================================
+/* 🎯 TIMELINE:
+   ━━━━━━━━━━━━━━━━━━━━━━━━━
+   Frame 1 (16ms budget):
+   0-10ms:  Main work (UI updates, animations)
+   10-16ms: IDLE TIME (6ms) → idleCallback chạy!
+            → Gửi 3-5 analytics events
+   
+   Frame 2 (16ms budget):
+   0-15ms:  Heavy main work (user scrolling)
+   15-16ms: IDLE TIME (1ms) → idleCallback chạy ngắn
+            → Gửi 1 event
+   
+   Frame 3 (16ms budget):
+   0-16ms:  Full main work (no idle time)
+            → idleCallback KHÔNG chạy!
+            → Chờ frame sau
+*/
+
+// ============================================
+// ✅ USE CASE 2: PRELOAD IMAGES khi browser rảnh
+// ============================================
 
 const imagesToPreload = [
   '/img1.jpg',
@@ -894,50 +1695,108 @@ const imagesToPreload = [
 ];
 
 function preloadImages(deadline: IdleDeadline) {
+  // 🔄 Xử lý trong khi còn thời gian VÀ còn images
   while (
-    deadline.timeRemaining() > 0 && // Còn thời gian
-    imagesToPreload.length > 0
+    deadline.timeRemaining() > 0 &&   // 📍 Còn thời gian
+    imagesToPreload.length > 0        // 📍 Còn images
   ) {
+    // 🎯 Preload 1 image
     const img = new Image();
     img.src = imagesToPreload.shift()!;
+    // 💡 Browser download image trong background
   }
 
-  // Continue nếu còn images
+  // ⚠️ Continue nếu còn images
   if (imagesToPreload.length > 0) {
-    requestIdleCallback(preloadImages);
+    requestIdleCallback(preloadImages); // 🔄 Recursive
   }
 }
 
-requestIdleCallback(preloadImages, { timeout: 2000 }); // Force sau 2s nếu không rảnh
+// 🚀 Bắt đầu preload với timeout fallback
+requestIdleCallback(preloadImages, { timeout: 2000 });
+// 💡 timeout: Force chạy sau 2s nếu không rảnh
+// 🎯 Đảm bảo images cuối cùng vẫn được load
 
-// ===================================================
-// 🧹 CLEANUP old cache entries
-// ===================================================
+/* 📊 BENEFITS:
+   ✅ Images preload trong background
+   ✅ Không block UI (scroll, click vẫn smooth)
+   ✅ Tận dụng idle time (không lãng phí CPU)
+   ✅ Timeout fallback đảm bảo complete
+*/
+
+// ============================================
+// ✅ USE CASE 3: CLEANUP old cache entries
+// ============================================
 
 class CacheCleanup {
+  // 🗂️ Cache entries với timestamp
   private cacheEntries = new Map<string, { data: any; timestamp: number }>();
 
   scheduleCleanup() {
     requestIdleCallback((deadline) => {
       const now = Date.now();
-      const maxAge = 1000 * 60 * 60; // 1 hour
+      const maxAge = 1000 * 60 * 60; // ⏱️ 1 hour
 
+      // 🔄 Iterate qua cache entries
       for (const [key, entry] of this.cacheEntries) {
-        // ⚠️ Kiểm tra còn thời gian không
+        // ⚠️ Kiệm tra còn thời gian không
         if (deadline.timeRemaining() < 1) {
-          // Reschedule
+          // 🕑 Hết thời gian → Reschedule
           this.scheduleCleanup();
           return;
+          // 💡 Chờ frame sau tiếp tục
         }
 
-        // Xóa entries cũ
+        // 🧹 Xóa entries cũ (> 1 hour)
         if (now - entry.timestamp > maxAge) {
           this.cacheEntries.delete(key);
+          console.log(`🧹 Cleaned cache: ${key}`);
         }
       }
     });
   }
 }
+
+// 🎬 Usage
+const cacheManager = new CacheCleanup();
+cacheManager.scheduleCleanup();
+// 💡 Cleanup chạy khi browser rảnh, không ảnh hưởng user experience
+
+// ============================================
+// 📚 KEY CONCEPTS
+// ============================================
+
+/*
+  🎯 KHI NÀO DÙNG requestIdleCallback?
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ Analytics tracking
+  ✅ Logging, telemetry
+  ✅ Preload resources (images, data)
+  ✅ Cache cleanup
+  ✅ Background data sync
+  ✅ Non-critical DOM updates
+  
+  ❌ KHI NÀO KHÔNG DÙNG?
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ❌ Critical user-facing updates
+  ❌ Animations (dùng RAF)
+  ❌ Immediate response to user input
+  ❌ Time-sensitive operations
+  
+  💡 SO SÁNH:
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  - Microtask:            Priority CAO NHẤT, chạy NGAY
+  - RAF:                  Chạy TRƯỚC render (animations)
+  - Macrotask:            Chạy SAU render (defer work)
+  - requestIdleCallback:  Chạy khi browser RẢNH (lowest priority)
+  
+  ⚠️ LƯU Ý:
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  - Có thể KHÔNG chạy nếu browser luôn bận
+  - Dùng timeout để đảm bảo complete
+  - Check timeRemaining() trong loop
+  - Reschedule nếu chưa xong
+*/
 ```
 
 ---
