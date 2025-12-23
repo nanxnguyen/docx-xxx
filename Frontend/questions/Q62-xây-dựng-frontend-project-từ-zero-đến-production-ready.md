@@ -118,50 +118,50 @@ npx create-nx-workspace@latest my-app \
 {
   "compilerOptions": {
     // ✅🔒 STRICT MODE - Bắt lỗi sớm nhất (bắt buộc cho production)
-    "strict": true,                           // 🔒 Enable tất cả strict checks
-    "strictNullChecks": true,                // 🔒❌ Không cho null/undefined nếu không khai báo
-    "strictFunctionTypes": true,             // 🔒🔧 Check function parameter types chặt chẽ
-    "strictBindCallApply": true,             // 🔒📞 Check bind/call/apply arguments
-    "strictPropertyInitialization": true,    // 🔒🏗️ Class properties phải init trong constructor
-    "noImplicitThis": true,                  // 🔒❓ Không cho 'this' kiểu any
-    "noImplicitAny": true,                   // 🔒❓ Không cho type any tự động (phải khai báo rõ)
-    "noImplicitReturns": true,               // 🔒↩️ Function phải return ở tất cả code paths
-    "noFallthroughCasesInSwitch": true,      // 🔒🔀 Switch case phải có break hoặc return
-    "noUncheckedIndexedAccess": true,        // 🔒📋 Array/object access trả về T | undefined (safety)
-    "noUnusedLocals": true,                  // 🔒🗑️ Cảnh báo biến khai báo nhưng không dùng
-    "noUnusedParameters": true,              // 🔒🗑️ Cảnh báo parameter không dùng (prefix _ để ignore)
-    
+    "strict": true, // 🔒 Enable tất cả strict checks
+    "strictNullChecks": true, // 🔒❌ Không cho null/undefined nếu không khai báo
+    "strictFunctionTypes": true, // 🔒🔧 Check function parameter types chặt chẽ
+    "strictBindCallApply": true, // 🔒📞 Check bind/call/apply arguments
+    "strictPropertyInitialization": true, // 🔒🏗️ Class properties phải init trong constructor
+    "noImplicitThis": true, // 🔒❓ Không cho 'this' kiểu any
+    "noImplicitAny": true, // 🔒❓ Không cho type any tự động (phải khai báo rõ)
+    "noImplicitReturns": true, // 🔒↩️ Function phải return ở tất cả code paths
+    "noFallthroughCasesInSwitch": true, // 🔒🔀 Switch case phải có break hoặc return
+    "noUncheckedIndexedAccess": true, // 🔒📋 Array/object access trả về T | undefined (safety)
+    "noUnusedLocals": true, // 🔒🗑️ Cảnh báo biến khai báo nhưng không dùng
+    "noUnusedParameters": true, // 🔒🗑️ Cảnh báo parameter không dùng (prefix _ để ignore)
+
     // ✅📦 MODULE RESOLUTION (chuẩn hiện đại)
-    "module": "ESNext",                      // 📦 ES modules (import/export)
-    "moduleResolution": "bundler",           // 🔧 Bundler resolution (Vite, Webpack, esbuild)
-    "resolveJsonModule": true,               // 📄 Cho phép import .json files
-    "esModuleInterop": true,                 // 🔄 Tương thích CommonJS & ES modules
-    "allowSyntheticDefaultImports": true,    // 🔄 Cho phép import default từ modules không có export default
-    
+    "module": "ESNext", // 📦 ES modules (import/export)
+    "moduleResolution": "bundler", // 🔧 Bundler resolution (Vite, Webpack, esbuild)
+    "resolveJsonModule": true, // 📄 Cho phép import .json files
+    "esModuleInterop": true, // 🔄 Tương thích CommonJS & ES modules
+    "allowSyntheticDefaultImports": true, // 🔄 Cho phép import default từ modules không có export default
+
     // ✅🗺️ PATH ALIASES - Import rõ ràng, dễ refactor
-    "baseUrl": ".",                          // 🏠 Base directory cho path resolution
+    "baseUrl": ".", // 🏠 Base directory cho path resolution
     "paths": {
-      "@app/*": ["apps/web/src/*"],                      // 🌐 App code (pages, features...)
-      "@libs/shared/ui": ["libs/shared/ui/src/index.ts"],          // 🎨 Shared UI components
-      "@libs/shared/utils": ["libs/shared/utils/src/index.ts"],    // 🔧 Shared utilities
-      "@libs/shared/types": ["libs/shared/types/src/index.ts"],    // 📋 Shared TypeScript types
-      "@libs/shared/api": ["libs/shared/api/src/index.ts"],        // 🌐 API client
-      "@libs/features/*": ["libs/features/*/src/index.ts"]          // 🎯 Feature modules
+      "@app/*": ["apps/web/src/*"], // 🌐 App code (pages, features...)
+      "@libs/shared/ui": ["libs/shared/ui/src/index.ts"], // 🎨 Shared UI components
+      "@libs/shared/utils": ["libs/shared/utils/src/index.ts"], // 🔧 Shared utilities
+      "@libs/shared/types": ["libs/shared/types/src/index.ts"], // 📋 Shared TypeScript types
+      "@libs/shared/api": ["libs/shared/api/src/index.ts"], // 🌐 API client
+      "@libs/features/*": ["libs/features/*/src/index.ts"] // 🎯 Feature modules
     },
     // 💡 Sử dụng: import { Button } from '@libs/shared/ui';
     // ❌ Thay vì: import { Button } from '../../../libs/shared/ui/src/Button';
-    
+
     // ✅🎯 OUTPUT CONFIGURATION
-    "target": "ES2022",                      // 🎯 Target modern browsers (Chrome 90+, Firefox 88+)
+    "target": "ES2022", // 🎯 Target modern browsers (Chrome 90+, Firefox 88+)
     "lib": ["ES2022", "DOM", "DOM.Iterable"], // 📚 Include ES2022 + DOM APIs (fetch, Promise, etc.)
-    "jsx": "react-jsx",                      // ⚛️ React 17+ JSX transform (không cần import React)
-    "declaration": true,                     // 📋 Generate .d.ts declaration files
-    "declarationMap": true,                  // 🗺️ Generate .d.ts.map for IDE navigation
-    "sourceMap": true,                       // 🗺️ Generate source maps cho debugging
-    "skipLibCheck": true,                    // ⏩ Skip type check .d.ts files (faster build)
+    "jsx": "react-jsx", // ⚛️ React 17+ JSX transform (không cần import React)
+    "declaration": true, // 📋 Generate .d.ts declaration files
+    "declarationMap": true, // 🗺️ Generate .d.ts.map for IDE navigation
+    "sourceMap": true, // 🗺️ Generate source maps cho debugging
+    "skipLibCheck": true, // ⏩ Skip type check .d.ts files (faster build)
     "forceConsistentCasingInFileNames": true // 🔠 Case-sensitive imports (Linux/Mac compatibility)
   },
-  "exclude": ["node_modules", "dist", "build", ".next"]  // 🚫 Không compile các folder này
+  "exclude": ["node_modules", "dist", "build", ".next"] // 🚫 Không compile các folder này
 }
 ```
 
@@ -191,7 +191,11 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: ['./tsconfig.json', './apps/*/tsconfig.json', './libs/*/tsconfig.json'],
+    project: [
+      './tsconfig.json',
+      './apps/*/tsconfig.json',
+      './libs/*/tsconfig.json',
+    ],
     ecmaFeatures: {
       jsx: true,
     },
@@ -212,7 +216,11 @@ module.exports = {
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
-        project: ['./tsconfig.json', './apps/*/tsconfig.json', './libs/*/tsconfig.json'],
+        project: [
+          './tsconfig.json',
+          './apps/*/tsconfig.json',
+          './libs/*/tsconfig.json',
+        ],
       },
     },
   },
@@ -220,56 +228,76 @@ module.exports = {
     // ===================================
     // 📋 TYPESCRIPT RULES - Type safety
     // ===================================
-    '@typescript-eslint/no-unused-vars': ['error', {  // ❌🗑️ Không cho unused variables (code smell)
-      argsIgnorePattern: '^_',                       // ✅ Cho phép args bắt đầu bằng _ (unused bằng cố ý)
-      varsIgnorePattern: '^_',                       // ✅ Cho phép vars bắt đầu bằng _ (tương tự)
-    }],
-    '@typescript-eslint/no-explicit-any': 'error',   // ❌❓ Cấm type 'any' (mất type safety)
-    '@typescript-eslint/explicit-function-return-type': ['warn', {  // ⚠️🔙 Khuyến nghị khai báo return type
-      allowExpressions: true,                        // ✅ Cho phép arrow function không cần
-      allowTypedFunctionExpressions: true,           // ✅ Cho phép nếu function đã có type từ biến
-    }],
-    '@typescript-eslint/consistent-type-imports': ['error', {  // 📥📋 Bắt buộc dùng 'import type' cho types
-      prefer: 'type-imports',                        // 💡 Giúp tree-shaking, tách types ra khỏi runtime code
-    }],
-    '@typescript-eslint/no-floating-promises': 'error',  // ❌⌛ Promise phải await hoặc .catch (tránh unhandled rejection)
-    '@typescript-eslint/await-thenable': 'error',        // ❌⌛ Chỉ await promises, không await non-promise values
-    '@typescript-eslint/no-misused-promises': 'error',   // ❌⌛ Không dùng Promise ở nơi không phù hợp (if, &&, ||)
-    
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        // ❌🗑️ Không cho unused variables (code smell)
+        argsIgnorePattern: '^_', // ✅ Cho phép args bắt đầu bằng _ (unused bằng cố ý)
+        varsIgnorePattern: '^_', // ✅ Cho phép vars bắt đầu bằng _ (tương tự)
+      },
+    ],
+    '@typescript-eslint/no-explicit-any': 'error', // ❌❓ Cấm type 'any' (mất type safety)
+    '@typescript-eslint/explicit-function-return-type': [
+      'warn',
+      {
+        // ⚠️🔙 Khuyến nghị khai báo return type
+        allowExpressions: true, // ✅ Cho phép arrow function không cần
+        allowTypedFunctionExpressions: true, // ✅ Cho phép nếu function đã có type từ biến
+      },
+    ],
+    '@typescript-eslint/consistent-type-imports': [
+      'error',
+      {
+        // 📥📋 Bắt buộc dùng 'import type' cho types
+        prefer: 'type-imports', // 💡 Giúp tree-shaking, tách types ra khỏi runtime code
+      },
+    ],
+    '@typescript-eslint/no-floating-promises': 'error', // ❌⌛ Promise phải await hoặc .catch (tránh unhandled rejection)
+    '@typescript-eslint/await-thenable': 'error', // ❌⌛ Chỉ await promises, không await non-promise values
+    '@typescript-eslint/no-misused-promises': 'error', // ❌⌛ Không dùng Promise ở nơi không phù hợp (if, &&, ||)
+
     // ===================================
     // ⚛️ REACT RULES - Component best practices
     // ===================================
-    'react/react-in-jsx-scope': 'off',               // ✅⚛️ Không cần import React (React 17+ JSX transform)
-    'react/prop-types': 'off',                       // ✅📋 TypeScript xử lý props validation rồi
-    'react/jsx-no-target-blank': ['error', {         // ❌🔗 Bảo mật: <a target="_blank"> cần rel="noopener"
-      allowReferrer: false,                          // 🚫 Không gửi referrer (bảo mật)
-      enforceDynamicLinks: 'always',                 // ✅ Apply cho cả dynamic href
-    }],
-    'react/jsx-key': ['error', {                     // ❌🔑 Bắt buộc key trong .map() (React performance)
-      checkFragmentShorthand: true,                  // ✅ Check cả <> fragment shorthand
-    }],
-    'react-hooks/rules-of-hooks': 'error',           // ❌🎣 Chỉ gọi hooks trong component/custom hooks
-    'react-hooks/exhaustive-deps': 'warn',           // ⚠️📋 useEffect dependencies phải đầy đủ (tránh stale closure)
-    
+    'react/react-in-jsx-scope': 'off', // ✅⚛️ Không cần import React (React 17+ JSX transform)
+    'react/prop-types': 'off', // ✅📋 TypeScript xử lý props validation rồi
+    'react/jsx-no-target-blank': [
+      'error',
+      {
+        // ❌🔗 Bảo mật: <a target="_blank"> cần rel="noopener"
+        allowReferrer: false, // 🚫 Không gửi referrer (bảo mật)
+        enforceDynamicLinks: 'always', // ✅ Apply cho cả dynamic href
+      },
+    ],
+    'react/jsx-key': [
+      'error',
+      {
+        // ❌🔑 Bắt buộc key trong .map() (React performance)
+        checkFragmentShorthand: true, // ✅ Check cả <> fragment shorthand
+      },
+    ],
+    'react-hooks/rules-of-hooks': 'error', // ❌🎣 Chỉ gọi hooks trong component/custom hooks
+    'react-hooks/exhaustive-deps': 'warn', // ⚠️📋 useEffect dependencies phải đầy đủ (tránh stale closure)
+
     // ===================================
     // 📦 IMPORT RULES - Clean imports
     // ===================================
-    'import/no-unresolved': 'error',                 // ❌🔍 Tất cả imports phải resolve được
-    'import/no-cycle': 'error',                      // ❌🔄 Ngăn circular dependencies (A import B, B import A)
-    'import/no-duplicates': 'error',                 // ❌🔁 Không import duplicate từ cùng 1 module
-    'simple-import-sort/imports': 'error',           // 🔢 Auto sort imports (external → internal → relative)
-    'simple-import-sort/exports': 'error',           // 🔢 Auto sort exports
-    'unused-imports/no-unused-imports': 'error',     // 🗑️❌ Auto remove unused imports
-    
+    'import/no-unresolved': 'error', // ❌🔍 Tất cả imports phải resolve được
+    'import/no-cycle': 'error', // ❌🔄 Ngăn circular dependencies (A import B, B import A)
+    'import/no-duplicates': 'error', // ❌🔁 Không import duplicate từ cùng 1 module
+    'simple-import-sort/imports': 'error', // 🔢 Auto sort imports (external → internal → relative)
+    'simple-import-sort/exports': 'error', // 🔢 Auto sort exports
+    'unused-imports/no-unused-imports': 'error', // 🗑️❌ Auto remove unused imports
+
     // ===================================
     // 🔧 GENERAL RULES - Code quality
     // ===================================
-    'no-console': ['warn', { allow: ['warn', 'error'] }],  // ⚠️💬 console.log cảnh báo (dùng logger thay thế)
-    'no-debugger': 'error',                          // ❌🐛 Cấm debugger statement (quên xóa khi commit)
-    'no-alert': 'error',                             // ❌⚠️ Cấm alert/confirm/prompt (dùng Modal component)
-    'prefer-const': 'error',                         // ✅🔒 Dùng const thay vì let nếu không reassign
-    'no-var': 'error',                               // ❌🚫 Cấm var (dùng const/let - block scope)
-    'eqeqeq': ['error', 'always'],                   // ❌=== Bắt buộc === thay vì == (type safety)
+    'no-console': ['warn', { allow: ['warn', 'error'] }], // ⚠️💬 console.log cảnh báo (dùng logger thay thế)
+    'no-debugger': 'error', // ❌🐛 Cấm debugger statement (quên xóa khi commit)
+    'no-alert': 'error', // ❌⚠️ Cấm alert/confirm/prompt (dùng Modal component)
+    'prefer-const': 'error', // ✅🔒 Dùng const thay vì let nếu không reassign
+    'no-var': 'error', // ❌🚫 Cấm var (dùng const/let - block scope)
+    eqeqeq: ['error', 'always'], // ❌=== Bắt buộc === thay vì == (type safety)
   },
 };
 ```
@@ -290,12 +318,12 @@ module.exports = {
   bracketSpacing: true,
   jsxSingleQuote: false,
   quoteProps: 'as-needed',
-  
+
   // Plugin-specific
   plugins: [
     'prettier-plugin-tailwindcss', // Auto sort Tailwind classes
   ],
-  
+
   // Override cho specific files
   overrides: [
     {
@@ -355,26 +383,26 @@ npx --no -- commitlint --edit ${1}
 module.exports = {
   // 📋🔍 TypeScript files - Full validation pipeline
   '*.{ts,tsx}': [
-    'eslint --fix',                    // ✅🔧 Auto fix ESLint errors (imports, formatting, unused vars...)
-    'prettier --write',                // ✅🎨 Auto format code (indentation, quotes, spacing...)
-    () => 'tsc --noEmit',              // ✅📋 Type check toàn bộ project (không generate .js files)
+    'eslint --fix', // ✅🔧 Auto fix ESLint errors (imports, formatting, unused vars...)
+    'prettier --write', // ✅🎨 Auto format code (indentation, quotes, spacing...)
+    () => 'tsc --noEmit', // ✅📋 Type check toàn bộ project (không generate .js files)
     // 💡 Lưu ý: tsc --noEmit check toàn bộ, không chỉ staged files (vì types có thể affect nhau)
   ],
-  
+
   // 📦 JavaScript files - Lint + Format
   '*.{js,jsx}': [
-    'eslint --fix',                    // ✅🔧 Fix JS linting issues
-    'prettier --write',                // ✅🎨 Format JS code
+    'eslint --fix', // ✅🔧 Fix JS linting issues
+    'prettier --write', // ✅🎨 Format JS code
   ],
-  
+
   // 📄🎨 JSON, CSS, Markdown - Format only
   '*.{json,css,scss,md}': [
-    'prettier --write',                // ✅🎨 Chỉ format, không lint (vì JSON/CSS không có ESLint rules)
+    'prettier --write', // ✅🎨 Chỉ format, không lint (vì JSON/CSS không có ESLint rules)
   ],
-  
+
   // 🧪🔍 Test files - Run related tests
   '*.{test,spec}.{ts,tsx}': [
-    'vitest related --run',            // ✅🧪 Chạy tests liên quan đến file thay đổi
+    'vitest related --run', // ✅🧪 Chạy tests liên quan đến file thay đổi
     // 💡 'related' tìm tests import file này (không chạy toàn bộ test suite)
     // 🚀 Nhanh hơn full test, vẫn đảm bảo không phá tests
   ],
@@ -390,29 +418,29 @@ module.exports = {
 ```javascript
 // commitlint.config.cjs
 module.exports = {
-  extends: ['@commitlint/config-conventional'],  // 📋 Chuẩn Conventional Commits (Angular style)
+  extends: ['@commitlint/config-conventional'], // 📋 Chuẩn Conventional Commits (Angular style)
   rules: {
     // 🎯 TYPE ENUM - Danh sách types hợp lệ
     'type-enum': [
-      2,           // ❌ Error level (2 = error, 1 = warning, 0 = off)
-      'always',    // ✅ Luôn bắt buộc
+      2, // ❌ Error level (2 = error, 1 = warning, 0 = off)
+      'always', // ✅ Luôn bắt buộc
       [
-        'feat',     // ✨🎉 New feature (thêm tính năng mới)
-        'fix',      // 🐛🔧 Bug fix (sửa lỗi)
-        'docs',     // 📚📝 Documentation (cập nhật docs)
-        'style',    // 🎨 Formatting, missing semicolons (không ảnh hưởng logic)
+        'feat', // ✨🎉 New feature (thêm tính năng mới)
+        'fix', // 🐛🔧 Bug fix (sửa lỗi)
+        'docs', // 📚📝 Documentation (cập nhật docs)
+        'style', // 🎨 Formatting, missing semicolons (không ảnh hưởng logic)
         'refactor', // ♻️🔧 Code refactor (không fix bug, không thêm feature)
-        'perf',     // ⚡🚀 Performance improvement (tối ưu performance)
-        'test',     // 🧪✅ Adding tests (thêm/sửa tests)
-        'chore',    // 🔧📦 Build, dependencies, tooling (cập nhật config, packages)
-        'revert',   // ⏪❌ Revert a previous commit (rollback commit trước)
-        'ci',       // 🤖⚙️ CI/CD changes (cập nhật GitHub Actions, pipelines)
+        'perf', // ⚡🚀 Performance improvement (tối ưu performance)
+        'test', // 🧪✅ Adding tests (thêm/sửa tests)
+        'chore', // 🔧📦 Build, dependencies, tooling (cập nhật config, packages)
+        'revert', // ⏪❌ Revert a previous commit (rollback commit trước)
+        'ci', // 🤖⚙️ CI/CD changes (cập nhật GitHub Actions, pipelines)
       ],
     ],
-    'subject-case': [2, 'never', ['upper-case']],  // ❌ Subject không được viết hoa toàn bộ
-    'subject-empty': [2, 'never'],                 // ❌ Subject không được để trống
-    'subject-full-stop': [2, 'never', '.'],        // ❌ Subject không kết thúc bằng dấu chấm
-    'header-max-length': [2, 'always', 100],       // ❌ Header tối đa 100 ký tự (title line)
+    'subject-case': [2, 'never', ['upper-case']], // ❌ Subject không được viết hoa toàn bộ
+    'subject-empty': [2, 'never'], // ❌ Subject không được để trống
+    'subject-full-stop': [2, 'never', '.'], // ❌ Subject không kết thúc bằng dấu chấm
+    'header-max-length': [2, 'always', 100], // ❌ Header tối đa 100 ký tự (title line)
   },
 };
 
@@ -434,22 +462,24 @@ module.exports = {
 
 // 💡 Commit message structure:
 // <type>(<scope>): <subject>
-// 
+//
 // <body>
-// 
+//
 // <footer>
 
 // 💬 Ví dụ full commit message:
 // feat(auth): add OAuth2 login with Google
-// 
+//
 // - Implement Google OAuth2 flow
 // - Add AuthService with token management
 // - Create LoginButton component
-// 
+//
 // Closes #123
 ```
+
 // ❌ FEAT: Add feature (uppercase subject)
-```
+
+````
 
 #### **Step 1.6: Package.json Scripts**
 
@@ -463,32 +493,32 @@ module.exports = {
     "dev": "nx serve web",
     "dev:admin": "nx serve admin",
     "dev:all": "nx run-many --target=serve --all",
-    
+
     "// === BUILD ===": "",
     "build": "nx build web --configuration=production",
     "build:admin": "nx build admin --configuration=production",
     "build:all": "nx run-many --target=build --all",
     "build:affected": "nx affected --target=build",
-    
+
     "// === TESTING ===": "",
     "test": "nx test",
     "test:watch": "nx test --watch",
     "test:coverage": "nx test --coverage",
     "test:affected": "nx affected --target=test",
     "e2e": "nx e2e web-e2e",
-    
+
     "// === CODE QUALITY ===": "",
     "lint": "nx run-many --target=lint --all",
     "lint:fix": "nx run-many --target=lint --all --fix",
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    
+
     "// === GRAPH & ANALYSIS ===": "",
     "graph": "nx graph",
     "affected:graph": "nx affected:graph",
     "analyze": "nx run web:analyze",
-    
+
     "// === UTILITIES ===": "",
     "clean": "nx reset && rm -rf node_modules dist .next",
     "prepare": "husky install",
@@ -520,7 +550,7 @@ module.exports = {
     "@commitlint/cli": "^18.4.3"
   }
 }
-```
+````
 
 ---
 
@@ -758,7 +788,11 @@ export { capitalize, truncate, slugify } from './string/stringUtils';
 export { formatCurrency, formatNumber, roundTo } from './number/numberUtils';
 
 // Validation
-export { validateEmail, validatePhone, validateURL } from './validation/validators';
+export {
+  validateEmail,
+  validatePhone,
+  validateURL,
+} from './validation/validators';
 
 // =====================================
 // Usage trong app
@@ -826,18 +860,18 @@ function handleError(error: ApiError): string {
   switch (error.type) {
     case 'network':
       return `Network error: ${error.message}`;
-    
+
     case 'validation':
       return `Validation failed: ${Object.entries(error.errors)
         .map(([field, msgs]) => `${field}: ${msgs.join(', ')}`)
         .join('; ')}`;
-    
+
     case 'server':
       return `Server error (${error.code}): ${error.message}`;
-    
+
     case 'timeout':
       return `Request timeout after ${error.timeout}ms`;
-    
+
     default:
       // TypeScript ensure exhaustiveness
       const _exhaustive: never = error;
@@ -919,10 +953,10 @@ function LoginForm() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <input {...register('email')} />
       {errors.email && <span>{errors.email.message}</span>}
-      
+
       <input type="password" {...register('password')} />
       {errors.password && <span>{errors.password.message}</span>}
-      
+
       <button type="submit">Login</button>
     </form>
   );
@@ -947,7 +981,9 @@ const bigPRThreshold = 500;
 const changes = danger.github.pr.additions + danger.github.pr.deletions;
 
 if (changes > bigPRThreshold) {
-  warn(`:exclamation: Large PR (${changes} lines changed). Consider breaking it into smaller PRs for easier review.`);
+  warn(
+    `:exclamation: Large PR (${changes} lines changed). Consider breaking it into smaller PRs for easier review.`
+  );
 }
 
 // ===================================
@@ -978,22 +1014,31 @@ const hasPackageChanges = danger.git.modified_files.includes('package.json');
 const hasLockfileChanges = danger.git.modified_files.includes('pnpm-lock.yaml');
 
 if (hasPackageChanges && !hasLockfileChanges) {
-  fail('⚠️ package.json changed but pnpm-lock.yaml not updated. Run `pnpm install`.');
+  fail(
+    '⚠️ package.json changed but pnpm-lock.yaml not updated. Run `pnpm install`.'
+  );
 }
 
 // ===================================
 // CONSOLE.LOG CHECK
 // ===================================
-const newOrModified = [...danger.git.created_files, ...danger.git.modified_files];
-const jsFiles = newOrModified.filter((file) => file.endsWith('.ts') || file.endsWith('.tsx'));
+const newOrModified = [
+  ...danger.git.created_files,
+  ...danger.git.modified_files,
+];
+const jsFiles = newOrModified.filter(
+  (file) => file.endsWith('.ts') || file.endsWith('.tsx')
+);
 
 for (const file of jsFiles) {
   const content = await danger.github.utils.fileContents(file);
-  
+
   if (content.includes('console.log')) {
-    warn(`⚠️ Found \`console.log\` in ${file}. Remove before merging or use proper logger.`);
+    warn(
+      `⚠️ Found \`console.log\` in ${file}. Remove before merging or use proper logger.`
+    );
   }
-  
+
   if (content.includes('debugger')) {
     fail(`🚫 Found \`debugger\` statement in ${file}. Remove before merging.`);
   }
@@ -1002,8 +1047,8 @@ for (const file of jsFiles) {
 // ===================================
 // BUNDLE SIZE CHECK
 // ===================================
-const bundleAnalysis = danger.git.modified_files.find(
-  (file) => file.includes('bundle-stats.json')
+const bundleAnalysis = danger.git.modified_files.find((file) =>
+  file.includes('bundle-stats.json')
 );
 
 if (bundleAnalysis) {
@@ -1045,18 +1090,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-      
+
       - run: pnpm install
-      
+
       - name: Run Danger
         run: pnpm danger ci
         env:
@@ -1081,26 +1126,26 @@ export default defineConfig({
   plugins: [
     // ✅ React với SWC compiler (nhanh hơn Babel 20x)
     react(),
-    
+
     // ✅ Bundle analyzer
     visualizer({
       filename: 'dist/stats.html',
       gzipSize: true,
       brotliSize: true,
     }),
-    
+
     // ✅ Gzip compression
     compression({
       algorithm: 'gzip',
       ext: '.gz',
     }),
-    
+
     // ✅ Brotli compression (tốt hơn gzip)
     compression({
       algorithm: 'brotliCompress',
       ext: '.br',
     }),
-    
+
     // ✅ PWA support
     VitePWA({
       registerType: 'autoUpdate',
@@ -1124,17 +1169,17 @@ export default defineConfig({
       },
     }),
   ],
-  
+
   build: {
     // ✅ Target modern browsers
     target: 'esnext',
-    
+
     // ✅ Minify với esbuild (nhanh)
     minify: 'esbuild',
-    
+
     // ✅ Source maps cho production debug
     sourcemap: true,
-    
+
     // ✅ Code splitting
     rollupOptions: {
       output: {
@@ -1142,29 +1187,32 @@ export default defineConfig({
           // Vendor chunks
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'query-vendor': ['@tanstack/react-query'],
-          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
-          
+          'ui-vendor': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+          ],
+
           // Feature chunks
-          'dashboard': ['./src/features/dashboard'],
-          'settings': ['./src/features/settings'],
+          dashboard: ['./src/features/dashboard'],
+          settings: ['./src/features/settings'],
         },
-        
+
         // ✅ Chunk naming
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
     },
-    
+
     // ✅ Chunk size warnings
     chunkSizeWarningLimit: 500, // 500kb
   },
-  
+
   // ✅ Performance optimizations
   optimizeDeps: {
     include: ['react', 'react-dom'], // Pre-bundle dependencies
   },
-  
+
   // ✅ Path aliases (sync with tsconfig)
   resolve: {
     alias: {
@@ -1239,15 +1287,15 @@ import { Chart } from 'chart.js';
 // ✅ AFTER: Lazy load only when needed
 function DashboardChart() {
   const [Chart, setChart] = useState(null);
-  
+
   useEffect(() => {
     import('chart.js').then((module) => {
       setChart(() => module.Chart);
     });
   }, []);
-  
+
   if (!Chart) return <LoadingSpinner />;
-  
+
   return <Chart {...props} />;
 }
 
@@ -1288,16 +1336,16 @@ module.exports = {
         'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
         'total-blocking-time': ['error', { maxNumericValue: 300 }], // 300ms
         'speed-index': ['error', { maxNumericValue: 3000 }], // 3s
-        
+
         // ✅ Accessibility
         'categories:accessibility': ['error', { minScore: 0.9 }],
-        
+
         // ✅ Best practices
         'categories:best-practices': ['error', { minScore: 0.9 }],
-        
+
         // ✅ SEO
         'categories:seo': ['error', { minScore: 0.9 }],
-        
+
         // ✅ Resource hints
         'uses-rel-preconnect': 'off',
         'uses-http2': 'warn',
@@ -1323,21 +1371,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-      
+
       - run: pnpm install
-      
+
       - name: Build
         run: pnpm build
-      
+
       - name: Run Lighthouse CI
         run: pnpm lhci autorun
         env:
@@ -1361,10 +1409,10 @@ export default defineConfig({
   test: {
     // ✅ Environment
     environment: 'jsdom',
-    
+
     // ✅ Setup files
     setupFiles: ['./src/__tests__/setup.ts'],
-    
+
     // ✅ Coverage configuration
     coverage: {
       provider: 'v8',
@@ -1384,13 +1432,13 @@ export default defineConfig({
       functions: 80,
       lines: 80,
     },
-    
+
     // ✅ Globals (không cần import describe, it, expect)
     globals: true,
-    
+
     // ✅ Watch mode
     watch: false,
-    
+
     // ✅ Reporters
     reporters: ['default', 'html'],
   },
@@ -1467,10 +1515,7 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
 
 export function renderWithProviders(
   ui: ReactElement,
-  {
-    initialRoute = '/',
-    ...renderOptions
-  }: CustomRenderOptions = {}
+  { initialRoute = '/', ...renderOptions }: CustomRenderOptions = {}
 ) {
   // Create fresh QueryClient mỗi test
   const queryClient = new QueryClient({
@@ -1486,9 +1531,7 @@ export function renderWithProviders(
   function Wrapper({ children }: { children: React.ReactNode }) {
     return (
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          {children}
-        </BrowserRouter>
+        <BrowserRouter>{children}</BrowserRouter>
       </QueryClientProvider>
     );
   }
@@ -1521,7 +1564,7 @@ export const waitForLoadingToFinish = () =>
   });
 
 // ✅ Mock API handlers
-export const mockApiSuccess = <T,>(data: T) => {
+export const mockApiSuccess = <T>(data: T) => {
   return Promise.resolve({ data, status: 200, message: 'Success' });
 };
 
@@ -1551,7 +1594,7 @@ describe('Button', () => {
   it('handles click events', () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick}>Click me</Button>);
-    
+
     fireEvent.click(screen.getByRole('button'));
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
@@ -1570,7 +1613,7 @@ describe('Button', () => {
   it('applies variant styles correctly', () => {
     const { rerender } = render(<Button variant="primary">Button</Button>);
     expect(screen.getByRole('button')).toHaveClass('btn-primary');
-    
+
     rerender(<Button variant="secondary">Button</Button>);
     expect(screen.getByRole('button')).toHaveClass('btn-secondary');
   });
@@ -1599,24 +1642,26 @@ describe('LoginForm', () => {
   it('validates email format', async () => {
     const user = userEvent.setup();
     renderWithProviders(<LoginForm />);
-    
+
     const emailInput = screen.getByLabelText(/email/i);
     await user.type(emailInput, 'invalid-email');
     await user.tab(); // Blur to trigger validation
-    
-    expect(await screen.findByText(/invalid email format/i)).toBeInTheDocument();
+
+    expect(
+      await screen.findByText(/invalid email format/i)
+    ).toBeInTheDocument();
   });
 
   it('submits form with valid data', async () => {
     const user = userEvent.setup();
     mockLogin.mockResolvedValue({ token: 'abc123' });
-    
+
     renderWithProviders(<LoginForm />);
-    
+
     await user.type(screen.getByLabelText(/email/i), 'test@example.com');
     await user.type(screen.getByLabelText(/password/i), 'Password123!');
     await user.click(screen.getByRole('button', { name: /login/i }));
-    
+
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith({
         email: 'test@example.com',
@@ -1630,28 +1675,28 @@ describe('LoginForm', () => {
     mockLogin.mockRejectedValue({
       response: { data: { message: 'Invalid credentials' } },
     });
-    
+
     renderWithProviders(<LoginForm />);
-    
+
     await user.type(screen.getByLabelText(/email/i), 'test@example.com');
     await user.type(screen.getByLabelText(/password/i), 'wrong');
     await user.click(screen.getByRole('button', { name: /login/i }));
-    
+
     expect(await screen.findByText(/invalid credentials/i)).toBeInTheDocument();
   });
 
   it('disables submit button while loading', async () => {
     const user = userEvent.setup();
     mockLogin.mockImplementation(() => new Promise(() => {})); // Never resolves
-    
+
     renderWithProviders(<LoginForm />);
-    
+
     await user.type(screen.getByLabelText(/email/i), 'test@example.com');
     await user.type(screen.getByLabelText(/password/i), 'Password123!');
-    
+
     const submitButton = screen.getByRole('button', { name: /login/i });
     await user.click(submitButton);
-    
+
     expect(submitButton).toBeDisabled();
   });
 });
@@ -1665,29 +1710,29 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
-  
+
   // ✅ Timeout settings
   timeout: 30_000,
   expect: {
     timeout: 5_000,
   },
-  
+
   // ✅ Run tests in parallel
   fullyParallel: true,
-  
+
   // ✅ Retry on CI
   retries: process.env.CI ? 2 : 0,
-  
+
   // ✅ Workers
   workers: process.env.CI ? 1 : undefined,
-  
+
   // ✅ Reporter
   reporter: [
     ['html'],
     ['json', { outputFile: 'test-results.json' }],
     ['junit', { outputFile: 'junit.xml' }],
   ],
-  
+
   // ✅ Shared settings
   use: {
     baseURL: 'http://localhost:4173',
@@ -1695,7 +1740,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
-  
+
   // ✅ Projects (browsers)
   projects: [
     {
@@ -1719,7 +1764,7 @@ export default defineConfig({
       use: { ...devices['iPhone 12'] },
     },
   ],
-  
+
   // ✅ Web server
   webServer: {
     command: 'pnpm preview',
@@ -1742,13 +1787,13 @@ test.describe('Authentication Flow', () => {
     // Fill form
     await page.getByLabel(/email/i).fill('test@example.com');
     await page.getByLabel(/password/i).fill('Password123!');
-    
+
     // Submit
     await page.getByRole('button', { name: /login/i }).click();
-    
+
     // Verify redirect to dashboard
     await expect(page).toHaveURL('/dashboard');
-    
+
     // Verify user is logged in
     await expect(page.getByText(/welcome back/i)).toBeVisible();
   });
@@ -1756,7 +1801,7 @@ test.describe('Authentication Flow', () => {
   test('should show validation errors', async ({ page }) => {
     // Submit without filling
     await page.getByRole('button', { name: /login/i }).click();
-    
+
     // Verify validation errors
     await expect(page.getByText(/email is required/i)).toBeVisible();
     await expect(page.getByText(/password is required/i)).toBeVisible();
@@ -1766,7 +1811,7 @@ test.describe('Authentication Flow', () => {
     await page.getByLabel(/email/i).fill('wrong@example.com');
     await page.getByLabel(/password/i).fill('wrongpass');
     await page.getByRole('button', { name: /login/i }).click();
-    
+
     // Verify error message
     await expect(page.getByText(/invalid credentials/i)).toBeVisible();
   });
@@ -1776,14 +1821,14 @@ test.describe('Authentication Flow', () => {
     await page.getByLabel(/password/i).fill('Password123!');
     await page.getByLabel(/remember me/i).check();
     await page.getByRole('button', { name: /login/i }).click();
-    
+
     await expect(page).toHaveURL('/dashboard');
-    
+
     // Close and reopen browser
     await page.close();
     const newPage = await context.newPage();
     await newPage.goto('/');
-    
+
     // Should still be logged in
     await expect(newPage).toHaveURL('/dashboard');
   });
@@ -1794,10 +1839,10 @@ test.describe('Authentication Flow', () => {
     await page.getByLabel(/password/i).fill('Password123!');
     await page.getByRole('button', { name: /login/i }).click();
     await expect(page).toHaveURL('/dashboard');
-    
+
     // Logout
     await page.getByRole('button', { name: /logout/i }).click();
-    
+
     // Verify redirect to login
     await expect(page).toHaveURL('/login');
   });
@@ -1827,15 +1872,16 @@ test.describe('Dashboard', () => {
   test('should filter data by date range', async ({ page }) => {
     // Open date picker
     await page.getByRole('button', { name: /select date range/i }).click();
-    
+
     // Select last 7 days
     await page.getByText(/last 7 days/i).click();
-    
+
     // Wait for data to update
-    await page.waitForResponse((response) =>
-      response.url().includes('/api/dashboard') && response.status() === 200
+    await page.waitForResponse(
+      (response) =>
+        response.url().includes('/api/dashboard') && response.status() === 200
     );
-    
+
     // Verify data updated
     await expect(page.getByText(/showing data for last 7 days/i)).toBeVisible();
   });
@@ -1844,7 +1890,7 @@ test.describe('Dashboard', () => {
     // Click on orders tab
     await page.getByRole('tab', { name: /orders/i }).click();
     await expect(page).toHaveURL('/dashboard/orders');
-    
+
     // Click on analytics tab
     await page.getByRole('tab', { name: /analytics/i }).click();
     await expect(page).toHaveURL('/dashboard/analytics');
@@ -1853,10 +1899,10 @@ test.describe('Dashboard', () => {
   test('should handle loading states', async ({ page }) => {
     // Reload page
     await page.reload();
-    
+
     // Should show loading spinner
     await expect(page.getByRole('progressbar')).toBeVisible();
-    
+
     // Wait for data to load
     await expect(page.getByRole('progressbar')).not.toBeVisible();
     await expect(page.getByTestId('dashboard-content')).toBeVisible();
@@ -2178,7 +2224,7 @@ jobs:
     environment:
       name: staging
       url: https://staging.myapp.com
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -2233,7 +2279,7 @@ jobs:
     environment:
       name: production
       url: https://myapp.com
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -2308,7 +2354,7 @@ export function initSentry() {
     Sentry.init({
       dsn: import.meta.env.VITE_SENTRY_DSN,
       environment: import.meta.env.MODE,
-      
+
       // ✅ Performance monitoring
       integrations: [
         new BrowserTracing({
@@ -2321,12 +2367,12 @@ export function initSentry() {
           ),
         }),
       ],
-      
+
       // ✅ Sample rates
       tracesSampleRate: 0.1, // 10% của transactions
       replaysSessionSampleRate: 0.1, // 10% sessions
       replaysOnErrorSampleRate: 1.0, // 100% khi có error
-      
+
       // ✅ Filter sensitive data
       beforeSend(event, hint) {
         // Remove sensitive data
@@ -2334,15 +2380,15 @@ export function initSentry() {
           delete event.request.cookies;
           delete event.request.headers?.Authorization;
         }
-        
+
         // Filter local development errors
         if (event.request?.url?.includes('localhost')) {
           return null;
         }
-        
+
         return event;
       },
-      
+
       // ✅ Ignore certain errors
       ignoreErrors: [
         'ResizeObserver loop limit exceeded',
@@ -2384,7 +2430,7 @@ export function trackPerformance(name: string, duration: number) {
     name,
     op: 'custom',
   });
-  
+
   transaction.setMeasurement('duration', duration, 'millisecond');
   transaction.finish();
 }
@@ -2392,7 +2438,10 @@ export function trackPerformance(name: string, duration: number) {
 
 ```typescript
 // Usage trong App.tsx
-import { initSentry, SentryErrorBoundary } from '@app/services/monitoring/sentry';
+import {
+  initSentry,
+  SentryErrorBoundary,
+} from '@app/services/monitoring/sentry';
 
 // Initialize Sentry
 initSentry();
@@ -2433,7 +2482,7 @@ export function initAnalytics() {
 // ✅ Track page views
 export function usePageTracking() {
   const location = useLocation();
-  
+
   useEffect(() => {
     if (import.meta.env.PROD) {
       ReactGA.send({
@@ -2517,19 +2566,19 @@ function ProductPage() {
     // Track user action
     trackEvent('Product', 'Add to Cart', product.name, product.price);
   };
-  
+
   useEffect(() => {
     const startTime = performance.now();
-    
+
     // Fetch product data
     fetchProduct().then(() => {
       const loadTime = performance.now() - startTime;
-      
+
       // Track performance
       trackTiming('Product Page', 'Load Time', loadTime, product.id);
     });
   }, []);
-  
+
   return <div>...</div>;
 }
 ```
@@ -2548,25 +2597,25 @@ export function initPerformanceMonitoring() {
     trackTiming('Web Vitals', 'CLS', metric.value);
     console.log('CLS:', metric.value);
   });
-  
+
   // First Input Delay
   onFID((metric) => {
     trackTiming('Web Vitals', 'FID', metric.value);
     console.log('FID:', metric.value);
   });
-  
+
   // First Contentful Paint
   onFCP((metric) => {
     trackTiming('Web Vitals', 'FCP', metric.value);
     console.log('FCP:', metric.value);
   });
-  
+
   // Largest Contentful Paint
   onLCP((metric) => {
     trackTiming('Web Vitals', 'LCP', metric.value);
     console.log('LCP:', metric.value);
   });
-  
+
   // Time to First Byte
   onTTFB((metric) => {
     trackTiming('Web Vitals', 'TTFB', metric.value);
@@ -2579,21 +2628,21 @@ export function measurePerformance(name: string) {
   const startMark = `${name}-start`;
   const endMark = `${name}-end`;
   const measureName = name;
-  
+
   return {
     start: () => performance.mark(startMark),
     end: () => {
       performance.mark(endMark);
       performance.measure(measureName, startMark, endMark);
-      
+
       const measure = performance.getEntriesByName(measureName)[0];
       trackTiming('Custom Performance', name, measure.duration);
-      
+
       // Cleanup
       performance.clearMarks(startMark);
       performance.clearMarks(endMark);
       performance.clearMeasures(measureName);
-      
+
       return measure.duration;
     },
   };
@@ -2697,54 +2746,54 @@ interface FeatureFlagConfig {
 
 class FeatureFlagService {
   private flags: Map<FeatureFlag, FeatureFlagConfig> = new Map();
-  
+
   constructor() {
     this.initializeFlags();
   }
-  
+
   private initializeFlags() {
     // Load từ remote config hoặc environment
     this.flags.set('newDashboard', {
       enabled: true,
       rolloutPercentage: 50, // Rollout 50% users
     });
-    
+
     this.flags.set('darkMode', {
       enabled: true,
     });
-    
+
     this.flags.set('advancedFilters', {
       enabled: true,
       enabledFor: ['admin-user-id'], // Chỉ cho admin
     });
   }
-  
+
   isEnabled(flag: FeatureFlag, userId?: string): boolean {
     const config = this.flags.get(flag);
-    
+
     if (!config || !config.enabled) {
       return false;
     }
-    
+
     // Check user-specific enable
     if (config.enabledFor && userId) {
       return config.enabledFor.includes(userId);
     }
-    
+
     // Check rollout percentage
     if (config.rolloutPercentage && userId) {
       const hash = this.hashUserId(userId);
       return hash < config.rolloutPercentage;
     }
-    
+
     return config.enabled;
   }
-  
+
   private hashUserId(userId: string): number {
     // Simple hash function 0-100
     let hash = 0;
     for (let i = 0; i < userId.length; i++) {
-      hash = ((hash << 5) - hash) + userId.charCodeAt(i);
+      hash = (hash << 5) - hash + userId.charCodeAt(i);
       hash = hash & hash; // Convert to 32bit integer
     }
     return Math.abs(hash % 100);
@@ -2765,11 +2814,11 @@ export function useFeatureFlag(flag: FeatureFlag): boolean {
 function Dashboard() {
   const hasNewDashboard = useFeatureFlag('newDashboard');
   const hasDarkMode = useFeatureFlag('darkMode');
-  
+
   if (hasNewDashboard) {
     return <NewDashboard />;
   }
-  
+
   return <OldDashboard />;
 }
 ```
@@ -2953,14 +3002,16 @@ describe('calculateTotal', () => {
   it('calculates total for single item', () => {
     expect(calculateTotal([{ price: 10, quantity: 2 }])).toBe(20);
   });
-  
+
   it('calculates total for multiple items', () => {
-    expect(calculateTotal([
-      { price: 10, quantity: 2 },
-      { price: 5, quantity: 3 },
-    ])).toBe(35);
+    expect(
+      calculateTotal([
+        { price: 10, quantity: 2 },
+        { price: 5, quantity: 3 },
+      ])
+    ).toBe(35);
   });
-  
+
   it('returns 0 for empty cart', () => {
     expect(calculateTotal([])).toBe(0);
   });
@@ -2989,36 +3040,35 @@ const API_URL = import.meta.env.VITE_API_URL;
 // ❌ BAD: No monitoring
 function DataTable() {
   const [data, setData] = useState([]);
-  
+
   useEffect(() => {
-    fetch('/api/data').then(res => setData(res.data));
+    fetch('/api/data').then((res) => setData(res.data));
   }, []);
-  
+
   return <Table data={data} />;
 }
 
 // ✅ GOOD: Performance tracking
 function DataTable() {
   const [data, setData] = useState([]);
-  
+
   useEffect(() => {
     const perf = measurePerformance('data-fetch');
     perf.start();
-    
-    fetch('/api/data')
-      .then(res => {
-        setData(res.data);
-        const duration = perf.end();
-        
-        if (duration > 1000) {
-          captureError(new Error('Slow data fetch'), {
-            duration,
-            endpoint: '/api/data',
-          });
-        }
-      });
+
+    fetch('/api/data').then((res) => {
+      setData(res.data);
+      const duration = perf.end();
+
+      if (duration > 1000) {
+        captureError(new Error('Slow data fetch'), {
+          duration,
+          endpoint: '/api/data',
+        });
+      }
+    });
   }, []);
-  
+
   return <Table data={data} />;
 }
 ```
@@ -3027,17 +3077,18 @@ function DataTable() {
 
 ## **📊 5. COMPARISON: MONOREPO VS POLYREPO**
 
-| Aspect | Monorepo (Nx) | Polyrepo |
-|--------|---------------|----------|
-| **Code Sharing** | ⭐⭐⭐⭐⭐ Easy with libs | ⭐⭐ Requires npm packages |
-| **Consistency** | ⭐⭐⭐⭐⭐ Enforced standards | ⭐⭐ Varies per repo |
-| **Refactoring** | ⭐⭐⭐⭐⭐ Atomic changes | ⭐⭐ Multiple PRs needed |
-| **CI/CD Speed** | ⭐⭐⭐⭐⭐ Affected commands | ⭐⭐⭐ Build everything |
-| **Onboarding** | ⭐⭐⭐ Single repo to clone | ⭐⭐ Multiple repos |
-| **Team Scale** | ⭐⭐⭐⭐⭐ 50+ developers | ⭐⭐⭐ Best for small teams |
-| **Dependencies** | ⭐⭐⭐⭐ Centralized | ⭐⭐ Can drift |
+| Aspect           | Monorepo (Nx)                 | Polyrepo                    |
+| ---------------- | ----------------------------- | --------------------------- |
+| **Code Sharing** | ⭐⭐⭐⭐⭐ Easy with libs     | ⭐⭐ Requires npm packages  |
+| **Consistency**  | ⭐⭐⭐⭐⭐ Enforced standards | ⭐⭐ Varies per repo        |
+| **Refactoring**  | ⭐⭐⭐⭐⭐ Atomic changes     | ⭐⭐ Multiple PRs needed    |
+| **CI/CD Speed**  | ⭐⭐⭐⭐⭐ Affected commands  | ⭐⭐⭐ Build everything     |
+| **Onboarding**   | ⭐⭐⭐ Single repo to clone   | ⭐⭐ Multiple repos         |
+| **Team Scale**   | ⭐⭐⭐⭐⭐ 50+ developers     | ⭐⭐⭐ Best for small teams |
+| **Dependencies** | ⭐⭐⭐⭐ Centralized          | ⭐⭐ Can drift              |
 
-**Recommendation:** 
+**Recommendation:**
+
 - **Monorepo (Nx)**: Multi-app projects, shared libraries, large teams
 - **Polyrepo**: Independent services, different tech stacks
 
@@ -3046,6 +3097,7 @@ function DataTable() {
 ## **🏢 6. REAL-WORLD SCENARIO: Banking Dashboard**
 
 ### **Project Context**
+
 - **Scale**: 2M+ users, 50+ developers
 - **Apps**: Customer portal, Admin dashboard, Mobile app
 - **Shared**: UI library, API client, Utils, Types
@@ -3054,6 +3106,7 @@ function DataTable() {
 ### **Implementation Journey**
 
 **Week 1-2: Foundation**
+
 ```bash
 # Setup Nx monorepo
 npx create-nx-workspace banking-app --preset=react-monorepo
@@ -3069,6 +3122,7 @@ nx g @nx/react:lib shared-api
 ```
 
 **Week 3-4: Architecture**
+
 - Feature-based folder structure
 - Path aliases setup
 - Shared component library (50+ components)
@@ -3076,6 +3130,7 @@ nx g @nx/react:lib shared-api
 - State management (React Query + Zustand)
 
 **Week 5-6: Code Quality**
+
 - ESLint + Prettier + Husky
 - TypeScript strict mode
 - Zod validation schemas
@@ -3083,6 +3138,7 @@ nx g @nx/react:lib shared-api
 - **Result**: 90% fewer bugs in code review
 
 **Week 7-8: Performance**
+
 - Vite build optimization
 - Code splitting strategy
 - Lazy loading routes
@@ -3090,24 +3146,28 @@ nx g @nx/react:lib shared-api
 - **Result**: Build time 3s → 0.8s, Bundle size reduced 40%
 
 **Week 9-10: Testing**
+
 - Vitest setup (85% coverage)
 - React Testing Library
 - Playwright E2E (100+ scenarios)
 - **Result**: Caught 150+ bugs before production
 
 **Week 11-12: CI/CD**
+
 - GitHub Actions workflows
 - Affected commands (only test/build changed code)
 - Auto deployment to staging/production
 - **Result**: Deploy 20 times/day, 5min pipeline
 
 **Week 13-14: Monitoring**
+
 - Sentry error tracking
 - Google Analytics
 - Web Vitals monitoring
 - **Result**: 99.9% uptime, MTTR < 10min
 
 **Final Metrics:**
+
 - **Development Speed**: 70% faster (shared libraries, no duplication)
 - **Bug Rate**: 90% reduction (strict TypeScript, testing, code review)
 - **Build Time**: 3s → 0.8s (Vite, caching)
@@ -3121,6 +3181,7 @@ nx g @nx/react:lib shared-api
 ## **⚡ 7. OPTIMIZATION STRATEGIES**
 
 ### **Build Optimization**
+
 ```typescript
 // ✅ 1. SWC instead of Babel (20x faster)
 // vite.config.ts
@@ -3139,6 +3200,7 @@ pnpm vite-bundle-visualizer
 ```
 
 ### **Runtime Optimization**
+
 ```typescript
 // ✅ 1. React.memo for expensive components
 const ExpensiveComponent = React.memo(({ data }) => {
@@ -3155,28 +3217,18 @@ import { FixedSizeList } from 'react-window';
 
 function LargeList({ items }) {
   return (
-    <FixedSizeList
-      height={600}
-      itemCount={items.length}
-      itemSize={50}
-    >
-      {({ index, style }) => (
-        <div style={style}>{items[index]}</div>
-      )}
+    <FixedSizeList height={600} itemCount={items.length} itemSize={50}>
+      {({ index, style }) => <div style={style}>{items[index]}</div>}
     </FixedSizeList>
   );
 }
 
 // ✅ 4. Image optimization
-<img
-  src="/image.jpg"
-  loading="lazy"
-  decoding="async"
-  alt="..."
-/>
+<img src="/image.jpg" loading="lazy" decoding="async" alt="..." />;
 ```
 
 ### **Network Optimization**
+
 ```typescript
 // ✅ 1. React Query stale-while-revalidate
 const { data } = useQuery({
@@ -3189,13 +3241,15 @@ const { data } = useQuery({
 // ✅ 2. Prefetch on hover
 <Link
   to="/dashboard"
-  onMouseEnter={() => queryClient.prefetchQuery({
-    queryKey: ['dashboard'],
-    queryFn: fetchDashboard,
-  })}
+  onMouseEnter={() =>
+    queryClient.prefetchQuery({
+      queryKey: ['dashboard'],
+      queryFn: fetchDashboard,
+    })
+  }
 >
   Dashboard
-</Link>
+</Link>;
 
 // ✅ 3. Parallel requests
 const [users, posts, comments] = await Promise.all([
@@ -3215,6 +3269,7 @@ const [users, posts, comments] = await Promise.all([
 ## ✅ PRODUCTION-READY CHECKLIST
 
 ### Foundation
+
 - [ ] TypeScript strict mode enabled
 - [ ] ESLint + Prettier configured
 - [ ] Git hooks (Husky + lint-staged)
@@ -3222,6 +3277,7 @@ const [users, posts, comments] = await Promise.all([
 - [ ] Path aliases configured
 
 ### Architecture
+
 - [ ] Feature-based folder structure
 - [ ] Shared libraries created
 - [ ] State management strategy defined
@@ -3229,6 +3285,7 @@ const [users, posts, comments] = await Promise.all([
 - [ ] Error boundaries implemented
 
 ### Code Quality
+
 - [ ] Automated code review (Danger.js)
 - [ ] Type safety enforced (Zod schemas)
 - [ ] Code formatting automated
@@ -3236,6 +3293,7 @@ const [users, posts, comments] = await Promise.all([
 - [ ] Unused code detected
 
 ### Performance
+
 - [ ] Build optimization (Vite/SWC)
 - [ ] Code splitting per route
 - [ ] Lazy loading implemented
@@ -3243,6 +3301,7 @@ const [users, posts, comments] = await Promise.all([
 - [ ] Performance budgets defined
 
 ### Testing
+
 - [ ] Unit tests (80%+ coverage)
 - [ ] Integration tests
 - [ ] E2E tests (critical paths)
@@ -3250,6 +3309,7 @@ const [users, posts, comments] = await Promise.all([
 - [ ] Accessibility tests
 
 ### CI/CD
+
 - [ ] GitHub Actions workflows
 - [ ] Affected commands configured
 - [ ] Auto deployment setup
@@ -3257,6 +3317,7 @@ const [users, posts, comments] = await Promise.all([
 - [ ] Secret management
 
 ### Monitoring
+
 - [ ] Error tracking (Sentry)
 - [ ] Analytics (Google Analytics)
 - [ ] Performance monitoring (Web Vitals)
@@ -3264,6 +3325,7 @@ const [users, posts, comments] = await Promise.all([
 - [ ] Alerts configured
 
 ### Documentation
+
 - [ ] README comprehensive
 - [ ] Storybook for components
 - [ ] API documentation
@@ -3271,6 +3333,7 @@ const [users, posts, comments] = await Promise.all([
 - [ ] Onboarding guide
 
 ### Scalability
+
 - [ ] Micro-frontends ready
 - [ ] Feature flags system
 - [ ] A/B testing capability
@@ -3294,6 +3357,7 @@ const [users, posts, comments] = await Promise.all([
 **"Tốt nhất là xây dựng từ đầu đúng cách, không phải refactor sau. Investment vào tooling, testing, và monitoring ngày đầu sẽ trả về gấp 10 lần về sau."**
 
 **Success Metrics:**
+
 - **Developer Experience**: How fast can new dev be productive?
 - **Code Quality**: How many bugs reach production?
 - **Performance**: How fast is the app?
@@ -3301,3 +3365,366 @@ const [users, posts, comments] = await Promise.all([
 - **Maintainability**: How easy to change?
 
 **Remember:** Production-ready ≠ Perfect. Ship fast, iterate, improve continuously! 🚀
+
+---
+
+## **📊 9. PHÂN TÍCH & ĐỀ XUẤT BỔ SUNG**
+
+### **🔍 Đánh Giá Tổng Quan**
+
+File Q62 hiện tại đã cover **8 giai đoạn chính** từ Foundation đến Scalability với code examples chi tiết. Tuy nhiên, để đạt mức **Production-Ready hoàn chỉnh**, còn thiếu một số phần quan trọng:
+
+### **🔴 CRITICAL - Cần Bổ Sung Ngay**
+
+#### **1. Error Handling Strategy (Global Error Handling)**
+
+**Hiện trạng:**
+
+- ✅ Có ErrorBoundary trong folder structure (dòng 601)
+- ✅ Có SentryErrorBoundary trong Step 7.1 (dòng 2357)
+- ❌ **THIẾU**: Global error handling strategy chi tiết
+- ❌ **THIẾU**: API error handling patterns
+- ❌ **THIẾU**: Unhandled promise rejection handling
+- ❌ **THIẾU**: Network error recovery strategies
+
+**Cần bổ sung:**
+
+```typescript
+// apps/web/src/services/error/globalErrorHandler.ts
+// - Window error event listener
+// - Unhandled promise rejection handler
+// - API error interceptor với retry logic
+// - Error classification (NetworkError, ValidationError, ServerError)
+// - Error recovery strategies (retry, fallback, graceful degradation)
+```
+
+**Vị trí đề xuất:** Thêm sau **Step 7.1: Sentry Error Tracking** (sau dòng 2412)
+
+---
+
+#### **2. Environment Variables Management (Chi Tiết)**
+
+**Hiện trạng:**
+
+- ✅ Có đề cập trong Pitfall #4 (dòng 2970-2983)
+- ✅ Có trong CI/CD workflows (dòng 2199, 2257)
+- ❌ **THIẾT**: Type-safe environment variables
+- ❌ **THIẾU**: Environment validation với Zod
+- ❌ **THIẾU**: Multi-environment configuration strategy
+- ❌ **THIẾU**: Secret management best practices
+
+**Cần bổ sung:**
+
+```typescript
+// apps/web/src/config/env.ts
+// - Zod schema cho environment variables
+// - Type-safe env access
+// - Validation on app startup
+// - Default values cho development
+// - Error messages rõ ràng khi thiếu env vars
+```
+
+**Vị trí đề xuất:** Thêm vào **GIAI ĐOẠN 1: FOUNDATION** sau Step 1.6 (sau dòng 523)
+
+---
+
+#### **3. Internationalization (i18n) Setup**
+
+**Hiện trạng:**
+
+- ❌ **THIẾU HOÀN TOÀN**: Không có i18n setup
+- ❌ **THIẾU**: react-i18next configuration
+- ❌ **THIẾU**: Translation file structure
+- ❌ **THIẾU**: RTL support
+- ❌ **THIẾU**: Date/number/currency formatting với locale
+
+**Cần bổ sung:**
+
+```typescript
+// libs/shared/i18n/
+// - i18n configuration
+// - Translation files structure (en, vi, ja...)
+// - Language detection
+// - Lazy loading translations
+// - RTL support setup
+// - Integration với date/number formatting
+```
+
+**Vị trí đề xuất:** Thêm vào **GIAI ĐOẠN 2: ARCHITECTURE** sau Step 2.3 (sau dòng 774)
+
+---
+
+#### **4. Progressive Web App (PWA) Implementation Chi Tiết**
+
+**Hiện trạng:**
+
+- ✅ Có VitePWA plugin trong vite.config.ts (dòng 1104-1125)
+- ❌ **THIẾU**: Service Worker strategy chi tiết
+- ❌ **THIẾU**: Offline fallback strategies
+- ❌ **THIẾU**: Background sync implementation
+- ❌ **THIẾU**: Push notifications setup
+- ❌ **THIẾU**: Update notification UI
+
+**Cần bổ sung:**
+
+```typescript
+// apps/web/src/services/pwa/
+// - Service Worker registration
+// - Cache strategies (NetworkFirst, CacheFirst, StaleWhileRevalidate)
+// - Offline fallback pages
+// - Background sync cho failed requests
+// - Push notification setup
+// - Update prompt component
+```
+
+**Vị trí đề xuất:** Thêm vào **GIAI ĐOẠN 4: PERFORMANCE** sau Step 4.3 (sau dòng 1345)
+
+---
+
+#### **5. SEO Optimization Strategy**
+
+**Hiện trạng:**
+
+- ✅ Có Lighthouse CI với SEO checks (dòng 1298-1299)
+- ❌ **THIẾU**: Meta tags management
+- ❌ **THIẾU**: Open Graph tags
+- ❌ **THIẾU**: Structured data (JSON-LD)
+- ❌ **THIẾU**: Sitemap generation
+- ❌ **THIẾU**: robots.txt configuration
+
+**Cần bổ sung:**
+
+```typescript
+// apps/web/src/services/seo/
+// - Meta tags component với TypeScript
+// - Open Graph generator
+// - JSON-LD structured data
+// - Dynamic sitemap generation
+// - robots.txt với environment-based rules
+```
+
+**Vị trí đề xuất:** Thêm vào **GIAI ĐOẠN 4: PERFORMANCE** sau PWA section
+
+---
+
+### **🟡 IMPORTANT - Nên Bổ Sung**
+
+#### **6. Security Best Practices (Chi Tiết Hơn)**
+
+**Hiện trạng:**
+
+- ✅ Có security scan trong CI/CD (dòng 2128-2161)
+- ✅ Có Sentry security filters (dòng 2331-2343)
+- ❌ **THIẾU**: Content Security Policy (CSP) setup
+- ❌ **THIẾU**: XSS prevention patterns
+- ❌ **THIẾU**: CSRF token handling
+- ❌ **THIẾU**: Secure cookie configuration
+
+**Cần bổ sung:**
+
+```typescript
+// apps/web/src/services/security/
+// - CSP headers configuration
+// - XSS sanitization utilities
+// - CSRF token management
+// - Secure cookie settings
+// - Security headers middleware
+```
+
+**Vị trí đề xuất:** Thêm vào **GIAI ĐOẠN 3: CODE QUALITY** sau Step 3.3 (sau dòng 1064)
+
+---
+
+#### **7. Accessibility (a11y) Implementation**
+
+**Hiện trạng:**
+
+- ✅ Có jsx-a11y trong ESLint (dòng 185)
+- ✅ Có Lighthouse a11y check (dòng 1293)
+- ❌ **THIẾU**: Accessibility testing setup
+- ❌ **THIẾU**: Keyboard navigation patterns
+- ❌ **THIẾU**: Screen reader testing
+- ❌ **THIẾU**: Focus management utilities
+
+**Cần bổ sung:**
+
+```typescript
+// libs/shared/ui/src/a11y/
+// - Focus trap component
+// - Skip links component
+// - ARIA utilities
+// - Keyboard navigation hooks
+// - Screen reader testing utilities
+```
+
+**Vị trí đề xuất:** Thêm vào **GIAI ĐOẠN 5: TESTING** sau Step 5.4 (sau dòng 1865)
+
+---
+
+#### **8. Logging Strategy (Chi Tiết)**
+
+**Hiện trạng:**
+
+- ✅ Có console.log warnings trong ESLint (dòng 267)
+- ✅ Có Sentry logging (dòng 2294-2390)
+- ❌ **THIẾU**: Structured logging library (Winston, Pino)
+- ❌ **THIẾU**: Log levels configuration
+- ❌ **THIẾU**: Log aggregation strategy
+- ❌ **THIẾU**: Performance logging patterns
+
+**Cần bổ sung:**
+
+```typescript
+// apps/web/src/services/logging/
+// - Logger service với levels (debug, info, warn, error)
+// - Structured logging format
+// - Log aggregation setup (LogRocket, Datadog)
+// - Performance logging utilities
+// - Error context logging
+```
+
+**Vị trí đề xuất:** Thêm vào **GIAI ĐOẠN 7: MONITORING** sau Step 7.3 (sau dòng 2608)
+
+---
+
+#### **9. State Persistence Strategy**
+
+**Hiện trạng:**
+
+- ✅ Có Zustand store (dòng 633)
+- ✅ Có useLocalStorage hook (dòng 606)
+- ❌ **THIẾU**: State persistence patterns
+- ❌ **THIẾU**: State hydration từ localStorage
+- ❌ **THIẾU**: State migration strategies
+- ❌ **THIẾU**: State versioning
+
+**Cần bổ sung:**
+
+```typescript
+// libs/shared/utils/src/state/
+// - State persistence middleware cho Zustand
+// - State hydration utilities
+// - State migration utilities
+// - State versioning system
+```
+
+**Vị trí đề xuất:** Thêm vào **GIAI ĐOẠN 2: ARCHITECTURE** sau state management (sau dòng 638)
+
+---
+
+#### **10. API Documentation & Type Generation**
+
+**Hiện trạng:**
+
+- ✅ Có API client setup (dòng 623-626)
+- ❌ **THIẾU**: API documentation strategy
+- ❌ **THIẾU**: OpenAPI/Swagger integration
+- ❌ **THIẾU**: Type generation từ API schema
+- ❌ **THIẾU**: API mocking strategy
+
+**Cần bổ sung:**
+
+```typescript
+// tools/api-generator/
+// - OpenAPI schema parser
+// - TypeScript type generator từ OpenAPI
+// - API client generator
+// - Mock server setup (MSW)
+```
+
+**Vị trí đề xuất:** Thêm vào **GIAI ĐOẠN 2: ARCHITECTURE** sau API client (sau dòng 630)
+
+---
+
+### **🟢 NICE TO HAVE - Có Thể Bổ Sung Sau**
+
+#### **11. Dark Mode Implementation**
+
+- Theme switching strategy
+- System preference detection
+- Theme persistence
+- CSS variables cho theming
+
+#### **12. Browser Compatibility & Polyfills**
+
+- Browserslist configuration
+- Polyfill strategy
+- Feature detection
+- Graceful degradation
+
+#### **13. Memory Leak Detection**
+
+- Memory profiling setup
+- Leak detection patterns
+- React DevTools Profiler integration
+- Performance monitoring
+
+#### **14. API Mocking & Testing**
+
+- MSW (Mock Service Worker) setup
+- Mock data factories
+- API contract testing
+
+#### **15. Component Documentation**
+
+- Storybook setup chi tiết hơn
+- Component API documentation
+- Usage examples
+- Design system integration
+
+---
+
+### **📋 TỔNG KẾT ĐỀ XUẤT BỔ SUNG**
+
+| Priority     | Section                          | Lines Đề Xuất | Status     |
+| ------------ | -------------------------------- | ------------- | ---------- |
+| 🔴 Critical  | Error Handling Strategy          | ~200 lines    | ⚠️ Thiếu   |
+| 🔴 Critical  | Environment Variables (Chi tiết) | ~150 lines    | ⚠️ Thiếu   |
+| 🔴 Critical  | i18n Setup                       | ~250 lines    | ❌ Chưa có |
+| 🔴 Critical  | PWA Implementation               | ~300 lines    | ⚠️ Thiếu   |
+| 🔴 Critical  | SEO Optimization                 | ~200 lines    | ⚠️ Thiếu   |
+| 🟡 Important | Security Best Practices          | ~200 lines    | ⚠️ Thiếu   |
+| 🟡 Important | Accessibility Implementation     | ~150 lines    | ⚠️ Thiếu   |
+| 🟡 Important | Logging Strategy                 | ~150 lines    | ⚠️ Thiếu   |
+| 🟡 Important | State Persistence                | ~100 lines    | ⚠️ Thiếu   |
+| 🟡 Important | API Documentation                | ~150 lines    | ⚠️ Thiếu   |
+
+**Tổng cộng:** ~1,850 lines code examples + explanations cần bổ sung
+
+---
+
+### **🎯 Ưu Tiên Triển Khai**
+
+**Phase 1 (Ngay lập tức):**
+
+1. Error Handling Strategy
+2. Environment Variables Management
+3. i18n Setup
+
+**Phase 2 (Tuần tiếp theo):** 4. PWA Implementation 5. SEO Optimization 6. Security Best Practices
+
+**Phase 3 (Sau đó):** 7. Accessibility Implementation 8. Logging Strategy 9. State Persistence 10. API Documentation
+
+---
+
+### **💡 Lưu Ý Khi Bổ Sung**
+
+1. **Giữ format nhất quán**: Mỗi section nên có:
+
+   - Giải thích tại sao cần
+   - Code examples production-ready
+   - Best practices
+   - Common pitfalls
+   - Integration với các phần khác
+
+2. **Cross-references**: Link đến các sections liên quan (ví dụ: Error Handling → Sentry, i18n → Date formatting)
+
+3. **Real-world examples**: Dùng Banking Dashboard scenario như các phần khác
+
+4. **Vietnamese comments**: Giữ style Vietnamese comments như hiện tại
+
+5. **Code quality**: Tất cả code examples phải:
+   - TypeScript strict mode compliant
+   - Có error handling
+   - Có proper types
+   - Production-ready patterns

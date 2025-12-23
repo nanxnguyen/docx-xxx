@@ -1,10 +1,10 @@
-# 🔄 Q55: GraphQL vs REST - API Design, Apollo Client
+# 🔄 Q55: API Design & Integration Patterns
 
 ## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"GraphQL = single endpoint, client-driven queries, exact data (no over/under-fetching). REST = multiple endpoints, server-driven. Apollo Client: caching, optimistic updates, subscriptions. GraphQL tốt cho complex data, REST tốt cho simple CRUD."**
+**"API Design = REST best practices (RESTful principles, versioning, rate limiting) + GraphQL (single endpoint, client-driven). Integration patterns: Pagination (cursor vs offset), Real-time (Polling vs Long-polling vs SSE), Error handling, Caching strategies. Apollo Client: normalized cache, optimistic updates, subscriptions."**
 
 **🔑 GraphQL vs REST:**
 
@@ -58,12 +58,16 @@
 ## 📋 **Mục Lục**
 
 1. [GraphQL vs REST Comparison](#1-graphql-vs-rest-comparison)
-2. [Apollo Client Setup](#2-apollo-client-setup)
-3. [Queries & Mutations](#3-queries--mutations)
-4. [Caching Strategies](#4-caching-strategies)
-5. [Pagination](#5-pagination)
-6. [Optimistic Updates](#6-optimistic-updates)
-7. [Error Handling](#7-error-handling)
+2. [REST Best Practices](#2-rest-best-practices)
+3. [API Versioning](#3-api-versioning)
+4. [Rate Limiting Handling](#4-rate-limiting-handling)
+5. [Pagination Strategies](#5-pagination-strategies)
+6. [Real-time Data Patterns](#6-real-time-data-patterns)
+7. [Apollo Client Setup](#7-apollo-client-setup)
+8. [Queries & Mutations](#8-queries--mutations)
+9. [Caching Strategies](#9-caching-strategies)
+10. [Optimistic Updates](#10-optimistic-updates)
+11. [Error Handling](#11-error-handling)
 
 ---
 
