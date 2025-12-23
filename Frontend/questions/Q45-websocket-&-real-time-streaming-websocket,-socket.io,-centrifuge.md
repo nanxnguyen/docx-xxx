@@ -4229,6 +4229,1130 @@ export default function () {
 
 ---
 
+#### **🚀 Phần 6.2: Centrifuge Production Setup - Tối Ưu Performance, Clean Code & Reuse**
+
+**🎯 Mục Tiêu:**
+
+- ✅ Performance tối đa: Binary protocol, batching, throttling
+- ✅ Clean Code: Type-safe, separation of concerns, error handling
+- ✅ Reusability: React hooks, utilities, configuration management
+- ✅ Production-ready: Monitoring, logging, testing utilities
+
+---
+
+**📦 1. Complete Type-Safe Setup với Configuration:**
+
+```typescript
+// ===================================================
+// 📁 lib/centrifuge/types.ts - Type Definitions
+// ===================================================
+
+import { PublicationContext, SubscriptionState } from 'centrifuge';
+
+/**
+ * 📋 Channel Types (Type-safe channel names)
+ */
+export type ChannelType =
+  | `market:${string}` // VD: "market:VNM", "market:HPG"
+  | `portfolio:${string}` // VD: "portfolio:user123"
+  | `chat:${string}` // VD: "chat:room456"
+  | `orderbook:${string}`; // VD: "orderbook:BTCUSDT"
+
+/**
+ * 📨 Message Types (Type-safe message payloads)
+ */
+export interface MarketData {
+  symbol: string;
+  price: number;
+  volume: number;
+  change: number;
+  changePercent: number;
+  timestamp: number;
+}
+
+export interface PortfolioUpdate {
+  userId: string;
+  totalValue: number;
+  positions: Array<{
+    symbol: string;
+    quantity: number;
+    value: number;
+  }>;
+}
+
+export interface ChatMessage {
+  id: string;
+  userId: string;
+  content: string;
+  timestamp: number;
+}
+
+export interface OrderBookUpdate {
+  symbol: string;
+  bids: Array<[number, number]>; // [price, quantity]
+  asks: Array<[number, number]>;
+  timestamp: number;
+}
+
+/**
+ * 🔧 Configuration Types
+ */
+export interface CentrifugeConfig {
+  url: string;
+  getToken: () => Promise<string>;
+  protocol?: 'json' | 'protobuf'; // 💡 protobuf nhanh hơn ~5x
+  minReconnectDelay?: number;
+  maxReconnectDelay?: number;
+  maxReconnectAttempts?: number;
+  debug?: boolean;
+  onConnected?: () => void;
+  onDisconnected?: () => void;
+  onError?: (error: Error) => void;
+}
+
+/**
+ * 📊 Subscription Options với Type Safety
+ */
+export interface SubscriptionOptions<T = any> {
+  onPublish?: (data: T, ctx: PublicationContext) => void;
+  onSubscribe?: () => void;
+  onUnsubscribe?: () => void;
+  onError?: (error: Error) => void;
+  enabled?: boolean; // 💡 Conditional subscription
+  throttleMs?: number; // 💡 Throttle messages (VD: 100ms = max 10 msg/s)
+  batchSize?: number; // 💡 Batch messages (VD: 10 messages → 1 update)
+}
+
+/**
+ * 📈 Connection Stats
+ */
+export interface ConnectionStats {
+  connected: boolean;
+  subscriptions: number;
+  channels: string[];
+  reconnectAttempts: number;
+  lastConnectedAt?: number;
+  lastDisconnectedAt?: number;
+}
+```
+
+---
+
+**🏗️ 2. Enhanced CentrifugeManager với Performance Optimizations:**
+
+```typescript
+// ===================================================
+// 📁 lib/centrifuge/CentrifugeManager.ts
+// ===================================================
+
+import Centrifuge, {
+  Subscription,
+  PublicationContext,
+  SubscriptionState,
+} from 'centrifuge';
+import type {
+  CentrifugeConfig,
+  SubscriptionOptions,
+  ConnectionStats,
+  ChannelType,
+} from './types';
+
+/**
+ * 🚀 PRODUCTION-GRADE CENTRIFUGE MANAGER
+ *
+ * ✅ Features:
+ * - Singleton pattern (1 connection cho toàn app)
+ * - Reference counting (tránh duplicate subscriptions)
+ * - Message batching & throttling (performance)
+ * - Binary protocol support (protobuf)
+ * - Auto-reconnection với exponential backoff
+ * - Type-safe subscriptions
+ * - Error handling & retry strategies
+ * - Metrics & monitoring
+ */
+class CentrifugeManager {
+  private static instance: CentrifugeManager;
+  private centrifuge: Centrifuge | null = null;
+  private subscriptions: Map<string, Subscription> = new Map();
+  private refCount: Map<string, number> = new Map();
+  private reconnectAttempts = 0;
+  private config: CentrifugeConfig | null = null;
+
+  // 📊 Performance: Message batching & throttling
+  private messageQueues: Map<string, any[]> = new Map(); // Channel → messages queue
+  private throttleTimers: Map<string, NodeJS.Timeout> = new Map();
+  private batchTimers: Map<string, NodeJS.Timeout> = new Map();
+
+  // 📈 Metrics
+  private metrics = {
+    messagesReceived: 0,
+    messagesProcessed: 0,
+    subscriptionsCreated: 0,
+    reconnections: 0,
+    errors: 0,
+  };
+
+  private constructor() {}
+
+  static getInstance(): CentrifugeManager {
+    if (!CentrifugeManager.instance) {
+      CentrifugeManager.instance = new CentrifugeManager();
+    }
+    return CentrifugeManager.instance;
+  }
+
+  /**
+   * 🔗 Initialize Centrifuge connection
+   */
+  init(config: CentrifugeConfig): Centrifuge {
+    if (this.centrifuge) {
+      console.warn('⚠️ Centrifuge already initialized');
+      return this.centrifuge;
+    }
+
+    this.config = config;
+
+    // 🚀 Create Centrifuge client với optimal config
+    this.centrifuge = new Centrifuge(config.url, {
+      // 🔐 Token management (auto-refresh)
+      getToken: async () => {
+        try {
+          const token = await config.getToken();
+          this.reconnectAttempts = 0; // Reset on successful token
+          return token;
+        } catch (error) {
+          console.error('❌ Token fetch failed:', error);
+          this.metrics.errors++;
+          throw error;
+        }
+      },
+
+      // 🔄 Reconnection strategy (exponential backoff)
+      minReconnectDelay: config.minReconnectDelay || 1000, // 1s
+      maxReconnectDelay: config.maxReconnectDelay || 30000, // 30s max
+      // 💡 Exponential: 1s → 2s → 4s → 8s → 16s → 30s (max)
+
+      // 📊 Protocol: Binary (protobuf) cho performance
+      protocol: config.protocol || 'protobuf', // ✅ Nhanh hơn JSON ~5x
+      // 💡 Protobuf: ~40% smaller, ~5x faster parsing
+      // 💡 JSON: Dễ debug, nhưng chậm hơn
+
+      // 🐛 Debug mode (chỉ bật khi dev)
+      debug: config.debug ?? process.env.NODE_ENV === 'development',
+    });
+
+    // 📡 Setup global event handlers
+    this.setupEventHandlers();
+
+    // 🚀 Connect
+    this.centrifuge.connect();
+
+    return this.centrifuge;
+  }
+
+  /**
+   * 📡 Setup global event handlers
+   */
+  private setupEventHandlers(): void {
+    if (!this.centrifuge) return;
+
+    this.centrifuge.on('connected', (ctx) => {
+      console.log('✅ Centrifuge connected:', {
+        client: ctx.client,
+        transport: ctx.transport,
+        version: ctx.version,
+      });
+
+      this.reconnectAttempts = 0;
+      this.config?.onConnected?.();
+
+      // 📊 Track metrics
+      this.trackMetric('connection_established', {
+        transport: ctx.transport,
+        latency: ctx.latency,
+      });
+    });
+
+    this.centrifuge.on('disconnected', (ctx) => {
+      console.warn('🔌 Centrifuge disconnected:', {
+        code: ctx.code,
+        reason: ctx.reason,
+        reconnect: ctx.reconnect,
+      });
+
+      this.config?.onDisconnected?.();
+      this.metrics.reconnections++;
+
+      // 📊 Track disconnection
+      this.trackMetric('connection_lost', {
+        code: ctx.code,
+        reason: ctx.reason,
+      });
+    });
+
+    this.centrifuge.on('connecting', () => {
+      this.reconnectAttempts++;
+      console.log(`🔄 Reconnecting... (attempt ${this.reconnectAttempts})`);
+
+      // 🚨 Max attempts reached
+      if (this.reconnectAttempts >= (this.config?.maxReconnectAttempts || 10)) {
+        console.error('❌ Max reconnect attempts reached');
+        this.showReconnectError();
+      }
+    });
+
+    this.centrifuge.on('error', (ctx) => {
+      console.error('❌ Centrifuge error:', ctx.error);
+      this.metrics.errors++;
+      this.config?.onError?.(ctx.error);
+    });
+  }
+
+  /**
+   * 📥 Subscribe với Performance Optimizations
+   */
+  subscribe<T = any>(
+    channel: ChannelType,
+    options: SubscriptionOptions<T> = {}
+  ): () => void {
+    // 💡 Conditional subscription
+    if (options.enabled === false) {
+      return () => {}; // No-op cleanup
+    }
+
+    // 📈 Reference counting
+    const currentCount = this.refCount.get(channel) || 0;
+    this.refCount.set(channel, currentCount + 1);
+
+    // 🔍 Check existing subscription
+    let subscription = this.subscriptions.get(channel);
+
+    if (!subscription) {
+      // 🆕 Create new subscription
+      subscription = this.createSubscription(channel, options);
+      this.subscriptions.set(channel, subscription);
+      this.metrics.subscriptionsCreated++;
+    } else {
+      // ♻️ Reuse existing subscription
+      // Attach additional listener
+      if (options.onPublish) {
+        const wrappedHandler = this.wrapMessageHandler(
+          channel,
+          options.onPublish,
+          options
+        );
+        subscription.on('publication', wrappedHandler);
+      }
+    }
+
+    // 🧹 Return cleanup function
+    return () => {
+      this.unsubscribe(channel, options.onPublish);
+    };
+  }
+
+  /**
+   * 🆕 Create subscription với optimizations
+   */
+  private createSubscription<T>(
+    channel: ChannelType,
+    options: SubscriptionOptions<T>
+  ): Subscription {
+    if (!this.centrifuge) {
+      throw new Error('Centrifuge not initialized');
+    }
+
+    const subscription = this.centrifuge.newSubscription(channel);
+
+    // 📥 Publication handler với batching & throttling
+    subscription.on('publication', (ctx: PublicationContext) => {
+      this.metrics.messagesReceived++;
+
+      // 💡 Wrap handler với performance optimizations
+      const wrappedHandler = this.wrapMessageHandler(
+        channel,
+        options.onPublish,
+        options
+      );
+
+      wrappedHandler(ctx.data, ctx);
+    });
+
+    // ✅ Subscribed
+    subscription.on('subscribed', (ctx) => {
+      console.log(`✅ [${channel}] Subscribed`, {
+        recovered: ctx.recovered,
+        positioned: ctx.positioned,
+      });
+
+      options.onSubscribe?.();
+
+      // 📦 Fetch history nếu available
+      if (ctx.recoverable && ctx.positioned) {
+        this.fetchHistory(channel, subscription);
+      }
+    });
+
+    // 🚪 Unsubscribed
+    subscription.on('unsubscribed', (ctx) => {
+      console.log(`🚪 [${channel}] Unsubscribed`, {
+        code: ctx.code,
+        reason: ctx.reason,
+      });
+
+      options.onUnsubscribe?.();
+
+      // 🧹 Cleanup performance timers
+      this.cleanupPerformanceTimers(channel);
+    });
+
+    // ❌ Error
+    subscription.on('error', (ctx) => {
+      console.error(`❌ [${channel}] Error:`, ctx.error);
+      this.metrics.errors++;
+      options.onError?.(ctx.error);
+    });
+
+    // 🚀 Subscribe
+    subscription.subscribe();
+
+    return subscription;
+  }
+
+  /**
+   * ⚡ Wrap message handler với batching & throttling
+   */
+  private wrapMessageHandler<T>(
+    channel: ChannelType,
+    handler?: (data: T, ctx: PublicationContext) => void,
+    options: SubscriptionOptions<T> = {}
+  ): (data: T, ctx: PublicationContext) => void {
+    if (!handler) return () => {};
+
+    const throttleMs = options.throttleMs || 0; // 💡 0 = no throttle
+    const batchSize = options.batchSize || 1; // 💡 1 = no batching
+
+    // 📊 Case 1: Batching (collect N messages → process together)
+    if (batchSize > 1) {
+      return (data: T, ctx: PublicationContext) => {
+        const queue = this.messageQueues.get(channel) || [];
+        queue.push({ data, ctx });
+
+        // 💡 Flush khi đủ batch size
+        if (queue.length >= batchSize) {
+          this.flushBatch(channel, handler);
+        } else {
+          // 💡 Set timer để flush sau delay (tránh message cuối bị stuck)
+          const existingTimer = this.batchTimers.get(channel);
+          if (existingTimer) clearTimeout(existingTimer);
+
+          const timer = setTimeout(() => {
+            this.flushBatch(channel, handler);
+          }, 100); // 💡 Flush sau 100ms nếu chưa đủ batch
+
+          this.batchTimers.set(channel, timer);
+        }
+      };
+    }
+
+    // ⏱️ Case 2: Throttling (max N messages per second)
+    if (throttleMs > 0) {
+      return (data: T, ctx: PublicationContext) => {
+        const queue = this.messageQueues.get(channel) || [];
+        queue.push({ data, ctx });
+
+        const existingTimer = this.throttleTimers.get(channel);
+        if (existingTimer) return; // 💡 Đang throttle, bỏ qua
+
+        // 💡 Process immediately
+        handler(data, ctx);
+        this.metrics.messagesProcessed++;
+
+        // 💡 Set throttle timer
+        const timer = setTimeout(() => {
+          this.throttleTimers.delete(channel);
+
+          // 💡 Process queued messages
+          const queued = this.messageQueues.get(channel) || [];
+          if (queued.length > 0) {
+            const latest = queued[queued.length - 1]; // 💡 Chỉ lấy message mới nhất
+            handler(latest.data, latest.ctx);
+            this.metrics.messagesProcessed++;
+            this.messageQueues.set(channel, []);
+          }
+        }, throttleMs);
+
+        this.throttleTimers.set(channel, timer);
+      };
+    }
+
+    // ✅ Case 3: No optimization (process immediately)
+    return (data: T, ctx: PublicationContext) => {
+      handler(data, ctx);
+      this.metrics.messagesProcessed++;
+    };
+  }
+
+  /**
+   * 📦 Flush batched messages
+   */
+  private flushBatch<T>(
+    channel: ChannelType,
+    handler: (data: T, ctx: PublicationContext) => void
+  ): void {
+    const queue = this.messageQueues.get(channel) || [];
+    if (queue.length === 0) return;
+
+    // 💡 Process all messages in batch
+    queue.forEach(({ data, ctx }) => {
+      handler(data, ctx);
+      this.metrics.messagesProcessed++;
+    });
+
+    // 🧹 Clear queue
+    this.messageQueues.set(channel, []);
+    this.batchTimers.delete(channel);
+  }
+
+  /**
+   * 🧹 Cleanup performance timers
+   */
+  private cleanupPerformanceTimers(channel: ChannelType): void {
+    const throttleTimer = this.throttleTimers.get(channel);
+    if (throttleTimer) {
+      clearTimeout(throttleTimer);
+      this.throttleTimers.delete(channel);
+    }
+
+    const batchTimer = this.batchTimers.get(channel);
+    if (batchTimer) {
+      clearTimeout(batchTimer);
+      this.batchTimers.delete(channel);
+    }
+
+    this.messageQueues.delete(channel);
+  }
+
+  /**
+   * 🧹 Unsubscribe với reference counting
+   */
+  private unsubscribe<T>(
+    channel: ChannelType,
+    handler?: (data: T, ctx: PublicationContext) => void
+  ): void {
+    const currentCount = this.refCount.get(channel) || 0;
+    if (currentCount <= 0) {
+      console.warn(`⚠️ Unsubscribe called but ${channel} has no subscribers`);
+      return;
+    }
+
+    const newCount = currentCount - 1;
+    this.refCount.set(channel, newCount);
+
+    const subscription = this.subscriptions.get(channel);
+
+    if (newCount === 0) {
+      // 🗑️ Last subscriber → remove subscription
+      subscription?.unsubscribe();
+      subscription?.removeAllListeners();
+      this.subscriptions.delete(channel);
+      this.refCount.delete(channel);
+      this.cleanupPerformanceTimers(channel);
+    } else if (handler && subscription) {
+      // 🔗 Remove specific handler (still have other subscribers)
+      subscription.off('publication', handler);
+    }
+  }
+
+  /**
+   * 📦 Fetch message history
+   */
+  private async fetchHistory(
+    channel: ChannelType,
+    subscription: Subscription
+  ): Promise<void> {
+    try {
+      const result = await subscription.history({
+        limit: 100,
+        reverse: false, // Oldest → newest
+      });
+
+      console.log(
+        `📦 [${channel}] History: ${result.publications.length} messages`
+      );
+
+      // 🔄 Replay historical messages
+      result.publications.forEach((pub) => {
+        subscription.emit('publication', {
+          data: pub.data,
+          offset: pub.offset,
+          tags: pub.tags,
+        } as PublicationContext);
+      });
+    } catch (error) {
+      console.error(`❌ History fetch failed for ${channel}:`, error);
+    }
+  }
+
+  /**
+   * 📊 Get connection stats
+   */
+  getStats(): ConnectionStats {
+    return {
+      connected: this.centrifuge?.state === 'connected',
+      subscriptions: this.subscriptions.size,
+      channels: Array.from(this.subscriptions.keys()),
+      reconnectAttempts: this.reconnectAttempts,
+    };
+  }
+
+  /**
+   * 📈 Get performance metrics
+   */
+  getMetrics() {
+    return {
+      ...this.metrics,
+      messageThroughput: this.metrics.messagesProcessed / (Date.now() / 1000), // messages/sec
+    };
+  }
+
+  /**
+   * 📊 Track metric (integrate với analytics)
+   */
+  private trackMetric(event: string, data: any): void {
+    // 💡 Integrate với analytics service (VD: Sentry, DataDog)
+    if (typeof window !== 'undefined' && (window as any).analytics) {
+      (window as any).analytics.track(event, {
+        ...data,
+        timestamp: Date.now(),
+      });
+    }
+  }
+
+  /**
+   * 🚨 Show reconnect error
+   */
+  private showReconnectError(): void {
+    // 💡 Show toast/notification to user
+    console.error('❌ Max reconnect attempts. Please refresh page.');
+    // TODO: Integrate với notification system
+  }
+
+  /**
+   * 🧹 Destroy manager
+   */
+  destroy(): void {
+    console.log('🧹 Destroying CentrifugeManager');
+
+    // Cleanup all subscriptions
+    this.subscriptions.forEach((subscription, channel) => {
+      subscription.unsubscribe();
+      subscription.removeAllListeners();
+      this.cleanupPerformanceTimers(channel);
+    });
+
+    this.subscriptions.clear();
+    this.refCount.clear();
+    this.messageQueues.clear();
+    this.throttleTimers.clear();
+    this.batchTimers.clear();
+
+    // Disconnect
+    this.centrifuge?.disconnect();
+    this.centrifuge = null;
+    this.config = null;
+  }
+}
+
+// 🌐 Export singleton instance
+export const centrifugeManager = CentrifugeManager.getInstance();
+```
+
+---
+
+**🎣 3. React Hooks cho Reusability:**
+
+```typescript
+// ===================================================
+// 📁 lib/centrifuge/hooks.ts - React Hooks
+// ===================================================
+
+import { useEffect, useCallback, useState, useRef } from 'react';
+import { PublicationContext } from 'centrifuge';
+import { centrifugeManager } from './CentrifugeManager';
+import type {
+  ChannelType,
+  SubscriptionOptions,
+  ConnectionStats,
+} from './types';
+
+/**
+ * 🎣 Hook: Subscribe to Centrifuge channel
+ *
+ * ✅ Features:
+ * - Auto cleanup khi component unmount
+ * - Conditional subscription (enabled flag)
+ * - Type-safe message handling
+ * - Performance optimizations (throttle, batch)
+ */
+export function useCentrifugeSubscription<T = any>(
+  channel: ChannelType,
+  options: SubscriptionOptions<T> = {}
+) {
+  const {
+    onPublish,
+    onSubscribe,
+    onUnsubscribe,
+    onError,
+    enabled = true,
+    throttleMs,
+    batchSize,
+  } = options;
+
+  // 📊 State
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [lastMessage, setLastMessage] = useState<T | null>(null);
+
+  // 🔄 Refs để tránh stale closures
+  const handlersRef = useRef({
+    onPublish,
+    onSubscribe,
+    onUnsubscribe,
+    onError,
+  });
+  handlersRef.current = { onPublish, onSubscribe, onUnsubscribe, onError };
+
+  // 📥 Wrapped handlers với state updates
+  const handlePublish = useCallback((data: T, ctx: PublicationContext) => {
+    setLastMessage(data);
+    handlersRef.current.onPublish?.(data, ctx);
+  }, []);
+
+  const handleSubscribe = useCallback(() => {
+    setIsSubscribed(true);
+    setError(null);
+    handlersRef.current.onSubscribe?.();
+  }, []);
+
+  const handleUnsubscribe = useCallback(() => {
+    setIsSubscribed(false);
+    handlersRef.current.onUnsubscribe?.();
+  }, []);
+
+  const handleError = useCallback((err: Error) => {
+    setError(err);
+    handlersRef.current.onError?.(err);
+  }, []);
+
+  // 🔗 Subscribe effect
+  useEffect(() => {
+    if (!enabled) {
+      setIsSubscribed(false);
+      return;
+    }
+
+    const cleanup = centrifugeManager.subscribe(channel, {
+      onPublish: handlePublish,
+      onSubscribe: handleSubscribe,
+      onUnsubscribe: handleUnsubscribe,
+      onError: handleError,
+      throttleMs,
+      batchSize,
+    });
+
+    return cleanup;
+  }, [
+    channel,
+    enabled,
+    handlePublish,
+    handleSubscribe,
+    handleUnsubscribe,
+    handleError,
+    throttleMs,
+    batchSize,
+  ]);
+
+  return {
+    isSubscribed,
+    error,
+    lastMessage,
+  };
+}
+
+/**
+ * 🎣 Hook: Get connection stats
+ */
+export function useCentrifugeStats() {
+  const [stats, setStats] = useState<ConnectionStats>(
+    centrifugeManager.getStats()
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStats(centrifugeManager.getStats());
+    }, 1000); // 💡 Update mỗi giây
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return stats;
+}
+
+/**
+ * 🎣 Hook: Subscribe với state management (Zustand/Redux)
+ */
+export function useCentrifugeWithState<T = any>(
+  channel: ChannelType,
+  setState: (data: T) => void,
+  options: Omit<SubscriptionOptions<T>, 'onPublish'> = {}
+) {
+  return useCentrifugeSubscription<T>(channel, {
+    ...options,
+    onPublish: (data) => {
+      setState(data); // 💡 Auto update state
+    },
+  });
+}
+```
+
+---
+
+**⚙️ 4. Configuration & Initialization:**
+
+```typescript
+// ===================================================
+// 📁 lib/centrifuge/config.ts - Configuration
+// ===================================================
+
+import { centrifugeManager } from './CentrifugeManager';
+import type { CentrifugeConfig } from './types';
+
+/**
+ * 🔧 Get Centrifuge token from backend
+ */
+async function fetchCentrifugeToken(): Promise<string> {
+  const response = await fetch('/api/centrifuge/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Token fetch failed: ${response.status}`);
+  }
+
+  const { token } = await response.json();
+  return token;
+}
+
+/**
+ * 🚀 Initialize Centrifuge (gọi 1 lần khi app start)
+ */
+export function initCentrifuge(config?: Partial<CentrifugeConfig>): void {
+  const defaultConfig: CentrifugeConfig = {
+    url:
+      process.env.REACT_APP_CENTRIFUGO_URL ||
+      'ws://localhost:8000/connection/websocket',
+    getToken: fetchCentrifugeToken,
+    protocol: 'protobuf', // ✅ Binary protocol cho performance
+    minReconnectDelay: 1000,
+    maxReconnectDelay: 30000,
+    maxReconnectAttempts: 10,
+    debug: process.env.NODE_ENV === 'development',
+    onConnected: () => {
+      console.log('✅ Centrifuge connected');
+    },
+    onDisconnected: () => {
+      console.warn('🔌 Centrifuge disconnected');
+    },
+    onError: (error) => {
+      console.error('❌ Centrifuge error:', error);
+      // 💡 Integrate với error tracking (Sentry, etc.)
+    },
+  };
+
+  const finalConfig = { ...defaultConfig, ...config };
+  centrifugeManager.init(finalConfig);
+}
+
+/**
+ * 🧹 Cleanup Centrifuge (gọi khi app unmount)
+ */
+export function destroyCentrifuge(): void {
+  centrifugeManager.destroy();
+}
+```
+
+---
+
+**📱 5. Usage Examples:**
+
+```typescript
+// ===================================================
+// 📁 App.tsx - Initialize Centrifuge
+// ===================================================
+
+import { useEffect } from 'react';
+import { initCentrifuge, destroyCentrifuge } from './lib/centrifuge/config';
+
+function App() {
+  useEffect(() => {
+    // 🚀 Initialize Centrifuge khi app start
+    initCentrifuge({
+      url: 'wss://centrifugo.example.com/connection/websocket',
+      protocol: 'protobuf', // ✅ Binary protocol
+    });
+
+    // 🧹 Cleanup khi app unmount
+    return () => {
+      destroyCentrifuge();
+    };
+  }, []);
+
+  return <div>Your App</div>;
+}
+
+// ===================================================
+// 📁 components/MarketTicker.tsx - Subscribe Market Data
+// ===================================================
+
+import { useCentrifugeSubscription } from '@/lib/centrifuge/hooks';
+import type { MarketData } from '@/lib/centrifuge/types';
+
+function MarketTicker({ symbol }: { symbol: string }) {
+  const [price, setPrice] = useState<number>(0);
+
+  // 📥 Subscribe với throttling (max 10 updates/sec)
+  const { isSubscribed, error } = useCentrifugeSubscription<MarketData>(
+    `market:${symbol}`,
+    {
+      onPublish: (data) => {
+        setPrice(data.price); // 💡 Update price
+      },
+      throttleMs: 100, // 💡 Max 10 messages/second
+    }
+  );
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return (
+    <div>
+      <div>Status: {isSubscribed ? '✅ Connected' : '⏳ Connecting...'}</div>
+      <div>Price: {price.toLocaleString()}</div>
+    </div>
+  );
+}
+
+// ===================================================
+// 📁 components/OrderBook.tsx - High-Frequency Updates với Batching
+// ===================================================
+
+import { useCentrifugeSubscription } from '@/lib/centrifuge/hooks';
+import type { OrderBookUpdate } from '@/lib/centrifuge/types';
+
+function OrderBook({ symbol }: { symbol: string }) {
+  const [orderBook, setOrderBook] = useState<OrderBookUpdate | null>(null);
+
+  // 📥 Subscribe với batching (collect 10 messages → update 1 lần)
+  useCentrifugeSubscription<OrderBookUpdate>(`orderbook:${symbol}`, {
+    onPublish: (data) => {
+      setOrderBook(data); // 💡 Update order book
+    },
+    batchSize: 10, // 💡 Batch 10 updates → 1 render
+  });
+
+  return (
+    <div>
+      <h3>Order Book: {symbol}</h3>
+      {orderBook && (
+        <div>
+          <div>Bids: {orderBook.bids.length}</div>
+          <div>Asks: {orderBook.asks.length}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ===================================================
+// 📁 components/ChatRoom.tsx - Chat với Conditional Subscription
+// ===================================================
+
+import { useCentrifugeSubscription } from '@/lib/centrifuge/hooks';
+import type { ChatMessage } from '@/lib/centrifuge/types';
+
+function ChatRoom({ roomId, isActive }: { roomId: string; isActive: boolean }) {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+
+  // 📥 Subscribe chỉ khi room active
+  useCentrifugeSubscription<ChatMessage>(`chat:${roomId}`, {
+    onPublish: (message) => {
+      setMessages((prev) => [...prev, message]);
+    },
+    enabled: isActive, // 💡 Conditional subscription
+  });
+
+  return (
+    <div>
+      {messages.map((msg) => (
+        <div key={msg.id}>{msg.content}</div>
+      ))}
+    </div>
+  );
+}
+
+// ===================================================
+// 📁 components/ConnectionStatus.tsx - Monitor Connection
+// ===================================================
+
+import { useCentrifugeStats } from '@/lib/centrifuge/hooks';
+
+function ConnectionStatus() {
+  const stats = useCentrifugeStats();
+
+  return (
+    <div>
+      <div>Status: {stats.connected ? '✅ Connected' : '🔌 Disconnected'}</div>
+      <div>Subscriptions: {stats.subscriptions}</div>
+      <div>Channels: {stats.channels.join(', ')}</div>
+      {stats.reconnectAttempts > 0 && (
+        <div>Reconnecting... ({stats.reconnectAttempts} attempts)</div>
+      )}
+    </div>
+  );
+}
+```
+
+---
+
+**🧪 6. Testing Utilities:**
+
+```typescript
+// ===================================================
+// 📁 lib/centrifuge/__tests__/testUtils.ts
+// ===================================================
+
+import { vi } from 'vitest';
+import type { PublicationContext } from 'centrifuge';
+
+/**
+ * 🧪 Mock CentrifugeManager cho testing
+ */
+export function createMockCentrifugeManager() {
+  const subscriptions = new Map();
+  const messages: any[] = [];
+
+  return {
+    subscribe: vi.fn((channel: string, options: any) => {
+      const subscription = {
+        channel,
+        options,
+        emit: (event: string, data: any) => {
+          if (event === 'publication' && options.onPublish) {
+            options.onPublish(data.data, data);
+          }
+        },
+      };
+
+      subscriptions.set(channel, subscription);
+      return () => subscriptions.delete(channel); // Cleanup
+    }),
+
+    // 💡 Helper: Simulate message
+    simulateMessage: (channel: string, data: any) => {
+      const sub = subscriptions.get(channel);
+      if (sub) {
+        sub.emit('publication', {
+          data,
+          offset: Date.now(),
+          tags: {},
+        } as PublicationContext);
+      }
+    },
+
+    getStats: vi.fn(() => ({
+      connected: true,
+      subscriptions: subscriptions.size,
+      channels: Array.from(subscriptions.keys()),
+      reconnectAttempts: 0,
+    })),
+  };
+}
+```
+
+---
+
+**✅ Summary - Best Practices:**
+
+```typescript
+/**
+ * ✅ DO:
+ */
+
+// 1. Initialize 1 lần khi app start
+initCentrifuge({ url: 'wss://...', protocol: 'protobuf' });
+
+// 2. Dùng hooks để subscribe (auto cleanup)
+const { isSubscribed } = useCentrifugeSubscription('market:VNM', {
+  onPublish: (data) => setPrice(data.price),
+  throttleMs: 100, // ✅ Throttle high-frequency updates
+});
+
+// 3. Batch messages cho order book
+useCentrifugeSubscription('orderbook:BTCUSDT', {
+  onPublish: (data) => setOrderBook(data),
+  batchSize: 10, // ✅ Batch 10 → 1 update
+});
+
+// 4. Conditional subscription
+useCentrifugeSubscription('chat:room123', {
+  enabled: isRoomActive, // ✅ Chỉ subscribe khi cần
+});
+
+// 5. Type-safe subscriptions
+useCentrifugeSubscription<MarketData>('market:VNM', {
+  onPublish: (data) => {
+    // ✅ data có type MarketData
+    console.log(data.price, data.volume);
+  },
+});
+
+/**
+ * ❌ DON'T:
+ */
+
+// ❌ 1. Không tạo nhiều Centrifuge instances
+const centrifuge1 = new Centrifuge(url); // ❌
+const centrifuge2 = new Centrifuge(url); // ❌
+// ✅ Dùng singleton: centrifugeManager
+
+// ❌ 2. Không subscribe mà không cleanup
+useEffect(() => {
+  centrifugeManager.subscribe('channel', { onPublish: handler });
+  // ❌ Missing cleanup → memory leak
+}, []);
+
+// ❌ 3. Không throttle high-frequency updates
+useCentrifugeSubscription('ticker', {
+  onPublish: (data) => {
+    // ❌ Update UI mỗi message → lag
+    setPrice(data.price);
+  },
+  // ✅ Thêm: throttleMs: 100
+});
+
+// ❌ 4. Không dùng binary protocol cho production
+protocol: 'json', // ❌ Chậm hơn ~5x
+// ✅ Dùng: protocol: 'protobuf'
+```
+
+---
+
 #### **Phần 7: So Sánh WebSocket vs Socket.IO vs Centrifuge**
 
 ```typescript

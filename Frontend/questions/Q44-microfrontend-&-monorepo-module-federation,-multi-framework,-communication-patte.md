@@ -1690,6 +1690,1041 @@ function Navigation() {
 
 ---
 
+**📚 Phần 8: Monorepo Tools Comparison (So Sánh Công Cụ Monorepo)**
+
+#### **💡 Tại Sao Cần Monorepo Tools?**
+
+```typescript
+/**
+ * 🔥 VẤN ĐỀ: Quản Lý Nhiều Projects Thủ Công
+ *
+ * ❌ KHÔNG DÙNG TOOL:
+ * - Mỗi project có package.json riêng
+ * - Phải npm install ở từng project
+ * - Build từng project một (chậm!)
+ * - Không có dependency graph
+ * - Không có caching
+ * - Không có task orchestration
+ *
+ * ✅ DÙNG MONOREPO TOOL:
+ * - 1 lệnh build tất cả projects
+ * - Smart caching (chỉ build projects thay đổi)
+ * - Dependency graph tự động
+ * - Task orchestration (build theo thứ tự đúng)
+ * - Code sharing dễ dàng
+ */
+```
+
+#### **🎯 4 Công Cụ Chính: Nx vs Turborepo vs Lerna vs pnpm Workspaces**
+
+```typescript
+/**
+ * 📊 OVERVIEW COMPARISON
+ *
+ * | Tool            | Type              | Focus                    | Complexity | Ecosystem |
+ * | --------------- | ----------------- | ------------------------ | ---------- | --------- |
+ * | **Nx**          | Full-featured     | Angular/React ecosystem  | High       | Large     |
+ * | **Turborepo**   | Task runner       | Fast builds, caching    | Medium     | Medium    |
+ * | **Lerna**        | Legacy            | Publishing packages      | Low        | Small     |
+ * | **pnpm workspaces** | Built-in      | Package management       | Low        | Small     |
+ */
+```
+
+---
+
+#### **🔥 1. Nx (Nrwl Nx) - Full-Featured Monorepo Tool**
+
+```typescript
+/**
+ * 🎯 NX LÀ GÌ?
+ *
+ * Nx là một MONOREPO TOOL MẠNH MẼ, cung cấp:
+ * - Build system (Webpack, Vite, esbuild)
+ * - Testing framework (Jest, Vitest)
+ * - Code generation (generators)
+ * - Dependency graph visualization
+ * - Smart caching (local + remote)
+ * - Task orchestration
+ * - Module Federation support
+ *
+ * 🔥 ĐẶC ĐIỂM:
+ * - Angular ecosystem (nhưng support React, Vue, Node.js)
+ * - Plugin-based architecture
+ * - Rich DevTools (Nx Console)
+ * - Large community
+ */
+
+// ===================================================
+// ✅ NX SETUP & USAGE
+// ===================================================
+
+// 1️⃣ Tạo Nx workspace
+// npx create-nx-workspace@latest myorg --preset=react-monorepo
+
+// 2️⃣ Cấu trúc workspace
+/*
+myorg/
+├── apps/
+│   ├── shell/              ← Application
+│   ├── dashboard/          ← Application
+│   └── profile/            ← Application
+├── libs/
+│   ├── shared-ui/          ← Library
+│   ├── shared-utils/       ← Library
+│   └── shared-types/       ← Library
+├── nx.json                 ← Nx configuration
+├── package.json            ← Root dependencies
+└── tsconfig.base.json      ← Shared TypeScript config
+*/
+
+// 3️⃣ nx.json - Configuration
+{
+  "version": 2,
+  "projects": {
+    "shell": "apps/shell",
+    "dashboard": "apps/dashboard",
+    "profile": "apps/profile",
+    "shared-ui": "libs/shared-ui"
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],  // ✅ Build dependencies trước
+      "inputs": ["production", "^production"],
+      "cache": true              // ✅ Enable caching
+    },
+    "test": {
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+      "cache": true
+    }
+  },
+  "affected": {
+    "defaultBase": "main"       // ✅ Base branch cho affected commands
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "test", "lint"]
+      }
+    }
+  }
+}
+
+// 4️⃣ project.json - Project configuration
+// apps/shell/project.json
+{
+  "name": "shell",
+  "sourceRoot": "apps/shell/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/shell"
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "options": {
+        "port": 4200
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/shell"]
+    }
+  },
+  "tags": ["type:app", "scope:shell"]  // ✅ Tags cho filtering
+}
+
+// 5️⃣ Commands
+// Build tất cả projects
+nx run-many --target=build --all
+
+// Build chỉ projects affected (thay đổi)
+nx affected --target=build
+
+// Build với caching
+nx build shell  # ✅ Lần 1: Build (30s)
+nx build shell  # ✅ Lần 2: From cache (<1s)
+
+// Test với parallel execution
+nx run-many --target=test --all --parallel=3
+
+// Visualize dependency graph
+nx graph  # ✅ Mở browser với interactive graph
+
+// Generate code
+nx g @nx/react:component Button --project=shared-ui
+nx g @nx/react:app new-app
+
+/**
+ * ✅ ƯU ĐIỂM NX:
+ *
+ * 1️⃣ FULL-FEATURED:
+ *    → Build, test, lint, generate code
+ *    → Không cần setup thêm tools
+ *
+ * 2️⃣ SMART CACHING:
+ *    → Local cache (file system)
+ *    → Remote cache (Nx Cloud, self-hosted)
+ *    → Cache hit rate: 80-95%
+ *
+ * 3️⃣ DEPENDENCY GRAPH:
+ *    → Visualize dependencies
+ *    → Build theo thứ tự đúng
+ *    → Affected detection chính xác
+ *
+ * 4️⃣ PLUGIN ECOSYSTEM:
+ *    → @nx/react, @nx/angular, @nx/node
+ *    → @nx/next, @nx/nestjs
+ *    → Module Federation plugin
+ *
+ * 5️⃣ DEVTOOLS:
+ *    → Nx Console (VS Code extension)
+ *    → Interactive graph
+ *    → Task execution visualization
+ *
+ * ❌ NHƯỢC ĐIỂM NX:
+ *
+ * 1️⃣ LEARNING CURVE CAO:
+ *    → Nhiều concepts (projects, targets, executors)
+ *    → Configuration phức tạp
+ *
+ * 2️⃣ BUNDLE SIZE:
+ *    → Nx CLI: ~50 MB
+ *    → Nx daemon: Memory overhead
+ *
+ * 3️⃣ ANGULAR BIAS:
+ *    → Angular support tốt nhất
+ *    → React/Vue support tốt nhưng không bằng Angular
+ *
+ * 4️⃣ VENDOR LOCK-IN:
+ *    → Nx-specific configuration
+ *    → Khó migrate sang tool khác
+ */
+```
+
+---
+
+#### **⚡ 2. Turborepo - Fast Task Runner**
+
+```typescript
+/**
+ * 🎯 TURBOREPO LÀ GÌ?
+ *
+ * Turborepo là TASK RUNNER NHANH, tập trung vào:
+ * - Fast builds (parallel execution)
+ * - Smart caching (local + remote)
+ * - Task orchestration
+ * - Incremental builds
+ *
+ * 🔥 ĐẶC ĐIỂM:
+ * - Framework-agnostic (không quan tâm React/Angular)
+ * - Minimal configuration
+ * - Remote caching (Vercel, self-hosted)
+ * - Simple API
+ */
+
+// ===================================================
+// ✅ TURBOREPO SETUP & USAGE
+// ===================================================
+
+// 1️⃣ Install
+// npm install -D turbo
+
+// 2️⃣ turbo.json - Configuration
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],        // ✅ Build dependencies trước
+      "outputs": ["dist/**"],         // ✅ Cache outputs
+      "cache": true
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "cache": true
+    },
+    "lint": {
+      "cache": true,
+      "outputs": []
+    },
+    "dev": {
+      "cache": false,                 // ❌ Không cache dev server
+      "persistent": true              // ✅ Long-running task
+    }
+  },
+  "remoteCache": {
+    "enabled": true                   // ✅ Enable remote cache
+  }
+}
+
+// 3️⃣ package.json - Workspace setup
+{
+  "name": "myorg",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint"
+  }
+}
+
+// 4️⃣ Commands
+// Build tất cả packages
+turbo run build
+
+// Build với filtering
+turbo run build --filter=shell
+turbo run build --filter=...dashboard  // ✅ Build dashboard và dependencies
+
+// Build affected (cần setup git)
+turbo run build --filter="[HEAD^1]"
+
+// Remote caching (Vercel)
+turbo run build --token=$TURBO_TOKEN
+
+// Visualize pipeline
+turbo run build --graph=graph.html
+
+/**
+ * ✅ ƯU ĐIỂM TURBOREPO:
+ *
+ * 1️⃣ FAST:
+ *    → Parallel execution
+ *    → Incremental builds
+ *    → Smart caching
+ *
+ * 2️⃣ SIMPLE:
+ *    → Minimal configuration
+ *    → Framework-agnostic
+ *    → Dễ học
+ *
+ * 3️⃣ REMOTE CACHING:
+ *    → Vercel (free tier)
+ *    → Self-hosted option
+ *    → Team sharing cache
+ *
+ * 4️⃣ SMALL BUNDLE:
+ *    → ~5 MB (nhỏ hơn Nx 10x)
+ *    → No daemon
+ *
+ * 5️⃣ FLEXIBLE:
+ *    → Dùng với bất kỳ build tool (Webpack, Vite, esbuild)
+ *    → Không force structure
+ *
+ * ❌ NHƯỢC ĐIỂM TURBOREPO:
+ *
+ * 1️⃣ NO CODE GENERATION:
+ *    → Không có generators
+ *    → Phải tự setup projects
+ *
+ * 2️⃣ NO DEPENDENCY GRAPH UI:
+ *    → Chỉ có text-based graph
+ *    → Không có interactive visualization
+ *
+ * 3️⃣ NO TESTING FRAMEWORK:
+ *    → Chỉ orchestrate tests
+ *    → Không có built-in test runner
+ *
+ * 4️⃣ LESS ECOSYSTEM:
+ *    → Ít plugins hơn Nx
+ *    → Community nhỏ hơn
+ */
+```
+
+---
+
+#### **📦 3. Lerna - Legacy Publishing Tool**
+
+```typescript
+/**
+ * 🎯 LERNA LÀ GÌ?
+ *
+ * Lerna là tool CŨ, tập trung vào:
+ * - Publishing packages (npm publish)
+ * - Version management
+ * - Changelog generation
+ *
+ * 🔥 ĐẶC ĐIỂM:
+ * - Legacy tool (ít maintain)
+ * - Chủ yếu cho publishing
+ * - Không có caching
+ * - Không có task orchestration tốt
+ */
+
+// ===================================================
+// ✅ LERNA SETUP & USAGE
+// ===================================================
+
+// 1️⃣ Install
+// npm install -D lerna
+
+// 2️⃣ lerna.json - Configuration
+{
+  "version": "independent",           // ✅ Mỗi package version riêng
+  "npmClient": "pnpm",                // ✅ Dùng pnpm
+  "command": {
+    "publish": {
+      "conventionalCommits": true,    // ✅ Generate changelog
+      "message": "chore(release): publish"
+    }
+  }
+}
+
+// 3️⃣ Commands
+// Publish packages
+lerna publish
+
+// Version packages
+lerna version
+
+// Run command in all packages
+lerna run build
+
+// Bootstrap dependencies
+lerna bootstrap  // ✅ Link packages
+
+/**
+ * ✅ ƯU ĐIỂM LERNA:
+ *
+ * 1️⃣ PUBLISHING:
+ *    → Version management tốt
+ *    → Changelog generation
+ *    → Conventional commits support
+ *
+ * 2️⃣ SIMPLE:
+ *    → Dễ setup
+ *    → Ít configuration
+ *
+ * ❌ NHƯỢC ĐIỂM LERNA:
+ *
+ * 1️⃣ LEGACY:
+ *    → Ít maintain
+ *    → Không có caching
+ *    → Không có task orchestration tốt
+ *
+ * 2️⃣ SLOW:
+ *    → Sequential execution
+ *    → Không có parallel builds
+ *
+ * 3️⃣ LIMITED FEATURES:
+ *    → Chỉ focus publishing
+ *    → Không có code generation
+ *    → Không có dependency graph
+ *
+ * 💡 RECOMMENDATION:
+ *    → KHÔNG NÊN DÙNG LERNA MỚI
+ *    → Dùng Turborepo + Changesets (cho publishing)
+ */
+```
+
+---
+
+#### **🔗 4. pnpm Workspaces - Built-in Package Management**
+
+```typescript
+/**
+ * 🎯 PNPM WORKSPACES LÀ GÌ?
+ *
+ * pnpm Workspaces là FEATURE BUILT-IN của pnpm:
+ * - Package management
+ * - Dependency hoisting
+ * - Workspace linking
+ *
+ * 🔥 ĐẶC ĐIỂM:
+ * - Built-in (không cần cài thêm)
+ * - Fast installs
+ * - Disk space efficient
+ * - Strict dependency resolution
+ */
+
+// ===================================================
+// ✅ PNPM WORKSPACES SETUP & USAGE
+// ===================================================
+
+// 1️⃣ pnpm-workspace.yaml - Configuration
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+// 2️⃣ package.json - Root
+{
+  "name": "myorg",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r --filter='./apps/*' run build",
+    "test": "pnpm -r run test"
+  }
+}
+
+// 3️⃣ package.json - App (apps/shell/package.json)
+{
+  "name": "@myorg/shell",
+  "dependencies": {
+    "@myorg/shared-ui": "workspace:*"  // ✅ Link workspace package
+  }
+}
+
+// 4️⃣ Commands
+// Install dependencies
+pnpm install
+
+// Build all apps
+pnpm -r --filter='./apps/*' run build
+
+// Build specific app
+pnpm --filter=@myorg/shell run build
+
+// Add dependency to workspace
+pnpm add react --filter=@myorg/shell
+
+// Add workspace dependency
+pnpm add @myorg/shared-ui --filter=@myorg/shell --workspace
+
+/**
+ * ✅ ƯU ĐIỂM PNPM WORKSPACES:
+ *
+ * 1️⃣ BUILT-IN:
+ *    → Không cần cài thêm tool
+ *    → Zero configuration
+ *
+ * 2️⃣ FAST INSTALLS:
+ *    → Content-addressable storage
+ *    → Hard links (tiết kiệm disk)
+ *
+ * 3️⃣ STRICT:
+ *    → Không có phantom dependencies
+ *    → Dependency resolution chính xác
+ *
+ * 4️⃣ DISK EFFICIENT:
+ *    → 1 version React → tất cả packages dùng chung
+ *    → Tiết kiệm 70% disk space so với npm
+ *
+ * ❌ NHƯỢC ĐIỂM PNPM WORKSPACES:
+ *
+ * 1️⃣ NO TASK ORCHESTRATION:
+ *    → Không có dependency-aware builds
+ *    → Phải tự manage build order
+ *
+ * 2️⃣ NO CACHING:
+ *    → Không có build cache
+ *    → Phải build lại mỗi lần
+ *
+ * 3️⃣ NO CODE GENERATION:
+ *    → Không có generators
+ *
+ * 💡 RECOMMENDATION:
+ *    → Dùng pnpm workspaces + Turborepo
+ *    → pnpm: Package management
+ *    → Turborepo: Task orchestration + caching
+ */
+```
+
+---
+
+#### **📊 Detailed Comparison Table**
+
+| Feature                | Nx                   | Turborepo           | Lerna               | pnpm Workspaces    |
+| ---------------------- | -------------------- | ------------------- | ------------------- | ------------------ |
+| **Type**               | Full-featured        | Task runner         | Publishing tool     | Package manager    |
+| **Caching**            | ✅ Local + Remote    | ✅ Local + Remote   | ❌ No               | ❌ No              |
+| **Task Orchestration** | ✅ Yes (advanced)    | ✅ Yes (simple)     | ⚠️ Basic            | ❌ No              |
+| **Dependency Graph**   | ✅ Visual UI         | ⚠️ Text-based       | ❌ No               | ❌ No              |
+| **Code Generation**    | ✅ Yes (generators)  | ❌ No               | ❌ No               | ❌ No              |
+| **Build System**       | ✅ Built-in          | ❌ No (orchestrate) | ❌ No               | ❌ No              |
+| **Testing**            | ✅ Built-in          | ❌ No (orchestrate) | ❌ No               | ❌ No              |
+| **Remote Cache**       | ✅ Nx Cloud          | ✅ Vercel           | ❌ No               | ❌ No              |
+| **Learning Curve**     | ⚠️ High              | ✅ Low              | ✅ Low              | ✅ Low             |
+| **Bundle Size**        | ⚠️ ~50 MB            | ✅ ~5 MB            | ✅ ~10 MB           | ✅ Built-in        |
+| **Framework Support**  | ✅ Angular/React/Vue | ✅ Any              | ✅ Any              | ✅ Any             |
+| **Ecosystem**          | ✅ Large             | ⚠️ Medium           | ⚠️ Small            | ✅ Large (pnpm)    |
+| **Best For**           | Enterprise apps      | Fast builds         | Publishing packages | Package management |
+
+---
+
+#### **🔥 Caching Strategies Comparison**
+
+```typescript
+/**
+ * 🎯 CACHING STRATEGIES (Chiến Lược Cache)
+ *
+ * Caching giúp TRÁNH BUILD LẠI những gì đã build trước đó.
+ * → Build time giảm từ 10 phút → 30 giây (nếu cache hit)
+ */
+
+// ===================================================
+// 1️⃣ NX CACHING STRATEGY
+// ===================================================
+
+// nx.json
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "test", "lint"],
+        "cacheDirectory": ".nx/cache"  // ✅ Local cache
+      }
+    }
+  }
+}
+
+// Remote cache (Nx Cloud)
+{
+  "nxCloudAccessToken": "your-token",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx-cloud",
+      "options": {
+        "cacheableOperations": ["build", "test"]
+      }
+    }
+  }
+}
+
+/**
+ * ✅ NX CACHE MECHANISM:
+ *
+ * 1️⃣ INPUT HASHING:
+ *    → Hash inputs (source files, dependencies, config)
+ *    → Nếu hash giống → cache hit
+ *
+ * 2️⃣ OUTPUT STORAGE:
+ *    → Lưu outputs (dist files) vào cache
+ *    → Restore từ cache khi hit
+ *
+ * 3️⃣ REMOTE CACHE:
+ *    → Share cache giữa team members
+ *    → CI/CD cache → developers
+ *
+ * 📊 CACHE HIT RATE: 80-95%
+ */
+
+// ===================================================
+// 2️⃣ TURBOREPO CACHING STRATEGY
+// ===================================================
+
+// turbo.json
+{
+  "pipeline": {
+    "build": {
+      "outputs": ["dist/**"],  // ✅ Cache outputs
+      "cache": true
+    }
+  },
+  "remoteCache": {
+    "enabled": true,
+    "signature": true  // ✅ Verify cache integrity
+  }
+}
+
+// Remote cache (Vercel)
+turbo run build --token=$TURBO_TOKEN
+
+/**
+ * ✅ TURBOREPO CACHE MECHANISM:
+ *
+ * 1️⃣ TASK FINGERPRINTING:
+ *    → Hash task inputs (files, env vars)
+ *    → Compare với cache key
+ *
+ * 2️⃣ INCREMENTAL CACHING:
+ *    → Cache từng task riêng
+ *    → Reuse cache của dependencies
+ *
+ * 3️⃣ REMOTE CACHE:
+ *    → Vercel (free tier)
+ *    → Self-hosted option
+ *
+ * 📊 CACHE HIT RATE: 70-90%
+ */
+
+// ===================================================
+// 3️⃣ CACHE COMPARISON
+// ===================================================
+
+/**
+ * 📊 CACHE PERFORMANCE:
+ *
+ * Scenario: Build 10 apps, mỗi app 30s
+ *
+ * ❌ NO CACHE:
+ * - First build: 300s (10 apps × 30s)
+ * - Second build: 300s (rebuild all)
+ *
+ * ✅ NX CACHE (Local):
+ * - First build: 300s
+ * - Second build: 5s (cache hit)
+ * - Cache hit rate: 95%
+ *
+ * ✅ TURBOREPO CACHE (Local):
+ * - First build: 300s
+ * - Second build: 10s (cache hit)
+ * - Cache hit rate: 90%
+ *
+ * ✅ REMOTE CACHE (Team sharing):
+ * - Developer A builds: 300s
+ * - Developer B builds: 15s (download from remote cache)
+ * - CI/CD builds: 20s (download from remote cache)
+ */
+```
+
+---
+
+#### **⚙️ Task Orchestration Comparison**
+
+```typescript
+/**
+ * 🎯 TASK ORCHESTRATION (Điều Phối Tác Vụ)
+ *
+ * Task orchestration = Build tasks theo THỨ TỰ ĐÚNG,
+ * dựa trên dependency graph.
+ */
+
+// ===================================================
+// 1️⃣ NX TASK ORCHESTRATION
+// ===================================================
+
+// nx.json
+{
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],  // ✅ Build dependencies trước
+      "inputs": ["production", "^production"]
+    },
+    "test": {
+      "dependsOn": ["build"]   // ✅ Test sau khi build
+    }
+  }
+}
+
+// Dependency graph:
+// shared-ui → dashboard → shell
+//
+// Build order:
+// 1. shared-ui (no dependencies)
+// 2. dashboard (depends on shared-ui)
+// 3. shell (depends on dashboard)
+
+nx run-many --target=build --all
+// ✅ Tự động build theo thứ tự đúng
+// ✅ Parallel build khi có thể
+
+/**
+ * ✅ NX ORCHESTRATION FEATURES:
+ *
+ * 1️⃣ DEPENDENCY-AWARE:
+ *    → Build dependencies trước
+ *    → Parallel build khi có thể
+ *
+ * 2️⃣ AFFECTED DETECTION:
+ *    → Chỉ build projects thay đổi
+ *    → Build dependencies của affected projects
+ *
+ * 3️⃣ TASK PIPELINES:
+ *    → Define task dependencies
+ *    → Build → Test → Lint
+ */
+```
+
+```typescript
+// ===================================================
+// 2️⃣ TURBOREPO TASK ORCHESTRATION
+// ===================================================
+
+// turbo.json
+{
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],  // ✅ Build dependencies trước
+      "outputs": ["dist/**"]
+    },
+    "test": {
+      "dependsOn": ["build"],   // ✅ Test sau khi build
+      "outputs": ["coverage/**"]
+    }
+  }
+}
+
+// Dependency graph:
+// shared-ui → dashboard → shell
+//
+// Build order:
+// 1. shared-ui (no dependencies)
+// 2. dashboard (depends on shared-ui)
+// 3. shell (depends on dashboard)
+
+turbo run build
+// ✅ Tự động build theo thứ tự đúng
+// ✅ Parallel build khi có thể
+
+/**
+ * ✅ TURBOREPO ORCHESTRATION FEATURES:
+ *
+ * 1️⃣ PIPELINE CONFIG:
+ *    → Define task dependencies
+ *    → Simple, declarative
+ *
+ * 2️⃣ FILTERING:
+ *    → Build specific packages
+ *    → Build affected packages
+ *
+ * 3️⃣ PARALLEL EXECUTION:
+ *    → Build independent tasks parallel
+ */
+```
+
+```typescript
+// ===================================================
+// 3️⃣ PNPM WORKSPACES (NO ORCHESTRATION)
+// ===================================================
+
+// package.json
+{
+  "scripts": {
+    "build": "pnpm -r --filter='./apps/*' run build"
+  }
+}
+
+// ❌ PROBLEM: Build theo thứ tự trong array
+// → Có thể build shell trước dashboard (sai!)
+// → Phải tự manage build order
+
+/**
+ * ❌ PNPM WORKSPACES LIMITATIONS:
+ *
+ * 1️⃣ NO DEPENDENCY-AWARE:
+ *    → Build theo thứ tự trong command
+ *    → Phải tự sắp xếp
+ *
+ * 2️⃣ NO PARALLEL EXECUTION:
+ *    → Sequential execution
+ *    → Chậm hơn
+ */
+```
+
+---
+
+#### **💡 Decision Guide: Chọn Tool Nào?**
+
+```typescript
+/**
+ * 🎯 DECISION TREE (Cây Quyết Định)
+ *
+ * ┌─────────────────────────────────────────┐
+ * │  Bạn cần gì?                            │
+ * └─────────────────────────────────────────┘
+ *                    │
+ *        ┌───────────┴───────────┐
+ *        │                       │
+ *   Enterprise App          Simple App
+ *        │                       │
+ *        │                       │
+ *   ┌────┴────┐            ┌──────┴──────┐
+ *   │        │            │             │
+ * Angular  React        Fast Build   Package Mgmt
+ *   │        │            │             │
+ *   │        │            │             │
+ *   Nx      Nx        Turborepo    pnpm workspaces
+ */
+
+// ===================================================
+// ✅ DÙNG NX KHI:
+// ===================================================
+
+/**
+ * 1️⃣ ENTERPRISE APP:
+ *    → Team lớn (20+ developers)
+ *    → Nhiều projects (50+)
+ *    → Cần code generation
+ *    → Cần DevTools mạnh
+ *
+ * 2️⃣ ANGULAR ECOSYSTEM:
+ *    → Angular projects
+ *    → Nx support Angular tốt nhất
+ *
+ * 3️⃣ NEED FULL-FEATURED TOOL:
+ *    → Build, test, lint, generate
+ *    → Không muốn setup nhiều tools
+ *
+ * VD:
+ * - Enterprise Angular app
+ * - Large React monorepo với nhiều features
+ * - Cần Module Federation + Nx
+ */
+
+// ===================================================
+// ✅ DÙNG TURBOREPO KHI:
+// ===================================================
+
+/**
+ * 1️⃣ FAST BUILDS:
+ *    → Cần build nhanh
+ *    → Cần caching tốt
+ *    → Remote cache sharing
+ *
+ * 2️⃣ SIMPLE SETUP:
+ *    → Không cần code generation
+ *    → Không cần DevTools phức tạp
+ *    → Framework-agnostic
+ *
+ * 3️⃣ SMALL/MEDIUM APP:
+ *    → Team nhỏ/vừa (<20 developers)
+ *    → Projects vừa phải (<30)
+ *
+ * VD:
+ * - React/Vue monorepo
+ * - Next.js monorepo
+ * - Fast iteration cần thiết
+ */
+
+// ===================================================
+// ✅ DÙNG PNPM WORKSPACES KHI:
+// ===================================================
+
+/**
+ * 1️⃣ PACKAGE MANAGEMENT ONLY:
+ *    → Chỉ cần quản lý dependencies
+ *    → Không cần task orchestration
+ *    → Không cần caching
+ *
+ * 2️⃣ SIMPLE MONOREPO:
+ *    → Ít projects (<10)
+ *    → Build scripts đơn giản
+ *
+ * 3️⃣ COMBINE VỚI TURBOREPO:
+ *    → pnpm: Package management
+ *    → Turborepo: Task orchestration + caching
+ *
+ * VD:
+ * - Small monorepo
+ * - Package publishing
+ * - pnpm + Turborepo combo
+ */
+
+// ===================================================
+// ❌ KHÔNG DÙNG LERNA KHI:
+// ===================================================
+
+/**
+ * → Legacy tool, ít maintain
+ * → Không có caching
+ * → Không có task orchestration tốt
+ * → Dùng Turborepo + Changesets thay thế
+ */
+```
+
+---
+
+#### **🚀 Real-World Examples**
+
+```typescript
+/**
+ * 🏢 EXAMPLE 1: ENTERPRISE ANGULAR APP
+ *
+ * Setup: Nx + Angular + Module Federation
+ *
+ * Structure:
+ * - 50+ Angular apps
+ * - 100+ libraries
+ * - 30+ developers
+ *
+ * Commands:
+ * nx affected --target=build
+ * nx graph
+ * nx g @nx/angular:app new-app
+ *
+ * Results:
+ * - Build time: 10 phút → 2 phút (với cache)
+ * - Dev experience: Excellent (Nx Console)
+ * - Code generation: Fast (generators)
+ */
+
+/**
+ * 🏢 EXAMPLE 2: FAST REACT MONOREPO
+ *
+ * Setup: Turborepo + pnpm + Vite
+ *
+ * Structure:
+ * - 20 React apps
+ * - 30 packages
+ * - 10 developers
+ *
+ * Commands:
+ * turbo run build
+ * turbo run build --filter=...dashboard
+ *
+ * Results:
+ * - Build time: 5 phút → 30 giây (với cache)
+ * - Remote cache: Team sharing (Vercel)
+ * - Simple setup: Minimal config
+ */
+
+/**
+ * 🏢 EXAMPLE 3: SIMPLE MONOREPO
+ *
+ * Setup: pnpm workspaces only
+ *
+ * Structure:
+ * - 5 packages
+ * - 3 developers
+ *
+ * Commands:
+ * pnpm -r run build
+ *
+ * Results:
+ * - Simple: No extra tools
+ * - Fast installs: pnpm efficiency
+ * - Manual orchestration: Build order tự manage
+ */
+```
+
+---
+
+#### **💡 Key Takeaways**
+
+```typescript
+/**
+ * ✅ NX:
+ * - Full-featured, enterprise-grade
+ * - Best for: Large teams, Angular, code generation
+ * - Learning curve: High
+ * - Bundle: Large (~50 MB)
+ *
+ * ✅ TURBOREPO:
+ * - Fast, simple, framework-agnostic
+ * - Best for: Fast builds, caching, simple setup
+ * - Learning curve: Low
+ * - Bundle: Small (~5 MB)
+ *
+ * ✅ PNPM WORKSPACES:
+ * - Built-in package management
+ * - Best for: Simple monorepos, package management
+ * - Combine with: Turborepo (recommended)
+ *
+ * ❌ LERNA:
+ * - Legacy tool
+ * - Not recommended for new projects
+ * - Use Turborepo + Changesets instead
+ *
+ * 🎯 RECOMMENDATION:
+ * - Enterprise Angular: Nx
+ * - Fast React/Vue: Turborepo + pnpm
+ * - Simple: pnpm workspaces + Turborepo
+ */
+```
+
+---
+
 **❌ Common Mistakes (Lỗi Thường Gặp)**
 
 ```typescript
@@ -4677,7 +5712,7 @@ const tradingSlice = createSlice({
 
 ### **🎯 PHẦN 6: MIGRATION GUIDE (Hướng Dẫn Chuyển Đổi)**
 
-````typescript
+`````typescript
 /**
  * 🔄 MIGRATION: Context API → Zustand
  */
@@ -4787,7 +5822,7 @@ export const loginAsync = createAsyncThunk(
 
 ### **📊 PHẦN 7: REAL-WORLD EXAMPLES (Ví Dụ Thực Tế)**
 
-```typescript
+````typescript
 /**
  * 🏢 SCENARIO 1: E-COMMERCE APP
  *
@@ -4945,7 +5980,7 @@ export const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
-````
+`````
 
 ---
 

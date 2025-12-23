@@ -49,8 +49,8 @@
 - **Federation**: Microservices architecture cho GraphQL
 - **Batching**: Combine multiple queries in 1 HTTP request
 
-> **Câu hỏi phỏng vấn Senior Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐ (Advanced)  
+> **Câu hỏi phỏng vấn Senior Frontend Developer**
+> **Độ khó:** ⭐⭐⭐⭐ (Advanced)
 > **Thời gian trả lời:** 12-15 phút
 
 ---
@@ -132,32 +132,32 @@ const COMPARISON_TABLE = {
     REST: 'Multiple endpoints (/users, /posts, /comments)',
     GraphQL: 'Single endpoint (/graphql)',
   },
-  
+
   dataFetching: {
     REST: 'Fixed response structure (over/under-fetching)',
     GraphQL: 'Client specifies exact fields needed',
   },
-  
+
   versioning: {
     REST: 'Version in URL (/v1/users, /v2/users)',
     GraphQL: 'Field-level deprecation, no versioning',
   },
-  
+
   caching: {
     REST: 'HTTP caching (Cache-Control, ETag)',
     GraphQL: 'Client-side normalized cache (Apollo)',
   },
-  
+
   typing: {
     REST: 'Manual TypeScript types or OpenAPI',
     GraphQL: 'Auto-generated from schema',
   },
-  
+
   realTime: {
     REST: 'Polling, WebSockets, SSE',
     GraphQL: 'Subscriptions built-in',
   },
-  
+
   complexity: {
     REST: 'Simple to understand, mature ecosystem',
     GraphQL: 'Steeper learning curve, powerful',
@@ -228,7 +228,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
         `[GraphQL error]: Message: ${message}, Path: ${path}`,  // 📍 Đường dẫn query bị lỗi
         extensions  // 📦 Thêm info (code, timestamp, etc.)
       );
-      
+
       // 🔑 Handle authentication errors (Lỗi xác thực)
       if (extensions?.code === 'UNAUTHENTICATED') {
         localStorage.removeItem('auth_token');  // 🗄️ Xóa token hết hạn
@@ -236,7 +236,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
       }
     });
   }
-  
+
   if (networkError) {  // 🌐 Network errors (lỗi kết nối)
     console.error(`[Network error]: ${networkError}`);
     // VD: 500 Internal Server Error, timeout, no internet
@@ -268,7 +268,7 @@ export const apolloClient = new ApolloClient({
     authLink,     // 3️⃣ Thêm auth token
     httpLink,     // 4️⃣ Cuối cùng: Gửi HTTP request
   ]),
-  
+
   cache: new InMemoryCache({  // 💾 Normalized cache (cache chuẩn hóa)
     typePolicies: {  // 📖 Cấu hình cache cho từng type
       Query: {  // 🔍 Root Query type
@@ -287,13 +287,13 @@ export const apolloClient = new ApolloClient({
           },
         },
       },
-      
+
       // ✅ Custom cache ID (ID chuẩn hóa)
       User: {  // 👤 User type
         keyFields: ['id'],  // 🔑 Dùng field 'id' làm cache key
         // Cache key = "User:123" (User:${id})
       },
-      
+
       Post: {  // 📝 Post type
         keyFields: ['id'],  // 🔑 Dùng 'id' làm cache key
         fields: {  // 📋 Fields config
@@ -306,7 +306,7 @@ export const apolloClient = new ApolloClient({
       },
     },
   }),
-  
+
   defaultOptions: {  // ⚙️ Tùy chọn mặc định cho tất cả queries/mutations
     watchQuery: {  // 👁️ useQuery hook options
       fetchPolicy: 'cache-and-network',  // 💾 Trả về cache ngay + fetch network
@@ -368,7 +368,7 @@ const GET_USER_QUERY: TypedDocumentNode<
   { userId: string }
 > = gql`
   ${USER_FRAGMENT}
-  
+
   query GetUser($userId: ID!) {
     user(id: $userId) {
       ...UserFields
@@ -386,7 +386,7 @@ const GET_USER_QUERY: TypedDocumentNode<
 function UserProfile({ userId }: { userId: string }) {
   const { data, loading, error, refetch } = useQuery(GET_USER_QUERY, {  // 🎯 Hook query data
     variables: { userId },  // 📌 Biến truyền vào query ($userId)
-    
+
     // ✅ Fetch policy options (Chiến lược fetch):
     // - cache-first: Kiểm tra cache trước (default) → nhanh nhưng có thể stale
     // - cache-and-network: Trả cache ngay + fetch network → UX tốt nhất
@@ -394,37 +394,37 @@ function UserProfile({ userId }: { userId: string }) {
     // - cache-only: Chỉ dùng cache, không fetch → offline mode
     // - no-cache: Fetch nhưng không cache → dùng cho sensitive data
     fetchPolicy: 'cache-and-network',  // 💾+🌐 Hiển cache + fetch mới
-    
+
     // ✅ Poll every 30 seconds (Tự động refetch mỗi 30s)
     pollInterval: 30000,  // ⏰ 30000ms = 30s
     // → Auto-refresh data (VD: dashboard, live data)
-    
+
     // ✅ Skip query conditionally (Bỏ qua query nếu điều kiện)
     skip: !userId,  // ⚠️ Nếu userId không có → không chạy query
     // → Tránh query với biến invalid
-    
+
     // ✅ On complete callback (Callback khi query thành công)
     onCompleted: (data) => {
       console.log('User loaded:', data.user.name);  // 📝 Log success
     },
-    
+
     // ✅ On error callback (Callback khi query lỗi)
     onError: (error) => {
       console.error('Failed to load user:', error);  // 🚨 Log error
     },
   });
-  
+
   if (loading) return <Skeleton />;
   if (error) return <ErrorMessage error={error} retry={refetch} />;
   if (!data?.user) return <NotFound />;
-  
+
   return (
     <div>
       <h1>{data.user.name}</h1>
       <img src={data.user.avatar} alt={data.user.name} />
-      
+
       <PostList posts={data.user.posts} />
-      
+
       <button onClick={() => refetch()}>Refresh</button>
     </div>
   );
@@ -463,7 +463,7 @@ function CreatePostForm() {
         const existing: any = cache.readQuery({  // 💾 Đọc query cũ
           query: GET_POSTS_QUERY,
         });
-        
+
         // 🔹 Ghi updated posts vào cache
         cache.writeQuery({  // ✏️ Ghi vào cache
           query: GET_POSTS_QUERY,
@@ -476,24 +476,24 @@ function CreatePostForm() {
           },
         });
       },
-      
+
       // ✅ Refetch queries after mutation (Refetch queries sau mutation)
       refetchQueries: [  // 🔄 Danh sách queries cần refetch
         { query: GET_POSTS_QUERY },  // 🔄 Refetch all posts
         { query: GET_USER_POSTS_QUERY, variables: { userId: currentUserId } },  // 🔄 Refetch user posts
       ],
       // → Đảm bảo data mới nhất sau mutation
-      
+
       // ✅ Await refetch queries (Chờ refetch hoàn thành)
       awaitRefetchQueries: true,  // ⏳ Chờ refetch xong mới resolve mutation
       // → Đảm bảo UI cập nhật trước khi tiếp tục
-      
+
       // ✅ On completed callback
       onCompleted: (data) => {
         toast.success(`Post "${data.createPost.title}" created!`);  // 🎉 Hiển thông báo
         navigate(`/posts/${data.createPost.id}`);  // 🔀 Navigate đến post mới
       },
-      
+
       // ✅ On error callback
       onError: (error) => {
         toast.error('Failed to create post');  // ❌ Hiển lỗi
@@ -501,7 +501,7 @@ function CreatePostForm() {
       },
     }
   );
-  
+
   const handleSubmit = async (values: FormValues) => {
     await createPost({
       variables: {
@@ -512,7 +512,7 @@ function CreatePostForm() {
       },
     });
   };
-  
+
   return (
     <form onSubmit={handleSubmit}>
       <input name="title" />
@@ -541,7 +541,7 @@ import { useApolloClient } from '@apollo/client';
 
 function UserActions({ userId }: { userId: string }) {
   const client = useApolloClient();  // 🔧 Lấy Apollo client instance
-  
+
   // ✅ Read from cache (Đọc từ cache)
   const readUser = () => {
     const user = client.readFragment({  // 💾 Đọc fragment từ cache
@@ -556,7 +556,7 @@ function UserActions({ userId }: { userId: string }) {
     });
     console.log('Cached user:', user);  // 💾 In ra user từ cache
   };
-  
+
   // ✅ Write to cache (Ghi vào cache)
   const updateUserName = (newName: string) => {
     client.writeFragment({  // ✏️ Ghi fragment vào cache
@@ -572,7 +572,7 @@ function UserActions({ userId }: { userId: string }) {
     });
     // → UI tự động re-render (React hooks lắng nghe cache)
   };
-  
+
   // ✅ Evict from cache (Xóa khỏi cache)
   const removeUser = () => {
     client.cache.evict({  // 🗄️ Xóa object khỏi cache
@@ -581,13 +581,13 @@ function UserActions({ userId }: { userId: string }) {
     client.cache.gc();  // 🧹 Garbage collect (dọn dẹp cache)
     // → Xóa các references không còn dùng
   };
-  
+
   // ✅ Reset entire cache (Reset toàn bộ cache)
   const clearCache = () => {
     client.cache.reset();  // 🗄️ Xóa TẤT CẢ cache
     // → Mọi queries sẽ refetch lại
   };
-  
+
   // ✅ Modify cache field (Sửa field trong cache)
   const incrementLikes = (postId: string) => {
     client.cache.modify({  // ✏️ Sửa đổi cache
@@ -600,7 +600,7 @@ function UserActions({ userId }: { userId: string }) {
     });
     // → UI tự động cập nhật số likes
   };
-  
+
   return (
     <div>
       <button onClick={readUser}>Read Cache</button>
@@ -650,7 +650,7 @@ function InfinitePostList() {
   const { data, loading, fetchMore } = useQuery(GET_POSTS_QUERY, {  // 🔍 Query posts
     variables: { limit: 20 },  // 🔢 Lấy 20 posts mỗi lần
   });
-  
+
   const loadMore = () => {  // 📥 Hàm load thêm posts
     fetchMore({  // 🔄 Fetch thêm data (không refetch from scratch)
       variables: {
@@ -660,13 +660,13 @@ function InfinitePostList() {
     });
     // → Apollo tự động merge với data cũ (theo merge function trong cache config)
   };
-  
+
   return (
     <div>
       {data?.posts.edges.map(({ node }) => (  // 📋 Map qua edges
         <PostCard key={node.id} post={node} />  // 📦 Hiển thị mỗi post
       ))}
-      
+
       {data?.posts.pageInfo.hasNextPage && (  // ❓ Nếu còn trang tiếp theo
         <button onClick={loadMore} disabled={loading}>  // 📥 Nút load more
           {loading ? 'Loading...' : 'Load More'}  // ⏳ Hiển trạng thái
@@ -696,7 +696,7 @@ const GET_PRODUCTS_QUERY = gql`
 function PaginatedProducts() {
   const [page, setPage] = useState(1);  // 📌 State: Trang hiện tại
   const limit = 20;  // 🔢 Số items mỗi trang
-  
+
   const { data, loading } = useQuery(GET_PRODUCTS_QUERY, {  // 🔍 Query products
     variables: {
       offset: (page - 1) * limit,  // 📍 Offset: Bỏ qua bao nhiêu items
@@ -704,14 +704,14 @@ function PaginatedProducts() {
       limit,  // 🔢 Lấy bao nhiêu items
     },
   });
-  
+
   const totalPages = Math.ceil((data?.products.total ?? 0) / limit);  // 📊 Tính tổng số trang
   // VD: Total 95 items, limit 20 → 95/20 = 4.75 → ceil = 5 trang
-  
+
   return (
     <div>
       <ProductGrid products={data?.products.items ?? []} />  // 📋 Hiển thị products
-      
+
       <Pagination  // 🔢 Component pagination
         currentPage={page}  // 📍 Trang hiện tại
         totalPages={totalPages}  // 📊 Tổng số trang
@@ -756,7 +756,7 @@ function LikeButton({ postId, likes, isLiked }: LikeButtonProps) {
       },
     },
     // → UI cập nhật NGAY (trước khi server response) → UX tuyệt vời!
-    
+
     // ✅ Update cache optimistically (Cập nhật cache ngay)
     update(cache, { data: { likePost } }) {  // 💾 Callback cập nhật cache
       cache.modify({  // ✏️ Sửa cache
@@ -771,7 +771,7 @@ function LikeButton({ postId, likes, isLiked }: LikeButtonProps) {
         },
       });
     },
-    
+
     // ✅ Rollback on error (Rollback nếu thất bại)
     onError: (error) => {  // 🚨 Nếu server trả lỗi
       console.error('Like failed, rolling back...', error);  // 🚨 Log error
@@ -779,7 +779,7 @@ function LikeButton({ postId, likes, isLiked }: LikeButtonProps) {
       // → Apollo tự động ROLLBACK optimistic update (trả về giá trị cũ)
     },
   });
-  
+
   return (
     <button onClick={() => likePost({ variables: { postId } })}>  // 💆 Click để like
       {isLiked ? '❤️' : '🤍'} {likes}  // 📊 Hiển trạng thái + số likes
@@ -811,16 +811,16 @@ function GraphQLErrorHandler({ error }: { error: ApolloError }) {
           switch (err.extensions?.code) {  // 📌 extensions.code = custom error code
             case 'UNAUTHENTICATED':  // 🔑 Chưa đăng nhập
               return <LoginPrompt key={i} />;  // → Hiển form login
-            
+
             case 'FORBIDDEN':  // 🚫 Không có quyền
               return <AccessDenied key={i} />;  // → Hiển thông báo không có quyền
-            
+
             case 'NOT_FOUND':  // 🔍 Không tìm thấy
               return <NotFound key={i} />;  // → Hiển 404 page
-            
+
             case 'VALIDATION_ERROR':  // ✅ Lỗi validation
               return <ValidationErrors key={i} errors={err.extensions.errors} />;  // → Hiển chi tiết lỗi
-            
+
             default:  // 🚨 Lỗi khác
               return <GenericError key={i} message={err.message} />;  // → Hiển lỗi chung
           }
@@ -828,13 +828,13 @@ function GraphQLErrorHandler({ error }: { error: ApolloError }) {
       </div>
     );
   }
-  
+
   // ✅ Handle network errors (Xử lý lỗi network)
   if (error.networkError) {  // 🌐 Nếu có network error
     return <NetworkErrorMessage />;  // → Hiển thông báo lỗi kết nối
     // VD: 500 Internal Server Error, timeout, no internet
   }
-  
+
   return <GenericError message={error.message} />;  // 🚨 Lỗi không xác định
 }
 ```

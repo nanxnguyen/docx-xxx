@@ -5209,6 +5209,791 @@ function SlowComponent() {
 
 ---
 
+## **XXI. React-Specific Mistakes & Anti-Patterns**
+
+### **21.1 🪝 React Hooks - Lỗi Phổ Biến**
+
+```typescript
+/**
+ * ❌ MISTAKE 1: Missing dependencies in useEffect (Infinite loop)
+ */
+
+// ❌ BAD: userId dependency missing → stale data
+function UserProfile({ userId }) {
+  useEffect(() => {
+    fetchUser(userId); // Runs only once!
+  }, []); // ⚠️ No userId!
+}
+
+// ✅ GOOD: Include all dependencies
+function UserProfile({ userId }) {
+  useEffect(() => {
+    fetchUser(userId);
+  }, [userId]); // ✅ Runs when userId changes
+}
+
+/**
+ * ❌ MISTAKE 2: Stale closures in setInterval
+ */
+
+// ❌ BAD: count always stays 0
+function Counter() {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCount(count + 1); // ⚠️ count closure is always 0!
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []); // Empty deps
+}
+
+// ✅ GOOD 1: Functional update
+function Counter() {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCount(prev => prev + 1); // ✅ Uses previous state
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+}
+
+// ✅ GOOD 2: Include dependency
+function Counter() {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    const timeout = setTimeout(() => setCount(count + 1), 1000);
+    return () => clearTimeout(timeout);
+  }, [count]); // ✅ Runs when count changes
+}
+
+/**
+ * ❌ MISTAKE 3: Calling hooks conditionally (breaks rules)
+ */
+
+// ❌ BAD: Hook inside condition
+function Component({ isAdmin }) {
+  if (isAdmin) {
+    useEffect(() => {}); // ⚠️ Hook call order changes!
+  }
+}
+
+// ✅ GOOD: Logic inside hook
+function Component({ isAdmin }) {
+  useEffect(() => {
+    if (isAdmin) {
+      // Logic here
+    }
+  }, [isAdmin]);
+}
+
+/**
+ * ❌ MISTAKE 4: useMemo/useCallback overuse (premature optimization)
+ */
+
+// ❌ BAD: Memoizing simple operations
+function List({ items }) {
+  const sorted = useMemo(
+    () => items.sort((a, b) => a - b), // Simple! Overhead > benefit
+    [items]
+  );
+  return items.map(i => <Item key={i} value={i} />);
+}
+
+// ✅ GOOD: Only memoize expensive operations
+function List({ items }) {
+  const sorted = useMemo(
+    () => expensiveAlgorithm(items), // Complex! Worth memoizing
+    [items]
+  );
+  return sorted.map(i => <MemoItem key={i} value={i} />);
+}
+
+/**
+ * ❌ MISTAKE 5: useRef for state (won't re-render)
+ */
+
+// ❌ BAD: Using ref for values that need re-render
+function Counter() {
+  const countRef = useRef(0);
+  
+  return (
+    <button onClick={() => countRef.current++}>
+      Count: {countRef.current} {/* Never updates! */}
+    </button>
+  );
+}
+
+// ✅ GOOD: Use state for values needing re-render
+function Counter() {
+  const [count, setCount] = useState(0);
+  
+  return (
+    <button onClick={() => setCount(c => c + 1)}>
+      Count: {count} {/* Updates! */}
+    </button>
+  );
+}
+
+// ✅ GOOD: Use ref for DOM access
+function TextInput() {
+  const inputRef = useRef(null);
+  
+  return (
+    <>
+      <input ref={inputRef} />
+      <button onClick={() => inputRef.current?.focus()}>Focus</button>
+    </>
+  );
+}
+```
+
+### **21.2 ⚛️ Component Re-render Issues**
+
+```typescript
+/**
+ * ❌ MISTAKE 6: All children re-render on parent state change
+ */
+
+// ❌ BAD: Filter input causes all 10,000 items to re-render
+function UserList() {
+  const [filter, setFilter] = useState('');
+  const [users] = useState(generateMillionUsers()); // Large list
+  
+  const filteredUsers = users.filter(u => u.name.includes(filter));
+  
+  return (
+    <div>
+      <input 
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+      />
+      {filteredUsers.map(u => (
+        <UserCard key={u.id} user={u} /> {/* All re-render! */}
+      ))}
+    </div>
+  );
+}
+
+// ✅ GOOD 1: Split state into components (separation of concerns)
+function UserListContainer() {
+  const [users] = useState(generateMillionUsers());
+  
+  return (
+    <div>
+      <FilterInput /> {/* Only this component updates */}
+      <UserListDisplay users={users} /> {/* Stable, no re-render */}
+    </div>
+  );
+}
+
+function FilterInput() {
+  const [filter, setFilter] = useState('');
+  const users = useContext(UsersContext);
+  const filtered = useMemo(() => 
+    users.filter(u => u.name.includes(filter)), 
+    [users, filter]
+  );
+  return (
+    <>
+      <input value={filter} onChange={(e) => setFilter(e.target.value)} />
+      <UserList users={filtered} />
+    </>
+  );
+}
+
+// ✅ GOOD 2: Memoize children
+const UserCard = memo(({ user }) => (
+  <div>{user.name}</div>
+));
+
+function UserList({ users }) {
+  return users.map(u => <UserCard key={u.id} user={u} />);
+}
+
+/**
+ * ❌ MISTAKE 7: Props objects created inline (always new reference)
+ */
+
+// ❌ BAD: Props recreated every render
+function Parent() {
+  return (
+    <Child 
+      config={{ theme: 'dark', size: 'lg' }} {/* New object every render! */}
+      handler={() => doSomething()} {/* New function every render! */}
+    />
+  );
+}
+
+const Child = memo(({ config, handler }) => (
+  <div>{config.theme}</div> {/* Re-renders every parent render */}
+));
+
+// ✅ GOOD: Memoize values & callbacks
+function Parent() {
+  const config = useMemo(() => ({ theme: 'dark', size: 'lg' }), []);
+  const handler = useCallback(() => doSomething(), []);
+  
+  return <Child config={config} handler={handler} />;
+}
+
+/**
+ * ❌ MISTAKE 8: Index as key (breaks component state)
+ */
+
+// ❌ BAD: Using array index as key
+function ItemList({ items }) {
+  return items.map((item, index) => (
+    <Item key={index} value={item} /> {/* ⚠️ Key changes when list reorders! */}
+  ));
+}
+
+// Scenario: User has form input in Item, delete first item
+// Before: Item[0]="Apple", Item[1]="Banana" with input "Hello"
+// After delete: Item[0]="Banana", Item[1] removed
+// Problem: "Banana" still has input "Hello" (component state attached to index!)
+
+// ✅ GOOD: Use unique ID
+function ItemList({ items }) {
+  return items.map(item => (
+    <Item key={item.id} value={item} /> {/* ✅ Stable key */}
+  ));
+}
+```
+
+### **21.3 📊 State Management Mistakes**
+
+```typescript
+/**
+ * ❌ MISTAKE 9: Direct state mutation (React doesn't detect)
+ */
+
+// ❌ BAD: Mutating state directly
+function UserProfile() {
+  const [user, setUser] = useState({ name: 'John', age: 30 });
+  
+  const updateAge = () => {
+    user.age = 31; // ⚠️ Mutate object
+    setUser(user); // React doesn't detect change (same reference!)
+  };
+  
+  return <div>Age: {user.age}</div>; // Never updates!
+}
+
+// ✅ GOOD: Create new object
+function UserProfile() {
+  const [user, setUser] = useState({ name: 'John', age: 30 });
+  
+  const updateAge = () => {
+    setUser({ ...user, age: 31 }); // ✅ New object
+  };
+  
+  return <div>Age: {user.age}</div>;
+}
+
+/**
+ * ❌ MISTAKE 10: useState with expensive initialization
+ */
+
+// ❌ BAD: Expensive function runs every render
+function Component() {
+  const [data, setData] = useState(expensiveCalculation()); // Runs every render!
+}
+
+// ✅ GOOD: Use init function (runs once)
+function Component() {
+  const [data, setData] = useState(() => expensiveCalculation());
+}
+
+/**
+ * ❌ MISTAKE 11: Too many useState calls (state explosion)
+ */
+
+// ❌ BAD: 10+ useState for related data
+function Form() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  // ... 6 more useState
+  
+  // Hard to manage, easy to miss dependencies in useEffect
+}
+
+// ✅ GOOD: Group related state
+function Form() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: ''
+  });
+  
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+}
+
+// ✅ BETTER: useReducer for complex logic
+function Form() {
+  const [formData, dispatch] = useReducer(formReducer, initialState);
+  
+  const handleChange = (field, value) => {
+    dispatch({ type: 'UPDATE_FIELD', payload: { field, value } });
+  };
+}
+```
+
+---
+
+## **XXII. Library Integration Mistakes**
+
+### **22.1 🔗 Context API Misuse**
+
+```typescript
+/**
+ * ❌ MISTAKE 12: Context causes all consumers to re-render
+ */
+
+// ❌ BAD: Theme context causes all children to re-render
+function App() {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      <Header /> {/* Re-renders on theme change */}
+      <Sidebar /> {/* Re-renders on theme change */}
+      <MainContent /> {/* Re-renders on theme change */}
+    </ThemeContext.Provider>
+  );
+}
+
+// ✅ GOOD: Split contexts by frequency
+function App() {
+  const [theme, setTheme] = useState('light');
+  const [user, setUser] = useState(null);
+  
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      <UserContext.Provider value={{ user, setUser }}>
+        <Header /> {/* Only theme context re-renders */}
+        <MainContent /> {/* Gets both from separate contexts */}
+      </UserContext.Provider>
+    </ThemeContext.Provider>
+  );
+}
+
+/**
+ * ❌ MISTAKE 13: Creating context object inline (always new reference)
+ */
+
+// ❌ BAD: Value object recreated every render
+function App() {
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}> {/* New object! */}
+      <Children />
+    </ThemeContext.Provider>
+  );
+}
+
+// ✅ GOOD: Memoize context value
+function App() {
+  const [theme, setTheme] = useState('light');
+  const value = useMemo(() => ({ theme, setTheme }), [theme]);
+  
+  return (
+    <ThemeContext.Provider value={value}>
+      <Children />
+    </ThemeContext.Provider>
+  );
+}
+```
+
+### **22.2 ⚙️ Third-Party Library Issues**
+
+```typescript
+/**
+ * ❌ MISTAKE 14: Redux/Zustand selector not memoized
+ */
+
+// ❌ BAD: New selector object every render → re-subscribe
+function Counter() {
+  const count = useSelector(state => ({
+    value: state.counter.value,
+    doubled: state.counter.value * 2
+  })); // New object every render!
+  
+  return <div>{count.value}</div>;
+}
+
+// ✅ GOOD: Memoize selector
+const selectCounter = (state) => ({
+  value: state.counter.value,
+  doubled: state.counter.value * 2
+});
+
+function Counter() {
+  const count = useSelector(selectCounter); // Stable selector
+  return <div>{count.value}</div>;
+}
+
+/**
+ * ❌ MISTAKE 15: React Router navigation in event (race condition)
+ */
+
+// ❌ BAD: Cancel requests but navigate anyway
+function LoginForm() {
+  const navigate = useNavigate();
+  const abortRef = useRef(null);
+  
+  const handleLogin = async (credentials) => {
+    abortRef.current = new AbortController();
+    
+    try {
+      await loginAPI(credentials, { signal: abortRef.current.signal });
+      navigate('/dashboard'); // Still navigates even if aborted!
+    } catch (error) {
+      // Handle error
+    }
+  };
+  
+  useEffect(() => {
+    return () => abortRef.current?.abort();
+  }, []);
+}
+
+// ✅ GOOD: Check if still mounted
+function LoginForm() {
+  const navigate = useNavigate();
+  const isMountedRef = useRef(true);
+  
+  const handleLogin = async (credentials) => {
+    try {
+      await loginAPI(credentials);
+      if (isMountedRef.current) {
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      if (isMountedRef.current) {
+        showError(error);
+      }
+    }
+  };
+  
+  useEffect(() => {
+    return () => { isMountedRef.current = false; };
+  }, []);
+}
+```
+
+---
+
+## **XXIII. Frontend Performance Best Practices**
+
+### **23.1 📈 Performance Optimization**
+
+```typescript
+/**
+ * ✅ BEST PRACTICE 1: Code Splitting & Lazy Loading
+ */
+
+// ❌ BAD: Entire app in one bundle
+import Dashboard from './pages/Dashboard';
+import Admin from './pages/Admin';
+import Settings from './pages/Settings';
+
+// ✅ GOOD: Split by route
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Admin = lazy(() => import('./pages/Admin'));
+const Settings = lazy(() => import('./pages/Settings'));
+
+function App() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </Suspense>
+  );
+}
+
+/**
+ * ✅ BEST PRACTICE 2: Image Optimization
+ */
+
+// ❌ BAD: Full-size image for thumbnail
+function ProductGrid({ products }) {
+  return products.map(p => (
+    <img src={p.image} alt={p.name} />
+  ));
+}
+
+// ✅ GOOD: Lazy load with placeholder
+function ProductGrid({ products }) {
+  return products.map(p => (
+    <img 
+      src={p.thumbnail}
+      loading="lazy" // ✅ Browser lazy loads
+      alt={p.name}
+      width={200}
+      height={200}
+    />
+  ));
+}
+
+/**
+ * ✅ BEST PRACTICE 3: Virtualization for large lists
+ */
+
+// ❌ BAD: Render all 10,000 items (DOM bloat)
+function VirtualList({ items }) {
+  return (
+    <div>
+      {items.map(item => <Item key={item.id} {...item} />)}
+    </div>
+  );
+}
+
+// ✅ GOOD: Only render visible items
+import { FixedSizeList } from 'react-window';
+
+function VirtualList({ items }) {
+  return (
+    <FixedSizeList
+      height={600}
+      itemCount={items.length}
+      itemSize={50}
+      width="100%"
+    >
+      {({ index, style }) => (
+        <div style={style}>
+          <Item {...items[index]} />
+        </div>
+      )}
+    </FixedSizeList>
+  );
+}
+
+/**
+ * ✅ BEST PRACTICE 4: Memoize expensive computations
+ */
+
+// ✅ Cache API responses
+const cache = new Map();
+
+async function fetchUser(id) {
+  if (cache.has(id)) return cache.get(id);
+  
+  const data = await fetch(`/api/users/${id}`).then(r => r.json());
+  cache.set(id, data);
+  return data;
+}
+
+// ✅ Debounce search input
+const debouncedSearch = debounce(async (query) => {
+  const results = await searchAPI(query);
+  setResults(results);
+}, 300);
+```
+
+### **23.2 🔍 Testing Best Practices**
+
+```typescript
+/**
+ * ❌ MISTAKE 16: Testing implementation details instead of behavior
+ */
+
+// ❌ BAD: Testing internal state/functions
+function Counter() {
+  const [count, setCount] = useState(0);
+  
+  return (
+    <button onClick={() => setCount(c => c + 1)}>
+      Count: {count}
+    </button>
+  );
+}
+
+test('Counter', () => {
+  const { getByText } = render(<Counter />);
+  const state = getByText(/Count/).textContent; // Testing UI, not behavior
+  expect(state).toBe('Count: 0');
+});
+
+// ✅ GOOD: Test user behavior
+test('Counter increments on click', () => {
+  render(<Counter />);
+  const button = screen.getByRole('button');
+  
+  expect(button).toHaveTextContent('Count: 0');
+  
+  userEvent.click(button);
+  
+  expect(button).toHaveTextContent('Count: 1');
+});
+
+/**
+ * ✅ BEST PRACTICE 5: Use react-testing-library
+ */
+
+// ✅ Test what users see and do
+import { render, screen, userEvent } from '@testing-library/react';
+
+test('Login form', async () => {
+  render(<LoginForm />);
+  
+  const emailInput = screen.getByLabelText(/email/i);
+  const submitButton = screen.getByRole('button', { name: /login/i });
+  
+  userEvent.type(emailInput, 'user@test.com');
+  userEvent.click(submitButton);
+  
+  // Wait for success message
+  await screen.findByText(/login successful/i);
+});
+
+/**
+ * ✅ BEST PRACTICE 6: Mock API calls, not components
+ */
+
+// ✅ Good: Mock API
+import { rest } from 'msw';
+import { server } from './mocks/server';
+
+test('Fetch users', async () => {
+  server.use(
+    rest.get('/api/users', (req, res, ctx) => {
+      return res(ctx.json([{ id: 1, name: 'John' }]));
+    })
+  );
+  
+  render(<UserList />);
+  
+  await screen.findByText('John');
+});
+```
+
+### **23.3 ♿ Accessibility Best Practices**
+
+```typescript
+/**
+ * ✅ BEST PRACTICE 7: Semantic HTML & ARIA
+ */
+
+// ❌ BAD: div's for everything
+function Dialog() {
+  return (
+    <div onClick={onClose}>
+      <div>Title</div>
+      <div>Content</div>
+      <button>Close</button>
+    </div>
+  );
+}
+
+// ✅ GOOD: Semantic elements & ARIA
+function Dialog() {
+  return (
+    <div role="dialog" aria-labelledby="title">
+      <h2 id="title">Title</h2>
+      <p>Content</p>
+      <button onClick={onClose}>Close</button>
+    </div>
+  );
+}
+
+/**
+ * ✅ BEST PRACTICE 8: Keyboard navigation
+ */
+
+// ✅ Use semantic buttons
+<button onClick={handleClick}>Action</button>
+
+// ❌ DON'T: Use divs as buttons
+<div onClick={handleClick}>Action</div>
+
+/**
+ * ✅ BEST PRACTICE 9: Focus management
+ */
+
+function Modal() {
+  const closeButtonRef = useRef(null);
+  
+  useEffect(() => {
+    closeButtonRef.current?.focus(); // Focus trap
+  }, []);
+  
+  return (
+    <div role="dialog">
+      <button ref={closeButtonRef}>Close</button>
+    </div>
+  );
+}
+```
+
+---
+
+## **XXIV. TypeScript with React**
+
+### **24.1 💪 Type Safety**
+
+```typescript
+/**
+ * ✅ BEST PRACTICE 10: Strong typing for props & state
+ */
+
+// ✅ Define component props
+interface UserCardProps {
+  user: User;
+  onDelete?: (id: string) => void;
+  loading?: boolean;
+}
+
+function UserCard({ user, onDelete, loading }: UserCardProps) {
+  return (
+    <div>
+      <h3>{user.name}</h3>
+      {onDelete && <button onClick={() => onDelete(user.id)}>Delete</button>}
+    </div>
+  );
+}
+
+/**
+ * ✅ BEST PRACTICE 11: Generic components for reusability
+ */
+
+// Generic List component
+interface ListProps<T> {
+  items: T[];
+  renderItem: (item: T) => ReactNode;
+  keyExtractor: (item: T) => string | number;
+}
+
+function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
+  return (
+    <ul>
+      {items.map(item => (
+        <li key={keyExtractor(item)}>{renderItem(item)}</li>
+      ))}
+    </ul>
+  );
+}
+
+// Usage
+<List<User>
+  items={users}
+  renderItem={(user) => <UserCard user={user} />}
+  keyExtractor={(user) => user.id}
+/>
+```
+
+---
+
 ## **📚 Related Questions**
 
 | Câu hỏi | Chủ đề | Mức độ |
