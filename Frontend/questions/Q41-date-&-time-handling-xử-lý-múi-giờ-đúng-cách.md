@@ -284,7 +284,7 @@ console.log(customFormatter.format(date));
 
 **3. Compare Timestamps (So Sánh Thời Gian):**
 
-````typescript
+`````typescript
 // ===================================================
 // ✅ So sánh bằng Timestamp - KHÔNG bị ảnh hưởng timezone
 // ===================================================
@@ -370,7 +370,7 @@ console.log(endOfDay.toISOString());
 
 // 💡 Dùng cho query database: Tìm tất cả records trong ngày
 // WHERE createdAt >= startOfDay AND createdAt <= endOfDay
-````
+`````
 
 ---
 

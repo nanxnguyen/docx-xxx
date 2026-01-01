@@ -1,4 +1,4 @@
-# 🏗️ Q33: Frontend Tooling & Build Optimization - Bundling, Minify, Tree-shaking, Code Splitting, Polyfill, Transpiling, ESLint/Prettier, Source Maps
+# 🏗️ Q33: Frontend Tooling & Build Optimization - Dependency Graph, Bundling, Tree-shaking, Code Splitting, Minification, Transpiling, Polyfills, Caching, Dev vs Prod Build, Runtime Performance, Security, Observability & DX, ESLint/Prettier, Source Maps
 
 ## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
@@ -1053,6 +1053,1144 @@ Các công cụ quan trọng trong frontend development:
 - **Route-based**: Split theo routes (React Router, Vue Router)
 - **Component-based**: Lazy load components nặng (React.lazy, Vue defineAsyncComponent)
 - **Vendor splitting**: Tách libraries (React, Lodash...) ra vendor chunk
+
+---
+
+**📚 Phần 5: Dependency Graph (Sơ Đồ Phụ Thuộc)**
+
+#### **💡 Dependency Graph Là Gì?**
+
+**Dependency Graph** là **sơ đồ mô tả quan hệ phụ thuộc** giữa các modules/files trong ứng dụng. Bundler dùng graph này để:
+- Tìm tất cả files cần bundle
+- Xác định thứ tự load modules
+- Loại bỏ code không dùng (tree-shaking)
+- Tối ưu code splitting
+
+**🔍 Cách Hoạt Động:**
+
+```typescript
+// ===================================================
+// 📊 DEPENDENCY GRAPH CONSTRUCTION (Xây Dựng Sơ Đồ)
+// ===================================================
+
+/**
+ * QUY TRÌNH XÂY DỰNG DEPENDENCY GRAPH:
+ * 
+ * 1️⃣ Start từ Entry Point (index.js)
+ * 2️⃣ Scan imports/requires trong file
+ * 3️⃣ Đệ quy scan imports trong các file được import
+ * 4️⃣ Tạo graph (tree structure) với dependencies
+ * 5️⃣ Detect circular dependencies (phụ thuộc vòng)
+ * 6️⃣ Determine load order (thứ tự tải)
+ */
+
+// ===================================================
+// 📂 PROJECT STRUCTURE (Cấu Trúc Dự Án)
+// ===================================================
+
+// src/index.js (Entry point)
+import { initAuth } from './auth.js';
+import { fetchUserData } from './api.js';
+import { renderDashboard } from './dashboard.js';
+
+initAuth();
+const userData = await fetchUserData();
+renderDashboard(userData);
+
+// src/auth.js
+import { setToken, getToken } from './utils.js';
+import { API_URL } from './config.js';
+
+export function initAuth() {
+  const token = getToken();
+  if (!token) {
+    // Redirect to login
+  }
+}
+
+// src/api.js
+import { getToken } from './utils.js';
+import { API_URL } from './config.js';
+
+export async function fetchUserData() {
+  const token = getToken();
+  const response = await fetch(`${API_URL}/user`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.json();
+}
+
+// src/dashboard.js
+import { formatDate } from './utils.js';
+import { Chart } from './chart.js';
+
+export function renderDashboard(data) {
+  const chart = new Chart(data);
+  chart.render();
+}
+
+// src/utils.js
+export function setToken(token) {
+  localStorage.setItem('token', token);
+}
+
+export function getToken() {
+  return localStorage.getItem('token');
+}
+
+export function formatDate(date) {
+  return new Date(date).toLocaleDateString();
+}
+
+// src/config.js
+export const API_URL = 'https://api.example.com';
+
+// src/chart.js
+import { formatDate } from './utils.js';
+
+export class Chart {
+  constructor(data) {
+    this.data = data;
+  }
+  render() {
+    console.log('Rendering chart...');
+  }
+}
+
+// ===================================================
+// 📊 DEPENDENCY GRAPH (Sơ Đồ Phụ Thuộc)
+// ===================================================
+
+/**
+ * 🌳 VISUAL DEPENDENCY GRAPH:
+ * 
+ *                  index.js (Entry)
+ *                      │
+ *        ┌─────────────┼─────────────┐
+ *        │             │             │
+ *      auth.js       api.js    dashboard.js
+ *        │             │             │
+ *    ┌───┴───┐     ┌───┴───┐     ┌───┴───┐
+ *    │       │     │       │     │       │
+ * utils.js config.js utils.js config.js utils.js chart.js
+ *    │                                       │
+ *    │                                   utils.js
+ *    │                                    (đã có)
+ *    └───────────────────┬─────────────────┘
+ *                        │
+ *                  (Shared module)
+ * 
+ * ✅ INSIGHTS:
+ * - utils.js được dùng bởi 3 modules (auth, api, dashboard, chart)
+ * - config.js được dùng bởi 2 modules (auth, api)
+ * - Không có circular dependencies ✅
+ * - Load order: config.js, utils.js → auth.js, api.js, chart.js → dashboard.js → index.js
+ */
+
+// ===================================================
+// 🔢 DEPENDENCY GRAPH DATA STRUCTURE
+// ===================================================
+
+// Bundler internal representation (simplified)
+const dependencyGraph = {
+  'index.js': {
+    path: '/src/index.js',
+    dependencies: ['auth.js', 'api.js', 'dashboard.js'],
+    size: 250, // bytes
+    exports: [], // Entry point không export
+    imports: ['initAuth', 'fetchUserData', 'renderDashboard']
+  },
+  
+  'auth.js': {
+    path: '/src/auth.js',
+    dependencies: ['utils.js', 'config.js'],
+    size: 180,
+    exports: ['initAuth'],
+    imports: ['setToken', 'getToken', 'API_URL']
+  },
+  
+  'api.js': {
+    path: '/src/api.js',
+    dependencies: ['utils.js', 'config.js'],
+    size: 200,
+    exports: ['fetchUserData'],
+    imports: ['getToken', 'API_URL']
+  },
+  
+  'dashboard.js': {
+    path: '/src/dashboard.js',
+    dependencies: ['utils.js', 'chart.js'],
+    size: 150,
+    exports: ['renderDashboard'],
+    imports: ['formatDate', 'Chart']
+  },
+  
+  'utils.js': {
+    path: '/src/utils.js',
+    dependencies: [], // Leaf node - không depend vào file nào
+    size: 120,
+    exports: ['setToken', 'getToken', 'formatDate'],
+    imports: []
+  },
+  
+  'config.js': {
+    path: '/src/config.js',
+    dependencies: [], // Leaf node
+    size: 50,
+    exports: ['API_URL'],
+    imports: []
+  },
+  
+  'chart.js': {
+    path: '/src/chart.js',
+    dependencies: ['utils.js'],
+    size: 300,
+    exports: ['Chart'],
+    imports: ['formatDate']
+  }
+};
+
+// ===================================================
+// 🔄 CIRCULAR DEPENDENCY DETECTION (Phát Hiện Phụ Thuộc Vòng)
+// ===================================================
+
+// ❌ CIRCULAR DEPENDENCY EXAMPLE (Ví dụ phụ thuộc vòng)
+
+// moduleA.js
+import { funcB } from './moduleB.js';
+//    ↓ moduleA depends on moduleB
+
+export function funcA() {
+  return funcB() + 1;
+}
+
+// moduleB.js
+import { funcA } from './moduleA.js';
+//    ↓ moduleB depends on moduleA (CIRCULAR!)
+
+export function funcB() {
+  return funcA() - 1; // ⚠️ Infinite loop!
+}
+
+// 🚨 PROBLEM:
+// moduleA → moduleB → moduleA → moduleB → ... (vòng lặp vô hạn)
+// Bundler sẽ detect và warning: "Circular dependency detected!"
+
+/**
+ * 🔍 CIRCULAR DEPENDENCY DETECTION ALGORITHM:
+ * 
+ * 1. Dùng DFS (Depth-First Search) để traverse graph
+ * 2. Track visited nodes
+ * 3. Nếu visit lại node đang trong stack → Circular!
+ */
+
+function detectCircularDependency(graph, startNode) {
+  const visited = new Set();
+  const stack = new Set(); // Nodes đang được visit
+
+  function dfs(node) {
+    if (stack.has(node)) {
+      // ❌ Circular dependency detected!
+      throw new Error(`Circular dependency: ${[...stack, node].join(' → ')}`);
+    }
+    
+    if (visited.has(node)) {
+      return; // Already processed
+    }
+
+    visited.add(node);
+    stack.add(node);
+
+    // Visit dependencies
+    const deps = graph[node]?.dependencies || [];
+    for (const dep of deps) {
+      dfs(dep);
+    }
+
+    stack.delete(node); // Remove from stack sau khi xong
+  }
+
+  dfs(startNode);
+}
+
+// Example usage:
+try {
+  detectCircularDependency(dependencyGraph, 'index.js');
+  console.log('✅ No circular dependencies');
+} catch (error) {
+  console.error('❌ Circular dependency detected:', error.message);
+}
+
+// ===================================================
+// 📦 BUNDLING ORDER (Thứ Tự Gộp File)
+// ===================================================
+
+/**
+ * 🎯 TOPOLOGICAL SORT (Sắp Xếp Topo):
+ * 
+ * Xác định thứ tự bundle sao cho:
+ * - Dependencies được load TRƯỚC modules phụ thuộc vào nó
+ * - Không vi phạm dependencies
+ * 
+ * Algorithm:
+ * 1. Tìm nodes không có dependencies (leaf nodes)
+ * 2. Add vào bundle
+ * 3. Remove khỏi graph
+ * 4. Repeat cho đến khi hết nodes
+ */
+
+function topologicalSort(graph) {
+  const result = [];
+  const visited = new Set();
+  
+  function visit(node) {
+    if (visited.has(node)) return;
+    
+    visited.add(node);
+    
+    // Visit dependencies first (post-order traversal)
+    const deps = graph[node]?.dependencies || [];
+    for (const dep of deps) {
+      visit(dep);
+    }
+    
+    result.push(node);
+  }
+  
+  // Start from entry point
+  visit('index.js');
+  
+  return result;
+}
+
+const bundleOrder = topologicalSort(dependencyGraph);
+console.log('📦 Bundle order:', bundleOrder);
+// Output: ['config.js', 'utils.js', 'auth.js', 'api.js', 'chart.js', 'dashboard.js', 'index.js']
+
+/**
+ * 💡 GIẢI THÍCH:
+ * 
+ * 1. config.js, utils.js → Leaf nodes (không depend gì) → Bundle trước
+ * 2. auth.js, api.js → Depend vào config.js, utils.js → Bundle sau
+ * 3. chart.js → Depend vào utils.js → Bundle sau
+ * 4. dashboard.js → Depend vào utils.js, chart.js → Bundle sau
+ * 5. index.js → Entry point, depend vào tất cả → Bundle cuối
+ * 
+ * ✅ Đảm bảo: Khi index.js execute, tất cả dependencies đã loaded!
+ */
+
+// ===================================================
+// 🌲 TREE SHAKING với DEPENDENCY GRAPH
+// ===================================================
+
+/**
+ * Tree-shaking dùng dependency graph để:
+ * 1. Tìm exports nào được import (used exports)
+ * 2. Loại bỏ exports không được import (unused exports)
+ */
+
+function analyzeUsedExports(graph) {
+  const usedExports = new Map();
+  
+  // Scan tất cả imports
+  for (const [moduleName, moduleInfo] of Object.entries(graph)) {
+    const imports = moduleInfo.imports;
+    
+    for (const importName of imports) {
+      // Tìm module export importName này
+      for (const [depModule, depInfo] of Object.entries(graph)) {
+        if (depInfo.exports.includes(importName)) {
+          if (!usedExports.has(depModule)) {
+            usedExports.set(depModule, new Set());
+          }
+          usedExports.get(depModule).add(importName);
+        }
+      }
+    }
+  }
+  
+  return usedExports;
+}
+
+const usedExports = analyzeUsedExports(dependencyGraph);
+
+// Print tree-shaking results
+for (const [moduleName, moduleInfo] of Object.entries(dependencyGraph)) {
+  const allExports = moduleInfo.exports;
+  const used = usedExports.get(moduleName) || new Set();
+  const unused = allExports.filter(exp => !used.has(exp));
+  
+  if (unused.length > 0) {
+    console.log(`🌲 ${moduleName}: Remove unused exports: ${unused.join(', ')}`);
+  }
+}
+
+// Output:
+// 🌲 utils.js: Remove unused exports: setToken
+// (setToken exported nhưng không được import bởi module nào)
+
+// ===================================================
+// 🔍 DEPENDENCY GRAPH VISUALIZATION TOOLS
+// ===================================================
+
+/**
+ * 📊 WEBPACK BUNDLE ANALYZER
+ * 
+ * Visualize dependency graph & bundle sizes
+ */
+
+// Install
+// npm install --save-dev webpack-bundle-analyzer
+
+// webpack.config.js
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
+module.exports = {
+  plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',      // Generate HTML report
+      reportFilename: 'bundle-report.html',
+      openAnalyzer: true,          // Auto-open in browser
+      generateStatsFile: true,     // Generate stats.json
+      statsFilename: 'bundle-stats.json'
+    })
+  ]
+};
+
+// Run build
+// npm run build
+
+// Output:
+// ✅ bundle-report.html - Interactive treemap visualization
+//    - Xem size từng module
+//    - Xem dependencies giữa modules
+//    - Identify large modules (candidates for code splitting)
+
+/**
+ * 📊 VITE: rollup-plugin-visualizer
+ */
+
+// vite.config.ts
+import { visualizer } from 'rollup-plugin-visualizer';
+
+export default {
+  plugins: [
+    visualizer({
+      open: true,                  // Auto-open report
+      gzipSize: true,              // Show gzip sizes
+      brotliSize: true,            // Show brotli sizes
+      filename: 'bundle-analysis.html'
+    })
+  ]
+};
+
+/**
+ * 📊 NX: Dependency Graph
+ */
+
+// nx.json (Nx workspace)
+// Run command
+// npx nx graph
+
+// Output:
+// ✅ Interactive graph showing:
+//    - Project dependencies
+//    - Library dependencies
+//    - Affected projects (khi file thay đổi)
+
+// ===================================================
+// 💡 DEPENDENCY GRAPH BEST PRACTICES
+// ===================================================
+
+/**
+ * ✅ DO (NÊN):
+ * 
+ * 1. Tránh circular dependencies
+ *    - Refactor code để break cycles
+ *    - Dùng dependency injection thay vì direct imports
+ * 
+ * 2. Minimize dependencies
+ *    - Mỗi module nên có ít dependencies nhất có thể
+ *    - Tách large modules thành smaller, focused modules
+ * 
+ * 3. Shared modules cho common code
+ *    - utils.js, config.js → Shared by many modules
+ *    - Avoid code duplication
+ * 
+ * 4. Layer architecture
+ *    - UI Layer → Business Logic Layer → Data Layer
+ *    - Dependencies flow ONE DIRECTION (top → bottom)
+ * 
+ * 5. Analyze bundle regularly
+ *    - Run bundle analyzer mỗi sprint
+ *    - Track bundle size over time
+ *    - Set budget limits (main.js < 200 KB)
+ */
+
+/**
+ * ❌ DON'T (KHÔNG NÊN):
+ * 
+ * 1. Circular dependencies
+ *    moduleA → moduleB → moduleA ❌
+ * 
+ * 2. Deep dependency chains
+ *    A → B → C → D → E → F (quá sâu, hard to maintain)
+ * 
+ * 3. God modules (modules quá lớn)
+ *    utils.js with 100+ functions ❌
+ *    → Tách thành utils/math.js, utils/string.js, utils/date.js
+ * 
+ * 4. Barrel exports abuse
+ *    index.ts export tất cả → Bundle size lớn
+ *    → Import trực tiếp từ specific files
+ * 
+ * 5. Unused dependencies
+ *    Install library nhưng không dùng → Tăng node_modules size
+ *    → Regularly run `npm prune`, `depcheck`
+ */
+
+// ===================================================
+// 🎯 REAL-WORLD EXAMPLE: Trading App Dependency Graph
+// ===================================================
+
+/**
+ * 📊 TRADING APP STRUCTURE:
+ * 
+ *                        index.tsx (Entry)
+ *                             │
+ *          ┌──────────────────┼──────────────────┐
+ *          │                  │                  │
+ *       App.tsx          auth-provider.tsx   theme-provider.tsx
+ *          │                  │                  │
+ *    ┌─────┴─────┐       auth-api.ts        theme-config.ts
+ *    │           │            │
+ * Router.tsx  Layout.tsx  api-client.ts
+ *    │           │
+ *    │      ┌────┴────┐
+ *    │      │         │
+ * pages/  Header.tsx Sidebar.tsx
+ *    │      │
+ *    ├─ Dashboard.tsx
+ *    ├─ Trading.tsx
+ *    ├─ Portfolio.tsx
+ *    └─ Analytics.tsx
+ *         │
+ *    components/
+ *         ├─ StockChart.tsx
+ *         ├─ OrderForm.tsx
+ *         └─ PortfolioTable.tsx
+ *              │
+ *         utils/
+ *              ├─ format-currency.ts
+ *              ├─ calculate-profit.ts
+ *              └─ validate-order.ts
+ * 
+ * ✅ INSIGHTS:
+ * - utils/ → Shared by all components (high reusability)
+ * - api-client.ts → Shared by all API modules
+ * - pages/ → Lazy loaded (code splitting)
+ * - components/ → Can be code-split if heavy
+ * - No circular dependencies ✅
+ */
+
+// ===================================================
+// 📊 DEPENDENCY GRAPH METRICS
+// ===================================================
+
+/**
+ * 🎯 KEY METRICS TO TRACK:
+ * 
+ * 1. Module Count
+ *    - Total modules in project
+ *    - Trend: Should grow linearly with features
+ * 
+ * 2. Average Dependencies per Module
+ *    - Ideal: 2-5 dependencies per module
+ *    - Warning: >10 dependencies → Module too coupled
+ * 
+ * 3. Max Dependency Depth
+ *    - Ideal: <5 levels deep
+ *    - Warning: >7 levels → Hard to maintain
+ * 
+ * 4. Circular Dependencies
+ *    - Ideal: 0
+ *    - Warning: Any circular dependency → Refactor needed
+ * 
+ * 5. Shared Modules
+ *    - Track most-used modules (utils, config, api-client)
+ *    - Optimize these first (high impact)
+ * 
+ * 6. Bundle Size by Module
+ *    - Identify largest modules
+ *    - Candidates for code splitting
+ */
+
+// Example metrics output
+const metrics = {
+  totalModules: 45,
+  avgDependenciesPerModule: 3.2,
+  maxDepth: 6,
+  circularDependencies: 0,
+  topSharedModules: [
+    { name: 'utils/format-currency.ts', usedBy: 12 },
+    { name: 'api-client.ts', usedBy: 8 },
+    { name: 'theme-config.ts', usedBy: 6 }
+  ],
+  largestModules: [
+    { name: 'StockChart.tsx', size: 45000 },
+    { name: 'OrderForm.tsx', size: 38000 },
+    { name: 'PortfolioTable.tsx', size: 32000 }
+  ]
+};
+
+console.log('📊 Dependency Graph Metrics:', metrics);
+
+/**
+ * 💡 ACTIONABLE INSIGHTS:
+ * 
+ * 1. utils/format-currency.ts used by 12 modules
+ *    → Optimize this function (high impact)
+ *    → Consider memoization
+ * 
+ * 2. StockChart.tsx is 45KB
+ *    → Candidate for code splitting (lazy load)
+ *    → Consider using lightweight chart library
+ * 
+ * 3. avgDependenciesPerModule: 3.2 ✅
+ *    → Good! Modules are well-decoupled
+ * 
+ * 4. circularDependencies: 0 ✅
+ *    → Excellent! Clean architecture
+ */
+```
+
+---
+
+**📚 Phần 6: Caching Strategies (Chiến Lược Cache)**
+
+#### **💡 Caching Là Gì?**
+
+**Caching** là kỹ thuật **lưu trữ tạm thời** data/assets để **tái sử dụng** mà không cần fetch lại từ server. Trong frontend, caching giúp:
+- Giảm network requests → Nhanh hơn
+- Giảm server load → Tiết kiệm bandwidth
+- Offline support → PWA capabilities
+
+**🔥 Caching Strategies:**
+
+```typescript
+// ===================================================
+// 🗄️ CACHING LEVELS (Các Cấp Độ Cache)
+// ===================================================
+
+/**
+ * 1️⃣ BROWSER CACHE (HTTP Cache)
+ * 2️⃣ SERVICE WORKER CACHE (PWA Cache)
+ * 3️⃣ MEMORY CACHE (Runtime Cache)
+ * 4️⃣ LOCALSTORAGE/INDEXEDDB (Persistent Cache)
+ */
+
+// ===================================================
+// 1️⃣ BROWSER HTTP CACHE
+// ===================================================
+
+/**
+ * 🔐 CACHE-CONTROL HEADERS
+ * 
+ * Directives:
+ * - max-age=<seconds>: Cache thời gian tối đa
+ * - no-cache: Revalidate với server trước khi dùng
+ * - no-store: KHÔNG cache (sensitive data)
+ * - public: CDN có thể cache
+ * - private: Chỉ browser cache (không CDN)
+ * - immutable: File không bao giờ thay đổi
+ */
+
+// Nginx configuration (production)
+server {
+  location / {
+    root /var/www/html;
+
+    # 📄 HTML Files: Không cache (luôn fresh)
+    location ~* \.html$ {
+      add_header Cache-Control "no-cache, no-store, must-revalidate";
+      add_header Pragma "no-cache";
+      add_header Expires "0";
+    }
+
+    # 🎨 Static Assets với Content Hash: Cache vô thời hạn
+    location ~* \.(js|css)$ {
+      # File có hash (main.a3f8b2c1.js)
+      if ($request_filename ~* "\.([a-f0-9]{8})\.(js|css)$") {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        # immutable = Browser KHÔNG revalidate (tiết kiệm requests)
+      }
+    }
+
+    # 🖼️ Images: Cache 1 tháng
+    location ~* \.(jpg|jpeg|png|gif|svg|webp)$ {
+      add_header Cache-Control "public, max-age=2592000"; # 30 days
+    }
+
+    # 🔤 Fonts: Cache 1 năm
+    location ~* \.(woff|woff2|ttf|eot)$ {
+      add_header Cache-Control "public, max-age=31536000";
+      add_header Access-Control-Allow-Origin "*"; # CORS for fonts
+    }
+
+    # 📦 API Responses: Không cache hoặc cache ngắn
+    location /api/ {
+      add_header Cache-Control "no-cache"; # Revalidate mỗi lần
+      # Hoặc: Cache-Control "max-age=60" (cache 1 phút)
+    }
+  }
+}
+
+// ===================================================
+// 🎯 CACHE STRATEGIES (Chiến Lược Cache)
+// ===================================================
+
+/**
+ * 📋 CACHE FIRST (Cache trước, Network sau)
+ * 
+ * Use case: Static assets (JS, CSS, images)
+ * Flow:
+ * 1. Check cache → Có → Return từ cache
+ * 2. Không có → Fetch từ network → Save vào cache
+ */
+
+// Service Worker: Cache First Strategy
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then((cachedResponse) => {
+        if (cachedResponse) {
+          // ✅ Có trong cache → Return ngay
+          return cachedResponse;
+        }
+
+        // ❌ Không có → Fetch từ network
+        return fetch(event.request)
+          .then((networkResponse) => {
+            // Save vào cache cho lần sau
+            return caches.open('static-v1')
+              .then((cache) => {
+                cache.put(event.request, networkResponse.clone());
+                return networkResponse;
+              });
+          });
+      })
+  );
+});
+
+/**
+ * 🌐 NETWORK FIRST (Network trước, Cache fallback)
+ * 
+ * Use case: API data, dynamic content
+ * Flow:
+ * 1. Fetch từ network → Success → Update cache & return
+ * 2. Network fail → Return từ cache (stale data)
+ */
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    fetch(event.request)
+      .then((networkResponse) => {
+        // ✅ Network success → Update cache
+        return caches.open('api-v1')
+          .then((cache) => {
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
+          });
+      })
+      .catch(() => {
+        // ❌ Network fail → Fallback to cache
+        return caches.match(event.request);
+      })
+  );
+});
+
+/**
+ * 🔄 STALE WHILE REVALIDATE
+ * 
+ * Use case: Data cần fresh nhưng chấp nhận stale (user profile, settings)
+ * Flow:
+ * 1. Return từ cache ngay lập tức (stale data)
+ * 2. Background: Fetch từ network → Update cache
+ * 3. Lần sau user load → Thấy fresh data
+ */
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then((cachedResponse) => {
+        // 🔄 Background fetch để update cache
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            return caches.open('dynamic-v1')
+              .then((cache) => {
+                cache.put(event.request, networkResponse.clone());
+                return networkResponse;
+              });
+          });
+
+        // ✅ Return cache ngay lập tức (không chờ network)
+        return cachedResponse || fetchPromise;
+      })
+  );
+});
+
+/**
+ * 📡 NETWORK ONLY (Không cache)
+ * 
+ * Use case: Sensitive data (payment, private info)
+ * Flow:
+ * 1. Always fetch từ network
+ * 2. KHÔNG cache
+ */
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.url.includes('/api/payment')) {
+    // ❌ Payment data → KHÔNG cache
+    event.respondWith(fetch(event.request));
+  }
+});
+
+/**
+ * 💾 CACHE ONLY (Offline-first)
+ * 
+ * Use case: PWA app shell, critical assets
+ * Flow:
+ * 1. Only use cache
+ * 2. Không fetch từ network
+ */
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.url.includes('/app-shell')) {
+    // ✅ App shell luôn từ cache (offline support)
+    event.respondWith(caches.match(event.request));
+  }
+});
+
+// ===================================================
+// 2️⃣ SERVICE WORKER CACHE (PWA)
+// ===================================================
+
+/**
+ * 📱 PWA CACHING STRATEGIES
+ * 
+ * Service Worker = Proxy giữa browser và network
+ * → Intercept requests và control caching
+ */
+
+// service-worker.js
+
+const CACHE_VERSION = 'v1.0.0';
+const STATIC_CACHE = `static-${CACHE_VERSION}`;
+const API_CACHE = `api-${CACHE_VERSION}`;
+const IMAGE_CACHE = `images-${CACHE_VERSION}`;
+
+// 📦 Files to cache on install
+const STATIC_ASSETS = [
+  '/',
+  '/index.html',
+  '/main.a3f8b2c1.js',
+  '/vendor.9d4e7f1a.js',
+  '/styles.c4d9e2f3.css',
+  '/logo.svg',
+  '/offline.html' // Fallback page khi offline
+];
+
+// 🔧 Install event: Cache static assets
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(STATIC_CACHE)
+      .then((cache) => {
+        console.log('📦 Caching static assets...');
+        return cache.addAll(STATIC_ASSETS);
+      })
+      .then(() => {
+        // ✅ Skip waiting → Activate ngay lập tức
+        return self.skipWaiting();
+      })
+  );
+});
+
+// 🗑️ Activate event: Xóa old caches
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames
+            .filter((name) => {
+              // Xóa caches không phải version hiện tại
+              return name.startsWith('static-') && name !== STATIC_CACHE ||
+                     name.startsWith('api-') && name !== API_CACHE ||
+                     name.startsWith('images-') && name !== IMAGE_CACHE;
+            })
+            .map((name) => {
+              console.log('🗑️ Deleting old cache:', name);
+              return caches.delete(name);
+            })
+        );
+      })
+      .then(() => {
+        // ✅ Claim clients → SW control ngay
+        return self.clients.claim();
+      })
+  );
+});
+
+// 🌐 Fetch event: Route requests to caching strategies
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // 📄 HTML: Network first
+  if (request.headers.get('accept')?.includes('text/html')) {
+    event.respondWith(networkFirst(request, STATIC_CACHE));
+  }
+  
+  // 📦 Static assets (JS, CSS): Cache first
+  else if (url.pathname.match(/\.(js|css)$/)) {
+    event.respondWith(cacheFirst(request, STATIC_CACHE));
+  }
+  
+  // 🖼️ Images: Cache first với fallback
+  else if (url.pathname.match(/\.(png|jpg|jpeg|gif|svg|webp)$/)) {
+    event.respondWith(cacheFirst(request, IMAGE_CACHE));
+  }
+  
+  // 📡 API: Stale while revalidate
+  else if (url.pathname.startsWith('/api/')) {
+    event.respondWith(staleWhileRevalidate(request, API_CACHE));
+  }
+  
+  // 🌐 Default: Network first
+  else {
+    event.respondWith(networkFirst(request, STATIC_CACHE));
+  }
+});
+
+// Helper functions
+async function cacheFirst(request, cacheName) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+
+  try {
+    const response = await fetch(request);
+    const cache = await caches.open(cacheName);
+    cache.put(request, response.clone());
+    return response;
+  } catch (error) {
+    // Fallback to offline page
+    return caches.match('/offline.html');
+  }
+}
+
+async function networkFirst(request, cacheName) {
+  try {
+    const response = await fetch(request);
+    const cache = await caches.open(cacheName);
+    cache.put(request, response.clone());
+    return response;
+  } catch (error) {
+    const cached = await caches.match(request);
+    return cached || caches.match('/offline.html');
+  }
+}
+
+async function staleWhileRevalidate(request, cacheName) {
+  const cached = await caches.match(request);
+  
+  const fetchPromise = fetch(request).then((response) => {
+    const cache = caches.open(cacheName);
+    cache.then((c) => c.put(request, response.clone()));
+    return response;
+  });
+
+  return cached || fetchPromise;
+}
+
+// ===================================================
+// 3️⃣ MEMORY CACHE (Runtime Caching)
+// ===================================================
+
+/**
+ * 💾 IN-MEMORY CACHING
+ * 
+ * Cache trong RAM (JavaScript variables)
+ * → Cực nhanh nhưng mất khi refresh page
+ */
+
+// Simple memory cache implementation
+class MemoryCache {
+  private cache = new Map<string, { data: any; expiry: number }>();
+
+  set(key: string, data: any, ttl = 60000) {
+    // ttl = time to live (ms)
+    const expiry = Date.now() + ttl;
+    this.cache.set(key, { data, expiry });
+  }
+
+  get(key: string) {
+    const item = this.cache.get(key);
+    if (!item) return null;
+
+    // Check expiry
+    if (Date.now() > item.expiry) {
+      this.cache.delete(key); // Expired → Remove
+      return null;
+    }
+
+    return item.data;
+  }
+
+  clear() {
+    this.cache.clear();
+  }
+}
+
+// Usage
+const apiCache = new MemoryCache();
+
+async function fetchUserData(userId: string) {
+  // Check cache first
+  const cached = apiCache.get(`user-${userId}`);
+  if (cached) {
+    console.log('✅ From memory cache');
+    return cached;
+  }
+
+  // Fetch từ API
+  const response = await fetch(`/api/users/${userId}`);
+  const data = await response.json();
+
+  // Save to cache (TTL: 5 phút)
+  apiCache.set(`user-${userId}`, data, 5 * 60 * 1000);
+
+  return data;
+}
+
+// ===================================================
+// 4️⃣ LOCALSTORAGE / INDEXEDDB CACHE
+// ===================================================
+
+/**
+ * 💾 PERSISTENT CACHE
+ * 
+ * Cache trong disk (persistent across page reloads)
+ * - LocalStorage: 5-10 MB, sync API (slow)
+ * - IndexedDB: Unlimited, async API (fast)
+ */
+
+// LocalStorage Cache (simple key-value)
+class LocalStorageCache {
+  set(key: string, data: any, ttl = 3600000) {
+    const item = {
+      data,
+      expiry: Date.now() + ttl
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+  }
+
+  get(key: string) {
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) return null;
+
+    const item = JSON.parse(itemStr);
+
+    // Check expiry
+    if (Date.now() > item.expiry) {
+      localStorage.removeItem(key);
+      return null;
+    }
+
+    return item.data;
+  }
+}
+
+// IndexedDB Cache (for large data)
+class IndexedDBCache {
+  private dbName = 'app-cache';
+  private storeName = 'api-responses';
+
+  async open() {
+    return new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, 1);
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          const store = db.createObjectStore(this.storeName, { keyPath: 'key' });
+          store.createIndex('expiry', 'expiry', { unique: false });
+        }
+      };
+    });
+  }
+
+  async set(key: string, data: any, ttl = 3600000) {
+    const db = await this.open();
+    const transaction = db.transaction([this.storeName], 'readwrite');
+    const store = transaction.objectStore(this.storeName);
+
+    const item = {
+      key,
+      data,
+      expiry: Date.now() + ttl
+    };
+
+    store.put(item);
+  }
+
+  async get(key: string) {
+    const db = await this.open();
+    const transaction = db.transaction([this.storeName], 'readonly');
+    const store = transaction.objectStore(this.storeName);
+
+    return new Promise((resolve) => {
+      const request = store.get(key);
+      request.onsuccess = () => {
+        const item = request.result;
+        if (!item) return resolve(null);
+
+        // Check expiry
+        if (Date.now() > item.expiry) {
+          this.delete(key);
+          return resolve(null);
+        }
+
+        resolve(item.data);
+      };
+    });
+  }
+
+  async delete(key: string) {
+    const db = await this.open();
+    const transaction = db.transaction([this.storeName], 'readwrite');
+    const store = transaction.objectStore(this.storeName);
+    store.delete(key);
+  }
+}
+
+// Usage
+const idbCache = new IndexedDBCache();
+
+async function fetchLargeData() {
+  const cached = await idbCache.get('large-dataset');
+  if (cached) return cached;
+
+  const response = await fetch('/api/large-dataset');
+  const data = await response.json();
+
+  await idbCache.set('large-dataset', data, 24 * 60 * 60 * 1000); // 24h
+
+  return data;
+}
+```
 
 ---
 
@@ -2144,5 +3282,1634 @@ export default function Analytics() {
      // Fallback logic
    }
    ```
+
+---
+
+**📚 Phần 7: Dev vs Prod Build (Development vs Production)**
+
+#### **💡 Dev vs Prod Build - Khác Biệt Gì?**
+
+**Development Build** và **Production Build** có mục đích và tối ưu khác nhau hoàn toàn:
+
+```typescript
+// ===================================================
+// 🔧 DEVELOPMENT BUILD (Build Phát Triển)
+// ===================================================
+
+/**
+ * 🎯 MỤC ĐÍCH: Developer Experience (DX)
+ * 
+ * ✅ FEATURES:
+ * - Fast rebuild (nhanh như chớp)
+ * - Source maps (debug dễ dàng)
+ * - Hot Module Replacement (HMR - update không reload page)
+ * - Detailed error messages (lỗi chi tiết)
+ * - No minification (code dễ đọc)
+ * - No optimization (build nhanh)
+ * 
+ * ❌ KHÔNG DÙNG:
+ * - Minification (giữ code readable)
+ * - Tree-shaking (skip để build nhanh)
+ * - Image optimization (skip để build nhanh)
+ * - Code splitting (optional)
+ */
+
+// webpack.config.dev.js
+module.exports = {
+  mode: 'development', // ✅ Development mode
+
+  // 🗺️ Source maps: Detailed, inline
+  devtool: 'eval-source-map', // Fast rebuild, accurate source maps
+
+  // 🚫 NO minification
+  optimization: {
+    minimize: false, // Giữ code readable để debug
+    usedExports: false, // Skip tree-shaking
+    splitChunks: false // Skip code splitting
+  },
+
+  // 📦 Output: Readable code
+  output: {
+    filename: '[name].js', // No hash (không cần cache)
+    path: path.resolve(__dirname, 'dist'),
+    pathinfo: true // Include comments về modules
+  },
+
+  // 🔥 Dev Server: Hot reload
+  devServer: {
+    hot: true, // ✅ Hot Module Replacement
+    port: 3000,
+    open: true, // Auto-open browser
+    historyApiFallback: true, // SPA routing support
+    
+    // 🔄 Watch files và auto-reload
+    watchFiles: ['src/**/*'],
+    
+    // ⚡ Fast refresh (React)
+    liveReload: true
+  },
+
+  // 🔧 Plugins: Development tools
+  plugins: [
+    // ❌ NO minification plugins
+    // ❌ NO image optimization
+    
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('development'),
+      __DEV__: true // Enable development-only code
+    }),
+
+    // 🔥 Hot Module Replacement
+    new webpack.HotModuleReplacementPlugin(),
+
+    // 📊 Bundle analyzer (optional)
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'disabled' // Chỉ enable khi cần
+    })
+  ],
+
+  // 📊 Stats: Detailed output
+  stats: {
+    colors: true,
+    modules: true,
+    reasons: true, // Why modules were included
+    errorDetails: true,
+    chunks: true,
+    chunkModules: true
+  },
+
+  // ⚡ Performance: NO limits (accept large bundles)
+  performance: {
+    hints: false // Không warning về bundle size
+  }
+};
+
+// vite.config.dev.ts (Vite - Modern Bundler)
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  mode: 'development',
+
+  // ⚡ Dev Server: Native ESM (SIÊU NHANH!)
+  server: {
+    port: 3000,
+    open: true,
+    hmr: true, // Hot Module Replacement
+    
+    // 🚀 Vite dùng esbuild (Go) để transpile → 100x nhanh hơn Webpack
+  },
+
+  // 🗺️ Source maps
+  build: {
+    sourcemap: true,
+    minify: false // NO minification
+  },
+
+  // 🔧 Optimizations: DISABLED để build nhanh
+  optimizeDeps: {
+    force: false // Cache dependencies
+  }
+});
+
+// ===================================================
+// 🏭 PRODUCTION BUILD (Build Sản Xuất)
+// ===================================================
+
+/**
+ * 🎯 MỤC ĐÍCH: Performance & Size Optimization
+ * 
+ * ✅ FEATURES:
+ * - Minification (code nhỏ nhất)
+ * - Tree-shaking (loại dead code)
+ * - Code splitting (lazy load)
+ * - Image optimization (compress images)
+ * - Content hashing (cache busting)
+ * - Gzip/Brotli compression
+ * - Remove console.log, debugger
+ * - Source maps (separate .map files hoặc hidden)
+ * 
+ * ❌ KHÔNG DÙNG:
+ * - Detailed error messages (compact errors)
+ * - Development-only code (__DEV__ blocks)
+ * - HMR (không cần trong production)
+ */
+
+// webpack.config.prod.js
+module.exports = {
+  mode: 'production', // ✅ Production mode
+
+  // 🗺️ Source maps: Separate files (hidden)
+  devtool: 'source-map', // hoặc 'hidden-source-map'
+
+  // 🗜️ FULL minification + optimization
+  optimization: {
+    minimize: true, // ✅ Minify code
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true, // ❌ Remove console.log
+            drop_debugger: true, // ❌ Remove debugger
+            pure_funcs: ['console.info', 'console.debug'], // Remove specific logs
+            passes: 2 // Multiple passes cho better compression
+          },
+          mangle: {
+            safari10: true // Fix Safari 10 bugs
+          },
+          output: {
+            comments: false, // Remove comments
+            ascii_only: true // ASCII only (smaller size)
+          }
+        },
+        extractComments: false // Không tạo .LICENSE.txt files
+      }),
+      
+      // 🎨 CSS minification
+      new CssMinimizerPlugin()
+    ],
+
+    // 🌲 Tree-shaking
+    usedExports: true, // Mark unused exports
+    sideEffects: true, // Respect package.json sideEffects
+
+    // ✂️ Code splitting
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        // 📦 Vendor chunk (React, libraries)
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          priority: 10,
+          reuseExistingChunk: true
+        },
+        // 🎨 CSS chunk
+        styles: {
+          name: 'styles',
+          type: 'css/mini-extract',
+          chunks: 'all',
+          enforce: true
+        }
+      }
+    },
+
+    // 🔐 Module IDs: Deterministic (consistent hashes)
+    moduleIds: 'deterministic',
+    runtimeChunk: 'single' // Runtime code → separate chunk
+  },
+
+  // 📦 Output: Minified + Hashed
+  output: {
+    filename: '[name].[contenthash:8].js',
+    chunkFilename: '[name].[contenthash:8].chunk.js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
+    clean: true, // Clean dist/ before build
+    pathinfo: false // NO comments (smaller size)
+  },
+
+  // 🔧 Plugins: Production optimizations
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      __DEV__: false // Disable development code
+    }),
+
+    // 🗜️ Gzip/Brotli compression
+    new CompressionPlugin({
+      algorithm: 'gzip',
+      test: /\.(js|css|html|svg)$/,
+      threshold: 10240, // Only compress files > 10KB
+      minRatio: 0.8
+    }),
+    
+    new CompressionPlugin({
+      algorithm: 'brotliCompress',
+      test: /\.(js|css|html|svg)$/,
+      compressionOptions: { level: 11 },
+      threshold: 10240,
+      minRatio: 0.8,
+      filename: '[path][base].br'
+    }),
+
+    // 🖼️ Image optimization
+    new ImageMinimizerPlugin({
+      minimizer: {
+        implementation: ImageMinimizerPlugin.imageminMinify,
+        options: {
+          plugins: [
+            ['gifsicle', { interlaced: true }],
+            ['jpegtran', { progressive: true }],
+            ['optipng', { optimizationLevel: 5 }],
+            ['svgo', { plugins: [{ removeViewBox: false }] }]
+          ]
+        }
+      }
+    }),
+
+    // 📊 Bundle analyzer (generate report)
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: 'bundle-report.html',
+      openAnalyzer: false
+    }),
+
+    // 📄 HTML injection với minification
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true
+      }
+    }),
+
+    // 🎨 Extract CSS to separate files
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash:8].css',
+      chunkFilename: '[name].[contenthash:8].chunk.css'
+    })
+  ],
+
+  // 📊 Stats: Minimal output
+  stats: {
+    colors: true,
+    modules: false, // Hide modules list
+    children: false,
+    chunks: false,
+    chunkModules: false,
+    reasons: false,
+    
+    // Show warnings và errors only
+    warnings: true,
+    errors: true,
+    errorDetails: true
+  },
+
+  // ⚡ Performance budgets
+  performance: {
+    hints: 'error', // Fail build nếu vượt budget
+    maxEntrypointSize: 250000, // 250 KB
+    maxAssetSize: 250000, // 250 KB per file
+    assetFilter: (assetFilename) => {
+      // Only check JS/CSS files
+      return /\.(js|css)$/.test(assetFilename);
+    }
+  }
+};
+
+// vite.config.prod.ts
+import { defineConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+import viteImagemin from 'vite-plugin-imagemin';
+
+export default defineConfig({
+  mode: 'production',
+
+  build: {
+    // 🗜️ Minification
+    minify: 'esbuild', // esbuild (fast) hoặc 'terser' (smaller)
+    
+    // 🌲 Tree-shaking
+    rollupOptions: {
+      output: {
+        // ✂️ Manual chunks
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-utils': ['lodash-es', 'date-fns']
+        }
+      }
+    },
+
+    // 🗺️ Source maps
+    sourcemap: true, // hoặc 'hidden'
+
+    // 📦 Output với content hash
+    assetsInlineLimit: 4096, // Inline assets < 4KB
+    
+    // ⚡ Performance
+    chunkSizeWarningLimit: 1000, // Warning nếu chunk > 1MB
+    
+    // 🎯 Target browsers
+    target: 'es2015', // Modern browsers
+    
+    // 📊 Report size
+    reportCompressedSize: true
+  },
+
+  // 🔧 Plugins
+  plugins: [
+    // 📊 Bundle analyzer
+    visualizer({
+      open: true,
+      gzipSize: true,
+      brotliSize: true
+    }),
+
+    // 🖼️ Image optimization
+    viteImagemin({
+      gifsicle: { optimizationLevel: 7 },
+      optipng: { optimizationLevel: 7 },
+      mozjpeg: { quality: 80 },
+      svgo: {
+        plugins: [
+          { removeViewBox: false },
+          { removeEmptyAttrs: false }
+        ]
+      }
+    })
+  ]
+});
+
+// ===================================================
+// 📊 COMPARISON: Dev vs Prod Build
+// ===================================================
+
+/**
+ * ┌──────────────────────────────────────────────────────────┐
+ * │         DEV BUILD vs PROD BUILD COMPARISON               │
+ * ├──────────────────────────────────────────────────────────┤
+ * │                                                          │
+ * │  📊 METRIC             DEV           PROD                │
+ * │  ─────────────────────────────────────────────────       │
+ * │  Build Time           3 seconds     45 seconds           │
+ * │  Bundle Size          2.5 MB        800 KB               │
+ * │  Gzip Size            N/A           240 KB               │
+ * │  Source Maps          Inline        Separate (.map)      │
+ * │  Minified             ❌ No         ✅ Yes               │
+ * │  Tree-shaking         ❌ No         ✅ Yes               │
+ * │  Code Splitting       ❌ No         ✅ Yes               │
+ * │  HMR                  ✅ Yes        ❌ No                │
+ * │  console.log          ✅ Keep       ❌ Remove            │
+ * │  Error Details        ✅ Verbose    ⚠️ Minimal           │
+ * │  Content Hash         ❌ No         ✅ Yes               │
+ * │  Image Optimization   ❌ No         ✅ Yes               │
+ * │  CSS Extraction       ❌ No         ✅ Yes               │
+ * │  Rebuild Speed        ⚡ 100ms      ❌ N/A               │
+ * │                                                          │
+ * │  🎯 PRIORITY:                                            │
+ * │  DEV  → Developer Experience (DX) - Speed, Debug        │
+ * │  PROD → User Experience (UX) - Size, Performance        │
+ * └──────────────────────────────────────────────────────────┘
+ */
+
+// ===================================================
+// 🔧 CONDITIONAL CODE (Dev-only / Prod-only)
+// ===================================================
+
+// Development-only code
+if (__DEV__) {
+  // ✅ Chỉ chạy trong development
+  console.log('🔧 Development mode enabled');
+  
+  // Performance monitoring
+  if (typeof window !== 'undefined') {
+    window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.__REACT_DEVTOOLS_GLOBAL_HOOK__ || {};
+  }
+}
+
+// Production-only code
+if (process.env.NODE_ENV === 'production') {
+  // ✅ Chỉ chạy trong production
+  
+  // Sentry error tracking
+  Sentry.init({
+    dsn: 'https://xxx@sentry.io/xxx',
+    environment: 'production'
+  });
+  
+  // Google Analytics
+  gtag('config', 'GA-TRACKING-ID');
+}
+
+// ===================================================
+// 📦 ENVIRONMENT VARIABLES
+// ===================================================
+
+// .env.development
+/*
+NODE_ENV=development
+REACT_APP_API_URL=http://localhost:8000
+REACT_APP_ENABLE_MOCKS=true
+REACT_APP_LOG_LEVEL=debug
+*/
+
+// .env.production
+/*
+NODE_ENV=production
+REACT_APP_API_URL=https://api.production.com
+REACT_APP_ENABLE_MOCKS=false
+REACT_APP_LOG_LEVEL=error
+*/
+
+// Usage trong code
+const API_URL = process.env.REACT_APP_API_URL;
+const ENABLE_MOCKS = process.env.REACT_APP_ENABLE_MOCKS === 'true';
+
+if (ENABLE_MOCKS) {
+  // ✅ Development: Enable MSW (Mock Service Worker)
+  if (typeof window !== 'undefined') {
+    const { worker } = require('./mocks/browser');
+    worker.start();
+  }
+}
+
+// ===================================================
+// 🚀 BUILD SCRIPTS (package.json)
+// ===================================================
+
+// package.json
+{
+  "scripts": {
+    // 🔧 Development
+    "dev": "vite",                              // Dev server với HMR
+    "dev:debug": "vite --debug",                // Dev với debug logs
+    
+    // 🏭 Production
+    "build": "vite build",                      // Production build
+    "build:analyze": "vite build --mode analyze", // Build + bundle analyzer
+    "build:staging": "vite build --mode staging", // Staging build
+    
+    // 🧪 Testing builds
+    "build:test": "cross-env NODE_ENV=test vite build",
+    
+    // 📊 Preview production build
+    "preview": "vite preview",                  // Serve production build locally
+    
+    // 🔍 Type checking
+    "type-check": "tsc --noEmit",               // Check types (không emit files)
+    
+    // 📏 Linting
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    
+    // 🎨 Formatting
+    "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
+    
+    // ✅ Pre-build checks
+    "prebuild": "npm run type-check && npm run lint",
+    
+    // 🔬 Bundle size check
+    "size": "size-limit",
+    
+    // 🧹 Clean
+    "clean": "rimraf dist"
+  }
+}
+
+// ===================================================
+// ⚡ BUILD PERFORMANCE OPTIMIZATION
+// ===================================================
+
+/**
+ * 🚀 TIPS ĐỂ BUILD NHANH HƠN:
+ * 
+ * 1️⃣ USE CACHE:
+ */
+
+// webpack.config.js
+module.exports = {
+  cache: {
+    type: 'filesystem', // Cache to disk
+    buildDependencies: {
+      config: [__filename] // Invalidate cache khi config thay đổi
+    }
+  },
+
+  // 📦 Persistent cache cho loaders
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true, // ✅ Cache transpiled files
+              cacheCompression: false // Faster cache write
+            }
+          }
+        ]
+      }
+    ]
+  }
+};
+
+/**
+ * 2️⃣ PARALLEL BUILD:
+ */
+
+// webpack.config.js
+const TerserPlugin = require('terser-webpack-plugin');
+
+module.exports = {
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        parallel: true, // ✅ Use multiple CPUs
+        terserOptions: { /* ... */ }
+      })
+    ]
+  }
+};
+
+/**
+ * 3️⃣ SCOPE HOISTING:
+ */
+
+// webpack.config.js
+module.exports = {
+  optimization: {
+    concatenateModules: true, // ✅ Merge modules → smaller bundle
+    providedExports: true,
+    usedExports: true
+  }
+};
+
+/**
+ * 4️⃣ USE ESBUILD (SIÊU NHANH):
+ */
+
+// vite.config.ts
+export default {
+  build: {
+    minify: 'esbuild', // ✅ esbuild (Go) = 100x nhanh hơn Terser
+  },
+  
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'es2020' // Modern browsers only
+    }
+  }
+};
+
+/**
+ * 5️⃣ EXCLUDE NODE_MODULES FROM BABEL:
+ */
+
+// babel.config.js
+module.exports = {
+  exclude: [
+    /node_modules/, // ✅ Không transpile node_modules
+    /\.min\.js$/    // Skip minified files
+  ]
+};
+```
+
+---
+
+**📚 Phần 8: Runtime Performance (Hiệu Năng Runtime)**
+
+#### **💡 Runtime Performance - Tối Ưu Khi Chạy**
+
+**Runtime Performance** là hiệu năng khi app đang chạy trong browser. Khác với build optimization (tối ưu khi build), runtime optimization tập trung vào:
+- JavaScript execution speed
+- Rendering performance
+- Memory usage
+- Network requests
+
+```typescript
+// ===================================================
+// ⚡ JAVASCRIPT PERFORMANCE OPTIMIZATION
+// ===================================================
+
+/**
+ * 1️⃣ AVOID BLOCKING THE MAIN THREAD
+ * 
+ * JavaScript là single-threaded → Heavy computation block UI
+ */
+
+// ❌ BAD: Sync heavy computation (Block UI)
+function processLargeData(data: number[]) {
+  let result = 0;
+  for (let i = 0; i < data.length; i++) {
+    result += Math.sqrt(data[i]) * Math.log(data[i]); // Heavy math
+  }
+  return result;
+}
+
+// Main thread BLOCKED → UI frozen! ❌
+const result = processLargeData(Array(10_000_000).fill(100));
+
+// ✅ GOOD: Web Worker (Non-blocking)
+// worker.ts
+self.onmessage = (e) => {
+  const data = e.data;
+  let result = 0;
+  
+  for (let i = 0; i < data.length; i++) {
+    result += Math.sqrt(data[i]) * Math.log(data[i]);
+  }
+  
+  self.postMessage(result);
+};
+
+// main.ts
+const worker = new Worker('worker.ts');
+
+worker.postMessage(Array(10_000_000).fill(100));
+
+worker.onmessage = (e) => {
+  console.log('Result:', e.data);
+  // ✅ UI KHÔNG bị block!
+};
+
+/**
+ * 2️⃣ DEBOUNCE & THROTTLE (Giảm số lần gọi function)
+ */
+
+// ❌ BAD: Call API mỗi keystroke (quá nhiều requests!)
+function handleSearch(query: string) {
+  fetch(`/api/search?q=${query}`); // ❌ Gọi mỗi lần type
+}
+
+input.addEventListener('keyup', (e) => {
+  handleSearch(e.target.value); // Type "hello" → 5 API calls! ❌
+});
+
+// ✅ GOOD: Debounce (Chờ user ngừng typing)
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: NodeJS.Timeout;
+  
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+}
+
+const debouncedSearch = debounce((query: string) => {
+  fetch(`/api/search?q=${query}`); // ✅ Chỉ gọi khi user NGỪNG type 300ms
+}, 300);
+
+input.addEventListener('keyup', (e) => {
+  debouncedSearch(e.target.value); // Type "hello" → 1 API call! ✅
+});
+
+// ✅ Throttle: Giới hạn số lần gọi trong khoảng thời gian
+function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle: boolean;
+  
+  return (...args: Parameters<T>) => {
+    if (!inThrottle) {
+      func(...args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+}
+
+// Use case: Scroll event (fire too many times)
+const throttledScroll = throttle(() => {
+  console.log('Scrolling...'); // ✅ Chỉ log MAX 1 lần / 100ms
+}, 100);
+
+window.addEventListener('scroll', throttledScroll);
+
+/**
+ * 3️⃣ MEMOIZATION (Cache kết quả tính toán)
+ */
+
+// ❌ BAD: Recalculate mỗi lần (slow!)
+function fibonacci(n: number): number {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2); // ❌ Exponential time: O(2^n)
+}
+
+console.log(fibonacci(40)); // Takes 2 seconds! ❌
+
+// ✅ GOOD: Memoization (cache results)
+function memoize<T extends (...args: any[]) => any>(func: T): T {
+  const cache = new Map<string, ReturnType<T>>();
+  
+  return ((...args: Parameters<T>) => {
+    const key = JSON.stringify(args);
+    
+    if (cache.has(key)) {
+      return cache.get(key)!; // ✅ Return from cache
+    }
+    
+    const result = func(...args);
+    cache.set(key, result);
+    return result;
+  }) as T;
+}
+
+const fibonacciMemo = memoize((n: number): number => {
+  if (n <= 1) return n;
+  return fibonacciMemo(n - 1) + fibonacciMemo(n - 2);
+});
+
+console.log(fibonacciMemo(40)); // Takes 0.1ms! ✅
+
+/**
+ * 4️⃣ LAZY EVALUATION (Chỉ tính khi cần)
+ */
+
+// ❌ BAD: Tính TẤT CẢ ngay lập tức
+const allData = [1, 2, 3, /* ...1 million items */ 1_000_000]
+  .map(x => x * 2)        // ❌ Process 1M items
+  .filter(x => x > 100)   // ❌ Filter 1M items
+  .slice(0, 10);          // Chỉ lấy 10 items → Lãng phí! ❌
+
+// ✅ GOOD: Generator (Lazy evaluation)
+function* lazyMap<T, U>(
+  iterable: Iterable<T>,
+  mapper: (item: T) => U
+): Generator<U> {
+  for (const item of iterable) {
+    yield mapper(item);
+  }
+}
+
+function* lazyFilter<T>(
+  iterable: Iterable<T>,
+  predicate: (item: T) => boolean
+): Generator<T> {
+  for (const item of iterable) {
+    if (predicate(item)) {
+      yield item;
+    }
+  }
+}
+
+function* range(start: number, end: number): Generator<number> {
+  for (let i = start; i < end; i++) {
+    yield i;
+  }
+}
+
+// ✅ Chỉ process 10 items cần thiết!
+const lazyData = lazyFilter(
+  lazyMap(range(1, 1_000_000), x => x * 2),
+  x => x > 100
+);
+
+// Take first 10
+const result = [];
+for (const item of lazyData) {
+  result.push(item);
+  if (result.length === 10) break; // ✅ Stop early!
+}
+
+/**
+ * 5️⃣ VIRTUALIZATION (Render chỉ items visible)
+ */
+
+// ❌ BAD: Render 10,000 items (DOM HUGE!)
+function renderList(items: string[]) {
+  const ul = document.createElement('ul');
+  
+  items.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    ul.appendChild(li); // ❌ 10,000 DOM nodes! Slow!
+  });
+  
+  document.body.appendChild(ul);
+}
+
+renderList(Array(10_000).fill('Item')); // ❌ Page frozen!
+
+// ✅ GOOD: Virtual scrolling (chỉ render visible items)
+// React Virtual / react-window
+import { FixedSizeList } from 'react-window';
+
+function VirtualList({ items }: { items: string[] }) {
+  return (
+    <FixedSizeList
+      height={600}        // Container height
+      itemCount={items.length}  // Total items: 10,000
+      itemSize={35}       // Each item height
+      width="100%"
+    >
+      {({ index, style }) => (
+        <div style={style}>
+          {items[index]}  {/* ✅ Only render ~20 visible items */}
+        </div>
+      )}
+    </FixedSizeList>
+  );
+}
+
+// ✅ Render 20 items instead of 10,000 → 500x faster!
+
+/**
+ * 6️⃣ AVOID MEMORY LEAKS
+ */
+
+// ❌ BAD: Event listener không remove (memory leak!)
+class Component {
+  constructor() {
+    window.addEventListener('resize', this.handleResize);
+    // ❌ Không remove listener → Component unmount nhưng listener còn!
+  }
+
+  handleResize = () => {
+    console.log('Resizing...');
+  };
+}
+
+// ✅ GOOD: Remove listener khi unmount
+class ComponentFixed {
+  constructor() {
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  handleResize = () => {
+    console.log('Resizing...');
+  };
+
+  destroy() {
+    window.removeEventListener('resize', this.handleResize); // ✅ Cleanup!
+  }
+}
+
+// React: useEffect cleanup
+function MyComponent() {
+  useEffect(() => {
+    const handleResize = () => console.log('Resizing...');
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize); // ✅ Cleanup!
+    };
+  }, []);
+}
+
+/**
+ * 7️⃣ REQUEST ANIMATION FRAME (Smooth animations)
+ */
+
+// ❌ BAD: setTimeout cho animations (janky!)
+function animate() {
+  element.style.left = position + 'px';
+  position += 1;
+  
+  setTimeout(animate, 16); // ❌ Không sync với browser refresh rate
+}
+
+// ✅ GOOD: requestAnimationFrame (60 FPS)
+function animateRAF() {
+  element.style.left = position + 'px';
+  position += 1;
+  
+  requestAnimationFrame(animateRAF); // ✅ Sync với browser (smooth!)
+}
+
+requestAnimationFrame(animateRAF);
+
+// ===================================================
+// 🎨 RENDERING PERFORMANCE
+// ===================================================
+
+/**
+ * 1️⃣ AVOID LAYOUT THRASHING (Reflow/Repaint)
+ */
+
+// ❌ BAD: Read-Write-Read-Write (forced reflows!)
+function updateElements(elements: HTMLElement[]) {
+  elements.forEach(el => {
+    const height = el.offsetHeight; // ❌ READ (trigger reflow)
+    el.style.height = height + 10 + 'px'; // ❌ WRITE (invalidate layout)
+    // → Browser phải reflow mỗi iteration! Slow!
+  });
+}
+
+// ✅ GOOD: Batch reads, then batch writes
+function updateElementsOptimized(elements: HTMLElement[]) {
+  // Phase 1: Read tất cả (1 reflow duy nhất)
+  const heights = elements.map(el => el.offsetHeight);
+  
+  // Phase 2: Write tất cả (1 repaint duy nhất)
+  elements.forEach((el, i) => {
+    el.style.height = heights[i] + 10 + 'px';
+  });
+  
+  // ✅ Chỉ 1 reflow + 1 repaint (thay vì N reflows!)
+}
+
+/**
+ * 2️⃣ USE CSS TRANSFORMS (GPU-accelerated)
+ */
+
+// ❌ BAD: Animate với top/left (trigger layout)
+element.style.top = '100px'; // ❌ Layout + Paint + Composite
+element.style.left = '200px';
+
+// ✅ GOOD: Animate với transform (chỉ composite)
+element.style.transform = 'translate(200px, 100px)'; // ✅ Composite only (GPU)
+
+// ===================================================
+// 💾 MEMORY OPTIMIZATION
+// ===================================================
+
+/**
+ * 1️⃣ AVOID CREATING OBJECTS IN LOOPS
+ */
+
+// ❌ BAD: Create new object mỗi iteration
+function processData(items: any[]) {
+  items.forEach(item => {
+    const config = { /* ... */ }; // ❌ New object mỗi lần!
+    doSomething(item, config);
+  });
+}
+
+// ✅ GOOD: Reuse object
+function processDataOptimized(items: any[]) {
+  const config = { /* ... */ }; // ✅ Create once
+  
+  items.forEach(item => {
+    doSomething(item, config); // Reuse config
+  });
+}
+
+/**
+ * 2️⃣ OBJECT POOLING (Reuse objects)
+ */
+
+class ObjectPool<T> {
+  private pool: T[] = [];
+  
+  constructor(
+    private factory: () => T,
+    private reset: (obj: T) => void,
+    initialSize = 10
+  ) {
+    for (let i = 0; i < initialSize; i++) {
+      this.pool.push(factory());
+    }
+  }
+  
+  acquire(): T {
+    if (this.pool.length > 0) {
+      return this.pool.pop()!; // ✅ Reuse from pool
+    }
+    return this.factory(); // Create new nếu pool empty
+  }
+  
+  release(obj: T) {
+    this.reset(obj);
+    this.pool.push(obj); // Return to pool
+  }
+}
+
+// Usage: Particle system
+interface Particle {
+  x: number;
+  y: number;
+  velocity: { x: number; y: number };
+}
+
+const particlePool = new ObjectPool<Particle>(
+  () => ({ x: 0, y: 0, velocity: { x: 0, y: 0 } }), // Factory
+  (p) => { p.x = 0; p.y = 0; p.velocity.x = 0; p.velocity.y = 0; }, // Reset
+  100 // Initial pool size
+);
+
+function createParticle() {
+  const particle = particlePool.acquire(); // ✅ Reuse from pool
+  particle.x = Math.random() * 100;
+  particle.y = Math.random() * 100;
+  return particle;
+}
+
+function destroyParticle(particle: Particle) {
+  particlePool.release(particle); // ✅ Return to pool (không GC!)
+}
+```
+
+---
+
+**📚 Phần 9: Security (Bảo Mật)**
+
+#### **💡 Frontend Security - Bảo Vệ Ứng Dụng**
+
+```typescript
+// ===================================================
+// 🔐 COMMON SECURITY VULNERABILITIES
+// ===================================================
+
+/**
+ * 1️⃣ XSS (Cross-Site Scripting)
+ * 
+ * Attacker inject malicious script vào page
+ */
+
+// ❌ VULNERABLE: innerHTML với user input
+function displayUsername(username: string) {
+  document.getElementById('user').innerHTML = username;
+  // ❌ Nếu username = '<script>alert("XSS")</script>' → Execute! ❌
+}
+
+// ✅ SAFE: textContent (escape HTML)
+function displayUsernameSafe(username: string) {
+  document.getElementById('user').textContent = username;
+  // ✅ Script được escape → Không execute
+}
+
+// ✅ SAFE: Sanitize HTML (DOMPurify)
+import DOMPurify from 'dompurify';
+
+function displayHTMLContent(html: string) {
+  const clean = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'],
+    ALLOWED_ATTR: ['href']
+  });
+  document.getElementById('content').innerHTML = clean;
+  // ✅ Remove <script>, event handlers, etc.
+}
+
+/**
+ * 2️⃣ CSRF (Cross-Site Request Forgery)
+ * 
+ * Attacker trick user vào submit form từ malicious site
+ */
+
+// ✅ PROTECTION: CSRF Token
+// Backend gửi CSRF token trong cookie/header
+// Frontend gửi token trong request
+
+// Axios interceptor
+axios.interceptors.request.use((config) => {
+  const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  
+  if (token) {
+    config.headers['X-CSRF-Token'] = token; // ✅ Add CSRF token
+  }
+  
+  return config;
+});
+
+/**
+ * 3️⃣ SENSITIVE DATA EXPOSURE
+ */
+
+// ❌ BAD: Hardcode secrets trong code
+const API_KEY = 'sk-1234567890abcdef'; // ❌ Committed to Git!
+const PASSWORD = 'admin123'; // ❌ NEVER do this!
+
+// ✅ GOOD: Environment variables
+const API_KEY = process.env.REACT_APP_API_KEY; // ✅ From .env (not committed)
+
+// ⚠️ WARNING: Environment variables CÔNG KHAI trong frontend!
+// → KHÔNG lưu sensitive data (database passwords, private keys)
+// → Chỉ dùng cho public API keys, URLs, etc.
+
+/**
+ * 4️⃣ DEPENDENCY VULNERABILITIES
+ */
+
+// ✅ Regularly audit dependencies
+// npm audit
+// npm audit fix
+
+// ✅ Use Snyk, Dependabot để auto-detect vulnerabilities
+
+// package.json
+{
+  "scripts": {
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
+    "check-deps": "npx depcheck" // Find unused deps
+  }
+}
+
+/**
+ * 5️⃣ CONTENT SECURITY POLICY (CSP)
+ */
+
+// ✅ CSP Header: Restrict resource loading
+// index.html
+/*
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://cdn.example.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https:;
+  font-src 'self' data:;
+  connect-src 'self' https://api.example.com;
+">
+*/
+
+// Nginx
+/*
+add_header Content-Security-Policy "
+  default-src 'self';
+  script-src 'self' 'nonce-random123';
+  style-src 'self' 'nonce-random456';
+";
+*/
+
+/**
+ * 6️⃣ SECURE COOKIES
+ */
+
+// ✅ Set cookies với security flags
+document.cookie = "session=abc123; Secure; HttpOnly; SameSite=Strict";
+//                                   ↑       ↑         ↑
+//                                 HTTPS   No JS    No CSRF
+
+// Backend (Express)
+res.cookie('session', 'abc123', {
+  httpOnly: true,   // ✅ JavaScript không access được
+  secure: true,     // ✅ Chỉ send qua HTTPS
+  sameSite: 'strict', // ✅ Không send cross-site (CSRF protection)
+  maxAge: 3600000   // 1 hour
+});
+
+/**
+ * 7️⃣ SANITIZE USER INPUT
+ */
+
+// ❌ BAD: Trust user input
+function searchProducts(query: string) {
+  fetch(`/api/search?q=${query}`); // ❌ SQL injection, XSS...
+}
+
+// ✅ GOOD: Validate & sanitize
+import validator from 'validator';
+
+function searchProductsSafe(query: string) {
+  // Validate
+  if (!validator.isAlphanumeric(query.replace(/\s/g, ''))) {
+    throw new Error('Invalid search query');
+  }
+  
+  // Sanitize
+  const sanitized = validator.escape(query); // Escape HTML
+  
+  fetch(`/api/search?q=${encodeURIComponent(sanitized)}`); // ✅ URL encode
+}
+
+/**
+ * 8️⃣ SUBRESOURCE INTEGRITY (SRI)
+ */
+
+// ✅ Verify CDN scripts không bị tamper
+/*
+<script
+  src="https://cdn.example.com/library.js"
+  integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/ux..."
+  crossorigin="anonymous"
+></script>
+*/
+
+// Generate SRI hash:
+// openssl dgst -sha384 -binary library.js | openssl base64 -A
+```
+
+---
+
+**📚 Phần 10: Observability & Developer Experience (DX)**
+
+#### **💡 Monitoring & DX Tools**
+
+```typescript
+// ===================================================
+// 📊 MONITORING & OBSERVABILITY
+// ===================================================
+
+/**
+ * 1️⃣ ERROR TRACKING (Sentry)
+ */
+
+import * as Sentry from '@sentry/react';
+
+Sentry.init({
+  dsn: 'https://xxx@sentry.io/xxx',
+  environment: process.env.NODE_ENV,
+  release: process.env.REACT_APP_VERSION,
+  
+  // 🎯 Performance monitoring
+  tracesSampleRate: 1.0, // 100% transactions
+  
+  // 🔍 Session replay
+  replaysSessionSampleRate: 0.1, // 10% sessions
+  replaysOnErrorSampleRate: 1.0, // 100% error sessions
+  
+  // 🚫 Filter sensitive data
+  beforeSend(event) {
+    // Remove passwords, tokens
+    if (event.request) {
+      delete event.request.cookies;
+      delete event.request.headers?.Authorization;
+    }
+    return event;
+  }
+});
+
+// Catch errors
+try {
+  throw new Error('Something went wrong');
+} catch (error) {
+  Sentry.captureException(error, {
+    tags: { section: 'trading' },
+    extra: { userId: '123' }
+  });
+}
+
+/**
+ * 2️⃣ PERFORMANCE MONITORING
+ */
+
+// Web Vitals (Google)
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
+
+function sendToAnalytics(metric: any) {
+  // Send to analytics service
+  console.log(metric);
+  
+  // Google Analytics
+  gtag('event', metric.name, {
+    value: Math.round(metric.value),
+    event_category: 'Web Vitals',
+    non_interaction: true
+  });
+}
+
+getCLS(sendToAnalytics);  // Cumulative Layout Shift
+getFID(sendToAnalytics);  // First Input Delay
+getFCP(sendToAnalytics);  // First Contentful Paint
+getLCP(sendToAnalytics);  // Largest Contentful Paint
+getTTFB(sendToAnalytics); // Time to First Byte
+
+/**
+ * 3️⃣ CUSTOM PERFORMANCE METRICS
+ */
+
+// Mark performance milestones
+performance.mark('start-fetch');
+
+await fetch('/api/data');
+
+performance.mark('end-fetch');
+
+// Measure duration
+performance.measure('fetch-duration', 'start-fetch', 'end-fetch');
+
+// Get metrics
+const measures = performance.getEntriesByType('measure');
+console.log('Fetch took:', measures[0].duration, 'ms');
+
+/**
+ * 4️⃣ LOGGING
+ */
+
+// Structured logging
+class Logger {
+  private context: Record<string, any> = {};
+  
+  setContext(key: string, value: any) {
+    this.context[key] = value;
+  }
+  
+  log(level: 'info' | 'warn' | 'error', message: string, data?: any) {
+    const log = {
+      timestamp: new Date().toISOString(),
+      level,
+      message,
+      context: this.context,
+      data
+    };
+    
+    // Send to logging service
+    console.log(JSON.stringify(log));
+    
+    // Send to backend
+    if (level === 'error') {
+      fetch('/api/logs', {
+        method: 'POST',
+        body: JSON.stringify(log)
+      });
+    }
+  }
+}
+
+const logger = new Logger();
+logger.setContext('userId', '123');
+logger.setContext('sessionId', 'abc-456');
+
+logger.log('error', 'API call failed', {
+  url: '/api/orders',
+  status: 500
+});
+
+// ===================================================
+// 🛠️ DEVELOPER EXPERIENCE (DX) TOOLS
+// ===================================================
+
+/**
+ * 1️⃣ TYPE CHECKING (TypeScript)
+ */
+
+// tsconfig.json (Strict mode)
+{
+  "compilerOptions": {
+    "strict": true,                      // Enable all strict checks
+    "noUncheckedIndexedAccess": true,    // Array access safety
+    "noImplicitReturns": true,           // Function must return
+    "noFallthroughCasesInSwitch": true,  // Switch case must break
+    "exactOptionalPropertyTypes": true   // Strict optional props
+  }
+}
+
+/**
+ * 2️⃣ LINTING (ESLint)
+ */
+
+// .eslintrc.js
+module.exports = {
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+    'prettier' // Disable formatting rules
+  ],
+  rules: {
+    '@typescript-eslint/no-unused-vars': 'error',
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'react-hooks/exhaustive-deps': 'error' // Enforce dependency array
+  }
+};
+
+/**
+ * 3️⃣ CODE FORMATTING (Prettier)
+ */
+
+// .prettierrc.js
+module.exports = {
+  semi: true,
+  singleQuote: true,
+  tabWidth: 2,
+  trailingComma: 'es5',
+  printWidth: 100,
+  arrowParens: 'avoid'
+};
+
+/**
+ * 4️⃣ PRE-COMMIT HOOKS (Husky + lint-staged)
+ */
+
+// package.json
+{
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
+
+// .husky/pre-commit
+/*
+#!/bin/sh
+npx lint-staged
+npm run type-check
+npm test -- --bail --findRelatedTests
+*/
+
+/**
+ * 5️⃣ DOCUMENTATION (JSDoc/TSDoc)
+ */
+
+/**
+ * Calculate profit/loss for a trade
+ * 
+ * @param buyPrice - Price when bought
+ * @param sellPrice - Price when sold
+ * @param quantity - Number of shares
+ * @returns Profit (positive) or loss (negative)
+ * 
+ * @example
+ * ```ts
+ * const profit = calculateProfit(100, 150, 10);
+ * console.log(profit); // 500
+ * ```
+ */
+function calculateProfit(
+  buyPrice: number,
+  sellPrice: number,
+  quantity: number
+): number {
+  return (sellPrice - buyPrice) * quantity;
+}
+
+/**
+ * 6️⃣ DEBUGGING TOOLS
+ */
+
+// React DevTools
+// Redux DevTools
+// Chrome DevTools Performance tab
+
+// Custom debug utility
+const DEBUG = process.env.NODE_ENV === 'development';
+
+function debug(label: string, data: any) {
+  if (DEBUG) {
+    console.group(`🐛 ${label}`);
+    console.log(data);
+    console.trace(); // Stack trace
+    console.groupEnd();
+  }
+}
+
+// Usage
+debug('User data', userData);
+
+/**
+ * 7️⃣ BUNDLE SIZE MONITORING
+ */
+
+// size-limit (package.json)
+{
+  "size-limit": [
+    {
+      "path": "dist/main.*.js",
+      "limit": "200 KB"
+    },
+    {
+      "path": "dist/vendor.*.js",
+      "limit": "400 KB"
+    }
+  ]
+}
+
+// Run: npm run size
+// Fails CI nếu vượt limit → Force optimization!
+```
+
+---
+
+**🎓 SUMMARY (Tổng Kết Toàn Bộ)**
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│     FRONTEND TOOLING & BUILD OPTIMIZATION - COMPLETE GUIDE     │
+├────────────────────────────────────────────────────────────────┤
+│                                                                │
+│  📦 DEPENDENCY GRAPH                                           │
+│  ├─ Mô tả quan hệ giữa modules                                │
+│  ├─ Detect circular dependencies                              │
+│  ├─ Determine load order (topological sort)                   │
+│  └─ Visualize: webpack-bundle-analyzer, nx graph              │
+│                                                                │
+│  🗂️ BUNDLING                                                  │
+│  ├─ Gộp nhiều files → 1-2 bundles                            │
+│  ├─ Giảm HTTP requests (100 requests → 1 request)            │
+│  ├─ Tools: Webpack, Vite, Rollup                             │
+│  └─ Optimization: Vendor splitting, async chunks             │
+│                                                                │
+│  🌲 TREE-SHAKING                                              │
+│  ├─ Loại unused exports (dead code elimination)              │
+│  ├─ Yêu cầu: ESM (import/export), sideEffects: false         │
+│  ├─ Named exports > Default exports                          │
+│  └─ Example: Lodash 70KB → uniq 2KB (97% smaller)            │
+│                                                                │
+│  ✂️ CODE SPLITTING                                            │
+│  ├─ Tách code thành nhiều chunks                             │
+│  ├─ Route-based: React.lazy(), dynamic import()              │
+│  ├─ Component-based: Lazy load heavy components              │
+│  └─ Result: Initial load 800KB → 200KB (75% faster)          │
+│                                                                │
+│  🗜️ MINIFICATION                                              │
+│  ├─ Remove whitespace, comments                              │
+│  ├─ Shorten variable names (calculateTotal → a)              │
+│  ├─ Tools: Terser, esbuild                                   │
+│  └─ Result: 850KB → 280KB (67% smaller)                      │
+│                                                                │
+│  🔄 TRANSPILING                                               │
+│  ├─ ES2020+ → ES5 (old browsers)                             │
+│  ├─ TypeScript → JavaScript                                  │
+│  ├─ JSX → JavaScript                                          │
+│  └─ Tools: Babel, TypeScript, SWC                            │
+│                                                                │
+│  🔌 POLYFILLS                                                 │
+│  ├─ Add missing features (Promise, fetch, async/await)       │
+│  ├─ Differential serving: Modern vs Legacy bundles           │
+│  ├─ Tools: core-js, polyfill.io                              │
+│  └─ Strategy: Import only needed polyfills                   │
+│                                                                │
+│  💾 CACHING                                                   │
+│  ├─ Content hashing: main.[hash].js                          │
+│  ├─ Cache strategies: Cache-first, Network-first, SWR        │
+│  ├─ Service Worker: PWA offline support                      │
+│  └─ Result: 56% bandwidth saved, 3-5x faster loads           │
+│                                                                │
+│  🔧 DEV vs PROD BUILD                                         │
+│  ├─ Dev: Fast rebuild (3s), HMR, source maps, no minify     │
+│  ├─ Prod: Minify, tree-shake, split, hash, optimize         │
+│  ├─ Dev: 2.5MB (readable) vs Prod: 240KB (optimized)        │
+│  └─ Tools: mode: 'development' vs 'production'               │
+│                                                                │
+│  ⚡ RUNTIME PERFORMANCE                                       │
+│  ├─ Web Workers: Non-blocking heavy computation              │
+│  ├─ Debounce/Throttle: Reduce function calls                 │
+│  ├─ Memoization: Cache expensive calculations                │
+│  ├─ Virtualization: Render only visible items                │
+│  └─ Memory: Avoid leaks, object pooling                      │
+│                                                                │
+│  🔐 SECURITY                                                  │
+│  ├─ XSS: Sanitize HTML (DOMPurify)                           │
+│  ├─ CSRF: Token protection                                   │
+│  ├─ CSP: Content Security Policy                             │
+│  ├─ Secure cookies: HttpOnly, Secure, SameSite               │
+│  └─ Dependencies: npm audit, Snyk, Dependabot                │
+│                                                                │
+│  📊 OBSERVABILITY & DX                                        │
+│  ├─ Error tracking: Sentry                                   │
+│  ├─ Performance: Web Vitals (LCP, FID, CLS)                  │
+│  ├─ Logging: Structured logs                                 │
+│  ├─ DX: TypeScript strict, ESLint, Prettier                  │
+│  ├─ Pre-commit: Husky + lint-staged                          │
+│  └─ Bundle size: size-limit, bundle analyzer                 │
+│                                                                │
+│  🗺️ SOURCE MAPS                                              │
+│  ├─ Map minified code → original source                      │
+│  ├─ Dev: eval-source-map (fast rebuild)                      │
+│  ├─ Prod: source-map or hidden-source-map                    │
+│  └─ Debug với original code, variables, line numbers         │
+│                                                                │
+│  🎨 ESLINT / PRETTIER                                         │
+│  ├─ ESLint: Find bugs, enforce patterns                      │
+│  ├─ Prettier: Auto-format code                               │
+│  ├─ Integration: eslint-config-prettier                      │
+│  └─ Automation: Pre-commit hooks                             │
+└────────────────────────────────────────────────────────────────┘
+
+📈 REAL-WORLD IMPACT:
+├─ Initial load: 2.5MB → 240KB (90% faster) 🚀
+├─ Build time: Dev 3s, Prod 45s
+├─ Cache hit rate: 80-90% (returning users)
+├─ Bandwidth saved: 56% on average
+├─ Error rate: Reduced 70% (Sentry monitoring)
+└─ Developer productivity: +40% (better DX tools)
+
+🎯 KEY TAKEAWAYS:
+✅ Bundling: Fewer requests → Faster loads
+✅ Minification: Smaller files → Less bandwidth
+✅ Tree-shaking: Remove dead code → Smaller bundles
+✅ Code splitting: Lazy load → Faster initial render
+✅ Caching: Content hash + strategies → 80% cache hit
+✅ Security: XSS, CSRF, CSP → Protect users
+✅ Monitoring: Sentry, Web Vitals → Catch issues early
+✅ DX: TypeScript, ESLint, Prettier → Better code quality
+```
 
 ---

@@ -892,8 +892,7 @@ hashMap.visualize();
   - ⚡ Swiss Tables (Google): SIMD-accelerated lookup
   - 🔄 V8 transitions: Packed → Holey → Dictionary mode
 
-- 📊 **Monitor performance**: Chrome DevTools → Performance tab - ⏱️ Xem time spent trong map operations - 🔬 Profile với large datasets (>100k items)
-  ============================================
+- # 📊 **Monitor performance**: Chrome DevTools → Performance tab - ⏱️ Xem time spent trong map operations - 🔬 Profile với large datasets (>100k items)
   // ⚠️ CÁC LỖI THƯỜNG GẶP VÀ CÁCH SỬA
   // ============================================
 

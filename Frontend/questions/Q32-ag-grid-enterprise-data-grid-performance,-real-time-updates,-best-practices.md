@@ -162,19 +162,25 @@
 function LargeDatasetExample() {
   // 📊 Tạo 100,000 rows dữ liệu mẫu
   // 💡 Array.from() tạo array với 100,000 phần tử
+  // 💡 { length: 100000 }: Tạo array có 100,000 phần tử rỗng
+  // 💡 (_, i) => {...}: Callback function, i là index (0, 1, 2...)
   const rowData = Array.from({ length: 100000 }, (_, i) => ({
-    id: i, // 💡 ID duy nhất cho mỗi row
-    name: `User ${i}`, // 💡 Tên user
-    email: `user${i}@example.com`, // 💡 Email user
+    id: i, // 💡 ID duy nhất cho mỗi row - dùng làm key để tìm nhanh
+    name: `User ${i}`, // 💡 Tên user - template string tạo "User 0", "User 1"...
+    email: `user${i}@example.com`, // 💡 Email user - template string
     age: 20 + (i % 50), // 💡 Tuổi từ 20-69 (lặp lại)
+    // 💡 i % 50: Lấy số dư khi chia cho 50 → 0-49
+    // 💡 20 + (i % 50) → Tuổi từ 20-69, lặp lại sau mỗi 50 rows
   }));
 
   return (
     <AgGridReact
       rowData={rowData} // 📦 Truyền 100,000 rows vào grid
       getRowId={(params) => params.data.id} // ⚡ O(1) lookup - QUAN TRỌNG!
-      // 💡 getRowId: Cho phép AG Grid tìm row nhanh với O(1) thay vì O(n)
-      // 💡 Không có getRowId: Phải duyệt 100,000 rows → Chậm!
+      // 💡 getRowId: Function trả về unique ID cho mỗi row
+      // 💡 params.data.id: Lấy id từ data object (VD: 0, 1, 2...)
+      // 💡 O(1): Tìm row trong 1 bước (dùng Map/Hash table)
+      // 💡 Không có getRowId: Phải duyệt 100,000 rows → O(n) → Chậm!
       // → AG Grid chỉ render ~30 rows trong viewport (virtual scrolling)
       // → Scroll mượt mà, không lag!
       // 💡 Memory: Chỉ ~8MB thay vì 200MB nếu render tất cả!
@@ -186,44 +192,57 @@ function LargeDatasetExample() {
 // 🎯 Mục đích: Cập nhật grid theo thời gian thực từ WebSocket
 function RealTimeExample() {
   // 🔧 State: Lưu Grid API để có thể gọi methods
+  // useState: React hook để quản lý state
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
-  // 💡 gridApi: Object chứa tất cả methods để control grid
-  // 💡 null ban đầu vì grid chưa ready
+  // 💡 gridApi: Object chứa tất cả methods để control grid (update, filter, sort...)
+  // 💡 <GridApi | null>: TypeScript type - có thể là GridApi hoặc null
+  // 💡 null ban đầu vì grid chưa ready (chưa mount)
 
+  // useEffect: React hook chạy sau khi component render
   useEffect(() => {
-    if (!gridApi) return; // ⚠️ Guard: Đợi gridApi ready
+    if (!gridApi) return; // ⚠️ Guard: Đợi gridApi ready - không làm gì nếu chưa có
 
     // 🌐 WebSocket: Kết nối đến server streaming data
+    // 💡 WebSocket: Protocol 2 chiều, server có thể push data đến client
+    // 💡 wss://: WebSocket Secure (HTTPS cho WebSocket)
     // 💡 1000 updates/giây từ WebSocket (high-frequency updates)
     const ws = new WebSocket('wss://stream.example.com');
 
     // 📨 Event: Nhận message từ WebSocket
+    // onmessage: Event handler khi server gửi data đến
     ws.onmessage = (event) => {
+      // event.data: String JSON từ server
       const updates = JSON.parse(event.data);
-      // 💡 Parse JSON: Convert string → JavaScript object
-      // 💡 updates: Array of 10-20 row updates
+      // 💡 Parse JSON: Convert string → JavaScript object/array
+      // 💡 updates: Array of 10-20 row updates (mỗi update là 1 object)
 
       // ⚡ applyTransactionAsync: Update grid với batching
+      // applyTransactionAsync: Gộp nhiều updates lại, render 1 lần sau delay
       gridApi.applyTransactionAsync({ update: updates });
       // ✅ AG Grid tự động batch → chỉ render 20 lần/s thay vì 1000 lần/s
       // 💡 Batching: Gộp nhiều updates trong 50ms → render 1 lần
+      // 💡 Thay vì render 1000 lần/giây → chỉ render 20 lần/giây
       // ✅ CPU: 15% (vs MUI: 80% - không có batching)
       // 💡 Performance: Giảm 80% số lần render!
     };
 
     // 🧹 Cleanup: Đóng WebSocket khi component unmount
+    // Return function: React sẽ gọi khi component bị unmount
     return () => ws.close();
     // 💡 Quan trọng: Tránh memory leak, đóng connection
-  }, [gridApi]);
+    // 💡 Nếu không cleanup → WebSocket vẫn mở → Memory leak!
+  }, [gridApi]); // [gridApi]: Chỉ chạy lại khi gridApi thay đổi
 
   return (
     <AgGridReact
       onGridReady={(params) => setGridApi(params.api)}
-      // 💡 onGridReady: Callback khi grid đã sẵn sàng
-      // 💡 params.api: Grid API object → Lưu vào state
+      // 💡 onGridReady: Callback khi grid đã sẵn sàng (đã mount xong)
+      // 💡 params: Object chứa thông tin grid
+      // 💡 params.api: Grid API object → Lưu vào state để dùng sau
       asyncTransactionWaitMillis={50}
       // ⚡ Batch mỗi 50ms: Gộp updates trong 50ms → render 1 lần
-      // 💡 50ms = 20 renders/giây (đủ mượt cho mắt người)
+      // 💡 50ms = 20 renders/giây (1000ms ÷ 50ms = 20)
+      // 💡 Đủ mượt cho mắt người (mắt chỉ nhận biết ~24 FPS)
       // 💡 Nếu set 16ms = 60 FPS (mượt nhất nhưng tốn CPU hơn)
     />
   );
@@ -533,34 +552,50 @@ import 'ag-grid-community/styles/ag-theme-quartz.css';
 // 🎯 Mục đích: Hiển thị dữ liệu crypto với 3 cột
 function CryptoGrid() {
   // 📊 Row Data: Dữ liệu các hàng (rows)
+  // useState: React hook để lưu state
+  // [rowData]: Destructuring - chỉ lấy giá trị, không cần setter (vì không update)
   const [rowData] = useState([
-    { ticker: 'BTCUSDT', price: 50000, volume: 1234 },  // 💰 Bitcoin
-    { ticker: 'ETHUSDT', price: 3000, volume: 5678 }   // 💰 Ethereum
+    { ticker: 'BTCUSDT', price: 50000, volume: 1234 },  // 💰 Bitcoin - object 1
+    { ticker: 'ETHUSDT', price: 3000, volume: 5678 }   // 💰 Ethereum - object 2
   ]);
-  // 💡 useState: Lưu dữ liệu grid
+  // 💡 useState: Lưu dữ liệu grid - chỉ khởi tạo 1 lần khi component mount
   // 💡 Mỗi object = 1 row trong grid
+  // 💡 ticker: Mã coin (Bitcoin, Ethereum...)
+  // 💡 price: Giá hiện tại (USD)
+  // 💡 volume: Khối lượng giao dịch
 
   // 📋 Column Definitions: Định nghĩa các cột (columns)
+  // useMemo: React hook để cache giá trị, tránh tính toán lại
   const columnDefs = useMemo(() => [
     { field: 'ticker', headerName: 'Symbol' },   // 📊 Cột 1: Mã coin
     { field: 'price', headerName: 'Price' },      // 💰 Cột 2: Giá
     { field: 'volume', headerName: 'Volume' }     // 📈 Cột 3: Khối lượng
   ], []);
   // ✅ useMemo: Tránh re-create columnDefs mỗi render
-  // 💡 [] deps: Chỉ tạo 1 lần khi component mount
-  // 💡 field: Tên property trong rowData object
-  // 💡 headerName: Text hiển thị ở header cột
+  // 💡 () => [...]: Function trả về array column definitions
+  // 💡 [] deps: Empty dependency array - chỉ tạo 1 lần khi component mount
+  // 💡 field: Tên property trong rowData object (phải khớp với key trong data)
+  // 💡 headerName: Text hiển thị ở header cột (tiêu đề cột)
 
   return (
     // 🎨 Wrapper: Theme + kích thước
     <div className="ag-theme-quartz" style={{ height: 500 }}>
-      {/* 💡 ag-theme-quartz: Theme sáng, hiện đại */}
-      {/* 💡 height: 500px - Chiều cao grid */}
+      {/* 💡 ag-theme-quartz: Theme sáng, hiện đại - CSS class từ AG Grid */}
+      {/* 💡 style={{ height: 500 }}: Inline style - chiều cao grid 500px */}
       <AgGridReact
-        rowData={rowData}           // 📦 Dữ liệu hiển thị
-        columnDefs={columnDefs}     // 📋 Cấu hình cột
+        rowData={rowData}           // 📦 Dữ liệu hiển thị - array các objects
+        columnDefs={columnDefs}     // 📋 Cấu hình cột - array các column definitions
       />
       {/* 🎯 Kết quả: Grid 3 cột x 2 hàng */}
+      {/*
+        Grid hiển thị:
+        ┌──────────┬────────┬─────────┐
+        │ Symbol   │ Price  │ Volume  │
+        ├──────────┼────────┼─────────┤
+        │ BTCUSDT  │ 50000  │ 1234    │
+        │ ETHUSDT  │ 3000   │ 5678    │
+        └──────────┴────────┴─────────┘
+      */}
     </div>
   );
 }
@@ -575,20 +610,27 @@ function CryptoGrid() {
 ```typescript
 // ❌ SAI: Không có getRowId → O(n) lookup
 <AgGridReact rowData={data} />
-// 🚨 VẤN ĐỀ: AG Grid dùng index (0, 1, 2...) làm ID
+// 🚨 VẤN ĐỀ: AG Grid dùng index (0, 1, 2...) làm ID mặc định
+// 💡 O(n): Độ phức tạp tuyến tính - phải duyệt từ đầu đến cuối
 // 💡 Khi update row → Phải duyệt TOÀN BỘ array để tìm: O(n)
-// 💡 1,000 rows → Phải check 1,000 lần!
+// 💡 1,000 rows → Phải check 1,000 lần! (duyệt từ row 0 đến row 999)
 // 💡 10,000 rows → Phải check 10,000 lần → CHẬM!
+// 💡 Càng nhiều rows → Càng chậm (tỷ lệ thuận)
 
 // ✅ ĐÚNG: Có getRowId → O(1) lookup
 <AgGridReact
   rowData={data}
   getRowId={(params) => params.data.ticker} // ✅ Unique ID
   // 💡 getRowId: Function trả về unique ID cho mỗi row
+  // 💡 params: Object chứa thông tin row
+  // 💡 params.data: Data object của row (VD: { ticker: 'BTCUSDT', price: 50000 })
   // 💡 params.data.ticker: Lấy ticker từ data object (VD: 'BTCUSDT')
+  // 💡 ticker phải là unique (không trùng lặp) và stable (không thay đổi)
 />
 // ✅ AG Grid tạo Map: { 'BTCUSDT': rowNode, 'ETHUSDT': rowNode }
+// 💡 Map/Hash table: Cấu trúc dữ liệu cho phép tìm kiếm O(1)
 // 💡 Khi update 'BTCUSDT' → Tìm ngay trong Map: O(1)
+// 💡 O(1): Độ phức tạp hằng số - tìm trong 1 bước, không phụ thuộc số lượng rows
 // 💡 1,000 rows hay 10,000 rows → Vẫn tìm trong 1 bước!
 // 🚀 Nhanh hơn 1000x so với không có getRowId!
 
@@ -605,51 +647,70 @@ function CryptoGrid() {
 // ❌ SAI: setRowData → Re-render toàn bộ
 // 🚨 CÁCH CŨ - CHẬM: Dùng React state để update
 const [rowData, setRowData] = useState(initialData);
+// 💡 useState: React hook để quản lý state
+// 💡 initialData: Dữ liệu ban đầu khi component mount
+
 setRowData((prev) =>
+  // 💡 prev: Giá trị hiện tại của rowData
   prev.map(
+    // 💡 map(): Duyệt qua từng row trong array
     (row) =>
       row.ticker === ticker
-        ? { ...row, price: newPrice } // 💡 Tạo row mới với giá mới
-        : row // 💡 Giữ nguyên row khác
+        ? // 💡 So sánh: Nếu ticker khớp với row cần update
+          { ...row, price: newPrice } // 💡 Tạo row mới với giá mới
+        : // 💡 Spread operator: Copy tất cả properties cũ, ghi đè price
+          row // 💡 Giữ nguyên row khác - không thay đổi
   )
 );
 // 🚨 VẤN ĐỀ:
-// 1. setState → React re-render component
-// 2. rowData thay đổi → AG Grid nhận props mới
-// 3. AG Grid so sánh: rowData cũ vs rowData mới
-// 4. Khác nhau → Re-render TOÀN BỘ grid!
+// 1. setState → React re-render component (toàn bộ component)
+// 2. rowData thay đổi → AG Grid nhận props mới (rowData prop thay đổi)
+// 3. AG Grid so sánh: rowData cũ vs rowData mới (reference comparison)
+// 4. Khác nhau → Re-render TOÀN BỘ grid! (tất cả rows, tất cả cells)
 // 5. 10,000 rows × 5 cột = 50,000 cells re-render ❌
 // 6. Mất ~500ms, CPU 80-100%, UI giật lag!
+// 💡 Vấn đề: Chỉ cần update 1 cell nhưng phải render lại 50,000 cells!
 
 // ✅ ĐÚNG: applyTransaction → Chỉ update 1 row
 // 🚀 CÁCH MỚI - NHANH: Dùng Transaction API
 const [gridApi, setGridApi] = useState<GridApi | null>(null);
-// 💡 gridApi: Object chứa methods để control grid
+// 💡 gridApi: Object chứa methods để control grid (update, filter, sort...)
+// 💡 <GridApi | null>: TypeScript type - có thể là GridApi hoặc null
 
 function updatePrice(ticker: string, newPrice: number) {
-  if (!gridApi) return; // ⚠️ Guard: Đợi gridApi ready
+  // 💡 ticker: ID của row cần update (VD: 'BTCUSDT')
+  // 💡 newPrice: Giá mới cần cập nhật
+  if (!gridApi) return; // ⚠️ Guard: Đợi gridApi ready - không làm gì nếu chưa có
 
   // BƯỚC 1: Lấy row node với O(1) (nhờ getRowId)
   const rowNode = gridApi.getRowNode(ticker);
-  // 💡 getRowNode: Tìm row trong Map → O(1) thay vì O(n)
-  // 💡 ticker: ID của row (VD: 'BTCUSDT')
+  // 💡 getRowNode: Method tìm row trong Map → O(1) thay vì O(n)
+  // 💡 ticker: ID của row (VD: 'BTCUSDT') - phải khớp với getRowId
+  // 💡 rowNode: Object chứa thông tin row (data, index, selected...)
+  // 💡 O(1): Tìm trong 1 bước, không cần duyệt array
 
   if (!rowNode?.data) return; // ⚠️ Guard: Row không tồn tại
+  // 💡 Optional chaining (?.): Nếu rowNode null/undefined → return
+  // 💡 Nếu rowNode.data không tồn tại → return (không update)
 
   // BƯỚC 2: Tạo data mới (immutable - QUAN TRỌNG!)
   const updatedData = { ...rowNode.data, price: newPrice };
-  // 💡 Spread operator: Copy tất cả properties cũ
-  // 💡 Ghi đè price với giá mới
-  // 💡 Tạo object MỚI → AG Grid detect thay đổi
+  // 💡 Spread operator (...): Copy tất cả properties từ rowNode.data
+  // 💡 Ghi đè price với giá mới (price: newPrice)
+  // 💡 Tạo object MỚI với địa chỉ bộ nhớ mới → AG Grid detect thay đổi
+  // 💡 Immutable: Không sửa object cũ, tạo object mới
 
   // BƯỚC 3: Update chỉ 1 row qua Transaction API
   gridApi.applyTransaction({ update: [updatedData] });
+  // 💡 applyTransaction: Method update grid với incremental update
+  // 💡 { update: [...] }: Object chứa array các rows cần update
+  // 💡 AG Grid chỉ update rows trong array, không re-render toàn bộ
   // ✅ AG Grid chỉ re-render:
-  //    - 1 row (thay vì 10,000 rows)
-  //    - 5 cells (thay vì 50,000 cells)
-  //    - Mất ~2ms (thay vì 500ms)
-  //    - CPU 5-10% (thay vì 80-100%)
-  //    - UI mượt mà!
+  //    - 1 row (thay vì 10,000 rows) - chỉ row có ticker khớp
+  //    - 5 cells (thay vì 50,000 cells) - chỉ cells trong row đó
+  //    - Mất ~2ms (thay vì 500ms) - nhanh hơn 250 lần!
+  //    - CPU 5-10% (thay vì 80-100%) - tiết kiệm CPU
+  //    - UI mượt mà! - không giật lag
 }
 
 /**
@@ -666,34 +727,48 @@ function updatePrice(ticker: string, newPrice: number) {
 // ❌ SAI: Sync transaction → 100 renders/giây
 // 🚨 VẤN ĐỀ: Render ngay mỗi lần có update
 socket.on('price-update', (update) => {
+  // 💡 socket.on: Event listener - lắng nghe event 'price-update'
+  // 💡 update: Object chứa thông tin giá mới (VD: { ticker: 'BTCUSDT', price: 50001 })
   gridApi.applyTransaction({ update: [update] });
-  // ⚠️ Render ngay lập tức!
+  // ⚠️ Render ngay lập tức! - không đợi, không batch
+  // 💡 applyTransaction: Sync - render ngay khi gọi
+  // 💡 Mỗi lần có update → render ngay → tốn CPU
 });
 // 🚨 KẾT QUẢ:
 // → 100 updates/s → 100 renders/s → CPU 70%
-// 💡 Browser chỉ refresh 60 lần/giây (60 FPS)
+// 💡 100 updates/giây: Server gửi 100 lần update trong 1 giây
+// 💡 100 renders/s: Grid render 100 lần trong 1 giây
+// 💡 Browser chỉ refresh 60 lần/giây (60 FPS - Frames Per Second)
 // 💡 40 lần render BỊ LÃNG PHÍ! (browser không kịp hiển thị)
-// 💡 CPU cao, UI giật lag ❌
+// 💡 CPU cao (70%), UI giật lag ❌
+// 💡 Vấn đề: Render nhiều hơn mức cần thiết
 
 // ✅ ĐÚNG: Async transaction → Batch renders
 // 🚀 GIẢI PHÁP: Gộp nhiều updates thành 1 render
 const gridOptions = {
   asyncTransactionWaitMillis: 50,
-  // ⚡ Gộp updates mỗi 50ms
+  // ⚡ Gộp updates mỗi 50ms - delay trước khi render
   // 💡 AG Grid sẽ đợi 50ms, gộp TẤT CẢ updates trong khoảng đó
-  // 💡 Sau 50ms → Render 1 lần duy nhất
+  // 💡 Sau 50ms → Render 1 lần duy nhất với tất cả updates
+  // 💡 50ms: Thời gian đợi để batch - cân bằng giữa responsive và performance
 };
 
 socket.on('price-update', (update) => {
+  // 💡 socket.on: Event listener - lắng nghe event 'price-update'
   gridApi.applyTransactionAsync({ update: [update] });
-  // ✅ Thêm vào queue, không render ngay
+  // ✅ applyTransactionAsync: Async - thêm vào queue, không render ngay
+  // 💡 update: Object chứa thông tin giá mới
+  // 💡 AG Grid sẽ đợi 50ms, gộp nhiều updates lại, sau đó render 1 lần
 });
 // ✅ KẾT QUẢ:
 // → 100 updates/s → CHỈ 20 renders/s (1000ms ÷ 50ms = 20)
-// 💡 Giảm 80% số lần render!
-// → CPU 15% (thay vì 70%)
-// 💡 CPU giảm 79%!
+// 💡 100 updates/giây: Server gửi 100 lần update
+// 💡 20 renders/s: Grid chỉ render 20 lần (gộp 5 updates mỗi lần)
+// 💡 Giảm 80% số lần render! (100 → 20)
+// → CPU 15% (thay vì 70%) - giảm 79%!
+// 💡 CPU giảm 79%! (70% → 15%)
 // → UI mượt mà, FPS ổn định 60 ✅
+// 💡 FPS 60: 60 frames/giây - mượt mà, không giật lag
 
 /**
  * 📊 Timeline (50ms batching):
@@ -710,28 +785,42 @@ socket.on('price-update', (update) => {
 // 🚨 VẤN ĐỀ: Sửa trực tiếp object gốc
 rowNode.data.price = newPrice;
 // ⚠️ Sửa trực tiếp object gốc → Vẫn cùng địa chỉ bộ nhớ
+// 💡 Mutable: Thay đổi object gốc, không tạo object mới
+// 💡 rowNode.data vẫn trỏ đến cùng địa chỉ bộ nhớ (memory address)
 gridApi.applyTransaction({ update: [rowNode.data] });
 // 🚨 VẤN ĐỀ:
 // 1. rowNode.data vẫn trỏ đến ĐỊA CHỈ BỘ NHỚ cũ
+// 💡 Reference (tham chiếu) không thay đổi - vẫn cùng object
 // 2. AG Grid so sánh: oldRef === newRef → TRUE (cùng địa chỉ)
+// 💡 Reference comparison: So sánh địa chỉ bộ nhớ, không so sánh giá trị
+// 💡 oldRef === newRef: Cùng địa chỉ → AG Grid nghĩ không có gì thay đổi
 // 3. AG Grid kết luận: "Không có gì thay đổi"
+// 💡 AG Grid bỏ qua update vì nghĩ data không thay đổi
 // 4. UI KHÔNG cập nhật, user vẫn thấy giá cũ ❌
+// 💡 Grid không re-render → UI không cập nhật → User thấy giá cũ
 
 // ✅ ĐÚNG: Immutable (tạo object mới)
 // 🚀 GIẢI PHÁP: Tạo object mới với địa chỉ bộ nhớ mới
 const updatedData = {
-  ...rowNode.data, // 📦 Spread: Copy TẤT CẢ properties
-  price: newPrice, // 🔧 Ghi đè property mới
+  ...rowNode.data, // 📦 Spread: Copy TẤT CẢ properties từ rowNode.data
+  price: newPrice, // 🔧 Ghi đè property mới - thay thế giá cũ
 };
 // 💡 { ...obj } tạo object MỚI với ĐỊA CHỈ BỘ NHỚ mới
+// 💡 Spread operator: Copy tất cả properties, sau đó ghi đè price
 // 💡 Giống như Ctrl+C Ctrl+V: Tạo file copy, không sửa file gốc
+// 💡 Immutable: Không thay đổi object cũ, tạo object mới
 
 gridApi.applyTransaction({ update: [updatedData] });
 // ✅ HOẠT ĐỘNG:
 // 1. updatedData có ĐỊA CHỈ BỘ NHỚ mới
-// 2. AG Grid so sánh: oldRef !== newRef → FALSE (khác địa chỉ)
+// 💡 Object mới → địa chỉ bộ nhớ khác với object cũ
+// 2. AG Grid so sánh: oldRef !== newRef → TRUE (khác địa chỉ)
+// 💡 Reference comparison: So sánh địa chỉ bộ nhớ
+// 💡 oldRef !== newRef: Khác địa chỉ → AG Grid phát hiện thay đổi
 // 3. AG Grid kết luận: "Có thay đổi!"
+// 💡 AG Grid nhận biết data đã thay đổi → cần update
 // 4. Re-render cell với giá mới ✅
+// 💡 Grid re-render cell price → UI hiển thị giá mới
 
 /**
  * 💡 Tại sao?
@@ -767,57 +856,75 @@ const gridOptions = {
 // 🎯 Mục đích: Hiển thị giá crypto cập nhật theo thời gian thực từ Binance
 function CryptoGrid() {
   // 🔧 State: Lưu Grid API để control grid
+  // useState: React hook để quản lý state
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
-  // 💡 gridApi: Object chứa methods để update grid
-  // 💡 null ban đầu vì grid chưa ready
+  // 💡 gridApi: Object chứa methods để update grid (applyTransaction, getRowNode...)
+  // 💡 <GridApi | null>: TypeScript type - có thể là GridApi hoặc null
+  // 💡 null ban đầu vì grid chưa ready (chưa mount xong)
 
+  // useEffect: React hook chạy sau khi component render
   useEffect(() => {
-    if (!gridApi) return; // ⚠️ Guard: Đợi gridApi ready
+    if (!gridApi) return; // ⚠️ Guard: Đợi gridApi ready - không làm gì nếu chưa có
 
     // 🌐 WebSocket: Kết nối đến Binance streaming API
-    // 💡 wss:// = WebSocket Secure (HTTPS cho WebSocket)
+    // 💡 WebSocket: Protocol 2 chiều, server có thể push data đến client real-time
+    // 💡 wss:// = WebSocket Secure (HTTPS cho WebSocket) - kết nối an toàn
     const ws = new WebSocket('wss://stream.binance.com/ws');
-    // 💡 Binance WebSocket: Stream giá crypto real-time
+    // 💡 Binance WebSocket: Stream giá crypto real-time - cập nhật liên tục
+    // 💡 URL: Binance WebSocket endpoint để nhận giá crypto
 
     // 📨 Event: Nhận message từ WebSocket
+    // onmessage: Event handler khi server gửi data đến
     ws.onmessage = (event) => {
+      // event.data: String JSON từ server (VD: '{"s":"BTCUSDT","c":"50000.5","v":"1234.56"}')
       const update = JSON.parse(event.data);
       // 💡 Parse JSON: Convert string → JavaScript object
       // 💡 update: Object chứa thông tin giá mới
       // 💡 VD: { s: 'BTCUSDT', c: '50000.5', v: '1234.56' }
+      // 💡 s: Symbol (mã coin), c: Current price (giá hiện tại), v: Volume (khối lượng)
 
       // ⚡ Update grid với Transaction API (async batching)
       gridApi.applyTransactionAsync({
         update: [
           {
-            ticker: update.s, // 💡 Symbol (VD: 'BTCUSDT')
+            ticker: update.s, // 💡 Symbol (VD: 'BTCUSDT') - mã coin
             price: parseFloat(update.c), // 💡 Current price (convert string → number)
+            // 💡 parseFloat(): Chuyển string '50000.5' → number 50000.5
             volume: parseFloat(update.v), // 💡 Volume (convert string → number)
+            // 💡 parseFloat(): Chuyển string '1234.56' → number 1234.56
           },
         ],
       });
       // ✅ applyTransactionAsync: Gộp nhiều updates → render 1 lần
+      // 💡 Async: Thêm vào queue, không render ngay
       // 💡 Batching: Nếu có 10 updates trong 50ms → chỉ render 1 lần
       // 💡 Performance: Giảm 80-90% số lần render!
+      // 💡 Thay vì render 100 lần/giây → chỉ render 20 lần/giây
     };
 
     // 🧹 Cleanup: Đóng WebSocket khi component unmount
+    // Return function: React sẽ gọi khi component bị unmount
     return () => ws.close();
     // 💡 Quan trọng: Tránh memory leak, đóng connection
     // 💡 Nếu không cleanup → WebSocket vẫn mở → Memory leak!
-  }, [gridApi]);
+    // 💡 ws.close(): Đóng kết nối WebSocket, giải phóng tài nguyên
+  }, [gridApi]); // [gridApi]: Chỉ chạy lại khi gridApi thay đổi
 
   return (
     <AgGridReact
       onGridReady={(params) => setGridApi(params.api)}
-      // 💡 onGridReady: Callback khi grid đã sẵn sàng
-      // 💡 params.api: Grid API object → Lưu vào state
+      // 💡 onGridReady: Callback khi grid đã sẵn sàng (đã mount xong)
+      // 💡 params: Object chứa thông tin grid
+      // 💡 params.api: Grid API object → Lưu vào state để dùng sau
       getRowId={(params) => params.data.ticker}
       // ⚡ O(1) lookup: Dùng ticker làm unique ID
-      // 💡 Cho phép tìm row nhanh khi update
+      // 💡 params.data.ticker: Lấy ticker từ data (VD: 'BTCUSDT')
+      // 💡 Cho phép tìm row nhanh khi update - không cần duyệt array
       asyncTransactionWaitMillis={50}
       // ⚡ Batch mỗi 50ms: Gộp updates trong 50ms → render 1 lần
-      // 💡 50ms = 20 renders/giây (đủ mượt cho mắt người)
+      // 💡 50ms = 20 renders/giây (1000ms ÷ 50ms = 20)
+      // 💡 Đủ mượt cho mắt người (mắt chỉ nhận biết ~24 FPS)
+      // 💡 Cân bằng giữa responsive và performance
     />
   );
 }
@@ -827,21 +934,29 @@ function CryptoGrid() {
 
 ```typescript
 // 🎨 Column Definition: Cấu hình cột price với flash animation
+// columnDefs: Array các object định nghĩa cột
 const columnDefs = [
   {
-    field: 'price',                              // 💡 Tên field trong data
+    field: 'price',                              // 💡 Tên field trong data - phải khớp với key trong rowData
     enableCellChangeFlash: true,                  // ✅ Flash khi value thay đổi
     // 💡 enableCellChangeFlash: Bật animation flash khi giá thay đổi
-    // 💡 User dễ nhận biết cell nào vừa update
+    // 💡 Flash: Cell sẽ highlight (đổi màu nền) khi giá trị thay đổi
+    // 💡 User dễ nhận biết cell nào vừa update - visual feedback
 
     // 🎨 Cell Class Rules: Dynamic CSS classes dựa trên giá trị
+    // cellClassRules: Object chứa các rules để thêm/xóa CSS classes
     cellClassRules: {
       'price-up': (params) => params.value > params.oldValue,
+      // 💡 'price-up': Tên CSS class sẽ được thêm vào cell
+      // 💡 (params) => ...: Function trả về boolean - true = thêm class, false = xóa class
+      // 💡 params.value: Giá hiện tại của cell
+      // 💡 params.oldValue: Giá trước đó của cell
       // 💡 Giá tăng → Thêm class 'price-up' → Màu xanh
-      // 💡 params.value: Giá hiện tại
-      // 💡 params.oldValue: Giá trước đó
+      // 💡 AG Grid tự động thêm/xóa class khi giá trị thay đổi
 
       'price-down': (params) => params.value < params.oldValue,
+      // 💡 'price-down': Tên CSS class sẽ được thêm vào cell
+      // 💡 params.value < params.oldValue: Giá hiện tại < giá cũ → giá giảm
       // 💡 Giá giảm → Thêm class 'price-down' → Màu đỏ
     }
   }
@@ -850,13 +965,18 @@ const columnDefs = [
 // 🎨 CSS: Định nghĩa styles cho các classes
 .price-up {
   background-color: #00ff0030;  // 💡 Xanh lá với độ trong suốt 30%
-  // 💡 #00ff00 = Xanh lá, 30 = 30% opacity (hex)
+  // 💡 #00ff00 = Xanh lá (RGB: 0, 255, 0)
+  // 💡 30 = 30% opacity (hex) - trong suốt 30%, hiển thị 70%
+  // 💡 Kết quả: Nền xanh lá nhạt khi giá tăng
 }
 .price-down {
   background-color: #ff000030;  // 💡 Đỏ với độ trong suốt 30%
-  // 💡 #ff0000 = Đỏ, 30 = 30% opacity (hex)
+  // 💡 #ff0000 = Đỏ (RGB: 255, 0, 0)
+  // 💡 30 = 30% opacity (hex) - trong suốt 30%, hiển thị 70%
+  // 💡 Kết quả: Nền đỏ nhạt khi giá giảm
 }
 // 💡 Kết quả: Cell flash màu xanh khi giá tăng, đỏ khi giá giảm
+// 💡 User dễ nhận biết cell nào vừa thay đổi và thay đổi theo hướng nào
 ```
 
 ---
@@ -865,13 +985,15 @@ const columnDefs = [
 
 ```typescript
 // 📋 Column Definitions: Định nghĩa các cột của grid
+// useMemo: React hook để cache giá trị, tránh tính toán lại
 const columnDefs = useMemo(
   () => [
     // 📊 Basic column: Cột đơn giản
     {
-      field: 'ticker', // 💡 Tên field trong data
-      headerName: 'Symbol', // 💡 Text hiển thị ở header
-      width: 120, // 💡 Độ rộng cố định (120px)
+      field: 'ticker', // 💡 Tên field trong data - phải khớp với key trong rowData
+      headerName: 'Symbol', // 💡 Text hiển thị ở header cột (tiêu đề cột)
+      width: 120, // 💡 Độ rộng cố định (120px) - không thay đổi khi resize
+      // 💡 width: Cố định, không tự động điều chỉnh
     },
 
     // 💰 Value formatter: Format giá trị hiển thị
@@ -879,37 +1001,47 @@ const columnDefs = useMemo(
       field: 'price',
       valueFormatter: (params) => `$${params.value.toFixed(2)}`,
       // 💡 valueFormatter: Function format giá trị trước khi hiển thị
-      // 💡 params.value: Giá trị gốc (VD: 50000.5)
+      // 💡 params: Object chứa thông tin cell
+      // 💡 params.value: Giá trị gốc (VD: 50000.5) - number
       // 💡 toFixed(2): Làm tròn 2 chữ số thập phân (VD: 50000.50)
-      // 💡 Kết quả: "$50000.50"
+      // 💡 Template string: `$${...}` - thêm ký tự $ ở đầu
+      // 💡 Kết quả: "$50000.50" - string được hiển thị trong cell
     },
 
     // 🎨 Cell class rules: Conditional styling (màu sắc theo điều kiện)
     {
-      field: 'change24h', // 💡 Thay đổi giá trong 24h (%)
+      field: 'change24h', // 💡 Thay đổi giá trong 24h (%) - VD: +5.23% hoặc -2.15%
       cellClassRules: {
+        // 💡 cellClassRules: Object chứa các rules để thêm/xóa CSS classes
         'text-green': (params) => params.value > 0,
-        // 💡 Giá tăng (> 0) → Thêm class 'text-green' → Màu xanh
+        // 💡 'text-green': Tên CSS class sẽ được thêm vào cell
+        // 💡 (params) => params.value > 0: Function trả về boolean
+        // 💡 params.value > 0: Giá tăng (> 0) → true → Thêm class 'text-green' → Màu xanh
         'text-red': (params) => params.value < 0,
-        // 💡 Giá giảm (< 0) → Thêm class 'text-red' → Màu đỏ
+        // 💡 'text-red': Tên CSS class sẽ được thêm vào cell
+        // 💡 params.value < 0: Giá giảm (< 0) → true → Thêm class 'text-red' → Màu đỏ
+        // 💡 AG Grid tự động thêm/xóa class khi giá trị thay đổi
       },
     },
 
     // 📊 Column group: Nhóm các cột liên quan
     {
-      headerName: 'Statistics', // 💡 Tên header nhóm
+      headerName: 'Statistics', // 💡 Tên header nhóm - hiển thị ở trên các cột con
       children: [
-        // 💡 Các cột con trong nhóm
+        // 💡 children: Array các cột con trong nhóm
         { field: 'high24h', headerName: '24h High' }, // 💡 Giá cao nhất 24h
         { field: 'low24h', headerName: '24h Low' }, // 💡 Giá thấp nhất 24h
+        // 💡 Các cột này sẽ được nhóm dưới header "Statistics"
       ],
     },
   ],
-  []
+  [] // Empty dependency array
 );
 // ✅ useMemo → Chỉ tạo 1 lần khi component mount
-// 💡 [] deps: Không phụ thuộc vào props/state nào
+// 💡 () => [...]: Function trả về array column definitions
+// 💡 [] deps: Empty dependency array - không phụ thuộc vào props/state nào
 // 💡 Tránh re-create columnDefs mỗi render → Tối ưu performance
+// 💡 Nếu không dùng useMemo → columnDefs tạo mới mỗi render → Grid re-configure → Chậm!
 ```
 
 ---

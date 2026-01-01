@@ -4,47 +4,109 @@
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"Interceptors là middleware functions chạy trước/sau mỗi request/response, giúp centralize authentication, error handling, logging, và data transformation."**
+**"Interceptors là middleware functions (hàm trung gian) chạy trước/sau mỗi request/response, giúp tập trung hóa (centralize) authentication, error handling, logging, và data transformation."**
 
-**🔑 4 Use Cases Chính:**
+**💡 Giải thích đơn giản:**
 
-**1. Authentication & Token Management:**
+- **Middleware**: Là các hàm chạy giữa chừng, không phải điểm đầu hay điểm cuối
+- **Request Interceptor**: Chạy TRƯỚC khi request được gửi đi → Có thể sửa đổi request
+- **Response Interceptor**: Chạy SAU khi nhận response → Có thể xử lý response hoặc lỗi
+- **Centralize**: Tập trung logic vào một nơi → Không cần lặp lại code ở mọi nơi
 
-- Request interceptor: **auto-add JWT token** vào headers
-- Response interceptor: **auto-refresh expired tokens** (401 → refresh → retry)
-- Pattern: Lưu refresh token, khi 401 → call refresh API → update token → retry failed request
+**🔑 4 Use Cases Chính - 4 Trường Hợp Sử Dụng Chính:**
 
-**2. Global Error Handling:**
+**1. Authentication & Token Management - Xác Thực & Quản Lý Token:**
 
-- **Centralized error processing** - không cần try/catch mọi nơi
-- Handle network errors, timeouts, 401/403/500 uniformly
-- Show toast notifications, log errors, redirect login
+- **Request interceptor**: **Tự động thêm JWT token** vào headers
 
-**3. Request/Response Transformation:**
+  - Mỗi request tự động có token → Không cần thêm thủ công mỗi lần
+  - Ví dụ: `Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+
+- **Response interceptor**: **Tự động làm mới token hết hạn** (401 → refresh → retry)
+
+  - Khi gặp lỗi 401 (Unauthorized) → Tự động gọi API refresh token
+  - Lấy token mới → Cập nhật → Thử lại request ban đầu
+
+- **Pattern (Mẫu)**: Lưu refresh token, khi 401 → call refresh API → update token → retry failed request
+  - Flow: Request → 401 → Refresh token → Update token → Retry request → Success
+
+**2. Global Error Handling - Xử Lý Lỗi Toàn Cục:**
+
+- **Centralized error processing** - Xử lý lỗi tập trung, không cần try/catch mọi nơi
+
+  - Tất cả lỗi được xử lý ở một chỗ → Code sạch hơn, dễ maintain
+  - Không cần `try/catch` ở mỗi API call
+
+- Handle network errors, timeouts, 401/403/500 uniformly - Xử lý thống nhất các lỗi
+
+  - Network error (mất mạng) → Hiển thị thông báo "Kiểm tra kết nối"
+  - Timeout (quá thời gian) → Hiển thị "Request quá lâu, vui lòng thử lại"
+  - 401 (Unauthorized) → Tự động refresh token hoặc redirect login
+  - 403 (Forbidden) → Hiển thị "Không có quyền truy cập"
+  - 500 (Server Error) → Hiển thị "Lỗi server, vui lòng thử lại sau"
+
+- Show toast notifications, log errors, redirect login - Hiển thị thông báo, ghi log, chuyển hướng
+  - Toast: Thông báo popup cho user (VD: "Đăng nhập thành công!")
+  - Log: Ghi lại lỗi để developer debug
+  - Redirect: Tự động chuyển về trang login khi hết phiên
+
+**3. Request/Response Transformation - Chuyển Đổi Dữ Liệu:**
 
 - **Auto format** data: camelCase ↔ snake_case, date strings ↔ Date objects
+
+  - **camelCase**: `userName`, `firstName` (JavaScript style)
+  - **snake_case**: `user_name`, `first_name` (Python/Backend style)
+  - Tự động chuyển đổi giữa 2 format → Frontend dùng camelCase, Backend dùng snake_case
+  - Date strings: `"2024-01-01"` → `new Date("2024-01-01")` (Object Date)
+
 - Add common headers: `Content-Type`, `Accept-Language`, device info
-- Strip sensitive data trước khi log
 
-**4. Performance Monitoring & Retry:**
+  - `Content-Type: application/json` → Báo server gửi JSON
+  - `Accept-Language: vi-VN` → Báo server trả về tiếng Việt
+  - Device info: `X-Device-ID`, `X-Platform` → Theo dõi thiết bị user
 
-- Track request **timing** (start time → duration)
-- **Exponential backoff retry** cho failed requests
-- Circuit breaker pattern (dừng requests sau N failures)
+- Strip sensitive data trước khi log - Xóa dữ liệu nhạy cảm trước khi ghi log
+  - Token, password, credit card → Không được log ra console/file
+  - Tránh leak thông tin nhạy cảm trong logs
 
-**⚠️ Lỗi Thường Gặp:**
+**4. Performance Monitoring & Retry - Theo Dõi Hiệu Năng & Thử Lại:**
 
-- Không cleanup interceptor khi component unmount → **memory leak**
-- Modify request config trực tiếp mà không clone → side effects
-- Infinite loop khi retry logic không có **max attempts**
-- Token refresh race condition (multiple 401s cùng lúc) → queue requests
+- Track request **timing** (start time → duration) - Theo dõi thời gian request
 
-**💡 Kiến Thức Senior:**
+  - Lưu thời điểm bắt đầu → Tính thời gian kết thúc → Duration
+  - Ví dụ: Request bắt đầu lúc 10:00:00, kết thúc lúc 10:00:02 → Duration = 2 giây
 
-- **Execution order**: Request interceptors = **LIFO** (last added runs first), Response = **FIFO**
-- Interceptor return Promise → có thể **async/await** bên trong
-- Eject interceptor: `const id = axios.interceptors.request.use(...); axios.interceptors.request.eject(id)`
-- Best practice: Tạo **separate axios instances** cho từng service (auth API, data API) với different interceptors
+- **Exponential backoff retry** cho failed requests - Thử lại với thời gian chờ tăng dần
+
+  - Lần 1 fail → Đợi 1 giây → Thử lại
+  - Lần 2 fail → Đợi 2 giây → Thử lại
+  - Lần 3 fail → Đợi 4 giây → Thử lại
+  - → Tăng gấp đôi mỗi lần (1s → 2s → 4s → 8s...)
+
+- Circuit breaker pattern (dừng requests sau N failures) - Mẫu cầu chì
+  - Nếu fail quá nhiều lần (VD: 5 lần) → Tự động ngắt (không gọi API nữa)
+  - Sau một thời gian (VD: 60 giây) → Thử lại 1 lần
+  - Nếu thành công → Mở lại (cho phép gọi API bình thường)
+  - → Bảo vệ server khỏi quá tải khi server đang down
+
+**💡 Kiến Thức Senior - Advanced Knowledge:**
+
+- **Interceptor return Promise → có thể async/await bên trong**
+
+  - Interceptor có thể là async function → Dùng `await` để chờ async operations
+  - Ví dụ: `async (config) => { await refreshToken(); return config; }`
+
+- **Eject interceptor - Xóa interceptor**:
+
+  - `const id = axios.interceptors.request.use(...)` → Lưu ID
+  - `axios.interceptors.request.eject(id)` → Xóa interceptor bằng ID
+  - → Quan trọng để cleanup, tránh memory leak
+
+- **Best practice: Tạo separate axios instances cho từng service**
+  - `mainAPI` cho business logic (có token interceptor)
+  - `authAPI` cho authentication (KHÔNG có token interceptor → Tránh infinite loop)
+  - `uploadAPI` cho file uploads (timeout dài hơn, có progress tracking)
+  - → Mỗi service có config và interceptors riêng → Không ảnh hưởng lẫn nhau
 
 **⚡ Quick Summary:**
 
@@ -58,31 +120,101 @@
 
 **Trả lời:**
 
-**🔥 Core Concepts:**
+**🔥 Core Concepts - Khái Niệm Cốt Lõi:**
 
-- **Interceptors**: Middleware functions được execute trước/sau mỗi HTTP request/response
-- **Request Interceptors**: Transform/modify requests trước khi gửi đến server (add headers, auth tokens, logging)
-- **Response Interceptors**: Process responses hoặc handle errors trước khi return về caller
-- **Execution Order**: Request interceptors chạy theo thứ tự LIFO (Last In First Out), Response interceptors chạy theo FIFO (First In First Out)
-- **Chain of Responsibility Pattern**: Mỗi interceptor có thể modify data và pass sang interceptor tiếp theo
+- **Interceptors - Bộ chặn**:
 
-**✅ Ưu điểm:**
+  - Middleware functions (hàm trung gian) được execute (thực thi) trước/sau mỗi HTTP request/response
+  - Giống như "cửa kiểm soát" → Mọi request/response đều phải đi qua
+  - Có thể sửa đổi, kiểm tra, xử lý request/response trước khi tiếp tục
 
-- **Centralized Logic**: Authentication, logging, error handling ở một nơi duy nhất
-- **Code Reusability**: Không cần lặp lại logic cho mỗi request
-- **Separation of Concerns**: Tách logic infrastructure ra khỏi business logic
-- **Global Error Handling**: Xử lý errors thống nhất (401, 403, 500, network errors)
-- **Request/Response Transformation**: Format data tự động (camelCase ↔ snake_case)
-- **Performance Monitoring**: Track request timing, add metrics
-- **Retry Logic**: Tự động retry failed requests với exponential backoff
-- **Token Refresh**: Automatically refresh expired tokens trước khi request
+- **Request Interceptors - Bộ chặn Request**:
 
-**⚠️ Nhược điểm:**
+  - Transform/modify (chuyển đổi/sửa đổi) requests trước khi gửi đến server
+  - Có thể: add headers (thêm tiêu đề), auth tokens (token xác thực), logging (ghi log)
+  - Ví dụ: Tự động thêm `Authorization: Bearer token` vào mọi request
 
-- **Side Effects**: Có thể gây unexpected behaviors nếu không careful
-- **Debugging Complexity**: Khó debug khi có nhiều interceptors chained
-- **Performance Overhead**: Mỗi interceptor adds processing time
-- **Memory Leaks**: Nếu không cleanup properly khi component unmount
+- **Response Interceptors - Bộ chặn Response**:
+
+  - Process responses (xử lý phản hồi) hoặc handle errors (xử lý lỗi) trước khi return về caller (người gọi)
+  - Có thể: transform data (chuyển đổi dữ liệu), catch errors (bắt lỗi), retry (thử lại)
+  - Ví dụ: Tự động refresh token khi gặp lỗi 401
+
+- **Execution Order - Thứ Tự Thực Thi**:
+
+  - **Request interceptors**: Chạy theo thứ tự **LIFO** (Last In First Out - Vào sau chạy trước)
+    - Interceptor được add cuối cùng → Chạy đầu tiên
+    - Ví dụ: Add 1 → Add 2 → Add 3 → Execution: 3 → 2 → 1
+  - **Response interceptors**: Chạy theo thứ tự **FIFO** (First In First Out - Vào trước chạy trước)
+    - Interceptor được add đầu tiên → Chạy đầu tiên
+    - Ví dụ: Add 1 → Add 2 → Add 3 → Execution: 1 → 2 → 3
+
+- **Chain of Responsibility Pattern - Mẫu Chuỗi Trách Nhiệm**:
+  - Mỗi interceptor có thể modify (sửa đổi) data và pass (chuyển) sang interceptor tiếp theo
+  - Giống như "dây chuyền" → Mỗi interceptor xử lý một phần → Chuyển tiếp
+  - Ví dụ: Interceptor 1 thêm token → Interceptor 2 thêm header → Interceptor 3 log → Request sent
+
+**✅ Ưu điểm - Advantages:**
+
+- **Centralized Logic - Logic Tập Trung**:
+
+  - Authentication (xác thực), logging (ghi log), error handling (xử lý lỗi) ở một nơi duy nhất
+  - → Dễ maintain (bảo trì), dễ thay đổi, không cần sửa nhiều nơi
+
+- **Code Reusability - Tái Sử Dụng Code**:
+
+  - Không cần lặp lại logic cho mỗi request
+  - → Viết 1 lần, dùng cho tất cả requests
+
+- **Separation of Concerns - Tách Biệt Mối Quan Tâm**:
+
+  - Tách logic infrastructure (cơ sở hạ tầng) ra khỏi business logic (logic nghiệp vụ)
+  - → Code rõ ràng hơn, dễ test hơn
+
+- **Global Error Handling - Xử Lý Lỗi Toàn Cục**:
+
+  - Xử lý errors thống nhất (401, 403, 500, network errors)
+  - → User experience tốt hơn, không cần xử lý lỗi ở mọi nơi
+
+- **Request/Response Transformation - Chuyển Đổi Dữ Liệu**:
+
+  - Format data tự động (camelCase ↔ snake_case)
+  - → Frontend và Backend có thể dùng format khác nhau, tự động chuyển đổi
+
+- **Performance Monitoring - Theo Dõi Hiệu Năng**:
+
+  - Track request timing (theo dõi thời gian), add metrics (thêm số liệu)
+  - → Phát hiện requests chậm, tối ưu hóa performance
+
+- **Retry Logic - Logic Thử Lại**:
+
+  - Tự động retry failed requests với exponential backoff
+  - → Tăng khả năng thành công khi có lỗi tạm thời (network hiccup)
+
+- **Token Refresh - Làm Mới Token**:
+  - Automatically refresh expired tokens trước khi request
+  - → User không bị logout đột ngột, trải nghiệm mượt mà hơn
+
+**⚠️ Nhược điểm - Disadvantages:**
+
+- **Side Effects - Tác Động Phụ**:
+
+  - Có thể gây unexpected behaviors (hành vi không mong muốn) nếu không careful (cẩn thận)
+  - → Phải test kỹ, đảm bảo không ảnh hưởng đến các requests khác
+
+- **Debugging Complexity - Độ Phức Tạp Debug**:
+
+  - Khó debug khi có nhiều interceptors chained (chuỗi)
+  - → Khó biết interceptor nào gây lỗi, cần log chi tiết
+
+- **Performance Overhead - Chi Phí Hiệu Năng**:
+
+  - Mỗi interceptor adds processing time (thêm thời gian xử lý)
+  - → Mỗi interceptor thêm ~0.1-1ms, nhiều interceptors → chậm hơn
+
+- **Memory Leaks - Rò Rỉ Bộ Nhớ**:
+  - Nếu không cleanup properly (dọn dẹp đúng cách) khi component unmount
+  - → Interceptors vẫn còn trong memory → Chiếm RAM, có thể crash app
 
 **🎯 Use Cases & Hoạt Động Tối Ưu:**
 
@@ -212,89 +344,132 @@ apiClient.interceptors.response.use(
     });
 
     // 🔄 Case 1: RETRY LOGIC - Auto retry on network errors (Tự động thử lại khi lỗi mạng)
+    // Kiểm tra: Không có response = lỗi mạng (network error, timeout, server down...)
     if (!error.response && originalRequest && !originalRequest._retry) {
-      // ⚠️ Không có response = lỗi mạng
-      originalRequest._retry = true; // 🏷️ Đánh dấu đã retry
+      // ⚠️ Không có response = lỗi mạng (không phải lỗi từ server)
+      // 💡 error.response = undefined → Server không phản hồi (mất mạng, timeout...)
+      // 💡 originalRequest = Request ban đầu (để retry)
+      // 💡 !originalRequest._retry = Chưa retry lần nào (tránh retry mãi mãi)
+
+      originalRequest._retry = true; // 🏷️ Đánh dấu đã retry (tránh infinite loop)
       originalRequest._retryCount = (originalRequest._retryCount || 0) + 1; // ➕ Tăng số lần retry
+      // 💡 _retryCount: Đếm số lần đã retry (0 → 1 → 2 → 3)
 
       if (originalRequest._retryCount <= 3) {
-        // 3️⃣ Maximum 3 lần retry
+        // 3️⃣ Maximum 3 lần retry (tổng 4 lần: 1 lần đầu + 3 lần retry)
         console.log(
           `🔄 Retrying request (${originalRequest._retryCount}/3)...`
         );
+
+        // ⏱️ Exponential backoff: Thời gian chờ tăng dần (1s, 2s, 3s)
+        // 💡 Lần 1: 1000ms (1 giây)
+        // 💡 Lần 2: 2000ms (2 giây)
+        // 💡 Lần 3: 3000ms (3 giây)
+        // → Cho server thời gian recover khi bị quá tải
         await new Promise((resolve) =>
           setTimeout(resolve, 1000 * originalRequest._retryCount)
-        ); // ⏱️ Exponential backoff: 1s, 2s, 3s
-        return apiClient(originalRequest); // 🔁 Thử lại request
+        );
+
+        return apiClient(originalRequest); // 🔁 Thử lại request ban đầu
+        // 💡 Gọi lại request với config gốc → Có thể thành công lần này
       }
+      // ⚠️ Nếu đã retry 3 lần vẫn fail → Không retry nữa, throw error
     }
 
     // 🔐 Case 2: TOKEN REFRESH - 401 Unauthorized (Làm mới token khi hết hạn)
+    // Kiểm tra: 401 = Token hết hạn hoặc không hợp lệ
     if (
       error.response?.status === 401 &&
       originalRequest &&
       !originalRequest._retry
     ) {
-      // 🔒 401 = Token hết hạn
+      // 🔒 401 = Unauthorized (Token hết hạn hoặc không hợp lệ)
+      // 💡 error.response?.status === 401 → Server trả về lỗi 401
+      // 💡 originalRequest = Request ban đầu (để retry sau khi refresh)
+      // 💡 !originalRequest._retry = Chưa refresh (tránh infinite loop)
+
       originalRequest._retry = true; // 🏷️ Đánh dấu đã refresh (tránh infinite loop)
+      // 💡 Quan trọng: Đánh dấu ngay để tránh nhiều requests cùng refresh token
 
       try {
         // 🔄 Attempt to refresh token (Thử làm mới token)
-        const refreshToken = localStorage.getItem('refreshToken'); // 📦 Lấy refresh token
+        const refreshToken = localStorage.getItem('refreshToken'); // 📦 Lấy refresh token từ localStorage
+        // 💡 Refresh token: Token dùng để lấy access token mới (thường có thời hạn dài hơn)
+
+        // ⚠️ QUAN TRỌNG: Dùng axios riêng (KHÔNG dùng apiClient) để tránh infinite loop
+        // 💡 Nếu dùng apiClient → Sẽ trigger lại interceptor → Infinite loop!
         const response = await axios.post('/auth/refresh', { refreshToken }); // 📡 Gọi API refresh
+        // 💡 axios: Default axios instance (không có interceptors) hoặc authAPI riêng
 
-        const { accessToken, refreshToken: newRefreshToken } = response.data; // 🎫 Nhận tokens mới
+        const { accessToken, refreshToken: newRefreshToken } = response.data; // 🎫 Nhận tokens mới từ server
+        // 💡 Server trả về: { accessToken: '...', refreshToken: '...' }
 
-        // 💾 Save new tokens (Lưu tokens mới)
+        // 💾 Save new tokens (Lưu tokens mới vào localStorage)
         localStorage.setItem('accessToken', accessToken); // 💾 Lưu access token mới
         localStorage.setItem('refreshToken', newRefreshToken); // 💾 Lưu refresh token mới
+        // 💡 Cập nhật tokens mới → Các requests sau sẽ dùng token mới
 
         // 🔁 Retry original request with new token (Thử lại request với token mới)
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${accessToken}`; // 🎫 Gắn token mới vào header
+          // 💡 Cập nhật header với token mới → Request sẽ thành công
         }
 
         console.log(
           '🔐 Token refreshed successfully, retrying original request...'
         );
-        return apiClient(originalRequest); // ✅ Thử lại request ban đầu
+        return apiClient(originalRequest); // ✅ Thử lại request ban đầu với token mới
+        // 💡 Request ban đầu sẽ thành công vì đã có token mới
       } catch (refreshError) {
         // ❌ Refresh failed → logout user (Refresh thất bại → đăng xuất)
+        // 💡 Refresh token cũng hết hạn hoặc không hợp lệ → Phải đăng nhập lại
         console.error('❌ Token refresh failed, logging out...');
-        localStorage.clear(); // 🗑️ Xóa hết localStorage
+        localStorage.clear(); // 🗑️ Xóa hết localStorage (tokens, user data...)
         window.location.href = '/login'; // ↩️ Redirect về trang login
-        return Promise.reject(refreshError);
+        return Promise.reject(refreshError); // 🚫 Reject error để caller biết
       }
     }
 
     // 🚫 Case 3: FORBIDDEN - 403 (No permission - Không có quyền)
     if (error.response?.status === 403) {
-      // 🔒 403 = Không có quyền truy cập
+      // 🔒 403 = Forbidden (Không có quyền truy cập)
+      // 💡 Khác với 401: 401 = Chưa đăng nhập, 403 = Đã đăng nhập nhưng không có quyền
+      // 💡 Ví dụ: User thường cố truy cập trang admin → 403
       console.error('🚫 Access Forbidden - You do not have permission');
       // 🔔 Show toast notification or redirect (Hiển thị thông báo hoặc redirect)
       // toast.error('You do not have permission to access this resource');
+      // 💡 Có thể redirect về trang chủ hoặc hiển thị thông báo lỗi
     }
 
     // ⚠️ Case 4: NOT FOUND - 404 (Không tìm thấy tài nguyên)
     if (error.response?.status === 404) {
-      // 🔍 404 = URL không tồn tại
+      // 🔍 404 = Not Found (URL không tồn tại)
+      // 💡 Ví dụ: GET /api/users/999 → User không tồn tại → 404
       console.error('⚠️ Resource not found');
       // 🎯 Handle 404 error (Xử lý lỗi 404 - VD: redirect to 404 page)
+      // 💡 Có thể redirect về trang 404 hoặc hiển thị thông báo "Không tìm thấy"
     }
 
     // 🔥 Case 5: SERVER ERROR - 500+ (Lỗi server nội bộ)
     if (error.response?.status && error.response.status >= 500) {
-      // 💥 500+ = Lỗi server
+      // 💥 500+ = Server Error (Lỗi server nội bộ)
+      // 💡 500 = Internal Server Error (Lỗi code, database...)
+      // 💡 502 = Bad Gateway (Server proxy lỗi)
+      // 💡 503 = Service Unavailable (Server quá tải)
       console.error('🔥 Server Error - Please try again later');
       // 🔔 Show user-friendly error message (Hiển thị thông báo thân thiện)
       // toast.error('Server error occurred. Please try again later.');
+      // 💡 Không nên hiển thị chi tiết lỗi cho user (bảo mật)
     }
 
     // 🌐 Case 6: NETWORK ERROR - No response from server (Lỗi mạng)
     if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
       // ⏱️ Timeout hoặc mất kết nối
+      // 💡 error.code === 'ECONNABORTED' → Request bị hủy (timeout hoặc abort)
+      // 💡 error.message.includes('timeout') → Request quá thời gian chờ
       console.error('⏱️ Request Timeout - Check your connection');
       // 📶 toast.error('Request timeout. Please check your internet connection.');
+      // 💡 User nên kiểm tra kết nối mạng hoặc thử lại sau
     }
 
     // 📦 Return formatted error (Trả về lỗi đã format)
@@ -417,65 +592,85 @@ apiClient.interceptors.request.use(async (config) => {
 });
 
 // ============================================
-// 7. ADVANCED: Request Deduplication
+// 7. ADVANCED: Request Deduplication - Loại Bỏ Requests Trùng Lặp
 // ============================================
 /**
- * Vietnamese Explanation:
+ * Vietnamese Explanation - Giải Thích Tiếng Việt:
  * - Ngăn chặn duplicate requests (cùng URL + method + params)
- * - Nếu có request đang pending, return kết quả của request đó
+ *   → Tránh gọi API nhiều lần giống nhau (VD: User click nhiều lần button)
+ * - Nếu có request đang pending (đang chạy), return kết quả của request đó
+ *   → Reuse (tái sử dụng) kết quả thay vì tạo request mới
  * - Useful khi user click nhiều lần hoặc component re-render
+ *   → Tránh spam server, tiết kiệm bandwidth
  */
 const pendingRequests = new Map<string, Promise<any>>(); // 📋 Map lưu các pending requests
+// 💡 Key: `${method}:${url}:${params}` (VD: 'GET:/api/users:{"page":1}')
+// 💡 Value: Promise của request đó (đang chạy)
 
 apiClient.interceptors.request.use(
   (config) => {
     // 🔑 Create unique key for this request (Tạo key duy nhất cho request)
+    // 💡 Key = method + URL + params → Identify request giống nhau
     const requestKey = `${config.method}:${config.url}:${JSON.stringify(
       config.params
     )}`;
+    // 💡 Ví dụ: 'GET:/api/users:{"page":1,"limit":10}'
+    // 💡 2 requests giống nhau → Cùng key → Detect duplicate
 
     // ❓ Nếu đã có request pending với key này (Request trùng lặp)
     if (pendingRequests.has(requestKey)) {
       console.log('🔄 Duplicate request detected, using pending request...');
       // 🔁 Return pending promise (sẽ reject này để reuse pending request)
+      // 💡 Throw error đặc biệt với flag __DUPLICATE__ để error handler biết
       throw {
-        __DUPLICATE__: true, // 🏷️ Đánh dấu là duplicate
+        __DUPLICATE__: true, // 🏷️ Đánh dấu là duplicate (không phải lỗi thật)
         promise: pendingRequests.get(requestKey), // 📦 Trả về promise đang pending
+        // 💡 Promise này sẽ resolve/reject khi request đầu tiên xong
       };
     }
 
     // 💾 Store request key in config for later cleanup (Lưu key để cleanup sau)
     (config as any).__requestKey = requestKey;
+    // 💡 Lưu key vào config → Response interceptor sẽ xóa khỏi pendingRequests
 
-    return config;
+    return config; // ✅ Tiếp tục request bình thường (không duplicate)
   },
   (error) => {
     // ✅ Nếu là duplicate request, return pending promise (Trả về pending promise)
+    // 💡 Error handler: Bắt error từ request interceptor
     if (error.__DUPLICATE__) {
       return error.promise; // 🔁 Reuse kết quả của request đang chạy
+      // 💡 Không tạo request mới → Tiết kiệm bandwidth, tránh spam server
     }
-    return Promise.reject(error);
+    return Promise.reject(error); // ❌ Lỗi thật → Reject bình thường
   }
 );
 
 apiClient.interceptors.response.use(
   (response) => {
     // 🗑️ Remove from pending requests (Xóa khỏi pending requests khi hoàn thành)
+    // 💡 Quan trọng: Cleanup để tránh memory leak và cho phép request mới
     const requestKey = (response.config as any).__requestKey;
     if (requestKey) {
-      pendingRequests.delete(requestKey); // 🗑️ Xóa request key
+      pendingRequests.delete(requestKey); // 🗑️ Xóa request key khỏi Map
+      // 💡 Sau khi xóa → Request mới với cùng key có thể được tạo lại
     }
-    return response;
+    return response; // ✅ Trả về response bình thường
   },
   (error) => {
     // 🗑️ Remove from pending requests even on error (Xóa ngay cả khi lỗi)
+    // 💡 Quan trọng: Phải cleanup cả khi lỗi (không chỉ khi thành công)
     const requestKey = (error.config as any).__requestKey;
     if (requestKey) {
-      pendingRequests.delete(requestKey); // 🗑️ Xóa request key
+      pendingRequests.delete(requestKey); // 🗑️ Xóa request key khỏi Map
+      // 💡 Nếu không xóa → Request key vẫn còn → Không thể tạo request mới
     }
-    return Promise.reject(error);
+    return Promise.reject(error); // ❌ Reject error để caller xử lý
   }
 );
+// 💡 Tại sao cleanup quan trọng?
+// - Nếu không xóa → pendingRequests Map sẽ lớn dần → Memory leak
+// - Nếu không xóa → Request mới với cùng key sẽ bị block (vì Map vẫn có key cũ)
 
 // ============================================
 // 8. USAGE EXAMPLES
@@ -535,21 +730,6 @@ export const useAxiosInterceptors = () => {
   }, []); // 🎯 Empty dependency array = run once on mount (Chỉ chạy 1 lần khi mount)
 };
 ```
-
-**🎯 Best Practices - Tối Ưu Hóa:**
-
-1. **Always Cleanup Interceptors**: Eject interceptors khi component unmount để tránh memory leaks
-2. **Use Separate Axios Instances**: Tạo riêng instance cho từng API (auth API, data API, analytics API)
-3. **Avoid Heavy Computation**: Interceptors should be fast, avoid blocking operations
-4. **Proper Error Handling**: Always return Promise.reject() trong error handler
-5. **Token Refresh Strategy**: Implement queue cho multiple requests khi token expired
-6. **Development vs Production**: Use different logging levels (verbose in dev, minimal in prod)
-7. **Request/Response Transformation**: Centralize data transformation logic (camelCase ↔ snake_case)
-8. **Performance Monitoring**: Track slow requests and send metrics to monitoring service
-9. **Request Deduplication**: Prevent duplicate identical requests
-10. **Rate Limiting**: Implement request queuing to respect API rate limits
-11. **Retry Strategy**: Use exponential backoff for failed requests
-12. **Timeout Configuration**: Set appropriate timeouts based on endpoint type
 
 **⚠️ Common Mistakes - Lỗi Thường Gặp:**
 
@@ -618,61 +798,100 @@ axios.interceptors.response.use(
 
 ## **📚 TẠI SAO CẦN AXIOS INSTANCE?**
 
-### **❌ Problem: Dùng Default Axios**
+### **❌ Problem: Dùng Default Axios - Vấn Đề Khi Dùng Axios Mặc Định**
 
 ```typescript
 // ❌ BAD: Global axios - shared interceptors, config cho TẤT CẢ requests
+// 💡 Vấn đề: Dùng axios mặc định → Tất cả requests dùng chung config và interceptors
 import axios from 'axios';
 
 // ⚠️ Problem 1: Tất cả requests dùng chung config
 axios.defaults.baseURL = 'https://api.example.com'; // 🌐 Ảnh hưởng GLOBAL - Tất cả requests!
+// 💡 Tất cả requests (kể cả upload, auth, public API) đều dùng baseURL này
 axios.defaults.timeout = 5000; // ⏱️ Ảnh hưởng GLOBAL - Tất cả requests!
+// 💡 Upload file lớn cũng chỉ có 5s timeout → Sẽ timeout!
 
 // ⚠️ Problem 2: Interceptors apply cho TẤT CẢ
 axios.interceptors.request.use((config) => {
   config.headers.Authorization = 'Bearer token'; // 🔐 Cả auth API và public API đều có token!
   return config; // 😱 Cả auth API và public API đều có token!
+  // 💡 Vấn đề: Public API (blog, landing page) không cần token → Lãng phí, có thể gây lỗi
 });
 
 // ⚠️ Problem 3: Không thể config riêng cho từng service
 await axios.get('/users'); // 🔍 Uses global config
 await axios.post('https://upload.api.com/files', file); // 😱 Cũng dùng config trên!
+// 💡 Upload API cần timeout dài hơn (60s) nhưng chỉ có 5s → Timeout!
 ```
 
-**Hậu quả:**
+**Hậu quả - Consequences:**
 
-- ❌ Conflict config giữa các services (timeout khác nhau)
-- ❌ Interceptors apply cho cả requests không cần (auth token ở public API)
-- ❌ Khó debug (không biết request nào dùng config gì)
-- ❌ Khó test (global state affects tests)
-- ❌ Memory leak khi không cleanup interceptors
+- ❌ **Conflict config giữa các services** (timeout khác nhau)
+
+  - Upload API cần 60s timeout nhưng chỉ có 5s → Timeout!
+  - Auth API cần 5s timeout nhưng có thể bị ảnh hưởng bởi config khác
+
+- ❌ **Interceptors apply cho cả requests không cần** (auth token ở public API)
+
+  - Public API (blog, landing page) không cần token → Lãng phí, có thể gây lỗi
+  - Analytics API không cần token → Không cần thiết
+
+- ❌ **Khó debug** (không biết request nào dùng config gì)
+
+  - Tất cả requests dùng chung config → Khó biết request nào có vấn đề
+  - Khó trace lỗi vì không biết interceptor nào ảnh hưởng
+
+- ❌ **Khó test** (global state affects tests)
+
+  - Global config ảnh hưởng đến tất cả tests → Tests có thể fail không rõ lý do
+  - Khó mock vì phải mock global axios
+
+- ❌ **Memory leak khi không cleanup interceptors**
+  - Interceptors được add vào global axios → Không cleanup được dễ dàng
+  - Component unmount nhưng interceptors vẫn còn → Memory leak
 
 ---
 
-### **✅ Solution: Separate Axios Instances**
+### **✅ Solution: Separate Axios Instances - Giải Pháp: Tách Axios Instances**
 
 ```typescript
 // ✅ GOOD: Mỗi service có instance riêng
+// 💡 Mỗi instance độc lập → Config và interceptors riêng → Không ảnh hưởng lẫn nhau
+
 const mainAPI = axios.create({
   baseURL: 'https://api.example.com',
   timeout: 10000,
 }); // 🌐 Main API - 10s timeout
+// 💡 Dùng cho: Business logic (users, posts, comments...)
+// 💡 Có token interceptor, error handling, logging
+
 const authAPI = axios.create({
   baseURL: 'https://auth.example.com',
   timeout: 5000,
 }); // 🔐 Auth API - 5s timeout (nhanh hơn)
+// 💡 Dùng cho: Authentication (login, register, refresh token...)
+// 💡 KHÔNG có token interceptor (tránh infinite loop khi refresh token)
+// 💡 Timeout ngắn hơn vì auth requests nên nhanh
+
 const uploadAPI = axios.create({
   baseURL: 'https://upload.example.com',
   timeout: 60000,
 }); // 📤 Upload API - 60s timeout (file lớn)
+// 💡 Dùng cho: File uploads (images, documents...)
+// 💡 Timeout dài hơn vì file lớn cần nhiều thời gian
+// 💡 Có progress tracking interceptor
 
 // ✅ Mỗi instance có interceptors riêng, không ảnh hưởng lẫn nhau
 mainAPI.interceptors.request.use((config) => {
-  /* 🎯 Only for mainAPI */
+  /* 🎯 Only for mainAPI - Chỉ ảnh hưởng mainAPI */
+  // 💡 Thêm token, logging, request ID...
 });
 authAPI.interceptors.request.use((config) => {
-  /* 🔐 Only for authAPI */
+  /* 🔐 Only for authAPI - Chỉ ảnh hưởng authAPI */
+  // 💡 KHÔNG thêm token (tránh infinite loop)
+  // 💡 Chỉ thêm device fingerprint, rate limit handling...
 });
+// 💡 Upload API có interceptors riêng cho progress tracking
 ```
 
 ---
@@ -1335,31 +1554,7 @@ uploadAPI.post('/upload', largeFile);  // ✅ Đủ thời gian cho file lớn
 // 💡 Lợi ích: Giảm overhead của việc tạo connection mới (TCP handshake...)
 // 💡 VD: 10 requests đến api.example.com → Chỉ tạo 1 connection, reuse 9 lần
 
-// ✅ 2. Request Deduplication (Loại bỏ requests trùng lặp)
-const pendingRequests = new Map<string, Promise<any>>(); // 📋 Map lưu requests đang chạy
-mainAPI.interceptors.request.use((config) => {
-  const key = `${config.method}:${config.url}`; // 🔑 Tạo unique key
-  // 💡 Key = method + URL để identify request giống nhau
-
-  if (pendingRequests.has(key)) {
-    // ❓ Nếu đang có request giống vậy đang chạy
-    console.log('🔄 Reusing pending request'); // 📝 Log khi reuse
-    return Promise.reject({
-      __DUPLICATE__: true,
-      promise: pendingRequests.get(key),
-    }); // 🔁 Trả về promise đang chạy (không tạo request mới)
-  }
-
-  // 📡 Tạo request mới và lưu vào pending
-  const promise = mainAPI.request(config).finally(() => {
-    pendingRequests.delete(key); // 🗑️ Xóa khi hoàn thành
-  });
-  pendingRequests.set(key, promise); // 💾 Lưu vào pending
-  return config; // ✅ Tiếp tục request
-});
-// 💡 Lợi ích: Tránh spam requests (VD: User click nhiều lần button)
-
-// ✅ 3. Response Caching (GET only) (Cache kết quả - Chỉ GET)
+// ✅ 2. Response Caching (GET only) (Cache kết quả - Chỉ GET)
 const cache = new Map<string, { data: any; timestamp: number }>(); // 💾 Map lưu cache
 mainAPI.interceptors.request.use((config) => {
   if (config.method === 'get' && cache.has(config.url)) {
@@ -1494,341 +1689,6 @@ AXIOS INSTANCE STRATEGY
 
 ---
 
-### **3. Request Cancellation (Hủy Request)**
-
-```typescript
-// ═══════════════════════════════════════════════════════════
-// ABORT CONTROLLER (Modern - Cách hiện đại để hủy request)
-// ═══════════════════════════════════════════════════════════
-
-const controller = new AbortController(); // 🚫 Tạo AbortController để điều khiển việc hủy request
-// 💡 AbortController: Cho phép hủy request bất cứ lúc nào
-// 💡 Signal: Đối tượng để truyền vào axios config
-
-axios
-  .get('/api/users', { signal: controller.signal }) // 📡 Gửi request với signal
-  .catch((error) => {
-    if (axios.isCancel(error)) {
-      // ✅ Kiểm tra xem request có bị hủy không
-      console.log('Request canceled'); // 📝 Log khi request bị hủy
-      // 💡 axios.isCancel(): Kiểm tra error có phải do cancel không
-    }
-  });
-
-controller.abort(); // 🚫 Hủy request ngay lập tức
-// 💡 abort(): Dừng request đang chạy, trigger catch với CancelError
-
-// ═══════════════════════════════════════════════════════════
-// USE CASE: Cancel on unmount (React - Hủy khi component unmount)
-// ═══════════════════════════════════════════════════════════
-
-useEffect(() => {
-  const controller = new AbortController(); // 🚫 Tạo controller trong useEffect
-
-  axios
-    .get('/api/users', { signal: controller.signal }) // 📡 Request có signal
-    .then(({ data }) => setUsers(data)) // ✅ Lưu data nếu thành công
-    .catch((error) => !axios.isCancel(error) && console.error(error)); // ❌ Chỉ log lỗi thật (không phải cancel)
-  // 💡 !axios.isCancel(): Bỏ qua lỗi do cancel (không phải lỗi thật)
-
-  return () => controller.abort(); // 🧹 Cleanup: Hủy request khi component unmount
-  // 💡 Quan trọng: Tránh memory leak, tránh update state sau khi unmount
-}, []);
-```
-
----
-
-### **4. File Upload & Download (Tải File Lên & Xuống)**
-
-```typescript
-// ═══════════════════════════════════════════════════════════
-// UPLOAD với Progress (Tải file lên với theo dõi tiến độ)
-// ═══════════════════════════════════════════════════════════
-
-const uploadFile = async (file: File) => {
-  const formData = new FormData(); // 📦 Tạo FormData để gửi file
-  // 💡 FormData: Cho phép gửi file qua HTTP POST
-  formData.append('file', file); // 📄 Thêm file vào FormData
-  // 💡 append(): Thêm field vào FormData (key: 'file', value: File object)
-
-  const { data } = await axios.post('/api/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }, // 📝 Header cho file upload
-    // 💡 multipart/form-data: Content-Type dành cho file uploads
-    // ⚠️ Lưu ý: KHÔNG set Content-Type manually, để browser tự set (có boundary)
-    onUploadProgress: (e) => {
-      // 📊 Callback theo dõi tiến độ upload
-      const percent = Math.round((e.loaded * 100) / e.total!); // 📊 Tính % đã upload
-      // 💡 e.loaded: Số bytes đã upload
-      // 💡 e.total: Tổng số bytes cần upload
-      console.log(`📤 Upload: ${percent}%`); // 📝 Log tiến độ
-      // 💡 Có thể dispatch vào Redux/Zustand để update UI progress bar
-      // setUploadProgress(percent);  // 📢 Cập nhật state
-    },
-  });
-
-  return data; // 📦 Trả về response data (VD: { url: '...', filename: '...' })
-};
-
-// ═══════════════════════════════════════════════════════════
-// DOWNLOAD File (Tải file xuống)
-// ═══════════════════════════════════════════════════════════
-
-const downloadFile = async (fileId: string) => {
-  const response = await axios.get(`/api/files/${fileId}`, {
-    responseType: 'blob', // ⚠️ QUAN TRỌNG: Phải set blob để nhận binary data
-    // 💡 blob: Binary Large Object - Dữ liệu nhị phân (file, image, PDF...)
-    // 💡 Không set responseType: Nhận về JSON string (sai!)
-  });
-
-  // 🔗 Tạo URL từ blob để download
-  const url = window.URL.createObjectURL(new Blob([response.data])); // 🌐 Tạo object URL từ blob
-  // 💡 createObjectURL(): Tạo URL tạm thời từ blob (VD: blob:http://localhost:3000/abc123)
-  // 💡 new Blob(): Tạo blob object từ response data
-
-  const link = document.createElement('a'); // 🔗 Tạo thẻ <a> để trigger download
-  link.href = url; // 🔗 Gán URL vào href
-  link.download = 'filename.pdf'; // 📄 Tên file khi download
-  // 💡 download attribute: Browser sẽ download thay vì navigate
-  link.click(); // 🖱️ Click programmatically để trigger download
-
-  window.URL.revokeObjectURL(url); // 🗑️ Xóa object URL để giải phóng memory
-  // 💡 revokeObjectURL(): Quan trọng để tránh memory leak!
-  // 💡 Object URL chiếm memory, phải revoke sau khi dùng xong
-};
-```
-
----
-
-### **5. Error Handling (Xử Lý Lỗi)**
-
-```typescript
-// ═══════════════════════════════════════════════════════════
-// TYPE-SAFE ERROR HANDLING (Xử lý lỗi an toàn với TypeScript)
-// ═══════════════════════════════════════════════════════════
-
-try {
-  const response = await axios.get('/api/users'); // 📡 Gọi API
-} catch (error) {
-  // ✅ Kiểm tra xem có phải AxiosError không (Type-safe)
-  if (axios.isAxiosError(error)) {
-    // 💡 axios.isAxiosError(): Type guard để TypeScript biết đây là AxiosError
-
-    if (error.response) {
-      // ✅ Server đã phản hồi với error status (4xx, 5xx)
-      // 💡 error.response: Server đã nhận request và trả về error
-      const { status, data } = error.response; // 📦 Lấy status code và error data
-
-      switch (status) {
-        case 400:
-          console.error('❌ Bad Request - Dữ liệu không hợp lệ');
-          // 💡 400: Client gửi request sai format
-          break;
-        case 401:
-          window.location.href = '/login'; // ↩️ Redirect về login
-          // 💡 401: Chưa đăng nhập hoặc token hết hạn
-          break;
-        case 403:
-          console.error('🚫 Forbidden - Không có quyền truy cập');
-          // 💡 403: Đã đăng nhập nhưng không có quyền
-          break;
-        case 404:
-          console.error('⚠️ Not Found - Tài nguyên không tồn tại');
-          // 💡 404: URL không tồn tại
-          break;
-        case 422:
-          console.error('📝 Validation Error:', data.errors);
-          // 💡 422: Dữ liệu không hợp lệ (validation errors)
-          // 💡 data.errors: Thường là object chứa lỗi validation
-          break;
-        case 500:
-          console.error('🔥 Server Error - Lỗi server nội bộ');
-          // 💡 500: Lỗi server (database, code...)
-          break;
-      }
-    } else if (error.request) {
-      // ⚠️ Request đã gửi nhưng không nhận được response (network error, timeout)
-      // 💡 error.request: Request đã được gửi nhưng server không phản hồi
-      console.error('🌐 Network error or timeout - Kiểm tra kết nối mạng');
-      // 💡 Có thể là: Mất mạng, server down, timeout
-    } else {
-      // ❌ Lỗi khi setup request (trước khi gửi)
-      // 💡 Lỗi này xảy ra trước khi request được gửi đi
-      console.error('🚨 Request setup error:', error.message);
-      // 💡 VD: URL không hợp lệ, config sai...
-    }
-  } else {
-    // ⚠️ Không phải AxiosError (lỗi khác)
-    console.error('❓ Unknown error:', error);
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// CUSTOM ERROR HANDLER (Hàm xử lý lỗi tùy chỉnh)
-// ═══════════════════════════════════════════════════════════
-
-const handleError = (error: unknown) => {
-  // ✅ Kiểm tra xem có phải AxiosError không
-  if (axios.isAxiosError(error)) {
-    return {
-      success: false, // ❌ Đánh dấu thất bại
-      message: error.response?.data?.message || error.message, // 📝 Error message
-      // 💡 Ưu tiên message từ server, nếu không có thì dùng error.message
-      status: error.response?.status, // 🔢 HTTP status code (VD: 400, 401, 500...)
-      errors: error.response?.data?.errors, // 📋 Validation errors (nếu có)
-      // 💡 errors: Thường là object chứa các lỗi validation
-      // 💡 VD: { email: ['Email không hợp lệ'], password: ['Mật khẩu quá ngắn'] }
-    };
-  }
-  // ⚠️ Không phải AxiosError → Trả về error mặc định
-  return {
-    success: false,
-    message: 'Unexpected error - Lỗi không xác định',
-  };
-};
-```
-
----
-
-### **6. Advanced Patterns (Các Mẫu Nâng Cao)**
-
-```typescript
-// ═══════════════════════════════════════════════════════════
-// RETRY LOGIC với Exponential Backoff (Thử lại với tăng dần thời gian chờ)
-// ═══════════════════════════════════════════════════════════
-
-const axiosRetry = async (config: any, retries = 3) => {
-  // 💡 Exponential Backoff: Tăng thời gian chờ theo cấp số nhân
-  // 💡 VD: Lần 1 chờ 1s, lần 2 chờ 2s, lần 3 chờ 4s...
-  // 💡 Giúp server có thời gian recover khi bị quá tải
-
-  for (let i = 0; i < retries; i++) {
-    try {
-      return await axios(config); // 📡 Thử gọi API
-    } catch (error) {
-      if (i === retries - 1) throw error; // ❌ Đã hết số lần retry → throw error
-      // 💡 retries - 1: Lần cuối cùng, không retry nữa
-
-      // ⏱️ Chờ trước khi retry (exponential: 1s, 2s, 4s...)
-      await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, i)));
-      // 💡 Math.pow(2, i): 2^0=1, 2^1=2, 2^2=4...
-      // 💡 1000 * Math.pow(2, i): 1000ms, 2000ms, 4000ms...
-    }
-  }
-};
-
-// ═══════════════════════════════════════════════════════════
-// REQUEST DEDUPLICATION (Loại bỏ requests trùng lặp)
-// ═══════════════════════════════════════════════════════════
-
-const pending = new Map<string, Promise<any>>(); // 📋 Map lưu các requests đang chạy
-// 💡 Key: `${method}:${url}` (VD: 'GET:/api/users')
-// 💡 Value: Promise của request đó
-
-const dedupeRequest = async (config: any) => {
-  const key = `${config.method}:${config.url}`; // 🔑 Tạo unique key cho request
-  // 💡 Key = method + URL để identify request giống nhau
-
-  // ✅ Nếu đã có request giống vậy đang chạy → Reuse kết quả
-  if (pending.has(key)) {
-    console.log('🔄 Duplicate request detected, reusing pending request...');
-    return pending.get(key); // 🔁 Trả về promise đang chạy (không tạo request mới)
-  }
-
-  // 📡 Tạo request mới và lưu vào pending
-  const promise = axios(config).finally(() => {
-    pending.delete(key); // 🗑️ Xóa khỏi pending khi hoàn thành (success hoặc error)
-  });
-  pending.set(key, promise); // 💾 Lưu promise vào pending
-  return promise; // 📦 Trả về promise
-};
-// 💡 Lợi ích: Tránh gọi API nhiều lần giống nhau (VD: User click nhiều lần)
-
-// ═══════════════════════════════════════════════════════════
-// RESPONSE CACHING (Cache kết quả response)
-// ═══════════════════════════════════════════════════════════
-
-const cache = new Map<string, { data: any; timestamp: number }>(); // 💾 Map lưu cache
-// 💡 Key: URL của request
-// 💡 Value: { data: response data, timestamp: thời điểm cache }
-
-const cachedRequest = async (url: string, ttl = 5 * 60 * 1000) => {
-  // 💡 ttl: Time To Live - Thời gian cache hợp lệ (mặc định: 5 phút)
-  // 💡 5 * 60 * 1000 = 300,000ms = 5 phút
-
-  const cached = cache.get(url); // 🔍 Kiểm tra xem đã có cache chưa
-
-  // ✅ Nếu có cache và chưa hết hạn → Trả về cache
-  if (cached && Date.now() - cached.timestamp < ttl) {
-    console.log('💾 Returning cached data'); // 📝 Log khi dùng cache
-    return cached.data; // 📦 Trả về data từ cache (không gọi API)
-  }
-
-  // 📡 Chưa có cache hoặc đã hết hạn → Gọi API
-  const { data } = await axios.get(url); // 📡 Gọi API để lấy data mới
-
-  // 💾 Lưu vào cache
-  cache.set(url, {
-    data, // 📦 Response data
-    timestamp: Date.now(), // ⏰ Thời điểm cache (để tính TTL)
-  });
-
-  return data; // 📦 Trả về data mới
-};
-// 💡 Lợi ích: Giảm số lượng requests, tăng tốc độ (đặc biệt với GET requests)
-// ⚠️ Lưu ý: Chỉ cache GET requests, không cache POST/PUT/DELETE
-```
-
----
-
-### **💡 Best Practices (Thực Hành Tốt Nhất)**
-
-```typescript
-// ✅ 1. Dùng instance thay vì default axios (Tạo instance riêng thay vì dùng global)
-const api = axios.create({ baseURL: '/api' });
-// 💡 Tại sao: Tránh conflict config, dễ test, dễ quản lý
-// ❌ Tránh: axios.defaults.baseURL = '/api' (ảnh hưởng global)
-
-// ✅ 2. TypeScript types (Sử dụng TypeScript để type-safe)
-interface User {
-  id: string;
-  name: string;
-}
-const getUser = async (id: string): Promise<User> => {
-  const { data } = await api.get<User>(`/users/${id}`); // 📦 Type-safe response
-  // 💡 <User>: Generic type cho response data
-  return data; // ✅ TypeScript biết data là User type
-};
-
-// ✅ 3. Centralize error handling trong interceptors (Tập trung xử lý lỗi)
-api.interceptors.response.use(
-  (response) => response, // ✅ Success: Trả về response như bình thường
-  (error) => {
-    handleError(error); // 🔧 Xử lý lỗi tập trung (toast, log, redirect...)
-    return Promise.reject(error); // 🚫 Reject để caller có thể catch
-    // 💡 Luôn reject để caller biết request failed
-  }
-);
-
-// ✅ 4. Cancel requests on unmount (Hủy requests khi component unmount)
-useEffect(() => {
-  const controller = new AbortController(); // 🚫 Tạo AbortController
-  // ... fetch data với signal
-  api.get('/users', { signal: controller.signal }); // 📡 Request có signal
-  return () => controller.abort(); // 🧹 Cleanup: Hủy request khi unmount
-  // 💡 Quan trọng: Tránh memory leak, tránh update state sau khi unmount
-}, []);
-
-// ✅ 5. Set timeout để tránh hung requests (Đặt timeout để tránh request treo)
-axios.create({ timeout: 10000 }); // ⏱️ 10 giây timeout
-// 💡 Timeout: Hủy request nếu không nhận response sau X giây
-// 💡 Tránh: Request treo mãi mãi, tốn tài nguyên
-
-// ✅ 6. Separate auth instance (Tách instance cho auth để tránh infinite loop)
-const authAPI = axios.create({ baseURL: '/auth' });
-// 💡 Tại sao: Token refresh không dùng cùng instance → Tránh infinite loop
-// 💡 VD: mainAPI gặp 401 → gọi authAPI.post('/refresh') → Không trigger lại interceptor
-```
-
 ---
 
 ---
@@ -1957,4 +1817,607 @@ Best Practices:
   ├── Add request timing
   ├── Don't modify config deeply (avoid side effects)
   └── Avoid heavy logic inside interceptors
+```
+
+### **2. Axios Instance & Configuration**
+
+#### **2.1. Create Custom Instance**
+
+```typescript
+// ═══════════════════════════════════════════════════════════
+// CREATE AXIOS INSTANCE - Best Practice
+// ═══════════════════════════════════════════════════════════
+
+import axios, { AxiosInstance } from 'axios';
+
+// Tạo instance với base config
+const apiClient: AxiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || 'https://api.example.com',
+  timeout: 10000, // 10 seconds
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+
+  // Credentials & CSRF
+  withCredentials: true, // Send cookies với cross-origin requests
+  xsrfCookieName: 'XSRF-TOKEN', // CSRF token cookie name
+  xsrfHeaderName: 'X-XSRF-TOKEN', // CSRF token header name
+
+  // Validate status
+  validateStatus: (status) => status >= 200 && status < 500,
+});
+
+// ═══════════════════════════════════════════════════════════
+// MULTIPLE INSTANCES - Cho different APIs
+// ═══════════════════════════════════════════════════════════
+
+// Main API
+const mainAPI = axios.create({
+  baseURL: 'https://api.main.com',
+  timeout: 5000,
+});
+
+// Auth API (separate instance để tránh infinite loop trong token refresh)
+const authAPI = axios.create({
+  baseURL: 'https://auth.main.com',
+  timeout: 3000,
+});
+
+// Analytics API
+const analyticsAPI = axios.create({
+  baseURL: 'https://analytics.main.com',
+  timeout: 15000,
+});
+
+// File Upload API
+const uploadAPI = axios.create({
+  baseURL: 'https://upload.main.com',
+  timeout: 60000, // 1 minute for large files
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
+});
+
+// Sử dụng
+mainAPI.get('/users');
+authAPI.post('/login', credentials);
+analyticsAPI.post('/track', event);
+uploadAPI.post('/files', formData);
+```
+
+---
+
+### **3. Request Cancellation - Hủy Request**
+
+```typescript
+// ═══════════════════════════════════════════════════════════
+// ABORT CONTROLLER (Modern - Axios 0.22+)
+// ═══════════════════════════════════════════════════════════
+
+// 🚫 AbortController - Công cụ để hủy request
+const controller = new AbortController();
+// 💡 AbortController: Cho phép hủy request bất cứ lúc nào
+// 💡 Signal: Đối tượng để truyền vào axios config
+
+// 📡 Gửi request với signal → Có thể hủy được
+axios
+  .get('/api/users', {
+    signal: controller.signal, // 🔗 Gắn signal vào request
+  })
+  .then((response) => {
+    console.log(response.data); // ✅ Nhận dữ liệu nếu thành công
+  })
+  .catch((error) => {
+    // ❌ Xử lý lỗi (có thể là lỗi thật hoặc do cancel)
+    if (axios.isCancel(error)) {
+      // ✅ Kiểm tra xem có phải do cancel không
+      console.log('Request canceled:', error.message);
+      // 💡 axios.isCancel(): Kiểm tra error có phải do cancel không
+      // 💡 Nếu là cancel → Không phải lỗi thật, không cần xử lý
+    }
+  });
+
+// 🚫 Cancel request - Hủy request ngay lập tức
+controller.abort('User canceled the request');
+// 💡 abort(): Dừng request đang chạy, trigger catch với CancelError
+// 💡 Message: Thông điệp giải thích lý do hủy
+
+// ═══════════════════════════════════════════════════════════
+// USE CASE 1: Cancel on Component Unmount (React)
+// ═══════════════════════════════════════════════════════════
+
+import { useEffect, useState } from 'react';
+
+function UserList() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    // 🚫 Tạo AbortController trong useEffect
+    const controller = new AbortController();
+    // 💡 Mỗi lần component mount → Tạo controller mới
+
+    const fetchUsers = async () => {
+      try {
+        // 📡 Gửi request với signal → Có thể hủy được
+        const { data } = await axios.get('/api/users', {
+          signal: controller.signal, // 🔗 Gắn signal vào request
+        });
+        setUsers(data); // ✅ Lưu data vào state nếu thành công
+      } catch (error) {
+        // ❌ Xử lý lỗi (chỉ log lỗi thật, không log cancel)
+        if (!axios.isCancel(error)) {
+          // 💡 !axios.isCancel(): Chỉ log lỗi thật (không phải do cancel)
+          console.error('Error fetching users:', error);
+        }
+        // 💡 Nếu là cancel → Không log (bình thường, không phải lỗi)
+      }
+    };
+
+    fetchUsers(); // 🚀 Gọi hàm fetch users
+
+    // 🧹 Cleanup: Cancel request khi component unmount
+    return () => {
+      controller.abort(); // 🚫 Hủy request khi component unmount
+      // 💡 Quan trọng: Tránh memory leak, tránh update state sau khi unmount
+      // 💡 Nếu không cleanup → Request vẫn chạy → Có thể update state sau khi unmount → Error
+    };
+  }, []); // 💡 Empty dependency array = Chỉ chạy 1 lần khi mount
+
+  return <div>...</div>;
+}
+
+// ═══════════════════════════════════════════════════════════
+// USE CASE 2: Cancel Previous Search Request
+// ═══════════════════════════════════════════════════════════
+
+function SearchComponent() {
+  const [query, setQuery] = useState('');
+  const controllerRef = useRef<AbortController | null>(null);
+
+  const handleSearch = async (searchQuery: string) => {
+    // 🚫 Cancel previous request nếu có - Hủy request cũ trước khi gửi mới
+    if (controllerRef.current) {
+      controllerRef.current.abort(); // Hủy request cũ
+      // 💡 Quan trọng: Tránh race condition (request cũ về sau → ghi đè kết quả mới)
+    }
+
+    // 🆕 Create new controller - Tạo controller mới cho request này
+    controllerRef.current = new AbortController();
+
+    try {
+      // 📡 Gửi request search với signal → Có thể hủy được
+      const { data } = await axios.get('/api/search', {
+        params: { q: searchQuery }, // 🔍 Query params: search term
+        signal: controllerRef.current.signal, // 🔗 Gắn signal để có thể hủy
+      });
+      setResults(data); // ✅ Lưu kết quả vào state
+    } catch (error) {
+      // ❌ Xử lý lỗi (chỉ log lỗi thật, không log cancel)
+      if (!axios.isCancel(error)) {
+        console.error('Search error:', error);
+      }
+      // 💡 Nếu là cancel → Không log (bình thường khi user gõ tiếp)
+    }
+  };
+
+  // ⏱️ Debounce search - Chờ user ngừng gõ 500ms mới search
+  useEffect(() => {
+    // 💡 Debounce: Mỗi lần query thay đổi → Reset timer → Đợi 500ms
+    const timer = setTimeout(() => {
+      if (query) {
+        // ✅ Chỉ search nếu có query (không search khi query rỗng)
+        handleSearch(query);
+      }
+    }, 500); // ⏱️ Đợi 500ms sau khi user ngừng gõ
+
+    // 🧹 Cleanup: Clear timer khi query thay đổi hoặc unmount
+    return () => clearTimeout(timer);
+    // 💡 Quan trọng: Clear timer để tránh memory leak
+    // 💡 Nếu không clear → Timer vẫn chạy → Có thể search với query cũ
+  }, [query]); // 💡 Chạy lại mỗi khi query thay đổi
+}
+
+// ═══════════════════════════════════════════════════════════
+// CANCEL TOKEN (Legacy - Deprecated nhưng vẫn hoạt động)
+// ═══════════════════════════════════════════════════════════
+
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
+
+axios
+  .get('/api/users', {
+    cancelToken: source.token,
+  })
+  .catch((error) => {
+    if (axios.isCancel(error)) {
+      console.log('Request canceled:', error.message);
+    }
+  });
+
+// Cancel
+source.cancel('Operation canceled by user');
+```
+
+---
+
+### **4. File Upload & Download**
+
+#### **4.1. File Upload with Progress**
+
+```typescript
+// ═══════════════════════════════════════════════════════════
+// UPLOAD SINGLE FILE
+// ═══════════════════════════════════════════════════════════
+
+const uploadFile = async (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('userId', '123');
+
+  try {
+    const { data } = await axios.post('/api/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total!
+        );
+        console.log(`Upload progress: ${percentCompleted}%`);
+        // Update UI progress bar
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.error('Upload failed:', error);
+    throw error;
+  }
+};
+
+// ═══════════════════════════════════════════════════════════
+// UPLOAD MULTIPLE FILES
+// ═══════════════════════════════════════════════════════════
+
+const uploadMultipleFiles = async (files: File[]) => {
+  const formData = new FormData();
+
+  files.forEach((file, index) => {
+    formData.append(`file${index}`, file);
+  });
+
+  const { data } = await axios.post('/api/upload-multiple', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    onUploadProgress: (progressEvent) => {
+      const percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total!
+      );
+      console.log(`Total upload progress: ${percentCompleted}%`);
+    },
+  });
+
+  return data;
+};
+
+// ═══════════════════════════════════════════════════════════
+// REACT COMPONENT - File Upload với Progress Bar
+// ═══════════════════════════════════════════════════════════
+
+function FileUploader() {
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setUploading(true);
+
+    try {
+      await axios.post('/api/upload', formData, {
+        onUploadProgress: (progressEvent) => {
+          const progress = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total!
+          );
+          setUploadProgress(progress);
+        },
+      });
+
+      alert('Upload successful!');
+    } catch (error) {
+      console.error('Upload failed:', error);
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleFileUpload} disabled={uploading} />
+      {uploading && (
+        <div className="progress-bar">
+          <div style={{ width: `${uploadProgress}%` }}>{uploadProgress}%</div>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+#### **4.2. File Download**
+
+```typescript
+// ═══════════════════════════════════════════════════════════
+// DOWNLOAD FILE
+// ═══════════════════════════════════════════════════════════
+
+const downloadFile = async (fileId: string) => {
+  try {
+    const response = await axios.get(`/api/files/${fileId}`, {
+      responseType: 'blob', // ✅ Important cho files
+      onDownloadProgress: (progressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total!
+        );
+        console.log(`Download progress: ${percentCompleted}%`);
+      },
+    });
+
+    // Create blob URL và trigger download
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'filename.pdf'); // Filename
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Download failed:', error);
+  }
+};
+
+// ═══════════════════════════════════════════════════════════
+// DOWNLOAD DIFFERENT FILE TYPES
+// ═══════════════════════════════════════════════════════════
+
+const downloadPDF = async () => {
+  const response = await axios.get('/api/report.pdf', {
+    responseType: 'blob',
+  });
+
+  const blob = new Blob([response.data], { type: 'application/pdf' });
+  const url = window.URL.createObjectURL(blob);
+  window.open(url); // Open in new tab
+};
+
+const downloadExcel = async () => {
+  const response = await axios.get('/api/export.xlsx', {
+    responseType: 'arraybuffer', // For Excel files
+  });
+
+  const blob = new Blob([response.data], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
+
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'export.xlsx';
+  link.click();
+};
+```
+
+---
+
+### **5. Error Handling - Xử Lý Lỗi Chi Tiết**
+
+```typescript
+// ═══════════════════════════════════════════════════════════
+// ERROR STRUCTURE
+// ═══════════════════════════════════════════════════════════
+
+try {
+  const response = await axios.get('/api/users');
+} catch (error) {
+  if (axios.isAxiosError(error)) {
+    // ✅ Type-safe error handling
+
+    if (error.response) {
+      // ❌ Server responded với status code ngoài 2xx
+      console.error('Response error:');
+      console.error('Status:', error.response.status);
+      console.error('Data:', error.response.data);
+      console.error('Headers:', error.response.headers);
+
+      // Handle specific status codes
+      switch (error.response.status) {
+        case 400:
+          console.error('Bad Request - Invalid data');
+          break;
+        case 401:
+          console.error('Unauthorized - Please login');
+          // Redirect to login
+          window.location.href = '/login';
+          break;
+        case 403:
+          console.error('Forbidden - No permission');
+          break;
+        case 404:
+          console.error('Not Found');
+          break;
+        case 422:
+          console.error('Validation Error');
+          // Show validation errors
+          const validationErrors = error.response.data.errors;
+          break;
+        case 429:
+          console.error('Too Many Requests - Rate limited');
+          break;
+        case 500:
+          console.error('Server Error');
+          break;
+        case 503:
+          console.error('Service Unavailable');
+          break;
+      }
+    } else if (error.request) {
+      // ❌ Request sent nhưng không nhận được response
+      console.error('Request error - No response received');
+      console.error('Possible causes:');
+      console.error('- Network error');
+      console.error('- CORS issue');
+      console.error('- Request timeout');
+      console.error('- Server not responding');
+    } else {
+      // ❌ Lỗi khi setup request
+      console.error('Setup error:', error.message);
+    }
+
+    console.error('Config:', error.config);
+  } else {
+    // Lỗi khác (không phải Axios error)
+    console.error('Unexpected error:', error);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// CUSTOM ERROR HANDLER
+// ═══════════════════════════════════════════════════════════
+
+interface ApiErrorResponse {
+  success: boolean;
+  message: string;
+  status: number | null;
+  data: any;
+  errors?: Record<string, string[]>; // Validation errors
+}
+
+const handleAxiosError = (error: unknown): ApiErrorResponse => {
+  if (axios.isAxiosError(error)) {
+    const message = error.response?.data?.message || error.message;
+    const status = error.response?.status || null;
+    const errors = error.response?.data?.errors;
+
+    return {
+      success: false,
+      message,
+      status,
+      data: error.response?.data,
+      errors,
+    };
+  }
+
+  return {
+    success: false,
+    message: 'An unexpected error occurred',
+    status: null,
+    data: null,
+  };
+};
+
+// Usage
+try {
+  const response = await axios.post('/api/users', userData);
+  return {
+    success: true,
+    data: response.data,
+    message: 'Success',
+    status: 200,
+  };
+} catch (error) {
+  return handleAxiosError(error);
+}
+```
+
+---
+
+### **6. Advanced Features**
+
+#### **6.1. Response Caching**
+
+```typescript
+// ═══════════════════════════════════════════════════════════
+// SIMPLE CACHE IMPLEMENTATION
+// ═══════════════════════════════════════════════════════════
+
+interface CacheEntry {
+  data: any;
+  timestamp: number;
+}
+
+const cache = new Map<string, CacheEntry>();
+
+const cachedRequest = async (
+  url: string,
+  config = {},
+  ttl = 5 * 60 * 1000 // 5 minutes
+) => {
+  const cacheKey = `${url}:${JSON.stringify(config)}`;
+
+  // Check cache
+  const cached = cache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < ttl) {
+    console.log('✅ Returning cached data');
+    return cached.data;
+  }
+
+  // Fetch fresh data
+  const response = await axios.get(url, config);
+  cache.set(cacheKey, {
+    data: response.data,
+    timestamp: Date.now(),
+  });
+
+  return response.data;
+};
+```
+
+---
+
+### **💡 Best Practices**
+
+```typescript
+// ✅ 1. Luôn dùng axios instance thay vì default axios
+const api = axios.create({ baseURL: '/api' });
+
+// ✅ 2. TypeScript types cho responses
+interface User {
+  id: string;
+  name: string;
+}
+
+const getUser = async (id: string): Promise<User> => {
+  const { data } = await api.get<User>(`/users/${id}`);
+  return data;
+};
+
+// ✅ 3. Centralize error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Handle globally
+    handleAxiosError(error);
+    return Promise.reject(error);
+  }
+);
+
+// ✅ 4. Cancel requests on component unmount
+useEffect(() => {
+  const controller = new AbortController();
+  // ... fetch data
+  return () => controller.abort();
+}, []);
+
+// ✅ 5. Use timeout để avoid hung requests
+axios.create({ timeout: 10000 });
 ```

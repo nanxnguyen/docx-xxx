@@ -54,7 +54,7 @@
 - 🎯 **querySelector**: CSS selector, static
 - 📋 **querySelectorAll**: Return NodeList (not array)
 
-**Trả lời:**
+**Trả lời:**z`1
 
 - **DOM API**: Các methods để manipulate DOM elements
 - **Query Methods**: Các methods để select elements từ DOM

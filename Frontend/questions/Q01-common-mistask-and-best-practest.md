@@ -9,23 +9,27 @@
 **🔑 5 Trụ Cột Nền Tảng:**
 
 1. **Kiểu Dữ Liệu & Bộ Nhớ**:
+
    - 7 kiểu nguyên thủy (number, string, boolean, null, undefined, symbol, bigint) + Object
    - Primitive = stack (theo giá trị), Reference = heap (theo tham chiếu)
    - GC tự động dọn bộ nhớ (Mark-and-Sweep algorithm)
 
 2. **Execution Context & Scope**:
+
    - Call Stack thực thi code đồng bộ (LIFO)
    - Scope chain: Global → Function → Block scope
    - Hoisting: `var` khởi tạo undefined, `let/const` trong TDZ
    - Closure = hàm + môi trường từ vựng xung quanh
 
 3. **Bất Đồng Bộ (Event Loop)**:
+
    - **Microtask Queue** (ưu tiên cao): Promise.then, queueMicrotask
    - **Macrotask Queue** (ưu tiên thấp): setTimeout, setInterval
    - Event Loop: Call Stack → Microtasks → UI Render → 1 Macrotask
    - Async patterns: Callbacks → Promises → Async/Await
 
 4. **OOP & Prototypes**:
+
    - Prototype chain: mỗi object có `__proto__` trỏ đến prototype
    - Class = syntactic sugar cho prototype-based inheritance
    - `this` binding: new → explicit (call/apply/bind) → implicit → default
@@ -38,6 +42,7 @@
    - Promise, async/await cho async code
 
 **⚠️ Lỗi Thường Gặp:**
+
 - Mutate objects/arrays trực tiếp → dùng spread hoặc immutable methods
 - Quên `return` trong arrow function `() => { value }` → phải `() => value` hoặc `() => ({ value })`
 - `==` vs `===`: luôn dùng `===` (strict equality)
@@ -45,6 +50,7 @@
 - `this` mất context khi pass method: dùng arrow function hoặc bind
 
 **💡 Kiến Thức Senior:**
+
 - **Performance**: Tránh blocking main thread, dùng Web Workers cho heavy computation
 - **Memory**: WeakMap/WeakSet cho weak references tránh leaks
 - **Security**: XSS prevention (sanitize inputs), CSP headers
@@ -102,7 +108,7 @@ const environments = [
   'Node.js: File system, HTTP servers, CLI tools',
   'Mobile: React Native, Ionic',
   'Desktop: Electron, Tauri',
-  'IoT: Johnny-Five, Espruino'
+  'IoT: Johnny-Five, Espruino',
 ];
 ```
 
@@ -111,13 +117,13 @@ const environments = [
 ```typescript
 /**
  * 🔥 JavaScript Statistics (2024):
- * 
+ *
  * ✅ #1 Programming language (GitHub, Stack Overflow)
  * ✅ 98% websites sử dụng JS
  * ✅ 14M+ developers worldwide
  * ✅ Full-stack capable (Frontend + Backend)
  * ✅ Massive ecosystem (npm: 2M+ packages)
- * 
+ *
  * 💼 Career Impact:
  * • Frontend: React, Vue, Angular, Svelte
  * • Backend: Node.js, Express, NestJS
@@ -156,7 +162,7 @@ const obj: object = { name: 'John' };
  * • Pass by value vs reference
  * • Shallow vs deep copy
  * • Immutability patterns
- * 
+ *
  * 📚 Chi tiết: Q02-data-types-&-memory-management
  */
 ```
@@ -169,23 +175,23 @@ const obj: object = { name: 'John' };
  */
 
 // Implicit coercion
-console.log(5 + '5');    // '55' (number → string)
-console.log('5' - 2);    // 3 (string → number)
-console.log(true + 1);   // 2 (boolean → number)
+console.log(5 + '5'); // '55' (number → string)
+console.log('5' - 2); // 3 (string → number)
+console.log(true + 1); // 2 (boolean → number)
 
 // Comparison
-console.log(5 == '5');   // true (loose equality)
-console.log(5 === '5');  // false (strict equality)
+console.log(5 == '5'); // true (loose equality)
+console.log(5 === '5'); // false (strict equality)
 
 // Falsy values (8 values)
-Boolean(false);      // false
-Boolean(0);          // false
-Boolean('');         // false
-Boolean(null);       // false
-Boolean(undefined);  // false
-Boolean(NaN);        // false
-Boolean(-0);         // false
-Boolean(0n);         // false
+Boolean(false); // false
+Boolean(0); // false
+Boolean(''); // false
+Boolean(null); // false
+Boolean(undefined); // false
+Boolean(NaN); // false
+Boolean(-0); // false
+Boolean(0n); // false
 
 /**
  * 📚 Chi tiết: Q02 (Falsy/Truthy, == vs ===, null vs undefined)
@@ -213,7 +219,9 @@ let y = 10;
 
 // Functions: fully hoisted
 greet(); // ✅ Works!
-function greet() { console.log('Hi'); }
+function greet() {
+  console.log('Hi');
+}
 
 /**
  * 📚 Chi tiết: Q04-hoisting-&-temporal-dead-zone
@@ -229,16 +237,16 @@ function greet() { console.log('Hi'); }
 
 function createCounter() {
   let count = 0; // Private variable
-  
+
   return {
     increment: () => ++count,
-    getCount: () => count
+    getCount: () => count,
   };
 }
 
 const counter = createCounter();
 console.log(counter.increment()); // 1
-console.log(counter.getCount());  // 1
+console.log(counter.getCount()); // 1
 
 /**
  * 🎯 Use cases:
@@ -246,7 +254,7 @@ console.log(counter.getCount());  // 1
  * • Factory functions
  * • Event handlers
  * • Callbacks
- * 
+ *
  * 📚 Chi tiết: Q08-closure-&-data-privacy
  */
 ```
@@ -272,7 +280,7 @@ console.log('4: Sync');
  * 4: Sync
  * 3: Micro task
  * 2: Macro task
- * 
+ *
  * 📚 Chi tiết:
  * • Q06-event-loop (Technical deep dive)
  * • Q07-event-loop (Giải thích đời thường)
@@ -334,20 +342,14 @@ async function workflow() {
 const [users, posts, comments] = await Promise.all([
   fetchUsers(),
   fetchPosts(),
-  fetchComments()
+  fetchComments(),
 ]);
 
 // Promise.race (First to resolve)
-const fastest = await Promise.race([
-  fetchFromServer1(),
-  fetchFromServer2()
-]);
+const fastest = await Promise.race([fetchFromServer1(), fetchFromServer2()]);
 
 // Promise.allSettled (All results, success or fail)
-const results = await Promise.allSettled([
-  fetchUsers(),
-  fetchPosts()
-]);
+const results = await Promise.allSettled([fetchUsers(), fetchPosts()]);
 
 /**
  * 📚 Chi tiết: Q13, Q28-cancellation-concurrency-&-retry
@@ -368,7 +370,7 @@ const results = await Promise.allSettled([
 // ES6 Classes
 class Person {
   constructor(public name: string, private age: number) {}
-  
+
   greet() {
     return `Hi, I'm ${this.name}`;
   }
@@ -399,13 +401,15 @@ const add = (a: number, b: number) => a + b;
 
 // Immutability
 const users = [{ name: 'John' }];
-const updated = users.map(u => ({ ...u, age: 30 })); // New array
+const updated = users.map((u) => ({ ...u, age: 30 })); // New array
 
 // Higher-order functions
-const withLogging = (fn: Function) => (...args: any[]) => {
-  console.log('Called with:', args);
-  return fn(...args);
-};
+const withLogging =
+  (fn: Function) =>
+  (...args: any[]) => {
+    console.log('Called with:', args);
+    return fn(...args);
+  };
 
 const loggedAdd = withLogging(add);
 
@@ -472,7 +476,7 @@ const proxy = new Proxy(target, {
   get: (obj, prop) => {
     console.log(`Accessing ${String(prop)}`);
     return obj[prop];
-  }
+  },
 });
 
 // WeakMap/WeakSet
@@ -582,7 +586,7 @@ const beginnerTopics = [
   'Q08: Closures',
   'Q11: DOM Events',
   'Q12: DOM API',
-  'Q13: Async/Await & Promises'
+  'Q13: Async/Await & Promises',
 ];
 
 /**
@@ -610,7 +614,7 @@ const intermediateTopics = [
   'Q20: HTTP Caching',
   'Q21: JavaScript Proxy',
   'Q22: Classes',
-  'Q25: React Hooks & Patterns'
+  'Q25: React Hooks & Patterns',
 ];
 
 /**
@@ -639,7 +643,7 @@ const advancedTopics = [
   'Q39: Security',
   'Q43: Authentication Flow',
   'Q44: Microfrontend & Monorepo',
-  'Q46: Build Tools (Vite/Webpack)'
+  'Q46: Build Tools (Vite/Webpack)',
 ];
 
 /**
@@ -674,7 +678,7 @@ function showThis() {
 showThis();
 
 // Strict mode
-'use strict';
+('use strict');
 function strictThis() {
   console.log(this); // undefined
 }
@@ -687,7 +691,7 @@ const person = {
   name: 'John',
   greet() {
     console.log(this.name); // 'John' (this = person)
-  }
+  },
 };
 
 person.greet(); // ✅ 'John'
@@ -740,20 +744,20 @@ const john = new Person('John'); // this = new object
 
 const obj = {
   name: 'Object',
-  
+
   // Regular function
   regular() {
-    setTimeout(function() {
+    setTimeout(function () {
       console.log(this.name); // undefined (this = window)
     }, 100);
   },
-  
+
   // Arrow function (inherits this from parent)
   arrow() {
     setTimeout(() => {
       console.log(this.name); // 'Object' (this = obj)
     }, 100);
-  }
+  },
 };
 
 /**
@@ -761,7 +765,7 @@ const obj = {
  * • Event handlers
  * • Callbacks (setTimeout, map, filter)
  * • React class methods
- * 
+ *
  * ❌ Don't use arrow functions:
  * • Object methods (no own 'this')
  * • Constructors (can't use 'new')
@@ -787,7 +791,7 @@ function Animal(name: string) {
 }
 
 // Add method to prototype (shared across instances)
-Animal.prototype.speak = function() {
+Animal.prototype.speak = function () {
   return `${this.name} makes a sound`;
 };
 
@@ -816,7 +820,7 @@ Dog.prototype = Object.create(Animal.prototype);
 Dog.prototype.constructor = Dog;
 
 // Override method
-Dog.prototype.speak = function() {
+Dog.prototype.speak = function () {
   return `${this.name} barks`;
 };
 
@@ -831,16 +835,16 @@ console.log(husky instanceof Animal); // true
 
 class Person {
   constructor(public name: string, private age: number) {}
-  
+
   greet() {
     return `Hi, I'm ${this.name}`;
   }
-  
+
   // Getter
   get info() {
     return `${this.name}, ${this.age}`;
   }
-  
+
   // Static method
   static create(name: string) {
     return new Person(name, 0);
@@ -851,7 +855,7 @@ class Employee extends Person {
   constructor(name: string, age: number, public role: string) {
     super(name, age); // Call parent constructor
   }
-  
+
   // Override method
   greet() {
     return `${super.greet()}, I'm a ${this.role}`;
@@ -907,8 +911,8 @@ clearInterval(timerId);
 // ❌ 3. Closures holding references
 function createLeak() {
   const largeData = new Array(1000000);
-  
-  return function() {
+
+  return function () {
     console.log(largeData.length); // Keeps largeData in memory
   };
 }
@@ -974,16 +978,16 @@ user1 = null; // privateData entry auto-removed
 async function fetchUser(id: number) {
   try {
     const response = await fetch(`/api/users/${id}`);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    
+
     return await response.json();
   } catch (error) {
     // Handle error
     console.error('Failed to fetch user:', error);
-    
+
     // Re-throw with context
     throw new Error(`User fetch failed: ${error.message}`);
   } finally {
@@ -1008,10 +1012,7 @@ class ApiError extends Error {
 }
 
 class ValidationError extends Error {
-  constructor(
-    message: string,
-    public field: string
-  ) {
+  constructor(message: string, public field: string) {
     super(message);
     this.name = 'ValidationError';
   }
@@ -1038,21 +1039,21 @@ try {
 
 class ErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
-  
+
   static getDerivedStateFromError(error: Error) {
     return { hasError: true, error };
   }
-  
+
   componentDidCatch(error: Error, errorInfo: any) {
     // Log to error reporting service
     logErrorToService(error, errorInfo);
   }
-  
+
   render() {
     if (this.state.hasError) {
       return <ErrorFallback error={this.state.error} />;
     }
-    
+
     return this.props.children;
   }
 }
@@ -1065,12 +1066,12 @@ class ErrorBoundary extends React.Component {
 fetchData(); // If rejects, crashes in production
 
 // ✅ Always handle rejections
-fetchData().catch(error => {
+fetchData().catch((error) => {
   console.error('Failed:', error);
 });
 
 // ✅ Global handler (last resort)
-window.addEventListener('unhandledrejection', event => {
+window.addEventListener('unhandledrejection', (event) => {
   console.error('Unhandled promise rejection:', event.reason);
 });
 
@@ -1135,9 +1136,12 @@ function debounce<T extends (...args: any[]) => any>(
 
 // Usage: Search input
 const searchInput = document.querySelector('input');
-searchInput?.addEventListener('input', debounce((e) => {
-  search(e.target.value);
-}, 300));
+searchInput?.addEventListener(
+  'input',
+  debounce((e) => {
+    search(e.target.value);
+  }, 300)
+);
 
 // Throttle: Execute at most once per interval
 function throttle<T extends (...args: any[]) => any>(
@@ -1149,15 +1153,18 @@ function throttle<T extends (...args: any[]) => any>(
     if (!inThrottle) {
       fn(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 }
 
 // Usage: Scroll event
-window.addEventListener('scroll', throttle(() => {
-  console.log('Scrolled');
-}, 100));
+window.addEventListener(
+  'scroll',
+  throttle(() => {
+    console.log('Scrolled');
+  }, 100)
+);
 
 // ══════════════════════════════════════════════════════════
 // 3. LAZY LOADING & CODE SPLITTING
@@ -1187,14 +1194,14 @@ function App() {
 // Cache expensive calculations
 const memoize = <T extends (...args: any[]) => any>(fn: T) => {
   const cache = new Map();
-  
+
   return (...args: Parameters<T>): ReturnType<T> => {
     const key = JSON.stringify(args);
-    
+
     if (cache.has(key)) {
       return cache.get(key);
     }
-    
+
     const result = fn(...args);
     cache.set(key, result);
     return result;
@@ -1222,7 +1229,7 @@ const largeSet = new Set(largeArray);
 largeSet.has(9999); // O(1)
 
 // ❌ Slow: Object property lookup
-const obj = { a: 1, b: 2, /* ...1000 props */ };
+const obj = { a: 1, b: 2 /* ...1000 props */ };
 obj.hasOwnProperty('z'); // O(n) in worst case
 
 // ✅ Fast: Map
@@ -1234,13 +1241,13 @@ map.has('z'); // O(1)
 // ══════════════════════════════════════════════════════════
 
 // ❌ Layout thrashing (read/write interleaved)
-elements.forEach(el => {
+elements.forEach((el) => {
   const width = el.offsetWidth; // Read (forces layout)
   el.style.width = width + 10 + 'px'; // Write
 });
 
 // ✅ Batch reads, then batch writes
-const widths = elements.map(el => el.offsetWidth); // Batch reads
+const widths = elements.map((el) => el.offsetWidth); // Batch reads
 elements.forEach((el, i) => {
   el.style.width = widths[i] + 10 + 'px'; // Batch writes
 });
@@ -1321,10 +1328,18 @@ function processUserData(data: any) {
 }
 
 // ✅ Single responsibility
-function validateUser(data: any) { /* ... */ }
-function transformUser(data: any) { /* ... */ }
-function saveUser(data: any) { /* ... */ }
-function notifyUser(data: any) { /* ... */ }
+function validateUser(data: any) {
+  /* ... */
+}
+function transformUser(data: any) {
+  /* ... */
+}
+function saveUser(data: any) {
+  /* ... */
+}
+function notifyUser(data: any) {
+  /* ... */
+}
 
 // Compose functions
 const processUser = (data: any) => {
@@ -1361,7 +1376,7 @@ function processUser(user: User) {
   if (!user) return 'No user';
   if (!user.active) return 'Inactive';
   if (!user.email) return 'No email';
-  
+
   return sendEmail(user.email);
 }
 
@@ -1372,7 +1387,9 @@ function processUser(user: User) {
 // ❌ Bad names
 const d = new Date();
 const u = getU();
-function calc(a, b) { return a * b; }
+function calc(a, b) {
+  return a * b;
+}
 
 // ✅ Descriptive names
 const currentDate = new Date();
@@ -1446,9 +1463,9 @@ fetch('/api/transfer', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-CSRF-Token': getCsrfToken()
+    'X-CSRF-Token': getCsrfToken(),
   },
-  body: JSON.stringify({ amount: 100 })
+  body: JSON.stringify({ amount: 100 }),
 });
 
 // ══════════════════════════════════════════════════════════
@@ -1482,15 +1499,15 @@ function transferMoney(amount: number) {
   if (typeof amount !== 'number') {
     throw new ValidationError('Amount must be a number');
   }
-  
+
   if (amount <= 0) {
     throw new ValidationError('Amount must be positive');
   }
-  
+
   if (amount > MAX_TRANSFER_AMOUNT) {
     throw new ValidationError('Amount exceeds limit');
   }
-  
+
   processTransfer(amount);
 }
 
@@ -1506,7 +1523,7 @@ function transferMoney(amount: number) {
  * ✅ Implement rate limiting
  * ✅ Keep dependencies updated
  * ✅ Use Content Security Policy
- * 
+ *
  * 📚 Chi tiết: Q39-bảo-mật-security
  */
 ```
@@ -1573,8 +1590,8 @@ const users = [
 
 // ❌ Bad: 2 iterations (O(2n) = O(n))
 const activeUserNames = users
-  .filter(u => u.active)      // Iteration 1
-  .map(u => u.name);          // Iteration 2
+  .filter((u) => u.active) // Iteration 1
+  .map((u) => u.name); // Iteration 2
 
 // ✅ Good: 1 iteration with reduce (O(n))
 const activeUserNames = users.reduce((acc, user) => {
@@ -1605,10 +1622,10 @@ for (let i = 0; i < users.length; i++) {
 
 // ❌ Bad: 4 iterations
 const result = data
-  .filter(x => x.age > 18)       // Iteration 1
-  .map(x => ({ ...x, adult: true })) // Iteration 2
-  .filter(x => x.active)         // Iteration 3
-  .map(x => x.name);             // Iteration 4
+  .filter((x) => x.age > 18) // Iteration 1
+  .map((x) => ({ ...x, adult: true })) // Iteration 2
+  .filter((x) => x.active) // Iteration 3
+  .map((x) => x.name); // Iteration 4
 
 // ✅ Good: 1 iteration
 const result = data.reduce((acc, x) => {
@@ -1622,20 +1639,24 @@ const result = data.reduce((acc, x) => {
 // MISTAKE 3: find() trong loop
 // ══════════════════════════════════════════════════════════
 
-const orders = [/* 1000 orders */];
-const products = [/* 1000 products */];
+const orders = [
+  /* 1000 orders */
+];
+const products = [
+  /* 1000 products */
+];
 
 // ❌ Bad: O(n²) - 1,000,000 operations!
-const enrichedOrders = orders.map(order => ({
+const enrichedOrders = orders.map((order) => ({
   ...order,
-  product: products.find(p => p.id === order.productId) // O(n) inside O(n)
+  product: products.find((p) => p.id === order.productId), // O(n) inside O(n)
 }));
 
 // ✅ Good: O(n) - 2,000 operations
-const productMap = new Map(products.map(p => [p.id, p])); // O(n)
-const enrichedOrders = orders.map(order => ({
+const productMap = new Map(products.map((p) => [p.id, p])); // O(n)
+const enrichedOrders = orders.map((order) => ({
   ...order,
-  product: productMap.get(order.productId) // O(1)
+  product: productMap.get(order.productId), // O(1)
 })); // O(n)
 
 /**
@@ -1649,19 +1670,487 @@ const enrichedOrders = orders.map(order => ({
 // MISTAKE 4: includes() trong loop
 // ══════════════════════════════════════════════════════════
 
-const selectedIds = [1, 2, 3, /* ... 1000 ids */];
-const allItems = [/* ... 10000 items */];
+const selectedIds = [1, 2, 3 /* ... 1000 ids */];
+const allItems = [
+  /* ... 10000 items */
+];
 
 // ❌ Bad: O(n²)
-const selectedItems = allItems.filter(item => 
-  selectedIds.includes(item.id) // O(n) inside O(n)
+const selectedItems = allItems.filter(
+  (item) => selectedIds.includes(item.id) // O(n) inside O(n)
 );
 
 // ✅ Good: O(n)
 const selectedIdsSet = new Set(selectedIds); // O(n)
-const selectedItems = allItems.filter(item => 
-  selectedIdsSet.has(item.id) // O(1)
+const selectedItems = allItems.filter(
+  (item) => selectedIdsSet.has(item.id) // O(1)
 );
+```
+
+---
+
+### **10.1.5. Code Refactoring Examples - Giải Pháp A → Giải Pháp B**
+
+```typescript
+/**
+ * 📚 NHIỀU VÍ DỤ REFACTORING TỪ GIẢI PHÁP KHÔNG TỐI ƯU SANG TỐI ƯU
+ * Mục đích: Cung cấp nhiều pattern thực tế để áp dụng trong dự án
+ */
+
+// ══════════════════════════════════════════════════════════
+// PATTERN 1: map + filter → reduce (Nhiều ví dụ)
+// ══════════════════════════════════════════════════════════
+
+// 📌 Ví dụ 1: Lọc và transform users
+const users = [
+  { id: 1, name: 'John', age: 25, active: true, role: 'admin' },
+  { id: 2, name: 'Jane', age: 30, active: false, role: 'user' },
+  { id: 3, name: 'Bob', age: 35, active: true, role: 'user' },
+  // ... 10,000 users
+];
+
+// ❌ Giải pháp A: map + filter (2 lần duyệt)
+const activeAdminNames = users
+  .filter((u) => u.active && u.role === 'admin') // Duyệt lần 1: O(n)
+  .map((u) => u.name); // Duyệt lần 2: O(m) với m ≤ n
+
+// ✅ Giải pháp B: reduce (1 lần duyệt)
+const activeAdminNames = users.reduce((acc, user) => {
+  if (user.active && user.role === 'admin') {
+    acc.push(user.name);
+  }
+  return acc;
+}, [] as string[]);
+// 💡 Chỉ duyệt 1 lần: O(n) - nhanh hơn ~40-50%
+
+// 📌 Ví dụ 2: Tính tổng giá trị sau khi filter
+const orders = [
+  { id: 1, amount: 100, status: 'completed', discount: 10 },
+  { id: 2, amount: 200, status: 'pending', discount: 20 },
+  { id: 3, amount: 150, status: 'completed', discount: 15 },
+  // ... 5,000 orders
+];
+
+// ❌ Giải pháp A: filter + map + reduce (3 lần duyệt)
+const totalCompleted = orders
+  .filter((o) => o.status === 'completed') // Duyệt lần 1: O(n)
+  .map((o) => o.amount - o.discount) // Duyệt lần 2: O(m)
+  .reduce((sum, amount) => sum + amount, 0); // Duyệt lần 3: O(m)
+
+// ✅ Giải pháp B: reduce (1 lần duyệt)
+const totalCompleted = orders.reduce((sum, order) => {
+  if (order.status === 'completed') {
+    return sum + (order.amount - order.discount);
+  }
+  return sum;
+}, 0);
+// 💡 Chỉ duyệt 1 lần: O(n) - nhanh hơn ~66%
+
+// 📌 Ví dụ 3: Group và transform data
+const products = [
+  { id: 1, category: 'electronics', price: 100, inStock: true },
+  { id: 2, category: 'clothing', price: 50, inStock: false },
+  { id: 3, category: 'electronics', price: 200, inStock: true },
+  // ... 20,000 products
+];
+
+// ❌ Giải pháp A: filter + map (nhiều lần duyệt)
+const electronicsInStock = products
+  .filter((p) => p.category === 'electronics') // Duyệt lần 1: O(n)
+  .filter((p) => p.inStock) // Duyệt lần 2: O(m)
+  .map((p) => ({ id: p.id, price: p.price })); // Duyệt lần 3: O(k)
+
+// ✅ Giải pháp B: reduce (1 lần duyệt)
+const electronicsInStock = products.reduce((acc, product) => {
+  if (product.category === 'electronics' && product.inStock) {
+    acc.push({ id: product.id, price: product.price });
+  }
+  return acc;
+}, [] as Array<{ id: number; price: number }>);
+// 💡 Chỉ duyệt 1 lần: O(n) - nhanh hơn ~66%
+
+// 📌 Ví dụ 4: Tạo object từ array với điều kiện
+const items = [
+  { id: 1, name: 'Item 1', type: 'A', value: 10 },
+  { id: 2, name: 'Item 2', type: 'B', value: 20 },
+  { id: 3, name: 'Item 3', type: 'A', value: 30 },
+  // ... 15,000 items
+];
+
+// ❌ Giải pháp A: filter + reduce (2 lần duyệt)
+const typeAItems = items
+  .filter((item) => item.type === 'A') // Duyệt lần 1: O(n)
+  .reduce((acc, item) => {
+    acc[item.id] = item.name;
+    return acc;
+  }, {} as Record<number, string>); // Duyệt lần 2: O(m)
+
+// ✅ Giải pháp B: reduce (1 lần duyệt)
+const typeAItems = items.reduce((acc, item) => {
+  if (item.type === 'A') {
+    acc[item.id] = item.name;
+  }
+  return acc;
+}, {} as Record<number, string>);
+// 💡 Chỉ duyệt 1 lần: O(n) - nhanh hơn ~50%
+
+// ══════════════════════════════════════════════════════════
+// PATTERN 2: includes() → Set.has() (Nhiều ví dụ)
+// ══════════════════════════════════════════════════════════
+
+// 📌 Ví dụ 1: Check existence trong filter
+const allowedRoles = ['admin', 'moderator', 'editor'];
+const users = [
+  { id: 1, name: 'John', role: 'admin' },
+  { id: 2, name: 'Jane', role: 'user' },
+  { id: 3, name: 'Bob', role: 'moderator' },
+  // ... 50,000 users
+];
+
+// ❌ Giải pháp A: includes() trong filter (O(n²))
+const authorizedUsers = users.filter(
+  (user) => allowedRoles.includes(user.role) // O(m) mỗi lần, với m = allowedRoles.length
+);
+// 💡 Tổng: O(n × m) - với n = 50,000, m = 3 → 150,000 operations
+
+// ✅ Giải pháp B: Set.has() (O(n))
+const allowedRolesSet = new Set(allowedRoles); // O(m) - chỉ làm 1 lần
+const authorizedUsers = users.filter(
+  (user) => allowedRolesSet.has(user.role) // O(1) mỗi lần
+);
+// 💡 Tổng: O(m) + O(n) = O(n) - chỉ 50,003 operations
+// 💡 Nhanh hơn ~3 lần với m = 3, và càng nhiều hơn khi m tăng!
+
+// 📌 Ví dụ 2: Loại bỏ duplicates
+const numbers = [1, 2, 3, 2, 4, 3, 5, 1, 6, 2, 7, 3];
+// ... có thể có 100,000 số với nhiều duplicates
+
+// ❌ Giải pháp A: filter + indexOf (O(n²))
+const uniqueNumbers = numbers.filter(
+  (num, index) => numbers.indexOf(num) === index // O(n) mỗi lần
+);
+// 💡 Tổng: O(n²) - với n = 100,000 → 10 TỶ operations!
+
+// ✅ Giải pháp B: Set (O(n))
+const uniqueNumbers = [...new Set(numbers)];
+// 💡 Tổng: O(n) - chỉ 100,000 operations
+// 💡 Nhanh hơn ~100,000 lần với n = 100,000!
+
+// 📌 Ví dụ 3: Check nhiều điều kiện
+const blacklistedEmails = [
+  'spam@example.com',
+  'test@example.com',
+  'admin@example.com',
+  // ... 1,000 emails
+];
+const incomingEmails = [
+  { id: 1, from: 'user@example.com', subject: 'Hello' },
+  { id: 2, from: 'spam@example.com', subject: 'Buy now!' },
+  // ... 100,000 emails
+];
+
+// ❌ Giải pháp A: includes() trong filter (O(n × m))
+const validEmails = incomingEmails.filter(
+  (email) => !blacklistedEmails.includes(email.from) // O(m) mỗi lần
+);
+// 💡 Tổng: O(n × m) - với n = 100,000, m = 1,000 → 100 TRIỆU operations!
+
+// ✅ Giải pháp B: Set.has() (O(n))
+const blacklistedSet = new Set(blacklistedEmails); // O(m) - chỉ làm 1 lần
+const validEmails = incomingEmails.filter(
+  (email) => !blacklistedSet.has(email.from) // O(1) mỗi lần
+);
+// 💡 Tổng: O(m) + O(n) = O(n) - chỉ 101,000 operations
+// 💡 Nhanh hơn ~990 lần!
+
+// 📌 Ví dụ 4: Tìm intersection của 2 arrays
+const array1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const array2 = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+// ... có thể có 10,000 phần tử mỗi array
+
+// ❌ Giải pháp A: filter + includes() (O(n × m))
+const intersection = array1.filter(
+  (item) => array2.includes(item) // O(m) mỗi lần
+);
+// 💡 Tổng: O(n × m) - với n = 10,000, m = 10,000 → 100 TRIỆU operations!
+
+// ✅ Giải pháp B: Set.has() (O(n + m))
+const array2Set = new Set(array2); // O(m)
+const intersection = array1.filter(
+  (item) => array2Set.has(item) // O(1) mỗi lần
+);
+// 💡 Tổng: O(m) + O(n) = O(n + m) - chỉ 20,000 operations
+// 💡 Nhanh hơn ~5,000 lần!
+
+// ══════════════════════════════════════════════════════════
+// PATTERN 3: find() trong loop → Map.get()
+// ══════════════════════════════════════════════════════════
+
+// 📌 Ví dụ 1: Enrich data với lookup
+const orders = [
+  { id: 1, userId: 101, productId: 201, quantity: 2 },
+  { id: 2, userId: 102, productId: 202, quantity: 1 },
+  // ... 10,000 orders
+];
+const users = [
+  { id: 101, name: 'John', email: 'john@example.com' },
+  { id: 102, name: 'Jane', email: 'jane@example.com' },
+  // ... 5,000 users
+];
+const products = [
+  { id: 201, name: 'Product A', price: 100 },
+  { id: 202, name: 'Product B', price: 200 },
+  // ... 3,000 products
+];
+
+// ❌ Giải pháp A: find() trong map (O(n²))
+const enrichedOrders = orders.map((order) => ({
+  ...order,
+  user: users.find((u) => u.id === order.userId), // O(m) mỗi lần
+  product: products.find((p) => p.id === order.productId), // O(k) mỗi lần
+}));
+// 💡 Tổng: O(n × (m + k)) - với n = 10,000, m = 5,000, k = 3,000
+// 💡 → 80 TRIỆU operations!
+
+// ✅ Giải pháp B: Map.get() (O(n + m + k))
+const userMap = new Map(users.map((u) => [u.id, u])); // O(m)
+const productMap = new Map(products.map((p) => [p.id, p])); // O(k)
+const enrichedOrders = orders.map((order) => ({
+  ...order,
+  user: userMap.get(order.userId), // O(1) mỗi lần
+  product: productMap.get(order.productId), // O(1) mỗi lần
+}));
+// 💡 Tổng: O(m) + O(k) + O(n) = O(n + m + k) - chỉ 18,000 operations
+// 💡 Nhanh hơn ~4,444 lần!
+
+// 📌 Ví dụ 2: Aggregate data với lookup
+const transactions = [
+  { id: 1, accountId: 101, amount: 100, type: 'deposit' },
+  { id: 2, accountId: 102, amount: 50, type: 'withdrawal' },
+  // ... 50,000 transactions
+];
+const accounts = [
+  { id: 101, name: 'Account A', owner: 'John' },
+  { id: 102, name: 'Account B', owner: 'Jane' },
+  // ... 1,000 accounts
+];
+
+// ❌ Giải pháp A: find() trong reduce (O(n²))
+const accountTotals = transactions.reduce((acc, transaction) => {
+  const account = accounts.find((a) => a.id === transaction.accountId); // O(m) mỗi lần
+  if (!acc[account.id]) {
+    acc[account.id] = { name: account.name, total: 0 };
+  }
+  acc[account.id].total += transaction.amount;
+  return acc;
+}, {} as Record<number, { name: string; total: number }>);
+// 💡 Tổng: O(n × m) - với n = 50,000, m = 1,000 → 50 TRIỆU operations!
+
+// ✅ Giải pháp B: Map.get() (O(n + m))
+const accountMap = new Map(accounts.map((a) => [a.id, a])); // O(m)
+const accountTotals = transactions.reduce((acc, transaction) => {
+  const account = accountMap.get(transaction.accountId); // O(1) mỗi lần
+  if (!acc[account.id]) {
+    acc[account.id] = { name: account.name, total: 0 };
+  }
+  acc[account.id].total += transaction.amount;
+  return acc;
+}, {} as Record<number, { name: string; total: number }>);
+// 💡 Tổng: O(m) + O(n) = O(n + m) - chỉ 51,000 operations
+// 💡 Nhanh hơn ~980 lần!
+
+// ══════════════════════════════════════════════════════════
+// PATTERN 4: Multiple chains → Single reduce
+// ══════════════════════════════════════════════════════════
+
+// 📌 Ví dụ 1: Filter + map + filter + map
+const data = [
+  { id: 1, age: 25, active: true, category: 'A', score: 80 },
+  { id: 2, age: 30, active: false, category: 'B', score: 90 },
+  { id: 3, age: 35, active: true, category: 'A', score: 85 },
+  // ... 20,000 items
+];
+
+// ❌ Giải pháp A: 4 lần duyệt
+const result = data
+  .filter((x) => x.age > 18) // Duyệt lần 1: O(n)
+  .map((x) => ({ ...x, adult: true })) // Duyệt lần 2: O(m)
+  .filter((x) => x.active) // Duyệt lần 3: O(m)
+  .map((x) => ({ name: `User ${x.id}`, score: x.score })); // Duyệt lần 4: O(k)
+
+// ✅ Giải pháp B: 1 lần duyệt với reduce
+const result = data.reduce((acc, x) => {
+  if (x.age > 18 && x.active) {
+    acc.push({
+      name: `User ${x.id}`,
+      score: x.score,
+    });
+  }
+  return acc;
+}, [] as Array<{ name: string; score: number }>);
+// 💡 Chỉ duyệt 1 lần: O(n) - nhanh hơn ~75%
+
+// 📌 Ví dụ 2: Filter + map + sort
+const items = [
+  { id: 1, price: 100, inStock: true, rating: 4.5 },
+  { id: 2, price: 200, inStock: false, rating: 4.0 },
+  { id: 3, price: 150, inStock: true, rating: 5.0 },
+  // ... 30,000 items
+];
+
+// ❌ Giải pháp A: 3 lần duyệt
+const topRatedInStock = items
+  .filter((item) => item.inStock) // Duyệt lần 1: O(n)
+  .map((item) => ({ id: item.id, price: item.price, rating: item.rating })) // Duyệt lần 2: O(m)
+  .sort((a, b) => b.rating - a.rating) // Sort: O(m log m)
+  .slice(0, 10); // Slice: O(1)
+
+// ✅ Giải pháp B: 1 lần duyệt + sort chỉ top items
+const topRatedInStock = items
+  .reduce((acc, item) => {
+    if (item.inStock) {
+      acc.push({ id: item.id, price: item.price, rating: item.rating });
+    }
+    return acc;
+  }, [] as Array<{ id: number; price: number; rating: number }>)
+  .sort((a, b) => b.rating - a.rating)
+  .slice(0, 10);
+// 💡 Vẫn phải sort, nhưng giảm số lần duyệt từ 2 → 1
+// 💡 Nhanh hơn ~33% (không tính sort time)
+
+// ══════════════════════════════════════════════════════════
+// PATTERN 5: indexOf() trong loop → Set/Map
+// ══════════════════════════════════════════════════════════
+
+// 📌 Ví dụ 1: Check duplicate với indexOf
+const numbers = [1, 2, 3, 2, 4, 3, 5, 1, 6, 2, 7, 3];
+// ... có thể có 100,000 số
+
+// ❌ Giải pháp A: filter + indexOf (O(n²))
+const unique = numbers.filter(
+  (num, index) => numbers.indexOf(num) === index // O(n) mỗi lần
+);
+// 💡 Tổng: O(n²) - với n = 100,000 → 10 TỶ operations!
+
+// ✅ Giải pháp B: Set (O(n))
+const unique = [...new Set(numbers)];
+// 💡 Tổng: O(n) - chỉ 100,000 operations
+// 💡 Nhanh hơn ~100,000 lần!
+
+// 📌 Ví dụ 2: Remove items từ array
+const allItems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const itemsToRemove = [2, 4, 6, 8];
+// ... có thể có 50,000 items và 10,000 items to remove
+
+// ❌ Giải pháp A: filter + indexOf (O(n × m))
+const remainingItems = allItems.filter(
+  (item) => itemsToRemove.indexOf(item) === -1 // O(m) mỗi lần
+);
+// 💡 Tổng: O(n × m) - với n = 50,000, m = 10,000 → 500 TRIỆU operations!
+
+// ✅ Giải pháp B: Set.has() (O(n + m))
+const itemsToRemoveSet = new Set(itemsToRemove); // O(m)
+const remainingItems = allItems.filter(
+  (item) => !itemsToRemoveSet.has(item) // O(1) mỗi lần
+);
+// 💡 Tổng: O(m) + O(n) = O(n + m) - chỉ 60,000 operations
+// 💡 Nhanh hơn ~8,333 lần!
+
+// ══════════════════════════════════════════════════════════
+// PATTERN 6: Tổng hợp các pattern trên
+// ══════════════════════════════════════════════════════════
+
+// 📌 Ví dụ thực tế: Process orders với nhiều lookups
+const orders = [
+  { id: 1, userId: 101, productIds: [201, 202], status: 'pending' },
+  { id: 2, userId: 102, productIds: [203], status: 'completed' },
+  // ... 10,000 orders
+];
+const users = [
+  { id: 101, name: 'John', email: 'john@example.com', vip: true },
+  { id: 102, name: 'Jane', email: 'jane@example.com', vip: false },
+  // ... 5,000 users
+];
+const products = [
+  { id: 201, name: 'Product A', price: 100, inStock: true },
+  { id: 202, name: 'Product B', price: 200, inStock: false },
+  { id: 203, name: 'Product C', price: 150, inStock: true },
+  // ... 3,000 products
+];
+const allowedStatuses = ['pending', 'processing'];
+
+// ❌ Giải pháp A: Nhiều chains + find() + includes() (RẤT CHẬM!)
+const processedOrders = orders
+  .filter((order) => allowedStatuses.includes(order.status)) // O(n × m)
+  .map((order) => ({
+    ...order,
+    user: users.find((u) => u.id === order.userId), // O(n × k)
+    products: order.productIds
+      .map((pid) => products.find((p) => p.id === pid)) // O(n × l × j)
+      .filter((p) => p && p.inStock), // O(n × l)
+  }))
+  .filter((order) => order.user && order.user.vip) // O(n)
+  .map((order) => ({
+    orderId: order.id,
+    userName: order.user.name,
+    productNames: order.products.map((p) => p.name), // O(n × l)
+  }));
+// 💡 Tổng: O(n × (m + k + l × j + l)) = O(n²) hoặc O(n³) - CỰC CHẬM!
+
+// ✅ Giải pháp B: Map + Set + reduce (NHANH!)
+const allowedStatusesSet = new Set(allowedStatuses); // O(m)
+const userMap = new Map(users.map((u) => [u.id, u])); // O(k)
+const productMap = new Map(products.map((p) => [p.id, p])); // O(j)
+
+const processedOrders = orders.reduce((acc, order) => {
+  // Check status với Set: O(1)
+  if (!allowedStatusesSet.has(order.status)) return acc;
+
+  // Lookup user với Map: O(1)
+  const user = userMap.get(order.userId);
+  if (!user || !user.vip) return acc;
+
+  // Lookup products với Map: O(l) với l = số products trong order
+  const orderProducts = order.productIds
+    .map((pid) => productMap.get(pid))
+    .filter((p): p is NonNullable<typeof p> => p !== undefined && p.inStock);
+
+  if (orderProducts.length === 0) return acc;
+
+  acc.push({
+    orderId: order.id,
+    userName: user.name,
+    productNames: orderProducts.map((p) => p.name),
+  });
+
+  return acc;
+}, [] as Array<{ orderId: number; userName: string; productNames: string[] }>);
+// 💡 Tổng: O(m + k + j + n × l) = O(n × l) - NHANH HƠN RẤT NHIỀU!
+// 💡 Với n = 10,000, l trung bình = 2 → chỉ ~20,000 operations
+// 💡 So với giải pháp A có thể lên đến hàng trăm triệu operations!
+
+/**
+ * 📊 TỔNG KẾT PERFORMANCE GAINS:
+ *
+ * Pattern                    | Giải pháp A      | Giải pháp B      | Cải thiện
+ * --------------------------|------------------|------------------|------------
+ * map + filter              | O(2n)            | O(n)             | ~50%
+ * includes() trong loop     | O(n × m)         | O(n + m)         | ~m lần
+ * find() trong loop         | O(n × m)         | O(n + m)         | ~m lần
+ * Multiple chains           | O(4n)            | O(n)             | ~75%
+ * indexOf() trong loop      | O(n²)            | O(n)             | ~n lần
+ *
+ * 💡 Lưu ý: Performance gains phụ thuộc vào:
+ *   - Kích thước dữ liệu (n, m, k...)
+ *   - Số lần operations được gọi
+ *   - Browser/JS engine optimization
+ *
+ * ✅ Best Practice:
+ *   1. Luôn profile trước khi optimize
+ *   2. Ưu tiên optimize hot paths (code chạy nhiều lần)
+ *   3. Balance giữa readability và performance
+ *   4. Document trade-offs khi optimize
+ */
 ```
 
 ---
@@ -1685,7 +2174,7 @@ const users = [
 
 // ❌ Bad: O(n) per lookup
 function getUserName(userId: number) {
-  const user = users.find(u => u.id === userId); // Linear search
+  const user = users.find((u) => u.id === userId); // Linear search
   return user?.name;
 }
 
@@ -1695,7 +2184,7 @@ for (let i = 0; i < 1000; i++) {
 }
 
 // ✅ Good: O(1) per lookup
-const userMap = new Map(users.map(u => [u.id, u]));
+const userMap = new Map(users.map((u) => [u.id, u]));
 
 function getUserName(userId: number) {
   return userMap.get(userId)?.name; // Constant time
@@ -1711,21 +2200,24 @@ function getUserName(userId: number) {
 const numbers = [1, 2, 3, 2, 4, 3, 5];
 
 // ❌ Bad: O(n²)
-const unique = numbers.filter((num, index) => 
-  numbers.indexOf(num) === index // O(n) inside O(n)
+const unique = numbers.filter(
+  (num, index) => numbers.indexOf(num) === index // O(n) inside O(n)
 );
 
 // ✅ Good: O(n) with Set
 const unique = [...new Set(numbers)];
 
 // ✅ Alternative: O(n) with object
-const unique = numbers.reduce((acc, num) => {
-  if (!acc.seen[num]) {
-    acc.seen[num] = true;
-    acc.result.push(num);
-  }
-  return acc;
-}, { seen: {}, result: [] as number[] }).result;
+const unique = numbers.reduce(
+  (acc, num) => {
+    if (!acc.seen[num]) {
+      acc.seen[num] = true;
+      acc.result.push(num);
+    }
+    return acc;
+  },
+  { seen: {}, result: [] as number[] }
+).result;
 
 // ══════════════════════════════════════════════════════════
 // MISTAKE 7: Object key checking
@@ -1773,7 +2265,7 @@ const items = Array.from({ length: 1000 }, (_, i) => `Item ${i}`);
 
 // ❌ Bad: 1000 reflows/repaints
 const container = document.querySelector('.container');
-items.forEach(item => {
+items.forEach((item) => {
   const div = document.createElement('div');
   div.textContent = item;
   container.appendChild(div); // Triggers reflow each time!
@@ -1781,7 +2273,7 @@ items.forEach(item => {
 
 // ✅ Good: 1 reflow with DocumentFragment
 const fragment = document.createDocumentFragment();
-items.forEach(item => {
+items.forEach((item) => {
   const div = document.createElement('div');
   div.textContent = item;
   fragment.appendChild(div); // No reflow
@@ -1789,9 +2281,7 @@ items.forEach(item => {
 container.appendChild(fragment); // Single reflow
 
 // ✅ Better: innerHTML (fastest for large lists)
-container.innerHTML = items
-  .map(item => `<div>${item}</div>`)
-  .join('');
+container.innerHTML = items.map((item) => `<div>${item}</div>`).join('');
 
 /**
  * Performance (1000 items):
@@ -1807,14 +2297,14 @@ container.innerHTML = items
 const elements = document.querySelectorAll('.box');
 
 // ❌ Bad: Layout thrashing (read/write interleaved)
-elements.forEach(el => {
+elements.forEach((el) => {
   const height = el.offsetHeight; // Read (forces layout)
   el.style.height = height * 2 + 'px'; // Write
   // Each read forces browser to recalculate layout!
 });
 
 // ✅ Good: Batch reads, then batch writes
-const heights = Array.from(elements).map(el => el.offsetHeight); // Batch reads
+const heights = Array.from(elements).map((el) => el.offsetHeight); // Batch reads
 elements.forEach((el, i) => {
   el.style.height = heights[i] * 2 + 'px'; // Batch writes
 });
@@ -1854,7 +2344,7 @@ container.innerHTML = html;
 // ❌ Bad: New object every render (breaks memoization)
 function UserList() {
   const users = getUsers();
-  
+
   return (
     <ExpensiveChild
       config={{ theme: 'dark', locale: 'en' }} // New object!
@@ -1868,26 +2358,18 @@ const CONFIG = { theme: 'dark', locale: 'en' };
 const FILTERS = ['active', 'verified'];
 
 function UserList() {
-  return (
-    <ExpensiveChild
-      config={CONFIG}
-      filters={FILTERS}
-    />
-  );
+  return <ExpensiveChild config={CONFIG} filters={FILTERS} />;
 }
 
 // ✅ Better: useMemo for dynamic values
 function UserList({ theme, showActive }) {
-  const config = useMemo(
-    () => ({ theme, locale: 'en' }),
-    [theme]
-  );
-  
+  const config = useMemo(() => ({ theme, locale: 'en' }), [theme]);
+
   const filters = useMemo(
-    () => showActive ? ['active', 'verified'] : ['verified'],
+    () => (showActive ? ['active', 'verified'] : ['verified']),
     [showActive]
   );
-  
+
   return <ExpensiveChild config={config} filters={filters} />;
 }
 
@@ -1899,7 +2381,7 @@ function UserList({ theme, showActive }) {
 function TodoList({ todos }) {
   return (
     <div>
-      {todos.map(todo => (
+      {todos.map((todo) => (
         <TodoItem
           key={todo.id}
           todo={todo}
@@ -1915,10 +2397,10 @@ function TodoList({ todos }) {
   const handleDelete = useCallback((id: number) => {
     deleteTodo(id);
   }, []);
-  
+
   return (
     <div>
-      {todos.map(todo => (
+      {todos.map((todo) => (
         <TodoItem
           key={todo.id}
           todo={todo}
@@ -1947,9 +2429,7 @@ items.map((item, index) => (
 // React thinks item at index 2 was removed, but it was 'B'!
 
 // ✅ Good: Stable unique ID
-items.map(item => (
-  <div key={item.id}>{item.name}</div>
-));
+items.map((item) => <div key={item.id}>{item.name}</div>);
 
 // ══════════════════════════════════════════════════════════
 // MISTAKE 14: Not memoizing expensive calculations
@@ -1958,9 +2438,9 @@ items.map(item => (
 function DataTable({ data, filter }) {
   // ❌ Bad: Recalculates every render (even when data unchanged)
   const sortedData = data
-    .filter(item => item.status === filter)
+    .filter((item) => item.status === filter)
     .sort((a, b) => a.name.localeCompare(b.name));
-  
+
   return <Table data={sortedData} />;
 }
 
@@ -1968,10 +2448,10 @@ function DataTable({ data, filter }) {
 function DataTable({ data, filter }) {
   const sortedData = useMemo(() => {
     return data
-      .filter(item => item.status === filter)
+      .filter((item) => item.status === filter)
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [data, filter]); // Only recalculate when dependencies change
-  
+
   return <Table data={sortedData} />;
 }
 ```
@@ -1992,11 +2472,11 @@ function DataTable({ data, filter }) {
 // ❌ Bad: Duplicate source of truth
 function UserProfile({ user }) {
   const [fullName, setFullName] = useState('');
-  
+
   useEffect(() => {
     setFullName(`${user.firstName} ${user.lastName}`);
   }, [user]);
-  
+
   return <div>{fullName}</div>;
 }
 
@@ -2022,11 +2502,11 @@ function UserProfile({ user }) {
 // ❌ Bad: Updates state even when value unchanged
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   const increment = () => {
     setCount(count + 1); // Always triggers re-render
   };
-  
+
   return <button onClick={increment}>{count}</button>;
 }
 
@@ -2035,18 +2515,18 @@ function Counter() {
 // ✅ Good: Use functional update or check before setting
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   const increment = () => {
-    setCount(prev => prev + 1); // Functional update
+    setCount((prev) => prev + 1); // Functional update
   };
-  
+
   const setValue = (newValue: number) => {
-    setCount(prev => {
+    setCount((prev) => {
       if (prev === newValue) return prev; // Bail out
       return newValue;
     });
   };
-  
+
   return <button onClick={increment}>{count}</button>;
 }
 
@@ -2055,7 +2535,7 @@ function Counter() {
 // ══════════════════════════════════════════════════════════
 
 const [user, setUser] = useState({
-  profile: { name: 'John', address: { city: 'NYC' } }
+  profile: { name: 'John', address: { city: 'NYC' } },
 });
 
 // ❌ Bad: Mutation (doesn't trigger re-render)
@@ -2066,15 +2546,15 @@ const updateCity = (city: string) => {
 
 // ✅ Good: Immutable update
 const updateCity = (city: string) => {
-  setUser(prev => ({
+  setUser((prev) => ({
     ...prev,
     profile: {
       ...prev.profile,
       address: {
         ...prev.profile.address,
-        city
-      }
-    }
+        city,
+      },
+    },
   }));
 };
 
@@ -2082,9 +2562,11 @@ const updateCity = (city: string) => {
 import { produce } from 'immer';
 
 const updateCity = (city: string) => {
-  setUser(produce(draft => {
-    draft.profile.address.city = city; // Looks like mutation, but immutable!
-  }));
+  setUser(
+    produce((draft) => {
+      draft.profile.address.city = city; // Looks like mutation, but immutable!
+    })
+  );
 };
 ```
 
@@ -2103,21 +2585,21 @@ const updateCity = (city: string) => {
 
 // ❌ Bad: Sequential (3 seconds total)
 async function fetchData() {
-  const users = await fetchUsers();      // 1s
-  const posts = await fetchPosts();      // 1s
+  const users = await fetchUsers(); // 1s
+  const posts = await fetchPosts(); // 1s
   const comments = await fetchComments(); // 1s
-  
+
   return { users, posts, comments };
 }
 
 // ✅ Good: Parallel (1 second total)
 async function fetchData() {
   const [users, posts, comments] = await Promise.all([
-    fetchUsers(),      // All start together
+    fetchUsers(), // All start together
     fetchPosts(),
-    fetchComments()
+    fetchComments(),
   ]);
-  
+
   return { users, posts, comments };
 }
 
@@ -2142,9 +2624,7 @@ for (const id of userIds) {
 }
 
 // ✅ Good: Parallel (1 second)
-const users = await Promise.all(
-  userIds.map(id => fetchUser(id))
-);
+const users = await Promise.all(userIds.map((id) => fetchUser(id)));
 
 // ══════════════════════════════════════════════════════════
 // MISTAKE 20: Not handling promise rejections
@@ -2155,8 +2635,8 @@ fetchData(); // If rejects, app crashes in production!
 
 // ✅ Good: Always handle errors
 fetchData()
-  .then(data => console.log(data))
-  .catch(error => console.error('Failed:', error));
+  .then((data) => console.log(data))
+  .catch((error) => console.error('Failed:', error));
 
 // ✅ Better: Try/catch with async/await
 async function loadData() {
@@ -2170,7 +2650,7 @@ async function loadData() {
 }
 
 // ✅ Global handler (last resort)
-window.addEventListener('unhandledrejection', event => {
+window.addEventListener('unhandledrejection', (event) => {
   console.error('Unhandled rejection:', event.reason);
   logToErrorService(event.reason);
 });
@@ -2193,11 +2673,11 @@ window.addEventListener('unhandledrejection', event => {
 function Component() {
   useEffect(() => {
     const handleScroll = () => console.log('Scrolled');
-    
+
     window.addEventListener('scroll', handleScroll);
     // Missing cleanup! Listener persists after unmount
   }, []);
-  
+
   return <div>Content</div>;
 }
 
@@ -2205,14 +2685,14 @@ function Component() {
 function Component() {
   useEffect(() => {
     const handleScroll = () => console.log('Scrolled');
-    
+
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-  
+
   return <div>Content</div>;
 }
 
@@ -2228,7 +2708,7 @@ function Component() {
     }, 1000);
     // Interval never cleared!
   }, []);
-  
+
   return <div>Content</div>;
 }
 
@@ -2238,10 +2718,10 @@ function Component() {
     const intervalId = setInterval(() => {
       console.log('Tick');
     }, 1000);
-    
+
     return () => clearInterval(intervalId);
   }, []);
-  
+
   return <div>Content</div>;
 }
 
@@ -2259,7 +2739,7 @@ function createHandler(items: LargeObject[]) {
 // ✅ Good: Extract only what you need
 function createHandler(items: LargeObject[]) {
   const length = items.length; // Only store length
-  
+
   return () => {
     console.log(length);
   };
@@ -2298,7 +2778,7 @@ import { Chart } from 'heavy-chart-library'; // 500KB
 
 function Dashboard() {
   const [showChart, setShowChart] = useState(false);
-  
+
   return (
     <div>
       <button onClick={() => setShowChart(true)}>Show Chart</button>
@@ -2312,7 +2792,7 @@ const Chart = lazy(() => import('heavy-chart-library'));
 
 function Dashboard() {
   const [showChart, setShowChart] = useState(false);
-  
+
   return (
     <div>
       <button onClick={() => setShowChart(true)}>Show Chart</button>
@@ -2359,50 +2839,49 @@ dayjs().format('YYYY-MM-DD');
  */
 
 const performanceChecklist = {
-  
   // Array Operations
   '❌ filter + map': 'Use reduce or for loop',
   '❌ find in loop': 'Use Map for O(1) lookup',
   '❌ includes in loop': 'Use Set for O(1) lookup',
   '❌ Multiple iterations': 'Combine into single reduce',
-  
+
   // DOM Manipulation
   '❌ DOM query in loop': 'Cache reference outside loop',
   '❌ appendChild in loop': 'Use DocumentFragment or innerHTML',
   '❌ Layout thrashing': 'Batch reads, then batch writes',
   '❌ querySelector repeatedly': 'Cache elements',
-  
+
   // React
   '❌ Object/array in render': 'useMemo or move outside',
   '❌ Inline functions': 'useCallback for memoized children',
   '❌ Index as key': 'Use stable unique ID',
   '❌ Expensive calc in render': 'useMemo',
   '❌ Derived state': 'Compute during render',
-  
+
   // Async
   '❌ Sequential awaits': 'Promise.all for parallel',
   '❌ await in loop': 'Promise.all + map',
   '❌ Unhandled rejections': 'Always .catch() or try/catch',
-  
+
   // Memory
   '❌ Event listeners': 'Clean up in useEffect return',
   '❌ Timers/intervals': 'Clear on unmount',
   '❌ Large closures': 'Extract only needed values',
-  
+
   // Bundle
   '❌ Import entire library': 'Import specific functions',
   '❌ Heavy components upfront': 'React.lazy() + Suspense',
   '❌ Moment.js': 'Use date-fns or dayjs',
-  
+
   // General
   '❌ O(n²) algorithms': 'Use Map/Set for O(n)',
   '❌ Premature optimization': 'Profile first, then optimize',
-  '❌ No monitoring': 'Use Lighthouse, Web Vitals'
+  '❌ No monitoring': 'Use Lighthouse, Web Vitals',
 };
 
 /**
  * 🎯 Quick Wins (High Impact, Low Effort):
- * 
+ *
  * 1. Replace filter + map with reduce
  * 2. Use Map/Set instead of find/includes in loops
  * 3. Cache DOM references
@@ -2411,7 +2890,7 @@ const performanceChecklist = {
  * 6. Lazy load heavy libraries
  * 7. Clean up event listeners/timers
  * 8. Replace moment.js with date-fns
- * 
+ *
  * Before optimizing:
  * • Profile with Chrome DevTools
  * • Measure with Lighthouse
@@ -2444,11 +2923,11 @@ const Button = styled.button<{ $primary?: boolean }>`
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
-  
+
   &:hover {
     opacity: 0.9;
   }
-  
+
   @media (max-width: 768px) {
     padding: 0.25rem 0.5rem;
   }
@@ -2531,13 +3010,13 @@ function Component({ isPrimary }) {
  * • Complex component variants
  * • TypeScript-first project
  * • Don't care about bundle size
- * 
+ *
  * Use CSS Modules when:
  * • Want familiar CSS syntax
  * • Zero runtime overhead needed
  * • Migrating from traditional CSS
  * • Server-side rendering (SSR)
- * 
+ *
  * Use Tailwind when:
  * • Rapid prototyping
  * • Design system consistency
@@ -2566,7 +3045,7 @@ function Component({ isPrimary }) {
     .header { /* ... */ }
     .hero { /* ... */ }
   </style>
-  
+
   {/* Load full CSS asynchronously */}
   <link
     rel="preload"
@@ -2711,7 +3190,7 @@ element.appendChild(div);
 // ══════════════════════════════════════════════════════════
 
 // Set CSP headers on server
-// Content-Security-Policy: 
+// Content-Security-Policy:
 //   default-src 'self';
 //   script-src 'self' https://trusted-cdn.com;
 //   style-src 'self' 'unsafe-inline';
@@ -2724,7 +3203,7 @@ element.appendChild(div);
     http-equiv="Content-Security-Policy"
     content="default-src 'self'; script-src 'self' https://trusted-cdn.com"
   />
-</Helmet>
+</Helmet>;
 ```
 
 ---
@@ -2744,7 +3223,7 @@ element.appendChild(div);
  * User logged into bank.com
  * Attacker sends email with:
  * <img src="https://bank.com/transfer?to=attacker&amount=1000">
- * 
+ *
  * Browser automatically sends cookies → Money transferred!
  */
 
@@ -2762,9 +3241,9 @@ fetch('/api/transfer', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-CSRF-Token': csrfToken
+    'X-CSRF-Token': csrfToken,
   },
-  body: JSON.stringify({ to: 'recipient', amount: 1000 })
+  body: JSON.stringify({ to: 'recipient', amount: 1000 }),
 });
 
 // Server validates token matches session
@@ -2793,9 +3272,9 @@ fetch('/api/transfer', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest' // Custom header
+    'X-Requested-With': 'XMLHttpRequest', // Custom header
   },
-  body: JSON.stringify({ to: 'recipient', amount: 1000 })
+  body: JSON.stringify({ to: 'recipient', amount: 1000 }),
 });
 
 // Server checks for custom header presence
@@ -2819,15 +3298,15 @@ localStorage.setItem('token', jwt);
 
 fetch('/api/protected', {
   headers: {
-    Authorization: `Bearer ${localStorage.getItem('token')}`
-  }
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+  },
 });
 
 // ✅ HttpOnly cookies (Safe from XSS)
 // Server sets: Set-Cookie: session=abc123; HttpOnly; Secure; SameSite=Strict
 
 fetch('/api/protected', {
-  credentials: 'include' // Send cookies automatically
+  credentials: 'include', // Send cookies automatically
 });
 
 // ══════════════════════════════════════════════════════════
@@ -2842,9 +3321,9 @@ let accessToken: string | null = null;
 async function refreshAccessToken() {
   const response = await fetch('/api/refresh', {
     method: 'POST',
-    credentials: 'include' // Sends refresh token cookie
+    credentials: 'include', // Sends refresh token cookie
   });
-  
+
   const { accessToken: newToken } = await response.json();
   accessToken = newToken;
   return newToken;
@@ -2852,13 +3331,13 @@ async function refreshAccessToken() {
 
 // Axios interceptor for auto-refresh
 axios.interceptors.response.use(
-  response => response,
-  async error => {
+  (response) => response,
+  async (error) => {
     const originalRequest = error.config;
-    
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      
+
       try {
         const token = await refreshAccessToken();
         originalRequest.headers.Authorization = `Bearer ${token}`;
@@ -2869,7 +3348,7 @@ axios.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     }
-    
+
     return Promise.reject(error);
   }
 );
@@ -2881,32 +3360,32 @@ axios.interceptors.response.use(
 // ✅ Client-side validation (UX)
 function validatePassword(password: string) {
   const errors = [];
-  
+
   if (password.length < 12) {
     errors.push('Minimum 12 characters');
   }
-  
+
   if (!/[A-Z]/.test(password)) {
     errors.push('At least one uppercase letter');
   }
-  
+
   if (!/[a-z]/.test(password)) {
     errors.push('At least one lowercase letter');
   }
-  
+
   if (!/[0-9]/.test(password)) {
     errors.push('At least one number');
   }
-  
+
   if (!/[^A-Za-z0-9]/.test(password)) {
     errors.push('At least one special character');
   }
-  
+
   // Check against common passwords
   if (commonPasswords.includes(password.toLowerCase())) {
     errors.push('Password too common');
   }
-  
+
   return errors;
 }
 
@@ -2930,7 +3409,7 @@ function validatePassword(password: string) {
 function BadList({ items }) {
   return (
     <div>
-      {items.map(item => (
+      {items.map((item) => (
         <div key={item.id} style={{ height: 50 }}>
           {item.name}
         </div>
@@ -2944,11 +3423,9 @@ import { FixedSizeList } from 'react-window';
 
 function VirtualList({ items }) {
   const Row = ({ index, style }) => (
-    <div style={style}>
-      {items[index].name}
-    </div>
+    <div style={style}>{items[index].name}</div>
   );
-  
+
   return (
     <FixedSizeList
       height={600}
@@ -3012,11 +3489,11 @@ const HeavyChart = lazy(() => import('./components/HeavyChart'));
 
 function Dashboard() {
   const [showChart, setShowChart] = useState(false);
-  
+
   return (
     <div>
       <button onClick={() => setShowChart(true)}>Show Chart</button>
-      
+
       {showChart && (
         <Suspense fallback={<ChartSkeleton />}>
           <HeavyChart data={data} />
@@ -3037,11 +3514,11 @@ import 'moment/locale/vi';
 // ✅ Good: Dynamic import when needed
 async function formatDate(date: Date, locale: string) {
   const moment = await import('moment');
-  
+
   if (locale !== 'en') {
     await import(`moment/locale/${locale}`);
   }
-  
+
   return moment.default(date).locale(locale).format('LL');
 }
 ```
@@ -3061,13 +3538,13 @@ async function formatDate(date: Date, locale: string) {
 
 function Component() {
   const [result, setResult] = useState(null);
-  
+
   const handleCalculate = () => {
     // ❌ Blocks UI thread for 5 seconds
     const result = heavyComputation(largeDataset);
     setResult(result);
   };
-  
+
   return <button onClick={handleCalculate}>Calculate</button>;
 }
 
@@ -3085,22 +3562,22 @@ self.addEventListener('message', (e) => {
 function Component() {
   const [result, setResult] = useState(null);
   const workerRef = useRef<Worker>();
-  
+
   useEffect(() => {
     workerRef.current = new Worker(new URL('./worker.ts', import.meta.url));
-    
+
     workerRef.current.onmessage = (e) => {
       setResult(e.data);
     };
-    
+
     return () => workerRef.current?.terminate();
   }, []);
-  
+
   const handleCalculate = () => {
     // ✅ Non-blocking: UI remains responsive
     workerRef.current?.postMessage(largeDataset);
   };
-  
+
   return <button onClick={handleCalculate}>Calculate</button>;
 }
 
@@ -3116,7 +3593,7 @@ import { expose } from 'comlink';
 const api = {
   async processData(data: any[]) {
     return heavyComputation(data);
-  }
+  },
 };
 
 expose(api);
@@ -3155,29 +3632,29 @@ describe('LoginForm', () => {
   it('submits form with user credentials', async () => {
     const handleSubmit = jest.fn();
     const user = userEvent.setup();
-    
+
     render(<LoginForm onSubmit={handleSubmit} />);
-    
+
     // Find by role/label (accessible)
     await user.type(screen.getByLabelText(/email/i), 'user@example.com');
     await user.type(screen.getByLabelText(/password/i), 'password123');
     await user.click(screen.getByRole('button', { name: /login/i }));
-    
+
     // Assert behavior
     await waitFor(() => {
       expect(handleSubmit).toHaveBeenCalledWith({
         email: 'user@example.com',
-        password: 'password123'
+        password: 'password123',
       });
     });
   });
-  
+
   it('shows validation errors', async () => {
     render(<LoginForm />);
-    
+
     const user = userEvent.setup();
     await user.click(screen.getByRole('button', { name: /login/i }));
-    
+
     expect(screen.getByText(/email is required/i)).toBeInTheDocument();
     expect(screen.getByText(/password is required/i)).toBeInTheDocument();
   });
@@ -3187,9 +3664,9 @@ describe('LoginForm', () => {
 it('updates state on input change', () => {
   const { container } = render(<LoginForm />);
   const input = container.querySelector('input[name="email"]');
-  
+
   fireEvent.change(input, { target: { value: 'test@example.com' } });
-  
+
   // Don't test state directly!
   expect(wrapper.state('email')).toBe('test@example.com');
 });
@@ -3203,10 +3680,12 @@ import { setupServer } from 'msw/node';
 
 const server = setupServer(
   rest.get('/api/users', (req, res, ctx) => {
-    return res(ctx.json([
-      { id: 1, name: 'John' },
-      { id: 2, name: 'Jane' }
-    ]));
+    return res(
+      ctx.json([
+        { id: 1, name: 'John' },
+        { id: 2, name: 'Jane' },
+      ])
+    );
   })
 );
 
@@ -3216,9 +3695,9 @@ afterAll(() => server.close());
 
 it('fetches and displays users', async () => {
   render(<UserList />);
-  
+
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
-  
+
   await waitFor(() => {
     expect(screen.getByText('John')).toBeInTheDocument();
     expect(screen.getByText('Jane')).toBeInTheDocument();
@@ -3256,15 +3735,15 @@ import { test, expect } from '@playwright/test';
 test('user can login and view dashboard', async ({ page }) => {
   // Navigate
   await page.goto('https://app.example.com');
-  
+
   // Fill login form
   await page.fill('input[name="email"]', 'user@example.com');
   await page.fill('input[name="password"]', 'password123');
   await page.click('button[type="submit"]');
-  
+
   // Wait for navigation
   await page.waitForURL('**/dashboard');
-  
+
   // Assert
   await expect(page.locator('h1')).toHaveText('Dashboard');
   await expect(page.locator('.user-name')).toHaveText('John Doe');
@@ -3276,7 +3755,7 @@ test('user can login and view dashboard', async ({ page }) => {
 
 test('homepage looks correct', async ({ page }) => {
   await page.goto('https://app.example.com');
-  
+
   // Take screenshot and compare with baseline
   await expect(page).toHaveScreenshot('homepage.png');
 });
@@ -3287,15 +3766,15 @@ test('homepage looks correct', async ({ page }) => {
 
 test('handles API errors gracefully', async ({ page }) => {
   // Mock API to return error
-  await page.route('**/api/users', route => {
+  await page.route('**/api/users', (route) => {
     route.fulfill({
       status: 500,
-      body: JSON.stringify({ error: 'Internal Server Error' })
+      body: JSON.stringify({ error: 'Internal Server Error' }),
     });
   });
-  
+
   await page.goto('https://app.example.com/users');
-  
+
   // Assert error message shown
   await expect(page.locator('.error-message')).toHaveText(
     'Failed to load users'
@@ -3315,7 +3794,6 @@ test('handles API errors gracefully', async ({ page }) => {
  */
 
 const seniorDevHandbook = {
-  
   // ═══════════════════════════════════════════════════════
   // CORE JAVASCRIPT
   // ═══════════════════════════════════════════════════════
@@ -3326,7 +3804,7 @@ const seniorDevHandbook = {
       '✅ this binding (4 rules)',
       '✅ Event loop (microtasks, macrotasks)',
       '✅ Promises, async/await',
-      '✅ ES6+ features (destructuring, spread, optional chaining)'
+      '✅ ES6+ features (destructuring, spread, optional chaining)',
     ],
     advanced: [
       '✅ Generators & iterators',
@@ -3334,17 +3812,17 @@ const seniorDevHandbook = {
       '✅ WeakMap/WeakSet for memory management',
       '✅ Symbol for private properties',
       '✅ Temporal Dead Zone (TDZ)',
-      '✅ Module systems (ESM vs CommonJS)'
+      '✅ Module systems (ESM vs CommonJS)',
     ],
     performance: [
       '✅ O(n²) → O(n) optimizations',
       '✅ Map/Set for lookups',
       '✅ Memoization patterns',
       '✅ Debounce/throttle',
-      '✅ Web Workers for heavy tasks'
-    ]
+      '✅ Web Workers for heavy tasks',
+    ],
   },
-  
+
   // ═══════════════════════════════════════════════════════
   // REACT ECOSYSTEM
   // ═══════════════════════════════════════════════════════
@@ -3353,14 +3831,14 @@ const seniorDevHandbook = {
       '✅ All hooks (useState, useEffect, useContext, etc.)',
       '✅ Component lifecycle',
       '✅ Virtual DOM & reconciliation',
-      '✅ Keys in lists (why not index)'
+      '✅ Keys in lists (why not index)',
     ],
     patterns: [
       '✅ Compound Components',
       '✅ Render Props (legacy)',
       '✅ HOC (deprecated → use hooks)',
       '✅ Container/Presentational',
-      '✅ Controlled vs Uncontrolled'
+      '✅ Controlled vs Uncontrolled',
     ],
     performance: [
       '✅ React.memo for expensive components',
@@ -3369,17 +3847,17 @@ const seniorDevHandbook = {
       '✅ Code splitting (React.lazy)',
       '✅ Virtual scrolling (react-window)',
       '✅ Avoid inline objects/arrays',
-      '✅ Profiler API for bottlenecks'
+      '✅ Profiler API for bottlenecks',
     ],
     stateManagement: [
       '✅ Context API limitations',
       '✅ Redux (actions, reducers, middleware)',
       '✅ Zustand (simpler alternative)',
       '✅ React Query (server state)',
-      '✅ Recoil/Jotai (atomic state)'
-    ]
+      '✅ Recoil/Jotai (atomic state)',
+    ],
   },
-  
+
   // ═══════════════════════════════════════════════════════
   // CSS & STYLING
   // ═══════════════════════════════════════════════════════
@@ -3389,23 +3867,23 @@ const seniorDevHandbook = {
       '✅ CSS Variables (custom properties)',
       '✅ Container queries',
       '✅ CSS layers (@layer)',
-      '✅ content-visibility for lazy render'
+      '✅ content-visibility for lazy render',
     ],
     architecture: [
       '✅ BEM methodology',
       '✅ CSS Modules',
       '✅ Styled Components',
       '✅ Tailwind CSS',
-      '✅ Critical CSS extraction'
+      '✅ Critical CSS extraction',
     ],
     performance: [
       '✅ Avoid expensive selectors',
       '✅ CSS containment',
       '✅ will-change for animations',
-      '✅ Reduce reflows/repaints'
-    ]
+      '✅ Reduce reflows/repaints',
+    ],
   },
-  
+
   // ═══════════════════════════════════════════════════════
   // SECURITY
   // ═══════════════════════════════════════════════════════
@@ -3414,28 +3892,28 @@ const seniorDevHandbook = {
       '✅ Sanitize user input (DOMPurify)',
       '✅ Use textContent over innerHTML',
       '✅ Content Security Policy (CSP)',
-      '✅ Never use eval() or Function()'
+      '✅ Never use eval() or Function()',
     ],
     csrf: [
       '✅ CSRF tokens in forms',
       '✅ SameSite cookies',
-      '✅ Custom headers for AJAX'
+      '✅ Custom headers for AJAX',
     ],
     auth: [
       '✅ HttpOnly cookies (not localStorage)',
       '✅ Refresh token pattern',
       '✅ Password validation (length, complexity)',
-      '✅ bcrypt with salt >= 12'
+      '✅ bcrypt with salt >= 12',
     ],
     general: [
       '✅ HTTPS only',
       '✅ Secure headers (HSTS, X-Frame-Options)',
       '✅ Rate limiting',
       '✅ Input validation (client + server)',
-      '✅ Dependency audits (npm audit)'
-    ]
+      '✅ Dependency audits (npm audit)',
+    ],
   },
-  
+
   // ═══════════════════════════════════════════════════════
   // PERFORMANCE
   // ═══════════════════════════════════════════════════════
@@ -3444,7 +3922,7 @@ const seniorDevHandbook = {
       '✅ Core Web Vitals (LCP, FID, CLS)',
       '✅ Lighthouse score > 90',
       '✅ Time to Interactive < 3s',
-      '✅ Bundle size < 200KB (gzipped)'
+      '✅ Bundle size < 200KB (gzipped)',
     ],
     optimization: [
       '✅ Code splitting by route',
@@ -3452,17 +3930,17 @@ const seniorDevHandbook = {
       '✅ Tree shaking (unused code)',
       '✅ Compression (gzip/brotli)',
       '✅ CDN for static assets',
-      '✅ Service Worker for offline'
+      '✅ Service Worker for offline',
     ],
     monitoring: [
       '✅ Performance API',
       '✅ Chrome DevTools Profiler',
       '✅ React DevTools Profiler',
       '✅ Sentry for errors',
-      '✅ Web Vitals tracking'
-    ]
+      '✅ Web Vitals tracking',
+    ],
   },
-  
+
   // ═══════════════════════════════════════════════════════
   // TESTING
   // ═══════════════════════════════════════════════════════
@@ -3472,20 +3950,20 @@ const seniorDevHandbook = {
       '✅ React Testing Library',
       '✅ Test behavior, not implementation',
       '✅ Mock API calls (MSW)',
-      '✅ Code coverage > 80%'
+      '✅ Code coverage > 80%',
     ],
     integration: [
       '✅ Test user flows',
       '✅ Test error handling',
-      '✅ Test edge cases'
+      '✅ Test edge cases',
     ],
     e2e: [
       '✅ Playwright/Cypress',
       '✅ Critical user paths',
-      '✅ Visual regression testing'
-    ]
+      '✅ Visual regression testing',
+    ],
   },
-  
+
   // ═══════════════════════════════════════════════════════
   // BUILD & DEPLOYMENT
   // ═══════════════════════════════════════════════════════
@@ -3494,24 +3972,24 @@ const seniorDevHandbook = {
       '✅ Vite (fast dev server)',
       '✅ Webpack (production builds)',
       '✅ esbuild (fast bundler)',
-      '✅ SWC (Babel alternative)'
+      '✅ SWC (Babel alternative)',
     ],
     cicd: [
       '✅ GitHub Actions / GitLab CI',
       '✅ Automated tests',
       '✅ Linting (ESLint, Prettier)',
       '✅ Type checking (TypeScript)',
-      '✅ Preview deployments'
+      '✅ Preview deployments',
     ],
     deployment: [
       '✅ Vercel/Netlify for static',
       '✅ Docker for containers',
       '✅ CloudFront for CDN',
       '✅ Environment variables',
-      '✅ Health checks'
-    ]
+      '✅ Health checks',
+    ],
   },
-  
+
   // ═══════════════════════════════════════════════════════
   // SOFT SKILLS
   // ═══════════════════════════════════════════════════════
@@ -3523,15 +4001,14 @@ const seniorDevHandbook = {
     '✅ Performance debugging',
     '✅ Cross-team collaboration',
     '✅ Technical debt management',
-    '✅ Estimation & planning'
-  ]
+    '✅ Estimation & planning',
+  ],
 };
 
 /**
  * 🎯 INTERVIEW PREPARATION
  */
 const interviewTopics = {
-  
   // Must know cold
   critical: [
     'Closures & scope',
@@ -3541,9 +4018,9 @@ const interviewTopics = {
     'Event loop',
     'XSS/CSRF prevention',
     'Performance optimization (O(n²) → O(n))',
-    'CSS specificity & BEM'
+    'CSS specificity & BEM',
   ],
-  
+
   // Should be able to explain
   important: [
     'Prototype chain',
@@ -3553,9 +4030,9 @@ const interviewTopics = {
     'Code splitting',
     'Web Workers',
     'CSP & security headers',
-    'Testing strategies'
+    'Testing strategies',
   ],
-  
+
   // Good to know
   bonus: [
     'Generators',
@@ -3564,35 +4041,34 @@ const interviewTopics = {
     'SSR/SSG',
     'GraphQL',
     'WebAssembly',
-    'Progressive Web Apps'
-  ]
+    'Progressive Web Apps',
+  ],
 };
 
 /**
  * 📚 LEARNING PATH
  */
 const learningRoadmap = {
-  
   month1_3: [
     'Master all React hooks',
     'Build 3 projects with different patterns',
     'Learn testing (RTL + Jest)',
-    'Understand bundlers (Vite/Webpack)'
+    'Understand bundlers (Vite/Webpack)',
   ],
-  
+
   month4_6: [
     'Deep dive Event Loop',
     'Master performance optimization',
     'Learn security (XSS, CSRF, Auth)',
-    'Contribute to open source'
+    'Contribute to open source',
   ],
-  
+
   month7_12: [
     'System design practice',
     'Mentor junior developers',
     'Learn architecture patterns',
-    'Build production-grade apps'
-  ]
+    'Build production-grade apps',
+  ],
 };
 
 export default seniorDevHandbook;
@@ -3621,7 +4097,7 @@ export default seniorDevHandbook;
 
 const lazyLoadImages = () => {
   const images = document.querySelectorAll('img[data-src]');
-  
+
   const imageObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -3634,7 +4110,7 @@ const lazyLoadImages = () => {
   }, {
     rootMargin: '50px' // Load 50px before visible
   });
-  
+
   images.forEach(img => imageObserver.observe(img));
 };
 
@@ -3646,7 +4122,7 @@ function InfiniteScroll() {
   const [items, setItems] = useState<Item[]>([]);
   const [page, setPage] = useState(1);
   const loaderRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -3656,20 +4132,20 @@ function InfiniteScroll() {
       },
       { threshold: 1.0 }
     );
-    
+
     if (loaderRef.current) {
       observer.observe(loaderRef.current);
     }
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   useEffect(() => {
     fetchItems(page).then(newItems => {
       setItems(prev => [...prev, ...newItems]);
     });
   }, [page]);
-  
+
   return (
     <div>
       {items.map(item => <ItemCard key={item.id} {...item} />)}
@@ -3694,7 +4170,7 @@ const trackElementVisibility = (selector: string, callback: () => void) => {
     },
     { threshold: 0.5 }
   );
-  
+
   document.querySelectorAll(selector).forEach(el => observer.observe(el));
 };
 
@@ -3720,11 +4196,12 @@ trackElementVisibility('.ad-banner', () => {
 // main.ts
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((registration) => {
         console.log('SW registered:', registration.scope);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('SW registration failed:', error);
       });
   });
@@ -3740,25 +4217,24 @@ const STATIC_ASSETS = [
   '/index.html',
   '/styles.css',
   '/app.js',
-  '/logo.png'
+  '/logo.png',
 ];
 
 // Install: Cache static assets
 self.addEventListener('install', (event: ExtendableEvent) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
   );
 });
 
 // Activate: Clean old caches
 self.addEventListener('activate', (event: ExtendableEvent) => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
+    caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
-          .filter(name => name !== CACHE_NAME)
-          .map(name => caches.delete(name))
+          .filter((name) => name !== CACHE_NAME)
+          .map((name) => caches.delete(name))
       );
     })
   );
@@ -3768,11 +4244,11 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
 self.addEventListener('fetch', (event: FetchEvent) => {
   event.respondWith(
     fetch(event.request)
-      .then(response => {
+      .then((response) => {
         // Clone and cache successful responses
         if (response.status === 200) {
           const responseClone = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
+          caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
           });
         }
@@ -3791,13 +4267,11 @@ self.addEventListener('fetch', (event: FetchEvent) => {
 
 self.addEventListener('fetch', (event: FetchEvent) => {
   event.respondWith(
-    fetch(event.request)
-      .catch(() => {
-        return caches.match(event.request)
-          .then(response => {
-            return response || caches.match('/offline.html');
-          });
-      })
+    fetch(event.request).catch(() => {
+      return caches.match(event.request).then((response) => {
+        return response || caches.match('/offline.html');
+      });
+    })
   );
 });
 
@@ -3806,7 +4280,7 @@ self.addEventListener('fetch', (event: FetchEvent) => {
 // ══════════════════════════════════════════════════════════
 
 // Register sync when online
-navigator.serviceWorker.ready.then(registration => {
+navigator.serviceWorker.ready.then((registration) => {
   return registration.sync.register('sync-posts');
 });
 
@@ -3819,12 +4293,12 @@ self.addEventListener('sync', (event: SyncEvent) => {
 
 async function syncPendingPosts() {
   const posts = await getPostsFromIndexedDB();
-  
+
   for (const post of posts) {
     try {
       await fetch('/api/posts', {
         method: 'POST',
-        body: JSON.stringify(post)
+        body: JSON.stringify(post),
       });
       await deletePostFromIndexedDB(post.id);
     } catch (error) {
@@ -3840,19 +4314,19 @@ async function syncPendingPosts() {
 // Request permission
 async function requestNotificationPermission() {
   const permission = await Notification.requestPermission();
-  
+
   if (permission === 'granted') {
     const registration = await navigator.serviceWorker.ready;
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(PUBLIC_VAPID_KEY)
+      applicationServerKey: urlBase64ToUint8Array(PUBLIC_VAPID_KEY),
     });
-    
+
     // Send subscription to server
     await fetch('/api/subscribe', {
       method: 'POST',
       body: JSON.stringify(subscription),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 }
@@ -3860,7 +4334,7 @@ async function requestNotificationPermission() {
 // Service worker shows notification
 self.addEventListener('push', (event: PushEvent) => {
   const data = event.data?.json();
-  
+
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
@@ -3868,8 +4342,8 @@ self.addEventListener('push', (event: PushEvent) => {
       badge: '/badge.png',
       actions: [
         { action: 'open', title: 'Open App' },
-        { action: 'close', title: 'Close' }
-      ]
+        { action: 'close', title: 'Close' },
+      ],
     })
   );
 });
@@ -3877,11 +4351,9 @@ self.addEventListener('push', (event: PushEvent) => {
 // Handle notification click
 self.addEventListener('notificationclick', (event: NotificationEvent) => {
   event.notification.close();
-  
+
   if (event.action === 'open') {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
+    event.waitUntil(clients.openWindow('/'));
   }
 });
 ```
@@ -3902,16 +4374,19 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
 function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('MyDatabase', 1);
-    
+
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
-    
+
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
-      
+
       // Create object store
       if (!db.objectStoreNames.contains('posts')) {
-        const objectStore = db.createObjectStore('posts', { keyPath: 'id', autoIncrement: true });
+        const objectStore = db.createObjectStore('posts', {
+          keyPath: 'id',
+          autoIncrement: true,
+        });
         objectStore.createIndex('timestamp', 'timestamp', { unique: false });
         objectStore.createIndex('status', 'status', { unique: false });
       }
@@ -3925,67 +4400,67 @@ function openDB(): Promise<IDBDatabase> {
 
 class PostDB {
   private db: IDBDatabase | null = null;
-  
+
   async init() {
     this.db = await openDB();
   }
-  
+
   async add(post: Post): Promise<number> {
     const tx = this.db!.transaction('posts', 'readwrite');
     const store = tx.objectStore('posts');
     const request = store.add(post);
-    
+
     return new Promise((resolve, reject) => {
       request.onsuccess = () => resolve(request.result as number);
       request.onerror = () => reject(request.error);
     });
   }
-  
+
   async getAll(): Promise<Post[]> {
     const tx = this.db!.transaction('posts', 'readonly');
     const store = tx.objectStore('posts');
     const request = store.getAll();
-    
+
     return new Promise((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
   }
-  
+
   async getByStatus(status: string): Promise<Post[]> {
     const tx = this.db!.transaction('posts', 'readonly');
     const store = tx.objectStore('posts');
     const index = store.index('status');
     const request = index.getAll(status);
-    
+
     return new Promise((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
   }
-  
+
   async update(id: number, data: Partial<Post>): Promise<void> {
     const tx = this.db!.transaction('posts', 'readwrite');
     const store = tx.objectStore('posts');
     const getRequest = store.get(id);
-    
+
     return new Promise((resolve, reject) => {
       getRequest.onsuccess = () => {
         const post = { ...getRequest.result, ...data };
         const updateRequest = store.put(post);
-        
+
         updateRequest.onsuccess = () => resolve();
         updateRequest.onerror = () => reject(updateRequest.error);
       };
       getRequest.onerror = () => reject(getRequest.error);
     });
   }
-  
+
   async delete(id: number): Promise<void> {
     const tx = this.db!.transaction('posts', 'readwrite');
     const store = tx.objectStore('posts');
     const request = store.delete(id);
-    
+
     return new Promise((resolve, reject) => {
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
@@ -4017,7 +4492,7 @@ const drafts = await postDB.getByStatus('draft');
 
 class TypedStorage<T extends Record<string, any>> {
   constructor(private storage: Storage = localStorage) {}
-  
+
   set<K extends keyof T>(key: K, value: T[K]): void {
     try {
       this.storage.setItem(key as string, JSON.stringify(value));
@@ -4028,26 +4503,26 @@ class TypedStorage<T extends Record<string, any>> {
       }
     }
   }
-  
+
   get<K extends keyof T>(key: K): T[K] | null {
     const item = this.storage.getItem(key as string);
     if (!item) return null;
-    
+
     try {
       return JSON.parse(item);
     } catch {
       return item as T[K];
     }
   }
-  
+
   remove<K extends keyof T>(key: K): void {
     this.storage.removeItem(key as string);
   }
-  
+
   clear(): void {
     this.storage.clear();
   }
-  
+
   private cleanup(): void {
     // Remove oldest items
     const items = Object.entries(this.storage)
@@ -4060,10 +4535,10 @@ class TypedStorage<T extends Record<string, any>> {
         }
       })
       .sort((a, b) => a.timestamp - b.timestamp);
-    
+
     // Remove oldest 10%
     const toRemove = Math.ceil(items.length * 0.1);
-    items.slice(0, toRemove).forEach(item => {
+    items.slice(0, toRemove).forEach((item) => {
       this.storage.removeItem(item.key);
     });
   }
@@ -4071,9 +4546,9 @@ class TypedStorage<T extends Record<string, any>> {
 
 // Usage
 interface AppStorage {
-  user: { id: string; name: string; };
+  user: { id: string; name: string };
   token: string;
-  preferences: { theme: 'light' | 'dark'; };
+  preferences: { theme: 'light' | 'dark' };
 }
 
 const storage = new TypedStorage<AppStorage>();
@@ -4111,9 +4586,11 @@ localStorage.setItem('user', JSON.stringify({ id: '456', name: 'Jane' }));
 
 // Check quota
 if ('storage' in navigator && 'estimate' in navigator.storage) {
-  navigator.storage.estimate().then(estimate => {
+  navigator.storage.estimate().then((estimate) => {
     console.log(`Using ${estimate.usage} of ${estimate.quota} bytes`);
-    console.log(`${((estimate.usage! / estimate.quota!) * 100).toFixed(2)}% used`);
+    console.log(
+      `${((estimate.usage! / estimate.quota!) * 100).toFixed(2)}% used`
+    );
   });
 }
 ```
@@ -4256,7 +4733,7 @@ module.exports = {
  * • react.js: 120KB (cached)
  * • vendors.js: 200KB (cached)
  * • common.js: 30KB (cached)
- * 
+ *
  * Total: 400KB (20% smaller)
  * Subsequent loads: 50KB only! (90% cached)
  */
@@ -4285,14 +4762,14 @@ export default defineConfig({
       brotliSize: true
     })
   ],
-  
+
   build: {
     // Target modern browsers (smaller output)
     target: 'esnext',
-    
+
     // Chunk size warnings
     chunkSizeWarningLimit: 500,
-    
+
     rollupOptions: {
       output: {
         // Manual chunks
@@ -4303,7 +4780,7 @@ export default defineConfig({
         }
       }
     },
-    
+
     // Minification
     minify: 'terser',
     terserOptions: {
@@ -4313,7 +4790,7 @@ export default defineConfig({
       }
     }
   },
-  
+
   // Optimize deps
   optimizeDeps: {
     include: ['react', 'react-dom'],
@@ -4329,11 +4806,11 @@ export default defineConfig({
 <head>
   <!-- Preload fonts -->
   <link rel="preload" href="/fonts/main.woff2" as="font" type="font/woff2" crossorigin>
-  
+
   <!-- Preconnect to API -->
   <link rel="preconnect" href="https://api.example.com">
   <link rel="dns-prefetch" href="https://api.example.com">
-  
+
   <!-- Prefetch next route -->
   <link rel="prefetch" href="/dashboard.js">
 </head>
@@ -4429,7 +4906,7 @@ export default defineConfig({
 function Dropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  
+
   const handleKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
       case 'Escape':
@@ -4446,7 +4923,7 @@ function Dropdown() {
         break;
     }
   };
-  
+
   return (
     <div>
       <button
@@ -4457,7 +4934,7 @@ function Dropdown() {
       >
         Menu
       </button>
-      
+
       {isOpen && (
         <ul
           role="menu"
@@ -4478,29 +4955,29 @@ function Dropdown() {
 function Modal({ isOpen, onClose, children }) {
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
-  
+
   useEffect(() => {
     if (isOpen) {
       // Save current focus
       previousFocusRef.current = document.activeElement as HTMLElement;
-      
+
       // Focus first focusable element in modal
       const focusable = modalRef.current?.querySelector<HTMLElement>(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
       focusable?.focus();
-      
+
       // Trap focus in modal
       const handleTab = (e: KeyboardEvent) => {
         const focusableElements = modalRef.current?.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
-        
+
         if (!focusableElements) return;
-        
+
         const first = focusableElements[0];
         const last = focusableElements[focusableElements.length - 1];
-        
+
         if (e.key === 'Tab') {
           if (e.shiftKey && document.activeElement === first) {
             e.preventDefault();
@@ -4511,9 +4988,9 @@ function Modal({ isOpen, onClose, children }) {
           }
         }
       };
-      
+
       document.addEventListener('keydown', handleTab);
-      
+
       return () => {
         document.removeEventListener('keydown', handleTab);
         // Restore focus
@@ -4521,9 +4998,9 @@ function Modal({ isOpen, onClose, children }) {
       };
     }
   }, [isOpen]);
-  
+
   if (!isOpen) return null;
-  
+
   return (
     <div
       ref={modalRef}
@@ -4544,18 +5021,18 @@ function Modal({ isOpen, onClose, children }) {
 
 function LiveRegion() {
   const [message, setMessage] = useState('');
-  
+
   const announce = (text: string) => {
     setMessage(text);
     setTimeout(() => setMessage(''), 1000);
   };
-  
+
   return (
     <>
       <button onClick={() => announce('Item added to cart')}>
         Add to Cart
       </button>
-      
+
       {/* Screen reader will announce this */}
       <div
         role="status"
@@ -4610,10 +5087,10 @@ function LiveRegion() {
 function getContrastRatio(color1: string, color2: string): number {
   const lum1 = getLuminance(color1);
   const lum2 = getLuminance(color2);
-  
+
   const lighter = Math.max(lum1, lum2);
   const darker = Math.min(lum1, lum2);
-  
+
   return (lighter + 0.05) / (darker + 0.05);
 }
 
@@ -4625,7 +5102,7 @@ function getLuminance(color: string): number {
       ? val / 12.92
       : Math.pow((val + 0.055) / 1.055, 2.4);
   });
-  
+
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
@@ -4647,26 +5124,26 @@ function getLuminance(color: string): number {
 // React: Check preference
 function useReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  
+
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
-    
+
     const listener = (e: MediaQueryListEvent) => {
       setPrefersReducedMotion(e.matches);
     };
-    
+
     mediaQuery.addEventListener('change', listener);
     return () => mediaQuery.removeEventListener('change', listener);
   }, []);
-  
+
   return prefersReducedMotion;
 }
 
 // Usage
 function AnimatedComponent() {
   const prefersReducedMotion = useReducedMotion();
-  
+
   return (
     <motion.div
       animate={{ x: 100 }}
@@ -4697,7 +5174,7 @@ function AnimatedComponent() {
   <figcaption>
     <div id="chart-title">Quarterly Sales</div>
     <div id="chart-desc">
-      Sales grew from $1M in Q1 to $1.3M in Q4, 
+      Sales grew from $1M in Q1 to $1.3M in Q4,
       with Q3 showing the highest growth at 20%.
     </div>
   </figcaption>
@@ -4762,17 +5239,17 @@ import { useTranslation } from 'react-i18next';
 
 function Component() {
   const { t, i18n } = useTranslation();
-  
+
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
   };
-  
+
   return (
     <div>
       <h1>{t('welcome')}</h1>
       <p>{t('greeting', { name: 'John' })}</p>
       <p>{t('itemCount', { count: 5 })}</p>
-      
+
       <button onClick={() => changeLanguage('en')}>English</button>
       <button onClick={() => changeLanguage('vi')}>Tiếng Việt</button>
     </div>
@@ -4812,12 +5289,12 @@ import { useTranslation } from 'react-i18next';
 
 function PriceDisplay({ amount }: { amount: number }) {
   const { i18n } = useTranslation();
-  
+
   const formatter = new Intl.NumberFormat(i18n.language, {
     style: 'currency',
     currency: 'USD'
   });
-  
+
   return <span>{formatter.format(amount)}</span>;
   // en: $1,234.56
   // vi: US$1.234,56
@@ -4825,13 +5302,13 @@ function PriceDisplay({ amount }: { amount: number }) {
 
 function DateDisplay({ date }: { date: Date }) {
   const { i18n } = useTranslation();
-  
+
   const formatter = new Intl.DateTimeFormat(i18n.language, {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
-  
+
   return <span>{formatter.format(date)}</span>;
   // en: December 25, 2023
   // vi: 25 tháng 12, 2023
@@ -4844,12 +5321,12 @@ function DateDisplay({ date }: { date: Date }) {
 function App() {
   const { i18n } = useTranslation();
   const isRTL = ['ar', 'he', 'fa'].includes(i18n.language);
-  
+
   useEffect(() => {
     document.dir = isRTL ? 'rtl' : 'ltr';
     document.documentElement.lang = i18n.language;
   }, [i18n.language, isRTL]);
-  
+
   return <div>{/* app content */}</div>;
 }
 
@@ -4891,39 +5368,39 @@ import { BrowserTracing } from '@sentry/tracing';
 Sentry.init({
   dsn: 'YOUR_SENTRY_DSN',
   environment: process.env.NODE_ENV,
-  
+
   // Performance monitoring
   integrations: [
     new BrowserTracing({
-      tracingOrigins: ['localhost', 'https://api.example.com']
-    })
+      tracingOrigins: ['localhost', 'https://api.example.com'],
+    }),
   ],
-  
+
   tracesSampleRate: 0.1, // 10% of transactions
-  
+
   // Filter errors
   beforeSend(event, hint) {
     // Don't send local errors
     if (window.location.hostname === 'localhost') {
       return null;
     }
-    
+
     // Filter out known errors
     const error = hint.originalException as Error;
     if (error?.message?.includes('ResizeObserver')) {
       return null;
     }
-    
+
     return event;
   },
-  
+
   // Add user context
   beforeBreadcrumb(breadcrumb) {
     if (breadcrumb.category === 'console') {
       return null; // Don't log console breadcrumbs
     }
     return breadcrumb;
-  }
+  },
 });
 
 // ══════════════════════════════════════════════════════════
@@ -4959,7 +5436,7 @@ function App() {
 Sentry.setUser({
   id: user.id,
   email: user.email,
-  username: user.username
+  username: user.username,
 });
 
 // Add breadcrumbs
@@ -4967,7 +5444,7 @@ Sentry.addBreadcrumb({
   category: 'api',
   message: 'Fetched user data',
   level: 'info',
-  data: { userId: '123' }
+  data: { userId: '123' },
 });
 
 // Capture custom errors
@@ -4976,24 +5453,24 @@ try {
 } catch (error) {
   Sentry.captureException(error, {
     tags: {
-      section: 'payment'
+      section: 'payment',
     },
     extra: {
       paymentAmount: 100,
-      currency: 'USD'
-    }
+      currency: 'USD',
+    },
   });
 }
 
 // Performance monitoring
 const transaction = Sentry.startTransaction({
   name: 'CheckoutFlow',
-  op: 'user-flow'
+  op: 'user-flow',
 });
 
 const span = transaction.startChild({
   op: 'payment',
-  description: 'Process payment'
+  description: 'Process payment',
 });
 
 await processPayment();
@@ -5006,19 +5483,19 @@ transaction.finish();
 // ══════════════════════════════════════════════════════════
 
 axios.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     Sentry.captureException(error, {
       tags: {
         type: 'api-error',
-        endpoint: error.config?.url
+        endpoint: error.config?.url,
       },
       extra: {
         status: error.response?.status,
-        data: error.response?.data
-      }
+        data: error.response?.data,
+      },
     });
-    
+
     return Promise.reject(error);
   }
 );
@@ -5048,19 +5525,19 @@ function sendToAnalytics(metric: Metric) {
       value: metric.value,
       delta: metric.delta,
       id: metric.id,
-      navigationType: metric.navigationType
-    })
+      navigationType: metric.navigationType,
+    }),
   });
-  
+
   // Also log to console in dev
   console.log(metric.name, metric.value);
 }
 
 // Track Core Web Vitals
-onCLS(sendToAnalytics);  // Cumulative Layout Shift
-onFID(sendToAnalytics);  // First Input Delay
-onLCP(sendToAnalytics);  // Largest Contentful Paint
-onFCP(sendToAnalytics);  // First Contentful Paint
+onCLS(sendToAnalytics); // Cumulative Layout Shift
+onFID(sendToAnalytics); // First Input Delay
+onLCP(sendToAnalytics); // Largest Contentful Paint
+onFCP(sendToAnalytics); // First Contentful Paint
 onTTFB(sendToAnalytics); // Time to First Byte
 
 /**
@@ -5086,7 +5563,7 @@ performance.measure('data-fetch', 'data-fetch-start', 'data-fetch-end');
 
 // Get all measures
 const measures = performance.getEntriesByType('measure');
-measures.forEach(measure => {
+measures.forEach((measure) => {
   console.log(`${measure.name}: ${measure.duration}ms`);
 });
 
@@ -5108,17 +5585,18 @@ function onRenderCallback(
     id,
     phase,
     actualDuration, // Time spent rendering
-    baseDuration,   // Estimated time without memoization
+    baseDuration, // Estimated time without memoization
     startTime,
-    commitTime
+    commitTime,
   });
-  
+
   // Send to analytics if slow
-  if (actualDuration > 16) { // > 1 frame (60fps)
+  if (actualDuration > 16) {
+    // > 1 frame (60fps)
     sendToAnalytics({
       type: 'slow-render',
       component: id,
-      duration: actualDuration
+      duration: actualDuration,
     });
   }
 }
@@ -5139,14 +5617,15 @@ const observer = new PerformanceObserver((list) => {
   for (const entry of list.getEntries()) {
     console.warn('Long task detected:', {
       duration: entry.duration,
-      startTime: entry.startTime
+      startTime: entry.startTime,
     });
-    
+
     // Send to analytics
-    if (entry.duration > 50) { // > 50ms blocks UI
+    if (entry.duration > 50) {
+      // > 50ms blocks UI
       sendToAnalytics({
         type: 'long-task',
-        duration: entry.duration
+        duration: entry.duration,
       });
     }
   }
@@ -5163,13 +5642,14 @@ const resources = performance.getEntriesByType('resource');
 
 resources.forEach((resource: PerformanceResourceTiming) => {
   const duration = resource.responseEnd - resource.startTime;
-  
-  if (duration > 1000) { // > 1 second
+
+  if (duration > 1000) {
+    // > 1 second
     console.warn('Slow resource:', {
       name: resource.name,
       duration,
       size: resource.transferSize,
-      type: resource.initiatorType
+      type: resource.initiatorType,
     });
   }
 });
@@ -5181,18 +5661,18 @@ resources.forEach((resource: PerformanceResourceTiming) => {
 function usePerformance(componentName: string) {
   useEffect(() => {
     const startTime = performance.now();
-    
+
     return () => {
       const endTime = performance.now();
       const duration = endTime - startTime;
-      
+
       console.log(`${componentName} mounted for ${duration}ms`);
-      
+
       if (duration > 1000) {
         sendToAnalytics({
           type: 'slow-component',
           component: componentName,
-          duration
+          duration,
         });
       }
     };
@@ -5202,7 +5682,7 @@ function usePerformance(componentName: string) {
 // Usage
 function SlowComponent() {
   usePerformance('SlowComponent');
-  
+
   return <div>{/* content */}</div>;
 }
 ```
@@ -5239,7 +5719,7 @@ function UserProfile({ userId }) {
 // ❌ BAD: count always stays 0
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCount(count + 1); // ⚠️ count closure is always 0!
@@ -5251,10 +5731,10 @@ function Counter() {
 // ✅ GOOD 1: Functional update
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setCount(prev => prev + 1); // ✅ Uses previous state
+      setCount((prev) => prev + 1); // ✅ Uses previous state
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -5263,7 +5743,7 @@ function Counter() {
 // ✅ GOOD 2: Include dependency
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   useEffect(() => {
     const timeout = setTimeout(() => setCount(count + 1), 1000);
     return () => clearTimeout(timeout);
@@ -5300,7 +5780,7 @@ function List({ items }) {
     () => items.sort((a, b) => a - b), // Simple! Overhead > benefit
     [items]
   );
-  return items.map(i => <Item key={i} value={i} />);
+  return items.map((i) => <Item key={i} value={i} />);
 }
 
 // ✅ GOOD: Only memoize expensive operations
@@ -5309,7 +5789,7 @@ function List({ items }) {
     () => expensiveAlgorithm(items), // Complex! Worth memoizing
     [items]
   );
-  return sorted.map(i => <MemoItem key={i} value={i} />);
+  return sorted.map((i) => <MemoItem key={i} value={i} />);
 }
 
 /**
@@ -5319,7 +5799,7 @@ function List({ items }) {
 // ❌ BAD: Using ref for values that need re-render
 function Counter() {
   const countRef = useRef(0);
-  
+
   return (
     <button onClick={() => countRef.current++}>
       Count: {countRef.current} {/* Never updates! */}
@@ -5330,9 +5810,9 @@ function Counter() {
 // ✅ GOOD: Use state for values needing re-render
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   return (
-    <button onClick={() => setCount(c => c + 1)}>
+    <button onClick={() => setCount((c) => c + 1)}>
       Count: {count} {/* Updates! */}
     </button>
   );
@@ -5341,7 +5821,7 @@ function Counter() {
 // ✅ GOOD: Use ref for DOM access
 function TextInput() {
   const inputRef = useRef(null);
-  
+
   return (
     <>
       <input ref={inputRef} />
@@ -5362,12 +5842,12 @@ function TextInput() {
 function UserList() {
   const [filter, setFilter] = useState('');
   const [users] = useState(generateMillionUsers()); // Large list
-  
+
   const filteredUsers = users.filter(u => u.name.includes(filter));
-  
+
   return (
     <div>
-      <input 
+      <input
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
       />
@@ -5381,7 +5861,7 @@ function UserList() {
 // ✅ GOOD 1: Split state into components (separation of concerns)
 function UserListContainer() {
   const [users] = useState(generateMillionUsers());
-  
+
   return (
     <div>
       <FilterInput /> {/* Only this component updates */}
@@ -5393,8 +5873,8 @@ function UserListContainer() {
 function FilterInput() {
   const [filter, setFilter] = useState('');
   const users = useContext(UsersContext);
-  const filtered = useMemo(() => 
-    users.filter(u => u.name.includes(filter)), 
+  const filtered = useMemo(() =>
+    users.filter(u => u.name.includes(filter)),
     [users, filter]
   );
   return (
@@ -5421,7 +5901,7 @@ function UserList({ users }) {
 // ❌ BAD: Props recreated every render
 function Parent() {
   return (
-    <Child 
+    <Child
       config={{ theme: 'dark', size: 'lg' }} {/* New object every render! */}
       handler={() => doSomething()} {/* New function every render! */}
     />
@@ -5436,7 +5916,7 @@ const Child = memo(({ config, handler }) => (
 function Parent() {
   const config = useMemo(() => ({ theme: 'dark', size: 'lg' }), []);
   const handler = useCallback(() => doSomething(), []);
-  
+
   return <Child config={config} handler={handler} />;
 }
 
@@ -5474,23 +5954,23 @@ function ItemList({ items }) {
 // ❌ BAD: Mutating state directly
 function UserProfile() {
   const [user, setUser] = useState({ name: 'John', age: 30 });
-  
+
   const updateAge = () => {
     user.age = 31; // ⚠️ Mutate object
     setUser(user); // React doesn't detect change (same reference!)
   };
-  
+
   return <div>Age: {user.age}</div>; // Never updates!
 }
 
 // ✅ GOOD: Create new object
 function UserProfile() {
   const [user, setUser] = useState({ name: 'John', age: 30 });
-  
+
   const updateAge = () => {
     setUser({ ...user, age: 31 }); // ✅ New object
   };
-  
+
   return <div>Age: {user.age}</div>;
 }
 
@@ -5519,7 +5999,7 @@ function Form() {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   // ... 6 more useState
-  
+
   // Hard to manage, easy to miss dependencies in useEffect
 }
 
@@ -5529,18 +6009,18 @@ function Form() {
     name: '',
     email: '',
     phone: '',
-    address: ''
+    address: '',
   });
-  
+
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 }
 
 // ✅ BETTER: useReducer for complex logic
 function Form() {
   const [formData, dispatch] = useReducer(formReducer, initialState);
-  
+
   const handleChange = (field, value) => {
     dispatch({ type: 'UPDATE_FIELD', payload: { field, value } });
   };
@@ -5561,7 +6041,7 @@ function Form() {
 // ❌ BAD: Theme context causes all children to re-render
 function App() {
   const [theme, setTheme] = useState('light');
-  
+
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
       <Header /> {/* Re-renders on theme change */}
@@ -5575,7 +6055,7 @@ function App() {
 function App() {
   const [theme, setTheme] = useState('light');
   const [user, setUser] = useState(null);
-  
+
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
       <UserContext.Provider value={{ user, setUser }}>
@@ -5593,7 +6073,9 @@ function App() {
 // ❌ BAD: Value object recreated every render
 function App() {
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}> {/* New object! */}
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {' '}
+      {/* New object! */}
       <Children />
     </ThemeContext.Provider>
   );
@@ -5603,7 +6085,7 @@ function App() {
 function App() {
   const [theme, setTheme] = useState('light');
   const value = useMemo(() => ({ theme, setTheme }), [theme]);
-  
+
   return (
     <ThemeContext.Provider value={value}>
       <Children />
@@ -5621,18 +6103,18 @@ function App() {
 
 // ❌ BAD: New selector object every render → re-subscribe
 function Counter() {
-  const count = useSelector(state => ({
+  const count = useSelector((state) => ({
     value: state.counter.value,
-    doubled: state.counter.value * 2
+    doubled: state.counter.value * 2,
   })); // New object every render!
-  
+
   return <div>{count.value}</div>;
 }
 
 // ✅ GOOD: Memoize selector
 const selectCounter = (state) => ({
   value: state.counter.value,
-  doubled: state.counter.value * 2
+  doubled: state.counter.value * 2,
 });
 
 function Counter() {
@@ -5648,10 +6130,10 @@ function Counter() {
 function LoginForm() {
   const navigate = useNavigate();
   const abortRef = useRef(null);
-  
+
   const handleLogin = async (credentials) => {
     abortRef.current = new AbortController();
-    
+
     try {
       await loginAPI(credentials, { signal: abortRef.current.signal });
       navigate('/dashboard'); // Still navigates even if aborted!
@@ -5659,7 +6141,7 @@ function LoginForm() {
       // Handle error
     }
   };
-  
+
   useEffect(() => {
     return () => abortRef.current?.abort();
   }, []);
@@ -5669,7 +6151,7 @@ function LoginForm() {
 function LoginForm() {
   const navigate = useNavigate();
   const isMountedRef = useRef(true);
-  
+
   const handleLogin = async (credentials) => {
     try {
       await loginAPI(credentials);
@@ -5682,9 +6164,11 @@ function LoginForm() {
       }
     }
   };
-  
+
   useEffect(() => {
-    return () => { isMountedRef.current = false; };
+    return () => {
+      isMountedRef.current = false;
+    };
   }, []);
 }
 ```
@@ -5728,15 +6212,13 @@ function App() {
 
 // ❌ BAD: Full-size image for thumbnail
 function ProductGrid({ products }) {
-  return products.map(p => (
-    <img src={p.image} alt={p.name} />
-  ));
+  return products.map((p) => <img src={p.image} alt={p.name} />);
 }
 
 // ✅ GOOD: Lazy load with placeholder
 function ProductGrid({ products }) {
-  return products.map(p => (
-    <img 
+  return products.map((p) => (
+    <img
       src={p.thumbnail}
       loading="lazy" // ✅ Browser lazy loads
       alt={p.name}
@@ -5754,7 +6236,9 @@ function ProductGrid({ products }) {
 function VirtualList({ items }) {
   return (
     <div>
-      {items.map(item => <Item key={item.id} {...item} />)}
+      {items.map((item) => (
+        <Item key={item.id} {...item} />
+      ))}
     </div>
   );
 }
@@ -5788,8 +6272,8 @@ const cache = new Map();
 
 async function fetchUser(id) {
   if (cache.has(id)) return cache.get(id);
-  
-  const data = await fetch(`/api/users/${id}`).then(r => r.json());
+
+  const data = await fetch(`/api/users/${id}`).then((r) => r.json());
   cache.set(id, data);
   return data;
 }
@@ -5811,12 +6295,8 @@ const debouncedSearch = debounce(async (query) => {
 // ❌ BAD: Testing internal state/functions
 function Counter() {
   const [count, setCount] = useState(0);
-  
-  return (
-    <button onClick={() => setCount(c => c + 1)}>
-      Count: {count}
-    </button>
-  );
+
+  return <button onClick={() => setCount((c) => c + 1)}>Count: {count}</button>;
 }
 
 test('Counter', () => {
@@ -5829,11 +6309,11 @@ test('Counter', () => {
 test('Counter increments on click', () => {
   render(<Counter />);
   const button = screen.getByRole('button');
-  
+
   expect(button).toHaveTextContent('Count: 0');
-  
+
   userEvent.click(button);
-  
+
   expect(button).toHaveTextContent('Count: 1');
 });
 
@@ -5846,13 +6326,13 @@ import { render, screen, userEvent } from '@testing-library/react';
 
 test('Login form', async () => {
   render(<LoginForm />);
-  
+
   const emailInput = screen.getByLabelText(/email/i);
   const submitButton = screen.getByRole('button', { name: /login/i });
-  
+
   userEvent.type(emailInput, 'user@test.com');
   userEvent.click(submitButton);
-  
+
   // Wait for success message
   await screen.findByText(/login successful/i);
 });
@@ -5871,9 +6351,9 @@ test('Fetch users', async () => {
       return res(ctx.json([{ id: 1, name: 'John' }]));
     })
   );
-  
+
   render(<UserList />);
-  
+
   await screen.findByText('John');
 });
 ```
@@ -5923,11 +6403,11 @@ function Dialog() {
 
 function Modal() {
   const closeButtonRef = useRef(null);
-  
+
   useEffect(() => {
     closeButtonRef.current?.focus(); // Focus trap
   }, []);
-  
+
   return (
     <div role="dialog">
       <button ref={closeButtonRef}>Close</button>
@@ -5977,7 +6457,7 @@ interface ListProps<T> {
 function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
   return (
     <ul>
-      {items.map(item => (
+      {items.map((item) => (
         <li key={keyExtractor(item)}>{renderItem(item)}</li>
       ))}
     </ul>
@@ -5989,20 +6469,20 @@ function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
   items={users}
   renderItem={(user) => <UserCard user={user} />}
   keyExtractor={(user) => user.id}
-/>
+/>;
 ```
 
 ---
 
 ## **📚 Related Questions**
 
-| Câu hỏi | Chủ đề | Mức độ |
-|---------|--------|--------|
-| [Q02](./Q02-data-types-&-memory-management-tổng-hợp.md) | Data Types & Memory | ⭐⭐⭐⭐ |
-| [Q03](./Q03-es5-vs-es6+-features-so-sánh-chi-tiết-&-cách-hoạt-động.md) | ES6+ Features | ⭐⭐⭐ |
-| [Q06](./Q06-event-loop-cơ-chế-hoạt-động-javascript-(technical-deep-dive).md) | Event Loop (Technical) | ⭐⭐⭐⭐⭐ |
-| [Q08](./Q08-closure-&-data-privacy.md) | Closures | ⭐⭐⭐⭐ |
-| [Q13](./Q13-asyncawait-vs-promises-vs-callbacks-&-promise.allanyrace.md) | Async/Await | ⭐⭐⭐⭐ |
+| Câu hỏi                                                                        | Chủ đề                 | Mức độ     |
+| ------------------------------------------------------------------------------ | ---------------------- | ---------- |
+| [Q02](./Q02-data-types-&-memory-management-tổng-hợp.md)                        | Data Types & Memory    | ⭐⭐⭐⭐   |
+| [Q03](./Q03-es5-vs-es6+-features-so-sánh-chi-tiết-&-cách-hoạt-động.md)         | ES6+ Features          | ⭐⭐⭐     |
+| [Q06](<./Q06-event-loop-cơ-chế-hoạt-động-javascript-(technical-deep-dive).md>) | Event Loop (Technical) | ⭐⭐⭐⭐⭐ |
+| [Q08](./Q08-closure-&-data-privacy.md)                                         | Closures               | ⭐⭐⭐⭐   |
+| [Q13](./Q13-asyncawait-vs-promises-vs-callbacks-&-promise.allanyrace.md)       | Async/Await            | ⭐⭐⭐⭐   |
 
 ---
 
