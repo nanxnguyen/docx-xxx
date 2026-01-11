@@ -34,15 +34,15 @@
 
 ### 1️⃣ Keycloak là gì?
 
-**Keycloak** là một **Identity & Access Management Server (IAM)** – nghĩa là một máy chủ quản lý danh tính và truy cập.
+**Keycloak** là một **Identity & Access Management Server (IAM - Máy chủ quản lý danh tính và truy cập)** – nghĩa là một máy chủ quản lý danh tính và truy cập.
 
 Nó chịu trách nhiệm:
 
-- ✅ **Xác thực người dùng** (Authentication - Kiểm tra danh tính)
-- ✅ **Cấp quyền truy cập** (Authorization - Kiểm tra quyền hạn)
-- ✅ **Cấp và quản lý JWT token** (Phát token cho client)
-- ✅ **Quản lý phiên đăng nhập** (session - Theo dõi ai đã login)
-- ✅ **Hỗ trợ SSO** (Single Sign-On - Đăng nhập 1 lần) và **SLO** (Single Logout - Logout toàn hệ thống)
+- ✅ **Xác thực người dùng** (Authentication - Kiểm tra danh tính - Xác minh user là ai)
+- ✅ **Cấp quyền truy cập** (Authorization - Kiểm tra quyền hạn - Xác định user được làm gì)
+- ✅ **Cấp và quản lý JWT token** (Phát token cho client - JWT = JSON Web Token - Token dạng JSON)
+- ✅ **Quản lý phiên đăng nhập** (session - Theo dõi ai đã login - Session = Phiên đăng nhập)
+- ✅ **Hỗ trợ SSO** (Single Sign-On - Đăng nhập 1 lần - Đăng nhập 1 lần dùng nhiều app) và **SLO** (Single Logout - Logout toàn hệ thống - Logout 1 lần logout tất cả app)
 
 > 🎯 **Keycloak giúp Frontend / Backend không cần tự xây dựng logic đăng nhập phức tạp mà chỉ cần ủy quyền xác thực cho Keycloak.**
 
@@ -50,42 +50,59 @@ Nó chịu trách nhiệm:
 
 ## 🧩 II. Cấu trúc & Thành phần trong Keycloak
 
-| Thành phần                  | Vai trò                                                                    | Ví dụ thực tế                               |
-| --------------------------- | -------------------------------------------------------------------------- | ------------------------------------------- |
-| **Realm**                   | 🌐 Không gian quản lý độc lập (giống 1 tenant) chứa user, client, role, group | `momo-ttt`, `hrm-portal`, `finance-system`  |
-| **Client**                  | 📱 Một ứng dụng được đăng ký trong realm (FE hoặc BE)                         | `portal-frontend`, `portal-backend`         |
-| **User**                    | 👤 Người dùng có thể đăng nhập                                                | `nguyenvana`, `tranthihoa`                  |
-| **Group**                   | 👥 Nhóm người dùng (gán sẵn role)                                             | `admin-group`, `customer-group`             |
-| **Role**                    | 🏆 Vai trò (quyền hạn)                                                        | `admin`, `viewer`, `manager`                |
-| **Scope**                   | 🎯 Quyền truy cập cụ thể theo API                                             | `read:users`, `update:reports`              |
-| **Identity Provider (IdP)** | 🔗 Hệ thống xác thực bên ngoài                                                | Google Workspace, LDAP, Microsoft AD        |
-| **Token**                   | 🎫 Gói thông tin được cấp sau khi đăng nhập                                   | `access_token`, `refresh_token`, `id_token` |
-| **Session**                 | ⏱️ Phiên đăng nhập; Keycloak theo dõi user đã login ở app nào                 | Giúp thực hiện SSO & SLO                    |
-| **Policy / Mapper**         | ⚙️ Quy tắc xác định cách map role hoặc scope                                  | Gán role từ AD sang client role             |
+| Thành phần                  | Vai trò                                                                                             | Ví dụ thực tế                               |
+| --------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Realm**                   | 🌐 Không gian quản lý độc lập (giống 1 tenant - Đơn vị thuê) chứa user, client, role, group         | `momo-ttt`, `hrm-portal`, `finance-system`  |
+|                             | // Realm = Vùng quản lý độc lập (Mỗi realm có user, client, role riêng - Giống như 1 công ty riêng) |
+| **Client**                  | 📱 Một ứng dụng được đăng ký trong realm (FE hoặc BE - Frontend hoặc Backend)                       | `portal-frontend`, `portal-backend`         |
+|                             | // Client = Ứng dụng đã đăng ký (Mỗi app phải đăng ký làm client trong Keycloak)                    |
+| **User**                    | 👤 Người dùng có thể đăng nhập                                                                      | `nguyenvana`, `tranthihoa`                  |
+|                             | // User = Người dùng (Người có thể login vào hệ thống)                                              |
+| **Group**                   | 👥 Nhóm người dùng (gán sẵn role - Gán vai trò sẵn)                                                 | `admin-group`, `customer-group`             |
+|                             | // Group = Nhóm (Tập hợp user - User trong group tự động có role của group)                         |
+| **Role**                    | 🏆 Vai trò (quyền hạn)                                                                              | `admin`, `viewer`, `manager`                |
+|                             | // Role = Vai trò (Quyền hạn của user - Ví dụ: admin có quyền cao, viewer chỉ xem)                  |
+| **Scope**                   | 🎯 Quyền truy cập cụ thể theo API                                                                   | `read:users`, `update:reports`              |
+|                             | // Scope = Phạm vi quyền (Quyền chi tiết theo API - Ví dụ: đọc user, cập nhật báo cáo)              |
+| **Identity Provider (IdP)** | 🔗 Hệ thống xác thực bên ngoài                                                                      | Google Workspace, LDAP, Microsoft AD        |
+|                             | // IdP = Nhà cung cấp danh tính (Hệ thống xác thực bên ngoài - LDAP/AD/Google)                      |
+| **Token**                   | 🎫 Gói thông tin được cấp sau khi đăng nhập                                                         | `access_token`, `refresh_token`, `id_token` |
+|                             | // Token = Chứng chỉ (Thông tin được mã hóa - Dùng để xác thực)                                     |
+| **Session**                 | ⏱️ Phiên đăng nhập; Keycloak theo dõi user đã login ở app nào                                       | Giúp thực hiện SSO & SLO                    |
+|                             | // Session = Phiên đăng nhập (Keycloak theo dõi user đã login ở app nào - Giúp SSO)                 |
+| **Policy / Mapper**         | ⚙️ Quy tắc xác định cách map role hoặc scope                                                        | Gán role từ AD sang client role             |
+|                             | // Policy = Chính sách (Quy tắc phân quyền), Mapper = Bộ ánh xạ (Chuyển đổi thông tin)              |
 
 ---
 
 ## ⚙️ III. Cơ chế hoạt động nội bộ của Keycloak
 
-Keycloak hoạt động dựa trên chuẩn **OIDC (OpenID Connect)** – mở rộng từ **OAuth2**.
+Keycloak hoạt động dựa trên chuẩn **OIDC (OpenID Connect - Kết nối mở ID)** – mở rộng từ **OAuth2 (Ủy quyền mở phiên bản 2)**.
+// OIDC = OpenID Connect (Giao thức xác thực mở - Mở rộng từ OAuth2)
+// OAuth2 = Open Authorization 2.0 (Giao thức ủy quyền mở - Cho phép app truy cập tài nguyên)
 
-### 🧠 3 loại flow phổ biến trong OIDC:
+### 🧠 3 loại flow phổ biến trong OIDC: (3 loại luồng phổ biến)
 
-| Flow                                   | Mô tả                                | Dành cho                               |
-| -------------------------------------- | ------------------------------------ | -------------------------------------- |
-| **Authorization Code Flow (với PKCE)** | 🔐 FE lấy "code" rồi BE đổi thành token | Web app, SPA có backend (bảo mật nhất) |
-| **Implicit Flow**                      | ⚠️ FE nhận token trực tiếp từ Keycloak  | App cũ (ít dùng vì kém bảo mật)        |
-| **Client Credentials Flow**            | 🤖 Dành cho BE–BE (service account)     | Hệ thống vi mô nội bộ                  |
+| Flow                                   | Mô tả                                                                                               | Dành cho                               |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| **Authorization Code Flow (với PKCE)** | 🔐 FE lấy "code" rồi BE đổi thành token                                                             | Web app, SPA có backend (bảo mật nhất) |
+|                                        | // Authorization Code Flow = Luồng mã ủy quyền (FE nhận code, BE đổi code lấy token - Bảo mật nhất) |
+|                                        | // PKCE = Proof Key for Code Exchange (Bảo vệ code khỏi bị đánh cắp)                                |
+| **Implicit Flow**                      | ⚠️ FE nhận token trực tiếp từ Keycloak                                                              | App cũ (ít dùng vì kém bảo mật)        |
+|                                        | // Implicit Flow = Luồng ngầm (FE nhận token trực tiếp - Không an toàn, không nên dùng)             |
+| **Client Credentials Flow**            | 🤖 Dành cho BE–BE (service account)                                                                 | Hệ thống vi mô nội bộ                  |
+|                                        | // Client Credentials Flow = Luồng xác thực client (BE-BE, không có user - Service account)         |
 
 ---
 
 ## 🧭 IV. Flow chi tiết: FE → BE → Keycloak
 
-> **Backend-for-Frontend Model** - Flow an toàn nhất, được khuyến nghị bởi:
+> **Backend-for-Frontend Model (Mô hình Backend cho Frontend - BFF)** - Flow an toàn nhất, được khuyến nghị bởi:
+> // BFF = Backend for Frontend (Backend chuyên phục vụ Frontend - Tất cả token ở BE, FE chỉ có cookie)
 >
 > - 🏦 Ngân hàng (Vietcombank, Techcombank, HSBC…)
 > - 🧱 Doanh nghiệp lớn (MoMo, VNG, Grab, Shopee…)
-> - 🧩 Các hệ thống microservice, đa ứng dụng, có SSO
+> - 🧩 Các hệ thống microservice (Kiến trúc vi dịch vụ), đa ứng dụng (Nhiều app), có SSO (Đăng nhập 1 lần)
 
 ### 🔹 1️⃣ Giai đoạn đăng nhập (Login Flow)
 
@@ -102,14 +119,21 @@ Keycloak hoạt động dựa trên chuẩn **OIDC (OpenID Connect)** – mở r
 - URL chứa tham số:
 
 ```http
-# 🌐🔗 Authorization endpoint - bước đầu tiên trong OIDC flow
+# 🌐🔗 Authorization endpoint - bước đầu tiên trong OIDC flow (Điểm cuối ủy quyền - Bước đầu trong luồng OIDC)
 response_type=code              # 🎯 Yêu cầu lấy authorization code (không trả token trực tiếp vì bảo mật)
+                                # response_type = Loại phản hồi (code = Yêu cầu code, không phải token - Bảo mật hơn)
 client_id=portal-frontend       # 🏷️ ID của client app đã đăng ký trong Keycloak realm
+                                # client_id = ID ứng dụng (ID của app đã đăng ký trong Keycloak)
 redirect_uri=https://be.momo.vn/auth/callback  # 🔙 URL redirect sau khi login thành công (phải whitelist trong Keycloak)
+                                # redirect_uri = URL chuyển hướng (URL Keycloak sẽ redirect về sau khi login - Phải đăng ký trước)
 code_challenge=XYZ              # 🔐🔑 PKCE code challenge (SHA256 hash của code_verifier - ngăn authorization code interception)
+                                # code_challenge = Thử thách PKCE (Hash SHA256 của code_verifier - Bảo vệ code khỏi bị đánh cắp)
 code_challenge_method=S256      # ⚙️ Phương thức hash PKCE (S256 = SHA-256, plain không khuyến nghị)
+                                # code_challenge_method = Phương thức hash (S256 = SHA-256 - Không dùng plain text)
 scope=openid profile email      # 📋 Scope yêu cầu (openid bắt buộc cho OIDC, profile+email cho user info)
+                                # scope = Phạm vi quyền (openid = Bắt buộc cho OIDC, profile+email = Thông tin user)
 state=random_state_xyz          # 🎲 Random string chống CSRF attack (FE/BE verify sau khi redirect)
+                                # state = Chuỗi ngẫu nhiên (Chống tấn công CSRF - FE/BE kiểm tra sau khi redirect)
 ```
 
 **(3) User → Keycloak:**
@@ -127,12 +151,18 @@ BE gọi API `/protocol/openid-connect/token`:
 
 ```json
 {
-  "grant_type": "authorization_code",  // 🎯🔄 Kiểu grant - đổi authorization code lấy access token (OAuth2 standard)
-  "code": "ABC",                        // 🎫📝 Authorization code nhận được từ Keycloak (1 lần dùng, hết hạn sau 60s)
-  "client_id": "portal-frontend",      // 🏷️ Client ID (bắt buộc ngay cả khi có client_secret)
-  "client_secret": "********",         // 🔐🔒 Secret của confidential client (KHÔNG bao giờ để ở FE, chỉ BE giữ)
-  "redirect_uri": "https://be.momo.vn/auth/callback",  // 🔙✅ Phải trùng CHÍNH XÁC với redirect_uri trong authorize request
-  "code_verifier": "XYZ"                // 🔑🛡️ PKCE code verifier - Keycloak hash và so sánh với code_challenge (ngăn MITM attack)
+  "grant_type": "authorization_code", // 🎯🔄 Kiểu grant - đổi authorization code lấy access token (OAuth2 standard)
+  // grant_type = Loại cấp quyền (authorization_code = Đổi code lấy token - Chuẩn OAuth2)
+  "code": "ABC", // 🎫📝 Authorization code nhận được từ Keycloak (1 lần dùng, hết hạn sau 60s)
+  // code = Mã ủy quyền (Code nhận được từ Keycloak - Chỉ dùng 1 lần, hết hạn sau 60 giây)
+  "client_id": "portal-frontend", // 🏷️ Client ID (bắt buộc ngay cả khi có client_secret)
+  // client_id = ID ứng dụng (Bắt buộc phải có)
+  "client_secret": "********", // 🔐🔒 Secret của confidential client (KHÔNG bao giờ để ở FE, chỉ BE giữ)
+  // client_secret = Mật khẩu ứng dụng (KHÔNG BAO GIỜ để ở Frontend, chỉ Backend giữ)
+  "redirect_uri": "https://be.momo.vn/auth/callback", // 🔙✅ Phải trùng CHÍNH XÁC với redirect_uri trong authorize request
+  // redirect_uri = URL chuyển hướng (Phải TRÙNG CHÍNH XÁC với lúc authorize)
+  "code_verifier": "XYZ" // 🔑🛡️ PKCE code verifier - Keycloak hash và so sánh với code_challenge (ngăn MITM attack)
+  // code_verifier = Xác minh PKCE (Keycloak hash và so sánh với code_challenge - Chống tấn công MITM)
 }
 ```
 
@@ -140,13 +170,20 @@ Keycloak trả:
 
 ```json
 {
-  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",    // 🎫🔑 JWT Access Token - gửi kèm mỗi API request (Bearer token), hết hạn nhanh (5-10 phút)
-  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",   // 🔄💾 Refresh Token - lấy access_token mới khi hết hạn (15-60 phút), chỉ BE giữ trong Redis
-  "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",        // 🎫👤 ID Token (OIDC) - chứa thông tin user (sub, name, email, roles), FE có thể decode để hiển thị
-  "token_type": "Bearer",                                      // 🏷️ Loại token - dùng trong Authorization header: "Bearer {access_token}"
-  "expires_in": 300,                                           // ⏱️⏰ Access token hết hạn sau 300 giây (5 phút) - FE/BE phải refresh trước khi hết hạn
-  "refresh_expires_in": 1800,                                  // 🔄⏱️ Refresh token hết hạn sau 1800 giây (30 phút)
-  "scope": "openid profile email"                             // 📋 Scope được cấp (có thể ít hơn scope request nếu user không consent)
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...", // 🎫🔑 JWT Access Token - gửi kèm mỗi API request (Bearer token), hết hạn nhanh (5-10 phút)
+  // access_token = Token truy cập (JWT - Gửi kèm mỗi API request, hết hạn nhanh 5-10 phút)
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", // 🔄💾 Refresh Token - lấy access_token mới khi hết hạn (15-60 phút), chỉ BE giữ trong Redis
+  // refresh_token = Token làm mới (Dùng để lấy access_token mới khi hết hạn, chỉ BE giữ trong Redis)
+  "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...", // 🎫👤 ID Token (OIDC) - chứa thông tin user (sub, name, email, roles), FE có thể decode để hiển thị
+  // id_token = Token ID (Chứa thông tin user - sub=user ID, name, email, roles - FE có thể decode)
+  "token_type": "Bearer", // 🏷️ Loại token - dùng trong Authorization header: "Bearer {access_token}"
+  // token_type = Loại token (Bearer = Dùng trong header: "Bearer {access_token}")
+  "expires_in": 300, // ⏱️⏰ Access token hết hạn sau 300 giây (5 phút) - FE/BE phải refresh trước khi hết hạn
+  // expires_in = Thời gian hết hạn (300 giây = 5 phút - Phải refresh trước khi hết hạn)
+  "refresh_expires_in": 1800, // 🔄⏱️ Refresh token hết hạn sau 1800 giây (30 phút)
+  // refresh_expires_in = Thời gian hết hạn refresh token (1800 giây = 30 phút)
+  "scope": "openid profile email" // 📋 Scope được cấp (có thể ít hơn scope request nếu user không consent)
+  // scope = Phạm vi quyền được cấp (Có thể ít hơn scope yêu cầu nếu user không đồng ý)
 }
 ```
 
@@ -168,26 +205,38 @@ Keycloak trả:
 ```javascript
 // 🔹 Bước 1: Access token hết hạn sau 300 giây (5 phút)
 // ⏰❌ BE nhận biết access_token đã expired (check exp claim trong JWT)
+// expired = Hết hạn (Token đã hết hạn - BE kiểm tra exp claim trong JWT)
+// exp claim = Trường hết hạn (Trường trong JWT cho biết thời gian hết hạn)
 
 // 🔹 Bước 2: FE → BE: /auth/refresh
 // 🔄📤 FE gọi request với cookie HTTP-only chứa session ID
+// HTTP-only cookie = Cookie chỉ đọc được bởi server (Không đọc được bằng JavaScript - Bảo mật)
+// session ID = ID phiên (ID để BE tìm refresh_token trong Redis)
 
 // 🔹 Bước 3: BE → Keycloak: POST /token
 POST /protocol/openid-connect/token
 {
   grant_type: "refresh_token",           // 🔄🎯 Grant type cho refresh flow
+                                         // grant_type = Loại cấp quyền (refresh_token = Làm mới token)
   refresh_token: "<from_redis>",         // 💾🔑 Lấy refresh token từ Redis theo session ID
+                                         // refresh_token = Token làm mới (Lấy từ Redis theo session ID)
   client_id: "portal-frontend",         // 🏷️ Client ID
+                                         // client_id = ID ứng dụng
   client_secret: "********"              // 🔐🔒 Client secret (confidential client)
+                                         // client_secret = Mật khẩu ứng dụng (Chỉ confidential client có)
 }
 
 // 🔹 Bước 4: Keycloak → BE: trả new tokens
 // ✅🎫 Keycloak trả access_token mới + refresh_token mới (Token Rotation)
+// Token Rotation = Xoay token (Mỗi lần refresh, token mới được tạo)
 // ❌🚫 Refresh token cũ bị vô hiệu hóa ngay lập tức (chống reuse attack)
+// reuse attack = Tấn công tái sử dụng (Hacker dùng token cũ - Token rotation ngăn điều này)
 
 // 🔹 Bước 5: BE update Redis, trả FE cookie mới
 // 💾🔄 BE lưu refresh_token mới vào Redis, xoá token cũ
+// Redis = Cơ sở dữ liệu bộ nhớ (Lưu refresh_token nhanh)
 // 🍪✅ Trả về FE cookie HTTP-only mới (update session)
+// cookie mới = Cookie mới (Cập nhật session cho FE)
 ```
 
 > ⚙️ Sử dụng **Refresh Token Rotation** – mỗi lần refresh, token cũ bị vô hiệu hóa → chống reuse.
@@ -199,26 +248,41 @@ POST /protocol/openid-connect/token
 ```javascript
 // 🔹 Bước 1: FE → BE: /auth/logout
 // 🚪📤 User click logout, FE gọi request tới BE với cookie session
+// logout = Đăng xuất (User muốn thoát khỏi hệ thống)
 
 // 🔹 Bước 2: BE → Keycloak: GET/POST /logout
 GET /realms/<realm>/protocol/openid-connect/logout
+// realm = Vùng quản lý (Tên realm trong Keycloak)
 ?id_token_hint=<id_token>              // 🎫👤 ID token để Keycloak biết user nào logout
+                                       // id_token_hint = Gợi ý token ID (Keycloak biết user nào logout)
 &post_logout_redirect_uri=https://fe.app/logout-success  // 🔙🎯 Redirect sau khi logout xong
+                                       // post_logout_redirect_uri = URL chuyển hướng sau logout (Redirect về FE)
 &refresh_token=<refresh_token>         // 🔄❌ Gửi refresh token để Keycloak revoke (optional)
+                                       // refresh_token = Token làm mới (Gửi để Keycloak vô hiệu hóa - Tùy chọn)
+                                       // revoke = Vô hiệu hóa (Làm cho token không còn hiệu lực)
 
 // 🔹 Bước 3: Keycloak xoá SSO session
 // ❌💾 Keycloak xoá session của user trong database
+// SSO session = Phiên đăng nhập một lần (Session cho phép login 1 lần dùng nhiều app)
 // ❌🎫 Vô hiệu hoá tất cả access_token và refresh_token liên quan
+// Vô hiệu hóa = Làm cho không còn hiệu lực (Token không còn dùng được)
 
 // 🔹 Bước 4: Keycloak broadcast "backchannel logout"
 // 📡🚪 Keycloak gửi POST request tới tất cả ứng dụng khác user đang login
+// broadcast = Phát sóng (Gửi đến tất cả)
+// backchannel logout = Logout kênh ngầm (Keycloak gửi logout event đến các app khác)
 // 📤🚫 Từng app nhận logout event → xoá session local của user
+// logout event = Sự kiện logout (App nhận được thông báo user đã logout)
 // ✅🌐 Đảm bảo Single Logout (SLO) - logout toàn hệ thống
+// SLO = Single Logout (Logout một lần, logout tất cả app)
 
 // 🔹 Bước 5: BE + FE xoá session/cookie
 // 💾❌ BE xoá refresh_token khỏi Redis
+// Redis = Cơ sở dữ liệu bộ nhớ (Xóa refresh_token khỏi Redis)
 // 🍪❌ BE xoá cookie HTTP-only (Set-Cookie với Max-Age=0)
+// Max-Age=0 = Thời gian sống = 0 (Cookie sẽ bị xóa ngay)
 // 💻❌ FE xoá local session/state, redirect về login page
+// local session = Phiên đăng nhập local (Xóa thông tin đăng nhập ở FE)
 ```
 
 > 🧠 Giúp logout toàn hệ thống (nếu user đang đăng nhập ở nhiều app, tất cả cùng bị logout).
@@ -232,24 +296,39 @@ Khi cần gọi sang hệ thống khác (ví dụ realm khác hoặc microservic
 ```javascript
 // 🔹 Bước 1: BE gọi microservice nhưng KHÔNG gửi user token gốc
 // 🚫🔐 KHÔNG forward user access_token trực tiếp (rủi ro PII leak, quyền quá rộng)
+// forward = Chuyển tiếp (Không chuyển tiếp token gốc)
+// PII leak = Rò rỉ thông tin cá nhân (Personal Identifiable Information - Thông tin nhận dạng cá nhân)
+// quyền quá rộng = Quyền quá nhiều (Token có quá nhiều quyền - Nguy hiểm nếu bị lộ)
 
 // 🔹 Bước 2: BE → Keycloak: /token (grant_type=token_exchange)
 POST /protocol/openid-connect/token
 {
   grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",  // 🔄🔗 Token Exchange grant type (RFC 8693)
+                                                                  // grant_type = Loại cấp quyền (token-exchange = Đổi token - Chuẩn RFC 8693)
   subject_token: "<user_access_token>",                          // 🎫👤 Token gốc của user
+                                                                  // subject_token = Token chủ thể (Token gốc của user)
   subject_token_type: "urn:ietf:params:oauth:token-type:access_token",
+                                                                  // subject_token_type = Loại token chủ thể (access_token = Token truy cập)
   requested_token_type: "urn:ietf:params:oauth:token-type:access_token",  // 🎯 Yêu cầu access token mới
+                                                                  // requested_token_type = Loại token yêu cầu (access_token mới)
   audience: "trading-service",                                   // 🎯💻 Service cần gọi (giới hạn scope chỉ cho service này)
+                                                                  // audience = Đối tượng (Service nào sẽ nhận token - Giới hạn quyền)
   client_id: "portal-backend",                                   // 🏷️ Client gọi request
+                                                                  // client_id = ID ứng dụng (Backend gọi request)
   client_secret: "********"                                       // 🔐🔒 Secret của backend client
+                                                                  // client_secret = Mật khẩu ứng dụng (Secret của backend)
 }
 
 // 🔹 Bước 3: Keycloak kiểm tra policy → trả token mới
 // ✅🔍 Keycloak check Token Exchange Policy (ai được đổi token cho service nào)
+// Token Exchange Policy = Chính sách đổi token (Quy tắc ai được đổi token cho service nào)
 // 🎫⬇️ Trả về service_access_token với scope giảm (chỉ quyền tối thiểu cho trading-service)
+// service_access_token = Token truy cập dịch vụ (Token mới với quyền giảm)
+// scope giảm = Phạm vi quyền giảm (Chỉ quyền tối thiểu cần thiết)
 // 🔒👤 Service token không chứa PII của user, chỉ chứa user ID + role cần thiết
+// PII = Personal Identifiable Information (Thông tin nhận dạng cá nhân - Không chứa trong service token)
 // 🌐✅ Hỗ trợ SSO cross-realm - giữ danh tính user nhưng tăng bảo mật
+// cross-realm = Xuyên realm (Giữa các realm khác nhau - Vẫn giữ danh tính user)
 ```
 
 > Dùng để ủy quyền chéo giữa hệ thống mà vẫn giữ được danh tính người dùng (SSO thật sự).
@@ -258,29 +337,44 @@ POST /protocol/openid-connect/token
 
 ## 🧠 V. Giải thích chi tiết các loại token
 
-| Token             | Vai trò                                     | Thời hạn              | Ai giữ     |
-| ----------------- | ------------------------------------------- | --------------------- | ---------- |
-| **Access Token**  | 🎫 Cho phép truy cập API                       | Ngắn (5–10 phút)      | BE         |
-| **Refresh Token** | 🔄 Dùng để lấy token mới                       | Dài (15–60 phút)      | BE (Redis) |
-| **ID Token**      | 👤 Thông tin người dùng (name, email, role...) | Ngắn                  | BE         |
-| **Session**       | ⏱️ Theo dõi người dùng login ở app nào         | Được Keycloak quản lý | Keycloak   |
+| Token             | Vai trò                                                                           | Thời hạn              | Ai giữ     |
+| ----------------- | --------------------------------------------------------------------------------- | --------------------- | ---------- |
+| **Access Token**  | 🎫 Cho phép truy cập API                                                          | Ngắn (5–10 phút)      | BE         |
+|                   | // Access Token = Token truy cập (Dùng để gọi API - Hết hạn nhanh)                |
+| **Refresh Token** | 🔄 Dùng để lấy token mới                                                          | Dài (15–60 phút)      | BE (Redis) |
+|                   | // Refresh Token = Token làm mới (Dùng để lấy access_token mới - Hết hạn lâu hơn) |
+| **ID Token**      | 👤 Thông tin người dùng (name, email, role...)                                    | Ngắn                  | BE         |
+|                   | // ID Token = Token ID (Chứa thông tin user - name, email, role)                  |
+| **Session**       | ⏱️ Theo dõi người dùng login ở app nào                                            | Được Keycloak quản lý | Keycloak   |
+|                   | // Session = Phiên đăng nhập (Keycloak theo dõi user đã login ở app nào)          |
 
-> 💡 **Tất cả token đều là JWT (JSON Web Token)**, có thể xác minh bằng public key (JWKS) mà không cần gọi Keycloak mỗi lần.
+> 💡 **Tất cả token đều là JWT (JSON Web Token - Token dạng JSON)**, có thể xác minh bằng public key (JWKS - Bộ khóa công khai) mà không cần gọi Keycloak mỗi lần.
+> // JWT = JSON Web Token (Token dạng JSON - Có thể xác minh mà không cần gọi Keycloak)
+> // JWKS = JSON Web Key Set (Bộ khóa công khai - Dùng để xác minh JWT)
 
 ---
 
 ## 🧩 VI. Cơ chế bảo mật trong flow FE → BE → Keycloak
 
-| Cơ chế                                 | Mục đích                                        | Ghi chú                      |
-| -------------------------------------- | ----------------------------------------------- | ---------------------------- |
-| **PKCE** (Proof Key for Code Exchange) | 🔐 Ngăn hacker lấy cắp code trong redirect URL     | Bắt buộc cho public client   |
-| **HTTPS (TLS 1.3)**                    | 🔒 Mã hóa dữ liệu giữa FE–BE–Keycloak              | Tất cả request               |
-| **HTTP-only cookie**                   | 🚫 FE không đọc được token bằng JS                 | Ngăn XSS                     |
-| **CSRF Token**                         | 🛑 Chống request giả mạo                           | FE gửi kèm                   |
-| **Refresh Token Rotation**             | 🔄 Token chỉ dùng 1 lần                            | Bật trong Keycloak           |
-| **MFA / OTP**                          | 🔐 Tăng lớp xác thực                               | Dùng Keycloak OTP Policy     |
-| **Token Exchange Policy**              | 🔗 Giới hạn quyền truy cập giữa các realm          | Giảm rủi ro lateral movement |
-| **Audit Logging**                      | 📊 Ghi lại toàn bộ login / logout / token exchange | Phục vụ audit ngân hàng      |
+| Cơ chế                                 | Mục đích                                                                                              | Ghi chú                      |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------- |
+| **PKCE** (Proof Key for Code Exchange) | 🔐 Ngăn hacker lấy cắp code trong redirect URL                                                        | Bắt buộc cho public client   |
+|                                        | // PKCE = Bằng chứng khóa cho trao đổi code (Chống đánh cắp code trong URL)                           |
+| **HTTPS (TLS 1.3)**                    | 🔒 Mã hóa dữ liệu giữa FE–BE–Keycloak                                                                 | Tất cả request               |
+|                                        | // HTTPS = HTTP Secure (Mã hóa dữ liệu - TLS 1.3 = Giao thức bảo mật phiên bản 1.3)                   |
+| **HTTP-only cookie**                   | 🚫 FE không đọc được token bằng JS                                                                    | Ngăn XSS                     |
+|                                        | // HTTP-only cookie = Cookie chỉ đọc được bởi server (Ngăn XSS - Tấn công script chéo)                |
+| **CSRF Token**                         | 🛑 Chống request giả mạo                                                                              | FE gửi kèm                   |
+|                                        | // CSRF = Cross-Site Request Forgery (Tấn công giả mạo request - Token chống điều này)                |
+| **Refresh Token Rotation**             | 🔄 Token chỉ dùng 1 lần                                                                               | Bật trong Keycloak           |
+|                                        | // Refresh Token Rotation = Xoay token làm mới (Token chỉ dùng 1 lần - Chống tái sử dụng)             |
+| **MFA / OTP**                          | 🔐 Tăng lớp xác thực                                                                                  | Dùng Keycloak OTP Policy     |
+|                                        | // MFA = Multi-Factor Authentication (Xác thực đa yếu tố), OTP = One-Time Password (Mật khẩu một lần) |
+| **Token Exchange Policy**              | 🔗 Giới hạn quyền truy cập giữa các realm                                                             | Giảm rủi ro lateral movement |
+|                                        | // Token Exchange Policy = Chính sách đổi token (Giới hạn quyền giữa các realm)                       |
+|                                        | // lateral movement = Di chuyển ngang (Hacker di chuyển giữa các hệ thống)                            |
+| **Audit Logging**                      | 📊 Ghi lại toàn bộ login / logout / token exchange                                                    | Phục vụ audit ngân hàng      |
+|                                        | // Audit Logging = Ghi log kiểm toán (Ghi lại tất cả hoạt động - Phục vụ kiểm toán)                   |
 
 ---
 
@@ -337,13 +431,17 @@ Backend verify via JWKS
 
 > **Chuẩn ngân hàng**
 
-Keycloak hỗ trợ SSO theo chuẩn **OpenID Connect Session Management** và **SAML2 Web SSO**.
+Keycloak hỗ trợ SSO theo chuẩn **OpenID Connect Session Management (Quản lý phiên OpenID Connect)** và **SAML2 Web SSO (SSO Web SAML2)**.
+// SSO = Single Sign-On (Đăng nhập một lần)
+// OpenID Connect Session Management = Quản lý phiên OpenID Connect (Chuẩn quản lý phiên)
+// SAML2 = Security Assertion Markup Language 2 (Ngôn ngữ khẳng định bảo mật - Chuẩn SSO)
 
 Dựa trên mô hình:
 
-- 🔹 1 user login → dùng cho nhiều ứng dụng
-- 🔹 Session được Keycloak quản lý tập trung
-- 🔹 Logout 1 nơi → toàn bộ ứng dụng logout (SLO)
+- 🔹 1 user login → dùng cho nhiều ứng dụng (1 người dùng đăng nhập → dùng được nhiều app)
+- 🔹 Session được Keycloak quản lý tập trung (Session được quản lý tập trung bởi Keycloak)
+- 🔹 Logout 1 nơi → toàn bộ ứng dụng logout (SLO) (Logout 1 chỗ → tất cả app logout - SLO)
+  // SLO = Single Logout (Logout một lần - Logout tất cả app)
 
 ### 🔥 1️⃣ SSO hoạt động chi tiết
 
@@ -364,10 +462,23 @@ Keycloak tạo SSO session:
 
 ```javascript
 // ✅💾 User login thành công → Keycloak tạo SSO session trong database
+// User login thành công = Người dùng đăng nhập thành công
+// SSO session = Phiên đăng nhập một lần (Session cho phép login 1 lần dùng nhiều app)
 SSO Session ID: "5ae2a02c-b3d0-4b79-bc23-..."  // 🎫🔑 Unique session ID cho user
+// SSO Session ID = ID phiên SSO (ID duy nhất cho user - Dùng để theo dõi phiên)
 // 🍪🔐 Keycloak set cookie "KEYCLOAK_SESSION" vào browser (domain: keycloak.company.com)
+// set cookie = Thiết lập cookie (Keycloak đặt cookie vào trình duyệt)
+// KEYCLOAK_SESSION = Tên cookie (Cookie chứa thông tin phiên SSO)
+// domain = Tên miền (Cookie chỉ hoạt động trong domain này)
 // 💾 Session lưu: user_id, realm, client_ids đã login, timestamp
+// user_id = ID người dùng (ID của user đã login)
+// realm = Vùng quản lý (Realm user thuộc về)
+// client_ids = ID các ứng dụng (Danh sách app user đã login)
+// timestamp = Dấu thời gian (Thời điểm tạo session)
 // ⏰ Session timeout: 15-30 phút (internal) hoặc 60 phút (external)
+// Session timeout = Thời gian hết hạn phiên (15-30 phút cho nội bộ, 60 phút cho bên ngoài)
+// internal = Nội bộ (Nhân viên công ty)
+// external = Bên ngoài (Khách hàng)
 ```
 
 **(2) Khi user mở thêm ứng dụng thứ 2**
@@ -707,18 +818,20 @@ Flow chuẩn nhất cho ngân hàng lớn.
 
 > **Theo chuẩn ngân hàng**
 
-### 1. RBAC (Role-based) – vai trò theo chức vụ
+### 1. RBAC (Role-based - Dựa trên vai trò) – vai trò theo chức vụ
+
+// RBAC = Role-Based Access Control (Kiểm soát truy cập dựa trên vai trò - Phân quyền theo role)
 
 #### Ví dụ Internal:
 
 ```javascript
 // 🎯👥 Roles cho nhân viên ngân hàng/chứng khoán
-teller                // 💵👤 Giao dịch viên (transaction:create, account:read)
-branch_manager        // 🏛️👔 Trưởng chi nhánh (approve:transaction, reports:branch, users:manage)
-ops_manager           // ⚙️👔 Quản lý vận hành (system:config, workflow:manage, bulk:operations)
-risk_officer          // 🚨🔍 Quản lý rủi ro (risk:view, alerts:manage, reports:risk, users:investigate)
-auditor               // 🔍📊 Kiểm toán (logs:view:all, reports:audit, read-only everything)
-it_support            // 🔧💻 CNTT (system:support, users:reset-password, debug:access)
+teller; // 💵👤 Giao dịch viên (transaction:create, account:read)
+branch_manager; // 🏛️👔 Trưởng chi nhánh (approve:transaction, reports:branch, users:manage)
+ops_manager; // ⚙️👔 Quản lý vận hành (system:config, workflow:manage, bulk:operations)
+risk_officer; // 🚨🔍 Quản lý rủi ro (risk:view, alerts:manage, reports:risk, users:investigate)
+auditor; // 🔍📊 Kiểm toán (logs:view:all, reports:audit, read-only everything)
+it_support; // 🔧💻 CNTT (system:support, users:reset-password, debug:access)
 
 // 📋 Mỗi role có permissions map:
 // teller -> ["transaction:create", "account:read", "customer:search"]
@@ -729,10 +842,10 @@ it_support            // 🔧💻 CNTT (system:support, users:reset-password, de
 
 ```javascript
 // 🎯👤 Roles cho khách hàng
-customer              // 👤✅ Khách hàng thường (account:view, transaction:basic, transfer:limit-1M)
-vip_customer          // 🌟💰 VIP (transaction:premium, transfer:limit-10M, priority:support)
-business_customer     // 🏛️💼 Doanh nghiệp (bulk:transfer, payroll:manage, api:access, reports:advanced)
-broker                // 📈💹 Môi giới chứng khoán (trading:execute, portfolio:manage, market:data:realtime)
+customer; // 👤✅ Khách hàng thường (account:view, transaction:basic, transfer:limit-1M)
+vip_customer; // 🌟💰 VIP (transaction:premium, transfer:limit-10M, priority:support)
+business_customer; // 🏛️💼 Doanh nghiệp (bulk:transfer, payroll:manage, api:access, reports:advanced)
+broker; // 📈💹 Môi giới chứng khoán (trading:execute, portfolio:manage, market:data:realtime)
 
 // 📋 Permission mapping:
 // customer -> ["account:view", "transaction:self", "transfer:max:1000000"]
@@ -741,17 +854,25 @@ broker                // 📈💹 Môi giới chứng khoán (trading:execute, p
 
 ---
 
-### 2. ABAC (Attribute-based) – vai trò theo thuộc tính
+### 2. ABAC (Attribute-based - Dựa trên thuộc tính) – vai trò theo thuộc tính
 
-| Attribute          | Ý nghĩa                    |
-| ------------------ | -------------------------- |
-| `branch=700`       | Chi nhánh 700              |
-| `region=NORTH`     | Miền Bắc                   |
-| `level=4`          | Cấp lãnh đạo               |
-| `kyc_level=3`      | Hoàn thành định danh cấp 3 |
-| `risk_score <= 50` | Rủi ro thấp                |
+// ABAC = Attribute-Based Access Control (Kiểm soát truy cập dựa trên thuộc tính - Phân quyền theo attribute)
+
+| Attribute          | Ý nghĩa                                                                          |
+| ------------------ | -------------------------------------------------------------------------------- |
+| `branch=700`       | Chi nhánh 700                                                                    |
+|                    | // branch = Chi nhánh (Thuộc tính chi nhánh)                                     |
+| `region=NORTH`     | Miền Bắc                                                                         |
+|                    | // region = Vùng (Thuộc tính vùng địa lý)                                        |
+| `level=4`          | Cấp lãnh đạo                                                                     |
+|                    | // level = Cấp độ (Thuộc tính cấp bậc)                                           |
+| `kyc_level=3`      | Hoàn thành định danh cấp 3                                                       |
+|                    | // kyc_level = Cấp độ định danh (Know Your Customer - Mức độ xác minh danh tính) |
+| `risk_score <= 50` | Rủi ro thấp                                                                      |
+|                    | // risk_score = Điểm rủi ro (Thuộc tính đánh giá rủi ro)                         |
 
 > 💡 ABAC giúp kiểm soát truy cập theo dữ liệu, không chỉ theo vai trò.
+> // ABAC = Phân quyền linh hoạt hơn (Dựa trên thuộc tính cụ thể, không chỉ role)
 
 ---
 
@@ -820,7 +941,7 @@ Keycloak hỗ trợ:
 function canAccess(context) {
   var user = context.identity.attributes;  // 👤 Lấy attributes của user
   var riskScore = user.risk_score[0];      // 🚨 Risk score của user
-  
+
   // ✅ Chỉ cho user có risk_score <= 50
   if (riskScore <= 50) {
     return true;   // ✅ Cho phép truy cập
@@ -859,14 +980,14 @@ function canAccess(context) {
 }
 ```
 
-- Role-based Policy               // 🎯 Kiểm tra role của user
-- Client-based Policy             // 🏷️ Kiểm tra client nào gọi request
-- User Attribute Policy           // 👤 Kiểm tra thuộc tính user (branch, level, kyc_level)
-- Group-based Policy              // 👥 Kiểm tra group/department
-- JavaScript Logic Policy         // 🔧 Custom logic phc tạp (risk score, business rules)
-- Time-based Policy               // ⏰ Giới hạn theo thời gian (business hours only)
-- IP Range Policy (ngân hàng dùng nhiều)  // 🌐🚫 Chỉ IP công ty (cần custom SPI)
-- Aggregated Policy               // 🔗 Kết hợp nhiều policies (AND/OR logic)
+- Role-based Policy // 🎯 Kiểm tra role của user
+- Client-based Policy // 🏷️ Kiểm tra client nào gọi request
+- User Attribute Policy // 👤 Kiểm tra thuộc tính user (branch, level, kyc_level)
+- Group-based Policy // 👥 Kiểm tra group/department
+- JavaScript Logic Policy // 🔧 Custom logic phc tạp (risk score, business rules)
+- Time-based Policy // ⏰ Giới hạn theo thời gian (business hours only)
+- IP Range Policy (ngân hàng dùng nhiều) // 🌐🚫 Chỉ IP công ty (cần custom SPI)
+- Aggregated Policy // 🔗 Kết hợp nhiều policies (AND/OR logic)
 
 #### 📌 Ví dụ Policy:
 
@@ -882,17 +1003,25 @@ function canAccess(context) {
 
 Ngân hàng chia client theo mức độ tin cậy:
 
-### 1. Public Client (FE)
+### 1. Public Client (FE - Frontend)
 
 ```javascript
 // 🌐💻 Public Client - dành cho Frontend apps (browser/mobile)
+// Public Client = Client công khai (Dành cho Frontend - Browser/Mobile - Không giữ được secret)
 
 // 🔴 Đặc điểm:
 - ❌🔐 Không có `client_secret` (không giữ được secret an toàn trong browser/mobile)
+  // client_secret = Mật khẩu ứng dụng (Không có vì browser/mobile không an toàn để giữ secret)
 - ✅🔑 CHỈ dùng PKCE (Proof Key for Code Exchange - RFC 7636)
+  // PKCE = Bằng chứng khóa cho trao đổi code (Bắt buộc cho public client - RFC 7636 = Chuẩn)
 - ❌🔄 KHÔNG bao giờ giữ refresh token trong browser/localStorage
+  // refresh token = Token làm mới (KHÔNG BAO GIỜ lưu trong browser/localStorage - Không an toàn)
+  // localStorage = Bộ nhớ local (Không an toàn để lưu token)
 - ✅🍪 Nếu cần session -> dùng cookie HTTP-only từ BE
+  // cookie HTTP-only = Cookie chỉ đọc được bởi server (An toàn hơn - Từ Backend)
 - ✅🔗 Flow: Authorization Code + PKCE (không Implicit Flow)
+  // Authorization Code Flow = Luồng mã ủy quyền (Flow an toàn nhất)
+  // Implicit Flow = Luồng ngầm (Không an toàn - Không dùng)
 
 // 🎯 Keycloak config:
 {
@@ -919,17 +1048,28 @@ Ngân hàng chia client theo mức độ tin cậy:
 
 ---
 
-### 2. Confidential Client (Backend)
+### 2. Confidential Client (Backend - Backend)
 
 ```javascript
 // 🔐⚙️ Confidential Client - dành cho Backend services
+// Confidential Client = Client bí mật (Dành cho Backend - Có thể giữ secret an toàn)
 
 // 🟢 Đặc điểm:
 - ✅🔐🔒 Có `client_secret` hoặc private key JWT (RS256/ES256)
+  // client_secret = Mật khẩu ứng dụng (Có thể giữ an toàn ở Backend)
+  // private key JWT = Khóa riêng JWT (RS256/ES256 = Thuật toán ký - RSA/ECDSA)
 - ✅💾 BE giữ refresh token trong Redis/Database (server-side storage)
+  // Redis = Cơ sở dữ liệu bộ nhớ (Lưu refresh_token nhanh)
+  // server-side storage = Lưu trữ phía server (An toàn - Không ở client)
 - ✅🔄 BE gọi được token exchange (cross-realm, microservice)
+  // token exchange = Đổi token (Backend có thể đổi token cho microservice khác)
+  // cross-realm = Xuyên realm (Giữa các realm khác nhau)
+  // microservice = Vi dịch vụ (Hệ thống vi dịch vụ)
 - ✅🍪 Có session BE → Redis (distributed session)
+  // distributed session = Phiên phân tán (Session lưu trong Redis - Nhiều server dùng chung)
 - ✅🔑 Validate token local bằng JWKS (không gọi Keycloak mỗi request)
+  // validate token = Xác minh token (Kiểm tra token có hợp lệ không)
+  // JWKS = JSON Web Key Set (Bộ khóa công khai - Xác minh token local, không cần gọi Keycloak)
 
 // 🎯 Keycloak config:
 {
@@ -977,13 +1117,18 @@ Ngân hàng chia client theo mức độ tin cậy:
 
 ## 🧩 XVII. Token Exchange – chuẩn ngân hàng & chứng khoán
 
-### 🎯 Mục tiêu Token Exchange:
+### 🎯 Mục tiêu Token Exchange: (Mục tiêu đổi token)
 
-- Giảm rủi ro lộ token gốc
-- Tách biệt quyền của microservice
-- Giảm phạm vi quyền nếu service bị hack
+- Giảm rủi ro lộ token gốc (Giảm nguy cơ token gốc bị lộ)
+  // token gốc = Token ban đầu (Token của user - Nếu lộ sẽ nguy hiểm)
+- Tách biệt quyền của microservice (Tách quyền của từng microservice)
+  // tách biệt quyền = Phân tách quyền (Mỗi service chỉ có quyền cần thiết)
+- Giảm phạm vi quyền nếu service bị hack (Giảm quyền nếu service bị tấn công)
+  // phạm vi quyền = Scope (Nếu service bị hack, chỉ mất quyền của service đó)
 - Không cho microservice cầm token người dùng đầy đủ (PII protection)
-- Chuẩn Zero-Trust
+  // PII protection = Bảo vệ thông tin cá nhân (Microservice không thấy đầy đủ thông tin user)
+- Chuẩn Zero-Trust (Chuẩn không tin tưởng mặc định)
+  // Zero-Trust = Không tin tưởng mặc định (Không tin bất kỳ ai, luôn xác minh)
 
 ---
 
@@ -998,33 +1143,55 @@ Chỉ dùng giữa FE ↔ BE.
 ➡️ BE dùng Token Exchange để lấy Service Token:
 
 ```http
-# 🔄🔗 Token Exchange endpoint - RFC 8693 standard
+# 🔄🔗 Token Exchange endpoint - RFC 8693 standard (Điểm cuối đổi token - Chuẩn RFC 8693)
 POST /protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
+// Content-Type = Loại nội dung (application/x-www-form-urlencoded = Form URL encoded)
 
-# 📋 Request body:
+# 📋 Request body: (Nội dung yêu cầu)
 grant_type=urn:ietf:params:oauth:grant-type:token-exchange  # 🔄🔗 Token Exchange grant (RFC 8693)
+// grant_type = Loại cấp quyền (token-exchange = Đổi token - Chuẩn RFC 8693)
 subject_token=<user_access_token>                          # 🎫👤 Token gốc của user (từ login)
+// subject_token = Token chủ thể (Token gốc của user - Từ lúc login)
 subject_token_type=urn:ietf:params:oauth:token-type:access_token  # 📋 Loại token đầu vào
+// subject_token_type = Loại token chủ thể (access_token = Token truy cập)
 requested_token_type=urn:ietf:params:oauth:token-type:access_token  # 🎯🎫 Yêu cầu access token mới
+// requested_token_type = Loại token yêu cầu (access_token mới = Token truy cập mới)
 audience=trading-service                                   # 🎯🏢 Service cần gọi (giới hạn scope chỉ cho service này)
+// audience = Đối tượng (Service nào sẽ nhận token - Giới hạn quyền chỉ cho service này)
 client_id=portal-backend                                   # 🏷️ Client gọi request (BFF/Backend)
+// client_id = ID ứng dụng (Backend gọi request)
 client_secret=********                                      # 🔐🔒 Secret của backend client (confidential)
+// client_secret = Mật khẩu ứng dụng (Secret của backend - Confidential client)
 scope=trading:read trading:execute                         # 📋⬇️ Scope giảm xuống (chỉ quyền tối thiểu cho trading)
+// scope = Phạm vi quyền (Giảm xuống - Chỉ quyền tối thiểu cho trading)
+// trading:read = Đọc giao dịch, trading:execute = Thực thi giao dịch
 actor_token=<service_account_token>                        # 🤖 Optional: service account token (delegation)
+// actor_token = Token người thực hiện (Token service account - Tùy chọn - Ủy quyền)
+// service account = Tài khoản dịch vụ (Tài khoản cho service, không phải user)
+// delegation = Ủy quyền (Service account ủy quyền thay user)
 actor_token_type=urn:ietf:params:oauth:token-type:access_token
+// actor_token_type = Loại token người thực hiện (access_token = Token truy cập)
 ```
 
 Keycloak trả:
 
 ```json
 {
-  "access_token": "eyJhbGc...",        // 🎫⬇️ Service access token với scope giảm
+  "access_token": "eyJhbGc...", // 🎫⬇️ Service access token với scope giảm
+  // access_token = Token truy cập dịch vụ (Token mới với quyền giảm)
   "issued_token_type": "urn:ietf:params:oauth:token-type:access_token",
+  // issued_token_type = Loại token được phát hành (access_token = Token truy cập)
   "token_type": "Bearer",
-  "expires_in": 300,                   // ⏱️ Hết hạn nhanh (5 phút)
+  // token_type = Loại token (Bearer = Dùng trong header Authorization)
+  "expires_in": 300, // ⏱️ Hết hạn nhanh (5 phút)
+  // expires_in = Thời gian hết hạn (300 giây = 5 phút - Hết hạn nhanh)
   // ❌🚫 KHÔNG trả refresh_token - service token không refresh được
-  "scope": "trading:read trading:execute"  // 📋✅ Scope đã giảm (không có user:*, admin:*)
+  // refresh_token = Token làm mới (KHÔNG có - Service token không thể refresh)
+  "scope": "trading:read trading:execute" // 📋✅ Scope đã giảm (không có user:*, admin:*)
+  // scope = Phạm vi quyền (Đã giảm - Chỉ trading:read và trading:execute)
+  // Không có user:* = Không có quyền user đầy đủ
+  // Không có admin:* = Không có quyền admin
 }
 ```
 
@@ -1096,38 +1263,58 @@ Content-Type: application/json
 
 ---
 
-## 🧩 XIX. Bảo mật nâng cao (Zero Trust)
+## 🧩 XIX. Bảo mật nâng cao (Zero Trust - Không tin tưởng mặc định)
 
 > Ngân hàng / chứng khoán bắt buộc có:
+> // Zero Trust = Không tin tưởng mặc định (Không tin bất kỳ ai, luôn xác minh)
 
-### 1. MFA bắt buộc
+### 1. MFA bắt buộc (MFA = Multi-Factor Authentication - Xác thực đa yếu tố)
 
 - **Internal:** Smart-card, RSA Token, Microsoft Authenticator
+  // Internal = Nội bộ (Nhân viên công ty)
+  // Smart-card = Thẻ thông minh (Thẻ vật lý có chip)
+  // RSA Token = Token RSA (Thiết bị tạo mã OTP)
+  // Microsoft Authenticator = Ứng dụng xác thực Microsoft (App tạo mã OTP)
 - **External:** SMS OTP, Smart OTP, TOTP
+  // External = Bên ngoài (Khách hàng)
+  // SMS OTP = Mã OTP qua SMS (One-Time Password qua tin nhắn)
+  // Smart OTP = OTP thông minh (OTP từ app)
+  // TOTP = Time-based One-Time Password (Mật khẩu một lần theo thời gian)
 
-### 2. IP Restriction
+### 2. IP Restriction (Giới hạn IP)
 
-- Internal chỉ cho phép IP công ty
-- Trading Engine chỉ cho phép IP từ DMZ
+- Internal chỉ cho phép IP công ty (Internal chỉ cho phép IP từ công ty)
+  // IP công ty = IP nội bộ (Chỉ IP từ mạng công ty mới được truy cập)
+- Trading Engine chỉ cho phép IP từ DMZ (Trading Engine chỉ cho phép IP từ DMZ)
+  // Trading Engine = Động cơ giao dịch (Hệ thống giao dịch chứng khoán)
+  // DMZ = Demilitarized Zone (Vùng phi quân sự - Mạng trung gian)
 
-### 3. Token Replay Protection
+### 3. Token Replay Protection (Bảo vệ chống tái phát token)
 
-- PKCE
-- Refresh Token Rotation
-- Time-based nonce
+- PKCE (Proof Key for Code Exchange - Bằng chứng khóa cho trao đổi code)
+  // PKCE = Chống đánh cắp code trong URL
+- Refresh Token Rotation (Xoay token làm mới)
+  // Refresh Token Rotation = Token chỉ dùng 1 lần
+- Time-based nonce (Nonce dựa trên thời gian)
+  // nonce = Số chỉ dùng một lần (Số ngẫu nhiên dùng 1 lần - Chống tái phát)
 
-### 4. Audit Logging
+### 4. Audit Logging (Ghi log kiểm toán)
 
-Gửi sang Splunk / ELK / Datadog:
+Gửi sang Splunk / ELK / Datadog: (Gửi đến hệ thống log)
+// Splunk = Hệ thống phân tích log (Công cụ phân tích dữ liệu)
+// ELK = Elasticsearch, Logstash, Kibana (Stack công cụ log)
+// Datadog = Dịch vụ giám sát (Dịch vụ giám sát và phân tích)
 
-- login
-- logout
-- token exchange
-- permission denied
+- login (Đăng nhập)
+- logout (Đăng xuất)
+- token exchange (Đổi token)
+- permission denied (Từ chối quyền)
 
-### 5. Rate limiting & Brute Force Detection
+### 5. Rate limiting & Brute Force Detection (Giới hạn tốc độ & Phát hiện tấn công vũ phu)
 
-Bật trong Keycloak.
+Bật trong Keycloak. (Bật trong Keycloak)
+// Rate limiting = Giới hạn tốc độ (Giới hạn số request mỗi giây)
+// Brute Force Detection = Phát hiện tấn công vũ phu (Phát hiện đăng nhập sai nhiều lần)
 
 ---
 

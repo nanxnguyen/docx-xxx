@@ -4,80 +4,80 @@
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"Docker containerize frontend: Multi-stage builds (build stage + nginx stage), layer caching, .dockerignore. Docker Compose cho local dev. Production: health checks, non-root user, security hardening."**
+**"Docker containerize frontend (Docker đóng gói frontend): Multi-stage builds (build stage + nginx stage - build nhiều giai đoạn), layer caching (cache các lớp), .dockerignore. Docker Compose cho local dev (phát triển local). Production (Môi trường sản xuất): health checks (kiểm tra sức khỏe), non-root user (người dùng không phải root), security hardening (tăng cường bảo mật)."**
 
-**🔑 Docker Concepts:**
+**🔑 Docker Concepts (Khái Niệm Docker):**
 
-**1. Image vs Container:**
+**1. Image vs Container (Hình Ảnh vs Container):**
 
-- **Image**: Template immutable (như blueprint) - `node:20-alpine`, `nginx:alpine`
-- **Container**: Running instance của image (như VM nhẹ) - isolated process
-- **Dockerfile**: Script build image từ base image + commands
+- **Image (Hình ảnh)**: Template immutable (mẫu bất biến - như blueprint - bản thiết kế) - `node:20-alpine`, `nginx:alpine`
+- **Container (Container)**: Running instance của image (thể hiện đang chạy của hình ảnh - như VM nhẹ - máy ảo nhẹ) - isolated process (quy trình cô lập)
+- **Dockerfile**: Script build image từ base image + commands (tập lệnh xây dựng hình ảnh từ hình ảnh cơ sở + lệnh)
 
-**2. Multi-Stage Builds:**
+**2. Multi-Stage Builds (Xây Dựng Nhiều Giai Đoạn):**
 
-- **Stage 1 (Builder)**: Install deps, build app (Node.js, npm/yarn)
-- **Stage 2 (Production)**: Copy built files vào nginx, serve static files
-- **Benefit**: Final image nhỏ (chỉ nginx + dist), không có dev dependencies
+- **Stage 1 (Builder - Giai đoạn xây dựng)**: Install deps (cài đặt phụ thuộc), build app (xây dựng ứng dụng - Node.js, npm/yarn)
+- **Stage 2 (Production - Giai đoạn sản xuất)**: Copy built files vào nginx (sao chép tệp đã xây dựng vào nginx), serve static files (phục vụ tệp tĩnh)
+- **Benefit (Lợi ích)**: Final image nhỏ (hình ảnh cuối cùng nhỏ - chỉ nginx + dist), không có dev dependencies (không có phụ thuộc phát triển)
 
-**3. Layer Caching:**
+**3. Layer Caching (Cache Lớp):**
 
-- Docker cache layers theo thứ tự Dockerfile
-- **Strategy**: Copy `package.json` trước → install deps → copy source code sau
-- **Why**: `package.json` ít thay đổi → cache hit → build nhanh hơn
+- Docker cache layers theo thứ tự Dockerfile (Docker cache các lớp theo thứ tự trong Dockerfile)
+- **Strategy (Chiến lược)**: Copy `package.json` trước → install deps (cài đặt phụ thuộc) → copy source code sau (sao chép mã nguồn sau)
+- **Why (Tại sao)**: `package.json` ít thay đổi → cache hit (trúng cache) → build nhanh hơn
 
-**🔑 Dockerfile Best Practices:**
+**🔑 Dockerfile Best Practices (Thực Hành Tốt Nhất Dockerfile):**
 
-**1. Multi-Stage Build:**
+**1. Multi-Stage Build (Xây Dựng Nhiều Giai Đoạn):**
 
 ```dockerfile
-# Stage 1: Build
-FROM node:20-alpine AS builder
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+# Stage 1: Build (Giai đoạn 1: Xây dựng)
+FROM node:20-alpine AS builder  # Base image Node.js 20 trên Alpine Linux, đặt tên stage là "builder"
+COPY package*.json ./           # Copy package.json và package-lock.json
+RUN npm ci                      # Cài đặt dependencies (npm ci = clean install, nhanh hơn npm install)
+COPY . .                        # Copy toàn bộ mã nguồn
+RUN npm run build              # Build ứng dụng (tạo thư mục dist)
 
-# Stage 2: Production
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Stage 2: Production (Giai đoạn 2: Sản xuất)
+FROM nginx:alpine               # Base image nginx trên Alpine Linux (nhẹ, chỉ ~5MB)
+COPY --from=builder /app/dist /usr/share/nginx/html  # Copy files đã build từ stage builder vào nginx
 ```
 
-**2. Security:**
+**2. Security (Bảo Mật):**
 
-- **Non-root user**: Chạy container với user không phải root
-- **Minimal base image**: Dùng `alpine` (nhỏ, ít attack surface)
-- **Update packages**: `apk update && apk upgrade` trong build
+- **Non-root user (Người dùng không phải root)**: Chạy container với user không phải root (giảm rủi ro bảo mật)
+- **Minimal base image (Hình ảnh cơ sở tối thiểu)**: Dùng `alpine` (nhỏ, ít attack surface - bề mặt tấn công nhỏ)
+- **Update packages (Cập nhật gói)**: `apk update && apk upgrade` trong build (cập nhật gói để sửa lỗ hổng bảo mật)
 
-**3. Optimization:**
+**3. Optimization (Tối Ưu Hóa):**
 
-- **.dockerignore**: Exclude `node_modules`, `.git`, `.env`
-- **Layer ordering**: Copy files ít thay đổi trước (package.json)
-- **Health checks**: `HEALTHCHECK` command cho monitoring
+- **.dockerignore**: Exclude `node_modules`, `.git`, `.env` (loại trừ các tệp không cần thiết khỏi build context)
+- **Layer ordering (Thứ tự lớp)**: Copy files ít thay đổi trước (package.json) (tận dụng cache tốt hơn)
+- **Health checks (Kiểm tra sức khỏe)**: `HEALTHCHECK` command cho monitoring (giám sát trạng thái container)
 
 **🔑 Docker Compose:**
 
-**Use cases:**
+**Use cases (Trường hợp sử dụng):**
 
-- **Local development**: Frontend + Backend + Database cùng lúc
-- **Service orchestration**: Define networks, volumes, environment variables
-- **Quick setup**: `docker-compose up` → chạy toàn bộ stack
+- **Local development (Phát triển local)**: Frontend + Backend + Database cùng lúc (chạy toàn bộ stack trên máy local)
+- **Service orchestration (Điều phối dịch vụ)**: Define networks, volumes, environment variables (Định nghĩa mạng, volumes, biến môi trường)
+- **Quick setup (Thiết lập nhanh)**: `docker-compose up` → chạy toàn bộ stack (khởi động tất cả services)
 
-**⚠️ Lỗi Thường Gặp:**
+**⚠️ Lỗi Thường Gặp (Common Mistakes):**
 
-- Không dùng multi-stage → final image lớn (có dev deps)
-- Copy toàn bộ code trước install → cache miss mỗi lần code thay đổi
-- Chạy root user → security risk
-- Không có health check → khó monitor container health
-- Hardcode secrets trong Dockerfile → security vulnerability
+- Không dùng multi-stage → final image lớn (có dev deps - phụ thuộc phát triển)
+- Copy toàn bộ code trước install → cache miss mỗi lần code thay đổi (không tận dụng được cache)
+- Chạy root user → security risk (rủi ro bảo mật)
+- Không có health check → khó monitor container health (khó giám sát sức khỏe container)
+- Hardcode secrets trong Dockerfile → security vulnerability (lỗ hổng bảo mật - secrets bị lộ trong image)
 
-**💡 Kiến Thức Senior:**
+**💡 Kiến Thức Senior (Senior Knowledge):**
 
-- **BuildKit**: Parallel builds, better caching (`DOCKER_BUILDKIT=1`)
-- **Docker layer caching**: CI/CD cache layers giữa builds
-- **Multi-platform builds**: `docker buildx` cho ARM64 + AMD64
-- **Kubernetes**: Container orchestration cho production scale
-- **Container registries**: Docker Hub, AWS ECR, Google GCR
+- **BuildKit**: Parallel builds (xây dựng song song), better caching (cache tốt hơn) (`DOCKER_BUILDKIT=1`)
+- **Docker layer caching (Cache lớp Docker)**: CI/CD cache layers giữa builds (cache các lớp giữa các lần build)
+- **Multi-platform builds (Xây dựng đa nền tảng)**: `docker buildx` cho ARM64 + AMD64 (xây dựng cho cả ARM64 và AMD64)
+- **Kubernetes**: Container orchestration cho production scale (điều phối container cho quy mô sản xuất)
+- **Container registries (Kho lưu trữ container)**: Docker Hub, AWS ECR, Google GCR (nơi lưu trữ và chia sẻ images)
 
 > **Câu hỏi phỏng vấn Senior Frontend Developer** > **Độ khó:** ⭐⭐⭐⭐ (Advanced)
 > **Thời gian trả lời:** 15-20 phút
@@ -164,27 +164,27 @@ interface DockerConcepts {
 
 # ===================================================
 
-| Aspect        | Docker Containers    | Virtual Machines     |
-| ------------- | -------------------- | -------------------- |
-| **OS**        | Share host OS kernel | Full OS (Guest OS)   |
-| **Size**      | ~10-100 MB           | ~1-10 GB             |
-| **Startup**   | Seconds              | Minutes              |
-| **Resource**  | Lower overhead       | Higher overhead      |
-| **Isolation** | Process-level        | Hardware-level       |
-| **Use Case**  | Microservices, apps  | Legacy apps, full OS |
+| Aspect (Khía cạnh)                | Docker Containers (Container Docker)           | Virtual Machines (Máy ảo)                               |
+| --------------------------------- | ---------------------------------------------- | ------------------------------------------------------- |
+| **OS (Hệ điều hành)**             | Share host OS kernel (Chia sẻ kernel của host) | Full OS (Guest OS - Hệ điều hành đầy đủ)                |
+| **Size (Kích thước)**             | ~10-100 MB                                     | ~1-10 GB                                                |
+| **Startup (Khởi động)**           | Seconds (Giây)                                 | Minutes (Phút)                                          |
+| **Resource (Tài nguyên)**         | Lower overhead (Chi phí thấp hơn)              | Higher overhead (Chi phí cao hơn)                       |
+| **Isolation (Cô lập)**            | Process-level (Mức quy trình)                  | Hardware-level (Mức phần cứng)                          |
+| **Use Case (Trường hợp sử dụng)** | Microservices, apps (Vi dịch vụ, ứng dụng)     | Legacy apps, full OS (Ứng dụng cũ, hệ điều hành đầy đủ) |
 
-# ✅ Docker Advantages:
+# ✅ Docker Advantages (Ưu điểm Docker):
 
-- Lightweight: Chỉ chứa app + dependencies
-- Fast startup: Không cần boot OS
-- Efficient: Share kernel, ít resource hơn
-- Portable: Chạy giống nhau mọi nơi
+- Lightweight (Nhẹ): Chỉ chứa app + dependencies (chỉ chứa ứng dụng + phụ thuộc)
+- Fast startup (Khởi động nhanh): Không cần boot OS (không cần khởi động hệ điều hành)
+- Efficient (Hiệu quả): Share kernel (chia sẻ kernel), ít resource hơn (ít tài nguyên hơn)
+- Portable (Di động): Chạy giống nhau mọi nơi (chạy giống nhau trên mọi môi trường)
 
-# ⚠️ Docker Limitations:
+# ⚠️ Docker Limitations (Hạn chế Docker):
 
-- Security: Share kernel → nếu kernel có lỗi, tất cả containers bị ảnh hưởng
-- OS-specific: Linux containers chạy tốt trên Linux host
-- Windows/Mac: Cần Docker Desktop (VM wrapper)
+- Security (Bảo mật): Share kernel → nếu kernel có lỗi, tất cả containers bị ảnh hưởng (chia sẻ kernel → nếu kernel có lỗ hổng, tất cả container bị ảnh hưởng)
+- OS-specific (Phụ thuộc hệ điều hành): Linux containers chạy tốt trên Linux host (container Linux chạy tốt trên host Linux)
+- Windows/Mac: Cần Docker Desktop (VM wrapper - cần Docker Desktop - trình bao bọc máy ảo)
 ```
 
 ### **1.3. Docker Architecture**
@@ -196,23 +196,33 @@ interface DockerConcepts {
 
 ┌─────────────────────────────────────────┐
 │         Docker Client (CLI)              │
+│         (Ứng dụng khách Docker)           │
 │  docker build, docker run, docker ps    │
+│  (Lệnh build, run, xem danh sách)       │
 └──────────────┬──────────────────────────┘
                │
                ▼
 ┌─────────────────────────────────────────┐
 │      Docker Daemon (dockerd)            │
+│      (Tiến trình nền Docker)             │
 │  - Image management                      │
+│    (Quản lý hình ảnh)                   │
 │  - Container lifecycle                  │
+│    (Vòng đời container)                  │
 │  - Network management                   │
+│    (Quản lý mạng)                        │
 │  - Volume management                    │
+│    (Quản lý volume)                      │
 └──────────────┬──────────────────────────┘
                │
                ▼
 ┌─────────────────────────────────────────┐
 │      Container Runtime (containerd)     │
+│      (Thời gian chạy container)          │
 │  - OCI (Open Container Initiative)      │
+│    (Sáng kiến container mở)              │
 │  - RunC (container runtime)             │
+│    (Thời gian chạy container)            │
 └─────────────────────────────────────────┘
 ```
 
@@ -466,39 +476,39 @@ Thumbs.db
 
 # ===================================================
 
-## ❌ Single-Stage Build Problems:
+## ❌ Single-Stage Build Problems (Vấn đề xây dựng một giai đoạn):
 
-1. **Large Image Size:**
+1. **Large Image Size (Kích thước hình ảnh lớn):**
 
-   - Includes: Node.js runtime + npm/yarn + dev dependencies + build tools
-   - Size: ~500MB - 1GB
-   - Problem: Slow pull/push, waste storage
+   - Includes (Bao gồm): Node.js runtime + npm/yarn + dev dependencies (phụ thuộc phát triển) + build tools (công cụ xây dựng)
+   - Size (Kích thước): ~500MB - 1GB
+   - Problem (Vấn đề): Slow pull/push (kéo/đẩy chậm), waste storage (lãng phí dung lượng lưu trữ)
 
-2. **Security Risks:**
+2. **Security Risks (Rủi ro bảo mật):**
 
-   - Dev dependencies có thể chứa vulnerabilities
-   - Build tools không cần trong production
+   - Dev dependencies có thể chứa vulnerabilities (lỗ hổng bảo mật)
+   - Build tools không cần trong production (công cụ xây dựng không cần trong môi trường sản xuất)
 
-3. **Unnecessary Files:**
-   - Source code, test files, config files
-   - Không cần trong production container
+3. **Unnecessary Files (Tệp không cần thiết):**
+   - Source code (mã nguồn), test files (tệp kiểm thử), config files (tệp cấu hình)
+   - Không cần trong production container (không cần trong container sản xuất)
 
-## ✅ Multi-Stage Build Benefits:
+## ✅ Multi-Stage Build Benefits (Lợi ích xây dựng nhiều giai đoạn):
 
-1. **Smaller Final Image:**
+1. **Smaller Final Image (Hình ảnh cuối cùng nhỏ hơn):**
 
-   - Only: nginx + built static files
-   - Size: ~20-50MB (90% reduction)
-   - Benefit: Fast pull/push, efficient storage
+   - Only (Chỉ): nginx + built static files (tệp tĩnh đã xây dựng)
+   - Size (Kích thước): ~20-50MB (90% reduction - giảm 90%)
+   - Benefit (Lợi ích): Fast pull/push (kéo/đẩy nhanh), efficient storage (lưu trữ hiệu quả)
 
-2. **Security:**
+2. **Security (Bảo mật):**
 
-   - No dev dependencies in production
-   - Minimal attack surface
+   - No dev dependencies in production (không có phụ thuộc phát triển trong sản xuất)
+   - Minimal attack surface (bề mặt tấn công tối thiểu)
 
-3. **Separation of Concerns:**
-   - Build stage: Development tools
-   - Production stage: Only runtime needed
+3. **Separation of Concerns (Tách biệt mối quan tâm):**
+   - Build stage (Giai đoạn xây dựng): Development tools (công cụ phát triển)
+   - Production stage (Giai đoạn sản xuất): Only runtime needed (chỉ cần thời gian chạy)
 ```
 
 ### **3.2. Build Arguments & Environment Variables**
@@ -2226,88 +2236,90 @@ spec:
 
 # ===================================================
 
-| Aspect                  | Docker Compose        | Kubernetes              |
-| ----------------------- | --------------------- | ----------------------- |
-| **Use Case**            | Local dev, small apps | Production, large scale |
-| **Orchestration**       | Single host           | Multi-host cluster      |
-| **Scaling**             | Manual                | Auto-scaling            |
-| **High Availability**   | Limited               | Built-in                |
-| **Service Discovery**   | DNS-based             | Built-in                |
-| **Rolling Updates**     | Manual                | Automatic               |
-| **Resource Management** | Basic                 | Advanced                |
-| **Learning Curve**      | Easy                  | Steep                   |
+| Aspect (Khía cạnh)                           | Docker Compose                                          | Kubernetes                                      |
+| -------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------- |
+| **Use Case (Trường hợp sử dụng)**            | Local dev (Phát triển local), small apps (Ứng dụng nhỏ) | Production (Sản xuất), large scale (Quy mô lớn) |
+| **Orchestration (Điều phối)**                | Single host (Một máy chủ)                               | Multi-host cluster (Cụm nhiều máy chủ)          |
+| **Scaling (Mở rộng)**                        | Manual (Thủ công)                                       | Auto-scaling (Tự động mở rộng)                  |
+| **High Availability (Tính khả dụng cao)**    | Limited (Hạn chế)                                       | Built-in (Tích hợp sẵn)                         |
+| **Service Discovery (Khám phá dịch vụ)**     | DNS-based (Dựa trên DNS)                                | Built-in (Tích hợp sẵn)                         |
+| **Rolling Updates (Cập nhật dần)**           | Manual (Thủ công)                                       | Automatic (Tự động)                             |
+| **Resource Management (Quản lý tài nguyên)** | Basic (Cơ bản)                                          | Advanced (Nâng cao)                             |
+| **Learning Curve (Đường cong học tập)**      | Easy (Dễ)                                               | Steep (Dốc - khó)                               |
 ```
 
 ---
 
-## **🎯 Best Practices Summary**
+## **🎯 Best Practices Summary (Tóm Tắt Thực Hành Tốt Nhất)**
 
-### **✅ DO:**
+### **✅ DO (Nên Làm):**
 
-1. **Multi-stage builds**: Separate build and production stages
-2. **Layer caching**: Copy package.json before source code
-3. **.dockerignore**: Exclude unnecessary files
-4. **Non-root user**: Run containers as non-root
-5. **Health checks**: Add HEALTHCHECK commands
-6. **Minimal base images**: Use Alpine Linux
-7. **Security scanning**: Scan images for vulnerabilities
-8. **BuildKit**: Enable for better performance
+1. **Multi-stage builds (Xây dựng nhiều giai đoạn)**: Separate build and production stages (Tách biệt giai đoạn xây dựng và sản xuất)
+2. **Layer caching (Cache lớp)**: Copy package.json before source code (Sao chép package.json trước mã nguồn)
+3. **.dockerignore**: Exclude unnecessary files (Loại trừ tệp không cần thiết)
+4. **Non-root user (Người dùng không phải root)**: Run containers as non-root (Chạy container với người dùng không phải root)
+5. **Health checks (Kiểm tra sức khỏe)**: Add HEALTHCHECK commands (Thêm lệnh HEALTHCHECK)
+6. **Minimal base images (Hình ảnh cơ sở tối thiểu)**: Use Alpine Linux (Sử dụng Alpine Linux)
+7. **Security scanning (Quét bảo mật)**: Scan images for vulnerabilities (Quét hình ảnh để tìm lỗ hổng)
+8. **BuildKit**: Enable for better performance (Bật để hiệu suất tốt hơn)
 
-### **❌ DON'T:**
+### **❌ DON'T (Không Nên):**
 
-1. **Single-stage builds**: Include dev dependencies in production
-2. **Root user**: Don't run as root
-3. **Hardcode secrets**: Don't put secrets in Dockerfile
-4. **Large images**: Don't include unnecessary files
-5. **No health checks**: Always add health checks
-6. **Copy everything**: Use .dockerignore
-7. **Outdated packages**: Keep base images updated
+1. **Single-stage builds (Xây dựng một giai đoạn)**: Include dev dependencies in production (Bao gồm phụ thuộc phát triển trong sản xuất)
+2. **Root user (Người dùng root)**: Don't run as root (Không chạy với quyền root)
+3. **Hardcode secrets (Mã hóa cứng bí mật)**: Don't put secrets in Dockerfile (Không đặt bí mật trong Dockerfile)
+4. **Large images (Hình ảnh lớn)**: Don't include unnecessary files (Không bao gồm tệp không cần thiết)
+5. **No health checks (Không có kiểm tra sức khỏe)**: Always add health checks (Luôn thêm kiểm tra sức khỏe)
+6. **Copy everything (Sao chép mọi thứ)**: Use .dockerignore (Sử dụng .dockerignore)
+7. **Outdated packages (Gói lỗi thời)**: Keep base images updated (Giữ hình ảnh cơ sở được cập nhật)
 
 ---
 
-## **💡 Real-World Scenarios**
+## **💡 Real-World Scenarios (Kịch Bản Thực Tế)**
 
-### **Scenario 1: Monorepo with Multiple Apps**
+### **Scenario 1: Monorepo with Multiple Apps (Kịch bản 1: Monorepo với nhiều ứng dụng)**
 
 ```dockerfile
-# Build specific app in monorepo
-FROM node:20-alpine AS builder
-WORKDIR /app
+# Build specific app in monorepo (Xây dựng ứng dụng cụ thể trong monorepo)
+FROM node:20-alpine AS builder  # Base image Node.js 20 trên Alpine
+WORKDIR /app                    # Thư mục làm việc /app
 
-# Copy root package files
-COPY package.json yarn.lock ./
-COPY nx.json tsconfig.base.json ./
+# Copy root package files (Sao chép tệp package ở root)
+COPY package.json yarn.lock ./   # Copy package.json và yarn.lock
+COPY nx.json tsconfig.base.json ./  # Copy cấu hình Nx và TypeScript
 
-# Install dependencies
-RUN yarn install --frozen-lockfile
+# Install dependencies (Cài đặt phụ thuộc)
+RUN yarn install --frozen-lockfile  # Cài đặt với lockfile cố định
 
-# Copy app-specific code
-COPY apps/my-app ./apps/my-app
-COPY libs ./libs
+# Copy app-specific code (Sao chép mã ứng dụng cụ thể)
+COPY apps/my-app ./apps/my-app  # Copy ứng dụng my-app
+COPY libs ./libs                # Copy thư viện dùng chung
 
-# Build specific app
-RUN npx nx build my-app --configuration=production
+# Build specific app (Xây dựng ứng dụng cụ thể)
+RUN npx nx build my-app --configuration=production  # Build với cấu hình production
 
-# Production stage
-FROM nginx:alpine
-COPY --from=builder /app/dist/apps/my-app /usr/share/nginx/html
+# Production stage (Giai đoạn sản xuất)
+FROM nginx:alpine               # Base image nginx
+COPY --from=builder /app/dist/apps/my-app /usr/share/nginx/html  # Copy files đã build
 ```
 
-### **Scenario 2: Environment-Specific Builds**
+### **Scenario 2: Environment-Specific Builds (Kịch bản 2: Xây dựng theo môi trường)**
 
 ```bash
-# Build for different environments
+# Build for different environments (Xây dựng cho các môi trường khác nhau)
+# Production build (Xây dựng sản xuất)
 docker build \
-  --build-arg NODE_ENV=production \
-  --build-arg VITE_API_URL=https://api.prod.com \
-  -t myapp:prod .
+  --build-arg NODE_ENV=production \              # Môi trường sản xuất
+  --build-arg VITE_API_URL=https://api.prod.com \ # URL API sản xuất
+  -t myapp:prod .                                 # Tag: myapp:prod
 
+# Staging build (Xây dựng staging)
 docker build \
-  --build-arg NODE_ENV=staging \
-  --build-arg VITE_API_URL=https://api.staging.com \
-  -t myapp:staging .
+  --build-arg NODE_ENV=staging \                  # Môi trường staging
+  --build-arg VITE_API_URL=https://api.staging.com \ # URL API staging
+  -t myapp:staging .                               # Tag: myapp:staging
 ```
 
 ---
 
-**🎯 Remember:** "Docker containers should be lightweight, secure, and production-ready. Multi-stage builds + minimal base images + security hardening = best practices!"
+**🎯 Remember (Nhớ):** "Docker containers should be lightweight (Container Docker nên nhẹ), secure (bảo mật), and production-ready (sẵn sàng cho sản xuất). Multi-stage builds (Xây dựng nhiều giai đoạn) + minimal base images (hình ảnh cơ sở tối thiểu) + security hardening (tăng cường bảo mật) = best practices (thực hành tốt nhất)!"

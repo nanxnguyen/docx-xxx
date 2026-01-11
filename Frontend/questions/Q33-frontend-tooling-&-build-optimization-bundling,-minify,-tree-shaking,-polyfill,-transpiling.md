@@ -1061,6 +1061,7 @@ Các công cụ quan trọng trong frontend development:
 #### **💡 Dependency Graph Là Gì?**
 
 **Dependency Graph** là **sơ đồ mô tả quan hệ phụ thuộc** giữa các modules/files trong ứng dụng. Bundler dùng graph này để:
+
 - Tìm tất cả files cần bundle
 - Xác định thứ tự load modules
 - Loại bỏ code không dùng (tree-shaking)
@@ -1075,7 +1076,7 @@ Các công cụ quan trọng trong frontend development:
 
 /**
  * QUY TRÌNH XÂY DỰNG DEPENDENCY GRAPH:
- * 
+ *
  * 1️⃣ Start từ Entry Point (index.js)
  * 2️⃣ Scan imports/requires trong file
  * 3️⃣ Đệ quy scan imports trong các file được import
@@ -1115,7 +1116,7 @@ import { API_URL } from './config.js';
 export async function fetchUserData() {
   const token = getToken();
   const response = await fetch(`${API_URL}/user`, {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   });
   return response.json();
 }
@@ -1163,7 +1164,7 @@ export class Chart {
 
 /**
  * 🌳 VISUAL DEPENDENCY GRAPH:
- * 
+ *
  *                  index.js (Entry)
  *                      │
  *        ┌─────────────┼─────────────┐
@@ -1179,7 +1180,7 @@ export class Chart {
  *    └───────────────────┬─────────────────┘
  *                        │
  *                  (Shared module)
- * 
+ *
  * ✅ INSIGHTS:
  * - utils.js được dùng bởi 3 modules (auth, api, dashboard, chart)
  * - config.js được dùng bởi 2 modules (auth, api)
@@ -1198,56 +1199,56 @@ const dependencyGraph = {
     dependencies: ['auth.js', 'api.js', 'dashboard.js'],
     size: 250, // bytes
     exports: [], // Entry point không export
-    imports: ['initAuth', 'fetchUserData', 'renderDashboard']
+    imports: ['initAuth', 'fetchUserData', 'renderDashboard'],
   },
-  
+
   'auth.js': {
     path: '/src/auth.js',
     dependencies: ['utils.js', 'config.js'],
     size: 180,
     exports: ['initAuth'],
-    imports: ['setToken', 'getToken', 'API_URL']
+    imports: ['setToken', 'getToken', 'API_URL'],
   },
-  
+
   'api.js': {
     path: '/src/api.js',
     dependencies: ['utils.js', 'config.js'],
     size: 200,
     exports: ['fetchUserData'],
-    imports: ['getToken', 'API_URL']
+    imports: ['getToken', 'API_URL'],
   },
-  
+
   'dashboard.js': {
     path: '/src/dashboard.js',
     dependencies: ['utils.js', 'chart.js'],
     size: 150,
     exports: ['renderDashboard'],
-    imports: ['formatDate', 'Chart']
+    imports: ['formatDate', 'Chart'],
   },
-  
+
   'utils.js': {
     path: '/src/utils.js',
     dependencies: [], // Leaf node - không depend vào file nào
     size: 120,
     exports: ['setToken', 'getToken', 'formatDate'],
-    imports: []
+    imports: [],
   },
-  
+
   'config.js': {
     path: '/src/config.js',
     dependencies: [], // Leaf node
     size: 50,
     exports: ['API_URL'],
-    imports: []
+    imports: [],
   },
-  
+
   'chart.js': {
     path: '/src/chart.js',
     dependencies: ['utils.js'],
     size: 300,
     exports: ['Chart'],
-    imports: ['formatDate']
-  }
+    imports: ['formatDate'],
+  },
 };
 
 // ===================================================
@@ -1278,7 +1279,7 @@ export function funcB() {
 
 /**
  * 🔍 CIRCULAR DEPENDENCY DETECTION ALGORITHM:
- * 
+ *
  * 1. Dùng DFS (Depth-First Search) để traverse graph
  * 2. Track visited nodes
  * 3. Nếu visit lại node đang trong stack → Circular!
@@ -1293,7 +1294,7 @@ function detectCircularDependency(graph, startNode) {
       // ❌ Circular dependency detected!
       throw new Error(`Circular dependency: ${[...stack, node].join(' → ')}`);
     }
-    
+
     if (visited.has(node)) {
       return; // Already processed
     }
@@ -1327,11 +1328,11 @@ try {
 
 /**
  * 🎯 TOPOLOGICAL SORT (Sắp Xếp Topo):
- * 
+ *
  * Xác định thứ tự bundle sao cho:
  * - Dependencies được load TRƯỚC modules phụ thuộc vào nó
  * - Không vi phạm dependencies
- * 
+ *
  * Algorithm:
  * 1. Tìm nodes không có dependencies (leaf nodes)
  * 2. Add vào bundle
@@ -1342,24 +1343,24 @@ try {
 function topologicalSort(graph) {
   const result = [];
   const visited = new Set();
-  
+
   function visit(node) {
     if (visited.has(node)) return;
-    
+
     visited.add(node);
-    
+
     // Visit dependencies first (post-order traversal)
     const deps = graph[node]?.dependencies || [];
     for (const dep of deps) {
       visit(dep);
     }
-    
+
     result.push(node);
   }
-  
+
   // Start from entry point
   visit('index.js');
-  
+
   return result;
 }
 
@@ -1369,13 +1370,13 @@ console.log('📦 Bundle order:', bundleOrder);
 
 /**
  * 💡 GIẢI THÍCH:
- * 
+ *
  * 1. config.js, utils.js → Leaf nodes (không depend gì) → Bundle trước
  * 2. auth.js, api.js → Depend vào config.js, utils.js → Bundle sau
  * 3. chart.js → Depend vào utils.js → Bundle sau
  * 4. dashboard.js → Depend vào utils.js, chart.js → Bundle sau
  * 5. index.js → Entry point, depend vào tất cả → Bundle cuối
- * 
+ *
  * ✅ Đảm bảo: Khi index.js execute, tất cả dependencies đã loaded!
  */
 
@@ -1391,11 +1392,11 @@ console.log('📦 Bundle order:', bundleOrder);
 
 function analyzeUsedExports(graph) {
   const usedExports = new Map();
-  
+
   // Scan tất cả imports
   for (const [moduleName, moduleInfo] of Object.entries(graph)) {
     const imports = moduleInfo.imports;
-    
+
     for (const importName of imports) {
       // Tìm module export importName này
       for (const [depModule, depInfo] of Object.entries(graph)) {
@@ -1408,7 +1409,7 @@ function analyzeUsedExports(graph) {
       }
     }
   }
-  
+
   return usedExports;
 }
 
@@ -1418,10 +1419,12 @@ const usedExports = analyzeUsedExports(dependencyGraph);
 for (const [moduleName, moduleInfo] of Object.entries(dependencyGraph)) {
   const allExports = moduleInfo.exports;
   const used = usedExports.get(moduleName) || new Set();
-  const unused = allExports.filter(exp => !used.has(exp));
-  
+  const unused = allExports.filter((exp) => !used.has(exp));
+
   if (unused.length > 0) {
-    console.log(`🌲 ${moduleName}: Remove unused exports: ${unused.join(', ')}`);
+    console.log(
+      `🌲 ${moduleName}: Remove unused exports: ${unused.join(', ')}`
+    );
   }
 }
 
@@ -1435,7 +1438,7 @@ for (const [moduleName, moduleInfo] of Object.entries(dependencyGraph)) {
 
 /**
  * 📊 WEBPACK BUNDLE ANALYZER
- * 
+ *
  * Visualize dependency graph & bundle sizes
  */
 
@@ -1448,13 +1451,13 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 module.exports = {
   plugins: [
     new BundleAnalyzerPlugin({
-      analyzerMode: 'static',      // Generate HTML report
+      analyzerMode: 'static', // Generate HTML report
       reportFilename: 'bundle-report.html',
-      openAnalyzer: true,          // Auto-open in browser
-      generateStatsFile: true,     // Generate stats.json
-      statsFilename: 'bundle-stats.json'
-    })
-  ]
+      openAnalyzer: true, // Auto-open in browser
+      generateStatsFile: true, // Generate stats.json
+      statsFilename: 'bundle-stats.json',
+    }),
+  ],
 };
 
 // Run build
@@ -1476,12 +1479,12 @@ import { visualizer } from 'rollup-plugin-visualizer';
 export default {
   plugins: [
     visualizer({
-      open: true,                  // Auto-open report
-      gzipSize: true,              // Show gzip sizes
-      brotliSize: true,            // Show brotli sizes
-      filename: 'bundle-analysis.html'
-    })
-  ]
+      open: true, // Auto-open report
+      gzipSize: true, // Show gzip sizes
+      brotliSize: true, // Show brotli sizes
+      filename: 'bundle-analysis.html',
+    }),
+  ],
 };
 
 /**
@@ -1504,23 +1507,23 @@ export default {
 
 /**
  * ✅ DO (NÊN):
- * 
+ *
  * 1. Tránh circular dependencies
  *    - Refactor code để break cycles
  *    - Dùng dependency injection thay vì direct imports
- * 
+ *
  * 2. Minimize dependencies
  *    - Mỗi module nên có ít dependencies nhất có thể
  *    - Tách large modules thành smaller, focused modules
- * 
+ *
  * 3. Shared modules cho common code
  *    - utils.js, config.js → Shared by many modules
  *    - Avoid code duplication
- * 
+ *
  * 4. Layer architecture
  *    - UI Layer → Business Logic Layer → Data Layer
  *    - Dependencies flow ONE DIRECTION (top → bottom)
- * 
+ *
  * 5. Analyze bundle regularly
  *    - Run bundle analyzer mỗi sprint
  *    - Track bundle size over time
@@ -1529,21 +1532,21 @@ export default {
 
 /**
  * ❌ DON'T (KHÔNG NÊN):
- * 
+ *
  * 1. Circular dependencies
  *    moduleA → moduleB → moduleA ❌
- * 
+ *
  * 2. Deep dependency chains
  *    A → B → C → D → E → F (quá sâu, hard to maintain)
- * 
+ *
  * 3. God modules (modules quá lớn)
  *    utils.js with 100+ functions ❌
  *    → Tách thành utils/math.js, utils/string.js, utils/date.js
- * 
+ *
  * 4. Barrel exports abuse
  *    index.ts export tất cả → Bundle size lớn
  *    → Import trực tiếp từ specific files
- * 
+ *
  * 5. Unused dependencies
  *    Install library nhưng không dùng → Tăng node_modules size
  *    → Regularly run `npm prune`, `depcheck`
@@ -1555,7 +1558,7 @@ export default {
 
 /**
  * 📊 TRADING APP STRUCTURE:
- * 
+ *
  *                        index.tsx (Entry)
  *                             │
  *          ┌──────────────────┼──────────────────┐
@@ -1584,7 +1587,7 @@ export default {
  *              ├─ format-currency.ts
  *              ├─ calculate-profit.ts
  *              └─ validate-order.ts
- * 
+ *
  * ✅ INSIGHTS:
  * - utils/ → Shared by all components (high reusability)
  * - api-client.ts → Shared by all API modules
@@ -1599,27 +1602,27 @@ export default {
 
 /**
  * 🎯 KEY METRICS TO TRACK:
- * 
+ *
  * 1. Module Count
  *    - Total modules in project
  *    - Trend: Should grow linearly with features
- * 
+ *
  * 2. Average Dependencies per Module
  *    - Ideal: 2-5 dependencies per module
  *    - Warning: >10 dependencies → Module too coupled
- * 
+ *
  * 3. Max Dependency Depth
  *    - Ideal: <5 levels deep
  *    - Warning: >7 levels → Hard to maintain
- * 
+ *
  * 4. Circular Dependencies
  *    - Ideal: 0
  *    - Warning: Any circular dependency → Refactor needed
- * 
+ *
  * 5. Shared Modules
  *    - Track most-used modules (utils, config, api-client)
  *    - Optimize these first (high impact)
- * 
+ *
  * 6. Bundle Size by Module
  *    - Identify largest modules
  *    - Candidates for code splitting
@@ -1634,31 +1637,31 @@ const metrics = {
   topSharedModules: [
     { name: 'utils/format-currency.ts', usedBy: 12 },
     { name: 'api-client.ts', usedBy: 8 },
-    { name: 'theme-config.ts', usedBy: 6 }
+    { name: 'theme-config.ts', usedBy: 6 },
   ],
   largestModules: [
     { name: 'StockChart.tsx', size: 45000 },
     { name: 'OrderForm.tsx', size: 38000 },
-    { name: 'PortfolioTable.tsx', size: 32000 }
-  ]
+    { name: 'PortfolioTable.tsx', size: 32000 },
+  ],
 };
 
 console.log('📊 Dependency Graph Metrics:', metrics);
 
 /**
  * 💡 ACTIONABLE INSIGHTS:
- * 
+ *
  * 1. utils/format-currency.ts used by 12 modules
  *    → Optimize this function (high impact)
  *    → Consider memoization
- * 
+ *
  * 2. StockChart.tsx is 45KB
  *    → Candidate for code splitting (lazy load)
  *    → Consider using lightweight chart library
- * 
+ *
  * 3. avgDependenciesPerModule: 3.2 ✅
  *    → Good! Modules are well-decoupled
- * 
+ *
  * 4. circularDependencies: 0 ✅
  *    → Excellent! Clean architecture
  */
@@ -1671,6 +1674,7 @@ console.log('📊 Dependency Graph Metrics:', metrics);
 #### **💡 Caching Là Gì?**
 
 **Caching** là kỹ thuật **lưu trữ tạm thời** data/assets để **tái sử dụng** mà không cần fetch lại từ server. Trong frontend, caching giúp:
+
 - Giảm network requests → Nhanh hơn
 - Giảm server load → Tiết kiệm bandwidth
 - Offline support → PWA capabilities
@@ -1695,7 +1699,7 @@ console.log('📊 Dependency Graph Metrics:', metrics);
 
 /**
  * 🔐 CACHE-CONTROL HEADERS
- * 
+ *
  * Directives:
  * - max-age=<seconds>: Cache thời gian tối đa
  * - no-cache: Revalidate với server trước khi dùng
@@ -1751,7 +1755,7 @@ server {
 
 /**
  * 📋 CACHE FIRST (Cache trước, Network sau)
- * 
+ *
  * Use case: Static assets (JS, CSS, images)
  * Flow:
  * 1. Check cache → Có → Return từ cache
@@ -1784,7 +1788,7 @@ self.addEventListener('fetch', (event) => {
 
 /**
  * 🌐 NETWORK FIRST (Network trước, Cache fallback)
- * 
+ *
  * Use case: API data, dynamic content
  * Flow:
  * 1. Fetch từ network → Success → Update cache & return
@@ -1811,7 +1815,7 @@ self.addEventListener('fetch', (event) => {
 
 /**
  * 🔄 STALE WHILE REVALIDATE
- * 
+ *
  * Use case: Data cần fresh nhưng chấp nhận stale (user profile, settings)
  * Flow:
  * 1. Return từ cache ngay lập tức (stale data)
@@ -1841,7 +1845,7 @@ self.addEventListener('fetch', (event) => {
 
 /**
  * 📡 NETWORK ONLY (Không cache)
- * 
+ *
  * Use case: Sensitive data (payment, private info)
  * Flow:
  * 1. Always fetch từ network
@@ -1857,7 +1861,7 @@ self.addEventListener('fetch', (event) => {
 
 /**
  * 💾 CACHE ONLY (Offline-first)
- * 
+ *
  * Use case: PWA app shell, critical assets
  * Flow:
  * 1. Only use cache
@@ -1877,7 +1881,7 @@ self.addEventListener('fetch', (event) => {
 
 /**
  * 📱 PWA CACHING STRATEGIES
- * 
+ *
  * Service Worker = Proxy giữa browser và network
  * → Intercept requests và control caching
  */
@@ -1950,22 +1954,22 @@ self.addEventListener('fetch', (event) => {
   if (request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(networkFirst(request, STATIC_CACHE));
   }
-  
+
   // 📦 Static assets (JS, CSS): Cache first
   else if (url.pathname.match(/\.(js|css)$/)) {
     event.respondWith(cacheFirst(request, STATIC_CACHE));
   }
-  
+
   // 🖼️ Images: Cache first với fallback
   else if (url.pathname.match(/\.(png|jpg|jpeg|gif|svg|webp)$/)) {
     event.respondWith(cacheFirst(request, IMAGE_CACHE));
   }
-  
+
   // 📡 API: Stale while revalidate
   else if (url.pathname.startsWith('/api/')) {
     event.respondWith(staleWhileRevalidate(request, API_CACHE));
   }
-  
+
   // 🌐 Default: Network first
   else {
     event.respondWith(networkFirst(request, STATIC_CACHE));
@@ -2001,15 +2005,24 @@ async function networkFirst(request, cacheName) {
 }
 
 async function staleWhileRevalidate(request, cacheName) {
+  // 💡 Stale-While-Revalidate: Trả về cache ngay, fetch mới ở background
   const cached = await caches.match(request);
-  
+  //    ↑
+  //    💡 Kiểm tra cache trước → Trả về ngay nếu có (dù có thể cũ)
+
   const fetchPromise = fetch(request).then((response) => {
+    // 💡 Fetch dữ liệu mới từ network
     const cache = caches.open(cacheName);
+    //    💡 Mở cache storage
     cache.then((c) => c.put(request, response.clone()));
+    //    💡 Lưu response mới vào cache (clone vì response chỉ đọc 1 lần)
     return response;
   });
 
   return cached || fetchPromise;
+  //    ↑
+  //    💡 Trả về cache ngay (nếu có) HOẶC đợi fetch mới
+  //    💡 UX: User thấy data ngay, data mới được update ở background
 }
 
 // ===================================================
@@ -2018,58 +2031,81 @@ async function staleWhileRevalidate(request, cacheName) {
 
 /**
  * 💾 IN-MEMORY CACHING
- * 
+ *
  * Cache trong RAM (JavaScript variables)
  * → Cực nhanh nhưng mất khi refresh page
  */
 
 // Simple memory cache implementation
+// 💡 Memory Cache: Cache trong RAM (JavaScript Map)
+// 💡 Ưu điểm: Cực nhanh (O(1) lookup)
+// 💡 Nhược điểm: Mất khi refresh page (không persistent)
 class MemoryCache {
   private cache = new Map<string, { data: any; expiry: number }>();
+  //    ↑
+  //    💡 Map lưu key-value với expiry time
 
   set(key: string, data: any, ttl = 60000) {
-    // ttl = time to live (ms)
+    // ttl = time to live (ms) - Thời gian sống của cache
+    // 💡 TTL mặc định: 60 giây (60000ms)
     const expiry = Date.now() + ttl;
+    //    💡 Tính thời điểm hết hạn: Thời gian hiện tại + TTL
     this.cache.set(key, { data, expiry });
+    //    💡 Lưu data và expiry time vào cache
   }
 
   get(key: string) {
     const item = this.cache.get(key);
+    //    💡 Lấy item từ cache
     if (!item) return null;
+    //    💡 Nếu không có → Trả về null
 
-    // Check expiry
+    // Check expiry - Kiểm tra hết hạn
     if (Date.now() > item.expiry) {
+      // 💡 Nếu thời gian hiện tại > thời điểm hết hạn
       this.cache.delete(key); // Expired → Remove
+      //    💡 Xóa item đã hết hạn khỏi cache
       return null;
     }
 
     return item.data;
+    // 💡 Trả về data nếu chưa hết hạn
   }
 
   clear() {
     this.cache.clear();
+    // 💡 Xóa toàn bộ cache
   }
 }
 
-// Usage
+// Usage - Cách sử dụng Memory Cache
 const apiCache = new MemoryCache();
+// 💡 Tạo instance của MemoryCache
 
 async function fetchUserData(userId: string) {
-  // Check cache first
+  // Check cache first - Kiểm tra cache trước
   const cached = apiCache.get(`user-${userId}`);
+  //    💡 Tạo key: "user-123" (userId = "123")
+  //    💡 Kiểm tra xem đã có trong cache chưa
   if (cached) {
     console.log('✅ From memory cache');
+    // 💡 Nếu có trong cache → Trả về ngay (không cần fetch API)
     return cached;
   }
 
-  // Fetch từ API
+  // Fetch từ API - Lấy dữ liệu từ server
   const response = await fetch(`/api/users/${userId}`);
+  //    💡 Gọi API để lấy dữ liệu user
   const data = await response.json();
+  //    💡 Parse JSON response
 
-  // Save to cache (TTL: 5 phút)
+  // Save to cache (TTL: 5 phút) - Lưu vào cache
   apiCache.set(`user-${userId}`, data, 5 * 60 * 1000);
+  //    💡 Lưu data vào cache với TTL = 5 phút (5 * 60 * 1000 ms)
+  //    💡 Lần sau gọi sẽ lấy từ cache (nhanh hơn!)
 
   return data;
+  // 💡 Trả về data
 }
 
 // ===================================================
@@ -2078,117 +2114,170 @@ async function fetchUserData(userId: string) {
 
 /**
  * 💾 PERSISTENT CACHE
- * 
+ *
  * Cache trong disk (persistent across page reloads)
  * - LocalStorage: 5-10 MB, sync API (slow)
  * - IndexedDB: Unlimited, async API (fast)
  */
 
 // LocalStorage Cache (simple key-value)
+// 💡 LocalStorage: Persistent cache trong browser (5-10 MB limit)
+// 💡 Ưu điểm: Persistent (giữ sau khi refresh), đơn giản
+// 💡 Nhược điểm: Sync API (blocking), giới hạn 5-10 MB
 class LocalStorageCache {
   set(key: string, data: any, ttl = 3600000) {
+    // 💡 TTL mặc định: 1 giờ (3600000ms)
     const item = {
-      data,
-      expiry: Date.now() + ttl
+      data, // 💡 Dữ liệu cần cache
+      expiry: Date.now() + ttl // 💡 Thời điểm hết hạn
     };
     localStorage.setItem(key, JSON.stringify(item));
+    //    💡 Lưu vào LocalStorage (phải stringify vì chỉ lưu string)
   }
 
   get(key: string) {
     const itemStr = localStorage.getItem(key);
+    //    💡 Lấy string từ LocalStorage
     if (!itemStr) return null;
+    //    💡 Nếu không có → Trả về null
 
     const item = JSON.parse(itemStr);
+    //    💡 Parse string về object
 
-    // Check expiry
+    // Check expiry - Kiểm tra hết hạn
     if (Date.now() > item.expiry) {
+      // 💡 Nếu đã hết hạn
       localStorage.removeItem(key);
+      //    💡 Xóa item khỏi LocalStorage
       return null;
     }
 
     return item.data;
+    // 💡 Trả về data nếu chưa hết hạn
   }
 }
 
 // IndexedDB Cache (for large data)
+// 💡 IndexedDB: Persistent database trong browser (unlimited size)
+// 💡 Ưu điểm: Async API (non-blocking), không giới hạn size, structured data
+// 💡 Nhược điểm: API phức tạp hơn LocalStorage
 class IndexedDBCache {
-  private dbName = 'app-cache';
-  private storeName = 'api-responses';
+  private dbName = 'app-cache'; // 💡 Tên database
+  private storeName = 'api-responses'; // 💡 Tên object store (table)
 
   async open() {
+    // 💡 Mở kết nối đến IndexedDB database
     return new Promise<IDBDatabase>((resolve, reject) => {
       const request = indexedDB.open(this.dbName, 1);
+      //    💡 Mở database với version 1 (tăng version khi schema thay đổi)
 
       request.onerror = () => reject(request.error);
+      //    💡 Xử lý lỗi: Reject promise nếu có lỗi
       request.onsuccess = () => resolve(request.result);
+      //    💡 Thành công: Resolve với database instance
 
       request.onupgradeneeded = (event) => {
+        // 💡 Chạy khi database chưa tồn tại hoặc version mới
         const db = (event.target as IDBOpenDBRequest).result;
+        //    💡 Lấy database instance
         if (!db.objectStoreNames.contains(this.storeName)) {
+          // 💡 Kiểm tra object store đã tồn tại chưa
           const store = db.createObjectStore(this.storeName, { keyPath: 'key' });
+          //    💡 Tạo object store với keyPath là 'key' (primary key)
           store.createIndex('expiry', 'expiry', { unique: false });
+          //    💡 Tạo index trên field 'expiry' để query nhanh hơn
         }
       };
     });
   }
 
   async set(key: string, data: any, ttl = 3600000) {
+    // 💡 Lưu data vào IndexedDB với TTL mặc định 1 giờ
     const db = await this.open();
+    //    💡 Mở database
     const transaction = db.transaction([this.storeName], 'readwrite');
+    //    💡 Tạo transaction với mode 'readwrite' (cho phép ghi)
     const store = transaction.objectStore(this.storeName);
+    //    💡 Lấy object store từ transaction
 
     const item = {
-      key,
-      data,
-      expiry: Date.now() + ttl
+      key, // 💡 Primary key
+      data, // 💡 Dữ liệu cần cache
+      expiry: Date.now() + ttl // 💡 Thời điểm hết hạn
     };
 
     store.put(item);
+    // 💡 Lưu item vào store (put = insert hoặc update nếu key đã tồn tại)
   }
 
   async get(key: string) {
+    // 💡 Lấy data từ IndexedDB
     const db = await this.open();
+    //    💡 Mở database
     const transaction = db.transaction([this.storeName], 'readonly');
+    //    💡 Tạo transaction với mode 'readonly' (chỉ đọc, nhanh hơn)
     const store = transaction.objectStore(this.storeName);
+    //    💡 Lấy object store
 
     return new Promise((resolve) => {
       const request = store.get(key);
+      //    💡 Query item theo key
       request.onsuccess = () => {
         const item = request.result;
+        //    💡 Lấy kết quả từ request
         if (!item) return resolve(null);
+        //    💡 Nếu không có → Trả về null
 
-        // Check expiry
+        // Check expiry - Kiểm tra hết hạn
         if (Date.now() > item.expiry) {
+          // 💡 Nếu đã hết hạn
           this.delete(key);
+          //    💡 Xóa item khỏi database
           return resolve(null);
         }
 
         resolve(item.data);
+        // 💡 Trả về data nếu chưa hết hạn
       };
     });
   }
 
   async delete(key: string) {
+    // 💡 Xóa item khỏi IndexedDB
     const db = await this.open();
+    //    💡 Mở database
     const transaction = db.transaction([this.storeName], 'readwrite');
+    //    💡 Tạo transaction với mode 'readwrite' (cần để xóa)
     const store = transaction.objectStore(this.storeName);
+    //    💡 Lấy object store
     store.delete(key);
+    // 💡 Xóa item theo key
   }
 }
 
-// Usage
+// Usage - Cách sử dụng IndexedDB Cache
 const idbCache = new IndexedDBCache();
+// 💡 Tạo instance của IndexedDBCache (cho dữ liệu lớn)
 
 async function fetchLargeData() {
+  // 💡 Hàm lấy dữ liệu lớn (VD: 10MB dataset)
   const cached = await idbCache.get('large-dataset');
+  //    💡 Kiểm tra cache trước (async vì IndexedDB là async API)
   if (cached) return cached;
+  //    💡 Nếu có trong cache → Trả về ngay (tiết kiệm bandwidth!)
 
+  // 💡 Nếu không có trong cache → Fetch từ API
   const response = await fetch('/api/large-dataset');
+  //    💡 Gọi API để lấy dataset lớn
   const data = await response.json();
+  //    💡 Parse JSON response
 
   await idbCache.set('large-dataset', data, 24 * 60 * 60 * 1000); // 24h
+  //    💡 Lưu vào IndexedDB với TTL = 24 giờ
+  //    💡 IndexedDB phù hợp cho dữ liệu lớn (không giới hạn size như LocalStorage)
 
   return data;
+  // 💡 Trả về data
 }
 ```
 
@@ -3298,7 +3387,7 @@ export default function Analytics() {
 
 /**
  * 🎯 MỤC ĐÍCH: Developer Experience (DX)
- * 
+ *
  * ✅ FEATURES:
  * - Fast rebuild (nhanh như chớp)
  * - Source maps (debug dễ dàng)
@@ -3306,7 +3395,7 @@ export default function Analytics() {
  * - Detailed error messages (lỗi chi tiết)
  * - No minification (code dễ đọc)
  * - No optimization (build nhanh)
- * 
+ *
  * ❌ KHÔNG DÙNG:
  * - Minification (giữ code readable)
  * - Tree-shaking (skip để build nhanh)
@@ -3341,10 +3430,10 @@ module.exports = {
     port: 3000,
     open: true, // Auto-open browser
     historyApiFallback: true, // SPA routing support
-    
+
     // 🔄 Watch files và auto-reload
     watchFiles: ['src/**/*'],
-    
+
     // ⚡ Fast refresh (React)
     liveReload: true
   },
@@ -3353,7 +3442,7 @@ module.exports = {
   plugins: [
     // ❌ NO minification plugins
     // ❌ NO image optimization
-    
+
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development'),
       __DEV__: true // Enable development-only code
@@ -3395,7 +3484,7 @@ export default defineConfig({
     port: 3000,
     open: true,
     hmr: true, // Hot Module Replacement
-    
+
     // 🚀 Vite dùng esbuild (Go) để transpile → 100x nhanh hơn Webpack
   },
 
@@ -3417,7 +3506,7 @@ export default defineConfig({
 
 /**
  * 🎯 MỤC ĐÍCH: Performance & Size Optimization
- * 
+ *
  * ✅ FEATURES:
  * - Minification (code nhỏ nhất)
  * - Tree-shaking (loại dead code)
@@ -3427,7 +3516,7 @@ export default defineConfig({
  * - Gzip/Brotli compression
  * - Remove console.log, debugger
  * - Source maps (separate .map files hoặc hidden)
- * 
+ *
  * ❌ KHÔNG DÙNG:
  * - Detailed error messages (compact errors)
  * - Development-only code (__DEV__ blocks)
@@ -3463,7 +3552,7 @@ module.exports = {
         },
         extractComments: false // Không tạo .LICENSE.txt files
       }),
-      
+
       // 🎨 CSS minification
       new CssMinimizerPlugin()
     ],
@@ -3522,7 +3611,7 @@ module.exports = {
       threshold: 10240, // Only compress files > 10KB
       minRatio: 0.8
     }),
-    
+
     new CompressionPlugin({
       algorithm: 'brotliCompress',
       test: /\.(js|css|html|svg)$/,
@@ -3586,7 +3675,7 @@ module.exports = {
     chunks: false,
     chunkModules: false,
     reasons: false,
-    
+
     // Show warnings và errors only
     warnings: true,
     errors: true,
@@ -3616,7 +3705,7 @@ export default defineConfig({
   build: {
     // 🗜️ Minification
     minify: 'esbuild', // esbuild (fast) hoặc 'terser' (smaller)
-    
+
     // 🌲 Tree-shaking
     rollupOptions: {
       output: {
@@ -3633,13 +3722,13 @@ export default defineConfig({
 
     // 📦 Output với content hash
     assetsInlineLimit: 4096, // Inline assets < 4KB
-    
+
     // ⚡ Performance
     chunkSizeWarningLimit: 1000, // Warning nếu chunk > 1MB
-    
+
     // 🎯 Target browsers
     target: 'es2015', // Modern browsers
-    
+
     // 📊 Report size
     reportCompressedSize: true
   },
@@ -3708,7 +3797,7 @@ export default defineConfig({
 if (__DEV__) {
   // ✅ Chỉ chạy trong development
   console.log('🔧 Development mode enabled');
-  
+
   // Performance monitoring
   if (typeof window !== 'undefined') {
     window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.__REACT_DEVTOOLS_GLOBAL_HOOK__ || {};
@@ -3718,13 +3807,13 @@ if (__DEV__) {
 // Production-only code
 if (process.env.NODE_ENV === 'production') {
   // ✅ Chỉ chạy trong production
-  
+
   // Sentry error tracking
   Sentry.init({
     dsn: 'https://xxx@sentry.io/xxx',
     environment: 'production'
   });
-  
+
   // Google Analytics
   gtag('config', 'GA-TRACKING-ID');
 }
@@ -3771,34 +3860,34 @@ if (ENABLE_MOCKS) {
     // 🔧 Development
     "dev": "vite",                              // Dev server với HMR
     "dev:debug": "vite --debug",                // Dev với debug logs
-    
+
     // 🏭 Production
     "build": "vite build",                      // Production build
     "build:analyze": "vite build --mode analyze", // Build + bundle analyzer
     "build:staging": "vite build --mode staging", // Staging build
-    
+
     // 🧪 Testing builds
     "build:test": "cross-env NODE_ENV=test vite build",
-    
+
     // 📊 Preview production build
     "preview": "vite preview",                  // Serve production build locally
-    
+
     // 🔍 Type checking
     "type-check": "tsc --noEmit",               // Check types (không emit files)
-    
+
     // 📏 Linting
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    
+
     // 🎨 Formatting
     "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
-    
+
     // ✅ Pre-build checks
     "prebuild": "npm run type-check && npm run lint",
-    
+
     // 🔬 Bundle size check
     "size": "size-limit",
-    
+
     // 🧹 Clean
     "clean": "rimraf dist"
   }
@@ -3810,7 +3899,7 @@ if (ENABLE_MOCKS) {
 
 /**
  * 🚀 TIPS ĐỂ BUILD NHANH HƠN:
- * 
+ *
  * 1️⃣ USE CACHE:
  */
 
@@ -3882,7 +3971,7 @@ export default {
   build: {
     minify: 'esbuild', // ✅ esbuild (Go) = 100x nhanh hơn Terser
   },
-  
+
   optimizeDeps: {
     esbuildOptions: {
       target: 'es2020' // Modern browsers only
@@ -3910,6 +3999,7 @@ module.exports = {
 #### **💡 Runtime Performance - Tối Ưu Khi Chạy**
 
 **Runtime Performance** là hiệu năng khi app đang chạy trong browser. Khác với build optimization (tối ưu khi build), runtime optimization tập trung vào:
+
 - JavaScript execution speed
 - Rendering performance
 - Memory usage
@@ -3922,7 +4012,7 @@ module.exports = {
 
 /**
  * 1️⃣ AVOID BLOCKING THE MAIN THREAD
- * 
+ *
  * JavaScript là single-threaded → Heavy computation block UI
  */
 
@@ -3943,11 +4033,11 @@ const result = processLargeData(Array(10_000_000).fill(100));
 self.onmessage = (e) => {
   const data = e.data;
   let result = 0;
-  
+
   for (let i = 0; i < data.length; i++) {
     result += Math.sqrt(data[i]) * Math.log(data[i]);
   }
-  
+
   self.postMessage(result);
 };
 
@@ -3980,7 +4070,7 @@ function debounce<T extends (...args: any[]) => any>(
   delay: number
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
@@ -4001,7 +4091,7 @@ function throttle<T extends (...args: any[]) => any>(
   limit: number
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
-  
+
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
@@ -4033,14 +4123,14 @@ console.log(fibonacci(40)); // Takes 2 seconds! ❌
 // ✅ GOOD: Memoization (cache results)
 function memoize<T extends (...args: any[]) => any>(func: T): T {
   const cache = new Map<string, ReturnType<T>>();
-  
+
   return ((...args: Parameters<T>) => {
     const key = JSON.stringify(args);
-    
+
     if (cache.has(key)) {
       return cache.get(key)!; // ✅ Return from cache
     }
-    
+
     const result = func(...args);
     cache.set(key, result);
     return result;
@@ -4060,9 +4150,9 @@ console.log(fibonacciMemo(40)); // Takes 0.1ms! ✅
 
 // ❌ BAD: Tính TẤT CẢ ngay lập tức
 const allData = [1, 2, 3, /* ...1 million items */ 1_000_000]
-  .map(x => x * 2)        // ❌ Process 1M items
-  .filter(x => x > 100)   // ❌ Filter 1M items
-  .slice(0, 10);          // Chỉ lấy 10 items → Lãng phí! ❌
+  .map((x) => x * 2) // ❌ Process 1M items
+  .filter((x) => x > 100) // ❌ Filter 1M items
+  .slice(0, 10); // Chỉ lấy 10 items → Lãng phí! ❌
 
 // ✅ GOOD: Generator (Lazy evaluation)
 function* lazyMap<T, U>(
@@ -4093,8 +4183,8 @@ function* range(start: number, end: number): Generator<number> {
 
 // ✅ Chỉ process 10 items cần thiết!
 const lazyData = lazyFilter(
-  lazyMap(range(1, 1_000_000), x => x * 2),
-  x => x > 100
+  lazyMap(range(1, 1_000_000), (x) => x * 2),
+  (x) => x > 100
 );
 
 // Take first 10
@@ -4111,13 +4201,13 @@ for (const item of lazyData) {
 // ❌ BAD: Render 10,000 items (DOM HUGE!)
 function renderList(items: string[]) {
   const ul = document.createElement('ul');
-  
-  items.forEach(item => {
+
+  items.forEach((item) => {
     const li = document.createElement('li');
     li.textContent = item;
     ul.appendChild(li); // ❌ 10,000 DOM nodes! Slow!
   });
-  
+
   document.body.appendChild(ul);
 }
 
@@ -4130,14 +4220,14 @@ import { FixedSizeList } from 'react-window';
 function VirtualList({ items }: { items: string[] }) {
   return (
     <FixedSizeList
-      height={600}        // Container height
-      itemCount={items.length}  // Total items: 10,000
-      itemSize={35}       // Each item height
+      height={600} // Container height
+      itemCount={items.length} // Total items: 10,000
+      itemSize={35} // Each item height
       width="100%"
     >
       {({ index, style }) => (
         <div style={style}>
-          {items[index]}  {/* ✅ Only render ~20 visible items */}
+          {items[index]} {/* ✅ Only render ~20 visible items */}
         </div>
       )}
     </FixedSizeList>
@@ -4181,9 +4271,9 @@ class ComponentFixed {
 function MyComponent() {
   useEffect(() => {
     const handleResize = () => console.log('Resizing...');
-    
+
     window.addEventListener('resize', handleResize);
-    
+
     return () => {
       window.removeEventListener('resize', handleResize); // ✅ Cleanup!
     };
@@ -4198,7 +4288,7 @@ function MyComponent() {
 function animate() {
   element.style.left = position + 'px';
   position += 1;
-  
+
   setTimeout(animate, 16); // ❌ Không sync với browser refresh rate
 }
 
@@ -4206,7 +4296,7 @@ function animate() {
 function animateRAF() {
   element.style.left = position + 'px';
   position += 1;
-  
+
   requestAnimationFrame(animateRAF); // ✅ Sync với browser (smooth!)
 }
 
@@ -4222,7 +4312,7 @@ requestAnimationFrame(animateRAF);
 
 // ❌ BAD: Read-Write-Read-Write (forced reflows!)
 function updateElements(elements: HTMLElement[]) {
-  elements.forEach(el => {
+  elements.forEach((el) => {
     const height = el.offsetHeight; // ❌ READ (trigger reflow)
     el.style.height = height + 10 + 'px'; // ❌ WRITE (invalidate layout)
     // → Browser phải reflow mỗi iteration! Slow!
@@ -4232,13 +4322,13 @@ function updateElements(elements: HTMLElement[]) {
 // ✅ GOOD: Batch reads, then batch writes
 function updateElementsOptimized(elements: HTMLElement[]) {
   // Phase 1: Read tất cả (1 reflow duy nhất)
-  const heights = elements.map(el => el.offsetHeight);
-  
+  const heights = elements.map((el) => el.offsetHeight);
+
   // Phase 2: Write tất cả (1 repaint duy nhất)
   elements.forEach((el, i) => {
     el.style.height = heights[i] + 10 + 'px';
   });
-  
+
   // ✅ Chỉ 1 reflow + 1 repaint (thay vì N reflows!)
 }
 
@@ -4263,17 +4353,21 @@ element.style.transform = 'translate(200px, 100px)'; // ✅ Composite only (GPU)
 
 // ❌ BAD: Create new object mỗi iteration
 function processData(items: any[]) {
-  items.forEach(item => {
-    const config = { /* ... */ }; // ❌ New object mỗi lần!
+  items.forEach((item) => {
+    const config = {
+      /* ... */
+    }; // ❌ New object mỗi lần!
     doSomething(item, config);
   });
 }
 
 // ✅ GOOD: Reuse object
 function processDataOptimized(items: any[]) {
-  const config = { /* ... */ }; // ✅ Create once
-  
-  items.forEach(item => {
+  const config = {
+    /* ... */
+  }; // ✅ Create once
+
+  items.forEach((item) => {
     doSomething(item, config); // Reuse config
   });
 }
@@ -4284,7 +4378,7 @@ function processDataOptimized(items: any[]) {
 
 class ObjectPool<T> {
   private pool: T[] = [];
-  
+
   constructor(
     private factory: () => T,
     private reset: (obj: T) => void,
@@ -4294,14 +4388,14 @@ class ObjectPool<T> {
       this.pool.push(factory());
     }
   }
-  
+
   acquire(): T {
     if (this.pool.length > 0) {
       return this.pool.pop()!; // ✅ Reuse from pool
     }
     return this.factory(); // Create new nếu pool empty
   }
-  
+
   release(obj: T) {
     this.reset(obj);
     this.pool.push(obj); // Return to pool
@@ -4317,7 +4411,12 @@ interface Particle {
 
 const particlePool = new ObjectPool<Particle>(
   () => ({ x: 0, y: 0, velocity: { x: 0, y: 0 } }), // Factory
-  (p) => { p.x = 0; p.y = 0; p.velocity.x = 0; p.velocity.y = 0; }, // Reset
+  (p) => {
+    p.x = 0;
+    p.y = 0;
+    p.velocity.x = 0;
+    p.velocity.y = 0;
+  }, // Reset
   100 // Initial pool size
 );
 
@@ -4346,7 +4445,7 @@ function destroyParticle(particle: Particle) {
 
 /**
  * 1️⃣ XSS (Cross-Site Scripting)
- * 
+ *
  * Attacker inject malicious script vào page
  */
 
@@ -4376,7 +4475,7 @@ function displayHTMLContent(html: string) {
 
 /**
  * 2️⃣ CSRF (Cross-Site Request Forgery)
- * 
+ *
  * Attacker trick user vào submit form từ malicious site
  */
 
@@ -4387,11 +4486,11 @@ function displayHTMLContent(html: string) {
 // Axios interceptor
 axios.interceptors.request.use((config) => {
   const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-  
+
   if (token) {
     config.headers['X-CSRF-Token'] = token; // ✅ Add CSRF token
   }
-  
+
   return config;
 });
 
@@ -4489,10 +4588,10 @@ function searchProductsSafe(query: string) {
   if (!validator.isAlphanumeric(query.replace(/\s/g, ''))) {
     throw new Error('Invalid search query');
   }
-  
+
   // Sanitize
   const sanitized = validator.escape(query); // Escape HTML
-  
+
   fetch(`/api/search?q=${encodeURIComponent(sanitized)}`); // ✅ URL encode
 }
 
@@ -4519,7 +4618,7 @@ function searchProductsSafe(query: string) {
 
 #### **💡 Monitoring & DX Tools**
 
-```typescript
+````typescript
 // ===================================================
 // 📊 MONITORING & OBSERVABILITY
 // ===================================================
@@ -4534,14 +4633,14 @@ Sentry.init({
   dsn: 'https://xxx@sentry.io/xxx',
   environment: process.env.NODE_ENV,
   release: process.env.REACT_APP_VERSION,
-  
+
   // 🎯 Performance monitoring
   tracesSampleRate: 1.0, // 100% transactions
-  
+
   // 🔍 Session replay
   replaysSessionSampleRate: 0.1, // 10% sessions
   replaysOnErrorSampleRate: 1.0, // 100% error sessions
-  
+
   // 🚫 Filter sensitive data
   beforeSend(event) {
     // Remove passwords, tokens
@@ -4573,7 +4672,7 @@ import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
 function sendToAnalytics(metric: any) {
   // Send to analytics service
   console.log(metric);
-  
+
   // Google Analytics
   gtag('event', metric.name, {
     value: Math.round(metric.value),
@@ -4613,11 +4712,11 @@ console.log('Fetch took:', measures[0].duration, 'ms');
 // Structured logging
 class Logger {
   private context: Record<string, any> = {};
-  
+
   setContext(key: string, value: any) {
     this.context[key] = value;
   }
-  
+
   log(level: 'info' | 'warn' | 'error', message: string, data?: any) {
     const log = {
       timestamp: new Date().toISOString(),
@@ -4626,10 +4725,10 @@ class Logger {
       context: this.context,
       data
     };
-    
+
     // Send to logging service
     console.log(JSON.stringify(log));
-    
+
     // Send to backend
     if (level === 'error') {
       fetch('/api/logs', {
@@ -4730,12 +4829,12 @@ npm test -- --bail --findRelatedTests
 
 /**
  * Calculate profit/loss for a trade
- * 
+ *
  * @param buyPrice - Price when bought
  * @param sellPrice - Price when sold
  * @param quantity - Number of shares
  * @returns Profit (positive) or loss (negative)
- * 
+ *
  * @example
  * ```ts
  * const profit = calculateProfit(100, 150, 10);
@@ -4793,7 +4892,7 @@ debug('User data', userData);
 
 // Run: npm run size
 // Fails CI nếu vượt limit → Force optimization!
-```
+````
 
 ---
 

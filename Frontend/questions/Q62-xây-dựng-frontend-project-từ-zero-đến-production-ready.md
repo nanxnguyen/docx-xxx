@@ -2,13 +2,13 @@
 
 ## **⭐ PHIÊN BẢN TRẢ LỜI 1 PHÚT (Cho Phỏng Vấn Nhanh)**
 
-**"Build Frontend project production-ready cần 8 giai đoạn: Setup Project → Architecture → Code Quality → Performance → Testing → CI/CD → Monitoring → Scalability.**
+**"Build Frontend project production-ready cần 8 giai đoạn: Setup Project (Thiết lập dự án) → Architecture (Kiến trúc) → Code Quality (Chất lượng code) → Performance (Hiệu suất) → Testing (Kiểm thử) → CI/CD (Tích hợp/Triển khai liên tục) → Monitoring (Giám sát) → Scalability (Khả năng mở rộng).**
 
-**Đã lead team build Banking Dashboard từ zero: Nx monorepo với 15 apps/libs, ESLint + Prettier + Husky enforce standards, Vite build optimization (3s → 0.8s), React Query + Zustand state management, Vitest + Playwright testing (85% coverage), GitHub Actions CI/CD auto deploy, Sentry monitoring errors, scalable đến 50+ developers collaboration.**
+**Đã lead team build Banking Dashboard từ zero: Nx monorepo (Monorepo Nx - Quản lý nhiều app/lib trong 1 repo) với 15 apps/libs, ESLint + Prettier + Husky enforce standards (ESLint + Prettier + Husky thực thi tiêu chuẩn), Vite build optimization (Tối ưu build Vite - 3s → 0.8s), React Query + Zustand state management (Quản lý state), Vitest + Playwright testing (Kiểm thử - 85% coverage - Độ phủ 85%), GitHub Actions CI/CD auto deploy (Tự động triển khai), Sentry monitoring errors (Giám sát lỗi), scalable đến 50+ developers collaboration (Mở rộng cho 50+ lập trình viên).**
 
-**Key principles: Clear folder structure (feature-based), Shared libraries (DRY), Automated tooling (ESLint, TypeScript strict), Performance budgets (Lighthouse CI), Modular architecture (micro-frontends ready). Result: 70% faster development, 90% fewer bugs, deploy 20 times/day.**
+**Key principles (Nguyên tắc chính): Clear folder structure (feature-based - Cấu trúc thư mục rõ ràng theo tính năng), Shared libraries (DRY - Thư viện dùng chung - Don't Repeat Yourself), Automated tooling (ESLint, TypeScript strict - Công cụ tự động), Performance budgets (Lighthouse CI - Ngân sách hiệu suất), Modular architecture (micro-frontends ready - Kiến trúc mô-đun sẵn sàng micro-frontend). Result: 70% faster development (Phát triển nhanh hơn 70%), 90% fewer bugs (Ít lỗi hơn 90%), deploy 20 times/day (Triển khai 20 lần/ngày).**
 
-**Critical: TypeScript strict mode, path aliases, absolute imports, automated code review, bundle analysis, environment variables management, comprehensive testing strategy từ đầu - không phải "sẽ làm sau"."**
+**Critical (Quan trọng): TypeScript strict mode (Chế độ nghiêm ngặt TypeScript), path aliases (Bí danh đường dẫn), absolute imports (Import tuyệt đối), automated code review (Tự động review code), bundle analysis (Phân tích bundle), environment variables management (Quản lý biến môi trường), comprehensive testing strategy từ đầu (Chiến lược kiểm thử toàn diện từ đầu) - không phải "sẽ làm sau"."**
 
 ---
 
@@ -68,24 +68,44 @@ GIAI ĐOẠN 8: SCALABILITY (Ongoing)
 
 ```bash
 # =====================================
-# TẠI SAO DÙNG NX?
+# TẠI SAO DÙNG NX? (Why use Nx?)
 # =====================================
 # ✅🏗️ Monorepo support - Quản lý multiple apps/libs trong 1 repo (tránh dependency hell)
+# Monorepo = Monorepo (Quản lý nhiều app/lib trong 1 repository - Tránh dependency hell = Địa ngục phụ thuộc)
 # ✅⚙️ Built-in code generators (nx g component, nx g library - tự động tạo boilerplate)
+# Built-in code generators = Trình tạo code tích hợp (nx g = Nx generate - Tự động tạo code mẫu)
+# boilerplate = Code mẫu (Code template - Code khởi tạo)
 # ✅📊 Dependency graph visualization (nx graph - xem quan hệ giữa apps/libs)
+# Dependency graph = Đồ thị phụ thuộc (Xem quan hệ giữa các app/lib - nx graph = Lệnh xem đồ thị)
 # ✅🎯 Affected commands - Chỉ test/build code thay đổi (nx affected:test - tiết kiệm CI time 80%)
+# Affected commands = Lệnh ảnh hưởng (Chỉ test/build code thay đổi - Tiết kiệm 80% thời gian CI)
+# CI = Continuous Integration (Tích hợp liên tục)
 # ✅💾⚡ Caching layer - Build/test nhanh hơn 10x nhờ local + remote cache (Nx Cloud)
+# Caching layer = Lớp cache (Cache cục bộ + từ xa - Nhanh hơn 10x - Nx Cloud = Dịch vụ cache của Nx)
 # ✅🔧 Task orchestration - Chạy parallel tasks với dependency resolution tự động
+# Task orchestration = Điều phối tác vụ (Chạy song song với giải quyết phụ thuộc tự động)
+# parallel = Song song (Chạy đồng thời)
+# dependency resolution = Giải quyết phụ thuộc (Tự động sắp xếp thứ tự chạy)
 # ✅📦 Plugin ecosystem - React, Angular, Next.js, Vite, Jest, Cypress, Storybook...
+# Plugin ecosystem = Hệ sinh thái plugin (Nhiều plugin hỗ trợ các framework/tool)
 
-# 🔹 Install Nx CLI globally
+# 🔹 Install Nx CLI globally (Cài đặt Nx CLI toàn cục)
 npm install -g nx@latest  # 🌐 CLI tool để run nx commands
+# CLI = Command Line Interface (Giao diện dòng lệnh - Tool chạy lệnh)
+# globally = Toàn cục (Cài đặt cho toàn hệ thống, không chỉ project)
 
-# 🔹 Create workspace với preset
+# 🔹 Create workspace với preset (Tạo workspace với mẫu có sẵn)
 npx create-nx-workspace@latest my-app \
   --preset=react-monorepo \       # 📦⚛️ React monorepo template (apps + libs)
+  # preset = Mẫu có sẵn (Template - React monorepo = Mẫu React với nhiều app/lib)
+  # template = Mẫu (Cấu trúc dự án có sẵn)
   --packageManager=pnpm \         # 📦💾 pnpm - nhanh hơn npm 2x, tiết kiệm disk space
+  # packageManager = Trình quản lý gói (pnpm = Nhanh hơn npm 2x, tiết kiệm dung lượng đĩa)
+  # npm = Node Package Manager (Trình quản lý gói Node.js)
+  # pnpm = Performant npm (npm hiệu suất cao)
   --nx-cloud=true                 # ☁️⚡ Enable remote caching (free tier 500 hours/month)
+  # nx-cloud = Dịch vụ cache từ xa của Nx (Bật cache từ xa - Miễn phí 500 giờ/tháng)
+  # remote caching = Cache từ xa (Lưu cache trên cloud - Nhiều dev dùng chung)
 
 # 🏗️📂 Structure sau khi tạo:
 # my-app/
@@ -118,38 +138,80 @@ npx create-nx-workspace@latest my-app \
 {
   "compilerOptions": {
     // ✅🔒 STRICT MODE - Bắt lỗi sớm nhất (bắt buộc cho production)
+    // Strict Mode = Chế độ nghiêm ngặt (Bắt lỗi sớm - Bắt buộc cho production)
     "strict": true, // 🔒 Enable tất cả strict checks
+    // strict = Nghiêm ngặt (Bật tất cả kiểm tra nghiêm ngặt)
     "strictNullChecks": true, // 🔒❌ Không cho null/undefined nếu không khai báo
+    // strictNullChecks = Kiểm tra null nghiêm ngặt (Không cho null/undefined nếu không khai báo)
     "strictFunctionTypes": true, // 🔒🔧 Check function parameter types chặt chẽ
+    // strictFunctionTypes = Kiểm tra kiểu hàm nghiêm ngặt (Kiểm tra kiểu tham số chặt chẽ)
     "strictBindCallApply": true, // 🔒📞 Check bind/call/apply arguments
+    // strictBindCallApply = Kiểm tra bind/call/apply nghiêm ngặt (Kiểm tra đối số)
+    // bind/call/apply = Các phương thức gọi hàm trong JavaScript
     "strictPropertyInitialization": true, // 🔒🏗️ Class properties phải init trong constructor
+    // strictPropertyInitialization = Khởi tạo thuộc tính nghiêm ngặt (Thuộc tính class phải khởi tạo trong constructor)
+    // constructor = Hàm khởi tạo (Hàm chạy khi tạo đối tượng)
     "noImplicitThis": true, // 🔒❓ Không cho 'this' kiểu any
+    // noImplicitThis = Không cho this ngầm định (Không cho 'this' có kiểu any - Phải khai báo rõ)
     "noImplicitAny": true, // 🔒❓ Không cho type any tự động (phải khai báo rõ)
+    // noImplicitAny = Không cho any ngầm định (Không cho kiểu any tự động - Phải khai báo rõ)
+    // any = Kiểu bất kỳ (Mất type safety - Không an toàn)
     "noImplicitReturns": true, // 🔒↩️ Function phải return ở tất cả code paths
+    // noImplicitReturns = Không cho return ngầm định (Function phải return ở tất cả đường dẫn code)
+    // code paths = Đường dẫn code (Các nhánh logic trong function)
     "noFallthroughCasesInSwitch": true, // 🔒🔀 Switch case phải có break hoặc return
+    // noFallthroughCasesInSwitch = Không cho rơi qua case (Switch case phải có break hoặc return)
+    // fallthrough = Rơi qua (Không có break, code chạy tiếp case sau)
     "noUncheckedIndexedAccess": true, // 🔒📋 Array/object access trả về T | undefined (safety)
+    // noUncheckedIndexedAccess = Không cho truy cập chỉ mục không kiểm tra (Array/object access trả về T | undefined - An toàn hơn)
+    // indexed access = Truy cập chỉ mục (Truy cập phần tử mảng/object bằng index)
     "noUnusedLocals": true, // 🔒🗑️ Cảnh báo biến khai báo nhưng không dùng
+    // noUnusedLocals = Không cho biến local không dùng (Cảnh báo biến khai báo nhưng không dùng)
+    // locals = Biến cục bộ (Biến trong phạm vi function/block)
     "noUnusedParameters": true, // 🔒🗑️ Cảnh báo parameter không dùng (prefix _ để ignore)
+    // noUnusedParameters = Không cho tham số không dùng (Cảnh báo tham số không dùng - Dùng _ để bỏ qua)
+    // parameters = Tham số (Tham số của function)
 
     // ✅📦 MODULE RESOLUTION (chuẩn hiện đại)
+    // Module Resolution = Giải quyết module (Cách TypeScript tìm và import modules)
     "module": "ESNext", // 📦 ES modules (import/export)
+    // module = Module system (ESNext = ES modules hiện đại - import/export)
+    // ES modules = ES modules (Hệ thống module của JavaScript - import/export)
     "moduleResolution": "bundler", // 🔧 Bundler resolution (Vite, Webpack, esbuild)
+    // moduleResolution = Giải quyết module (bundler = Dùng bundler để resolve - Vite, Webpack, esbuild)
+    // bundler = Trình đóng gói (Tool đóng gói code - Vite, Webpack, esbuild)
     "resolveJsonModule": true, // 📄 Cho phép import .json files
+    // resolveJsonModule = Giải quyết module JSON (Cho phép import file .json)
     "esModuleInterop": true, // 🔄 Tương thích CommonJS & ES modules
+    // esModuleInterop = Tương thích module (Tương thích giữa CommonJS và ES modules)
+    // CommonJS = CommonJS (Hệ thống module cũ - require/module.exports)
     "allowSyntheticDefaultImports": true, // 🔄 Cho phép import default từ modules không có export default
+    // allowSyntheticDefaultImports = Cho phép import default giả (Cho phép import default từ module không có export default)
+    // synthetic = Giả (Tạo ra, không thật sự có)
 
     // ✅🗺️ PATH ALIASES - Import rõ ràng, dễ refactor
+    // Path Aliases = Bí danh đường dẫn (Định nghĩa đường dẫn ngắn gọn - Import rõ ràng, dễ refactor)
+    // refactor = Tái cấu trúc (Sửa code để cải thiện cấu trúc)
     "baseUrl": ".", // 🏠 Base directory cho path resolution
+    // baseUrl = URL cơ sở (Thư mục gốc cho giải quyết đường dẫn - "." = Thư mục hiện tại)
     "paths": {
       "@app/*": ["apps/web/src/*"], // 🌐 App code (pages, features...)
+      // @app = Bí danh cho app code (apps/web/src/* = Tất cả file trong apps/web/src)
       "@libs/shared/ui": ["libs/shared/ui/src/index.ts"], // 🎨 Shared UI components
+      // @libs/shared/ui = Bí danh cho shared UI (libs/shared/ui/src/index.ts = File export UI components)
       "@libs/shared/utils": ["libs/shared/utils/src/index.ts"], // 🔧 Shared utilities
+      // @libs/shared/utils = Bí danh cho shared utilities (Helper functions dùng chung)
       "@libs/shared/types": ["libs/shared/types/src/index.ts"], // 📋 Shared TypeScript types
+      // @libs/shared/types = Bí danh cho shared types (TypeScript types dùng chung)
       "@libs/shared/api": ["libs/shared/api/src/index.ts"], // 🌐 API client
+      // @libs/shared/api = Bí danh cho API client (Client gọi API)
       "@libs/features/*": ["libs/features/*/src/index.ts"] // 🎯 Feature modules
+      // @libs/features/* = Bí danh cho feature modules (Modules tính năng - * = Tất cả features)
     },
     // 💡 Sử dụng: import { Button } from '@libs/shared/ui';
+    // Sử dụng = Usage (Cách dùng - Import ngắn gọn, rõ ràng)
     // ❌ Thay vì: import { Button } from '../../../libs/shared/ui/src/Button';
+    // Thay vì = Instead of (Thay vì import dài, khó đọc - Relative path = Đường dẫn tương đối)
 
     // ✅🎯 OUTPUT CONFIGURATION
     "target": "ES2022", // 🎯 Target modern browsers (Chrome 90+, Firefox 88+)
@@ -178,14 +240,27 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
+    // eslint:recommended = ESLint được khuyến nghị (Các rules cơ bản được khuyến nghị)
     'plugin:@typescript-eslint/recommended',
+    // @typescript-eslint/recommended = TypeScript ESLint được khuyến nghị (Rules cho TypeScript)
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    // @typescript-eslint/recommended-requiring-type-checking = TypeScript ESLint cần type checking (Rules cần kiểm tra kiểu)
+    // type-checking = Kiểm tra kiểu (Phân tích kiểu TypeScript)
     'plugin:react/recommended',
+    // react/recommended = React được khuyến nghị (Rules cho React)
     'plugin:react-hooks/recommended',
+    // react-hooks/recommended = React Hooks được khuyến nghị (Rules cho React Hooks)
+    // Hooks = Móc (useState, useEffect, etc. - Cơ chế quản lý state trong React)
     'plugin:jsx-a11y/recommended', // Accessibility
+    // jsx-a11y/recommended = JSX Accessibility được khuyến nghị (Rules cho accessibility - Khả năng truy cập)
+    // a11y = Accessibility (Khả năng truy cập - Viết tắt của accessibility)
     'plugin:import/recommended',
+    // import/recommended = Import được khuyến nghị (Rules cho import/export)
     'plugin:import/typescript',
+    // import/typescript = Import TypeScript (Rules import cho TypeScript)
     'prettier', // Phải để cuối cùng
+    // prettier = Prettier (Tắt các ESLint rules conflict với Prettier - Phải để cuối cùng)
+    // conflict = Xung đột (Mâu thuẫn giữa ESLint và Prettier)
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -228,76 +303,159 @@ module.exports = {
     // ===================================
     // 📋 TYPESCRIPT RULES - Type safety
     // ===================================
+    // Type safety = An toàn kiểu (Đảm bảo kiểu dữ liệu đúng)
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
         // ❌🗑️ Không cho unused variables (code smell)
+        // unused variables = Biến không dùng (Code smell = Dấu hiệu code xấu)
         argsIgnorePattern: '^_', // ✅ Cho phép args bắt đầu bằng _ (unused bằng cố ý)
+        // argsIgnorePattern = Mẫu bỏ qua tham số (Cho phép tham số bắt đầu bằng _ - Unused cố ý)
+        // unused bằng cố ý = Cố tình không dùng (Tham số bắt buộc nhưng không dùng)
         varsIgnorePattern: '^_', // ✅ Cho phép vars bắt đầu bằng _ (tương tự)
+        // varsIgnorePattern = Mẫu bỏ qua biến (Cho phép biến bắt đầu bằng _ - Tương tự)
       },
     ],
     '@typescript-eslint/no-explicit-any': 'error', // ❌❓ Cấm type 'any' (mất type safety)
+    // no-explicit-any = Không cho any rõ ràng (Cấm khai báo type 'any' - Mất an toàn kiểu)
+    // explicit = Rõ ràng (Khai báo rõ ràng)
     '@typescript-eslint/explicit-function-return-type': [
       'warn',
       {
         // ⚠️🔙 Khuyến nghị khai báo return type
+        // explicit-function-return-type = Kiểu trả về hàm rõ ràng (Khuyến nghị khai báo kiểu trả về)
         allowExpressions: true, // ✅ Cho phép arrow function không cần
+        // allowExpressions = Cho phép biểu thức (Cho phép arrow function không cần khai báo kiểu trả về)
+        // arrow function = Hàm mũi tên (() => {} - Cú pháp hàm ngắn gọn)
         allowTypedFunctionExpressions: true, // ✅ Cho phép nếu function đã có type từ biến
+        // allowTypedFunctionExpressions = Cho phép biểu thức hàm đã có kiểu (Nếu function đã có type từ biến thì không cần)
+        // typed = Đã có kiểu (Đã được gán kiểu)
       },
     ],
     '@typescript-eslint/consistent-type-imports': [
       'error',
       {
         // 📥📋 Bắt buộc dùng 'import type' cho types
+        // consistent-type-imports = Import kiểu nhất quán (Bắt buộc dùng 'import type' cho types)
         prefer: 'type-imports', // 💡 Giúp tree-shaking, tách types ra khỏi runtime code
+        // prefer = Ưu tiên (Ưu tiên dùng 'import type')
+        // tree-shaking = Loại bỏ code không dùng (Xóa code không sử dụng khi build)
+        // runtime code = Code chạy (Code thực thi - Không phải types)
       },
     ],
     '@typescript-eslint/no-floating-promises': 'error', // ❌⌛ Promise phải await hoặc .catch (tránh unhandled rejection)
+    // no-floating-promises = Không cho Promise trôi nổi (Promise phải await hoặc .catch - Tránh unhandled rejection)
+    // floating = Trôi nổi (Không được xử lý)
+    // unhandled rejection = Từ chối không xử lý (Promise bị reject nhưng không có .catch)
     '@typescript-eslint/await-thenable': 'error', // ❌⌛ Chỉ await promises, không await non-promise values
+    // await-thenable = Await có thể then (Chỉ await promises - Không await giá trị không phải promise)
+    // thenable = Có thể then (Có phương thức .then() - Promise)
     '@typescript-eslint/no-misused-promises': 'error', // ❌⌛ Không dùng Promise ở nơi không phù hợp (if, &&, ||)
+    // no-misused-promises = Không lạm dụng Promise (Không dùng Promise ở nơi không phù hợp - if, &&, ||)
+    // misused = Lạm dụng (Dùng sai chỗ)
 
     // ===================================
     // ⚛️ REACT RULES - Component best practices
     // ===================================
+    // Component best practices = Thực hành tốt cho component (Các quy tắc tốt cho React component)
     'react/react-in-jsx-scope': 'off', // ✅⚛️ Không cần import React (React 17+ JSX transform)
+    // react-in-jsx-scope = React trong phạm vi JSX (Không cần import React - React 17+ JSX transform)
+    // JSX transform = Chuyển đổi JSX (React 17+ tự động chuyển JSX, không cần import React)
     'react/prop-types': 'off', // ✅📋 TypeScript xử lý props validation rồi
+    // prop-types = Kiểu props (Tắt vì TypeScript đã xử lý validation props rồi)
+    // props = Thuộc tính (Dữ liệu truyền vào component)
+    // validation = Xác thực (Kiểm tra dữ liệu hợp lệ)
     'react/jsx-no-target-blank': [
       'error',
       {
         // ❌🔗 Bảo mật: <a target="_blank"> cần rel="noopener"
+        // jsx-no-target-blank = Không cho target="_blank" không an toàn (Cần rel="noopener" - Bảo mật)
+        // target="_blank" = Mở tab mới (Mở link trong tab mới)
+        // rel="noopener" = Không mở (Bảo mật - Ngăn trang mới truy cập window.opener)
         allowReferrer: false, // 🚫 Không gửi referrer (bảo mật)
+        // allowReferrer = Cho phép referrer (Không gửi referrer - Bảo mật)
+        // referrer = Người giới thiệu (Thông tin trang nguồn)
         enforceDynamicLinks: 'always', // ✅ Apply cho cả dynamic href
+        // enforceDynamicLinks = Thực thi link động (Áp dụng cho cả href động - Luôn luôn)
+        // dynamic href = href động (href được tạo từ biến - Không phải hardcode)
       },
     ],
     'react/jsx-key': [
       'error',
       {
         // ❌🔑 Bắt buộc key trong .map() (React performance)
+        // jsx-key = Key trong JSX (Bắt buộc key trong .map() - React performance)
+        // key = Khóa (React dùng key để theo dõi phần tử - Quan trọng cho performance)
+        // .map() = Phương thức map (Duyệt và tạo mảng mới)
         checkFragmentShorthand: true, // ✅ Check cả <> fragment shorthand
+        // checkFragmentShorthand = Kiểm tra fragment viết tắt (Kiểm tra cả <> - Fragment viết tắt)
+        // fragment = Mảnh (React Fragment - <>...</> - Không tạo thẻ HTML)
+        // shorthand = Viết tắt (Cú pháp ngắn gọn)
       },
     ],
     'react-hooks/rules-of-hooks': 'error', // ❌🎣 Chỉ gọi hooks trong component/custom hooks
+    // rules-of-hooks = Quy tắc hooks (Chỉ gọi hooks trong component/custom hooks)
+    // hooks = Móc (useState, useEffect, etc. - Cơ chế quản lý state trong React)
+    // custom hooks = Hooks tùy chỉnh (Hooks tự tạo - Function bắt đầu bằng "use")
     'react-hooks/exhaustive-deps': 'warn', // ⚠️📋 useEffect dependencies phải đầy đủ (tránh stale closure)
+    // exhaustive-deps = Phụ thuộc đầy đủ (useEffect dependencies phải đầy đủ - Tránh stale closure)
+    // useEffect = Effect hook (Hook chạy side effects - Chạy sau khi render)
+    // dependencies = Phụ thuộc (Mảng dependencies - [dep1, dep2])
+    // stale closure = Closure cũ (Closure giữ giá trị cũ - Bug phổ biến)
+    // closure = Đóng (Function giữ biến từ scope bên ngoài)
 
     // ===================================
     // 📦 IMPORT RULES - Clean imports
     // ===================================
+    // Clean imports = Import sạch (Import rõ ràng, không lộn xộn)
     'import/no-unresolved': 'error', // ❌🔍 Tất cả imports phải resolve được
+    // no-unresolved = Không cho import không giải quyết được (Tất cả imports phải tìm thấy file)
+    // resolve = Giải quyết (Tìm và load module)
     'import/no-cycle': 'error', // ❌🔄 Ngăn circular dependencies (A import B, B import A)
+    // no-cycle = Không cho vòng lặp (Ngăn circular dependencies - A import B, B import A)
+    // circular dependencies = Phụ thuộc vòng tròn (A phụ thuộc B, B phụ thuộc A - Gây lỗi)
     'import/no-duplicates': 'error', // ❌🔁 Không import duplicate từ cùng 1 module
+    // no-duplicates = Không cho trùng lặp (Không import nhiều lần từ cùng 1 module)
+    // duplicate = Trùng lặp (Lặp lại)
     'simple-import-sort/imports': 'error', // 🔢 Auto sort imports (external → internal → relative)
+    // simple-import-sort/imports = Sắp xếp import đơn giản (Tự động sắp xếp - external → internal → relative)
+    // external = Bên ngoài (Package từ node_modules)
+    // internal = Nội bộ (Code trong project)
+    // relative = Tương đối (Import bằng đường dẫn tương đối - ./ hoặc ../)
     'simple-import-sort/exports': 'error', // 🔢 Auto sort exports
+    // simple-import-sort/exports = Sắp xếp export đơn giản (Tự động sắp xếp exports)
+    // exports = Xuất (export - Xuất function/class/constant)
     'unused-imports/no-unused-imports': 'error', // 🗑️❌ Auto remove unused imports
+    // no-unused-imports = Không cho import không dùng (Tự động xóa import không dùng)
+    // unused = Không dùng (Import nhưng không sử dụng)
 
     // ===================================
     // 🔧 GENERAL RULES - Code quality
     // ===================================
+    // Code quality = Chất lượng code (Đảm bảo code tốt, dễ đọc, dễ maintain)
     'no-console': ['warn', { allow: ['warn', 'error'] }], // ⚠️💬 console.log cảnh báo (dùng logger thay thế)
+    // no-console = Không cho console (console.log cảnh báo - Dùng logger thay thế)
+    // logger = Trình ghi log (Tool ghi log chuyên nghiệp - Thay thế console.log)
     'no-debugger': 'error', // ❌🐛 Cấm debugger statement (quên xóa khi commit)
+    // no-debugger = Không cho debugger (Cấm debugger statement - Quên xóa khi commit)
+    // debugger = Trình gỡ lỗi (Statement dừng code để debug - Phải xóa trước khi commit)
+    // commit = Cam kết (Lưu code vào git)
     'no-alert': 'error', // ❌⚠️ Cấm alert/confirm/prompt (dùng Modal component)
+    // no-alert = Không cho alert (Cấm alert/confirm/prompt - Dùng Modal component thay thế)
+    // alert/confirm/prompt = Cảnh báo/Xác nhận/Nhập (Dialog của browser - Không đẹp, không tùy chỉnh)
+    // Modal component = Component modal (Component dialog tùy chỉnh - Đẹp hơn, linh hoạt hơn)
     'prefer-const': 'error', // ✅🔒 Dùng const thay vì let nếu không reassign
+    // prefer-const = Ưu tiên const (Dùng const thay vì let nếu không gán lại)
+    // const = Hằng số (Không thể gán lại - let = Biến có thể gán lại)
+    // reassign = Gán lại (Thay đổi giá trị biến)
     'no-var': 'error', // ❌🚫 Cấm var (dùng const/let - block scope)
+    // no-var = Không cho var (Cấm var - Dùng const/let - block scope)
+    // var = Biến cũ (Function scope - Không nên dùng)
+    // block scope = Phạm vi khối (const/let có phạm vi trong {} - An toàn hơn)
     eqeqeq: ['error', 'always'], // ❌=== Bắt buộc === thay vì == (type safety)
+    // eqeqeq = So sánh bằng nghiêm ngặt (Bắt buộc === thay vì == - An toàn kiểu)
+    // === = So sánh bằng nghiêm ngặt (So sánh giá trị và kiểu)
+    // == = So sánh bằng lỏng (Chỉ so sánh giá trị - Không an toàn)
   },
 };
 ```
@@ -342,8 +500,17 @@ module.exports = {
 # 🎣🔐 Install Husky + lint-staged + commitlint
 pnpm add -D husky lint-staged @commitlint/cli @commitlint/config-conventional
 # husky: Git hooks framework (đăng ký hooks vào .git/hooks)
+# Husky = Husky (Framework Git hooks - Đăng ký hooks vào .git/hooks)
+# Git hooks = Móc Git (Script tự động chạy khi có sự kiện Git - pre-commit, commit-msg, etc.)
+# hooks = Móc (Script tự động chạy)
 # lint-staged: Chạy linters chỉ trên staged files (🚀 nhanh hơn full repo)
+# lint-staged = Lint đã stage (Chạy linters chỉ trên file đã stage - Nhanh hơn full repo)
+# staged files = File đã stage (File đã được git add - Sẵn sàng commit)
+# linters = Trình lint (Tool kiểm tra code - ESLint, Prettier, etc.)
+# full repo = Toàn bộ repo (Tất cả file trong repository)
 # commitlint: Validate commit messages theo chuẩn (Conventional Commits)
+# commitlint = Lint commit message (Kiểm tra commit message theo chuẩn)
+# Conventional Commits = Commit theo quy ước (Chuẩn commit message - feat:, fix:, etc.)
 
 # 🔹 Setup husky (tạo .husky/ folder)
 npx husky install
@@ -380,31 +547,58 @@ npx --no -- commitlint --edit ${1}
 
 ```javascript
 // .lintstagedrc.cjs
+// lintstagedrc = Lint-staged config (File cấu hình lint-staged)
 module.exports = {
   // 📋🔍 TypeScript files - Full validation pipeline
+  // Full validation pipeline = Pipeline xác thực đầy đủ (Chuỗi kiểm tra đầy đủ)
   '*.{ts,tsx}': [
+    // *.{ts,tsx} = Tất cả file .ts và .tsx (TypeScript files)
     'eslint --fix', // ✅🔧 Auto fix ESLint errors (imports, formatting, unused vars...)
+    // eslint --fix = ESLint tự động sửa (Sửa lỗi ESLint - imports, formatting, unused vars...)
+    // auto fix = Tự động sửa (Sửa lỗi tự động)
     'prettier --write', // ✅🎨 Auto format code (indentation, quotes, spacing...)
+    // prettier --write = Prettier ghi (Tự động format code - indentation, quotes, spacing...)
+    // format = Định dạng (Sắp xếp code đẹp - Indentation, quotes, spacing)
+    // indentation = Thụt lề (Khoảng cách đầu dòng)
     () => 'tsc --noEmit', // ✅📋 Type check toàn bộ project (không generate .js files)
+    // tsc --noEmit = TypeScript compiler không emit (Type check toàn bộ project - Không generate .js files)
+    // type check = Kiểm tra kiểu (Kiểm tra lỗi TypeScript)
+    // generate = Tạo (Tạo file .js từ .ts)
     // 💡 Lưu ý: tsc --noEmit check toàn bộ, không chỉ staged files (vì types có thể affect nhau)
+    // affect = Ảnh hưởng (Types có thể ảnh hưởng lẫn nhau)
   ],
 
   // 📦 JavaScript files - Lint + Format
+  // JavaScript files = File JavaScript (.js, .jsx)
   '*.{js,jsx}': [
     'eslint --fix', // ✅🔧 Fix JS linting issues
+    // Fix JS linting issues = Sửa vấn đề lint JS (Sửa lỗi ESLint cho JavaScript)
     'prettier --write', // ✅🎨 Format JS code
+    // Format JS code = Định dạng code JS (Sắp xếp code JavaScript đẹp)
   ],
 
   // 📄🎨 JSON, CSS, Markdown - Format only
+  // Format only = Chỉ format (Không lint - Vì JSON/CSS không có ESLint rules)
   '*.{json,css,scss,md}': [
     'prettier --write', // ✅🎨 Chỉ format, không lint (vì JSON/CSS không có ESLint rules)
+    // Chỉ format = Only format (Chỉ sắp xếp đẹp - Không kiểm tra lỗi)
+    // JSON = JSON (Định dạng dữ liệu)
+    // CSS = CSS (Styling)
+    // SCSS = SCSS (CSS với biến, nesting)
+    // Markdown = Markdown (Định dạng văn bản)
   ],
 
   // 🧪🔍 Test files - Run related tests
+  // Test files = File kiểm thử (.test.ts, .spec.ts)
   '*.{test,spec}.{ts,tsx}': [
     'vitest related --run', // ✅🧪 Chạy tests liên quan đến file thay đổi
+    // vitest related --run = Vitest chạy liên quan (Chạy tests liên quan đến file thay đổi)
+    // related = Liên quan (Tìm tests import file này)
+    // --run = Chạy (Chạy tests một lần - Không watch)
     // 💡 'related' tìm tests import file này (không chạy toàn bộ test suite)
+    // test suite = Bộ kiểm thử (Tất cả tests trong project)
     // 🚀 Nhanh hơn full test, vẫn đảm bảo không phá tests
+    // phá tests = Break tests (Làm tests bị lỗi)
   ],
 };
 
@@ -421,20 +615,41 @@ module.exports = {
   extends: ['@commitlint/config-conventional'], // 📋 Chuẩn Conventional Commits (Angular style)
   rules: {
     // 🎯 TYPE ENUM - Danh sách types hợp lệ
+    // TYPE ENUM = Kiểu liệt kê (Danh sách types hợp lệ cho commit message)
     'type-enum': [
       2, // ❌ Error level (2 = error, 1 = warning, 0 = off)
+      // Error level = Mức lỗi (2 = lỗi, 1 = cảnh báo, 0 = tắt)
       'always', // ✅ Luôn bắt buộc
+      // always = Luôn luôn (Luôn bắt buộc phải có type)
       [
         'feat', // ✨🎉 New feature (thêm tính năng mới)
+        // feat = Feature (Tính năng mới - Thêm tính năng mới)
         'fix', // 🐛🔧 Bug fix (sửa lỗi)
+        // fix = Sửa (Sửa lỗi - Bug fix)
         'docs', // 📚📝 Documentation (cập nhật docs)
+        // docs = Documentation (Tài liệu - Cập nhật docs)
         'style', // 🎨 Formatting, missing semicolons (không ảnh hưởng logic)
+        // style = Phong cách (Formatting, thiếu semicolons - Không ảnh hưởng logic)
+        // formatting = Định dạng (Sắp xếp code đẹp)
+        // semicolons = Dấu chấm phẩy (;)
         'refactor', // ♻️🔧 Code refactor (không fix bug, không thêm feature)
+        // refactor = Tái cấu trúc (Sửa code để cải thiện - Không fix bug, không thêm feature)
         'perf', // ⚡🚀 Performance improvement (tối ưu performance)
+        // perf = Performance (Hiệu suất - Tối ưu performance)
+        // performance = Hiệu suất (Tốc độ, tài nguyên)
         'test', // 🧪✅ Adding tests (thêm/sửa tests)
+        // test = Kiểm thử (Thêm/sửa tests)
         'chore', // 🔧📦 Build, dependencies, tooling (cập nhật config, packages)
+        // chore = Việc vặt (Build, dependencies, tooling - Cập nhật config, packages)
+        // dependencies = Phụ thuộc (Packages cần thiết)
+        // tooling = Công cụ (Tools, scripts)
         'revert', // ⏪❌ Revert a previous commit (rollback commit trước)
+        // revert = Hoàn nguyên (Revert commit trước - Rollback)
+        // rollback = Quay lại (Quay lại trạng thái trước)
         'ci', // 🤖⚙️ CI/CD changes (cập nhật GitHub Actions, pipelines)
+        // ci = Continuous Integration (Tích hợp liên tục - Cập nhật GitHub Actions, pipelines)
+        // CI/CD = Continuous Integration/Continuous Deployment (Tích hợp/Triển khai liên tục)
+        // pipelines = Pipeline (Quy trình tự động)
       ],
     ],
     'subject-case': [2, 'never', ['upper-case']], // ❌ Subject không được viết hoa toàn bộ
@@ -888,17 +1103,38 @@ function handleError(error: ApiError): string {
 // =====================================
 
 import { z } from 'zod';
+// z = Zod (Import Zod - Thư viện validation TypeScript-first)
+// zod = Zod (Thư viện validation - Type-safe validation)
 
 // ✅ Reusable schemas
+// Reusable schemas = Schema tái sử dụng (Schema dùng lại nhiều nơi)
+// schemas = Schema (Định nghĩa validation rules)
 export const emailSchema = z.string().email('Invalid email format');
+// emailSchema = Schema email (Schema validate email)
+// z.string() = Chuỗi (Kiểu string - Zod string)
+// .email() = Email (Validate định dạng email)
+// 'Invalid email format' = Thông báo lỗi (Message khi validation fail)
 
 export const passwordSchema = z
+  // passwordSchema = Schema password (Schema validate password)
   .string()
+  // .string() = Chuỗi (Kiểu string)
   .min(8, 'Password must be at least 8 characters')
+  // .min(8) = Tối thiểu 8 (Password phải có ít nhất 8 ký tự)
   .regex(/[A-Z]/, 'Password must contain uppercase letter')
+  // .regex() = Biểu thức chính quy (Kiểm tra pattern - Phải có chữ hoa)
+  // regex = Regular expression (Biểu thức chính quy - Pattern matching)
+  // [A-Z] = Chữ hoa (Pattern chữ hoa A-Z)
+  // uppercase = Chữ hoa (Uppercase letter = Chữ cái viết hoa)
   .regex(/[a-z]/, 'Password must contain lowercase letter')
+  // [a-z] = Chữ thường (Pattern chữ thường a-z)
+  // lowercase = Chữ thường (Lowercase letter = Chữ cái viết thường)
   .regex(/[0-9]/, 'Password must contain number')
+  // [0-9] = Số (Pattern số 0-9)
   .regex(/[^A-Za-z0-9]/, 'Password must contain special character');
+// [^A-Za-z0-9] = Ký tự đặc biệt (Pattern không phải chữ/số - Special character)
+// ^ = Không phải (Not - Trong regex)
+// special character = Ký tự đặc biệt (!, @, #, $, etc.)
 
 export const phoneSchema = z
   .string()
@@ -916,36 +1152,68 @@ export const userSchema = z.object({
 });
 
 // Infer TypeScript type từ Zod schema
+// Infer = Suy luận (Tự động tạo TypeScript type từ Zod schema)
+// TypeScript type = Kiểu TypeScript (Interface, type - Định nghĩa kiểu dữ liệu)
 export type User = z.infer<typeof userSchema>;
+// z.infer = Zod infer (Tạo TypeScript type từ Zod schema)
+// typeof = Type of (Lấy type của schema)
+// User = User type (TypeScript type cho User - Tự động từ userSchema)
 
 // Login form schema
+// Login form = Form đăng nhập (Form nhập email, password)
 export const loginFormSchema = z.object({
+  // z.object() = Object Zod (Schema cho object - Validate object)
   email: emailSchema,
+  // email = Email (Dùng emailSchema đã định nghĩa)
   password: z.string().min(1, 'Password is required'),
+  // password = Mật khẩu (String, tối thiểu 1 ký tự - Bắt buộc)
+  // required = Bắt buộc (Phải có - Không được để trống)
   rememberMe: z.boolean().optional(),
+  // rememberMe = Nhớ tôi (Boolean - Tùy chọn)
+  // .optional() = Tùy chọn (Có thể không có - Không bắt buộc)
 });
 
 export type LoginFormData = z.infer<typeof loginFormSchema>;
+// LoginFormData = Dữ liệu form đăng nhập (TypeScript type cho login form data)
 
 // =====================================
 // Usage trong component
 // =====================================
 
 import { useForm } from 'react-hook-form';
+// useForm = useForm hook (React Hook Form hook - Quản lý form)
+// react-hook-form = React Hook Form (Thư viện quản lý form - Validation, state)
 import { zodResolver } from '@hookform/resolvers/zod';
+// zodResolver = Zod resolver (Resolver tích hợp Zod với React Hook Form)
+// resolver = Bộ giải quyết (Xử lý validation - Kết nối Zod với React Hook Form)
+// @hookform/resolvers = Resolvers (Package chứa resolvers - Zod, Yup, etc.)
 import { loginFormSchema, type LoginFormData } from '@libs/shared/utils';
+// loginFormSchema = Schema form đăng nhập (Zod schema)
+// LoginFormData = Dữ liệu form đăng nhập (TypeScript type)
 
 function LoginForm() {
   const {
+    // useForm = useForm hook (Trả về object chứa register, handleSubmit, errors, etc.)
     register,
+    // register = Đăng ký (Đăng ký input với form - {...register('email')})
     handleSubmit,
+    // handleSubmit = Xử lý submit (Xử lý khi submit form - handleSubmit(onSubmit))
     formState: { errors },
+    // formState = Trạng thái form (State của form - errors, isValid, isDirty, etc.)
+    // errors = Lỗi (Object chứa lỗi validation - { email: { message: '...' } })
   } = useForm<LoginFormData>({
+    // useForm<LoginFormData> = useForm với type (TypeScript type cho form data)
     resolver: zodResolver(loginFormSchema),
+    // resolver = Bộ giải quyết (Zod resolver - Kết nối Zod với React Hook Form)
+    // zodResolver(loginFormSchema) = Zod resolver với schema (Validate bằng Zod schema)
   });
 
   const onSubmit = (data: LoginFormData) => {
+    // onSubmit = Khi submit (Function chạy khi submit form)
+    // data = Dữ liệu (Form data đã validate - Type-safe)
     // data is fully typed and validated
+    // fully typed = Đầy đủ kiểu (TypeScript type đầy đủ)
+    // validated = Đã validate (Đã kiểm tra hợp lệ)
     console.log(data);
   };
 
@@ -1125,40 +1393,73 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig({
   plugins: [
     // ✅ React với SWC compiler (nhanh hơn Babel 20x)
+    // SWC compiler = Trình biên dịch SWC (Nhanh hơn Babel 20x - Compile JavaScript/TypeScript)
+    // compiler = Trình biên dịch (Chuyển code TypeScript/JSX thành JavaScript)
+    // Babel = Babel (Trình biên dịch JavaScript cũ - Chậm hơn SWC)
     react(),
 
     // ✅ Bundle analyzer
+    // Bundle analyzer = Phân tích bundle (Tool phân tích kích thước bundle)
+    // bundle = Gói (File JavaScript đã đóng gói)
     visualizer({
       filename: 'dist/stats.html',
+      // filename = Tên file (File kết quả phân tích - stats.html)
       gzipSize: true,
+      // gzipSize = Kích thước gzip (Hiển thị kích thước sau khi nén gzip)
+      // gzip = Gzip (Thuật toán nén - Giảm kích thước file)
       brotliSize: true,
+      // brotliSize = Kích thước brotli (Hiển thị kích thước sau khi nén brotli)
+      // brotli = Brotli (Thuật toán nén tốt hơn gzip)
     }),
 
     // ✅ Gzip compression
+    // Gzip compression = Nén gzip (Nén file bằng gzip)
+    // compression = Nén (Giảm kích thước file)
     compression({
       algorithm: 'gzip',
+      // algorithm = Thuật toán (Thuật toán nén - gzip)
       ext: '.gz',
+      // ext = Extension (Phần mở rộng file - .gz)
     }),
 
     // ✅ Brotli compression (tốt hơn gzip)
+    // Brotli compression = Nén brotli (Nén file bằng brotli - Tốt hơn gzip)
     compression({
       algorithm: 'brotliCompress',
+      // brotliCompress = Nén brotli (Thuật toán nén brotli)
       ext: '.br',
+      // .br = Extension brotli (Phần mở rộng file brotli)
     }),
 
     // ✅ PWA support
+    // PWA = Progressive Web App (Ứng dụng web tiến bộ - Hoạt động như app native)
     VitePWA({
       registerType: 'autoUpdate',
+      // registerType = Loại đăng ký (autoUpdate = Tự động cập nhật)
+      // autoUpdate = Tự động cập nhật (Tự động cập nhật khi có phiên bản mới)
       includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      // includeAssets = Bao gồm tài sản (Bao gồm các file tĩnh)
+      // assets = Tài sản (File tĩnh - favicon, robots.txt, icon)
+      // favicon = Favicon (Icon hiển thị trên tab browser)
+      // robots.txt = Robots.txt (File hướng dẫn search engine)
+      // apple-touch-icon = Icon Apple (Icon cho iOS)
       manifest: {
+        // manifest = Manifest (File mô tả PWA)
         name: 'My App',
+        // name = Tên (Tên ứng dụng)
         short_name: 'App',
+        // short_name = Tên ngắn (Tên ngắn hiển thị trên home screen)
         theme_color: '#ffffff',
+        // theme_color = Màu chủ đề (Màu chủ đề của app)
         icons: [
+          // icons = Icon (Danh sách icon)
           {
             src: 'pwa-192x192.png',
+            // src = Source (Nguồn - Đường dẫn icon)
             sizes: '192x192',
+            // sizes = Kích thước (Kích thước icon - 192x192 pixels)
             type: 'image/png',
+            // type = Loại (Loại file - image/png)
           },
           {
             src: 'pwa-512x512.png',
@@ -1172,40 +1473,73 @@ export default defineConfig({
 
   build: {
     // ✅ Target modern browsers
+    // Target = Mục tiêu (Target modern browsers = Nhắm đến trình duyệt hiện đại)
+    // modern browsers = Trình duyệt hiện đại (Chrome, Firefox, Safari mới)
     target: 'esnext',
+    // esnext = ES Next (JavaScript phiên bản mới nhất - ES2022+)
 
     // ✅ Minify với esbuild (nhanh)
+    // Minify = Nén (Xóa khoảng trắng, rút gọn code - Giảm kích thước file)
     minify: 'esbuild',
+    // esbuild = esbuild (Trình minify nhanh - Nhanh hơn Terser)
 
     // ✅ Source maps cho production debug
+    // Source maps = Bản đồ nguồn (File map code đã minify về code gốc - Debug production)
+    // production debug = Gỡ lỗi production (Debug code đã build)
     sourcemap: true,
 
     // ✅ Code splitting
+    // Code splitting = Chia tách code (Chia code thành nhiều file nhỏ - Tải nhanh hơn)
     rollupOptions: {
+      // rollupOptions = Tùy chọn Rollup (Cấu hình Rollup - Bundler của Vite)
+      // Rollup = Rollup (Bundler đóng gói code)
       output: {
+        // output = Đầu ra (Cấu hình file đầu ra)
         manualChunks: {
+          // manualChunks = Chunks thủ công (Chia code thành chunks thủ công)
+          // chunks = Khối (Các file JavaScript đã chia)
           // Vendor chunks
+          // Vendor = Nhà cung cấp (Thư viện bên thứ ba - node_modules)
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          // react-vendor = Vendor React (Chunk chứa React, React DOM, React Router)
           'query-vendor': ['@tanstack/react-query'],
+          // query-vendor = Vendor Query (Chunk chứa React Query)
           'ui-vendor': [
             '@radix-ui/react-dialog',
             '@radix-ui/react-dropdown-menu',
           ],
+          // ui-vendor = Vendor UI (Chunk chứa UI libraries - Radix UI)
 
           // Feature chunks
+          // Feature = Tính năng (Code tính năng - Dashboard, Settings)
           dashboard: ['./src/features/dashboard'],
+          // dashboard = Dashboard (Chunk chứa code dashboard)
           settings: ['./src/features/settings'],
+          // settings = Settings (Chunk chứa code settings)
         },
 
         // ✅ Chunk naming
+        // Chunk naming = Đặt tên chunk (Quy tắc đặt tên file chunk)
         chunkFileNames: 'assets/js/[name]-[hash].js',
+        // chunkFileNames = Tên file chunk (assets/js/[name]-[hash].js)
+        // [name] = Tên chunk (Tên chunk - react-vendor, dashboard, etc.)
+        // [hash] = Hash (Hash để cache busting - Thay đổi khi code thay đổi)
+        // cache busting = Phá cache (Làm browser tải file mới)
         entryFileNames: 'assets/js/[name]-[hash].js',
+        // entryFileNames = Tên file entry (File entry point - File bắt đầu)
+        // entry = Điểm vào (File bắt đầu ứng dụng)
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        // assetFileNames = Tên file asset (File tài sản - CSS, images, fonts)
+        // assets = Tài sản (File tĩnh - CSS, images, fonts)
+        // [ext] = Extension (Phần mở rộng - css, png, woff2)
       },
     },
 
     // ✅ Chunk size warnings
+    // Chunk size warnings = Cảnh báo kích thước chunk (Cảnh báo khi chunk quá lớn)
     chunkSizeWarningLimit: 500, // 500kb
+    // chunkSizeWarningLimit = Giới hạn cảnh báo kích thước chunk (500KB - Cảnh báo nếu chunk > 500KB)
+    // 500kb = 500 kilobyte (Kích thước file - 500KB)
   },
 
   // ✅ Performance optimizations
@@ -1236,13 +1570,20 @@ import { createBrowserRouter } from 'react-router-dom';
 import { LoadingSpinner } from '@libs/shared/ui';
 
 // ✅ Lazy load pages (route-based code splitting)
+// Lazy load = Tải chậm (Tải code khi cần - Không tải ngay)
+// route-based code splitting = Chia tách code theo route (Chia code theo trang)
 const HomePage = lazy(() => import('../pages/HomePage'));
+// lazy = Lười (React.lazy - Tải component khi cần)
+// import = Nhập (Nhập module - Dynamic import = Nhập động)
 const DashboardPage = lazy(() => import('../pages/DashboardPage'));
 const SettingsPage = lazy(() => import('../pages/SettingsPage'));
 const ProfilePage = lazy(() => import('../pages/ProfilePage'));
 
 // ✅ Preload critical routes
+// Preload = Tải trước (Tải code trước khi cần - Tăng tốc độ)
+// critical routes = Route quan trọng (Trang quan trọng - Dashboard, Settings)
 const preloadDashboard = () => import('../pages/DashboardPage');
+// preloadDashboard = Tải trước Dashboard (Function tải Dashboard trước)
 const preloadSettings = () => import('../pages/SettingsPage');
 
 export const router = createBrowserRouter([
@@ -1414,23 +1755,44 @@ export default defineConfig({
     setupFiles: ['./src/__tests__/setup.ts'],
 
     // ✅ Coverage configuration
+    // Coverage = Độ phủ (Tỷ lệ code được test - Code coverage)
     coverage: {
       provider: 'v8',
+      // provider = Nhà cung cấp (v8 = V8 engine coverage - Engine của Chrome)
+      // v8 = V8 (JavaScript engine của Chrome - Nhanh, chính xác)
       reporter: ['text', 'json', 'html', 'lcov'],
+      // reporter = Báo cáo (Các định dạng báo cáo coverage)
+      // text = Văn bản (Báo cáo dạng text trong terminal)
+      // json = JSON (Báo cáo dạng JSON - Dùng cho CI/CD)
+      // html = HTML (Báo cáo dạng HTML - Xem trong browser)
+      // lcov = LCOV (Định dạng LCOV - Dùng cho Codecov, Coveralls)
       exclude: [
+        // exclude = Loại trừ (Loại trừ các file/folder không cần test)
         'node_modules/',
+        // node_modules = node_modules (Thư viện bên thứ ba - Không cần test)
         'src/__tests__/',
+        // __tests__ = __tests__ (Folder test - Không cần test test files)
         '**/*.test.{ts,tsx}',
+        // *.test = File test (File test - Không cần test test files)
         '**/*.spec.{ts,tsx}',
+        // *.spec = File spec (File spec - Tương tự test files)
         '**/*.stories.{ts,tsx}',
+        // *.stories = File stories (File Storybook - Không cần test)
         '**/types/',
+        // types = Types (Folder types - Chỉ định nghĩa types, không có logic)
         '**/*.d.ts',
+        // *.d.ts = Declaration files (File định nghĩa TypeScript - Không có code thực thi)
       ],
       // ✅ Coverage thresholds
+      // Coverage thresholds = Ngưỡng độ phủ (Yêu cầu tối thiểu coverage)
       statements: 80,
+      // statements = Câu lệnh (80% câu lệnh phải được test)
       branches: 75,
+      // branches = Nhánh (75% nhánh if/else phải được test)
       functions: 80,
+      // functions = Hàm (80% hàm phải được test)
       lines: 80,
+      // lines = Dòng (80% dòng code phải được test)
     },
 
     // ✅ Globals (không cần import describe, it, expect)
@@ -1927,8 +2289,13 @@ on:
     branches: [main, develop]
 
 concurrency:
+  // concurrency = Đồng thời (Chạy đồng thời - Quản lý nhiều workflow cùng lúc)
   group: ${{ github.workflow }}-${{ github.ref }}
+  // group = Nhóm (Nhóm workflow - Cùng workflow và branch)
+  // github.workflow = Tên workflow (Tên workflow - ci.yml)
+  // github.ref = Tham chiếu (Branch hoặc tag - main, develop, etc.)
   cancel-in-progress: true
+  // cancel-in-progress = Hủy đang chạy (Hủy workflow cũ khi có workflow mới - Tránh chạy trùng)
 
 jobs:
   # ===================================
@@ -2369,9 +2736,16 @@ export function initSentry() {
       ],
 
       // ✅ Sample rates
+      // Sample rates = Tỷ lệ mẫu (Tỷ lệ gửi dữ liệu - Giảm chi phí)
       tracesSampleRate: 0.1, // 10% của transactions
+      // tracesSampleRate = Tỷ lệ mẫu trace (10% transactions - Trace = Theo dõi performance)
+      // transactions = Giao dịch (Request, page load, user action)
       replaysSessionSampleRate: 0.1, // 10% sessions
+      // replaysSessionSampleRate = Tỷ lệ mẫu replay session (10% sessions - Replay = Ghi lại hành động user)
+      // sessions = Phiên (Phiên người dùng - Từ khi mở đến khi đóng)
       replaysOnErrorSampleRate: 1.0, // 100% khi có error
+      // replaysOnErrorSampleRate = Tỷ lệ mẫu replay khi lỗi (100% khi có error - Luôn ghi lại khi lỗi)
+      // error = Lỗi (Exception, crash)
 
       // ✅ Filter sensitive data
       beforeSend(event, hint) {
@@ -2587,36 +2961,62 @@ function ProductPage() {
 
 ```typescript
 // apps/web/src/services/monitoring/performance.ts
+// monitoring = Giám sát (Theo dõi hiệu suất)
+// performance = Hiệu suất (Tốc độ, tài nguyên)
 import { onCLS, onFID, onFCP, onLCP, onTTFB } from 'web-vitals';
+// web-vitals = Web Vitals (Thư viện đo Web Vitals - Chỉ số hiệu suất web)
+// onCLS = On Cumulative Layout Shift (Callback khi CLS thay đổi)
+// onFID = On First Input Delay (Callback khi FID thay đổi)
+// onFCP = On First Contentful Paint (Callback khi FCP thay đổi)
+// onLCP = On Largest Contentful Paint (Callback khi LCP thay đổi)
+// onTTFB = On Time to First Byte (Callback khi TTFB thay đổi)
 import { trackTiming } from '../analytics/analytics';
+// trackTiming = Theo dõi thời gian (Gửi dữ liệu timing đến analytics)
 
 // ✅ Track Web Vitals
+// Track = Theo dõi (Ghi lại, gửi dữ liệu)
+// Web Vitals = Web Vitals (Chỉ số hiệu suất web quan trọng - CLS, FID, FCP, LCP, TTFB)
 export function initPerformanceMonitoring() {
+  // initPerformanceMonitoring = Khởi tạo giám sát hiệu suất (Bắt đầu theo dõi performance)
   // Cumulative Layout Shift
+  // Cumulative Layout Shift = Dịch chuyển layout tích lũy (CLS - Đo độ ổn định layout)
+  // Layout Shift = Dịch chuyển layout (Phần tử di chuyển khi load - Gây khó chịu)
   onCLS((metric) => {
+    // metric = Chỉ số (Dữ liệu CLS - { value: số, entries: [...] })
     trackTiming('Web Vitals', 'CLS', metric.value);
+    // trackTiming = Theo dõi thời gian (Gửi CLS đến analytics)
     console.log('CLS:', metric.value);
   });
 
   // First Input Delay
+  // First Input Delay = Độ trễ đầu vào đầu tiên (FID - Đo độ phản hồi)
+  // Input = Đầu vào (Click, tap, keypress)
+  // Delay = Độ trễ (Thời gian từ khi click đến khi browser phản hồi)
   onFID((metric) => {
     trackTiming('Web Vitals', 'FID', metric.value);
     console.log('FID:', metric.value);
   });
 
   // First Contentful Paint
+  // First Contentful Paint = Vẽ nội dung đầu tiên (FCP - Đo thời gian hiển thị nội dung đầu)
+  // Contentful = Có nội dung (Có text, image - Không phải background)
+  // Paint = Vẽ (Browser vẽ nội dung lên màn hình)
   onFCP((metric) => {
     trackTiming('Web Vitals', 'FCP', metric.value);
     console.log('FCP:', metric.value);
   });
 
   // Largest Contentful Paint
+  // Largest Contentful Paint = Vẽ nội dung lớn nhất (LCP - Đo thời gian hiển thị nội dung lớn nhất)
+  // Largest = Lớn nhất (Phần tử lớn nhất trong viewport)
   onLCP((metric) => {
     trackTiming('Web Vitals', 'LCP', metric.value);
     console.log('LCP:', metric.value);
   });
 
   // Time to First Byte
+  // Time to First Byte = Thời gian đến byte đầu tiên (TTFB - Đo thời gian nhận byte đầu từ server)
+  // First Byte = Byte đầu tiên (Byte đầu tiên từ server response)
   onTTFB((metric) => {
     trackTiming('Web Vitals', 'TTFB', metric.value);
     console.log('TTFB:', metric.value);
@@ -2661,6 +3061,11 @@ console.log(`Data fetch took ${duration}ms`);
 ### **GIAI ĐOẠN 8: SCALABILITY & ADVANCED PATTERNS**
 
 #### **Step 8.1: Micro-Frontends Architecture (Module Federation)**
+
+// Micro-Frontends = Vi frontend (Kiến trúc chia frontend thành nhiều app độc lập)
+// Architecture = Kiến trúc (Cấu trúc hệ thống)
+// Module Federation = Liên bang module (Cơ chế chia sẻ code giữa các app - Webpack 5)
+// Federation = Liên bang (Kết hợp nhiều app độc lập thành 1 hệ thống)
 
 ```typescript
 // apps/web/vite.config.ts
@@ -2730,18 +3135,34 @@ function App() {
 
 #### **Step 8.2: Feature Flags System**
 
+// Feature Flags = Cờ tính năng (Bật/tắt tính năng mà không cần deploy lại)
+// System = Hệ thống (Hệ thống quản lý feature flags)
+
 ```typescript
 // libs/shared/utils/src/featureFlags/featureFlags.ts
+// featureFlags = Cờ tính năng (File quản lý feature flags)
 type FeatureFlag =
+  // FeatureFlag = Kiểu cờ tính năng (Danh sách tên feature flags)
   | 'newDashboard'
+  // newDashboard = Dashboard mới (Tính năng dashboard mới)
   | 'darkMode'
+  // darkMode = Chế độ tối (Tính năng chế độ tối)
   | 'advancedFilters'
+  // advancedFilters = Bộ lọc nâng cao (Tính năng bộ lọc nâng cao)
   | 'experimentalFeature';
+// experimentalFeature = Tính năng thử nghiệm (Tính năng đang thử nghiệm)
 
 interface FeatureFlagConfig {
+  // FeatureFlagConfig = Cấu hình cờ tính năng (Cấu hình cho mỗi feature flag)
   enabled: boolean;
+  // enabled = Đã bật (Bật/tắt feature flag)
   rolloutPercentage?: number; // 0-100
+  // rolloutPercentage = Tỷ lệ triển khai (0-100 - Triển khai cho % user)
+  // rollout = Triển khai (Phát hành tính năng từ từ)
+  // percentage = Phần trăm (Tỷ lệ - 0-100%)
   enabledFor?: string[]; // User IDs
+  // enabledFor = Bật cho (Danh sách User IDs - Chỉ bật cho user cụ thể)
+  // User IDs = ID người dùng (Danh sách ID user được bật tính năng)
 }
 
 class FeatureFlagService {
@@ -3077,15 +3498,37 @@ function DataTable() {
 
 ## **📊 5. COMPARISON: MONOREPO VS POLYREPO**
 
-| Aspect           | Monorepo (Nx)                 | Polyrepo                    |
-| ---------------- | ----------------------------- | --------------------------- |
-| **Code Sharing** | ⭐⭐⭐⭐⭐ Easy with libs     | ⭐⭐ Requires npm packages  |
-| **Consistency**  | ⭐⭐⭐⭐⭐ Enforced standards | ⭐⭐ Varies per repo        |
-| **Refactoring**  | ⭐⭐⭐⭐⭐ Atomic changes     | ⭐⭐ Multiple PRs needed    |
-| **CI/CD Speed**  | ⭐⭐⭐⭐⭐ Affected commands  | ⭐⭐⭐ Build everything     |
-| **Onboarding**   | ⭐⭐⭐ Single repo to clone   | ⭐⭐ Multiple repos         |
-| **Team Scale**   | ⭐⭐⭐⭐⭐ 50+ developers     | ⭐⭐⭐ Best for small teams |
-| **Dependencies** | ⭐⭐⭐⭐ Centralized          | ⭐⭐ Can drift              |
+| Aspect           | Monorepo (Nx)                                                                                  | Polyrepo                    |
+| ---------------- | ---------------------------------------------------------------------------------------------- | --------------------------- |
+| **Code Sharing** | ⭐⭐⭐⭐⭐ Easy with libs                                                                      | ⭐⭐ Requires npm packages  |
+|                  | // Code Sharing = Chia sẻ code (Monorepo: Dễ với libs - Polyrepo: Cần npm packages)            |
+|                  | // libs = Thư viện (Shared libraries - Thư viện dùng chung)                                    |
+|                  | // npm packages = Gói npm (Phải publish lên npm để dùng chung)                                 |
+| **Consistency**  | ⭐⭐⭐⭐⭐ Enforced standards                                                                  | ⭐⭐ Varies per repo        |
+|                  | // Consistency = Nhất quán (Monorepo: Tiêu chuẩn được thực thi - Polyrepo: Khác nhau mỗi repo) |
+|                  | // Enforced standards = Tiêu chuẩn được thực thi (ESLint, Prettier chung)                      |
+|                  | // Varies per repo = Khác nhau mỗi repo (Mỗi repo có config riêng)                             |
+| **Refactoring**  | ⭐⭐⭐⭐⭐ Atomic changes                                                                      | ⭐⭐ Multiple PRs needed    |
+|                  | // Refactoring = Tái cấu trúc (Monorepo: Thay đổi nguyên tử - Polyrepo: Cần nhiều PR)          |
+|                  | // Atomic changes = Thay đổi nguyên tử (Thay đổi tất cả cùng lúc - 1 commit)                   |
+|                  | // Multiple PRs = Nhiều PR (Cần nhiều Pull Request - Mỗi repo 1 PR)                            |
+| **CI/CD Speed**  | ⭐⭐⭐⭐⭐ Affected commands                                                                   | ⭐⭐⭐ Build everything     |
+|                  | // CI/CD Speed = Tốc độ CI/CD (Monorepo: Chỉ build code thay đổi - Polyrepo: Build tất cả)     |
+|                  | // Affected commands = Lệnh ảnh hưởng (Chỉ test/build code thay đổi - Nhanh)                   |
+|                  | // Build everything = Build tất cả (Build toàn bộ repo - Chậm)                                 |
+| **Onboarding**   | ⭐⭐⭐ Single repo to clone                                                                    | ⭐⭐ Multiple repos         |
+|                  | // Onboarding = Đưa vào (Monorepo: 1 repo clone - Polyrepo: Nhiều repo)                        |
+|                  | // Single repo = 1 repo (Chỉ cần clone 1 repo)                                                 |
+|                  | // Multiple repos = Nhiều repo (Phải clone nhiều repo)                                         |
+| **Team Scale**   | ⭐⭐⭐⭐⭐ 50+ developers                                                                      | ⭐⭐⭐ Best for small teams |
+|                  | // Team Scale = Quy mô team (Monorepo: 50+ dev - Polyrepo: Tốt cho team nhỏ)                   |
+|                  | // developers = Lập trình viên (Số lượng dev trong team)                                       |
+|                  | // small teams = Team nhỏ (Team ít người)                                                      |
+| **Dependencies** | ⭐⭐⭐⭐ Centralized                                                                           | ⭐⭐ Can drift              |
+|                  | // Dependencies = Phụ thuộc (Monorepo: Tập trung - Polyrepo: Có thể lệch)                      |
+|                  | // Centralized = Tập trung (Tất cả dùng cùng version - Dễ quản lý)                             |
+|                  | // Can drift = Có thể lệch (Mỗi repo có thể dùng version khác - Khó quản lý)                   |
+|                  | // drift = Lệch (Version khác nhau giữa các repo)                                              |
 
 **Recommendation:**
 
@@ -3182,67 +3625,128 @@ nx g @nx/react:lib shared-api
 
 ### **Build Optimization**
 
+// Build Optimization = Tối ưu build (Tối ưu quá trình build - Nhanh hơn, nhỏ hơn)
+
 ```typescript
 // ✅ 1. SWC instead of Babel (20x faster)
+// SWC instead of Babel = SWC thay vì Babel (Nhanh hơn 20x)
+// instead of = Thay vì (Dùng SWC thay vì Babel)
 // vite.config.ts
 plugins: [react({ jsxRuntime: 'automatic', jsxImportSource: '@emotion/react' })]
+// jsxRuntime = JSX runtime (automatic = Tự động - Không cần import React)
+// jsxImportSource = Nguồn import JSX (@emotion/react = Dùng Emotion cho CSS-in-JS)
 
 // ✅ 2. Dependency pre-bundling
+// Dependency pre-bundling = Đóng gói phụ thuộc trước (Đóng gói dependencies trước - Tăng tốc dev)
+// pre-bundling = Đóng gói trước (Đóng gói dependencies trước khi chạy)
 optimizeDeps: {
+  // optimizeDeps = Tối ưu phụ thuộc (Cấu hình tối ưu dependencies)
   include: ['react', 'react-dom', 'react-router-dom'],
+  // include = Bao gồm (Bao gồm các package cần pre-bundle)
 }
 
 // ✅ 3. Code splitting per route
+// Code splitting per route = Chia tách code theo route (Chia code theo trang - Tải nhanh hơn)
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+// lazy = Lười (React.lazy - Tải component khi cần)
+// import = Nhập (Dynamic import - Nhập động)
 
 // ✅ 4. Analyze bundle
+// Analyze bundle = Phân tích bundle (Xem bundle có gì, kích thước bao nhiêu)
 pnpm vite-bundle-visualizer
+// vite-bundle-visualizer = Trình trực quan hóa bundle Vite (Tool xem bundle - HTML report)
+// visualizer = Trình trực quan hóa (Tool hiển thị bundle dạng đồ thị)
 ```
 
 ### **Runtime Optimization**
 
+// Runtime Optimization = Tối ưu runtime (Tối ưu khi chạy - Tăng tốc độ render)
+
 ```typescript
 // ✅ 1. React.memo for expensive components
+// React.memo = React memo (Memoization - Chỉ re-render khi props thay đổi)
+// expensive components = Component đắt (Component render nặng - Tốn nhiều tài nguyên)
 const ExpensiveComponent = React.memo(({ data }) => {
+  // memo = Memoization (Ghi nhớ - Chỉ re-render khi props thay đổi)
   return <div>{/* Heavy render logic */}</div>;
+  // Heavy render logic = Logic render nặng (Logic render phức tạp, tốn thời gian)
 });
 
 // ✅ 2. useMemo for expensive calculations
+// useMemo = useMemo hook (Memoization cho giá trị - Chỉ tính lại khi dependencies thay đổi)
+// expensive calculations = Tính toán đắt (Tính toán phức tạp, tốn thời gian)
 const sortedData = useMemo(() => {
+  // useMemo = useMemo hook (Ghi nhớ kết quả tính toán)
   return data.sort((a, b) => a.value - b.value);
+  // sort = Sắp xếp (Sắp xếp mảng - Tốn thời gian với mảng lớn)
 }, [data]);
+// [data] = Dependencies (Chỉ tính lại khi data thay đổi)
 
 // ✅ 3. Virtual scrolling for large lists
+// Virtual scrolling = Cuộn ảo (Chỉ render phần tử visible - Tối ưu cho danh sách lớn)
+// large lists = Danh sách lớn (Danh sách nhiều phần tử - 1000+ items)
 import { FixedSizeList } from 'react-window';
+// react-window = react-window (Thư viện virtual scrolling - Chỉ render phần tử visible)
+// FixedSizeList = Danh sách kích thước cố định (List với item size cố định)
 
 function LargeList({ items }) {
   return (
     <FixedSizeList height={600} itemCount={items.length} itemSize={50}>
+      // height = Chiều cao (Chiều cao danh sách - 600px) // itemCount = Số phần
+      tử (Tổng số items - items.length) // itemSize = Kích thước phần tử (Chiều
+      cao mỗi item - 50px)
       {({ index, style }) => <div style={style}>{items[index]}</div>}
+      // index = Chỉ mục (Chỉ mục phần tử hiện tại) // style = Style (Style từ
+      react-window - Position absolute để virtual scroll)
     </FixedSizeList>
   );
 }
 
 // ✅ 4. Image optimization
+// Image optimization = Tối ưu hình ảnh (Tối ưu tải hình ảnh - Lazy load, async decode)
 <img src="/image.jpg" loading="lazy" decoding="async" alt="..." />;
+// loading="lazy" = Tải lười (Lazy load - Chỉ tải khi vào viewport)
+// lazy = Lười (Tải khi cần - Không tải ngay)
+// decoding="async" = Giải mã bất đồng bộ (Decode ảnh bất đồng bộ - Không block render)
+// async = Bất đồng bộ (Không chờ - Chạy song song)
+// alt = Alternative text (Văn bản thay thế - Accessibility)
 ```
 
 ### **Network Optimization**
 
+// Network Optimization = Tối ưu mạng (Tối ưu request - Giảm số request, tăng tốc độ)
+
 ```typescript
 // ✅ 1. React Query stale-while-revalidate
+// React Query = React Query (Thư viện quản lý server state - Cache, sync, etc.)
+// stale-while-revalidate = Cũ trong khi tái xác thực (Hiển thị data cũ, fetch data mới ngầm)
+// stale = Cũ (Data đã cũ - Hết hạn)
+// revalidate = Tái xác thực (Kiểm tra lại, fetch data mới)
 const { data } = useQuery({
+  // useQuery = useQuery hook (Hook fetch data với cache)
   queryKey: ['users'],
+  // queryKey = Khóa truy vấn (Key để cache - ['users'] = Cache key)
   queryFn: fetchUsers,
+  // queryFn = Hàm truy vấn (Function fetch data - fetchUsers)
   staleTime: 5 * 60 * 1000, // 5 minutes
+  // staleTime = Thời gian cũ (5 phút - Data còn mới trong 5 phút)
+  // 5 * 60 * 1000 = 5 phút (5 phút * 60 giây * 1000 milliseconds)
   cacheTime: 10 * 60 * 1000, // 10 minutes
+  // cacheTime = Thời gian cache (10 phút - Giữ cache 10 phút sau khi không dùng)
+  // cache = Cache (Lưu trữ tạm - Giữ data trong bộ nhớ)
 });
 
 // ✅ 2. Prefetch on hover
+// Prefetch = Tải trước (Tải data trước khi cần - Tăng tốc độ)
+// on hover = Khi di chuột (Khi user di chuột vào link)
 <Link
   to="/dashboard"
+  // Link = Link (React Router Link - Điều hướng)
   onMouseEnter={() =>
+    // onMouseEnter = Khi di chuột vào (Event khi mouse vào element)
     queryClient.prefetchQuery({
+      // queryClient = Query client (Client quản lý queries)
+      // prefetchQuery = Tải trước query (Tải data trước khi cần)
       queryKey: ['dashboard'],
       queryFn: fetchDashboard,
     })
@@ -3252,11 +3756,20 @@ const { data } = useQuery({
 </Link>;
 
 // ✅ 3. Parallel requests
+// Parallel requests = Request song song (Gửi nhiều request cùng lúc - Nhanh hơn tuần tự)
+// parallel = Song song (Đồng thời - Không chờ nhau)
 const [users, posts, comments] = await Promise.all([
+  // Promise.all = Promise tất cả (Chờ tất cả promises hoàn thành - Song song)
+  // await = Đợi (Đợi promise hoàn thành)
   fetchUsers(),
+  // fetchUsers = Lấy users (Function fetch danh sách users)
   fetchPosts(),
+  // fetchPosts = Lấy posts (Function fetch danh sách posts)
   fetchComments(),
+  // fetchComments = Lấy comments (Function fetch danh sách comments)
 ]);
+// Promise.all = Chạy song song (Tất cả requests chạy cùng lúc - Nhanh hơn tuần tự)
+// Tuần tự = Sequential (Chạy lần lượt - Chậm hơn)
 ```
 
 ---
@@ -3270,101 +3783,282 @@ const [users, posts, comments] = await Promise.all([
 
 ### Foundation
 
+// Foundation = Nền tảng (Cơ sở - Setup ban đầu)
+
 - [ ] TypeScript strict mode enabled
+      // TypeScript strict mode = Chế độ nghiêm ngặt TypeScript (Bật tất cả strict checks)
+      // enabled = Đã bật (Đã kích hoạt)
 - [ ] ESLint + Prettier configured
+      // ESLint = ESLint (Linter - Kiểm tra lỗi code)
+      // Prettier = Prettier (Formatter - Sắp xếp code đẹp)
+      // configured = Đã cấu hình (Đã setup)
 - [ ] Git hooks (Husky + lint-staged)
+      // Git hooks = Móc Git (Script tự động chạy khi có sự kiện Git)
+      // Husky = Husky (Framework Git hooks)
+      // lint-staged = Lint đã stage (Chạy linters trên file đã stage)
 - [ ] Commit conventions enforced
+      // Commit conventions = Quy ước commit (Chuẩn commit message - feat:, fix:, etc.)
+      // enforced = Được thực thi (Bắt buộc phải theo)
 - [ ] Path aliases configured
+      // Path aliases = Bí danh đường dẫn (@app, @libs - Import ngắn gọn)
+      // configured = Đã cấu hình (Đã setup trong tsconfig)
 
 ### Architecture
 
+// Architecture = Kiến trúc (Cấu trúc code, tổ chức project)
+
 - [ ] Feature-based folder structure
+      // Feature-based = Dựa trên tính năng (Tổ chức code theo tính năng - auth/, dashboard/)
+      // folder structure = Cấu trúc thư mục (Cách tổ chức folders)
 - [ ] Shared libraries created
+      // Shared libraries = Thư viện dùng chung (Libraries dùng chung giữa các app)
+      // created = Đã tạo (Đã tạo shared libs)
 - [ ] State management strategy defined
+      // State management = Quản lý state (Cách quản lý state - Zustand, Redux, React Query)
+      // strategy = Chiến lược (Kế hoạch, cách làm)
+      // defined = Đã định nghĩa (Đã quyết định dùng gì)
 - [ ] API client with interceptors
+      // API client = Client API (Client gọi API - Axios, Fetch)
+      // interceptors = Bộ chặn (Request/Response interceptors - Thêm token, xử lý lỗi)
+      // interceptors = Chặn request/response (Thêm header, xử lý lỗi tự động)
 - [ ] Error boundaries implemented
+      // Error boundaries = Ranh giới lỗi (React component bắt lỗi - Ngăn app crash)
+      // implemented = Đã triển khai (Đã code error boundaries)
 
 ### Code Quality
 
+// Code Quality = Chất lượng code (Đảm bảo code tốt, dễ đọc, dễ maintain)
+
 - [ ] Automated code review (Danger.js)
+      // Automated = Tự động (Tự động kiểm tra - Không cần người)
+      // code review = Review code (Kiểm tra code trước khi merge)
+      // Danger.js = Danger.js (Tool tự động review PR - Kiểm tra PR size, tests, etc.)
 - [ ] Type safety enforced (Zod schemas)
+      // Type safety = An toàn kiểu (Đảm bảo kiểu dữ liệu đúng)
+      // enforced = Được thực thi (Bắt buộc)
+      // Zod schemas = Schema Zod (Zod validation schemas - Validate data)
+      // Zod = Zod (Thư viện validation TypeScript-first)
 - [ ] Code formatting automated
+      // Code formatting = Định dạng code (Sắp xếp code đẹp - Prettier)
+      // automated = Tự động (Tự động format khi commit)
 - [ ] Import sorting configured
+      // Import sorting = Sắp xếp import (Tự động sắp xếp imports - simple-import-sort)
+      // configured = Đã cấu hình (Đã setup)
 - [ ] Unused code detected
+      // Unused code = Code không dùng (Code không được sử dụng)
+      // detected = Phát hiện (Tool phát hiện unused code - ESLint, TypeScript)
 
 ### Performance
 
+// Performance = Hiệu suất (Tốc độ, tài nguyên)
+
 - [ ] Build optimization (Vite/SWC)
+      // Build optimization = Tối ưu build (Tối ưu quá trình build - Vite, SWC)
+      // Vite = Vite (Build tool nhanh)
+      // SWC = SWC (Compiler nhanh - Thay thế Babel)
 - [ ] Code splitting per route
+      // Code splitting = Chia tách code (Chia code thành nhiều file - Tải nhanh hơn)
+      // per route = Theo route (Chia code theo trang)
 - [ ] Lazy loading implemented
+      // Lazy loading = Tải chậm (Tải code khi cần - React.lazy)
+      // implemented = Đã triển khai (Đã code lazy loading)
 - [ ] Bundle analysis setup
+      // Bundle analysis = Phân tích bundle (Xem bundle có gì, kích thước bao nhiêu)
+      // setup = Đã setup (Đã cấu hình bundle analyzer)
 - [ ] Performance budgets defined
+      // Performance budgets = Ngân sách hiệu suất (Giới hạn kích thước bundle, thời gian load)
+      // budgets = Ngân sách (Giới hạn - Ví dụ: Bundle < 500KB, LCP < 2.5s)
+      // defined = Đã định nghĩa (Đã set performance budgets)
 
 ### Testing
 
+// Testing = Kiểm thử (Test code - Đảm bảo code đúng)
+
 - [ ] Unit tests (80%+ coverage)
+      // Unit tests = Kiểm thử đơn vị (Test từng function/component riêng lẻ)
+      // coverage = Độ phủ (Tỷ lệ code được test - 80%+ = Ít nhất 80%)
 - [ ] Integration tests
+      // Integration tests = Kiểm thử tích hợp (Test nhiều component/service cùng lúc)
+      // integration = Tích hợp (Kết hợp nhiều phần)
 - [ ] E2E tests (critical paths)
+      // E2E tests = Kiểm thử end-to-end (Test toàn bộ flow - User click → API → Database)
+      // E2E = End-to-End (Từ đầu đến cuối - Toàn bộ flow)
+      // critical paths = Đường dẫn quan trọng (Flow quan trọng - Login, checkout, etc.)
 - [ ] Visual regression tests
+      // Visual regression tests = Kiểm thử hồi quy trực quan (Test UI không thay đổi)
+      // visual = Trực quan (Giao diện, UI)
+      // regression = Hồi quy (Thay đổi không mong muốn - UI bị vỡ)
 - [ ] Accessibility tests
+      // Accessibility tests = Kiểm thử khả năng truy cập (Test a11y - Screen reader, keyboard)
+      // accessibility = Khả năng truy cập (a11y - Người khuyết tật có thể dùng)
 
 ### CI/CD
 
+// CI/CD = Continuous Integration/Continuous Deployment (Tích hợp/Triển khai liên tục)
+
 - [ ] GitHub Actions workflows
+      // GitHub Actions = GitHub Actions (CI/CD platform của GitHub)
+      // workflows = Quy trình làm việc (File .yml định nghĩa CI/CD pipeline)
 - [ ] Affected commands configured
+      // Affected commands = Lệnh ảnh hưởng (Chỉ test/build code thay đổi - Nx affected)
+      // configured = Đã cấu hình (Đã setup affected commands)
 - [ ] Auto deployment setup
+      // Auto deployment = Triển khai tự động (Tự động deploy khi merge PR)
+      // deployment = Triển khai (Deploy code lên server)
+      // setup = Đã setup (Đã cấu hình auto deployment)
 - [ ] Environment management
+      // Environment management = Quản lý môi trường (Quản lý dev, staging, production)
+      // environment = Môi trường (dev, staging, production)
+      // management = Quản lý (Cách quản lý env vars, configs)
 - [ ] Secret management
+      // Secret management = Quản lý bí mật (Quản lý API keys, tokens - GitHub Secrets)
+      // secret = Bí mật (API keys, tokens, passwords)
+      // management = Quản lý (Cách lưu trữ, sử dụng secrets an toàn)
 
 ### Monitoring
 
+// Monitoring = Giám sát (Theo dõi app trong production)
+
 - [ ] Error tracking (Sentry)
+      // Error tracking = Theo dõi lỗi (Ghi lại lỗi trong production - Sentry)
+      // Sentry = Sentry (Error tracking service - Ghi lại lỗi, stack trace)
 - [ ] Analytics (Google Analytics)
+      // Analytics = Phân tích (Theo dõi user behavior - Google Analytics)
+      // Google Analytics = Google Analytics (Tool phân tích user behavior)
 - [ ] Performance monitoring (Web Vitals)
+      // Performance monitoring = Giám sát hiệu suất (Theo dõi performance - Web Vitals)
+      // Web Vitals = Web Vitals (Chỉ số hiệu suất web - CLS, FID, FCP, LCP, TTFB)
 - [ ] Logging strategy
+      // Logging strategy = Chiến lược ghi log (Cách ghi log - Winston, Pino)
+      // logging = Ghi log (Ghi lại events, errors, info)
+      // strategy = Chiến lược (Kế hoạch, cách làm)
 - [ ] Alerts configured
+      // Alerts = Cảnh báo (Thông báo khi có vấn đề - Email, Slack)
+      // configured = Đã cấu hình (Đã setup alerts)
 
 ### Documentation
 
+// Documentation = Tài liệu (Hướng dẫn, mô tả)
+
 - [ ] README comprehensive
+      // README = README (File hướng dẫn project - Setup, usage)
+      // comprehensive = Toàn diện (Đầy đủ, chi tiết)
 - [ ] Storybook for components
+      // Storybook = Storybook (Tool xem components - Component documentation)
+      // components = Components (React components)
 - [ ] API documentation
+      // API documentation = Tài liệu API (Mô tả API endpoints - Swagger, OpenAPI)
+      // API = API (Application Programming Interface - Giao diện lập trình)
 - [ ] Architecture diagrams
+      // Architecture diagrams = Sơ đồ kiến trúc (Vẽ cấu trúc hệ thống - Mermaid, Draw.io)
+      // diagrams = Sơ đồ (Hình vẽ mô tả)
 - [ ] Onboarding guide
+      // Onboarding guide = Hướng dẫn đưa vào (Hướng dẫn dev mới - Setup, workflow)
+      // onboarding = Đưa vào (Quá trình dev mới bắt đầu làm việc)
 
 ### Scalability
 
+// Scalability = Khả năng mở rộng (Có thể mở rộng khi cần - Thêm dev, thêm tính năng)
+
 - [ ] Micro-frontends ready
+      // Micro-frontends = Vi frontend (Kiến trúc chia frontend thành nhiều app độc lập)
+      // ready = Sẵn sàng (Có thể chuyển sang micro-frontends khi cần)
 - [ ] Feature flags system
+      // Feature flags = Cờ tính năng (Bật/tắt tính năng mà không cần deploy lại)
+      // system = Hệ thống (Hệ thống quản lý feature flags)
 - [ ] A/B testing capability
+      // A/B testing = Kiểm thử A/B (Test 2 phiên bản - Xem phiên bản nào tốt hơn)
+      // capability = Khả năng (Có thể làm A/B testing)
 - [ ] Multi-tenancy support
+      // Multi-tenancy = Đa thuê (Hỗ trợ nhiều tenant - Nhiều khách hàng dùng chung app)
+      // tenancy = Thuê (Tenant = Khách hàng thuê app)
+      // support = Hỗ trợ (Có thể hỗ trợ multi-tenancy)
 - [ ] Internationalization (i18n)
+      // Internationalization = Quốc tế hóa (Hỗ trợ nhiều ngôn ngữ - i18n)
+      // i18n = Internationalization (i + 18 chữ cái + n = i18n)
+      // Hỗ trợ nhiều ngôn ngữ (Tiếng Việt, Tiếng Anh, etc.)
 ```
 
 ### **💡 Core Principles**
 
+// Core Principles = Nguyên tắc cốt lõi (Nguyên tắc quan trọng nhất)
+
 1. **Start with solid foundation** - TypeScript strict, proper tooling
+   // Start with solid foundation = Bắt đầu với nền tảng vững chắc (TypeScript strict, tooling đúng)
+   // solid = Vững chắc (Tốt, mạnh)
+   // foundation = Nền tảng (Cơ sở - TypeScript, ESLint, Prettier)
+   // proper tooling = Tooling đúng (Công cụ phù hợp - ESLint, Prettier, Husky)
 2. **Automate everything** - Linting, testing, deployment
+   // Automate everything = Tự động hóa mọi thứ (Linting, testing, deployment tự động)
+   // automate = Tự động hóa (Không cần làm thủ công)
+   // linting = Linting (Kiểm tra code tự động)
+   // deployment = Triển khai (Deploy tự động)
 3. **Measure performance** - Lighthouse CI, Web Vitals
+   // Measure performance = Đo hiệu suất (Lighthouse CI, Web Vitals)
+   // measure = Đo (Đo lường, đánh giá)
+   // Lighthouse CI = Lighthouse CI (Tool đo performance tự động trong CI)
+   // Web Vitals = Web Vitals (Chỉ số hiệu suất web)
 4. **Test comprehensively** - Unit, integration, E2E
+   // Test comprehensively = Kiểm thử toàn diện (Unit, integration, E2E)
+   // comprehensively = Toàn diện (Đầy đủ, nhiều loại test)
 5. **Monitor in production** - Sentry, analytics, metrics
+   // Monitor in production = Giám sát trong production (Sentry, analytics, metrics)
+   // production = Production (Môi trường production - App đang chạy thật)
+   // metrics = Chỉ số (Số liệu - Performance, errors, users)
 6. **Document thoroughly** - README, Storybook, diagrams
+   // Document thoroughly = Tài liệu kỹ lưỡng (README, Storybook, diagrams)
+   // thoroughly = Kỹ lưỡng (Đầy đủ, chi tiết)
 7. **Scale thoughtfully** - Monorepo, shared libraries, feature flags
+   // Scale thoughtfully = Mở rộng có suy nghĩ (Monorepo, shared libraries, feature flags)
+   // thoughtfully = Có suy nghĩ (Cẩn thận, có kế hoạch)
 8. **Iterate continuously** - Regular audits, refactoring, updates
+   // Iterate continuously = Lặp lại liên tục (Regular audits, refactoring, updates)
+   // iterate = Lặp lại (Làm đi làm lại, cải thiện)
+   // continuously = Liên tục (Không ngừng)
+   // audits = Kiểm toán (Kiểm tra định kỳ - Code review, performance audit)
+   // refactoring = Tái cấu trúc (Sửa code để cải thiện cấu trúc)
+   // updates = Cập nhật (Cập nhật dependencies, tools)
 
 ### **🚀 Final Wisdom**
 
+// Final Wisdom = Trí tuệ cuối cùng (Lời khuyên cuối cùng, quan trọng nhất)
+
 **"Tốt nhất là xây dựng từ đầu đúng cách, không phải refactor sau. Investment vào tooling, testing, và monitoring ngày đầu sẽ trả về gấp 10 lần về sau."**
+// Investment = Đầu tư (Đầu tư thời gian, công sức)
+// tooling = Công cụ (ESLint, Prettier, Husky, etc.)
+// testing = Kiểm thử (Unit tests, E2E tests)
+// monitoring = Giám sát (Sentry, analytics)
+// trả về = Return (Lợi ích nhận được - Gấp 10 lần)
 
 **Success Metrics:**
+// Success Metrics = Chỉ số thành công (Cách đánh giá project thành công)
 
 - **Developer Experience**: How fast can new dev be productive?
+  // Developer Experience = Trải nghiệm lập trình viên (Dev mới có thể làm việc nhanh như thế nào?)
+  // productive = Năng suất (Có thể làm việc hiệu quả)
 - **Code Quality**: How many bugs reach production?
+  // Code Quality = Chất lượng code (Bao nhiêu lỗi đến production?)
+  // bugs = Lỗi (Bugs - Lỗi code)
+  // reach production = Đến production (Lỗi xuất hiện trong production)
 - **Performance**: How fast is the app?
+  // Performance = Hiệu suất (App nhanh như thế nào?)
+  // fast = Nhanh (Tốc độ - Load time, render time)
 - **Reliability**: How often does it break?
+  // Reliability = Độ tin cậy (App bị lỗi thường xuyên như thế nào?)
+  // break = Bị lỗi (Crash, error - App không hoạt động)
 - **Maintainability**: How easy to change?
+  // Maintainability = Khả năng bảo trì (Dễ thay đổi như thế nào?)
+  // maintain = Bảo trì (Sửa, cập nhật code)
+  // change = Thay đổi (Thêm tính năng, sửa lỗi)
 
 **Remember:** Production-ready ≠ Perfect. Ship fast, iterate, improve continuously! 🚀
+// Remember = Nhớ (Lưu ý)
+// Production-ready = Sẵn sàng production (Đủ tốt để deploy - Không phải hoàn hảo)
+// Perfect = Hoàn hảo (100% - Không cần thiết)
+// Ship fast = Ship nhanh (Deploy nhanh - Không chờ hoàn hảo)
+// iterate = Lặp lại (Làm đi làm lại, cải thiện)
+// improve = Cải thiện (Làm tốt hơn)
+// continuously = Liên tục (Không ngừng)
 
 ---
 

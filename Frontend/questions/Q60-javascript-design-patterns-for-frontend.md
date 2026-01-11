@@ -4,58 +4,66 @@
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
 
-**"Design patterns: Singleton (1 instance), Observer (subscribe changes), Factory (create objects), Module (encapsulation), Pub/Sub (event-driven), Dependency Injection (loose coupling). Modern: Hooks patterns, Compound Components."**
+**"Design patterns: Singleton (1 instance - 1 thể hiện duy nhất), Observer (subscribe changes - đăng ký theo dõi thay đổi), Factory (create objects - tạo đối tượng), Module (encapsulation - đóng gói), Pub/Sub (event-driven - giao tiếp dựa trên sự kiện), Dependency Injection (loose coupling - liên kết lỏng lẻo). Modern: Hooks patterns (mẫu hooks), Compound Components (component kết hợp)."**
 
-**🔑 6 Essential Patterns:**
+**🔑 6 Essential Patterns (6 Mẫu Thiết Kế Cốt Lõi):**
 
-**1. Singleton - Single Instance:**
-- **Use case**: Database connection, config object, logger
-- **JS**: Module exports object (auto-singleton), class với static instance
-- **Caution**: Hard to test (global state), avoid unless necessary
+**1. Singleton - Single Instance (Thể Hiện Duy Nhất):**
 
-**2. Observer - Subscribe to Changes:**
-- **Use case**: Event listeners, state management, reactive programming
-- **Pattern**: Subject maintains observers list, notify on change
-- **Modern**: RxJS Observables, MobX, Vue reactivity
+- **Use case (Trường hợp sử dụng)**: Database connection (kết nối cơ sở dữ liệu), config object (đối tượng cấu hình), logger (hệ thống ghi log)
+- **JS**: Module exports object (auto-singleton - module xuất đối tượng tự động singleton), class với static instance (lớp với thể hiện tĩnh)
+- **Caution (Lưu ý)**: Hard to test (khó kiểm thử - do global state - trạng thái toàn cục), avoid unless necessary (tránh trừ khi thực sự cần thiết)
 
-**3. Pub/Sub (Publish-Subscribe):**
-- **Khác Observer**: Decoupled (event bus giữa publisher/subscriber)
-- **Use case**: Cross-component communication, analytics events
-- **Implementation**: EventEmitter, window.postMessage, Redux
+**2. Observer - Subscribe to Changes (Đăng Ký Theo Dõi Thay Đổi):**
 
-**4. Factory - Object Creation:**
-- **Use case**: Create objects without specifying exact class
-- **Example**: `React.createElement()`, component factories
-- **Benefits**: Flexibility, hide complexity
+- **Use case**: Event listeners (bộ lắng nghe sự kiện), state management (quản lý trạng thái), reactive programming (lập trình phản ứng)
+- **Pattern**: Subject maintains observers list (Chủ thể duy trì danh sách người quan sát), notify on change (thông báo khi có thay đổi)
+- **Modern**: RxJS Observables, MobX, Vue reactivity (tính phản ứng của Vue)
 
-**5. Module Pattern - Encapsulation:**
-- **ES6 Modules**: `export/import` - native encapsulation
-- **IIFE**: `(function(){ ... })()` - private scope (legacy)
-- **Use case**: Libraries, utilities, prevent global pollution
+**3. Pub/Sub (Publish-Subscribe - Xuất Bản/Đăng Ký):**
 
-**6. Dependency Injection:**
-- **Pattern**: Pass dependencies (không hard-code)
-- **Use case**: Testing (mock dependencies), loose coupling
-- **React**: Props, Context API, custom hooks
+- **Khác Observer**: Decoupled (tách rời - event bus giữa publisher/subscriber - bus sự kiện giữa người xuất bản và người đăng ký)
+- **Use case**: Cross-component communication (giao tiếp giữa các component), analytics events (sự kiện phân tích)
+- **Implementation (Triển khai)**: EventEmitter, window.postMessage, Redux
 
-**🔑 Modern React Patterns:**
+**4. Factory - Object Creation (Tạo Đối Tượng):**
 
-- **Compound Components**: `<Select>` + `<Option>` share state
-- **Render Props**: `<DataProvider render={data => ...} />`
-- **Higher-Order Components** (HOC): `withAuth(Component)`
-- **Custom Hooks**: `useAuth()`, `useFetch()` - reusable logic
+- **Use case**: Create objects without specifying exact class (Tạo đối tượng mà không cần chỉ định lớp cụ thể)
+- **Example**: `React.createElement()`, component factories (nhà máy component)
+- **Benefits (Lợi ích)**: Flexibility (linh hoạt), hide complexity (ẩn độ phức tạp)
 
-**⚠️ Lỗi Thường Gặp:**
-- Over-engineering: Dùng patterns không cần thiết → complexity
-- Singleton abuse → global state, hard test
-- Observer memory leaks → forget unsubscribe
-- Pub/Sub không type-safe → dùng TypeScript event types
+**5. Module Pattern - Encapsulation (Đóng Gói):**
 
-**💡 Kiến Thức Senior:**
-- **Strategy Pattern**: Interchangeable algorithms (sort strategies, payment methods)
-- **Command Pattern**: Undo/redo functionality (Redux actions)
-- **Proxy Pattern**: ES6 Proxy cho reactivity (Vue 3, MobX)
-- **Facade Pattern**: Simplify complex APIs (Axios wraps fetch, jQuery wraps DOM)
+- **ES6 Modules**: `export/import` - native encapsulation (đóng gói tự nhiên)
+- **IIFE**: `(function(){ ... })()` - private scope (phạm vi riêng tư - legacy - cũ)
+- **Use case**: Libraries (thư viện), utilities (tiện ích), prevent global pollution (ngăn chặn ô nhiễm toàn cục)
+
+**6. Dependency Injection (Tiêm Phụ Thuộc):**
+
+- **Pattern**: Pass dependencies (không hard-code - truyền phụ thuộc, không mã hóa cứng)
+- **Use case**: Testing (mock dependencies - kiểm thử với phụ thuộc giả), loose coupling (liên kết lỏng lẻo)
+- **React**: Props, Context API, custom hooks (hooks tùy chỉnh)
+
+**🔑 Modern React Patterns (Mẫu React Hiện Đại):**
+
+- **Compound Components (Component Kết Hợp)**: `<Select>` + `<Option>` share state (chia sẻ trạng thái)
+- **Render Props (Props Render)**: `<DataProvider render={data => ...} />` - truyền function render như prop
+- **Higher-Order Components (HOC - Component Bậc Cao)**: `withAuth(Component)` - bọc component với logic xác thực
+- **Custom Hooks (Hooks Tùy Chỉnh)**: `useAuth()`, `useFetch()` - reusable logic (logic tái sử dụng)
+
+**⚠️ Lỗi Thường Gặp (Common Mistakes):**
+
+- Over-engineering (Kỹ thuật quá mức): Dùng patterns không cần thiết → complexity (độ phức tạp)
+- Singleton abuse (Lạm dụng Singleton) → global state (trạng thái toàn cục), hard test (khó kiểm thử)
+- Observer memory leaks (Rò rỉ bộ nhớ Observer) → forget unsubscribe (quên hủy đăng ký)
+- Pub/Sub không type-safe (không an toàn kiểu) → dùng TypeScript event types (kiểu sự kiện TypeScript)
+
+**💡 Kiến Thức Senior (Senior Knowledge):**
+
+- **Strategy Pattern (Mẫu Chiến Lược)**: Interchangeable algorithms (thuật toán có thể thay thế - sort strategies - chiến lược sắp xếp, payment methods - phương thức thanh toán)
+- **Command Pattern (Mẫu Lệnh)**: Undo/redo functionality (chức năng hoàn tác/làm lại - Redux actions)
+- **Proxy Pattern (Mẫu Proxy)**: ES6 Proxy cho reactivity (tính phản ứng - Vue 3, MobX)
+- **Facade Pattern (Mẫu Mặt Tiền)**: Simplify complex APIs (đơn giản hóa API phức tạp - Axios wraps fetch, jQuery wraps DOM)
 
 **❓ Câu Hỏi:**
 
@@ -68,9 +76,10 @@ Giải thích các Design Patterns phổ biến trong JavaScript/TypeScript fron
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │          JAVASCRIPT DESIGN PATTERNS (Gang of Four + Modern)  │
+│          (CÁC MẪU THIẾT KẾ JAVASCRIPT - Gang of Four + Hiện Đại) │
 ├──────────────────────────────────────────────────────────────┤
 │                                                              │
-│  🏗️ CREATIONAL PATTERNS (Object Creation)                    │
+│  🏗️ CREATIONAL PATTERNS (Object Creation - Mẫu Tạo Đối Tượng)                    │
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │  • Singleton     - Đảm bảo chỉ 1 instance duy nhất    │ │
 │  │  • Factory       - Tạo objects mà không chỉ định class│ │
@@ -78,20 +87,20 @@ Giải thích các Design Patterns phổ biến trong JavaScript/TypeScript fron
 │  │  • Builder       - Xây dựng complex objects từng bước │ │
 │  └────────────────────────────────────────────────────────┘ │
 │                                                              │
-│  🔗 STRUCTURAL PATTERNS (Object Relationships)               │
+│  🔗 STRUCTURAL PATTERNS (Object Relationships - Mẫu Quan Hệ Đối Tượng)               │
 │  ┌────────────────────────────────────────────────────────┐ │
-│  │  • Module        - Encapsulation, private/public API   │ │
-│  │  • Decorator     - Thêm behavior vào objects          │ │
-│  │  • Facade        - Simplified interface               │ │
-│  │  • Proxy         - Control access to objects          │ │
+│  │  • Module        - Encapsulation (Đóng gói), private/public API   │ │
+│  │  • Decorator     - Thêm behavior vào objects (Thêm hành vi vào đối tượng)          │ │
+│  │  • Facade        - Simplified interface (Giao diện đơn giản hóa)               │ │
+│  │  • Proxy         - Control access to objects (Kiểm soát truy cập đối tượng)          │ │
 │  └────────────────────────────────────────────────────────┘ │
 │                                                              │
-│  📡 BEHAVIORAL PATTERNS (Object Communication)               │
+│  📡 BEHAVIORAL PATTERNS (Object Communication - Mẫu Giao Tiếp Đối Tượng)               │
 │  ┌────────────────────────────────────────────────────────┐ │
-│  │  • Observer      - Subscribe to object changes         │ │
-│  │  • Pub/Sub       - Event-driven communication         │ │
-│  │  • Strategy      - Interchangeable algorithms         │ │
-│  │  • Command       - Encapsulate requests as objects    │ │
+│  │  • Observer      - Subscribe to object changes (Đăng ký theo dõi thay đổi)         │ │
+│  │  • Pub/Sub       - Event-driven communication (Giao tiếp dựa trên sự kiện)         │ │
+│  │  • Strategy      - Interchangeable algorithms (Thuật toán có thể thay thế)         │ │
+│  │  • Command       - Encapsulate requests as objects (Đóng gói yêu cầu thành đối tượng)    │ │
 │  └────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────┘
 ```
@@ -106,12 +115,12 @@ Giải thích các Design Patterns phổ biến trong JavaScript/TypeScript fron
 // ===================================================
 
 /**
- * Use Cases:
- * - Global state management (Redux store)
- * - Logger service
- * - Database connection
- * - API client
- * - Configuration manager
+ * Use Cases (Trường hợp sử dụng):
+ * - Global state management (Quản lý trạng thái toàn cục - Redux store)
+ * - Logger service (Dịch vụ ghi log)
+ * - Database connection (Kết nối cơ sở dữ liệu)
+ * - API client (Ứng dụng khách API)
+ * - Configuration manager (Trình quản lý cấu hình)
  */
 
 // ===================================================
@@ -119,24 +128,25 @@ Giải thích các Design Patterns phổ biến trong JavaScript/TypeScript fron
 // ===================================================
 
 class ApiClient {
-  constructor(private baseUrl: string) {}
+  constructor(private baseUrl: string) {} // baseUrl: địa chỉ cơ sở của API
 
   async get(endpoint: string) {
-    return fetch(`${this.baseUrl}${endpoint}`);
+    // endpoint: điểm cuối API
+    return fetch(`${this.baseUrl}${endpoint}`); // Gửi request GET
   }
 }
 
-// Problem: Creates new instance every time!
+// Problem (Vấn đề): Creates new instance every time! (Tạo thể hiện mới mỗi lần!)
 const api1 = new ApiClient('https://api.example.com');
 const api2 = new ApiClient('https://api.example.com');
-// api1 !== api2 (different instances, waste memory)
+// api1 !== api2 (different instances - các thể hiện khác nhau, waste memory - lãng phí bộ nhớ)
 
 // ===================================================
 // ✅ GOOD: Singleton Pattern (Classic ES6 Class)
 // ===================================================
 
 class ApiClient {
-  private static instance: ApiClient;  // 👉 Static instance (duy nhất)
+  private static instance: ApiClient; // 👉 Static instance (duy nhất)
   private baseUrl: string;
 
   // 🔒 Private constructor (cannot use `new` outside class - Không thể new từ bên ngoài)
@@ -145,25 +155,30 @@ class ApiClient {
   }
 
   // 🎯 Public method to get the single instance (Lấy instance duy nhất)
-  public static getInstance(baseUrl: string = 'https://api.example.com'): ApiClient {
-    if (!ApiClient.instance) {  // ❓ Chưa có instance
-      ApiClient.instance = new ApiClient(baseUrl);  // ✅ Tạo instance mới
+  public static getInstance(
+    baseUrl: string = 'https://api.example.com'
+  ): ApiClient {
+    if (!ApiClient.instance) {
+      // ❓ Chưa có instance
+      ApiClient.instance = new ApiClient(baseUrl); // ✅ Tạo instance mới
     }
-    return ApiClient.instance;  // 🔁 Trả về instance hiện tại
+    return ApiClient.instance; // 🔁 Trả về instance hiện tại
   }
 
-  public async get(endpoint: string) {  // 📥 GET request
-    const response = await fetch(`${this.baseUrl}${endpoint}`);
-    return response.json();
+  async get(endpoint: string) {
+    // 📥 GET request (Gửi request GET)
+    const response = await fetch(`${this.baseUrl}${endpoint}`); // Gọi fetch API
+    return response.json(); // Trả về dữ liệu JSON
   }
 
-  public async post(endpoint: string, data: any) {  // 📤 POST request
+  public async post(endpoint: string, data: any) {
+    // 📤 POST request (Gửi request POST)
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },  // 📝 JSON header
-      body: JSON.stringify(data)  // 📦 Serialize data
+      method: 'POST', // Phương thức POST
+      headers: { 'Content-Type': 'application/json' }, // 📝 JSON header (Header JSON)
+      body: JSON.stringify(data), // 📦 Serialize data (Chuyển đổi dữ liệu thành JSON string)
     });
-    return response.json();
+    return response.json(); // Trả về dữ liệu JSON
   }
 }
 
@@ -178,9 +193,10 @@ console.log(api1 === api2); // ✅ true (same instance - Cùng 1 instance!)
 
 // 📄 apiClient.ts
 class ApiClient {
-  constructor(private baseUrl: string) {}  // 🎯 Constructor đơn giản
+  constructor(private baseUrl: string) {} // 🎯 Constructor đơn giản
 
-  async get(endpoint: string) {  // 📥 GET request
+  async get(endpoint: string) {
+    // 📥 GET request
     const response = await fetch(`${this.baseUrl}${endpoint}`);
     return response.json();
   }
@@ -191,77 +207,83 @@ class ApiClient {
 export const apiClient = new ApiClient('https://api.example.com');
 
 // 📄 app.ts
-import { apiClient } from './apiClient';  // 📥 Import instance
+import { apiClient } from './apiClient'; // 📥 Import instance
 
 // ✅ Always the same instance (ES modules cached by default)
-apiClient.get('/users');  // 👥 Lấy danh sách users
+apiClient.get('/users'); // 👥 Lấy danh sách users
 
 // ===================================================
 // 🔥 REAL-WORLD EXAMPLE: Logger Singleton
 // ===================================================
 
-type LogLevel = 'debug' | 'info' | 'warn' | 'error';  // 🏷️ Các mức log
+type LogLevel = 'debug' | 'info' | 'warn' | 'error'; // 🏷️ Các mức log
 
 class Logger {
-  private static instance: Logger;  // 👉 Static instance
-  private logs: Array<{ level: LogLevel; message: string; timestamp: Date }> = [];  // 📊 Lưu tất cả logs
+  private static instance: Logger; // 👉 Static instance
+  private logs: Array<{ level: LogLevel; message: string; timestamp: Date }> =
+    []; // 📊 Lưu tất cả logs
 
-  private constructor() {}  // 🔒 Private constructor
+  private constructor() {} // 🔒 Private constructor
 
-  public static getInstance(): Logger {  // 🎯 Lấy instance
+  public static getInstance(): Logger {
+    // 🎯 Lấy instance
     if (!Logger.instance) {
       Logger.instance = new Logger();
     }
     return Logger.instance;
   }
 
-  private log(level: LogLevel, message: string) {  // 📝 Log function chính
+  private log(level: LogLevel, message: string) {
+    // 📝 Log function chính
     const logEntry = {
       level,
       message,
-      timestamp: new Date()  // ⏱️ Thời gian log
+      timestamp: new Date(), // ⏱️ Thời gian log
     };
 
-    this.logs.push(logEntry);  // 📥 Lưu vào array
+    this.logs.push(logEntry); // 📥 Lưu vào array
 
     // 🎨 Console output with colors (In ra console với màu sắc)
     const colors = {
       debug: '\x1b[36m', // 💙 Cyan - Màu xanh nhạt
       info: '\x1b[32m', // 🟢 Green - Màu xanh lá
       warn: '\x1b[33m', // 🟡 Yellow - Màu vàng
-      error: '\x1b[31m' // 🔴 Red - Màu đỏ
+      error: '\x1b[31m', // 🔴 Red - Màu đỏ
     };
 
-    console.log(
-      `${colors[level]}[${level.toUpperCase()}]\x1b[0m ${message}`
-    );
+    console.log(`${colors[level]}[${level.toUpperCase()}]\x1b[0m ${message}`);
   }
 
-  public debug(message: string) {  // 💙 Debug level
-    this.log('debug', message);
+  public debug(message: string) {
+    // 💙 Debug level (Mức debug - thông tin gỡ lỗi)
+    this.log('debug', message); // Gọi hàm log với level debug
   }
 
-  public info(message: string) {  // 🟢 Info level
-    this.log('info', message);
+  public info(message: string) {
+    // 🟢 Info level (Mức thông tin)
+    this.log('info', message); // Gọi hàm log với level info
   }
 
-  public warn(message: string) {  // 🟡 Warning level
-    this.log('warn', message);
+  public warn(message: string) {
+    // 🟡 Warning level (Mức cảnh báo)
+    this.log('warn', message); // Gọi hàm log với level warn
   }
 
-  public error(message: string) {  // 🔴 Error level
-    this.log('error', message);
+  public error(message: string) {
+    // 🔴 Error level (Mức lỗi)
+    this.log('error', message); // Gọi hàm log với level error
   }
 
-  public getLogs() {  // 📊 Lấy tất cả logs
-    return this.logs;
+  public getLogs() {
+    // 📊 Lấy tất cả logs (Trả về tất cả các log đã ghi)
+    return this.logs; // Trả về mảng logs
   }
 }
 
 // 📝 Usage
 const logger = Logger.getInstance();
-logger.info('App started');  // 🟢 [INFO] App started
-logger.error('Failed to fetch data');  // 🔴 [ERROR] Failed to fetch data
+logger.info('App started'); // 🟢 [INFO] App started
+logger.error('Failed to fetch data'); // 🔴 [ERROR] Failed to fetch data
 logger.getLogs(); // 📊 All logs from entire app
 ```
 
@@ -275,11 +297,11 @@ logger.getLogs(); // 📊 All logs from entire app
 // ===================================================
 
 /**
- * Use Cases:
- * - React state management (useState triggers re-render)
- * - Event listeners (addEventListener)
- * - Real-time data updates (stock prices, chat)
- * - Model-View synchronization
+ * Use Cases (Trường hợp sử dụng):
+ * - React state management (Quản lý trạng thái React - useState triggers re-render - useState kích hoạt render lại)
+ * - Event listeners (Bộ lắng nghe sự kiện - addEventListener)
+ * - Real-time data updates (Cập nhật dữ liệu thời gian thực - stock prices - giá cổ phiếu, chat - trò chuyện)
+ * - Model-View synchronization (Đồng bộ hóa Model-View)
  */
 
 // ===================================================
@@ -287,28 +309,28 @@ logger.getLogs(); // 📊 All logs from entire app
 // ===================================================
 
 interface Observer {
-  update(data: any): void;  // 🔄 Phương thức nhận update
+  update(data: any): void; // 🔄 Phương thức nhận update
 }
 
 class Subject {
-  private observers: Observer[] = [];  // 📊 Danh sách observers
+  private observers: Observer[] = []; // 📊 Danh sách observers
 
   // 🔔 Subscribe to changes (Đăng ký nhận thông báo)
   public subscribe(observer: Observer): void {
-    this.observers.push(observer);  // 📥 Thêm vào danh sách
+    this.observers.push(observer); // 📥 Thêm vào danh sách
   }
 
   // 🚫 Unsubscribe (Hủy đăng ký)
   public unsubscribe(observer: Observer): void {
     const index = this.observers.indexOf(observer);
     if (index > -1) {
-      this.observers.splice(index, 1);  // 🗑️ Xóa khỏi danh sách
+      this.observers.splice(index, 1); // 🗑️ Xóa khỏi danh sách
     }
   }
 
   // 📢 Notify all observers (Thông báo cho tất cả observers)
   protected notify(data: any): void {
-    this.observers.forEach((observer) => observer.update(data));  // 🔁 Gọi update cho từng observer
+    this.observers.forEach((observer) => observer.update(data)); // 🔁 Gọi update cho từng observer
   }
 }
 
@@ -317,8 +339,8 @@ class Subject {
 // ===================================================
 
 class Stock extends Subject {
-  private price: number = 0;  // 💵 Giá hiện tại
-  private name: string;       // 🏷️ Tên cổ phiếu
+  private price: number = 0; // 💵 Giá hiện tại
+  private name: string; // 🏷️ Tên cổ phiếu
 
   constructor(name: string, initialPrice: number) {
     super();
@@ -326,36 +348,39 @@ class Stock extends Subject {
     this.price = initialPrice;
   }
 
-  public setPrice(newPrice: number): void {  // 💰 Đổi giá
-    console.log(`${this.name} price changed: $${this.price} → $${newPrice}`);
-    this.price = newPrice;
-    this.notify({ name: this.name, price: newPrice });  // 📢 Thông báo cho observers
+  public setPrice(newPrice: number): void {
+    // 💰 Đổi giá (Cập nhật giá mới)
+    console.log(`${this.name} price changed: $${this.price} → $${newPrice}`); // In log thay đổi giá
+    this.price = newPrice; // Cập nhật giá mới
+    this.notify({ name: this.name, price: newPrice }); // 📢 Thông báo cho observers (Gửi thông báo đến tất cả observers)
   }
 
-  public getPrice(): number {  // 📊 Lấy giá
-    return this.price;
+  public getPrice(): number {
+    // 📊 Lấy giá (Trả về giá hiện tại)
+    return this.price; // Trả về giá
   }
 }
 
 // 📺 Observer 1: Display widget (Hiển thị)
 class PriceDisplay implements Observer {
-  constructor(private elementId: string) {}  // 🎯 Element ID để hiển thị
+  constructor(private elementId: string) {} // 🎯 Element ID để hiển thị
 
   update(data: { name: string; price: number }): void {
     const element = document.getElementById(this.elementId);
     if (element) {
-      element.textContent = `${data.name}: $${data.price}`;  // 📝 Cập nhật text
+      element.textContent = `${data.name}: $${data.price}`; // 📝 Cập nhật text
     }
   }
 }
 
 // 🔔 Observer 2: Alert service (Cảnh báo)
 class PriceAlert implements Observer {
-  constructor(private threshold: number) {}  // 🚨 Ngưỡng giá
+  constructor(private threshold: number) {} // 🚨 Ngưỡng giá
 
   update(data: { name: string; price: number }): void {
-    if (data.price > this.threshold) {  // ❗ Vượt ngưỡng
-      alert(`${data.name} exceeded $${this.threshold}!`);  // 🔔 Cảnh báo
+    if (data.price > this.threshold) {
+      // ❗ Vượt ngưỡng
+      alert(`${data.name} exceeded $${this.threshold}!`); // 🔔 Cảnh báo
     }
   }
 }
@@ -363,29 +388,31 @@ class PriceAlert implements Observer {
 // 📝 Observer 3: Logger (Ghi log)
 class PriceLogger implements Observer {
   update(data: { name: string; price: number }): void {
-    console.log(`[LOG] ${new Date().toISOString()} - ${data.name}: $${data.price}`);  // 📊 Ghi log với timestamp
+    console.log(
+      `[LOG] ${new Date().toISOString()} - ${data.name}: $${data.price}`
+    ); // 📊 Ghi log với timestamp
   }
 }
 
-// Usage
-const appleStock = new Stock('AAPL', 150);
+// Usage (Cách sử dụng)
+const appleStock = new Stock('AAPL', 150); // Tạo cổ phiếu Apple với giá ban đầu $150
 
-const display = new PriceDisplay('stock-display');
-const alert = new PriceAlert(200);
-const logger = new PriceLogger();
+const display = new PriceDisplay('stock-display'); // Widget hiển thị giá
+const alert = new PriceAlert(200); // Cảnh báo khi giá vượt $200
+const logger = new PriceLogger(); // Ghi log giá
 
-// Subscribe observers
-appleStock.subscribe(display);
-appleStock.subscribe(alert);
-appleStock.subscribe(logger);
+// Subscribe observers (Đăng ký các observer)
+appleStock.subscribe(display); // Đăng ký widget hiển thị
+appleStock.subscribe(alert); // Đăng ký cảnh báo
+appleStock.subscribe(logger); // Đăng ký logger
 
-// Update price → all observers notified!
-appleStock.setPrice(180); // Display updates, logger logs
-appleStock.setPrice(210); // Display updates, alert fires, logger logs
+// Update price → all observers notified! (Cập nhật giá → tất cả observer được thông báo!)
+appleStock.setPrice(180); // Display updates (hiển thị cập nhật), logger logs (logger ghi log)
+appleStock.setPrice(210); // Display updates, alert fires (cảnh báo kích hoạt), logger logs
 
-// Unsubscribe
-appleStock.unsubscribe(alert);
-appleStock.setPrice(220); // Only display and logger notified
+// Unsubscribe (Hủy đăng ký)
+appleStock.unsubscribe(alert); // Hủy đăng ký cảnh báo
+appleStock.setPrice(220); // Only display and logger notified (Chỉ hiển thị và logger được thông báo)
 ```
 
 ---
@@ -398,32 +425,33 @@ appleStock.setPrice(220); // Only display and logger notified
 // ===================================================
 
 /**
- * Difference from Observer:
- * - Observer: Subject knows its observers (tight coupling)
- * - Pub/Sub: Publishers/Subscribers don't know each other (loose coupling)
- * 
- * Use Cases:
- * - Global events (analytics tracking)
- * - Cross-component communication
- * - Microservices messaging
+ * Difference from Observer (Khác biệt so với Observer):
+ * - Observer: Subject knows its observers (Chủ thể biết các observer của nó - tight coupling - liên kết chặt chẽ)
+ * - Pub/Sub: Publishers/Subscribers don't know each other (Người xuất bản/Người đăng ký không biết nhau - loose coupling - liên kết lỏng lẻo)
+ *
+ * Use Cases (Trường hợp sử dụng):
+ * - Global events (Sự kiện toàn cục - analytics tracking - theo dõi phân tích)
+ * - Cross-component communication (Giao tiếp giữa các component)
+ * - Microservices messaging (Nhắn tin giữa các microservice)
  */
 
 // ===================================================
 // ✅ IMPLEMENTATION: Event Bus (Pub/Sub Mediator - Trung gian sự kiện)
 // ===================================================
 
-type EventCallback = (data?: any) => void;  // 🔗 Callback function cho sự kiện
+type EventCallback = (data?: any) => void; // 🔗 Callback function cho sự kiện
 
 class EventBus {
-  private events: Map<string, EventCallback[]> = new Map();  // 📊 Lưu danh sách events và callbacks
+  private events: Map<string, EventCallback[]> = new Map(); // 📊 Lưu danh sách events và callbacks
 
   // 🔔 Subscribe to event (Đăng ký lắng nghe sự kiện)
   public on(event: string, callback: EventCallback): () => void {
-    if (!this.events.has(event)) {  // ❓ Chưa có event này
-      this.events.set(event, []);  // 🆕 Tạo array mới
+    if (!this.events.has(event)) {
+      // ❓ Chưa có event này
+      this.events.set(event, []); // 🆕 Tạo array mới
     }
 
-    this.events.get(event)!.push(callback);  // 📥 Thêm callback vào danh sách
+    this.events.get(event)!.push(callback); // 📥 Thêm callback vào danh sách
 
     // 🔁 Return unsubscribe function (Trả về hàm hủy đăng ký)
     return () => this.off(event, callback);
@@ -435,7 +463,7 @@ class EventBus {
     if (callbacks) {
       const index = callbacks.indexOf(callback);
       if (index > -1) {
-        callbacks.splice(index, 1);  // 🗑️ Xóa callback
+        callbacks.splice(index, 1); // 🗑️ Xóa callback
       }
     }
   }
@@ -444,7 +472,7 @@ class EventBus {
   public emit(event: string, data?: any): void {
     const callbacks = this.events.get(event);
     if (callbacks) {
-      callbacks.forEach((callback) => callback(data));  // 🔁 Gọi tất cả callbacks
+      callbacks.forEach((callback) => callback(data)); // 🔁 Gọi tất cả callbacks
     }
   }
 
@@ -452,7 +480,7 @@ class EventBus {
   public once(event: string, callback: EventCallback): void {
     const onceCallback = (data?: any) => {
       callback(data);
-      this.off(event, onceCallback);  // 🚫 Tự động hủy sau khi chạy
+      this.off(event, onceCallback); // 🚫 Tự động hủy sau khi chạy
     };
     this.on(event, onceCallback);
   }
@@ -468,18 +496,19 @@ const eventBus = new EventBus();
 // 📤 Publisher: ProductCard component
 class ProductCard {
   addToCart(product: { id: string; name: string; price: number }) {
-    eventBus.emit('product:added', product);  // 📢 Phát sự kiện
+    eventBus.emit('product:added', product); // 📢 Phát sự kiện
   }
 }
 
 // 📥 Subscriber 1: CartWidget (Widget giỏ hàng)
 class CartWidget {
-  private itemCount: number = 0;  // 📊 Số lượng sản phẩm
+  private itemCount: number = 0; // 📊 Số lượng sản phẩm
 
   constructor() {
-    eventBus.on('product:added', (product) => {  // 🔔 Lắng nghe sự kiện
-      this.itemCount++;  // ➡️ Tăng số lượng
-      this.updateUI();   // 🔄 Cập nhật UI
+    eventBus.on('product:added', (product) => {
+      // 🔔 Lắng nghe sự kiện
+      this.itemCount++; // ➡️ Tăng số lượng
+      this.updateUI(); // 🔄 Cập nhật UI
       console.log(`Cart updated: ${this.itemCount} items`);
     });
   }
@@ -487,7 +516,7 @@ class CartWidget {
   private updateUI() {
     const badge = document.getElementById('cart-badge');
     if (badge) {
-      badge.textContent = String(this.itemCount);  // 📝 Cập nhật badge
+      badge.textContent = String(this.itemCount); // 📝 Cập nhật badge
     }
   }
 }
@@ -495,11 +524,13 @@ class CartWidget {
 // 📊 Subscriber 2: Analytics (Phân tích)
 class Analytics {
   constructor() {
-    eventBus.on('product:added', (product) => {  // 🔔 Lắng nghe
-      this.trackEvent('add_to_cart', {  // 📊 Theo dõi sự kiện
+    eventBus.on('product:added', (product) => {
+      // 🔔 Lắng nghe
+      this.trackEvent('add_to_cart', {
+        // 📊 Theo dõi sự kiện
         product_id: product.id,
         product_name: product.name,
-        price: product.price
+        price: product.price,
       });
     });
   }
@@ -513,8 +544,9 @@ class Analytics {
 // 🔔 Subscriber 3: Toast Notification (Thông báo)
 class ToastNotifier {
   constructor() {
-    eventBus.on('product:added', (product) => {  // 🔔 Lắng nghe
-      this.showToast(`${product.name} added to cart!`);  // 🔔 Hiển thị thông báo
+    eventBus.on('product:added', (product) => {
+      // 🔔 Lắng nghe
+      this.showToast(`${product.name} added to cart!`); // 🔔 Hiển thị thông báo
     });
   }
 
@@ -524,18 +556,18 @@ class ToastNotifier {
   }
 }
 
-// Usage
-const productCard = new ProductCard();
-const cartWidget = new CartWidget();
-const analytics = new Analytics();
-const toastNotifier = new ToastNotifier();
+// Usage (Cách sử dụng)
+const productCard = new ProductCard(); // Component thẻ sản phẩm
+const cartWidget = new CartWidget(); // Widget giỏ hàng
+const analytics = new Analytics(); // Dịch vụ phân tích
+const toastNotifier = new ToastNotifier(); // Dịch vụ thông báo
 
-// Add product → all subscribers notified!
-productCard.addToCart({ id: '123', name: 'Laptop', price: 999 });
-// Output:
-// [Analytics] add_to_cart: { product_id: '123', ... }
-// Cart updated: 1 items
-// 🔔 Laptop added to cart!
+// Add product → all subscribers notified! (Thêm sản phẩm → tất cả người đăng ký được thông báo!)
+productCard.addToCart({ id: '123', name: 'Laptop', price: 999 }); // Thêm laptop vào giỏ
+// Output (Kết quả):
+// [Analytics] add_to_cart: { product_id: '123', ... } // Phân tích ghi nhận
+// Cart updated: 1 items // Giỏ hàng cập nhật: 1 sản phẩm
+// 🔔 Laptop added to cart! // Thông báo: Laptop đã được thêm vào giỏ!
 
 // ===================================================
 // 🎯 REACT EXAMPLE: Custom Event Hook
@@ -543,23 +575,24 @@ productCard.addToCart({ id: '123', name: 'Laptop', price: 999 });
 
 import { useEffect } from 'react';
 
-// Custom hook for event subscription
+// Custom hook for event subscription (Hook tùy chỉnh để đăng ký sự kiện)
 function useEventBus(event: string, callback: EventCallback) {
   useEffect(() => {
-    const unsubscribe = eventBus.on(event, callback);
-    return unsubscribe; // Cleanup on unmount
-  }, [event, callback]);
+    const unsubscribe = eventBus.on(event, callback); // Đăng ký sự kiện
+    return unsubscribe; // Cleanup on unmount (Dọn dẹp khi component bị gỡ)
+  }, [event, callback]); // Phụ thuộc: event và callback
 }
 
-// React component
+// React component (Component React)
 function CartBadge() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0); // Trạng thái đếm số lượng
 
   useEventBus('product:added', () => {
-    setCount((prev) => prev + 1);
+    // Lắng nghe sự kiện thêm sản phẩm
+    setCount((prev) => prev + 1); // Tăng số lượng lên 1
   });
 
-  return <span className="badge">{count}</span>;
+  return <span className="badge">{count}</span>; // Hiển thị số lượng
 }
 ```
 
@@ -573,10 +606,10 @@ function CartBadge() {
 // ===================================================
 
 /**
- * Use Cases:
- * - Create different types of objects based on input
- * - Encapsulate complex creation logic
- * - Plugin systems (load different implementations)
+ * Use Cases (Trường hợp sử dụng):
+ * - Create different types of objects based on input (Tạo các loại đối tượng khác nhau dựa trên đầu vào)
+ * - Encapsulate complex creation logic (Đóng gói logic tạo phức tạp)
+ * - Plugin systems (Hệ thống plugin - load different implementations - tải các triển khai khác nhau)
  */
 
 // ===================================================
@@ -588,22 +621,22 @@ function createButton(type: string) {
     return {
       render() {
         return '<button class="btn-primary">Click</button>';
-      }
+      },
     };
   } else if (type === 'secondary') {
     return {
       render() {
         return '<button class="btn-secondary">Click</button>';
-      }
+      },
     };
   } else if (type === 'danger') {
     return {
       render() {
         return '<button class="btn-danger">Click</button>';
-      }
+      },
     };
   }
-  // Gets messy with many types!
+  // Gets messy with many types! (Trở nên lộn xộn với nhiều loại!)
 }
 
 // ===================================================
@@ -611,124 +644,145 @@ function createButton(type: string) {
 // ===================================================
 
 interface Button {
-  render(): string;   // 🎨 Render HTML
-  onClick(): void;    // 🖌️ Xử lý click
+  // Interface định nghĩa contract cho Button
+  render(): string; // 🎨 Render HTML (Trả về HTML của button)
+  onClick(): void; // 🖌️ Xử lý click (Xử lý sự kiện click)
 }
 
 class PrimaryButton implements Button {
-  render(): string {  // 🟢 Button xanh lá (primary)
-    return '<button class="btn-primary">Click</button>';
+  // Button chính (màu xanh lá)
+  render(): string {
+    // 🟢 Button xanh lá (primary) - Trả về HTML button chính
+    return '<button class="btn-primary">Click</button>'; // HTML button với class primary
   }
 
-  onClick(): void {  // 🖌️ Primary action
-    console.log('Primary action');
+  onClick(): void {
+    // 🖌️ Primary action (Hành động chính)
+    console.log('Primary action'); // In log: hành động chính
   }
 }
 
 class SecondaryButton implements Button {
-  render(): string {  // 🔵 Button xanh (secondary)
-    return '<button class="btn-secondary">Click</button>';
+  // Button phụ (màu xanh)
+  render(): string {
+    // 🔵 Button xanh (secondary) - Trả về HTML button phụ
+    return '<button class="btn-secondary">Click</button>'; // HTML button với class secondary
   }
 
-  onClick(): void {  // 🖌️ Secondary action
-    console.log('Secondary action');
+  onClick(): void {
+    // 🖌️ Secondary action (Hành động phụ)
+    console.log('Secondary action'); // In log: hành động phụ
   }
 }
 
 class DangerButton implements Button {
-  render(): string {  // 🔴 Button đỏ (danger)
-    return '<button class="btn-danger">Delete</button>';
+  // Button nguy hiểm (màu đỏ)
+  render(): string {
+    // 🔴 Button đỏ (danger) - Trả về HTML button nguy hiểm
+    return '<button class="btn-danger">Delete</button>'; // HTML button với class danger
   }
 
-  onClick(): void {  // ⚠️ Danger action - cần confirm
-    if (confirm('Are you sure?')) {  // ❓ Xác nhận
-      console.log('Deleted!');  // 🗑️ Xóa
+  onClick(): void {
+    // ⚠️ Danger action - cần confirm (Hành động nguy hiểm - cần xác nhận)
+    if (confirm('Are you sure?')) {
+      // ❓ Xác nhận (Hiển thị hộp thoại xác nhận)
+      console.log('Deleted!'); // 🗑️ Xóa (In log: đã xóa)
     }
   }
 }
 
-// Factory class
+// Factory class (Lớp Factory - Nhà máy tạo button)
 class ButtonFactory {
   static createButton(type: 'primary' | 'secondary' | 'danger'): Button {
-    switch (type) {
+    switch (
+      type // Kiểm tra loại button
+    ) {
       case 'primary':
-        return new PrimaryButton();
+        return new PrimaryButton(); // Tạo button chính
       case 'secondary':
-        return new SecondaryButton();
+        return new SecondaryButton(); // Tạo button phụ
       case 'danger':
-        return new DangerButton();
+        return new DangerButton(); // Tạo button nguy hiểm
       default:
-        throw new Error(`Unknown button type: ${type}`);
+        throw new Error(`Unknown button type: ${type}`); // Lỗi: loại button không xác định
     }
   }
 }
 
-// Usage
-const btn1 = ButtonFactory.createButton('primary');
-const btn2 = ButtonFactory.createButton('danger');
+// Usage (Cách sử dụng)
+const btn1 = ButtonFactory.createButton('primary'); // Tạo button chính
+const btn2 = ButtonFactory.createButton('danger'); // Tạo button nguy hiểm
 
-console.log(btn1.render()); // <button class="btn-primary">...</button>
-btn2.onClick(); // Shows confirm dialog
+console.log(btn1.render()); // <button class="btn-primary">...</button> // In HTML của button
+btn2.onClick(); // Shows confirm dialog (Hiển thị hộp thoại xác nhận)
 
 // ===================================================
 // 🔥 REAL-WORLD EXAMPLE: Notification Factory
 // ===================================================
 
 interface Notification {
-  send(message: string): void;
+  // Interface định nghĩa contract cho Notification
+  send(message: string): void; // Phương thức gửi thông báo với nội dung message
 }
 
 class EmailNotification implements Notification {
-  constructor(private email: string) {}
+  // Thông báo qua Email
+  constructor(private email: string) {} // email: địa chỉ email người nhận
 
   send(message: string): void {
-    console.log(`📧 Email sent to ${this.email}: ${message}`);
-    // Send email via SMTP/API
+    console.log(`📧 Email sent to ${this.email}: ${message}`); // Gửi email đến địa chỉ
+    // Send email via SMTP/API (Gửi email qua SMTP/API)
   }
 }
 
 class SMSNotification implements Notification {
-  constructor(private phone: string) {}
+  // Thông báo qua SMS
+  constructor(private phone: string) {} // phone: số điện thoại người nhận
 
   send(message: string): void {
-    console.log(`📱 SMS sent to ${this.phone}: ${message}`);
-    // Send SMS via Twilio/API
+    console.log(`📱 SMS sent to ${this.phone}: ${message}`); // Gửi SMS đến số điện thoại
+    // Send SMS via Twilio/API (Gửi SMS qua Twilio/API)
   }
 }
 
 class PushNotification implements Notification {
-  constructor(private deviceToken: string) {}
+  // Thông báo đẩy
+  constructor(private deviceToken: string) {} // deviceToken: token thiết bị
 
   send(message: string): void {
-    console.log(`🔔 Push sent to ${this.deviceToken}: ${message}`);
-    // Send push via Firebase/OneSignal
+    console.log(`🔔 Push sent to ${this.deviceToken}: ${message}`); // Gửi thông báo đẩy đến thiết bị
+    // Send push via Firebase/OneSignal (Gửi thông báo đẩy qua Firebase/OneSignal)
   }
 }
 
 class NotificationFactory {
+  // Factory tạo các loại Notification
   static create(
-    type: 'email' | 'sms' | 'push',
-    recipient: string
+    // Phương thức tĩnh tạo Notification
+    type: 'email' | 'sms' | 'push', // Loại thông báo: email, sms, hoặc push
+    recipient: string // Người nhận: email, số điện thoại, hoặc device token
   ): Notification {
-    switch (type) {
+    switch (
+      type // Kiểm tra loại thông báo
+    ) {
       case 'email':
-        return new EmailNotification(recipient);
+        return new EmailNotification(recipient); // Tạo EmailNotification
       case 'sms':
-        return new SMSNotification(recipient);
+        return new SMSNotification(recipient); // Tạo SMSNotification
       case 'push':
-        return new PushNotification(recipient);
+        return new PushNotification(recipient); // Tạo PushNotification
       default:
-        throw new Error(`Unknown notification type: ${type}`);
+        throw new Error(`Unknown notification type: ${type}`); // Lỗi: loại không xác định
     }
   }
 }
 
-// Usage
-const notifier1 = NotificationFactory.create('email', 'user@example.com');
-const notifier2 = NotificationFactory.create('sms', '+1234567890');
+// Usage (Cách sử dụng)
+const notifier1 = NotificationFactory.create('email', 'user@example.com'); // Tạo thông báo email
+const notifier2 = NotificationFactory.create('sms', '+1234567890'); // Tạo thông báo SMS
 
-notifier1.send('Your order has shipped!');
-notifier2.send('Your verification code is 123456');
+notifier1.send('Your order has shipped!'); // Gửi email: Đơn hàng của bạn đã được gửi!
+notifier2.send('Your verification code is 123456'); // Gửi SMS: Mã xác minh của bạn là 123456
 ```
 
 ---
@@ -741,10 +795,10 @@ notifier2.send('Your verification code is 123456');
 // ===================================================
 
 /**
- * Use Cases:
- * - Create private scope (before ES6 modules)
- * - Encapsulate implementation details
- * - Expose only public API
+ * Use Cases (Trường hợp sử dụng):
+ * - Create private scope (Tạo phạm vi riêng tư - before ES6 modules - trước ES6 modules)
+ * - Encapsulate implementation details (Đóng gói chi tiết triển khai)
+ * - Expose only public API (Chỉ hiển thị API công khai)
  */
 
 // ===================================================
@@ -761,143 +815,160 @@ function getCount() {
   return counter;
 }
 
-// Problem: `counter` is globally accessible!
-counter = 999; // ❌ Can be modified directly!
+// Problem (Vấn đề): `counter` is globally accessible! (`counter` có thể truy cập toàn cục!)
+counter = 999; // ❌ Can be modified directly! (Có thể sửa đổi trực tiếp!)
 
 // ===================================================
 // ✅ SOLUTION: Module Pattern (IIFE - Immediately Invoked Function Expression)
 // ===================================================
 
 const CounterModule = (function () {
-  // Private variable (closure)
-  let counter = 0;
+  // IIFE - Immediately Invoked Function Expression (Biểu thức hàm được gọi ngay)
+  // Private variable (closure) (Biến riêng tư - closure)
+  let counter = 0; // Biến đếm, không thể truy cập từ bên ngoài
 
-  // Private function
+  // Private function (Hàm riêng tư)
   function log(message: string) {
-    console.log(`[Counter] ${message}`);
+    console.log(`[Counter] ${message}`); // Ghi log với prefix [Counter]
   }
 
-  // Public API
+  // Public API (API công khai - chỉ những gì được return mới có thể truy cập)
   return {
     increment() {
+      // Tăng counter
       counter++;
-      log(`Incremented to ${counter}`);
+      log(`Incremented to ${counter}`); // Ghi log: Tăng lên giá trị mới
     },
 
     decrement() {
+      // Giảm counter
       counter--;
-      log(`Decremented to ${counter}`);
+      log(`Decremented to ${counter}`); // Ghi log: Giảm xuống giá trị mới
     },
 
     getCount() {
+      // Lấy giá trị counter
       return counter;
     },
 
     reset() {
+      // Đặt lại counter về 0
       counter = 0;
-      log('Reset to 0');
-    }
+      log('Reset to 0'); // Ghi log: Đặt lại về 0
+    },
   };
-})();
+})(); // Gọi hàm ngay lập tức
 
-// Usage
-CounterModule.increment(); // [Counter] Incremented to 1
-CounterModule.increment(); // [Counter] Incremented to 2
-console.log(CounterModule.getCount()); // 2
+// Usage (Cách sử dụng)
+CounterModule.increment(); // [Counter] Incremented to 1 (Tăng lên 1)
+CounterModule.increment(); // [Counter] Incremented to 2 (Tăng lên 2)
+console.log(CounterModule.getCount()); // 2 (In ra giá trị: 2)
 
-// ❌ Cannot access private variables
-console.log(CounterModule.counter); // undefined
-console.log(CounterModule.log); // undefined
+// ❌ Cannot access private variables (Không thể truy cập biến riêng tư)
+console.log(CounterModule.counter); // undefined (Không tồn tại)
+console.log(CounterModule.log); // undefined (Không tồn tại)
 
 // ===================================================
 // ✅ MODERN: ES6 Modules (Built-in Encapsulation)
 // ===================================================
 
 // counter.ts
-let counter = 0;
+let counter = 0; // Biến riêng tư (không export)
 
 function log(message: string) {
+  // Hàm riêng tư (không export)
   console.log(`[Counter] ${message}`);
 }
 
 export function increment() {
+  // Hàm công khai (export)
   counter++;
-  log(`Incremented to ${counter}`);
+  log(`Incremented to ${counter}`); // Gọi hàm log riêng tư
 }
 
 export function decrement() {
+  // Hàm công khai (export)
   counter--;
-  log(`Decremented to ${counter}`);
+  log(`Decremented to ${counter}`); // Gọi hàm log riêng tư
 }
 
 export function getCount() {
-  return counter;
+  // Hàm công khai (export)
+  return counter; // Trả về biến riêng tư
 }
 
 // app.ts
-import { increment, getCount } from './counter';
+import { increment, getCount } from './counter'; // Import các hàm công khai
 
-increment(); // ✅ Works
-console.log(getCount()); // 1
+increment(); // ✅ Works (Hoạt động - tăng counter lên 1)
+console.log(getCount()); // 1 (In ra: 1)
 
-// ❌ Cannot import private variables
-import { counter } from './counter'; // Error: 'counter' is not exported
+// ❌ Cannot import private variables (Không thể import biến riêng tư)
+import { counter } from './counter'; // Error: 'counter' is not exported (Lỗi: 'counter' không được export)
 
 // ===================================================
 // 🔥 REAL-WORLD EXAMPLE: Local Storage Manager
 // ===================================================
 
 const StorageManager = (function () {
-  const PREFIX = 'app_';
+  // Module quản lý localStorage
+  const PREFIX = 'app_'; // Tiền tố cho tất cả keys (riêng tư)
 
   function getKey(key: string): string {
-    return PREFIX + key;
+    // Hàm riêng tư: thêm prefix vào key
+    return PREFIX + key; // Trả về key với prefix
   }
 
   function handleError(error: Error) {
-    console.error('[Storage] Error:', error.message);
+    // Hàm riêng tư: xử lý lỗi
+    console.error('[Storage] Error:', error.message); // In lỗi ra console
   }
 
   return {
+    // Public API (API công khai)
     set(key: string, value: any): void {
+      // Lưu giá trị vào localStorage
       try {
-        const serialized = JSON.stringify(value);
-        localStorage.setItem(getKey(key), serialized);
+        const serialized = JSON.stringify(value); // Chuyển đổi object thành JSON string
+        localStorage.setItem(getKey(key), serialized); // Lưu vào localStorage với key có prefix
       } catch (error) {
-        handleError(error as Error);
+        handleError(error as Error); // Xử lý lỗi nếu có
       }
     },
 
     get<T>(key: string): T | null {
+      // Lấy giá trị từ localStorage
       try {
-        const item = localStorage.getItem(getKey(key));
-        return item ? JSON.parse(item) : null;
+        const item = localStorage.getItem(getKey(key)); // Lấy item từ localStorage
+        return item ? JSON.parse(item) : null; // Parse JSON nếu có, không thì null
       } catch (error) {
-        handleError(error as Error);
-        return null;
+        handleError(error as Error); // Xử lý lỗi nếu có
+        return null; // Trả về null nếu lỗi
       }
     },
 
     remove(key: string): void {
-      localStorage.removeItem(getKey(key));
+      // Xóa giá trị khỏi localStorage
+      localStorage.removeItem(getKey(key)); // Xóa item với key có prefix
     },
 
     clear(): void {
-      Object.keys(localStorage)
-        .filter((key) => key.startsWith(PREFIX))
-        .forEach((key) => localStorage.removeItem(key));
-    }
+      // Xóa tất cả items có prefix
+      Object.keys(localStorage) // Lấy tất cả keys trong localStorage
+        .filter((key) => key.startsWith(PREFIX)) // Lọc chỉ những key có prefix
+        .forEach((key) => localStorage.removeItem(key)); // Xóa từng key
+    },
   };
-})();
+})(); // Gọi hàm ngay lập tức
 
-// Usage
-StorageManager.set('user', { name: 'John', age: 30 });
-const user = StorageManager.get<{ name: string; age: number }>('user');
-console.log(user); // { name: 'John', age: 30 }
+// Usage (Cách sử dụng)
+StorageManager.set('user', { name: 'John', age: 30 }); // Lưu user vào localStorage
+const user = StorageManager.get<{ name: string; age: number }>('user'); // Lấy user từ localStorage
+console.log(user); // { name: 'John', age: 30 } (In ra object user)
 
-// ❌ Cannot access private functions
-StorageManager.getKey('user'); // Error
-StorageManager.PREFIX; // undefined
+// ❌ Cannot access private functions (Không thể truy cập hàm riêng tư)
+StorageManager.getKey('user'); // Error (Lỗi - hàm không tồn tại)
+StorageManager.PREFIX; // undefined (Không tồn tại - biến riêng tư)
 ```
 
 ---
@@ -910,10 +981,10 @@ StorageManager.PREFIX; // undefined
 // ===================================================
 
 /**
- * Use Cases:
- * - Testability (inject mocks)
- * - Flexibility (swap implementations)
- * - Loose coupling (depend on abstractions)
+ * Use Cases (Trường hợp sử dụng):
+ * - Testability (Khả năng kiểm thử - inject mocks - tiêm mock objects)
+ * - Flexibility (Tính linh hoạt - swap implementations - thay đổi triển khai)
+ * - Loose coupling (Liên kết lỏng lẻo - depend on abstractions - phụ thuộc vào trừu tượng)
  */
 
 // ===================================================
@@ -921,135 +992,147 @@ StorageManager.PREFIX; // undefined
 // ===================================================
 
 class UserService {
-  private api: ApiClient;
+  private api: ApiClient; // Phụ thuộc vào ApiClient
 
   constructor() {
-    // ❌ Hardcoded dependency (tight coupling)
-    this.api = new ApiClient('https://api.example.com');
+    // ❌ Hardcoded dependency (tight coupling) (Phụ thuộc mã hóa cứng - liên kết chặt chẽ)
+    this.api = new ApiClient('https://api.example.com'); // Tạo ApiClient trực tiếp trong constructor
   }
 
   async getUser(id: string) {
-    return this.api.get(`/users/${id}`);
+    // Lấy thông tin user
+    return this.api.get(`/users/${id}`); // Gọi API để lấy user
   }
 }
 
-// Problem: Cannot test without real API!
+// Problem (Vấn đề): Cannot test without real API! (Không thể kiểm thử mà không có API thật!)
 const userService = new UserService();
-// Always uses real ApiClient
+// Always uses real ApiClient (Luôn sử dụng ApiClient thật - không thể mock)
 
 // ===================================================
 // ✅ GOOD: Dependency Injection (Loose Coupling)
 // ===================================================
 
 interface IApiClient {
-  get(endpoint: string): Promise<any>;
-  post(endpoint: string, data: any): Promise<any>;
+  // Interface định nghĩa contract cho API client
+  get(endpoint: string): Promise<any>; // Phương thức GET
+  post(endpoint: string, data: any): Promise<any>; // Phương thức POST
 }
 
 class ApiClient implements IApiClient {
-  constructor(private baseUrl: string) {}
+  // Triển khai thật của API client
+  constructor(private baseUrl: string) {} // baseUrl: địa chỉ cơ sở API
 
   async get(endpoint: string) {
-    const response = await fetch(`${this.baseUrl}${endpoint}`);
-    return response.json();
+    // Gửi request GET
+    const response = await fetch(`${this.baseUrl}${endpoint}`); // Gọi fetch API
+    return response.json(); // Trả về JSON
   }
 
   async post(endpoint: string, data: any) {
+    // Gửi request POST
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      method: 'POST', // Phương thức POST
+      headers: { 'Content-Type': 'application/json' }, // Header JSON
+      body: JSON.stringify(data), // Body dạng JSON string
     });
-    return response.json();
+    return response.json(); // Trả về JSON
   }
 }
 
 class UserService {
-  // ✅ Inject dependency via constructor
-  constructor(private api: IApiClient) {}
+  // ✅ Inject dependency via constructor (Tiêm phụ thuộc qua constructor)
+  constructor(private api: IApiClient) {} // Nhận IApiClient (interface) thay vì class cụ thể
 
   async getUser(id: string) {
-    return this.api.get(`/users/${id}`);
+    // Lấy thông tin user
+    return this.api.get(`/users/${id}`); // Gọi API GET
   }
 
   async createUser(data: any) {
-    return this.api.post('/users', data);
+    // Tạo user mới
+    return this.api.post('/users', data); // Gọi API POST
   }
 }
 
-// Production: Inject real API client
-const apiClient = new ApiClient('https://api.example.com');
-const userService = new UserService(apiClient);
+// Production (Môi trường sản xuất): Inject real API client (Tiêm API client thật)
+const apiClient = new ApiClient('https://api.example.com'); // Tạo ApiClient thật
+const userService = new UserService(apiClient); // Tiêm vào UserService
 
-// Testing: Inject mock API client
+// Testing (Kiểm thử): Inject mock API client (Tiêm API client giả)
 class MockApiClient implements IApiClient {
+  // API client giả cho testing
   async get(endpoint: string) {
-    return { id: '123', name: 'Test User' }; // Fake data
+    return { id: '123', name: 'Test User' }; // Fake data (Dữ liệu giả)
   }
 
   async post(endpoint: string, data: any) {
-    return { success: true };
+    return { success: true }; // Trả về thành công giả
   }
 }
 
-const mockApi = new MockApiClient();
-const testUserService = new UserService(mockApi);
+const mockApi = new MockApiClient(); // Tạo mock API client
+const testUserService = new UserService(mockApi); // Tiêm mock vào UserService
 
-// ✅ Test without real API!
-const user = await testUserService.getUser('123');
-console.log(user); // { id: '123', name: 'Test User' }
+// ✅ Test without real API! (Kiểm thử mà không cần API thật!)
+const user = await testUserService.getUser('123'); // Lấy user (sử dụng mock)
+console.log(user); // { id: '123', name: 'Test User' } (Dữ liệu giả từ mock)
 
 // ===================================================
 // 🔥 REAL-WORLD EXAMPLE: DI Container
 // ===================================================
 
 class DIContainer {
-  private services: Map<string, any> = new Map();
+  // Container quản lý Dependency Injection
+  private services: Map<string, any> = new Map(); // Map lưu trữ các service factories
 
-  // Register service
+  // Register service (Đăng ký service)
   register<T>(name: string, factory: () => T): void {
-    this.services.set(name, factory);
+    // name: tên service, factory: hàm tạo service
+    this.services.set(name, factory); // Lưu factory vào Map
   }
 
-  // Resolve service (singleton pattern)
+  // Resolve service (singleton pattern) (Giải quyết service - mẫu singleton)
   resolve<T>(name: string): T {
-    const factory = this.services.get(name);
+    // name: tên service cần lấy
+    const factory = this.services.get(name); // Lấy factory từ Map
     if (!factory) {
-      throw new Error(`Service not registered: ${name}`);
+      throw new Error(`Service not registered: ${name}`); // Lỗi nếu service chưa đăng ký
     }
 
-    // Call factory function to create instance
-    return factory();
+    // Call factory function to create instance (Gọi hàm factory để tạo instance)
+    return factory(); // Trả về instance được tạo
   }
 }
 
-// Usage
-const container = new DIContainer();
+// Usage (Cách sử dụng)
+const container = new DIContainer(); // Tạo DI container
 
-// Register services
-container.register('apiClient', () => new ApiClient('https://api.example.com'));
+// Register services (Đăng ký các service)
+container.register('apiClient', () => new ApiClient('https://api.example.com')); // Đăng ký ApiClient
 container.register('userService', () => {
-  const api = container.resolve<ApiClient>('apiClient');
-  return new UserService(api);
+  // Đăng ký UserService
+  const api = container.resolve<ApiClient>('apiClient'); // Lấy ApiClient từ container
+  return new UserService(api); // Tạo UserService với ApiClient đã inject
 });
 
-// Resolve services
-const userService = container.resolve<UserService>('userService');
-await userService.getUser('123');
+// Resolve services (Lấy service từ container)
+const userService = container.resolve<UserService>('userService'); // Lấy UserService
+await userService.getUser('123'); // Sử dụng service
 ```
 
 ---
 
 ## **🎯 WHEN TO USE WHAT?**
 
-| Pattern              | **Use Case**                                      | **Example**                      |
-| -------------------- | ------------------------------------------------- | -------------------------------- |
-| **Singleton**        | Global state, single instance needed              | Logger, API client, Config       |
-| **Observer**         | One-to-many notifications                         | React state, event listeners     |
-| **Pub/Sub**          | Decoupled event system                            | Analytics, cross-component comm  |
-| **Factory**          | Create objects based on type                      | Buttons, notifications, plugins  |
-| **Module**           | Encapsulation (private/public API)                | localStorage wrapper, utilities  |
-| **Dependency Injection** | Loose coupling, testability                   | Services with API dependencies   |
+| Pattern (Mẫu)            | **Use Case (Trường hợp sử dụng)**                                                  | **Example (Ví dụ)**                                                    |
+| ------------------------ | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Singleton**            | Global state (Trạng thái toàn cục), single instance needed (cần thể hiện duy nhất) | Logger (Ghi log), API client (Ứng dụng khách API), Config (Cấu hình)   |
+| **Observer**             | One-to-many notifications (Thông báo một-nhiều)                                    | React state (Trạng thái React), event listeners (Bộ lắng nghe sự kiện) |
+| **Pub/Sub**              | Decoupled event system (Hệ thống sự kiện tách rời)                                 | Analytics (Phân tích), cross-component comm (Giao tiếp giữa component) |
+| **Factory**              | Create objects based on type (Tạo đối tượng dựa trên loại)                         | Buttons (Nút bấm), notifications (Thông báo), plugins (Plugin)         |
+| **Module**               | Encapsulation (Đóng gói - private/public API)                                      | localStorage wrapper (Bọc localStorage), utilities (Tiện ích)          |
+| **Dependency Injection** | Loose coupling (Liên kết lỏng lẻo), testability (Khả năng kiểm thử)                | Services with API dependencies (Dịch vụ có phụ thuộc API)              |
 
 ---
 
@@ -1070,12 +1153,12 @@ await userService.getUser('123');
 - **Module**: Encapsulation with private/public API (IIFE or ES6 modules)
 - **Dependency Injection**: Loose coupling, testability (inject mocks)
 
-**💡 Key Takeaways:**
+**💡 Key Takeaways (Điểm Quan Trọng):**
 
-1. **Use Singleton** for global services (logger, API client)
-2. **Use Observer/Pub-Sub** for reactive programming (events, state)
-3. **Use Factory** for object creation with multiple types
-4. **Use Module** for encapsulation (ES6 modules standard now)
-5. **Use DI** for testable, loosely coupled code
+1. **Use Singleton (Sử dụng Singleton)** for global services (cho dịch vụ toàn cục - logger - ghi log, API client - ứng dụng khách API)
+2. **Use Observer/Pub-Sub (Sử dụng Observer/Pub-Sub)** for reactive programming (cho lập trình phản ứng - events - sự kiện, state - trạng thái)
+3. **Use Factory (Sử dụng Factory)** for object creation with multiple types (cho việc tạo đối tượng với nhiều loại)
+4. **Use Module (Sử dụng Module)** for encapsulation (cho đóng gói - ES6 modules standard now - ES6 modules là chuẩn hiện tại)
+5. **Use DI (Sử dụng Dependency Injection)** for testable, loosely coupled code (cho code có thể kiểm thử, liên kết lỏng lẻo)
 
 ---

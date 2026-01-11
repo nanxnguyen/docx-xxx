@@ -4,13 +4,13 @@
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập. Module Federation = runtime integration (share code, no rebuild).**
+**"Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập (split large app into many small independent apps). Module Federation = runtime integration (tích hợp thời gian chạy - share code, no rebuild - chia sẻ code, không rebuild).**
 
-**🏗️ Microfrontend Architecture:**
+**🏗️ Microfrontend Architecture (Kiến Trúc Microfrontend):**
 
-- **Concept**: Mỗi team sở hữu 1 microfrontend (MFE) → deploy độc lập → tech stack riêng.
-- **Runtime Integration**: MFEs load at runtime (không phải build time) → independent releases.
-- **Shell App (Host)**: Container app load remote MFEs.
+- **Concept (Khái niệm)**: Mỗi team sở hữu 1 microfrontend (MFE) (Each team owns 1 microfrontend - MFE) → deploy độc lập (independent deployment) → tech stack riêng (own tech stack).
+- **Runtime Integration (Tích hợp thời gian chạy)**: MFEs load at runtime (MFE tải lúc chạy) (không phải build time - not build time) → independent releases (phát hành độc lập).
+- **Shell App (Host) (Ứng dụng Shell - Máy chủ)**: Container app load remote MFEs (Ứng dụng container tải các MFE từ xa).
 
 **🔧 Module Federation (Webpack 5 / Vite):**
 
@@ -106,37 +106,37 @@
   - **Turborepo**: Vercel, nhanh, dễ setup
   - **Lerna**: Legacy (cũ), ít dùng hơn
 
-**⚠️ Trade-offs:**
+**⚠️ Trade-offs (Đánh Đổi):**
 
-| Aspect                   | Monolith              | Microfrontend                       |
-| ------------------------ | --------------------- | ----------------------------------- |
-| **Complexity**           | Low                   | High (orchestration, communication) |
-| **Build Time**           | Slow (1 large app)    | Fast (parallel builds)              |
-| **Deploy**               | All-or-nothing        | Independent per MFE                 |
-| **Team Autonomy**        | Low (shared codebase) | High (own tech stack)               |
-| **Bundle Size**          | Optimized             | Risk of duplication                 |
-| **Developer Experience** | Simple                | Complex (tooling, debugging)        |
+| Aspect (Khía cạnh)                                    | Monolith (Đơn khối)                           | Microfrontend (Vi frontend)                                      |
+| ----------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------- |
+| **Complexity (Độ phức tạp)**                          | Low (Thấp)                                    | High (Cao - orchestration, communication - điều phối, giao tiếp) |
+| **Build Time (Thời gian build)**                      | Slow (Chậm - 1 large app - 1 app lớn)         | Fast (Nhanh - parallel builds - build song song)                 |
+| **Deploy (Triển khai)**                               | All-or-nothing (Tất cả hoặc không)            | Independent per MFE (Độc lập theo MFE)                           |
+| **Team Autonomy (Tự chủ team)**                       | Low (Thấp - shared codebase - codebase chung) | High (Cao - own tech stack - tech stack riêng)                   |
+| **Bundle Size (Kích thước bundle)**                   | Optimized (Tối ưu)                            | Risk of duplication (Rủi ro trùng lặp)                           |
+| **Developer Experience (Trải nghiệm nhà phát triển)** | Simple (Đơn giản)                             | Complex (Phức tạp - tooling, debugging - công cụ, gỡ lỗi)        |
 
-**💡 Senior Insights:**
+**💡 Senior Insights (Kiến Thức Senior):**
 
-- **When to use MFE**: Large teams (10+ devs), independent releases critical, different domains (e-commerce: catalog, checkout, profile).
-- **When NOT to use**: Small teams, simple apps, tight coupling between features.
-- **Module Federation vs Iframe**: MF = shared dependencies, better performance. Iframe = total isolation but clunky UX.
-- **Styling Isolation**: CSS Modules, Shadow DOM, CSS-in-JS (styled-components) → prevent style conflicts.
-- **Routing**: Each MFE handle own routes + Shell sync URL state.
+- **When to use MFE (Khi nào dùng MFE)**: Large teams (10+ devs - Team lớn 10+ dev), independent releases critical (phát hành độc lập quan trọng), different domains (các domain khác nhau) (e-commerce: catalog, checkout, profile - thương mại điện tử: danh mục, thanh toán, hồ sơ).
+- **When NOT to use (Khi nào không dùng)**: Small teams (Team nhỏ), simple apps (app đơn giản), tight coupling between features (liên kết chặt chẽ giữa các tính năng).
+- **Module Federation vs Iframe (Module Federation vs Iframe)**: MF = shared dependencies (MF = phụ thuộc chia sẻ), better performance (hiệu năng tốt hơn). Iframe = total isolation (Iframe = cô lập hoàn toàn) but clunky UX (nhưng UX cứng nhắc).
+- **Styling Isolation (Cô lập Styling)**: CSS Modules, Shadow DOM, CSS-in-JS (styled-components) → prevent style conflicts (ngăn xung đột style).
+- **Routing (Định tuyến)**: Each MFE handle own routes (Mỗi MFE xử lý routes riêng) + Shell sync URL state (Shell đồng bộ trạng thái URL).
 
-**🚀 Real-World Example (E-commerce):**
+**🚀 Real-World Example (Ví Dụ Thực Tế - E-commerce):**
 
 ```
-Shell (Host App)
-├── Product Catalog MFE (Team A - React)
-├── Shopping Cart MFE (Team B - Vue)
-├── Checkout MFE (Team C - Angular)
-└── User Profile MFE (Team D - React)
+Shell (Host App - Ứng dụng máy chủ)
+├── Product Catalog MFE (Team A - React - Danh mục sản phẩm MFE)
+├── Shopping Cart MFE (Team B - Vue - Giỏ hàng MFE)
+├── Checkout MFE (Team C - Angular - Thanh toán MFE)
+└── User Profile MFE (Team D - React - Hồ sơ người dùng MFE)
 ```
 
-- Team A deploy catalog update → không ảnh hưởng Teams B, C, D.
-- Shared: React, UI library (button, input) via Module Federation.
+- Team A deploy catalog update (Team A triển khai cập nhật danh mục) → không ảnh hưởng Teams B, C, D (doesn't affect Teams B, C, D).
+- Shared (Chia sẻ): React, UI library (button, input) via Module Federation (thư viện UI qua Module Federation).
 
 ---
 
@@ -653,12 +653,12 @@ function App() {
 └── tsconfig.base.json          ← Shared TypeScript config
 ```
 
-**🔥 Ưu Điểm Monorepo:**
+**🔥 Ưu Điểm Monorepo (Monorepo Advantages):**
 
-- ✅ **Code sharing dễ dàng**: Import libs giữa các apps
-- ✅ **Atomic commits**: 1 commit thay đổi nhiều apps
-- ✅ **Consistent tooling**: Cùng ESLint, Prettier, TypeScript config
-- ✅ **Dependency management**: 1 `package.json` root cho tất cả
+- ✅ **Code sharing dễ dàng (Easy code sharing)**: Import libs giữa các apps (Import libraries between apps)
+- ✅ **Atomic commits (Commit nguyên tử)**: 1 commit thay đổi nhiều apps (1 commit changes multiple apps)
+- ✅ **Consistent tooling (Công cụ nhất quán)**: Cùng ESLint, Prettier, TypeScript config (Same ESLint, Prettier, TypeScript config)
+- ✅ **Dependency management (Quản lý phụ thuộc)**: 1 `package.json` root cho tất cả (1 root package.json for all)
 
 ---
 
@@ -666,42 +666,48 @@ function App() {
 
 #### **💡 Module Federation Là Gì?**
 
-**Module Federation** (Webpack 5 / Vite Federation) là kỹ thuật cho phép **chia sẻ code giữa các apps ở runtime** (không phải build time).
+**Module Federation** (Webpack 5 / Vite Federation) là kỹ thuật cho phép **chia sẻ code giữa các apps ở runtime** (Module Federation is a technique that allows **sharing code between apps at runtime**) (không phải build time - not build time).
 
-**🔥 Cơ Chế Hoạt Động:**
+**🔥 Cơ Chế Hoạt Động (How It Works):**
 
 ```typescript
 // ===================================================
 // 🏠 SHELL APP (Host - React) - webpack.config.js
+// (Ứng dụng Shell - Máy chủ - React)
 // ===================================================
 // Đây là app chính, load các remote apps vào
+// (This is the main app, loads remote apps into it)
 
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      name: 'shell', // ⚠️ Tên app này
+      name: 'shell', // ⚠️ Tên app này (Name of this app)
 
       // 📥 REMOTES: Các app remote mà shell sẽ load
+      // (REMOTES: Remote apps that shell will load)
       remotes: {
         // Key: tên import, Value: URL + scope name
+        // (Key: import name, Value: URL + scope name)
         dashboard: 'dashboard@http://localhost:3001/remoteEntry.js', // Dashboard app (React)
         profile: 'profile@http://localhost:3002/remoteEntry.js', // Profile app (Vue)
       },
 
       // 📤 EXPOSES: Những gì shell chia sẻ cho remote apps
+      // (EXPOSES: What shell shares to remote apps)
       exposes: {
-        './Header': './src/components/Header', // Share Header component
-        './AuthService': './src/services/AuthService', // Share Auth service
+        './Header': './src/components/Header', // Share Header component (Chia sẻ component Header)
+        './AuthService': './src/services/AuthService', // Share Auth service (Chia sẻ dịch vụ Auth)
       },
 
       // 🔄 SHARED: Dependencies dùng chung (tránh duplicate)
+      // (SHARED: Shared dependencies - avoid duplicate)
       shared: {
         react: {
-          singleton: true, // ⚠️ Chỉ có 1 instance React trong toàn bộ app
-          requiredVersion: '^18.0.0', // Version yêu cầu
-          eager: true, // Load ngay lập tức (không lazy)
+          singleton: true, // ⚠️ Chỉ có 1 instance React trong toàn bộ app (Only 1 React instance in entire app)
+          requiredVersion: '^18.0.0', // Version yêu cầu (Required version)
+          eager: true, // Load ngay lập tức (không lazy) (Load immediately - not lazy)
         },
         'react-dom': { singleton: true, eager: true },
       },
@@ -711,22 +717,27 @@ module.exports = {
 
 // ===================================================
 // 📊 DASHBOARD APP (Remote - React) - webpack.config.js
+// (Ứng dụng Dashboard - Từ xa - React)
 // ===================================================
 // App độc lập, expose components cho shell
+// (Independent app, exposes components to shell)
 
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'dashboard', // ⚠️ Tên app này (phải trùng với remotes ở shell)
-      filename: 'remoteEntry.js', // ⚠️ File entry point
+      // (Name of this app - must match remotes in shell)
+      filename: 'remoteEntry.js', // ⚠️ File entry point (File điểm vào)
 
       // 📤 EXPOSES: Components/modules mà dashboard chia sẻ
+      // (EXPOSES: Components/modules that dashboard shares)
       exposes: {
-        './DashboardPage': './src/pages/DashboardPage', // Main page
-        './StatsWidget': './src/components/StatsWidget', // Widget component
+        './DashboardPage': './src/pages/DashboardPage', // Main page (Trang chính)
+        './StatsWidget': './src/components/StatsWidget', // Widget component (Component widget)
       },
 
       // 🔄 SHARED: Dependencies dùng chung với shell
+      // (SHARED: Dependencies shared with shell)
       shared: {
         react: { singleton: true, requiredVersion: '^18.0.0' },
         'react-dom': { singleton: true },
@@ -737,8 +748,10 @@ module.exports = {
 
 // ===================================================
 // 👤 PROFILE APP (Remote - Vue 3) - vite.config.ts
+// (Ứng dụng Profile - Từ xa - Vue 3)
 // ===================================================
 // App Vue, expose components cho shell (Multi-framework!)
+// (Vue app, exposes components to shell - Multi-framework!)
 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
@@ -748,16 +761,18 @@ export default defineConfig({
   plugins: [
     vue(),
     federation({
-      name: 'profile', // ⚠️ Tên app
+      name: 'profile', // ⚠️ Tên app (Name of app)
       filename: 'remoteEntry.js',
 
       // 📤 EXPOSES: Vue components
+      // (EXPOSES: Vue components)
       exposes: {
-        './ProfilePage': './src/pages/ProfilePage.vue', // Vue component
-        './UserAvatar': './src/components/UserAvatar.vue', // Vue component
+        './ProfilePage': './src/pages/ProfilePage.vue', // Vue component (Component Vue)
+        './UserAvatar': './src/components/UserAvatar.vue', // Vue component (Component Vue)
       },
 
       // 🔄 SHARED: Vue dependencies
+      // (SHARED: Vue dependencies)
       shared: {
         vue: { singleton: true },
       },
@@ -771,30 +786,36 @@ export default defineConfig({
 ```typescript
 // ===================================================
 // 🏠 SHELL APP - src/App.tsx (React)
+// (Ứng dụng Shell - React)
 // ===================================================
 
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // 📥 LAZY LOAD remote components từ dashboard (React)
+// (LAZY LOAD remote components from dashboard - React)
 const DashboardPage = lazy(() => import('dashboard/DashboardPage'));
 //                                       ↑         ↑
 //                              remote name    exposed module
+//                              (tên remote)   (module được expose)
 
 // 📥 LAZY LOAD remote components từ profile (Vue)
+// (LAZY LOAD remote components from profile - Vue)
 const ProfilePage = lazy(() => import('profile/ProfilePage'));
 
 function App() {
   return (
     <BrowserRouter>
       <div className="app">
-        <Header /> {/* Shell's own component */}
+        <Header /> {/* Shell's own component (Component riêng của Shell) */}
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             {/* Dashboard app (React) - Team A */}
+            {/* (Ứng dụng Dashboard - React - Team A) */}
             <Route path="/dashboard" element={<DashboardPage />} />
 
             {/* Profile app (Vue) - Team B */}
+            {/* (Ứng dụng Profile - Vue - Team B) */}
             <Route path="/profile" element={<ProfilePage />} />
           </Routes>
         </Suspense>
@@ -806,6 +827,7 @@ function App() {
 export default App;
 
 // ⚠️ TypeScript types cho remote modules
+// (TypeScript types for remote modules)
 // src/types/remotes.d.ts
 declare module 'dashboard/DashboardPage' {
   const DashboardPage: React.ComponentType;
@@ -818,68 +840,73 @@ declare module 'profile/ProfilePage' {
 }
 ```
 
-**🔥 Timeline Hoạt Động:**
+**🔥 Timeline Hoạt Động (Operation Timeline):**
 
 ```
 User truy cập http://localhost:3000/dashboard
+(User accesses http://localhost:3000/dashboard)
 
-1️⃣ Shell app load (React)
-   └─ Load shell bundle (~500KB)
-   └─ Render Header, Sidebar
+1️⃣ Shell app load (React) (Ứng dụng Shell tải - React)
+   └─ Load shell bundle (~500KB) (Tải bundle shell - ~500KB)
+   └─ Render Header, Sidebar (Render Header, Sidebar)
 
-2️⃣ User click "Dashboard" → Route change
-   └─ React Router match /dashboard
-   └─ Trigger lazy(() => import('dashboard/DashboardPage'))
+2️⃣ User click "Dashboard" → Route change (Người dùng click "Dashboard" → Thay đổi route)
+   └─ React Router match /dashboard (React Router khớp /dashboard)
+   └─ Trigger lazy(() => import('dashboard/DashboardPage')) (Kích hoạt lazy load)
 
-3️⃣ Module Federation fetch remote
-   └─ Fetch http://localhost:3001/remoteEntry.js
-   └─ Parse manifest (biết dashboard expose gì)
-   └─ Fetch dashboard chunk (~300KB)
+3️⃣ Module Federation fetch remote (Module Federation tải từ xa)
+   └─ Fetch http://localhost:3001/remoteEntry.js (Tải remoteEntry.js)
+   └─ Parse manifest (biết dashboard expose gì) (Phân tích manifest - biết dashboard expose gì)
+   └─ Fetch dashboard chunk (~300KB) (Tải chunk dashboard - ~300KB)
 
-4️⃣ Dashboard component render
-   └─ Dùng shared React instance từ shell (không duplicate)
-   └─ Render DashboardPage component
+4️⃣ Dashboard component render (Component Dashboard render)
+   └─ Dùng shared React instance từ shell (không duplicate) (Dùng instance React chia sẻ từ shell - không trùng lặp)
+   └─ Render DashboardPage component (Render component DashboardPage)
 
 Total: Shell (500KB) + Dashboard (300KB) = 800KB
-✅ Nếu KHÔNG dùng Module Federation: 500KB + 500KB = 1MB (duplicate React)
+✅ Nếu KHÔNG dùng Module Federation (If NOT using Module Federation): 500KB + 500KB = 1MB (duplicate React - React trùng lặp)
 ```
 
 ---
 
 **📚 Phần 3: Multi-Framework Development (Phát Triển Đa Framework)**
 
-#### **💡 Tại Sao Cần Multi-Framework?**
+#### **💡 Tại Sao Cần Multi-Framework? (Why Multi-Framework?)**
 
-- ✅ **Legacy migration**: Migrate từ Angular → React từng phần
-- ✅ **Team autonomy**: Team A dùng React, Team B dùng Vue
-- ✅ **Best tool for the job**: Dashboard dùng React, Charts dùng Svelte
+- ✅ **Legacy migration (Di chuyển legacy)**: Migrate từ Angular → React từng phần (Migrate from Angular → React incrementally)
+- ✅ **Team autonomy (Tự chủ team)**: Team A dùng React, Team B dùng Vue (Team A uses React, Team B uses Vue)
+- ✅ **Best tool for the job (Công cụ phù hợp)**: Dashboard dùng React, Charts dùng Svelte (Dashboard uses React, Charts uses Svelte)
 
-#### **🔥 Cách Hoạt Động:**
+#### **🔥 Cách Hoạt Động (How It Works):**
 
 ```typescript
 // ===================================================
 // 🏠 SHELL (React) load PROFILE (Vue)
+// (Shell - React tải Profile - Vue)
 // ===================================================
 
 // Shell App (React) - src/App.tsx
 import React, { Suspense, lazy, useEffect, useRef } from 'react';
 
 // ❌ KHÔNG THỂ: Import Vue component trực tiếp vào React
-// import ProfilePage from './ProfilePage.vue'; // ❌ Lỗi!
+// (CANNOT: Import Vue component directly into React)
+// import ProfilePage from './ProfilePage.vue'; // ❌ Lỗi! (Error!)
 
 // ✅ GIẢI PHÁP 1: Module Federation + Wrapper
+// (SOLUTION 1: Module Federation + Wrapper)
 const ProfilePage = lazy(() => import('profile/ProfilePage'));
 
 function App() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ProfilePage /> {/* Vue component trong React! */}
+      <ProfilePage /> {/* Vue component trong React! (Vue component in React!) */}
     </Suspense>
   );
 }
 
 // ===================================================
 // 👤 PROFILE APP (Vue) - src/pages/ProfilePage.vue
+// (Ứng dụng Profile - Vue)
 // ===================================================
 
 <template>
@@ -895,7 +922,7 @@ import { ref, onMounted } from 'vue';
 const user = ref({ name: '', email: '' });
 
 onMounted(async () => {
-  // Fetch user data
+  // Fetch user data (Tải dữ liệu người dùng)
   const response = await fetch('/api/user');
   user.value = await response.json();
 });
@@ -903,6 +930,7 @@ onMounted(async () => {
 
 // ===================================================
 // 🔧 PROFILE APP - Wrapper để React hiểu Vue component
+// (PROFILE APP - Wrapper để React hiểu Vue component)
 // ===================================================
 
 // profile/src/bootstrap.tsx
@@ -910,15 +938,17 @@ import { createApp } from 'vue';
 import ProfilePage from './pages/ProfilePage.vue';
 
 // Export function để mount Vue app vào DOM element
+// (Export function to mount Vue app to DOM element)
 export function mountProfilePage(el: HTMLElement) {
   const app = createApp(ProfilePage);
   app.mount(el);
 
-  // Return cleanup function
+  // Return cleanup function (Trả về hàm dọn dẹp)
   return () => app.unmount();
 }
 
 // profile/src/VueWrapper.tsx (React wrapper for Vue)
+// (React wrapper cho Vue)
 import React, { useEffect, useRef } from 'react';
 import { mountProfilePage } from './bootstrap';
 
@@ -937,22 +967,22 @@ export default function VueWrapper() {
 }
 ```
 
-**🎯 Framework Compatibility Matrix:**
+**🎯 Framework Compatibility Matrix (Ma Trận Tương Thích Framework):**
 
-| Shell ↓ / Remote → | React      | Vue        | Angular    | Svelte     |
-| ------------------ | ---------- | ---------- | ---------- | ---------- |
-| **React**          | ✅ Native  | ✅ Wrapper | ✅ Wrapper | ✅ Wrapper |
-| **Vue**            | ✅ Wrapper | ✅ Native  | ✅ Wrapper | ✅ Wrapper |
-| **Angular**        | ✅ Wrapper | ✅ Wrapper | ✅ Native  | ✅ Wrapper |
-| **Svelte**         | ✅ Wrapper | ✅ Wrapper | ✅ Wrapper | ✅ Native  |
+| Shell ↓ / Remote → (Shell / Remote) | React            | Vue              | Angular          | Svelte           |
+| ----------------------------------- | ---------------- | ---------------- | ---------------- | ---------------- |
+| **React**                           | ✅ Native (Gốc)  | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) |
+| **Vue**                             | ✅ Wrapper (Bọc) | ✅ Native (Gốc)  | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) |
+| **Angular**                         | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) | ✅ Native (Gốc)  | ✅ Wrapper (Bọc) |
+| **Svelte**                          | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) | ✅ Native (Gốc)  |
 
 ---
 
 **📚 Phần 4: Communication Patterns (Mẫu Giao Tiếp)**
 
-Các Micro apps cần giao tiếp với nhau (share data, trigger actions). Có 3 patterns chính:
+Các Micro apps cần giao tiếp với nhau (Micro apps need to communicate with each other) (share data, trigger actions - chia sẻ dữ liệu, kích hoạt hành động). Có 3 patterns chính (There are 3 main patterns):
 
-#### **🔥 Pattern 1: Event Bus (Custom Events)**
+#### **🔥 Pattern 1: Event Bus (Custom Events) (Mẫu 1: Event Bus - Sự Kiện Tùy Chỉnh)**
 
 ```typescript
 // ===================================================
@@ -1052,17 +1082,17 @@ function LoginButton() {
 }
 ```
 
-**✅ Ưu điểm Event Bus:**
+**✅ Ưu điểm Event Bus (Event Bus Advantages):**
 
-- ✅ Decoupled (apps không cần biết nhau)
-- ✅ Dễ implement
-- ✅ Multi-framework compatible
+- ✅ Decoupled (Tách rời - apps không cần biết nhau - apps don't need to know each other)
+- ✅ Dễ implement (Easy to implement)
+- ✅ Multi-framework compatible (Tương thích đa framework)
 
-**❌ Nhược điểm:**
+**❌ Nhược điểm (Disadvantages):**
 
-- ❌ Khó debug (không biết ai emit, ai listen)
-- ❌ No type safety (TypeScript không check được)
-- ❌ Memory leaks nếu quên `off()`
+- ❌ Khó debug (Hard to debug - không biết ai emit, ai listen - don't know who emits, who listens)
+- ❌ No type safety (Không an toàn kiểu - TypeScript không check được - TypeScript can't check)
+- ❌ Memory leaks nếu quên `off()` (Memory leaks if forget `off()`)
 
 #### **🔥 Pattern 2: Shared State (Redux/Zustand)**
 
@@ -1148,22 +1178,23 @@ function DashboardPage() {
 }
 ```
 
-**✅ Ưu điểm Shared State:**
+**✅ Ưu điểm Shared State (Shared State Advantages):**
 
-- ✅ Type safe (TypeScript)
-- ✅ Predictable (1 source of truth)
-- ✅ Dễ debug (DevTools)
+- ✅ Type safe (An toàn kiểu - TypeScript)
+- ✅ Predictable (Dự đoán được - 1 source of truth - 1 nguồn sự thật)
+- ✅ Dễ debug (Easy to debug - DevTools)
 
-**❌ Nhược điểm:**
+**❌ Nhược điểm (Disadvantages):**
 
-- ❌ Tightly coupled (apps phụ thuộc vào shared state)
-- ❌ Phức tạp hơn Event Bus
+- ❌ Tightly coupled (Liên kết chặt chẽ - apps phụ thuộc vào shared state - apps depend on shared state)
+- ❌ Phức tạp hơn Event Bus (More complex than Event Bus)
 
-#### **🔥 Pattern 3: Props/Callbacks (Parent → Child)**
+#### **🔥 Pattern 3: Props/Callbacks (Parent → Child) (Mẫu 3: Props/Callbacks - Cha → Con)**
 
 ```typescript
 // ===================================================
 // 🏠 SHELL APP - Pass props to remote apps
+// (Ứng dụng Shell - Truyền props cho remote apps)
 // ===================================================
 
 function App() {
@@ -1172,32 +1203,33 @@ function App() {
   return (
     <div>
       {/* Pass props xuống Dashboard remote */}
+      {/* (Pass props down to Dashboard remote) */}
       <DashboardPage
-        user={user} // ⚠️ Data flow: Shell → Dashboard
-        onLogout={() => setUser(null)} // ⚠️ Callback: Dashboard → Shell
+        user={user} // ⚠️ Data flow: Shell → Dashboard (Luồng dữ liệu: Shell → Dashboard)
+        onLogout={() => setUser(null)} // ⚠️ Callback: Dashboard → Shell (Callback: Dashboard → Shell)
       />
     </div>
   );
 }
 ```
 
-**🎯 Khi Nào Dùng Pattern Nào?**
+**🎯 Khi Nào Dùng Pattern Nào? (When to Use Which Pattern?)**
 
-| Pattern             | Use Case                                       | Coupling  |
-| ------------------- | ---------------------------------------------- | --------- |
-| **Event Bus**       | Loosely coupled events (login, logout, notify) | Loose ✅  |
-| **Shared State**    | Global state (user, theme, cart)               | Medium ⚠️ |
-| **Props/Callbacks** | Parent-child communication                     | Tight ❌  |
+| Pattern (Mẫu)       | Use Case (Trường hợp sử dụng)                                          | Coupling (Liên kết)    |
+| ------------------- | ---------------------------------------------------------------------- | ---------------------- |
+| **Event Bus**       | Loosely coupled events (Sự kiện liên kết lỏng - login, logout, notify) | Loose ✅ (Lỏng)        |
+| **Shared State**    | Global state (State toàn cục - user, theme, cart)                      | Medium ⚠️ (Trung bình) |
+| **Props/Callbacks** | Parent-child communication (Giao tiếp cha-con)                         | Tight ❌ (Chặt)        |
 
 ---
 
 **📚 Phần 5: Routing Strategies (Chiến Lược Định Tuyến)**
 
-#### **💡 Problem: Ai Quản Lý Routes?**
+#### **💡 Problem: Ai Quản Lý Routes? (Vấn đề: Ai quản lý routes?)**
 
-Với Microfrontend, routing có 2 chiến lược:
+Với Microfrontend, routing có 2 chiến lược (With Microfrontend, routing has 2 strategies):
 
-#### **🔥 Strategy 1: Shell-based Routing (Shell quản lý tất cả routes)**
+#### **🔥 Strategy 1: Shell-based Routing (Shell quản lý tất cả routes) (Chiến lược 1: Định tuyến dựa trên Shell - Shell quản lý tất cả routes)**
 
 ```typescript
 // ===================================================
@@ -1239,22 +1271,23 @@ function App() {
 }
 ```
 
-**✅ Ưu điểm:**
+**✅ Ưu điểm (Advantages):**
 
-- ✅ Centralized routing (1 nơi quản lý tất cả)
-- ✅ Dễ setup, dễ hiểu
-- ✅ Shell control navigation flow
+- ✅ Centralized routing (Định tuyến tập trung - 1 nơi quản lý tất cả - 1 place manages all)
+- ✅ Dễ setup, dễ hiểu (Easy setup, easy to understand)
+- ✅ Shell control navigation flow (Shell kiểm soát luồng điều hướng)
 
-**❌ Nhược điểm:**
+**❌ Nhược điểm (Disadvantages):**
 
-- ❌ Remote apps không autonomous (phụ thuộc shell)
-- ❌ Shell phải biết tất cả routes của remotes
+- ❌ Remote apps không autonomous (Remote apps không tự chủ - phụ thuộc shell - depend on shell)
+- ❌ Shell phải biết tất cả routes của remotes (Shell must know all routes of remotes)
 
-#### **🔥 Strategy 2: Distributed Routing (Mỗi app tự quản lý routes)**
+#### **🔥 Strategy 2: Distributed Routing (Mỗi app tự quản lý routes) (Chiến lược 2: Định tuyến phân tán - Mỗi app tự quản lý routes)**
 
 ```typescript
 // ===================================================
 // 🏠 SHELL APP - Chỉ route top-level
+// (Ứng dụng Shell - Chỉ route cấp trên)
 // ===================================================
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -1264,9 +1297,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Shell chỉ route /dashboard/*, còn lại để Dashboard tự handle */}
+        {/* (Shell only routes /dashboard/*, rest let Dashboard handle) */}
         <Route path="/dashboard/*" element={<DashboardApp />} />
 
         {/* Profile tự handle /profile/* */}
+        {/* (Profile handles /profile/* itself) */}
         <Route path="/profile/*" element={<ProfileApp />} />
       </Routes>
     </BrowserRouter>
@@ -1275,6 +1310,7 @@ function App() {
 
 // ===================================================
 // 📊 DASHBOARD APP - Tự quản lý routes con
+// (Ứng dụng Dashboard - Tự quản lý routes con)
 // ===================================================
 
 import { Routes, Route } from 'react-router-dom';
@@ -1283,6 +1319,7 @@ function DashboardApp() {
   return (
     <Routes>
       {/* /dashboard → /dashboard (trang chính) */}
+      {/* (/dashboard → /dashboard - main page) */}
       <Route path="/" element={<DashboardHome />} />
 
       {/* /dashboard/stats */}
@@ -1295,34 +1332,35 @@ function DashboardApp() {
 }
 ```
 
-**✅ Ưu điểm:**
+**✅ Ưu điểm (Advantages):**
 
-- ✅ Autonomous apps (mỗi app tự quản lý routes)
-- ✅ Shell không cần biết routes của remotes
+- ✅ Autonomous apps (Ứng dụng tự chủ - mỗi app tự quản lý routes - each app manages own routes)
+- ✅ Shell không cần biết routes của remotes (Shell doesn't need to know routes of remotes)
 
-**❌ Nhược điểm:**
+**❌ Nhược điểm (Disadvantages):**
 
-- ❌ Phức tạp hơn
-- ❌ Có thể conflict routes giữa apps
+- ❌ Phức tạp hơn (More complex)
+- ❌ Có thể conflict routes giữa apps (Can conflict routes between apps)
 
 ---
 
 **📚 Phần 6: Styling Isolation (Cô Lập CSS)**
 
-#### **💡 Problem: CSS Conflicts Giữa Các Apps**
+#### **💡 Problem: CSS Conflicts Giữa Các Apps (Vấn đề: Xung đột CSS giữa các ứng dụng)**
 
 ```css
 /* Dashboard App - styles.css */
 .header {
   background: red;
-} /* ❌ Class name chung */
+} /* ❌ Class name chung (Common class name) */
 
 /* Profile App - styles.css */
 .header {
   background: blue;
-} /* ❌ Conflict! */
+} /* ❌ Conflict! (Xung đột!) */
 
 /* Kết quả: Header màu gì? Tùy thuộc CSS nào load sau! */
+/* (Result: What color is Header? Depends on which CSS loads last!) */
 ```
 
 #### **🔥 Solution 1: CSS Modules**
@@ -1368,14 +1406,14 @@ function DashboardHeader() {
 // 💡 Mỗi app có class name khác nhau → KHÔNG conflict!
 ```
 
-**✅ Ưu điểm CSS Modules:**
+**✅ Ưu điểm CSS Modules (CSS Modules Advantages):**
 
-- ✅ Scoped styles (không conflict)
-- ✅ Build-time transformation
+- ✅ Scoped styles (Styles có phạm vi - không conflict - no conflict)
+- ✅ Build-time transformation (Chuyển đổi lúc build)
 
-**❌ Nhược điểm:**
+**❌ Nhược điểm (Disadvantages):**
 
-- ❌ Không dùng được global styles dễ dàng
+- ❌ Không dùng được global styles dễ dàng (Can't use global styles easily)
 
 #### **🔥 Solution 2: CSS-in-JS (Styled Components, Emotion)**
 
@@ -1416,16 +1454,16 @@ function DashboardHeader() {
 // ✅ Không conflict với app khác vì class name unique
 ```
 
-**✅ Ưu điểm CSS-in-JS:**
+**✅ Ưu điểm CSS-in-JS (CSS-in-JS Advantages):**
 
-- ✅ Scoped styles
-- ✅ Dynamic styles (props-based)
-- ✅ No CSS files
+- ✅ Scoped styles (Styles có phạm vi)
+- ✅ Dynamic styles (Styles động - props-based - dựa trên props)
+- ✅ No CSS files (Không cần file CSS)
 
-**❌ Nhược điểm:**
+**❌ Nhược điểm (Disadvantages):**
 
-- ❌ Runtime overhead
-- ❌ Larger bundle size
+- ❌ Runtime overhead (Chi phí thời gian chạy)
+- ❌ Larger bundle size (Kích thước bundle lớn hơn)
 
 #### **🔥 Solution 3: Shadow DOM**
 
@@ -1470,15 +1508,15 @@ customElements.define('dashboard-header', DashboardHeader);
 // ✅ CSS hoàn toàn cô lập, không ảnh hưởng app khác
 ```
 
-**✅ Ưu điểm Shadow DOM:**
+**✅ Ưu điểm Shadow DOM (Shadow DOM Advantages):**
 
-- ✅ TRUE isolation (100% không conflict)
-- ✅ Native browser API
+- ✅ TRUE isolation (Cô lập thực sự - 100% không conflict - 100% no conflict)
+- ✅ Native browser API (API trình duyệt gốc)
 
-**❌ Nhược điểm:**
+**❌ Nhược điểm (Disadvantages):**
 
-- ❌ Khó style từ bên ngoài
-- ❌ Không dùng được với React/Vue components
+- ❌ Khó style từ bên ngoài (Hard to style from outside)
+- ❌ Không dùng được với React/Vue components (Can't use with React/Vue components)
 
 #### **🔥 Solution 4: Prefix/Namespace**
 
@@ -1510,14 +1548,14 @@ customElements.define('dashboard-header', DashboardHeader);
 /* ✅ Không conflict vì tên classes khác nhau */
 ```
 
-**🎯 Styling Strategy Comparison:**
+**🎯 Styling Strategy Comparison (So Sánh Chiến Lược Styling):**
 
-| Strategy             | Isolation  | Performance | DX (Developer Experience) | Use Case        |
-| -------------------- | ---------- | ----------- | ------------------------- | --------------- |
-| **CSS Modules**      | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐                  | Default choice  |
-| **CSS-in-JS**        | ⭐⭐⭐⭐⭐ | ⭐⭐⭐      | ⭐⭐⭐⭐⭐                | Dynamic styles  |
-| **Shadow DOM**       | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐  | ⭐⭐⭐                    | Web Components  |
-| **Prefix/Namespace** | ⭐⭐⭐     | ⭐⭐⭐⭐⭐  | ⭐⭐                      | Simple projects |
+| Strategy (Chiến lược) | Isolation (Cô lập) | Performance (Hiệu năng) | DX (Developer Experience - Trải nghiệm nhà phát triển) | Use Case (Trường hợp sử dụng)      |
+| --------------------- | ------------------ | ----------------------- | ------------------------------------------------------ | ---------------------------------- |
+| **CSS Modules**       | ⭐⭐⭐⭐           | ⭐⭐⭐⭐⭐              | ⭐⭐⭐⭐                                               | Default choice (Lựa chọn mặc định) |
+| **CSS-in-JS**         | ⭐⭐⭐⭐⭐         | ⭐⭐⭐                  | ⭐⭐⭐⭐⭐                                             | Dynamic styles (Styles động)       |
+| **Shadow DOM**        | ⭐⭐⭐⭐⭐         | ⭐⭐⭐⭐⭐              | ⭐⭐⭐                                                 | Web Components (Thành phần web)    |
+| **Prefix/Namespace**  | ⭐⭐⭐             | ⭐⭐⭐⭐⭐              | ⭐⭐                                                   | Simple projects (Dự án đơn giản)   |
 
 ---
 
@@ -1566,37 +1604,41 @@ nx serve shell  # http://localhost:4200 (auto serve remotes)
 
 **✅ Best Practices (Thực Hành Tốt Nhất)**
 
-#### **🔥 1. Dependency Management**
+#### **🔥 1. Dependency Management (Quản Lý Phụ Thuộc)**
 
 ```json
 // ❌ SAI: Mỗi app có version React khác nhau
+// (WRONG: Each app has different React version)
 {
   "shell": { "react": "18.0.0" },
-  "dashboard": { "react": "17.0.0" },  // ❌ Conflict!
-  "profile": { "react": "18.2.0" }      // ❌ Duplicate bundles!
+  "dashboard": { "react": "17.0.0" },  // ❌ Conflict! (Xung đột!)
+  "profile": { "react": "18.2.0" }      // ❌ Duplicate bundles! (Bundle trùng lặp!)
 }
 
 // ✅ ĐÚNG: Shared dependencies ở root
+// (CORRECT: Shared dependencies at root)
 // package.json (root)
 {
   "dependencies": {
-    "react": "18.2.0",        // ✅ Tất cả apps dùng chung version
+    "react": "18.2.0",        // ✅ Tất cả apps dùng chung version (All apps use same version)
     "react-dom": "18.2.0"
   }
 }
 ```
 
-#### **🔥 2. Versioning Strategy**
+#### **🔥 2. Versioning Strategy (Chiến Lược Phiên Bản)**
 
 ```bash
 # Semantic Versioning cho remote apps
+# (Semantic Versioning for remote apps)
 dashboard@1.2.3
-          │ │ └─ PATCH: Bug fixes (backward compatible)
-          │ └─── MINOR: New features (backward compatible)
-          └───── MAJOR: Breaking changes (NOT backward compatible)
+          │ │ └─ PATCH: Bug fixes (backward compatible - tương thích ngược)
+          │ └─── MINOR: New features (backward compatible - tương thích ngược)
+          └───── MAJOR: Breaking changes (NOT backward compatible - không tương thích ngược)
 
 # Shell compatibility matrix
-shell@2.0.0 → dashboard@^1.0.0 (✅ Compatible với 1.x.x)
+# (Ma trận tương thích Shell)
+shell@2.0.0 → dashboard@^1.0.0 (✅ Compatible với 1.x.x - Tương thích với 1.x.x)
             → profile@^2.0.0
 ```
 
@@ -1605,6 +1647,7 @@ shell@2.0.0 → dashboard@^1.0.0 (✅ Compatible với 1.x.x)
 ```typescript
 // ===================================================
 // 🏠 SHELL APP - Error Boundary cho remote apps
+// (Ứng dụng Shell - Error Boundary cho remote apps)
 // ===================================================
 
 import { Component, ErrorInfo, ReactNode } from 'react';
@@ -1621,7 +1664,7 @@ class RemoteErrorBoundary extends Component<
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Remote app crashed:', error, errorInfo);
-    // Log to Sentry, Datadog, etc.
+    // Log to Sentry, Datadog, etc. (Ghi log đến Sentry, Datadog, v.v.)
   }
 
   render() {
@@ -1629,8 +1672,9 @@ class RemoteErrorBoundary extends Component<
       return (
         <div>
           <h2>Oops! Dashboard app crashed 😢</h2>
+          {/* (Ồ! Ứng dụng Dashboard bị sập 😢) */}
           <button onClick={() => this.setState({ hasError: false })}>
-            Retry
+            Retry (Thử lại)
           </button>
         </div>
       );
@@ -1640,21 +1684,23 @@ class RemoteErrorBoundary extends Component<
   }
 }
 
-// Usage
+// Usage (Cách sử dụng)
 function App() {
   return (
     <RemoteErrorBoundary>
       <DashboardPage /> {/* Nếu crash, không ảnh hưởng Shell */}
+      {/* (If crashes, doesn't affect Shell) */}
     </RemoteErrorBoundary>
   );
 }
 ```
 
-#### **🔥 4. Performance Optimization**
+#### **🔥 4. Performance Optimization (Tối Ưu Hiệu Năng)**
 
 ```typescript
 // ===================================================
 // 🚀 Preload remote apps khi user hover
+// (Tải trước remote apps khi người dùng hover)
 // ===================================================
 
 import { useState } from 'react';
@@ -1665,7 +1711,7 @@ function Navigation() {
   const prefetchRemote = (remoteName: string) => {
     if (prefetched.has(remoteName)) return;
 
-    // Preload remote module
+    // Preload remote module (Tải trước module từ xa)
     import(`${remoteName}/App`).then(() => {
       setPrefetched((prev) => new Set(prev).add(remoteName));
       console.log(`✅ Prefetched ${remoteName}`);
@@ -1676,7 +1722,7 @@ function Navigation() {
     <nav>
       <a
         href="/dashboard"
-        onMouseEnter={() => prefetchRemote('dashboard')} // ⚡ Hover = preload
+        onMouseEnter={() => prefetchRemote('dashboard')} // ⚡ Hover = preload (Hover = tải trước)
       >
         Dashboard
       </a>

@@ -4,84 +4,105 @@
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"CSR = browser render (SPA), SSR = server render HTML. CSR tốt cho interactive apps, SSR tốt cho SEO/performance. Modern: Hybrid (SSR first paint + CSR hydration)."**
+**"CSR = browser render (SPA - Single Page Application - Ứng dụng một trang), SSR = server render HTML (Server render HTML). CSR tốt cho interactive apps (ứng dụng tương tác), SSR tốt cho SEO/performance (hiệu suất). Modern: Hybrid (Kết hợp - SSR first paint + CSR hydration - Hydration là gắn events vào HTML)."**
 
 **🔑 So Sánh Chi Tiết:**
 
-| **Metric** | **CSR** | **SSR** |
-|-----------|---------|--------|
-| **Initial Load** | Chậm (download JS → execute) | Nhanh (HTML ready) |
-| **SEO** | Kém (crawlers không chờ JS) | Tốt (HTML đầy đủ) |
-| **Navigation** | Nhanh (no reload) | Chậm (full page reload) |
-| **Server Load** | Thấp (static CDN) | Cao (render mỗi request) |
-| **Complexity** | Đơn giản (frontend only) | Phức tạp (isomorphic code) |
+| **Metric (Chỉ số)**            | **CSR**                                                           | **SSR**                                                    |
+| ------------------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------- |
+| **Initial Load (Tải ban đầu)** | Chậm (download JS → execute - Tải JS → thực thi)                  | Nhanh (HTML ready - HTML sẵn sàng)                         |
+| **SEO (Tối ưu SEO)**           | Kém (crawlers không chờ JS - Trình thu thập không chờ JavaScript) | Tốt (HTML đầy đủ - HTML có đầy đủ nội dung)                |
+| **Navigation (Điều hướng)**    | Nhanh (no reload - Không tải lại trang)                           | Chậm (full page reload - Tải lại toàn bộ trang)            |
+| **Server Load (Tải server)**   | Thấp (static CDN - CDN tĩnh)                                      | Cao (render mỗi request - Render cho mỗi yêu cầu)          |
+| **Complexity (Độ phức tạp)**   | Đơn giản (frontend only - Chỉ frontend)                           | Phức tạp (isomorphic code - Code chạy cả server và client) |
 
 **🔑 CSR (Client-Side Rendering):**
 
 **Cách hoạt động:**
-1. Server gửi empty HTML + JS bundle (500KB-2MB)
-2. Browser download → parse → execute JS
-3. React/Vue render UI → attach events (hydration)
+
+1. Server gửi empty HTML (HTML rỗng) + JS bundle (Gói JavaScript - 500KB-2MB)
+2. Browser download (Tải xuống) → parse (Phân tích) → execute JS (Thực thi JavaScript)
+3. React/Vue render UI (Vẽ giao diện) → attach events (Gắn sự kiện - hydration - Hydration là quá trình gắn JavaScript vào HTML đã render)
 
 **Ưu điểm:**
-- **Fast navigation** - no reload, smooth SPA experience
-- **Rich interactions** - full JS power, real-time features
-- **Low server cost** - CDN serving static files
+
+- **Fast navigation (Điều hướng nhanh)** - no reload (Không tải lại trang), smooth SPA experience (Trải nghiệm SPA mượt mà - SPA = Single Page Application)
+- **Rich interactions (Tương tác phong phú)** - full JS power (Sức mạnh JavaScript đầy đủ), real-time features (Tính năng thời gian thực)
+- **Low server cost (Chi phí server thấp)** - CDN serving static files (CDN phục vụ file tĩnh - CDN = Content Delivery Network - Mạng phân phối nội dung)
 
 **Nhược điểm:**
-- **Slow First Paint** - chờ download + execute JS (2-5s)
-- **Poor SEO** - crawlers không execute JS
-- **Large bundle** - 500KB+ initial load
+
+- **Slow First Paint (Vẽ lần đầu chậm)** - chờ download (Tải xuống) + execute JS (Thực thi JavaScript) (2-5s)
+- **Poor SEO (SEO kém)** - crawlers (Trình thu thập dữ liệu như Google bot) không execute JS (Không thực thi JavaScript)
+- **Large bundle (Gói lớn)** - 500KB+ initial load (Tải ban đầu - Initial load là lần tải đầu tiên)
 
 **🔑 SSR (Server-Side Rendering):**
 
 **Cách hoạt động:**
-1. Server render React/Vue → HTML string
-2. Send full HTML (có content) về browser
-3. Browser display ngay → download JS → hydrate (interactivity)
+
+1. Server render React/Vue (Server render React/Vue thành) → HTML string (Chuỗi HTML)
+2. Send full HTML (Gửi HTML đầy đủ - có content - có nội dung) về browser (Về trình duyệt)
+3. Browser display ngay (Trình duyệt hiển thị ngay) → download JS (Tải JavaScript) → hydrate (Hydration - Gắn events để tương tác - interactivity)
 
 **Ưu điểm:**
-- **Fast First Paint** - HTML ready, no JS blocking
-- **SEO-friendly** - crawlers thấy full content
-- **Better performance** on slow devices/networks
+
+- **Fast First Paint (Vẽ lần đầu nhanh)** - HTML ready (HTML sẵn sàng), no JS blocking (Không bị chặn bởi JavaScript)
+- **SEO-friendly (Thân thiện SEO)** - crawlers (Trình thu thập dữ liệu) thấy full content (Thấy đầy đủ nội dung)
+- **Better performance (Hiệu suất tốt hơn)** on slow devices/networks (Trên thiết bị/mạng chậm)
 
 **Nhược điểm:**
-- **High server load** - render mỗi request
-- **TTFB slower** - server processing time
-- **Complex setup** - isomorphic code, hydration issues
+
+- **High server load (Tải server cao)** - render mỗi request (Render cho mỗi yêu cầu - Request là yêu cầu từ người dùng)
+- **TTFB slower (TTFB chậm hơn)** - server processing time (Thời gian xử lý server - TTFB = Time To First Byte - Thời gian đến byte đầu tiên)
+- **Complex setup (Thiết lập phức tạp)** - isomorphic code (Code isomorphic - Code chạy được cả server và client), hydration issues (Vấn đề hydration - Lỗi khi gắn events)
 
 **⚠️ Lỗi Thường Gặp:**
+
 - SSR dùng browser APIs (`window`, `localStorage`) → crash server
 - Hydration mismatch (server HTML ≠ client HTML) → re-render flicker
 - CSR không loading state → blank screen 3-5s
 - SSR không cache → overload server
 
-**💡 Kiến Thức Senior:**
-- **Hybrid rendering**: Next.js SSG (static) + ISR (revalidate) + SSR (dynamic)
-- **Streaming SSR**: Send HTML chunks progressively (React 18 Suspense)
-- **Partial Hydration**: Chỉ hydrate interactive components (Islands Architecture - Astro)
-- **Edge SSR**: Render on CDN edge (Vercel Edge, Cloudflare Workers) - faster TTFB
+**💡 Kiến Thức Senior: (Kiến thức dành cho Senior Developer)**
+
+- **Hybrid rendering (Render kết hợp)**: Next.js SSG (static - tĩnh) + ISR (revalidate - tái xác thực) + SSR (dynamic - động)
+  // SSG = Static Site Generation (Tạo trang tĩnh)
+  // ISR = Incremental Static Regeneration (Tái tạo tĩnh tăng dần)
+  // SSR = Server-Side Rendering (Render phía server)
+- **Streaming SSR (SSR luồng)**: Send HTML chunks progressively (Gửi HTML từng phần - React 18 Suspense)
+  // Streaming = Gửi từng phần (Gửi dữ liệu từng phần thay vì chờ hết)
+  // Suspense = Component React để xử lý async (Component React xử lý bất đồng bộ)
+- **Partial Hydration (Hydration một phần)**: Chỉ hydrate interactive components (Chỉ hydrate component tương tác - Islands Architecture - Astro)
+  // Islands Architecture = Kiến trúc đảo (Chỉ hydrate phần cần thiết)
+  // Astro = Framework hỗ trợ Islands Architecture (Framework hỗ trợ kiến trúc đảo)
+- **Edge SSR (SSR ở biên)**: Render on CDN edge (Render trên CDN edge - Vercel Edge, Cloudflare Workers) - faster TTFB (TTFB nhanh hơn)
+  // Edge = Biên mạng (Gần user hơn - Giảm độ trễ)
+  // CDN = Content Delivery Network (Mạng phân phối nội dung)
+  // Vercel Edge = Edge functions của Vercel (Hàm edge của Vercel)
+  // Cloudflare Workers = Workers của Cloudflare (Workers của Cloudflare)
 
 **Trả lời:**
 
 #### **🎯 Khái Niệm Cốt Lõi**
 
 **CSR (Client-Side Rendering):**
+
 - Server gửi **HTML rỗng** (chỉ có `<div id="root"></div>`) + **JavaScript bundle** (500KB-2MB)
 - Browser **download JS → parse → execute → render** → hiển thị nội dung
 - Giống như: Mua IKEA furniture (phải tự lắp ráp ở nhà)
 - Rendering engine: Browser (Chrome V8, Firefox SpiderMonkey)
 
 **SSR (Server-Side Rendering):**
+
 - Server **render sẵn HTML đầy đủ** (có nội dung) rồi gửi về browser
 - Browser **hiển thị ngay** HTML → sau đó download JS để tương tác
 - Giống như: Mua furniture đã lắp ráp sẵn (chỉ cần đặt vào nhà)
 - Rendering engine: Node.js server (React renderToString)
 
-
 #### **✅ Ưu Điểm CSR (Client-Side Rendering)**
 
 **1. Navigation Cực Nhanh (Fast SPA Navigation)**
+
 ```
 User clicks link:
 - CSR: 0ms (chỉ thay đổi DOM, không reload page)
@@ -90,6 +111,7 @@ User clicks link:
 ```
 
 **2. Rich Interactions (Tương Tác Phong Phú)**
+
 ```typescript
 // CSR: Dễ dàng làm real-time features
 - Live chat, notifications
@@ -100,6 +122,7 @@ User clicks link:
 ```
 
 **3. Server Load Thấp (Less Server Load)**
+
 ```
 - Server chỉ serve static files (HTML, JS, CSS)
 - Không cần render cho mỗi request
@@ -108,6 +131,7 @@ User clicks link:
 ```
 
 **4. Dễ Deploy & Scale**
+
 ```
 - Deploy lên CDN (Vercel, Netlify, CloudFront)
 - Không cần server-side logic
@@ -120,6 +144,7 @@ User clicks link:
 #### **❌ Nhược Điểm CSR**
 
 **1. Initial Load Chậm (Slow First Load)**
+
 ```
 Timeline:
 [0s]   User clicks link
@@ -134,21 +159,22 @@ Timeline:
 ```
 
 **2. SEO Nghèo Nàn (Poor SEO)**
+
 ```html
 <!-- Google bot sees: -->
 <html>
   <body>
-    <div id="root"></div>  <!-- EMPTY! -->
+    <div id="root"></div>
+    <!-- EMPTY! -->
     <script src="bundle.js"></script>
   </body>
 </html>
 
-→ Google không thấy nội dung
-→ Không index được
-→ SEO ranking thấp
+→ Google không thấy nội dung → Không index được → SEO ranking thấp
 ```
 
 **3. Blank Screen Problem**
+
 ```
 User experience:
 [0-3s] White/blank screen (nothing to see) - ⬜ Màn hình trắng (chưa có gì)
@@ -161,6 +187,7 @@ User experience:
 ```
 
 **4. Phụ Thuộc JavaScript**
+
 ```
 - ❌ User disable JS → website không chạy
 - 💥 JS error → website crash - Lỗi JS làm sập website
@@ -173,6 +200,7 @@ User experience:
 #### **✅ Ưu Điểm SSR (Server-Side Rendering)**
 
 **1. Initial Load Cực Nhanh (Fast Time to Content)**
+
 ```
 Timeline:
 [0s]   User clicks link
@@ -187,6 +215,7 @@ Timeline:
 ```
 
 **2. SEO Xuất Sắc (SEO-Friendly)**
+
 ```html
 <!-- Google bot sees: -->
 <html>
@@ -200,12 +229,12 @@ Timeline:
   </body>
 </html>
 
-→ Google index đầy đủ nội dung
-→ Better ranking
-→ Social media previews work (Open Graph)
+→ Google index đầy đủ nội dung → Better ranking → Social media previews work
+(Open Graph)
 ```
 
 **3. Better Performance (Đặc biệt cho slow devices)**
+
 ```
 - 🚀 Server render nhanh (powerful CPU) - Server CPU mạnh render nhanh
 - 📱 User device không cần làm việc nặng - Điện thoại không bị nặng
@@ -214,6 +243,7 @@ Timeline:
 ```
 
 **4. Không Blank Screen**
+
 ```
 User experience:
 [0.5s] ✅ Content appears immediately! - Nội dung hiện ngay!
@@ -229,6 +259,7 @@ User experience:
 #### **❌ Nhược Điểm SSR**
 
 **1. Server Load Cao (High Server Cost)**
+
 ```
 CSR:
 - 🖥️ Server: "Here's HTML + JS" (1 lần, cache được)
@@ -243,6 +274,7 @@ SSR:
 ```
 
 **2. Navigation Chậm Hơn (Slower Navigation)**
+
 ```
 User clicks internal link:
 
@@ -259,6 +291,7 @@ SSR:
 ```
 
 **3. Complexity Cao (Complex Setup)**
+
 ```typescript
 // ✅ CSR: Simple (Đơn giản)
 ReactDOM.render(<App />, root); // Chỉ 1 dòng code!
@@ -273,6 +306,7 @@ ReactDOM.render(<App />, root); // Chỉ 1 dòng code!
 ```
 
 **4. TTFB Cao Hơn (Time to First Byte)**
+
 ```
 CSR:
 - ⚡ TTFB: 50ms (serve static file) - Chỉ gửi file tĩnh
@@ -284,6 +318,7 @@ SSR:
 ```
 
 **5. Hydration Issues**
+
 ```typescript
 // 🖥️ Server renders: <div>Count: 0</div>
 // 💻 Client state:   <div>Count: 1</div>
@@ -338,6 +373,7 @@ SSR:
 #### **🎯 Khi Nào Dùng Gì?**
 
 **Dùng CSR khi:**
+
 ```
 ✅ Internal tools / Admin dashboard
    → Không cần SEO, user đã login
@@ -353,6 +389,7 @@ SSR:
 ```
 
 **Dùng SSR khi:**
+
 ```
 ✅ Public-facing websites
    → Cần SEO, social sharing
@@ -368,6 +405,7 @@ SSR:
 ```
 
 **Dùng SSG (Hybrid) khi:**
+
 ```
 ✅ Static content with occasional updates
    → Blog posts, product pages
@@ -384,18 +422,21 @@ SSR:
 #### **💡 Key Takeaways**
 
 **CSR (Client-Side):**
+
 - 🚀 Navigation nhanh, tương tác mượt
 - 💰 Chi phí thấp, dễ deploy
 - ❌ Initial load chậm (3-5s), SEO kém
 - 🎯 **Dùng cho**: Internal tools, SPAs, interactive apps
 
 **SSR (Server-Side):**
+
 - ⚡ Initial load nhanh (0.5-1s), SEO tốt
 - ✅ Không blank screen, better UX
 - ❌ Server cost cao, navigation chậm hơn
 - 🎯 **Dùng cho**: Public sites, marketing, e-commerce
 
 **Modern Approach:**
+
 - **Mix cả 3**: SSG (static pages) + SSR (dynamic) + CSR (interactive)
 - **Framework**: Next.js, Remix, Nuxt.js hỗ trợ cả 3
 - **Measure**: Dùng Lighthouse, Web Vitals để optimize
@@ -522,49 +563,58 @@ User clicks link
 // </body>
 // </html>
 
-// main.tsx - Entry point
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+// main.tsx - Entry point (Điểm vào - File bắt đầu chạy ứng dụng)
+import React from 'react'; // Import React library (Thư viện React)
+import ReactDOM from 'react-dom/client'; // Import ReactDOM để render (Để vẽ giao diện)
+import App from './App'; // Import component App (Component chính)
 
-// Render app on client
-const root = ReactDOM.createRoot(document.getElementById('root')!);
-root.render(<App />);
+// Render app on client (Vẽ ứng dụng trên client - Trình duyệt)
+const root = ReactDOM.createRoot(document.getElementById('root')!); // Tạo root element (Tạo phần tử gốc - root là div#root trong HTML)
+root.render(<App />); // Render component App vào root (Vẽ App vào phần tử gốc)
 
-// App.tsx - Main component
-import { useState, useEffect } from 'react';
+// App.tsx - Main component (Component chính)
+import { useState, useEffect } from 'react'; // Import hooks (useState = quản lý state, useEffect = chạy side effects)
 
 interface User {
-  id: number;
-  name: string;
-  email: string;
+  // Interface định nghĩa kiểu dữ liệu User (Định nghĩa cấu trúc dữ liệu người dùng)
+  id: number; // ID người dùng (Số)
+  name: string; // Tên người dùng (Chuỗi)
+  email: string; // Email người dùng (Chuỗi)
 }
 
 function App() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Component App - Component chính của ứng dụng
+  const [users, setUsers] = useState<User[]>([]); // State lưu danh sách users (Trạng thái lưu danh sách người dùng - ban đầu là mảng rỗng)
+  const [loading, setLoading] = useState(true); // State lưu trạng thái loading (Trạng thái đang tải - ban đầu là true)
 
-  // Fetch data on client
+  // Fetch data on client (Lấy dữ liệu trên client - Trình duyệt)
   useEffect(() => {
-    fetch('https://api.example.com/users')
-      .then((res) => res.json())
+    // useEffect chạy sau khi component render (Chạy sau khi vẽ component)
+    fetch('https://api.example.com/users') // Gọi API lấy danh sách users (Gửi request đến API)
+      .then((res) => res.json()) // Chuyển response thành JSON (Chuyển phản hồi thành JSON)
       .then((data) => {
-        setUsers(data);
-        setLoading(false);
+        // Khi có data (Khi có dữ liệu)
+        setUsers(data); // Cập nhật state users (Cập nhật danh sách người dùng)
+        setLoading(false); // Tắt loading (Tắt trạng thái đang tải)
       });
-  }, []);
+  }, []); // [] = chỉ chạy 1 lần khi component mount (Mảng rỗng = chỉ chạy 1 lần khi component được gắn vào)
 
   if (loading) {
-    return <div>Loading...</div>; // User sees loading state
+    // Nếu đang loading (Nếu đang tải)
+    return <div>Loading...</div>; // Hiển thị "Loading..." (User sees loading state - Người dùng thấy trạng thái đang tải)
   }
 
   return (
+    // Return JSX (Trả về JSX - JavaScript XML - Cú pháp giống HTML)
     <div>
-      <h1>Users</h1>
+      <h1>Users</h1> {/* Tiêu đề */}
       <ul>
+        {/* Danh sách không có thứ tự */}
         {users.map((user) => (
+          // Duyệt qua mảng users và render mỗi user (Lặp qua danh sách người dùng)
           <li key={user.id}>
-            {user.name} - {user.email}
+            {/* Mỗi item cần key (Mỗi phần tử cần key để React theo dõi) */}
+            {user.name} - {user.email} {/* Hiển thị tên và email */}
           </li>
         ))}
       </ul>
@@ -628,43 +678,51 @@ User clicks link
 // SSR Example - Next.js
 // ============================================
 
-// pages/users.tsx - SSR page
-import { GetServerSideProps } from 'next';
+// pages/users.tsx - SSR page (Trang SSR - Server-Side Rendering)
+import { GetServerSideProps } from 'next'; // Import type từ Next.js (Import kiểu dữ liệu từ Next.js)
 
 interface User {
-  id: number;
-  name: string;
-  email: string;
+  // Interface định nghĩa kiểu User (Định nghĩa cấu trúc dữ liệu người dùng)
+  id: number; // ID người dùng
+  name: string; // Tên người dùng
+  email: string; // Email người dùng
 }
 
 interface Props {
-  users: User[];
+  // Interface định nghĩa props của component (Props là dữ liệu truyền vào component)
+  users: User[]; // Mảng users (Danh sách người dùng)
 }
 
-// This function runs on SERVER for every request
+// This function runs on SERVER for every request (Hàm này chạy trên SERVER cho mỗi request - Mỗi yêu cầu)
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  // Fetch data on server
-  const res = await fetch('https://api.example.com/users');
-  const users = await res.json();
+  // Export function getServerSideProps (Xuất hàm getServerSideProps - Next.js sẽ gọi hàm này trên server)
+  // Fetch data on server (Lấy dữ liệu trên server)
+  const res = await fetch('https://api.example.com/users'); // Gọi API (Gửi request đến API)
+  const users = await res.json(); // Chuyển response thành JSON (Chuyển phản hồi thành JSON)
 
-  // Pass data to component as props
+  // Pass data to component as props (Truyền dữ liệu vào component qua props)
   return {
+    // Trả về object với props (Trả về đối tượng chứa props)
     props: {
-      users, // This data is already available!
+      users, // This data is already available! (Dữ liệu này đã có sẵn! - Không cần đợi trên client)
     },
   };
 };
 
-// Component renders on server
+// Component renders on server (Component render trên server)
 function UsersPage({ users }: Props) {
-  // No loading state needed - data is already here!
+  // Component nhận users từ props (Component nhận danh sách users từ props)
+  // No loading state needed - data is already here! (Không cần loading state - Dữ liệu đã có sẵn!)
   return (
     <div>
-      <h1>Users</h1>
+      <h1>Users</h1> {/* Tiêu đề */}
       <ul>
+        {/* Danh sách */}
         {users.map((user) => (
+          // Duyệt qua users và render (Lặp qua danh sách người dùng)
           <li key={user.id}>
-            {user.name} - {user.email}
+            {/* Mỗi item cần key (Mỗi phần tử cần key) */}
+            {user.name} - {user.email} {/* Hiển thị tên và email */}
           </li>
         ))}
       </ul>
@@ -758,12 +816,18 @@ export default UsersPage;
 // - Games
 // - Real-time collaboration tools
 
-// Example:
+// Example: (Ví dụ)
 const AdminDashboard = () => {
+  // Component AdminDashboard (Component bảng điều khiển admin)
   return (
     <div>
-      <Chart data={realtimeData} /> {/* Real-time updates */}
-      <DataGrid onEdit={handleEdit} /> {/* Complex interactions */}
+      <Chart data={realtimeData} />{' '}
+      {/* Real-time updates (Cập nhật thời gian thực) */}
+      {/* Chart = Biểu đồ (Component biểu đồ với dữ liệu thời gian thực) */}
+      <DataGrid onEdit={handleEdit} />{' '}
+      {/* Complex interactions (Tương tác phức tạp) */}
+      {/* DataGrid = Bảng dữ liệu (Component bảng với chức năng chỉnh sửa) */}
+      {/* onEdit = Callback khi edit (Hàm gọi lại khi chỉnh sửa) */}
     </div>
   );
 };
@@ -788,21 +852,30 @@ const AdminDashboard = () => {
 // - Location-based content
 // - User-specific dashboards
 
-// Example:
+// Example: (Ví dụ)
 export const getServerSideProps = async (context) => {
-  // Fetch based on user location
-  const { country } = context.req.geo;
-  const products = await fetchProductsByCountry(country);
+  // Export getServerSideProps (Xuất hàm getServerSideProps - Chạy trên server)
+  // context = Context chứa request info (Context chứa thông tin request)
+  // Fetch based on user location (Lấy dữ liệu dựa trên vị trí người dùng)
+  const { country } = context.req.geo; // Lấy country từ geo (Lấy quốc gia từ thông tin địa lý)
+  // context.req.geo = Thông tin địa lý từ request (Thông tin địa lý từ yêu cầu)
+  const products = await fetchProductsByCountry(country); // Lấy sản phẩm theo country (Lấy sản phẩm theo quốc gia)
 
-  return { props: { products } };
+  return { props: { products } }; // Trả về props (Trả về dữ liệu sản phẩm)
 };
 
 const ProductPage = ({ products }) => {
+  // Component nhận products từ props (Component nhận danh sách sản phẩm)
   return (
     <div>
-      <h1>Products in Your Region</h1>
+      <h1>Products in Your Region</h1>{' '}
+      {/* Tiêu đề (Sản phẩm trong khu vực của bạn) */}
       {products.map((p) => (
+        // Duyệt qua products (Lặp qua danh sách sản phẩm)
         <ProductCard key={p.id} {...p} />
+        // ProductCard = Component hiển thị sản phẩm (Component thẻ sản phẩm)
+        // key = Key cho React (Key để React theo dõi)
+        // {...p} = Spread props (Truyền tất cả thuộc tính của p vào component)
       ))}
     </div>
   );
@@ -820,27 +893,32 @@ Next.js còn có SSG (Static Site Generation) - best of both worlds:
 // SSG Example - Next.js
 // ============================================
 
-// Build time: Generate static HTML
+// Build time: Generate static HTML (Thời gian build: Tạo HTML tĩnh)
 export const getStaticProps: GetStaticProps = async () => {
-  // This runs at BUILD TIME, not per request
-  const res = await fetch('https://api.example.com/posts');
-  const posts = await res.json();
+  // Export function getStaticProps (Xuất hàm getStaticProps - Chạy khi build, không phải mỗi request)
+  // This runs at BUILD TIME, not per request (Chạy khi BUILD, không phải mỗi request - Chỉ chạy 1 lần khi build)
+  const res = await fetch('https://api.example.com/posts'); // Gọi API lấy posts (Gửi request lấy bài viết)
+  const posts = await res.json(); // Chuyển thành JSON (Chuyển phản hồi thành JSON)
 
   return {
-    props: { posts },
-    revalidate: 60, // Re-generate every 60 seconds (ISR)
+    // Trả về props (Trả về dữ liệu)
+    props: { posts }, // Truyền posts vào component (Truyền danh sách bài viết)
+    revalidate: 60, // Re-generate every 60 seconds (ISR) (Tái tạo mỗi 60 giây - ISR = Incremental Static Regeneration - Tái tạo tĩnh tăng dần)
   };
 };
 
-// Component
+// Component (Component)
 const BlogPage = ({ posts }) => {
+  // Component nhận posts từ props (Component nhận danh sách bài viết)
   return (
     <div>
-      <h1>Blog Posts</h1>
+      <h1>Blog Posts</h1> {/* Tiêu đề */}
       {posts.map((post) => (
+        // Duyệt qua posts (Lặp qua danh sách bài viết)
         <article key={post.id}>
-          <h2>{post.title}</h2>
-          <p>{post.excerpt}</p>
+          {/* Mỗi bài viết cần key (Mỗi phần tử cần key) */}
+          <h2>{post.title}</h2> {/* Tiêu đề bài viết */}
+          <p>{post.excerpt}</p> {/* Tóm tắt bài viết */}
         </article>
       ))}
     </div>
@@ -870,82 +948,97 @@ const BlogPage = ({ posts }) => {
 **1. CSR Optimization:**
 
 ```typescript
-// ✅ Code splitting - Tách code thành nhiều file nhỏ
-import { lazy, Suspense } from 'react';
+// ✅ Code splitting - Tách code thành nhiều file nhỏ (Chia nhỏ code để tải nhanh hơn)
+import { lazy, Suspense } from 'react'; // Import lazy và Suspense (lazy = tải chậm, Suspense = hiển thị loading)
 
-// 📦 Lazy load component (chỉ tải khi cần)
-const HeavyComponent = lazy(() => import('./HeavyComponent'));
+// 📦 Lazy load component (chỉ tải khi cần - Lazy loading = Tải khi cần thiết)
+const HeavyComponent = lazy(() => import('./HeavyComponent')); // Tạo component lazy (Tạo component tải chậm - chỉ tải khi dùng)
 
 function App() {
   return (
-    // 🔄 Suspense: Hiển thị Loading trong khi đợi component tải
+    // 🔄 Suspense: Hiển thị Loading trong khi đợi component tải (Suspense = Hiển thị loading khi đợi)
     <Suspense fallback={<Loading />}>
-      <HeavyComponent />
+      {/* fallback = Hiển thị gì khi đang tải (fallback = phần tử hiển thị khi đang tải) */}
+      <HeavyComponent /> {/* Component sẽ được tải khi cần (Component này sẽ tải khi cần) */}
     </Suspense>
   );
 }
 
-// ✅ Preload critical data - Tải trước data quan trọng
-<link rel="preload" href="/api/users" as="fetch" crossOrigin="anonymous" />
+// ✅ Preload critical data - Tải trước data quan trọng (Preload = Tải trước dữ liệu quan trọng)
+<link rel="preload" href="/api/users" as="fetch" crossOrigin="anonymous" />;
+// rel="preload" = Báo browser tải trước (Báo trình duyệt tải trước)
+// as="fetch" = Kiểu tải là fetch (Kiểu tải là fetch - Gọi API)
+// crossOrigin="anonymous" = Cho phép cross-origin (Cho phép tải từ domain khác)
 
-// ✅ Service Worker caching - Cache offline
+// ✅ Service Worker caching - Cache offline (Service Worker = Cache để dùng offline)
 if ('serviceWorker' in navigator) {
-  // 🗄️ Đăng ký service worker để cache file
-  navigator.serviceWorker.register('/sw.js');
+  // Kiểm tra browser có hỗ trợ Service Worker (Kiểm tra trình duyệt có hỗ trợ Service Worker)
+  // 🗄️ Đăng ký service worker để cache file (Đăng ký service worker để lưu cache file)
+  navigator.serviceWorker.register('/sw.js'); // Đăng ký service worker (Đăng ký file service worker)
 }
 ```
 
 **2. SSR Optimization:**
 
 ```typescript
-// ✅ Cache rendered pages - Cache trang đã render
-import { NextResponse } from 'next/server';
+// ✅ Cache rendered pages - Cache trang đã render (Lưu cache trang đã render)
+import { NextResponse } from 'next/server'; // Import NextResponse từ Next.js (Import NextResponse để xử lý response)
 
 export async function middleware(request) {
-  const response = NextResponse.next();
-  // 🗄️ Cache Control: Lưu cache 60s, dùng stale trong 120s
+  // Export function middleware (Xuất hàm middleware - Middleware = Xử lý trước khi render)
+  const response = NextResponse.next(); // Tạo response tiếp theo (Tạo phản hồi tiếp theo)
+  // 🗄️ Cache Control: Lưu cache 60s, dùng stale trong 120s (Lưu cache 60 giây, dùng dữ liệu cũ trong 120 giây)
   response.headers.set(
-    'Cache-Control', 
+    // Set header Cache-Control (Thiết lập header Cache-Control)
+    'Cache-Control',
     'public, max-age=60, stale-while-revalidate=120'
+    // public = Cache công khai (Cache có thể dùng chung)
+    // max-age=60 = Cache 60 giây (Lưu cache 60 giây)
+    // stale-while-revalidate=120 = Dùng dữ liệu cũ trong khi tái xác thực 120 giây (Dùng dữ liệu cũ trong khi kiểm tra lại)
   );
-  return response;
+  return response; // Trả về response (Trả về phản hồi)
 }
 
-// ✅ Streaming SSR (React 18) - Gửi HTML từng phần
-import { renderToReadableStream } from 'react-dom/server';
+// ✅ Streaming SSR (React 18) - Gửi HTML từng phần (Streaming SSR = Gửi HTML từng phần thay vì chờ hết)
+import { renderToReadableStream } from 'react-dom/server'; // Import renderToReadableStream (Import hàm render thành stream)
 
-// 📡 Stream HTML thay vì chờ render hết (faster TTFB)
-const stream = await renderToReadableStream(<App />);
-return new Response(stream);
+// 📡 Stream HTML thay vì chờ render hết (faster TTFB) (Gửi HTML từng phần thay vì chờ render hết - TTFB nhanh hơn)
+const stream = await renderToReadableStream(<App />); // Render App thành stream (Vẽ App thành luồng dữ liệu)
+return new Response(stream); // Trả về Response với stream (Trả về Response chứa stream)
 
-// ✅ Selective hydration - Chỉ hydrate một phần
-// 💧 suppressHydrationWarning: Bỏ qua warning khi nội dung server-only
-<div suppressHydrationWarning>{serverOnlyContent}</div>
+// ✅ Selective hydration - Chỉ hydrate một phần (Selective hydration = Chỉ hydrate phần cần thiết)
+// 💧 suppressHydrationWarning: Bỏ qua warning khi nội dung server-only (Bỏ qua cảnh báo khi nội dung chỉ có trên server)
+<div suppressHydrationWarning>{serverOnlyContent}</div>;
+// suppressHydrationWarning = Bỏ qua cảnh báo hydration (Bỏ qua cảnh báo khi HTML server khác client)
+// serverOnlyContent = Nội dung chỉ có trên server (Nội dung chỉ render trên server)
 ```
 
 **3. Hybrid Strategy:**
 
 ```typescript
-// ✅ Mix CSR + SSR + SSG
-// - SSG: Static pages (blog, docs)
-// - SSR: Dynamic pages (user profile)
-// - CSR: Interactive parts (comments, likes)
+// ✅ Mix CSR + SSR + SSG (Kết hợp CSR + SSR + SSG)
+// - SSG: Static pages (blog, docs) (SSG cho trang tĩnh - Blog, tài liệu)
+// - SSR: Dynamic pages (user profile) (SSR cho trang động - Hồ sơ người dùng)
+// - CSR: Interactive parts (comments, likes) (CSR cho phần tương tác - Bình luận, like)
 
-// pages/post/[id].tsx
+// pages/post/[id].tsx (Trang bài viết với dynamic route - [id] = tham số động)
 export const getStaticProps = async ({ params }) => {
-  const post = await fetchPost(params.id); // SSG
-  return { props: { post } };
+  // Export getStaticProps (Xuất hàm getStaticProps - Chạy khi build)
+  const post = await fetchPost(params.id); // SSG - Lấy bài viết theo ID (Lấy bài viết - SSG = Static Site Generation)
+  return { props: { post } }; // Trả về props (Trả về dữ liệu bài viết)
 };
 
 const PostPage = ({ post }) => {
+  // Component nhận post từ props (Component nhận bài viết)
   return (
     <div>
-      {/* SSG content */}
+      {/* SSG content (Nội dung SSG - Đã render sẵn) */}
       <article>{post.content}</article>
-
-      {/* CSR interactive part */}
-      <Comments postId={post.id} />
-      <LikeButton postId={post.id} />
+      {/* Article = Bài viết (Nội dung bài viết đã được render sẵn) */}
+      {/* CSR interactive part (Phần tương tác CSR - Render trên client) */}
+      <Comments postId={post.id} />{' '}
+      {/* Component Comments - Tải và render trên client (Component bình luận) */}
+      <LikeButton postId={post.id} /> {/* Component LikeButton - Tải và render trên client (Component nút like) */}
     </div>
   );
 };
@@ -957,26 +1050,31 @@ const PostPage = ({ post }) => {
 
 ```typescript
 // 1️⃣ Measure Time to First Byte (TTFB) - Đo thời gian đến byte đầu tiên
-// ⏱️ TTFB: Thời gian từ khi click đến khi nhận byte đầu từ server
+// ⏱️ TTFB: Thời gian từ khi click đến khi nhận byte đầu từ server (TTFB = Time To First Byte)
 performance.getEntriesByType('navigation')[0].responseStart;
+// performance.getEntriesByType('navigation') = Lấy thông tin navigation (Lấy thông tin điều hướng)
+// [0].responseStart = Thời điểm bắt đầu nhận response (Thời điểm bắt đầu nhận phản hồi)
 
 // 2️⃣ Measure First Contentful Paint (FCP) - Đo thời gian vẽ nội dung đầu
-// 🎨 FCP: Thời gian đến khi user thấy nội dung đầu tiên
+// 🎨 FCP: Thời gian đến khi user thấy nội dung đầu tiên (FCP = First Contentful Paint - Vẽ nội dung đầu tiên)
 new PerformanceObserver((list) => {
+  // Tạo PerformanceObserver để theo dõi performance (Tạo người quan sát hiệu suất)
   for (const entry of list.getEntries()) {
-    console.log('FCP:', entry.startTime);
+    // Duyệt qua các entry (Lặp qua các mục)
+    console.log('FCP:', entry.startTime); // Log thời gian FCP (Ghi log thời gian FCP)
   }
-}).observe({ entryTypes: ['paint'] });
+}).observe({ entryTypes: ['paint'] }); // Quan sát các sự kiện paint (Theo dõi các sự kiện vẽ)
 
-// 3️⃣ Detect SSR vs CSR - Phát hiện đang render ở đâu
-// 🔍 Check môi trường: Server (no window) hay Client (có window)
-const isSSR = typeof window === 'undefined';
-console.log('Rendering on:', isSSR ? 'Server' : 'Client');
+// 3️⃣ Detect SSR vs CSR - Phát hiện đang render ở đâu (Phát hiện đang render trên server hay client)
+// 🔍 Check môi trường: Server (no window) hay Client (có window) (Kiểm tra môi trường)
+const isSSR = typeof window === 'undefined'; // Kiểm tra có window không (window chỉ có trên browser)
+// typeof window === 'undefined' = Không có window = đang ở server (Không có window = đang ở server)
+console.log('Rendering on:', isSSR ? 'Server' : 'Client'); // Log môi trường render (Ghi log môi trường)
 
-// 4️⃣ Chrome DevTools - Công cụ debug
-// 🌐 Network tab: Check HTML size (SSR = lớn, CSR = nhỏ)
-// ⚡ Performance tab: Xem timeline render
-// 💯 Lighthouse: Chạy audit để so sánh SSR vs CSR
+// 4️⃣ Chrome DevTools - Công cụ debug (Công cụ gỡ lỗi Chrome)
+// 🌐 Network tab: Check HTML size (SSR = lớn, CSR = nhỏ) (Tab Network: Kiểm tra kích thước HTML)
+// ⚡ Performance tab: Xem timeline render (Tab Performance: Xem dòng thời gian render)
+// 💯 Lighthouse: Chạy audit để so sánh SSR vs CSR (Lighthouse: Chạy kiểm tra để so sánh)
 ```
 
 ---
@@ -984,50 +1082,61 @@ console.log('Rendering on:', isSSR ? 'Server' : 'Client');
 #### **❌ Common Mistakes**
 
 ```typescript
-// ❌ MISTAKE 1: Using window/document in SSR
+// ❌ MISTAKE 1: Using window/document in SSR (LỖI 1: Dùng window/document trong SSR)
 function MyComponent() {
-  // 🐛 Lỗi: window chỉ có trên browser, server không có!
-  const width = window.innerWidth; // ❌ Error: window is not defined
-  return <div style={{ width }}></div>;
+  // Component MyComponent (Component của tôi)
+  // 🐛 Lỗi: window chỉ có trên browser, server không có! (window chỉ có trên trình duyệt, server không có)
+  const width = window.innerWidth; // ❌ Error: window is not defined (Lỗi: window không được định nghĩa)
+  // window.innerWidth = Chiều rộng cửa sổ (window chỉ có trên browser)
+  return <div style={{ width }}></div>; // Return JSX với style (Trả về JSX với style)
 }
 
-// ✅ FIX: Check environment - Kiểm tra môi trường
+// ✅ FIX: Check environment - Kiểm tra môi trường (SỬA: Kiểm tra môi trường)
 function MyComponent() {
-  const [width, setWidth] = useState(0);
+  // Component đã sửa (Component đã được sửa)
+  const [width, setWidth] = useState(0); // State lưu width (Trạng thái lưu chiều rộng - ban đầu là 0)
 
-  // 🔧 useEffect chỉ chạy trên client, an toàn!
+  // 🔧 useEffect chỉ chạy trên client, an toàn! (useEffect chỉ chạy trên client, an toàn)
   useEffect(() => {
-    // 🔍 Check nếu có window (= browser environment)
+    // useEffect chạy sau khi render (Chạy sau khi vẽ component)
+    // 🔍 Check nếu có window (= browser environment) (Kiểm tra nếu có window = môi trường browser)
     if (typeof window !== 'undefined') {
-      setWidth(window.innerWidth); // ✅ An toàn
+      // Nếu window tồn tại (Nếu có window)
+      setWidth(window.innerWidth); // ✅ An toàn - Set width (An toàn - Thiết lập chiều rộng)
     }
-  }, []);
+  }, []); // [] = chỉ chạy 1 lần (Mảng rỗng = chỉ chạy 1 lần)
 
-  return <div style={{ width }}></div>;
+  return <div style={{ width }}></div>; // Return JSX (Trả về JSX)
 }
 
-// ❌ MISTAKE 2: Fetching data in useEffect for SSR
+// ❌ MISTAKE 2: Fetching data in useEffect for SSR (LỖI 2: Lấy dữ liệu trong useEffect cho SSR)
 export default function Page() {
-  const [data, setData] = useState(null);
+  // Component Page (Component trang)
+  const [data, setData] = useState(null); // State lưu data (Trạng thái lưu dữ liệu - ban đầu là null)
 
   useEffect(() => {
-    // 🐛 Lỗi: useEffect chạy trên client → SEO không thấy data!
-    fetch('/api/data').then(/* ... */); // ❌ Runs on client!
-  }, []);
+    // useEffect chạy trên client (Chạy trên trình duyệt)
+    // 🐛 Lỗi: useEffect chạy trên client → SEO không thấy data! (useEffect chạy trên client → SEO không thấy dữ liệu)
+    fetch('/api/data').then(/* ... */); // ❌ Runs on client! (Chạy trên client - Google bot không thấy)
+    // fetch = Gọi API (Gửi request đến API)
+  }, []); // [] = chỉ chạy 1 lần (Mảng rỗng = chỉ chạy 1 lần)
 
-  return <div>{data?.title}</div>; // ⚠️ Google bot thấy null
+  return <div>{data?.title}</div>; // ⚠️ Google bot thấy null (Google bot thấy null - Không có dữ liệu)
+  // data?.title = Optional chaining (Truy cập an toàn - Nếu data null thì trả về undefined)
 }
 
-// ✅ FIX: Use getServerSideProps - Fetch data trên server
+// ✅ FIX: Use getServerSideProps - Fetch data trên server (SỬA: Dùng getServerSideProps - Lấy dữ liệu trên server)
 export const getServerSideProps = async () => {
-  // 🖥️ Chạy trên server → SEO-friendly
-  const data = await fetch('/api/data').then((r) => r.json());
-  return { props: { data } }; // 📦 Truyền data vào component
+  // Export getServerSideProps (Xuất hàm getServerSideProps - Chạy trên server)
+  // 🖥️ Chạy trên server → SEO-friendly (Chạy trên server → Thân thiện SEO)
+  const data = await fetch('/api/data').then((r) => r.json()); // Gọi API và chuyển thành JSON (Gửi request và chuyển thành JSON)
+  return { props: { data } }; // 📦 Truyền data vào component (Truyền dữ liệu vào component qua props)
 };
 
 export default function Page({ data }) {
-  // ✅ Data đã có sẵn, Google bot thấy ngay!
-  return <div>{data.title}</div>;
+  // Component nhận data từ props (Component nhận dữ liệu từ props)
+  // ✅ Data đã có sẵn, Google bot thấy ngay! (Dữ liệu đã có sẵn, Google bot thấy ngay)
+  return <div>{data.title}</div>; // Return JSX với data (Trả về JSX với dữ liệu)
 }
 
 // ❌ MISTAKE 3: Over-using SSR - Dùng SSR cho mọi thứ
@@ -1110,34 +1219,54 @@ SEO needed?
 - ✅ Pros: Fastest, SEO-friendly, low cost (CDN)
 - ❌ Cons: Stale data (solved with ISR)
 
-**Modern Approach:**
+**Modern Approach: (Cách tiếp cận hiện đại)**
 
 ```typescript
-// Mix all three strategies!
-// - SSG for static pages (blog, docs)
-// - SSR for dynamic pages (user profile, search)
-// - CSR for interactive parts (comments, likes)
+// Mix all three strategies! (Kết hợp cả 3 chiến lược!)
+// - SSG for static pages (blog, docs) (SSG cho trang tĩnh - Blog, tài liệu)
+// - SSR for dynamic pages (user profile, search) (SSR cho trang động - Hồ sơ người dùng, tìm kiếm)
+// - CSR for interactive parts (comments, likes) (CSR cho phần tương tác - Bình luận, like)
 
-// Example: E-commerce site
-// - Homepage: SSG (revalidate hourly)
-// - Product page: SSR (real-time inventory)
-// - Cart: CSR (no SEO needed)
-// - Checkout: SSR (security + UX)
+// Example: E-commerce site (Ví dụ: Trang thương mại điện tử)
+// - Homepage: SSG (revalidate hourly) (Trang chủ: SSG - Tái xác thực mỗi giờ)
+//   // revalidate = Tái xác thực (Tái tạo lại sau một khoảng thời gian)
+// - Product page: SSR (real-time inventory) (Trang sản phẩm: SSR - Hàng tồn kho thời gian thực)
+//   // real-time inventory = Hàng tồn kho thời gian thực (Cần cập nhật liên tục)
+// - Cart: CSR (no SEO needed) (Giỏ hàng: CSR - Không cần SEO)
+//   // Cart = Giỏ hàng (Chỉ user đã login mới thấy)
+// - Checkout: SSR (security + UX) (Thanh toán: SSR - Bảo mật + Trải nghiệm người dùng)
+//   // Checkout = Thanh toán (Cần bảo mật và UX tốt)
 ```
 
-**Key Takeaway:**
+**Key Takeaway: (Điểm quan trọng)**
 
-- There's NO "best" approach - choose based on requirements
-- Modern frameworks (Next.js, Remix) support all strategies
-- Measure with real data: TTFB, FCP, TTI, Lighthouse
-- SEO + Performance = SSR/SSG
-- Interactivity + Simple = CSR
-
+- There's NO "best" approach - choose based on requirements (Không có cách "tốt nhất" - Chọn dựa trên yêu cầu)
+- Modern frameworks (Next.js, Remix) support all strategies (Framework hiện đại hỗ trợ tất cả chiến lược)
+  // Next.js = Framework React với SSR/SSG (Framework React hỗ trợ SSR/SSG)
+  // Remix = Framework React với SSR (Framework React tập trung vào SSR)
+- Measure with real data: TTFB, FCP, TTI, Lighthouse (Đo bằng dữ liệu thực: TTFB, FCP, TTI, Lighthouse)
+  // TTFB = Time To First Byte (Thời gian đến byte đầu tiên)
+  // FCP = First Contentful Paint (Vẽ nội dung đầu tiên)
+  // TTI = Time To Interactive (Thời gian đến khi tương tác được)
+  // Lighthouse = Công cụ đo performance (Công cụ đo hiệu suất của Google)
+- SEO + Performance = SSR/SSG (SEO + Hiệu suất = SSR/SSG)
+- Interactivity + Simple = CSR (Tương tác + Đơn giản = CSR)
 
 ```
-💧 Hydration là quá trình Server render ra HTML → Browser hiển thị ngay → Sau đó React “gắn” event listeners vào HTML → UI trở nên tương tác được.
+💧 Hydration là quá trình Server render ra HTML → Browser hiển thị ngay → Sau đó React "gắn" event listeners vào HTML → UI trở nên tương tác được.
+// Hydration = Quá trình gắn JavaScript vào HTML đã render sẵn (Quá trình làm cho HTML tĩnh trở nên tương tác)
+// event listeners = Bộ lắng nghe sự kiện (Các hàm xử lý sự kiện như click, hover)
+// UI = User Interface (Giao diện người dùng)
 
 "Hydration là bước React biến HTML do SSR hoặc SSG render sẵn thành UI có thể tương tác, bằng cách attach event listeners và khôi phục state.
+// attach = Gắn (Gắn event listeners vào các phần tử HTML)
+// state = Trạng thái (Trạng thái của component - Dữ liệu động)
 
 HTML từ server ngay lập tức giúp cải thiện SEO và First Contentful Paint, còn hydration giúp UI hoạt động như SPA. Thách thức lớn nhất là tránh hydration mismatch và tối ưu cost hydration trong các trang lớn bằng techniques như partial/lazy hydration.
+// SEO = Search Engine Optimization (Tối ưu hóa công cụ tìm kiếm)
+// First Contentful Paint = Vẽ nội dung đầu tiên (Thời điểm user thấy nội dung đầu tiên)
+// SPA = Single Page Application (Ứng dụng một trang)
+// hydration mismatch = HTML server khác HTML client (HTML server không khớp với HTML client)
+// partial hydration = Hydration một phần (Chỉ hydrate phần cần thiết)
+// lazy hydration = Hydration chậm (Hydrate khi cần)
 ```

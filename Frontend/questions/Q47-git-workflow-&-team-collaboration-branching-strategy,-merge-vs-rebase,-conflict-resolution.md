@@ -64,7 +64,7 @@
 📊 Structure Git Flow:
 
 main (production)          ───●───────●───────●─────── (v1.0, v2.0, v3.0)
-                              ╱         ╲       
+                              ╱         ╲
 develop (staging)      ──────●───●───●───●───●──────── (code mới nhất)
                             ╱     ╲   ╱
 feature/login      ────────●───●───●                    (tính năng mới)
@@ -172,7 +172,7 @@ git branch -d hotfix/critical-security-bug
 main (production)   ──●───●───────●───●───────●──────
                       │   │       │   │       │
                       │   │       │   │       └─ feature/payment merged
-                      │   │       │   └─ feature/dashboard merged  
+                      │   │       │   └─ feature/dashboard merged
                       │   │       └─ hotfix/bug-fix merged
                       │   └─ feature/login merged
                       │
@@ -458,12 +458,12 @@ const featureConfig: FeatureFlagConfig = {
 // Frontend check
 function isFeatureEnabled(userId: string, featureName: string): boolean {
   const config = getFeatureConfig(featureName);
-  
+
   // Luôn bật cho target users
   if (config.targetUsers?.includes(userId)) {
     return true;
   }
-  
+
   // Bật theo % (consistent hashing để user luôn thấy cùng UI)
   const hash = hashUserId(userId);
   return hash % 100 < config.rolloutPercentage;
@@ -580,7 +580,7 @@ export async function getUser(id: string) {
 // components/UserProfile.tsx
 function UserProfile({ userId }: Props) {
   const user = await getUser(userId);
-  
+
   return (
     <div>
       <p>Name: {user.name}</p>
@@ -729,15 +729,9 @@ export function calculateTotal(items: Item[]): number {
   return items.reduce((sum, item) => sum + item.price, 0);
 }
 
-<<<<<<< HEAD (your code - feature branch)
 export function calculateTax(amount: number): number {
   return amount * 0.1; // 10% tax
 }
-=======
-export function formatCurrency(amount: number): string {
-  return `$${amount.toFixed(2)}`;
-}
->>>>>>> main (their code - main branch)
 ```
 
 **Cách resolve:**
@@ -830,23 +824,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       # 1. Install dependencies
       - name: Install
         run: npm ci
-      
+
       # 2. Lint code
       - name: Lint
         run: npm run lint
-      
+
       # 3. Run tests
       - name: Test
         run: npm test
-      
+
       # 4. Build
       - name: Build
         run: npm run build
-      
+
       # 5. Deploy (chỉ khi merge vào main)
       - name: Deploy
         if: github.ref == 'refs/heads/main'

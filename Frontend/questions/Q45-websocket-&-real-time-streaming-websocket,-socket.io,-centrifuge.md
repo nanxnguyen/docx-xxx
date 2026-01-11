@@ -4,69 +4,69 @@
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"WebSocket = persistent bidirectional TCP connection cho real-time data. Socket.IO = WebSocket wrapper với auto-reconnect + rooms. Centrifuge = scalable pub/sub với Redis for enterprise."**
+**"WebSocket = persistent bidirectional TCP connection cho real-time data (WebSocket = kết nối TCP hai chiều bền vững cho dữ liệu thời gian thực). Socket.IO = WebSocket wrapper với auto-reconnect + rooms (Socket.IO = lớp bọc WebSocket với tự động kết nối lại + phòng). Centrifuge = scalable pub/sub với Redis for enterprise (Centrifuge = pub/sub có thể mở rộng với Redis cho doanh nghiệp)."**
 
-**🔑 3 Technologies:**
+**🔑 3 Technologies (3 Công Nghệ):**
 
-**1. Native WebSocket API:**
+**1. 🌐 Native WebSocket API (API WebSocket Gốc):**
 
-- **Protocol**: `ws://` (unencrypted) hoặc `wss://` (SSL/TLS)
-- **Persistent connection** - 1 handshake, reuse mãi
-- **Bidirectional** - server push data bất cứ lúc nào
-- Use case: Trading platforms (real-time prices), chat, live notifications
-- Ưu điểm: Low latency (~50ms), less bandwidth than polling
+- **Protocol (Giao thức)**: `ws://` (unencrypted - không mã hóa) hoặc `wss://` (SSL/TLS - có mã hóa)
+- **Persistent connection (Kết nối bền vững)** - 1 handshake (1 lần bắt tay), reuse mãi (tái sử dụng mãi)
+- **Bidirectional (Hai chiều)** - server push data bất cứ lúc nào (máy chủ đẩy dữ liệu bất cứ lúc nào)
+- **Use case (Trường hợp sử dụng)**: Trading platforms (real-time prices - nền tảng giao dịch - giá thời gian thực), chat (trò chuyện), live notifications (thông báo trực tiếp)
+- **Ưu điểm (Advantages)**: Low latency (~50ms - độ trễ thấp), less bandwidth than polling (ít băng thông hơn so với polling)
 
-**2. Socket.IO (High-Level Library):**
+**2. 🔌 Socket.IO (High-Level Library - Thư Viện Cấp Cao):**
 
-- **Auto-reconnect** khi connection lost
-- **Fallback mechanisms**: WebSocket → HTTP long-polling (nếu WS blocked)
-- **Rooms & Namespaces**: Organize connections (chat rooms, user-specific channels)
-- **Broadcasting**: Send message to all/specific clients
-- **Event-based API**: `socket.emit('event', data)` - cleaner than raw messages
+- **Auto-reconnect (Tự động kết nối lại)** khi connection lost (khi mất kết nối)
+- **Fallback mechanisms (Cơ chế dự phòng)**: WebSocket → HTTP long-polling (nếu WS blocked - nếu WebSocket bị chặn)
+- **Rooms & Namespaces (Phòng & Không gian tên)**: Organize connections (Tổ chức kết nối - chat rooms - phòng chat, user-specific channels - kênh theo người dùng)
+- **Broadcasting (Phát sóng)**: Send message to all/specific clients (Gửi tin nhắn đến tất cả/kênh cụ thể)
+- **Event-based API (API dựa trên sự kiện)**: `socket.emit('event', data)` - cleaner than raw messages (sạch hơn so với tin nhắn thô)
 
-**3. Centrifuge (Scalable Pub/Sub):**
+**3. 📡 Centrifuge (Scalable Pub/Sub - Pub/Sub Có Thể Mở Rộng):**
 
-- **Horizontal scaling** - multiple server instances share state via **Redis**
-- **Channel subscriptions**: Client subscribe channels, server publish to channels
-- **Presence**: Track online users in channels
-- **History**: Replay missed messages (offline → online)
-- Use case: Large-scale systems (>10k concurrent connections)
+- **Horizontal scaling (Mở rộng ngang)** - multiple server instances share state via **Redis** (nhiều instance máy chủ chia sẻ trạng thái qua Redis)
+- **Channel subscriptions (Đăng ký kênh)**: Client subscribe channels, server publish to channels (Máy khách đăng ký kênh, máy chủ xuất bản đến kênh)
+- **Presence (Hiện diện)**: Track online users in channels (Theo dõi người dùng trực tuyến trong kênh)
+- **History (Lịch sử)**: Replay missed messages (offline → online - Phát lại tin nhắn đã bỏ lỡ - ngoại tuyến → trực tuyến)
+- **Use case (Trường hợp sử dụng)**: Large-scale systems (>10k concurrent connections - Hệ thống quy mô lớn - hơn 10k kết nối đồng thời)
 
-**⚠️ Lỗi Thường Gặp:**
+**⚠️ Lỗi Thường Gặp (Common Mistakes):**
 
-- Không handle reconnection → connection lost = app broken
-- Send large payloads → slow, dùng binary (ArrayBuffer) thay JSON
-- Không authenticate WS connections → security risk
-- Memory leak: không cleanup event listeners khi disconnect
+- ❌ Không handle reconnection (Không xử lý kết nối lại) → connection lost = app broken (mất kết nối = ứng dụng bị hỏng)
+- ❌ Send large payloads (Gửi tải trọng lớn) → slow (chậm), dùng binary (ArrayBuffer) thay JSON (dùng nhị phân thay JSON)
+- ❌ Không authenticate WS connections (Không xác thực kết nối WebSocket) → security risk (rủi ro bảo mật)
+- ❌ Memory leak (Rò rỉ bộ nhớ): không cleanup event listeners khi disconnect (không dọn dẹp trình nghe sự kiện khi ngắt kết nối)
 
-**💡 Kiến Thức Senior:**
+**💡 Kiến Thức Senior (Senior Knowledge):**
 
-- **WebSocket vs SSE**: SSE = server → client only (simpler), WS = bidirectional
-- **Heartbeat/Ping-Pong**: Detect dead connections (send ping every 30s, expect pong)
-- **Binary frames**: `ws.send(arrayBuffer)` nhanh hơn JSON strings (~40%)
-- **Backpressure**: Client slow consume → buffer overflow, implement flow control
-- **Load balancing**: Sticky sessions (same client → same server) or Redis pub/sub share state
+- **WebSocket vs SSE (WebSocket vs SSE)**: SSE = server → client only (simpler - SSE = chỉ máy chủ → máy khách - đơn giản hơn), WS = bidirectional (WS = hai chiều)
+- **Heartbeat/Ping-Pong (Nhịp tim/Ping-Pong)**: Detect dead connections (Phát hiện kết nối chết - send ping every 30s, expect pong - gửi ping mỗi 30 giây, mong đợi pong)
+- **Binary frames (Khung nhị phân)**: `ws.send(arrayBuffer)` nhanh hơn JSON strings (~40% - nhanh hơn chuỗi JSON ~40%)
+- **Backpressure (Áp lực ngược)**: Client slow consume → buffer overflow, implement flow control (Máy khách tiêu thụ chậm → tràn bộ đệm, triển khai kiểm soát luồng)
+- **Load balancing (Cân bằng tải)**: Sticky sessions (same client → same server - Phiên dính - cùng máy khách → cùng máy chủ) or Redis pub/sub share state (hoặc Redis pub/sub chia sẻ trạng thái)
 
-**⚡ Quick Summary:**
+**⚡ Quick Summary (Tóm Tắt Nhanh):**
 
-> WebSocket = persistent connection, real-time bidirectional communication. Socket.IO = WebSocket + fallback + rooms. Centrifuge = scalable real-time messaging với Redis
+> WebSocket = persistent connection, real-time bidirectional communication (WebSocket = kết nối bền vững, giao tiếp hai chiều thời gian thực). Socket.IO = WebSocket + fallback + rooms (Socket.IO = WebSocket + dự phòng + phòng). Centrifuge = scalable real-time messaging với Redis (Centrifuge = nhắn tin thời gian thực có thể mở rộng với Redis)
 
-**💡 Ghi Nhớ:**
+**💡 Ghi Nhớ (Remember):**
 
-- 🌐 **WebSocket**: Native browser API, low-level, persistent TCP connection
-- 🔌 **Socket.IO**: High-level library, auto-reconnect, fallback to polling
-- 📡 **Centrifuge**: Enterprise solution, horizontal scaling, Redis pub/sub
-- ⚡ **Use Case**: Trading (real-time price), Chat, Live dashboard, Notifications
+- 🌐 **WebSocket**: Native browser API (API trình duyệt gốc), low-level (cấp thấp), persistent TCP connection (kết nối TCP bền vững)
+- 🔌 **Socket.IO**: High-level library (Thư viện cấp cao), auto-reconnect (tự động kết nối lại), fallback to polling (dự phòng sang polling)
+- 📡 **Centrifuge**: Enterprise solution (Giải pháp doanh nghiệp), horizontal scaling (mở rộng ngang), Redis pub/sub
+- ⚡ **Use Case (Trường hợp sử dụng)**: Trading (real-time price - Giao dịch - giá thời gian thực), Chat (Trò chuyện), Live dashboard (Bảng điều khiển trực tiếp), Notifications (Thông báo)
 
 **Trả lời:**
 
-#### **Phần 1: WebSocket Basics**
+#### **📚 Phần 1: WebSocket Basics (Cơ Bản WebSocket)**
 
-**💡 WebSocket là gì?**
+**💡 WebSocket là gì? (What is WebSocket?)**
 
-WebSocket là giao thức **persistent, bidirectional** communication giữa client và server qua **single TCP connection**.
+WebSocket là giao thức **persistent, bidirectional** communication giữa client và server qua **single TCP connection** (WebSocket là giao thức giao tiếp **bền vững, hai chiều** giữa máy khách và máy chủ qua **một kết nối TCP duy nhất**).
 
-**Tại sao dùng WebSocket thay vì REST API Polling?**
+**❓ Tại sao dùng WebSocket thay vì REST API Polling? (Why use WebSocket instead of REST API Polling?)**
 
 ```typescript
 // ❌🚫 REST API Polling - KHÔNG hiệu quả cho real-time data
@@ -170,7 +170,7 @@ ws.onmessage = (event) => {
  */
 ```
 
-**WebSocket Lifecycle:**
+**🔄 WebSocket Lifecycle (Vòng Đời WebSocket):**
 
 ```typescript
 // 🔹 1. CONNECTING (readyState = 0)
@@ -332,9 +332,9 @@ ws.close(1000, 'Component unmounted'); // ✅ Clean close
 
 ---
 
-#### **Phần 2: Production WebSocket Architecture**
+#### **🏗️ Phần 2: Production WebSocket Architecture (Kiến Trúc WebSocket Sản Xuất)**
 
-**Pattern 1: Reference Counting Subscription Manager**
+**🔢 Pattern 1: Reference Counting Subscription Manager (Quản Lý Đăng Ký Đếm Tham Chiếu)**
 
 ```typescript
 /**
@@ -494,7 +494,7 @@ class LiveDataManager {
  */
 ````
 
-**Pattern 2: Zustand Store Integration**
+**🏪 Pattern 2: Zustand Store Integration (Tích Hợp Zustand Store)**
 
 ```typescript
 // File: lib/live-data-manager/stores/useLiveDataStore.ts
@@ -597,7 +597,7 @@ ws.onmessage = (event) => {
 };
 ```
 
-**Pattern 3: React Hook Integration**
+**🎣 Pattern 3: React Hook Integration (Tích Hợp React Hook)**
 
 ```typescript
 // File: lib/live-data-manager/hooks/useLiveMarketData.ts
@@ -722,9 +722,9 @@ const StockWatchlist = () => {
 
 ---
 
-#### **Phần 3: Performance Optimization**
+#### **⚡ Phần 3: Performance Optimization (Tối Ưu Hiệu Năng)**
 
-**Optimization 1: Throttling với requestAnimationFrame**
+**⏱️ Optimization 1: Throttling với requestAnimationFrame (Tối Ưu 1: Giới Hạn với requestAnimationFrame)**
 
 ```typescript
 /**
@@ -842,7 +842,7 @@ const useThrottledWebSocket = () => {
  */
 ```
 
-**Optimization 2: Selective Re-rendering**
+**🎯 Optimization 2: Selective Re-rendering (Tối Ưu 2: Render Có Chọn Lọc)**
 
 ```typescript
 /**
@@ -908,7 +908,7 @@ const StockRow = ({ symbol }) => {
 };
 ```
 
-**Optimization 3: Virtual Scrolling**
+**📜 Optimization 3: Virtual Scrolling (Tối Ưu 3: Cuộn Ảo)**
 
 ```typescript
 /**
@@ -981,7 +981,7 @@ const Watchlist = ({ data }) => {
  */
 ```
 
-**Optimization 4: Batch Updates**
+**📦 Optimization 4: Batch Updates (Tối Ưu 4: Cập Nhật Theo Lô)**
 
 ```typescript
 // ❌🐌 BAD: Update từng ticker một (individual updates)
@@ -1095,9 +1095,9 @@ const batchUpdateTickers = (updates: TickerData[]) => {
 
 ---
 
-#### **Phần 4: Error Handling & Reconnection**
+#### **🛡️ Phần 4: Error Handling & Reconnection (Xử Lý Lỗi & Kết Nối Lại)**
 
-**Exponential Backoff Reconnection:**
+**🔄 Exponential Backoff Reconnection (Kết Nối Lại Exponential Backoff):**
 
 ```typescript
 class ResilientWebSocket {
@@ -1334,7 +1334,7 @@ class ResilientWebSocket {
  */
 ```
 
-**Connection Status UI:**
+**📊 Connection Status UI (Giao Diện Trạng Thái Kết Nối):**
 
 ```typescript
 const ConnectionStatus = () => {
@@ -1395,9 +1395,9 @@ const ConnectionStatus = () => {
 
 ---
 
-#### **Phần 5: Socket.IO - High-Level WebSocket Library**
+#### **🔌 Phần 5: Socket.IO - High-Level WebSocket Library (Socket.IO - Thư Viện WebSocket Cấp Cao)**
 
-**Socket.IO Features:**
+**✨ Socket.IO Features (Tính Năng Socket.IO):**
 
 ```typescript
 /**
@@ -1498,7 +1498,7 @@ socket.emit('upload-chart', imageBlob);
 socket.disconnect();
 ```
 
-**Server-side (Node.js):**
+**🖥️ Server-side (Node.js) (Phía Máy Chủ):**
 
 ```typescript
 import { Server } from 'socket.io';
@@ -1560,9 +1560,9 @@ io.on('connection', (socket) => {
 
 ---
 
-#### **Phần 5.1: Socket.IO Deep Dive - Architecture & Advanced Patterns**
+#### **🔍 Phần 5.1: Socket.IO Deep Dive - Architecture & Advanced Patterns (Socket.IO Deep Dive - Kiến Trúc & Mẫu Nâng Cao)**
 
-**🏗️ Socket.IO Architecture Internals:**
+**🏗️ Socket.IO Architecture Internals (Kiến Trúc Nội Bộ Socket.IO):**
 
 ```typescript
 /**
@@ -2004,9 +2004,9 @@ socket.on('image-ready', (imageBlob) => {
 
 ---
 
-#### **Phần 5.2: Socket.IO Best Practices**
+#### **✅ Phần 5.2: Socket.IO Best Practices (Thực Hành Tốt Nhất Socket.IO)**
 
-**🏆 Production-Ready Patterns:**
+**🏆 Production-Ready Patterns (Mẫu Sẵn Sàng Sản Xuất):**
 
 ```typescript
 /**
@@ -2531,9 +2531,9 @@ socket.on('error', (error) => {
 
 ---
 
-#### **Phần 6: Centrifuge - Enterprise Real-time Messaging**
+#### **📡 Phần 6: Centrifuge - Enterprise Real-time Messaging (Centrifuge - Nhắn Tin Thời Gian Thực Doanh Nghiệp)**
 
-**Centrifuge Features:**
+**✨ Centrifuge Features (Tính Năng Centrifuge):**
 
 ```typescript
 /**
@@ -2780,7 +2780,7 @@ centrifuge.disconnect(); // 🚪 Close connection
  */
 ```
 
-**Server-side (Centrifugo):**
+**🖥️ Server-side (Centrifugo) (Phía Máy Chủ - Centrifugo):**
 
 ```json
 // centrifugo.json
@@ -2804,9 +2804,9 @@ centrifuge.disconnect(); // 🚪 Close connection
 
 ---
 
-#### **Phần 6.1: Centrifugo Best Practices & Deep Dive**
+#### **🔍 Phần 6.1: Centrifugo Best Practices & Deep Dive (Thực Hành Tốt Nhất & Deep Dive Centrifugo)**
 
-**🎯 Advanced Centrifugo Patterns:**
+**🎯 Advanced Centrifugo Patterns (Mẫu Centrifugo Nâng Cao):**
 
 ```typescript
 /**
@@ -5353,53 +5353,58 @@ protocol: 'json', // ❌ Chậm hơn ~5x
 
 ---
 
-#### **Phần 7: So Sánh WebSocket vs Socket.IO vs Centrifuge**
+#### **📊 Phần 7: So Sánh WebSocket vs Socket.IO vs Centrifuge (Comparison)**
 
-```typescript
-/**
- * ┌────────────────┬────────────────┬────────────────┬────────────────┐
- * │                │  WEBSOCKET     │  SOCKET.IO     │  CENTRIFUGE    │
- * ├────────────────┼────────────────┼────────────────┼────────────────┤
- * │ Complexity     │ ⭐ Low         │ ⭐⭐ Medium    │ ⭐⭐⭐ High     │
- * │ Size           │ Native         │ ~50KB          │ ~20KB          │
- * │ Auto-reconnect │ ❌ Manual      │ ✅ Built-in    │ ✅ Built-in    │
- * │ Fallback       │ ❌ No          │ ✅ Long-poll   │ ✅ SSE         │
- * │ Rooms          │ ❌ Manual      │ ✅ Built-in    │ ✅ Channels    │
- * │ Scaling        │ ❌ Single      │ ⚠️ Redis       │ ✅ Redis/Nats  │
- * │ Binary         │ ✅ Yes         │ ✅ Yes         │ ✅ Yes         │
- * │ Presence       │ ❌ Manual      │ ⚠️ Custom      │ ✅ Built-in    │
- * │ History        │ ❌ Manual      │ ❌ No          │ ✅ Built-in    │
- * │ Auth           │ ❌ Manual      │ ⚠️ Custom      │ ✅ JWT Token   │
- * │ Server         │ Any WS server  │ Socket.IO srv  │ Centrifugo     │
- * │ Use Case       │ Simple apps    │ Medium apps    │ Enterprise     │
- * └────────────────┴────────────────┴────────────────┴────────────────┘
- *
- * 🎯 DECISION TREE:
- *
- * Simple app, basic real-time (chat, notifications)
- *   → Native WebSocket
- *
- * Need auto-reconnect, rooms, fallback (IE11 support)
- *   → Socket.IO
- *
- * Enterprise, millions of connections, horizontal scaling
- *   → Centrifuge
- *
- * Trading platform, high throughput, low latency
- *   → Centrifuge (with Redis/KeyDB)
- */
+**📋 Bảng So Sánh Chi Tiết (Detailed Comparison Table):**
+
+| Tính Năng (Feature)                      | 🌐 WebSocket                      | 🔌 Socket.IO                      | 📡 Centrifuge               |
+| ---------------------------------------- | --------------------------------- | --------------------------------- | --------------------------- |
+| **Complexity (Độ phức tạp)**             | ⭐ Low (Thấp)                     | ⭐⭐ Medium (Trung bình)          | ⭐⭐⭐ High (Cao)           |
+| **Size (Kích thước)**                    | Native (Gốc)                      | ~50KB                             | ~20KB                       |
+| **Auto-reconnect (Tự động kết nối lại)** | ❌ Manual (Thủ công)              | ✅ Built-in (Tích hợp sẵn)        | ✅ Built-in (Tích hợp sẵn)  |
+| **Fallback (Dự phòng)**                  | ❌ No (Không)                     | ✅ Long-poll (Long polling)       | ✅ SSE (Server-Sent Events) |
+| **Rooms (Phòng)**                        | ❌ Manual (Thủ công)              | ✅ Built-in (Tích hợp sẵn)        | ✅ Channels (Kênh)          |
+| **Scaling (Mở rộng)**                    | ❌ Single (Đơn lẻ)                | ⚠️ Redis (Cần Redis)              | ✅ Redis/Nats (Redis/Nats)  |
+| **Binary (Nhị phân)**                    | ✅ Yes (Có)                       | ✅ Yes (Có)                       | ✅ Yes (Có)                 |
+| **Presence (Hiện diện)**                 | ❌ Manual (Thủ công)              | ⚠️ Custom (Tùy chỉnh)             | ✅ Built-in (Tích hợp sẵn)  |
+| **History (Lịch sử)**                    | ❌ Manual (Thủ công)              | ❌ No (Không)                     | ✅ Built-in (Tích hợp sẵn)  |
+| **Auth (Xác thực)**                      | ❌ Manual (Thủ công)              | ⚠️ Custom (Tùy chỉnh)             | ✅ JWT Token (Token JWT)    |
+| **Server (Máy chủ)**                     | Any WS server (Bất kỳ máy chủ WS) | Socket.IO srv (Máy chủ Socket.IO) | Centrifugo (Centrifugo)     |
+| **Use Case (Trường hợp sử dụng)**        | Simple apps (Ứng dụng đơn giản)   | Medium apps (Ứng dụng trung bình) | Enterprise (Doanh nghiệp)   |
+
+**🎯 Decision Tree (Cây Quyết Định):**
+
+```
+Simple app, basic real-time (chat, notifications)
+Ứng dụng đơn giản, thời gian thực cơ bản (trò chuyện, thông báo)
+  → 🌐 Native WebSocket
+
+Need auto-reconnect, rooms, fallback (IE11 support)
+Cần tự động kết nối lại, phòng, dự phòng (hỗ trợ IE11)
+  → 🔌 Socket.IO
+
+Enterprise, millions of connections, horizontal scaling
+Doanh nghiệp, hàng triệu kết nối, mở rộng ngang
+  → 📡 Centrifuge
+
+Trading platform, high throughput, low latency
+Nền tảng giao dịch, thông lượng cao, độ trễ thấp
+  → 📡 Centrifuge (with Redis/KeyDB - với Redis/KeyDB)
 ```
 
 ---
 
-#### **Phần 8: Best Practices**
+#### **✅ Phần 8: Best Practices (Thực Hành Tốt Nhất)**
+
+**✅ DO (Nên Làm):**
 
 ```typescript
 /**
- * ✅ DO:
+ * ✅ DO (Nên Làm):
  */
 
 // 1. Always cleanup WebSocket on unmount
+// (Luôn dọn dẹp WebSocket khi unmount)
 useEffect(() => {
   const ws = new WebSocket(url);
 
@@ -5409,6 +5414,7 @@ useEffect(() => {
 }, []);
 
 // 2. Use reference counting for subscriptions
+// (Sử dụng đếm tham chiếu cho đăng ký)
 const subscribe = (symbol: string) => {
   refCount[symbol] = (refCount[symbol] || 0) + 1;
 
@@ -5418,6 +5424,7 @@ const subscribe = (symbol: string) => {
 };
 
 // 3. Throttle UI updates với requestAnimationFrame
+// (Giới hạn cập nhật UI với requestAnimationFrame)
 const latestData = useRef({});
 const updateUI = () => {
   setData(latestData.current);
@@ -5425,12 +5432,15 @@ const updateUI = () => {
 };
 
 // 4. Handle reconnection với exponential backoff
+// (Xử lý kết nối lại với exponential backoff)
 const delay = baseDelay * Math.pow(2, attempts);
 
 // 5. Show connection status to users
+// (Hiển thị trạng thái kết nối cho người dùng)
 <ConnectionStatus status={wsStatus} />;
 
 // 6. Batch updates
+// (Cập nhật theo lô)
 let batch = [];
 const flushBatch = () => {
   updateStore(batch);
@@ -5439,29 +5449,40 @@ const flushBatch = () => {
 setTimeout(flushBatch, 16); // 60fps
 
 // 7. Use virtual scrolling for large lists
+// (Sử dụng cuộn ảo cho danh sách lớn)
 <AgGridReact rowData={data} />; // Auto virtual scrolling
+```
 
+**❌ DON'T (Không Nên Làm):**
+
+```typescript
 /**
- * ❌ DON'T:
+ * ❌ DON'T (Không Nên Làm):
  */
 
 // 1. Don't create multiple WebSocket connections for same data
-// Use reference counting!
+// (Không tạo nhiều kết nối WebSocket cho cùng dữ liệu)
+// Use reference counting! (Sử dụng đếm tham chiếu!)
 
 // 2. Don't update UI on every message
-// Throttle với RAF!
+// (Không cập nhật UI trên mỗi tin nhắn)
+// Throttle với RAF! (Giới hạn với RAF!)
 
 // 3. Don't forget to unsubscribe
-// Memory leak!
+// (Không quên hủy đăng ký)
+// Memory leak! (Rò rỉ bộ nhớ!)
 
 // 4. Don't render all items in large lists
-// Use virtual scrolling!
+// (Không render tất cả mục trong danh sách lớn)
+// Use virtual scrolling! (Sử dụng cuộn ảo!)
 
 // 5. Don't ignore close codes
-// Check if should reconnect!
+// (Không bỏ qua mã đóng)
+// Check if should reconnect! (Kiểm tra xem có nên kết nối lại không!)
 
 // 6. Don't use == for subscription checking
-// Use Set or Map!
+// (Không dùng == để kiểm tra đăng ký)
+// Use Set or Map! (Sử dụng Set hoặc Map!)
 ```
 
 ---

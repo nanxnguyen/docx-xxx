@@ -6,48 +6,151 @@
 
 **"Dùng Timestamps (Unix milliseconds) hoặc ISO 8601 UTC cho storage/transmission, convert sang local timezone chỉ khi display. Libraries: date-fns, dayjs, Luxon."**
 
+<!-- 💡 Tóm tắt ngắn gọn:
+- Storage/Transmission: Luôn dùng UTC (timestamp hoặc ISO 8601)
+- Display: Convert UTC → local timezone của user
+- Libraries: date-fns, dayjs, Luxon (tránh native Date object) -->
+
 **🔑 Best Practices:**
 
 **1. Storage & Transmission - Luôn UTC:**
 
 - **Timestamp** (Unix ms): `Date.now()` = 1705329000000 - absolute time point
+  <!-- 💡 Timestamp = Số milliseconds từ 1970-01-01 00:00:00 UTC -->
+  <!-- 💡 Absolute time point = Điểm thời gian tuyệt đối, không phụ thuộc timezone -->
+  <!-- 💡 VD: 1705329000000 = "2024-01-15 14:30:00 UTC" (giống nhau mọi nơi) -->
+
 - **ISO 8601 UTC**: `new Date().toISOString()` = "2024-01-15T14:30:00.000Z"
+  <!-- 💡 ISO 8601 = Chuẩn quốc tế cho date/time format -->
+  <!-- 💡 'Z' suffix = UTC (Zulu time) -->
+  <!-- 💡 Format: YYYY-MM-DDTHH:mm:ss.sssZ -->
+  <!-- 💡 VD: "2024-01-15T14:30:00.000Z" = 15/01/2024 14:30:00 UTC -->
+
 - Database lưu TIMESTAMP hoặc DATETIME UTC
+  <!-- 💡 Database nên lưu kiểu TIMESTAMP (số nguyên) hoặc DATETIME với timezone UTC -->
+  <!-- 💡 Tránh lưu string "DD/MM/YYYY" (không có timezone info) -->
+
 - API truyền ISO 8601 với 'Z' suffix (UTC)
+  <!-- 💡 API response nên trả về ISO 8601 với 'Z' (UTC) -->
+  <!-- 💡 Client nhận được → Parse → Convert sang local timezone để hiển thị -->
 
 **2. Display - Convert to Local:**
 
 - `new Date(timestamp).toLocaleString('vi-VN', {timeZone: 'Asia/Ho_Chi_Minh'})`
+  <!-- 💡 toLocaleString(): Convert Date object → string theo locale và timezone -->
+  <!-- 💡 'vi-VN': Locale tiếng Việt (format: DD/MM/YYYY) -->
+  <!-- 💡 timeZone: 'Asia/Ho_Chi_Minh' = Vietnam timezone (UTC+7) -->
+  <!-- 💡 VD: Input UTC "14:30" → Output "21:30" (UTC+7) -->
+
 - `Intl.DateTimeFormat` cho i18n formatting
+  <!-- 💡 Intl.DateTimeFormat: API built-in của browser cho internationalization -->
+  <!-- 💡 Hỗ trợ nhiều locale (vi-VN, en-US, ja-JP...) -->
+  <!-- 💡 Format date/time theo chuẩn quốc tế -->
+
 - Show timezone explicitly: "15/01/2024 21:30 ICT"
+  <!-- 💡 ICT = Indochina Time (UTC+7) -->
+  <!-- 💡 Hiển thị timezone rõ ràng → User biết đây là giờ nào -->
+  <!-- 💡 Tránh nhầm lẫn: "21:30" là giờ Vietnam hay giờ khác? -->
 
 **3. Avoid Native Date Pitfalls:**
 
 - ❌ `new Date('2024-01-15')` → depends on browser timezone
+  <!-- 💡 Vấn đề: Browser parse string → Kết quả khác nhau giữa Chrome/Safari -->
+  <!-- 💡 Chrome: Parse as UTC → "2024-01-15T00:00:00Z" -->
+  <!-- 💡 Safari: Parse as local → "2024-01-15T00:00:00+07:00" -->
+  <!-- 💡 → Cùng code, khác kết quả! -->
+
 - ❌ Months zero-indexed: `new Date(2024, 1, 15)` = Feb 15
+  <!-- 💡 Vấn đề: Month bắt đầu từ 0 (0=Jan, 1=Feb, ..., 11=Dec) -->
+  <!-- 💡 Dễ nhầm: new Date(2024, 1, 15) = Tháng 2, không phải tháng 1! -->
+  <!-- 💡 → Rất dễ bug nếu quên quy tắc này -->
+
 - ❌ Mutable: `date.setMonth()` modifies original
+  <!-- 💡 Vấn đề: Date object là mutable (có thể thay đổi) -->
+  <!-- 💡 date.setMonth(2) → Thay đổi date gốc, không tạo object mới -->
+  <!-- 💡 → Side effects, khó debug -->
+
 - ✅ Use libraries: **date-fns** (functional, tree-shakable), **dayjs** (lightweight), **Luxon** (immutable, timezone-aware)
+  <!-- 💡 date-fns: Functional style, tree-shakable (chỉ import functions cần dùng) -->
+  <!-- 💡 dayjs: Nhẹ (2KB), API giống Moment.js, immutable by default -->
+  <!-- 💡 Luxon: Mạnh mẽ nhất, timezone-aware tốt, immutable -->
 
 **4. Common Scenarios:**
 
 - **User selects date**: Convert local → UTC before send server
+  <!-- 💡 User chọn ngày giờ theo local timezone (VD: "15/01/2024 21:30" Vietnam) -->
+  <!-- 💡 Trước khi gửi server → Convert sang UTC ("2024-01-15T14:30:00.000Z") -->
+  <!-- 💡 Server lưu UTC → Không bị lỗi timezone -->
+
 - **Display server date**: Parse UTC → convert local timezone
+  <!-- 💡 Server trả về UTC ("2024-01-15T14:30:00.000Z") -->
+  <!-- 💡 Client parse → Convert sang local timezone để hiển thị -->
+  <!-- 💡 VD: UTC "14:30" → Vietnam "21:30" (UTC+7) -->
+
 - **Scheduling**: Store UTC + user's timezone separately
+  <!-- 💡 Lưu UTC time (universal) + user's timezone (để hiển thị) -->
+  <!-- 💡 VD: { startTime: "2024-01-15T14:30:00.000Z", timezone: "Asia/Ho_Chi_Minh" } -->
+  <!-- 💡 → Hiển thị đúng giờ local cho user -->
+
 - **Recurring events**: Calculate in user's timezone (handle DST)
+  <!-- 💡 Sự kiện lặp lại (VD: Meeting hàng tuần lúc 9:00 AM) -->
+  <!-- 💡 Tính toán trong user's timezone → Handle DST tự động -->
+  <!-- 💡 VD: US có DST → 9:00 AM mùa đông khác 9:00 AM mùa hè (offset khác) -->
 
 **⚠️ Lỗi Thường Gặp:**
 
 - Lưu date string "DD/MM/YYYY" → parsing issues, dùng ISO 8601
+  <!-- 💡 Vấn đề: String "15/01/2024" không có timezone info -->
+  <!-- 💡 Parse → Không biết đây là giờ nào (UTC? Local?) -->
+  <!-- 💡 → Dùng ISO 8601: "2024-01-15T14:30:00.000Z" (có timezone) -->
+
 - Compare dates không normalize timezone → sai kết quả
+  <!-- 💡 Vấn đề: So sánh 2 dates khác timezone → Sai kết quả -->
+  <!-- 💡 VD: "2024-01-15T21:30:00+07:00" vs "2024-01-15T14:30:00Z" -->
+  <!-- 💡 → Cùng 1 thời điểm nhưng so sánh sai nếu không normalize -->
+  <!-- 💡 → Dùng timestamp để so sánh: date1.getTime() === date2.getTime() -->
+
 - Quên Daylight Saving Time (DST) → sai 1 giờ 2 lần/năm
+  <!-- 💡 Vấn đề: Một số quốc gia có DST (giờ mùa hè) -->
+  <!-- 💡 VD: US: Mùa đông UTC-5, mùa hè UTC-4 (chênh 1 giờ) -->
+  <!-- 💡 Hardcode offset → Sai 1 giờ 2 lần/năm (khi DST bắt đầu/kết thúc) -->
+  <!-- 💡 → Dùng IANA timezone: "America/New_York" (tự động handle DST) -->
+
 - Dùng `Date()` constructor với string → browser-dependent parsing
+  <!-- 💡 Vấn đề: new Date('2024-01-15') → Kết quả khác nhau giữa browsers -->
+  <!-- 💡 Chrome/Firefox: Parse as UTC -->
+  <!-- 💡 Safari (older): Parse as local -->
+  <!-- 💡 → Cùng code, khác kết quả! -->
+  <!-- 💡 → Dùng ISO 8601 với 'Z': new Date('2024-01-15T00:00:00.000Z') -->
 
 **💡 Kiến Thức Senior:**
 
 - **IANA timezone database**: "Asia/Ho_Chi_Minh", không dùng "GMT+7" (không handle DST)
+  <!-- 💡 IANA = Internet Assigned Numbers Authority -->
+  <!-- 💡 IANA timezone database = Database chuẩn quốc tế cho timezones -->
+  <!-- 💡 VD: "Asia/Ho_Chi_Minh", "America/New_York", "Europe/London" -->
+  <!-- 💡 Không dùng "GMT+7" vì không handle DST (Daylight Saving Time) -->
+  <!-- 💡 VD: US có DST → "GMT-5" sai vào mùa hè (phải là GMT-4) -->
+
 - **ISO 8601 formats**: `2024-01-15T14:30:00Z` (UTC) vs `2024-01-15T14:30:00+07:00` (offset)
+  <!-- 💡 ISO 8601 = Chuẩn quốc tế cho date/time format -->
+  <!-- 💡 Format 1: "2024-01-15T14:30:00Z" → 'Z' = UTC (Zulu time) -->
+  <!-- 💡 Format 2: "2024-01-15T14:30:00+07:00" → '+07:00' = UTC+7 (Vietnam) -->
+  <!-- 💡 Cả 2 đều valid, nhưng 'Z' rõ ràng hơn (UTC explicit) -->
+
 - **Temporal API** (TC39 Stage 3): Future replacement for Date - `Temporal.ZonedDateTime`
+  <!-- 💡 TC39 = Technical Committee 39 (JavaScript standardization) -->
+  <!-- 💡 Temporal API = Proposal mới để thay thế Date object -->
+  <!-- 💡 Stage 3 = Gần như chắc chắn sẽ được thêm vào JavaScript -->
+  <!-- 💡 Temporal.ZonedDateTime = Immutable, timezone-aware, không có month zero-indexing -->
+  <!-- 💡 VD: Temporal.ZonedDateTime.from('2024-01-15T14:30:00Z[Asia/Ho_Chi_Minh]') -->
+
 - **UTC Offset vs Timezone**: Offset = static (+7), Timezone = rules (handle DST, history)
+  <!-- 💡 UTC Offset = Số giờ chênh lệch với UTC (static, không đổi) -->
+  <!-- 💡 VD: Vietnam = UTC+7 (luôn luôn +7 giờ) -->
+  <!-- 💡 Timezone = Rules phức tạp (handle DST, lịch sử thay đổi) -->
+  <!-- 💡 VD: "America/New_York" = UTC-5 (mùa đông), UTC-4 (mùa hè) -->
+  <!-- 💡 → Dùng timezone (IANA) thay vì offset để handle DST tự động -->
 
 **❓ Câu Hỏi:**
 Làm thế nào xử lý Date/Time trong JavaScript không bị ảnh hưởng bởi múi giờ?
@@ -57,15 +160,26 @@ Làm thế nào xử lý Date/Time trong JavaScript không bị ảnh hưởng b
 ```typescript
 // ❌ VẤN ĐỀ: Timezone-dependent
 const date = new Date('2024-01-15'); // Local timezone!
+// 💡 Vấn đề: Browser parse string → Kết quả phụ thuộc browser implementation
 // User Vietnam (UTC+7): 2024-01-15 07:00:00 UTC
+// 💡 Chrome: Parse as UTC → "2024-01-15T00:00:00Z" → getTime() = timestamp UTC
 // User US (UTC-5):      2024-01-15 05:00:00 UTC
+// 💡 Safari (older): Parse as local → "2024-01-15T00:00:00-05:00" → getTime() khác!
 // → Cùng code, khác kết quả!
+// 💡 → Dùng ISO 8601 với 'Z': new Date('2024-01-15T00:00:00.000Z')
 
 // ❌ VẤN ĐỀ: Month zero-indexed
 new Date(2024, 1, 15); // February 15! (month 1 = Feb)
+// 💡 Vấn đề: Month bắt đầu từ 0 (0=Jan, 1=Feb, ..., 11=Dec)
+// 💡 Dễ nhầm: Nghĩ month 1 = January, nhưng thực tế = February!
+// 💡 → Nhớ: Month zero-indexed, Day one-indexed
 
 // ❌ VẤN ĐỀ: Mutable
 date.setMonth(2); // Thay đổi date gốc!
+// 💡 Vấn đề: Date object là mutable (có thể thay đổi)
+// 💡 date.setMonth(2) → Thay đổi date gốc, không tạo object mới
+// 💡 → Side effects: date ban đầu bị thay đổi → Bug khó debug
+// 💡 → Clone trước khi modify: const newDate = new Date(date.getTime())
 ```
 
 ---
@@ -219,16 +333,27 @@ console.log(ukTimestamp); // 1705329000000
 // Cách 1: Lưu Timestamp (số milliseconds)
 await db.save({
   createdAt: Date.now(), // 💡 1705329000000 (timestamp)
+  // 💡 Date.now() = Số milliseconds từ 1970-01-01 00:00:00 UTC
+  // 💡 Timestamp = Universal time reference (giống nhau mọi nơi)
   // ✅ Ưu điểm: Số nguyên, dễ so sánh, không phụ thuộc timezone
+  // ✅ Ưu điểm: Database index nhanh (số nguyên)
+  // ✅ Ưu điểm: Không cần parse string
   // ✅ Database: Lưu kiểu BIGINT hoặc NUMBER
+  // 💡 VD: PostgreSQL BIGINT, MySQL BIGINT, MongoDB Number
 });
 
 // Cách 2: Lưu ISO 8601 UTC string
 await db.save({
   createdAt: new Date().toISOString(),
+  // 💡 toISOString() = Convert Date → ISO 8601 string với 'Z' suffix (UTC)
   // 💡 "2024-01-15T14:30:00.000Z"
-  // ✅ Ưu điểm: Human-readable, có timezone info (Z = UTC)
+  // 💡 Format: YYYY-MM-DDTHH:mm:ss.sssZ
+  // ✅ Ưu điểm: Human-readable (đọc được bằng mắt)
+  // ✅ Ưu điểm: Có timezone info (Z = UTC explicit)
+  // ✅ Ưu điểm: Chuẩn quốc tế (ISO 8601)
   // ✅ Database: Lưu kiểu VARCHAR hoặc TIMESTAMP
+  // 💡 VD: PostgreSQL TIMESTAMP, MySQL DATETIME, MongoDB String
+  // ⚠️ Lưu ý: Nếu dùng TIMESTAMP type → Database tự động handle timezone
 });
 
 // ===================================================
@@ -249,15 +374,25 @@ const date = new Date('2024-01-15T14:30:00.000Z');
 // ===================================================
 
 // Cách 1: Dùng Intl.DateTimeFormat (Built-in, không cần library)
+// 💡 Intl.DateTimeFormat = API built-in của browser cho internationalization
+// 💡 Hỗ trợ nhiều locale và timezone, không cần install library
 const formatter = new Intl.DateTimeFormat('en-US', {
+  // 💡 'en-US' = Locale tiếng Anh Mỹ (format: "January 15, 2024")
   timeZone: 'Asia/Ho_Chi_Minh', // 💡 Múi giờ Vietnam (UTC+7)
-  dateStyle: 'long', // 💡 "January 15, 2024"
-  timeStyle: 'short', // 💡 "9:30 PM"
+  // 💡 IANA timezone: "Asia/Ho_Chi_Minh" (không dùng "GMT+7")
+  dateStyle: 'long', // 💡 "January 15, 2024" (full date format)
+  // 💡 dateStyle: 'long' = Full date (có tên tháng đầy đủ)
+  // 💡 Các options: 'full', 'long', 'medium', 'short'
+  timeStyle: 'short', // 💡 "9:30 PM" (time format)
+  // 💡 timeStyle: 'short' = Time ngắn gọn (có AM/PM)
+  // 💡 Các options: 'full', 'long', 'medium', 'short'
 });
 console.log(formatter.format(date));
 // 💡 Input: "2024-01-15T14:30:00.000Z" (UTC)
+// 💡 formatter.format() tự động convert UTC → Vietnam timezone
 // 💡 Output: "January 15, 2024 at 9:30 PM" (Vietnam time)
 // ✅ 14:30 UTC + 7 giờ = 21:30 Vietnam
+// 💡 Browser tự động tính toán offset (+7 giờ)
 
 // Cách 2: Dùng toLocaleString() (Đơn giản hơn)
 const vnTime = date.toLocaleString('vi-VN', {
@@ -294,11 +429,14 @@ const date2 = new Date('2024-01-20T18:45:00.000Z'); // UTC
 
 // ✅ So sánh: date1 có sau date2 không?
 const isAfter = date1.getTime() > date2.getTime();
-// 💡 getTime() trả về timestamp (số milliseconds)
+// 💡 getTime() trả về timestamp (số milliseconds từ 1970-01-01 UTC)
+// 💡 Timestamp = Universal time reference (giống nhau mọi nơi)
 // 💡 So sánh số → Không phụ thuộc timezone
-// ✅ date1.getTime() = 1705329000000
-// ✅ date2.getTime() = 1705761900000
+// 💡 So sánh số nguyên → Rất nhanh (O(1))
+// ✅ date1.getTime() = 1705329000000 (2024-01-15 14:30:00 UTC)
+// ✅ date2.getTime() = 1705761900000 (2024-01-20 18:45:00 UTC)
 // ✅ 1705329000000 > 1705761900000 = false (date1 trước date2)
+// 💡 So sánh timestamp chính xác hơn so sánh Date objects
 
 // ✅ Tính số ngày chênh lệch
 const daysDiff = Math.floor(
@@ -381,13 +519,18 @@ console.log(endOfDay.toISOString());
 ```typescript
 /**
  * 🏗️ CONSTRUCTOR #1: new Date() - Current time
+ * 💡 Tạo Date object với thời gian hiện tại (current time)
  */
 
 // 📅 Tạo Date object với thời gian hiện tại
 const now = new Date();
+// 💡 new Date() = Constructor không có tham số
 // 💡 Lấy thời gian từ system clock của máy (browser hoặc server)
 // 💡 Timezone = local timezone của máy đang chạy code
+// 💡 VD: Máy ở Vietnam → Timezone = "Asia/Ho_Chi_Minh" (UTC+7)
+// 💡 VD: Máy ở US → Timezone = "America/New_York" (UTC-5)
 // 💡 Internal value = timestamp (milliseconds từ 1970-01-01 UTC)
+// 💡 Timestamp giống nhau mọi nơi, nhưng toString() khác nhau theo timezone
 
 console.log(now.toString());
 // "Mon Dec 22 2025 14:30:45 GMT+0700 (Indochina Time)"
@@ -426,14 +569,21 @@ const clientDate = new Date(serverTime);
 /**
  * 🏗️ CONSTRUCTOR #3: new Date(dateString) - Parse string
  * ⚠️ NGUY HIỂM: Kết quả phụ thuộc browser implementation!
+ * 💡 Đây là cách parse date string - RẤT DỄ GẶP BUG!
  */
 
 // ❌ ISO 8601 WITHOUT timezone → Browser-dependent!
 const date1 = new Date('2024-01-15');
+// 💡 Vấn đề: String "2024-01-15" không có timezone info
 // 💡 Spec không rõ ràng: Là UTC hay local timezone?
+// 💡 ECMAScript spec không quy định rõ → Browser tự implement
 // 🐛 Chrome/Firefox: Parse as UTC → "2024-01-15T00:00:00Z"
+// 💡 Chrome/Firefox giả định đây là UTC (00:00 UTC)
 // 🐛 Safari (older): Parse as local → "2024-01-15T00:00:00+07:00"
+// 💡 Safari (older) giả định đây là local timezone
 // 💥 KHÁC NHAU giữa browsers!
+// 💡 → Cùng code, khác kết quả → Bug khó debug!
+// ✅ FIX: Luôn dùng ISO 8601 với timezone: new Date('2024-01-15T00:00:00.000Z')
 
 console.log(date1.toISOString());
 // Chrome: "2024-01-15T00:00:00.000Z" (UTC)
@@ -505,36 +655,70 @@ console.log(utcDate.toISOString());
 ```typescript
 /**
  * 📖 GET METHODS - 2 Versions: Local vs UTC
+ * 💡 Date object có 2 bộ methods: Local timezone và UTC
+ * 💡 Quan trọng: Phân biệt rõ khi nào dùng Local, khi nào dùng UTC
  */
 
 const date = new Date('2024-01-15T14:30:45.123Z'); // UTC time
+// 💡 Input: "2024-01-15T14:30:45.123Z" (UTC)
+// 💡 'Z' suffix = UTC (Zulu time)
 
 // 🌍 LOCAL timezone methods (Vietnam UTC+7)
+// 💡 get*() methods = Trả về giá trị theo LOCAL timezone của máy
+// 💡 VD: Máy ở Vietnam (UTC+7) → getHours() trả về giờ Vietnam
 console.log(date.getFullYear()); // 2024
+// 💡 getFullYear() = Năm (4 chữ số) - Giống nhau mọi timezone
 console.log(date.getMonth()); // 0 (January, zero-indexed!)
+// 💡 getMonth() = Tháng (0-11) - Zero-indexed!
+// 💡 0 = January, 1 = February, ..., 11 = December
 console.log(date.getDate()); // 15 (day of month)
+// 💡 getDate() = Ngày trong tháng (1-31) - One-indexed
 console.log(date.getDay()); // 1 (Monday, 0=Sunday)
+// 💡 getDay() = Thứ trong tuần (0-6)
+// 💡 0 = Sunday, 1 = Monday, ..., 6 = Saturday
 console.log(date.getHours()); // 21 (14 + 7 = 21:30 Vietnam)
+// 💡 getHours() = Giờ theo LOCAL timezone
+// 💡 14:30 UTC + 7 giờ = 21:30 Vietnam (local)
 console.log(date.getMinutes()); // 30
+// 💡 getMinutes() = Phút (0-59) - Giống nhau mọi timezone
 console.log(date.getSeconds()); // 45
+// 💡 getSeconds() = Giây (0-59) - Giống nhau mọi timezone
 console.log(date.getMilliseconds()); // 123
+// 💡 getMilliseconds() = Milliseconds (0-999) - Giống nhau mọi timezone
 
 // 💡 get*() methods trả về LOCAL timezone values
 // 💡 Vietnam UTC+7: 14:30 UTC → 21:30 local
+// 💡 → getHours() = 21 (không phải 14!)
+// ⚠️ Lưu ý: Nếu dùng cho server timestamps → Dùng getUTC*() thay vì get*()
 
 // 🌐 UTC methods (always UTC, không phụ thuộc local timezone)
+// 💡 getUTC*() methods = Trả về giá trị theo UTC (không phụ thuộc local timezone)
+// 💡 Kết quả GIỐNG NHAU trên mọi timezone (vì UTC là universal)
 console.log(date.getUTCFullYear()); // 2024
+// 💡 getUTCFullYear() = Năm UTC (giống getFullYear())
 console.log(date.getUTCMonth()); // 0 (January)
+// 💡 getUTCMonth() = Tháng UTC (0-11, zero-indexed)
 console.log(date.getUTCDate()); // 15
+// 💡 getUTCDate() = Ngày UTC (1-31)
 console.log(date.getUTCDay()); // 1 (Monday)
+// 💡 getUTCDay() = Thứ UTC (0-6)
 console.log(date.getUTCHours()); // 14 (giữ nguyên UTC)
+// 💡 getUTCHours() = Giờ UTC (0-23)
+// 💡 14:30 UTC → getUTCHours() = 14 (giữ nguyên, không +7)
+// 💡 → Khác với getHours() = 21 (local Vietnam)
 console.log(date.getUTCMinutes()); // 30
+// 💡 getUTCMinutes() = Phút UTC (0-59)
 console.log(date.getUTCSeconds()); // 45
+// 💡 getUTCSeconds() = Giây UTC (0-59)
 console.log(date.getUTCMilliseconds()); // 123
+// 💡 getUTCMilliseconds() = Milliseconds UTC (0-999)
 
 // 💡 getUTC*() methods luôn trả về UTC values
 // 💡 Kết quả GIỐNG NHAU trên mọi timezone
+// 💡 VD: Máy ở Vietnam, US, UK → getUTCHours() đều = 14
 // ✅ BEST PRACTICE: Dùng getUTC*() cho logic, get*() cho display
+// 💡 Logic (so sánh, tính toán) → Dùng UTC (không phụ thuộc timezone)
+// 💡 Display (hiển thị cho user) → Dùng Local (user thấy giờ đúng múi giờ)
 
 // 📊 COMPARISON:
 // ┌─────────────────┬──────────────┬──────────────┐
@@ -547,16 +731,25 @@ console.log(date.getUTCMilliseconds()); // 123
 /**
  * 🔧 SET METHODS - Mutable (Thay đổi object gốc!)
  * ⚠️ NGUY HIỂM: Side effects!
+ * 💡 Date object là MUTABLE → set*() methods thay đổi object gốc
+ * 💡 → Rất dễ gây bug nếu không cẩn thận!
  */
 
 const original = new Date('2024-01-15T14:30:00.000Z');
+// 💡 Tạo Date object: "2024-01-15 14:30:00 UTC"
 console.log(original.toISOString());
 // "2024-01-15T14:30:00.000Z"
+// 💡 toISOString() = Convert Date → ISO 8601 string (UTC)
 
 // ❌ setMonth() mutates original object!
 original.setMonth(2); // Set to March (month=2)
+// 💡 setMonth(2) = Set tháng = 2 (March, vì zero-indexed)
+// 💡 ⚠️ NGUY HIỂM: setMonth() THAY ĐỔI object gốc (original)
+// 💡 → original bị mutate, không tạo object mới
 console.log(original.toISOString());
 // "2024-03-15T14:30:00.000Z"  ← Original đã BỊ THAY ĐỔI!
+// 💡 original giờ là "2024-03-15" (tháng 3), không phải "2024-01-15" nữa!
+// 💡 → Side effect: Object ban đầu bị thay đổi → Bug khó debug!
 
 // 💥 PROBLEM: Unexpected side effects
 function displayNextMonth(date: Date) {
@@ -573,30 +766,54 @@ console.log(myDate.toISOString());
 // 💡 Caller không expect myDate thay đổi → BUG!
 
 // ✅ SOLUTION 1: Clone trước khi modify
+// 💡 Best practice: Clone Date object trước khi modify → Tránh side effects
 function displayNextMonthSafe(date: Date) {
   const clone = new Date(date.getTime()); // 📋 Clone
+  // 💡 date.getTime() = Timestamp (số milliseconds)
+  // 💡 new Date(timestamp) = Tạo Date object mới từ timestamp
+  // 💡 → clone là object mới, không phải reference đến date gốc
   clone.setMonth(clone.getMonth() + 1);
+  // 💡 Modify clone (không phải date gốc)
+  // 💡 clone.getMonth() + 1 = Tháng tiếp theo
   return clone.toISOString();
+  // 💡 Trả về string (không modify date gốc)
 }
 
 const myDate2 = new Date('2024-01-15T14:30:00.000Z');
+// 💡 Tạo Date object: "2024-01-15 14:30:00 UTC"
 console.log(displayNextMonthSafe(myDate2));
 // "2024-02-15T14:30:00.000Z"
+// 💡 Function trả về tháng tiếp theo (February)
 
 console.log(myDate2.toISOString());
 // "2024-01-15T14:30:00.000Z"  ← myDate2 KHÔNG thay đổi ✅
+// 💡 myDate2 vẫn là "2024-01-15" (không bị modify)
+// 💡 → Không có side effect → Safe!
 
 // ✅ SOLUTION 2: Immutable approach (recommended)
+// 💡 Immutable = Không thay đổi input, luôn trả về object mới
+// 💡 → Functional programming style, dễ test, dễ debug
 function addMonths(date: Date, months: number): Date {
   const result = new Date(date.getTime()); // Clone
+  // 💡 Clone date gốc → result là object mới
   result.setMonth(result.getMonth() + months);
+  // 💡 Modify result (không phải date gốc)
+  // 💡 getMonth() + months = Thêm số tháng
   return result; // Return new object
+  // 💡 Trả về Date object mới (không modify date gốc)
+  // 💡 → Immutable: Input không đổi, output là object mới
 }
 
 const myDate3 = new Date('2024-01-15T14:30:00.000Z');
+// 💡 Tạo Date object: "2024-01-15 14:30:00 UTC"
 const nextMonth = addMonths(myDate3, 1);
+// 💡 Gọi function với months = 1 (thêm 1 tháng)
+// 💡 Function trả về Date object mới (không modify myDate3)
 console.log(nextMonth.toISOString()); // "2024-02-15T14:30:00.000Z"
+// 💡 nextMonth = "2024-02-15" (tháng tiếp theo)
 console.log(myDate3.toISOString()); // "2024-01-15T14:30:00.000Z" ✅
+// 💡 myDate3 vẫn là "2024-01-15" (không bị modify)
+// 💡 → Immutable approach: Input không đổi → Safe, predictable!
 
 // ✅ SOLUTION 3: Dùng library (date-fns, Luxon) - immutable by default
 // import { addMonths } from 'date-fns';
@@ -637,14 +854,21 @@ console.log(formatOffset(offset)); // "UTC+07:00" (Vietnam)
 
 /**
  * 🌞 DAYLIGHT SAVING TIME (DST) - Thay đổi offset theo mùa
+ * 💡 DST = Giờ mùa hè (Daylight Saving Time / Summer Time)
+ * 💡 Đây là phần PHỨC TẠP và DỄ GÂY BUG nhất trong date/time handling!
  *
- * 💡 KHÁ I NIỆM:
+ * 💡 KHÁI NIỆM:
  * - DST = Giờ mùa hè (Summer Time)
  * - Một số quốc gia chỉnh đồng hồ:
- *   + Mùa hè: +1 giờ (tiết kiệm điện)
+ *   + Mùa hè: +1 giờ (tiết kiệm điện, tận dụng ánh sáng ban ngày)
  *   + Mùa đông: -1 giờ (về giờ chuẩn)
  * - Vietnam KHÔNG có DST
+ *   💡 Vietnam luôn UTC+7 (không thay đổi theo mùa)
+ *   💡 → Đơn giản hơn, không cần handle DST
  * - US, Europe CÓ DST
+ *   💡 US: Mùa đông UTC-5 (EST), mùa hè UTC-4 (EDT)
+ *   💡 Europe: Mùa đông UTC+0 (GMT), mùa hè UTC+1 (BST)
+ *   💡 → Offset thay đổi 2 lần/năm (khi DST bắt đầu/kết thúc)
  */
 
 // 📅 New York timezone:
@@ -694,29 +918,60 @@ const nyTime = toTimezone(winterDate, 'America/New_York');
 
 /**
  * 🗓️ DST TRANSITION - Edge cases nguy hiểm
+ * 💡 DST transition = Thời điểm chuyển đổi giữa DST và standard time
+ * 💡 Đây là EDGE CASES nguy hiểm nhất - Rất dễ gây bug!
  */
 
 // 🌅 DST begins: 2:00 AM → 3:00 AM (spring forward)
+// 💡 Spring forward = Nhảy từ 2:00 AM → 3:00 AM (bỏ qua 1 giờ)
+// 💡 VD: US: 2:00 AM EST → 3:00 AM EDT (nhảy 1 giờ)
 // 💥 2:30 AM KHÔNG TỒN TẠI (skipped)!
+// 💡 Thời gian từ 2:00 AM đến 3:00 AM BỊ BỎ QUA (không tồn tại)
 
 const springForward = new Date('2024-03-10T07:30:00Z'); // 2:30 AM EST
+// 💡 UTC "07:30" = 2:30 AM EST (UTC-5) - Thời gian này BỊ SKIP
 // 💡 Thời gian này bị skip do DST
-// 💡 Browser/library tự động điều chỉnh
+// 💡 Browser/library tự động điều chỉnh → 3:30 AM EDT
+// 💡 → Browser tự động "nhảy" qua thời gian không tồn tại
 
 // 🌇 DST ends: 2:00 AM → 1:00 AM (fall back)
+// 💡 Fall back = Quay lại từ 2:00 AM → 1:00 AM (lặp lại 1 giờ)
+// 💡 VD: US: 2:00 AM EDT → 1:00 AM EST (lặp lại 1 giờ)
 // 💥 1:30 AM XẢY RA 2 LẦN!
+// 💡 Thời gian từ 1:00 AM đến 2:00 AM XẢY RA 2 LẦN (ambiguous!)
 
 const fallBack1 = new Date('2024-11-03T05:30:00Z'); // 1:30 AM EDT (first)
+// 💡 UTC "05:30" = 1:30 AM EDT (UTC-4) - Lần đầu tiên
 const fallBack2 = new Date('2024-11-03T06:30:00Z'); // 1:30 AM EST (second)
+// 💡 UTC "06:30" = 1:30 AM EST (UTC-5) - Lần thứ hai (sau khi fall back)
 
 // 💡 Cùng local time "1:30 AM" nhưng khác UTC!
-// 💡 Ambiguous: Không biết lần nào
+// 💡 fallBack1 = UTC 05:30 (EDT, trước khi fall back)
+// 💡 fallBack2 = UTC 06:30 (EST, sau khi fall back)
+// 💡 Ambiguous: Không biết lần nào (cùng local time, khác UTC)
+// 💡 → Rất dễ gây bug nếu không handle đúng!
 
 // ✅ BEST PRACTICE:
 // 1. Lưu UTC (timestamp/ISO) → Không ambiguous
+//    💡 Lưu UTC → Không bị ambiguous (cùng 1 UTC time, không có 2 lần)
+//    💡 VD: Lưu "2024-11-03T06:30:00.000Z" (UTC) → Rõ ràng, không ambiguous
+//    💡 → Tránh bug "1:30 AM xảy ra 2 lần"
+//
 // 2. Dùng timezone database (IANA) → Auto-handle DST
+//    💡 Dùng "America/New_York" thay vì "GMT-5" (hardcode offset)
+//    💡 IANA timezone database tự động handle DST rules
+//    💡 → Browser/library tự động tính offset đúng (EST vs EDT)
+//
 // 3. Test với DST transition dates
+//    💡 Test với dates khi DST bắt đầu/kết thúc
+//    💡 VD: US DST: March 10 (spring forward), November 3 (fall back)
+//    💡 → Đảm bảo code handle đúng edge cases
+//
 // 4. Hiển thị timezone rõ ràng: "1:30 AM EST" vs "1:30 AM EDT"
+//    💡 Hiển thị timezone name (EST/EDT) → User biết đây là giờ nào
+//    💡 EST = Eastern Standard Time (UTC-5, mùa đông)
+//    💡 EDT = Eastern Daylight Time (UTC-4, mùa hè)
+//    💡 → Tránh nhầm lẫn khi DST transition
 ```
 
 ---

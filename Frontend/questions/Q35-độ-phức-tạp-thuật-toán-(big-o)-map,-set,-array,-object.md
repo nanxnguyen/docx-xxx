@@ -695,12 +695,20 @@ class SimpleHashMap<K, V> {
   }
 
   // 📊 Hiển thị cấu trúc buckets để debug
+  // 💡 Method này giúp visualize hash table structure
+  // 💡 Hữu ích để debug collision và hiểu cách hash table hoạt động
   visualize(): void {
     this.buckets.forEach((bucket, idx) => {
+      // 💡 Duyệt qua từng bucket trong mảng buckets
+      // 💡 idx = index của bucket (0, 1, 2, ..., buckets.length-1)
       if (bucket.length > 0) {
+        // 💡 Chỉ hiển thị bucket có chứa entries (không hiển thị bucket rỗng)
         console.log(
           `📦 Bucket ${idx}:`,
           bucket.map((e) => `${e.key}=${e.value}`).join(' → ')
+          // 💡 Convert mỗi entry thành string: "key=value"
+          // 💡 Nếu có collision → nhiều entries trong 1 bucket → join bằng " → "
+          // 💡 VD: "apple=1 → banana=2" (collision trong bucket 2)
         );
       }
     });
@@ -713,23 +721,31 @@ class SimpleHashMap<K, V> {
 
 // 🎬 Demo collision (va chạm hash)
 // 💡 Collision = 2 key khác nhau nhưng có cùng hash code → cùng bucket
+// 💡 Collision là hiện tượng bình thường trong hash table
+// 💡 Hash function tốt sẽ giảm thiểu collision nhưng không thể tránh hoàn toàn
 const hashMap = new SimpleHashMap<string, number>(8);
 // 💡 Tạo hash map với 8 buckets (ít buckets → dễ collision hơn)
+// 💡 Với ít buckets, nhiều key sẽ rơi vào cùng bucket → dễ thấy collision
 
 hashMap.set('apple', 1);
 // 🍎 hash('apple') % 8 = ? → bucket index
+// 💡 VD: hash('apple') = 12345 → 12345 % 8 = 1 → bucket[1]
 hashMap.set('banana', 2);
 // 🍌 hash('banana') % 8 = ? → bucket index
+// 💡 VD: hash('banana') = 12353 → 12353 % 8 = 1 → bucket[1] (collision với apple!)
 hashMap.set('cherry', 3);
 // 🍒 hash('cherry') % 8 = ? → bucket index
+// 💡 VD: hash('cherry') = 23456 → 23456 % 8 = 0 → bucket[0] (không collision)
 
 hashMap.visualize();
 // 💡 Output sẽ show collision nếu hash('apple') % 8 === hash('banana') % 8
 // 💡 VD output:
-//    📦 Bucket 2: apple=1 → banana=2  (collision!)
-//    📦 Bucket 5: cherry=3
+//    📦 Bucket 0: cherry=3
+//    📦 Bucket 1: apple=1 → banana=2  (collision! 2 keys cùng bucket)
 // 💡 Collision xảy ra khi 2 key khác nhau nhưng rơi vào cùng 1 bucket
+// 💡 Khi có collision, entries được lưu trong linked list (chain) trong bucket đó
 // 💡 JS engines tự động resize khi có quá nhiều collision → maintain O(1)
+// 💡 Resize = tăng số buckets → giảm collision → giữ performance tốt
 ```
 
 **🎯 Best Practices - Tối Ưu Performance:**
@@ -965,19 +981,27 @@ const unique2 = [...new Set(arr)];
 // 💡 Nhanh hơn cách trên ~250 lần!
 
 // ❌ LỖI 3: Xóa array items trong loop → O(n²) CHẬM!
+// 💡 Đây là lỗi rất phổ biến khi làm việc với Array
+// 💡 Vấn đề: splice() trong loop gây ra O(n²) complexity
 for (let i = 0; i < arr.length; i++) {
+// 💡 Loop từ đầu đến cuối mảng
 if (condition) {
+// 💡 Nếu phần tử thỏa điều kiện → xóa
 arr.splice(i, 1);
 // 🐢 O(n) - phải shift TẤT CẢ elements phía sau
 // 💡 splice(i, 1) xóa phần tử tại index i
 // 💡 Sau đó phải shift: arr[i+1] → arr[i], arr[i+2] → arr[i+1], ...
 // 💡 VD: Xóa arr[5] trong mảng 1000 phần tử → phải shift 995 phần tử!
+// 💡 Mỗi lần shift = copy memory → tốn thời gian!
 
     i--;
     // 🔄 Điều chỉnh index (dễ gây bug!)
     // 💡 Cần i-- vì sau khi xóa, phần tử tiếp theo đã chuyển lên vị trí i
     // 💡 Nếu không có i-- → sẽ bỏ sót phần tử tiếp theo
     // ⚠️ Dễ gây bug nếu quên i--
+    // 💡 VD: arr = [1, 2, 3, 4, 5], xóa phần tử chẵn
+    // 💡 i=1, arr[1]=2 (chẵn) → xóa → arr = [1, 3, 4, 5]
+    // 💡 Nếu không i-- → i=2, arr[2]=4 (đã bỏ sót 3!)
 
 }
 }
@@ -985,14 +1009,21 @@ arr.splice(i, 1);
 // 💡 VD: Xóa 100 phần tử trong mảng 1000 phần tử
 // 💡 Mỗi lần xóa shift ~500 phần tử trung bình
 // 💡 Tổng: 100 × 500 = 50,000 operations!
+// ⏱️ Thời gian: ~50-100ms cho 1000 phần tử
 
 // ✅ CÁCH SỬA: Dùng filter → O(n) NHANH VÀ AN TOÀN!
+// 💡 filter() là method built-in của Array, được optimize tốt
+// 💡 Tạo mảng mới thay vì modify mảng gốc → functional programming style
 const filtered = arr.filter((item) => !condition);
 // ⚡ O(n) - 1 lần duyệt, tạo mảng mới
 // 💡 filter() duyệt qua arr 1 lần, tạo mảng mới với các phần tử thỏa điều kiện
 // 💡 Không modify mảng gốc → tránh bug + dễ debug!
+// 💡 VD: arr = [1, 2, 3, 4, 5], condition = số chẵn
+// 💡 filtered = [1, 3, 5] (giữ lại số lẻ)
+// 💡 arr vẫn là [1, 2, 3, 4, 5] (không thay đổi)
 // 💡 VD: 1000 phần tử → chỉ 1000 operations (thay vì 50,000!)
 // 💡 Nhanh hơn cách trên ~50 lần!
+// ⏱️ Thời gian: ~1-2ms cho 1000 phần tử (thay vì 50-100ms!)
 
 ````
 
@@ -1042,53 +1073,88 @@ const filtered = arr.filter((item) => !condition);
 **🎯 Áp Dụng Vào Production:**
 
 ```ts
-// ❌ BEFORE: Chậm, khó maintain - O(n × m × k)
+// ❌ BEFORE: Chậm, khó maintain - O(n × m × k × p)
+// 💡 Đây là ví dụ điển hình của nested loops với Array.find()
+// 💡 Rất phổ biến trong code thực tế nhưng CỰC CHẬM với data lớn!
 function processOrders(orders, users, products) {
   return orders.map(order => ({
     // 🔁 Loop 1: orders.map() → n lần (n = số orders)
+    // 💡 VD: n = 1000 orders → loop 1000 lần
     ...order,
+    // 💡 Spread operator: Copy tất cả properties của order
     user: users.find(u => u.id === order.userId),
     // 🔁 Loop 2: users.find() → O(m) mỗi lần (m = số users)
     // 💡 Mỗi order phải tìm user → n × m operations
+    // 💡 find() duyệt từ đầu: check user[0], user[1], ..., user[500] mới tìm thấy
+    // 💡 VD: 1000 orders × 1000 users = 1 TRIỆU operations chỉ để tìm users!
 
     items: order.itemIds.map(id =>
       // 🔁 Loop 3: order.itemIds.map() → k lần (k = số items mỗi order)
+      // 💡 VD: mỗi order có 10 items → k = 10
+      // 💡 Tổng: n × k = 1000 × 10 = 10,000 lần loop
       products.find(p => p.id === id)
       // 🔁 Loop 4: products.find() → O(p) mỗi lần (p = số products)
       // 💡 Mỗi item phải tìm product → n × k × p operations
+      // 💡 find() duyệt từ đầu: check product[0], product[1], ..., product[250] mới tìm thấy
+      // 💡 VD: 10,000 items × 500 products = 5 TRIỆU operations để tìm products!
     )
   }));
 }
 // 💀 Complexity: O(n × m × k × p) - CỰC CHẬM!
 // 💡 VD: 1000 orders × 1000 users × 10 items × 500 products
-// 💡 = 5 TỶ operations! → Có thể mất vài PHÚT!
+// 💡 = 1,000,000 (users) + 5,000,000 (products) = 6 TRIỆU operations!
+// ⏱️ Thời gian: Có thể mất vài PHÚT với data lớn!
+// 🐌 User experience: Page bị đơ, browser không phản hồi!
 
 // ✅ AFTER: Nhanh, scalable - O(n + m + p)
+// 💡 Đây là cách tối ưu: Build lookup maps trước, dùng O(1) lookup trong loop
+// 💡 Pattern này rất quan trọng trong production code!
 function processOrders(orders, users, products) {
   // 🏗️ Build lookup maps 1 lần: O(m + p)
+  // 💡 Bước này chỉ chạy 1 lần, không lặp lại trong loop
   const userMap = new Map(users.map(u => [u.id, u]));
   // 💡 Build userMap: O(m) - duyệt users 1 lần
+  // 💡 users.map() → O(m): Tạo array entries [id, user]
+  // 💡 new Map() → O(m): Build hash table từ entries
+  // 💡 VD: 1000 users → 1000 operations để build Map
+  // 💡 Sau khi build xong, mỗi lookup chỉ tốn O(1)!
 
   const productMap = new Map(products.map(p => [p.id, p]));
   // 💡 Build productMap: O(p) - duyệt products 1 lần
+  // 💡 Tương tự userMap: Build 1 lần, dùng nhiều lần
+  // 💡 VD: 500 products → 500 operations để build Map
 
   return orders.map(order => ({
     // 🔁 Loop: n lần (n = số orders)
+    // 💡 VD: n = 1000 orders → loop 1000 lần
     ...order,
+    // 💡 Spread operator: Copy properties của order
     user: userMap.get(order.userId),
     // ⚡ O(1) - hash lookup tức thì
+    // 💡 Hash(order.userId) → bucket → tìm ngay
     // 💡 Không cần duyệt users nữa!
+    // 💡 VD: 1000 orders × O(1) = 1000 operations (thay vì 1 TRIỆU!)
 
     items: order.itemIds.map(id => productMap.get(id))
     // ⚡ O(1) mỗi lần - hash lookup
+    // 💡 Hash(id) → bucket → tìm ngay
     // 💡 Không cần duyệt products nữa!
+    // 💡 VD: 10,000 items × O(1) = 10,000 operations (thay vì 5 TRIỆU!)
   }));
 }
 // ✅ Complexity: O(m + p + n × k) ≈ O(n + m + p) - NHANH, scale tốt!
+// 💡 Giải thích:
+//   - O(m): Build userMap (1 lần)
+//   - O(p): Build productMap (1 lần)
+//   - O(n): Loop qua orders
+//   - O(k): Loop qua items mỗi order (k thường nhỏ, VD: 10)
+//   - O(1): Mỗi lookup trong Map (không tính vào complexity chính)
 // 💡 VD: 1000 orders × 1000 users × 10 items × 500 products
-// 💡 = 1,000 + 500 + (1000 × 10) = 11,500 operations!
+// 💡 = 1,000 (build userMap) + 500 (build productMap) + (1000 × 10) (lookups)
+// 💡 = 11,500 operations!
 // 💡 Nhanh hơn cách trên ~400,000 lần! ⚡
-// ⏱️ Chạy xong trong vài GIÂY thay vì vài PHÚT!
+// ⏱️ Thời gian: Chạy xong trong vài GIÂY thay vì vài PHÚT!
+// 🚀 User experience: Page load nhanh, mượt mà!
 ````
 
 **💪 Level Up Senior/Staff:**

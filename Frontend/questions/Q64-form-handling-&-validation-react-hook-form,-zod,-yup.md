@@ -4,71 +4,71 @@
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"Form handling: React Hook Form (uncontrolled, performance) vs Formik (controlled, simple). Validation: Zod (TypeScript-first, schema) vs Yup (runtime, flexible). Best practices: Controller cho custom components, FormProvider tránh prop drilling, validation mode onBlur."**
+**"Form handling (Xử lý form): React Hook Form (uncontrolled - không kiểm soát, performance - hiệu năng) vs Formik (controlled - kiểm soát, simple - đơn giản). Validation (Xác thực): Zod (TypeScript-first - ưu tiên TypeScript, schema - lược đồ) vs Yup (runtime - thời gian chạy, flexible - linh hoạt). Best practices (Thực hành tốt nhất): Controller cho custom components (component tùy chỉnh), FormProvider tránh prop drilling (tránh truyền props qua nhiều lớp), validation mode onBlur (chế độ xác thực khi mất focus)."**
 
-**🔑 Form Libraries Comparison:**
+**🔑 Form Libraries Comparison (So Sánh Thư Viện Form):**
 
-**1. React Hook Form (Recommended):**
+**1. React Hook Form (Được Khuyến Nghị):**
 
-- **Uncontrolled**: Dùng refs, ít re-renders → performance tốt
-- **Bundle size**: ~9KB (nhỏ nhất)
+- **Uncontrolled (Không kiểm soát)**: Dùng refs (tham chiếu), ít re-renders (ít render lại) → performance tốt (hiệu năng tốt)
+- **Bundle size (Kích thước gói)**: ~9KB (nhỏ nhất)
 - **API**: `useForm()`, `register()`, `Controller`, `FormProvider`
-- **Validation**: Built-in + Zod/Yup integration
-- **Best for**: Performance-critical forms, large forms
+- **Validation (Xác thực)**: Built-in (tích hợp sẵn) + Zod/Yup integration (tích hợp Zod/Yup)
+- **Best for (Tốt nhất cho)**: Performance-critical forms (form yêu cầu hiệu năng cao), large forms (form lớn)
 
 **2. Formik:**
 
-- **Controlled**: Dùng state, nhiều re-renders → đơn giản hơn
+- **Controlled (Kiểm soát)**: Dùng state (trạng thái), nhiều re-renders (nhiều render lại) → đơn giản hơn
 - **Bundle size**: ~15KB
 - **API**: `useFormik()`, `Field`, `Form`, `ErrorMessage`
-- **Validation**: Yup integration
-- **Best for**: Simple forms, rapid prototyping
+- **Validation**: Yup integration (tích hợp Yup)
+- **Best for**: Simple forms (form đơn giản), rapid prototyping (tạo mẫu nhanh)
 
-**🔑 Validation Libraries:**
+**🔑 Validation Libraries (Thư Viện Xác Thực):**
 
-**1. Zod (TypeScript-first):**
+**1. Zod (Ưu Tiên TypeScript):**
 
-- **Type-safe**: Schema → TypeScript types tự động
-- **Runtime validation**: Validate data at runtime
+- **Type-safe (An toàn kiểu)**: Schema → TypeScript types tự động (lược đồ → kiểu TypeScript tự động)
+- **Runtime validation (Xác thực thời gian chạy)**: Validate data at runtime (xác thực dữ liệu khi chạy)
 - **API**: `z.object()`, `z.string()`, `z.number()`
-- **Best for**: TypeScript projects, type safety
+- **Best for**: TypeScript projects (dự án TypeScript), type safety (an toàn kiểu)
 
 **2. Yup:**
 
-- **Flexible**: Schema validation, transformations
+- **Flexible (Linh hoạt)**: Schema validation (xác thực lược đồ), transformations (chuyển đổi)
 - **API**: `yup.object()`, `yup.string()`, `yup.number()`
-- **Best for**: JavaScript projects, complex validations
+- **Best for**: JavaScript projects (dự án JavaScript), complex validations (xác thực phức tạp)
 
-**🔑 Best Practices:**
+**🔑 Best Practices (Thực Hành Tốt Nhất):**
 
-**1. Performance:**
+**1. Performance (Hiệu Năng):**
 
-- **React Hook Form**: Dùng `Controller` cho custom components
-- **FormProvider**: Tránh prop drilling, share form context
-- **useWatch()**: Watch specific fields thay vì `watch()` toàn form
-- **Validation mode**: `onBlur` thay vì `onChange` (nhẹ hơn)
+- **React Hook Form**: Dùng `Controller` cho custom components (component tùy chỉnh)
+- **FormProvider**: Tránh prop drilling (tránh truyền props qua nhiều lớp), share form context (chia sẻ ngữ cảnh form)
+- **useWatch()**: Watch specific fields (theo dõi các trường cụ thể) thay vì `watch()` toàn form (toàn bộ form)
+- **Validation mode (Chế độ xác thực)**: `onBlur` thay vì `onChange` (nhẹ hơn - hiệu năng tốt hơn)
 
-**2. Validation:**
+**2. Validation (Xác Thực):**
 
-- **Schema validation**: Zod/Yup cho complex rules
-- **Field-level validation**: Validate từng field riêng
-- **Async validation**: Validate với API calls
-- **Custom validators**: Tạo validators riêng cho business logic
+- **Schema validation (Xác thực lược đồ)**: Zod/Yup cho complex rules (quy tắc phức tạp)
+- **Field-level validation (Xác thực cấp trường)**: Validate từng field riêng (xác thực từng trường riêng biệt)
+- **Async validation (Xác thực bất đồng bộ)**: Validate với API calls (xác thực với lời gọi API)
+- **Custom validators (Bộ xác thực tùy chỉnh)**: Tạo validators riêng cho business logic (logic nghiệp vụ)
 
-**⚠️ Lỗi Thường Gặp:**
+**⚠️ Lỗi Thường Gặp (Common Mistakes):**
 
-- `watch()` toàn form → re-render mỗi keystroke
-- Không dùng `Controller` cho custom components → mất validation
-- Validation mode `onChange` → quá nặng cho large forms
-- Không tách form sections → toàn form re-render
+- `watch()` toàn form → re-render mỗi keystroke (render lại mỗi lần gõ phím)
+- Không dùng `Controller` cho custom components → mất validation (mất xác thực)
+- Validation mode `onChange` → quá nặng cho large forms (quá nặng cho form lớn)
+- Không tách form sections (không tách phần form) → toàn form re-render (toàn bộ form render lại)
 
-**💡 Kiến Thức Senior:**
+**💡 Kiến Thức Senior (Senior Knowledge):**
 
-- **Form state management**: Controlled vs Uncontrolled trade-offs
-- **Multi-step forms**: Wizard pattern với React Hook Form
-- **Dynamic fields**: Add/remove fields dynamically
-- **File uploads**: Handle file uploads với validation
-- **Form performance**: Optimize re-renders với memo, Controller
+- **Form state management (Quản lý trạng thái form)**: Controlled vs Uncontrolled trade-offs (đánh đổi giữa kiểm soát và không kiểm soát)
+- **Multi-step forms (Form nhiều bước)**: Wizard pattern với React Hook Form (mẫu wizard với React Hook Form)
+- **Dynamic fields (Trường động)**: Add/remove fields dynamically (thêm/xóa trường động)
+- **File uploads (Tải lên tệp)**: Handle file uploads với validation (xử lý tải lên tệp với xác thực)
+- **Form performance (Hiệu năng form)**: Optimize re-renders với memo, Controller (tối ưu render lại với memo, Controller)
 
 > **Câu hỏi phỏng vấn Senior Frontend Developer** > **Độ khó:** ⭐⭐⭐⭐ (Advanced)
 > **Thời gian trả lời:** 15-20 phút
@@ -84,7 +84,7 @@
 5. [Complex Form Patterns](#5-complex-form-patterns)
 6. [Performance Optimization](#6-performance-optimization)
 7. [File Uploads & Advanced Features](#7-file-uploads--advanced-features)
-ss
+
 ---
 
 ## 1. Form Libraries Comparison
@@ -98,29 +98,29 @@ ss
 
 # ===================================================
 
-| Aspect             | React Hook Form          | Formik                  |
-| ------------------ | ------------------------ | ----------------------- |
-| **Architecture**   | Uncontrolled (refs)      | Controlled (state)      |
-| **Re-renders**     | Minimal (field-level)    | Many (form-level)       |
-| **Bundle Size**    | ~9KB                     | ~15KB                   |
-| **Performance**    | ⚡⚡⚡⚡⚡ Excellent     | ⚡⚡⚡ Good             |
-| **Learning Curve** | Medium                   | Easy                    |
-| **TypeScript**     | Excellent                | Good                    |
-| **Validation**     | Built-in + Zod/Yup       | Yup integration         |
-| **Best For**       | Large forms, performance | Simple forms, rapid dev |
+| Aspect (Khía cạnh)                      | React Hook Form                                        | Formik                                                    |
+| --------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------- |
+| **Architecture (Kiến trúc)**            | Uncontrolled (refs - không kiểm soát, dùng tham chiếu) | Controlled (state - kiểm soát, dùng trạng thái)           |
+| **Re-renders (Render lại)**             | Minimal (field-level - tối thiểu, cấp trường)          | Many (form-level - nhiều, cấp form)                       |
+| **Bundle Size (Kích thước gói)**        | ~9KB                                                   | ~15KB                                                     |
+| **Performance (Hiệu năng)**             | ⚡⚡⚡⚡⚡ Excellent (Xuất sắc)                        | ⚡⚡⚡ Good (Tốt)                                         |
+| **Learning Curve (Đường cong học tập)** | Medium (Trung bình)                                    | Easy (Dễ)                                                 |
+| **TypeScript**                          | Excellent (Xuất sắc)                                   | Good (Tốt)                                                |
+| **Validation (Xác thực)**               | Built-in + Zod/Yup (Tích hợp sẵn + Zod/Yup)            | Yup integration (Tích hợp Yup)                            |
+| **Best For (Tốt nhất cho)**             | Large forms, performance (Form lớn, hiệu năng)         | Simple forms, rapid dev (Form đơn giản, phát triển nhanh) |
 
-# ✅ React Hook Form Advantages:
+# ✅ React Hook Form Advantages (Ưu điểm):
 
-- Performance: Ít re-renders, field-level updates
-- Bundle size: Nhỏ nhất trong các form libraries
-- TypeScript: Type-safe với Zod integration
-- API: Flexible, nhiều features
+- Performance (Hiệu năng): Ít re-renders (ít render lại), field-level updates (cập nhật cấp trường)
+- Bundle size (Kích thước gói): Nhỏ nhất trong các form libraries (thư viện form)
+- TypeScript: Type-safe với Zod integration (An toàn kiểu với tích hợp Zod)
+- API: Flexible (Linh hoạt), nhiều features (nhiều tính năng)
 
-# ✅ Formik Advantages:
+# ✅ Formik Advantages (Ưu điểm):
 
-- Simplicity: API đơn giản, dễ học
-- Ecosystem: Nhiều plugins, community lớn
-- Controlled: Predictable state management
+- Simplicity (Đơn giản): API đơn giản, dễ học
+- Ecosystem (Hệ sinh thái): Nhiều plugins (nhiều plugin), community lớn (cộng đồng lớn)
+- Controlled (Kiểm soát): Predictable state management (Quản lý trạng thái dễ đoán)
 ```
 
 ### **1.2. Controlled vs Uncontrolled Forms**
@@ -571,40 +571,46 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 
-// ✅ Define schema
+// ✅ Define schema (Định nghĩa lược đồ)
 const formSchema = yup.object({
+  // ✅ Email: string, bắt buộc, phải là email hợp lệ
   email: yup
-    .string()
-    .required('Email is required')
-    .email('Invalid email address'),
+    .string() // ✅ Kiểu string
+    .required('Email is required') // ✅ Bắt buộc phải nhập
+    .email('Invalid email address'), // ✅ Phải đúng format email
 
+  // ✅ Password: string, tối thiểu 8 ký tự, có chữ hoa, chữ thường, số
   password: yup
     .string()
-    .required('Password is required')
-    .min(8, 'Password must be at least 8 characters')
-    .matches(/[A-Z]/, 'Password must contain uppercase')
-    .matches(/[a-z]/, 'Password must contain lowercase')
-    .matches(/[0-9]/, 'Password must contain number'),
+    .required('Password is required') // ✅ Bắt buộc
+    .min(8, 'Password must be at least 8 characters') // ✅ Tối thiểu 8 ký tự
+    .matches(/[A-Z]/, 'Password must contain uppercase') // ✅ Phải có chữ hoa
+    .matches(/[a-z]/, 'Password must contain lowercase') // ✅ Phải có chữ thường
+    .matches(/[0-9]/, 'Password must contain number'), // ✅ Phải có số
 
+  // ✅ Age: number, từ 18 đến 120
   age: yup
-    .number()
-    .required('Age is required')
-    .min(18, 'Must be at least 18')
-    .max(120, 'Must be less than 120')
-    .typeError('Age must be a number'),
+    .number() // ✅ Kiểu number
+    .required('Age is required') // ✅ Bắt buộc
+    .min(18, 'Must be at least 18') // ✅ Tối thiểu 18
+    .max(120, 'Must be less than 120') // ✅ Tối đa 120
+    .typeError('Age must be a number'), // ✅ Lỗi nếu không phải số
 
+  // ✅ Website: string, optional, nếu nhập phải là URL hợp lệ
   website: yup
     .string()
-    .url('Invalid URL')
-    .nullable()
-    .transform((value) => value || null), // Transform empty string to null
+    .url('Invalid URL') // ✅ Phải là URL hợp lệ
+    .nullable() // ✅ Cho phép null
+    .transform((value) => value || null), // ✅ Transform empty string to null (Chuyển chuỗi rỗng thành null)
 
+  // ✅ ConfirmPassword: string, phải khớp với password
   confirmPassword: yup
     .string()
-    .required('Please confirm password')
-    .oneOf([yup.ref('password')], "Passwords don't match"),
+    .required('Please confirm password') // ✅ Bắt buộc
+    .oneOf([yup.ref('password')], "Passwords don't match"), // ✅ Phải khớp với password (dùng yup.ref để tham chiếu field khác)
 });
 
+// ✅ TypeScript type từ schema - Yup cần InferType để suy luận kiểu
 type FormData = yup.InferType<typeof formSchema>;
 
 function YupForm() {
@@ -642,29 +648,29 @@ function YupForm() {
 
 # ===================================================
 
-| Aspect               | Zod                  | Yup                 |
-| -------------------- | -------------------- | ------------------- |
-| **TypeScript**       | ⭐⭐⭐⭐⭐ Excellent | ⭐⭐⭐ Good         |
-| **Type Inference**   | ✅ Automatic         | ⚠️ Manual           |
-| **Bundle Size**      | ~10KB                | ~13KB               |
-| **Performance**      | ⚡⚡⚡⚡ Fast        | ⚡⚡⚡ Good         |
-| **API**              | Modern, clean        | Flexible, verbose   |
-| **Transformations**  | ✅ Built-in          | ✅ Advanced         |
-| **Async Validation** | ✅ Yes               | ✅ Yes              |
-| **Best For**         | TypeScript projects  | JavaScript projects |
+| Aspect (Khía cạnh)                          | Zod                                    | Yup                                     |
+| ------------------------------------------- | -------------------------------------- | --------------------------------------- |
+| **TypeScript**                              | ⭐⭐⭐⭐⭐ Excellent (Xuất sắc)        | ⭐⭐⭐ Good (Tốt)                       |
+| **Type Inference (Suy luận kiểu)**          | ✅ Automatic (Tự động)                 | ⚠️ Manual (Thủ công)                    |
+| **Bundle Size (Kích thước gói)**            | ~10KB                                  | ~13KB                                   |
+| **Performance (Hiệu năng)**                 | ⚡⚡⚡⚡ Fast (Nhanh)                  | ⚡⚡⚡ Good (Tốt)                       |
+| **API**                                     | Modern, clean (Hiện đại, sạch)         | Flexible, verbose (Linh hoạt, dài dòng) |
+| **Transformations (Chuyển đổi)**            | ✅ Built-in (Tích hợp sẵn)             | ✅ Advanced (Nâng cao)                  |
+| **Async Validation (Xác thực bất đồng bộ)** | ✅ Yes (Có)                            | ✅ Yes (Có)                             |
+| **Best For (Tốt nhất cho)**                 | TypeScript projects (Dự án TypeScript) | JavaScript projects (Dự án JavaScript)  |
 
-# ✅ Zod Advantages:
+# ✅ Zod Advantages (Ưu điểm):
 
-- TypeScript-first: Type inference tự động
-- Modern API: Clean, intuitive
-- Performance: Nhanh hơn Yup
-- Type safety: Compile-time + runtime
+- TypeScript-first (Ưu tiên TypeScript): Type inference tự động (Suy luận kiểu tự động)
+- Modern API (API hiện đại): Clean (Sạch), intuitive (Trực quan)
+- Performance (Hiệu năng): Nhanh hơn Yup
+- Type safety (An toàn kiểu): Compile-time + runtime (Thời gian biên dịch + thời gian chạy)
 
-# ✅ Yup Advantages:
+# ✅ Yup Advantages (Ưu điểm):
 
-- Flexible: Nhiều transformations
-- Mature: Ecosystem lớn, nhiều plugins
-- JavaScript-friendly: Dễ dùng với JS
+- Flexible (Linh hoạt): Nhiều transformations (Nhiều chuyển đổi)
+- Mature (Trưởng thành): Ecosystem lớn (Hệ sinh thái lớn), nhiều plugins (nhiều plugin)
+- JavaScript-friendly (Thân thiện JavaScript): Dễ dùng với JS
 ```
 
 ---
@@ -1581,55 +1587,64 @@ function FormWithStateManagement() {
 
 ---
 
-## **🎯 Best Practices Summary**
+## **🎯 Best Practices Summary (Tóm Tắt Thực Hành Tốt Nhất)**
 
-### **✅ DO:**
+### **✅ DO (Nên Làm):**
 
-1. **Use React Hook Form**: Performance tốt nhất, ít re-renders
-2. **Controller for custom components**: Đảm bảo validation hoạt động
-3. **FormProvider**: Tránh prop drilling, share form context
-4. **useWatch()**: Watch specific fields thay vì `watch()` toàn form
-5. **Validation mode onBlur**: Nhẹ hơn onChange
-6. **Zod for TypeScript**: Type-safe validation
-7. **Memo components**: Tách form sections với memo
-8. **Batch updates**: Dùng `shouldValidate: false` khi set nhiều values
+1. **Use React Hook Form (Sử dụng React Hook Form)**: Performance tốt nhất (hiệu năng tốt nhất), ít re-renders (ít render lại)
+2. **Controller for custom components (Controller cho component tùy chỉnh)**: Đảm bảo validation hoạt động (đảm bảo xác thực hoạt động)
+3. **FormProvider**: Tránh prop drilling (tránh truyền props qua nhiều lớp), share form context (chia sẻ ngữ cảnh form)
+4. **useWatch()**: Watch specific fields (theo dõi trường cụ thể) thay vì `watch()` toàn form (toàn bộ form)
+5. **Validation mode onBlur (Chế độ xác thực onBlur)**: Nhẹ hơn onChange (hiệu năng tốt hơn onChange)
+6. **Zod for TypeScript**: Type-safe validation (xác thực an toàn kiểu)
+7. **Memo components (Component memo)**: Tách form sections với memo (tách phần form với memo)
+8. **Batch updates (Cập nhật hàng loạt)**: Dùng `shouldValidate: false` khi set nhiều values (đặt nhiều giá trị)
 
-### **❌ DON'T:**
+### **❌ DON'T (Không Nên):**
 
-1. **watch() toàn form**: Subscribe toàn bộ form → nhiều re-renders
-2. **Validation mode onChange**: Quá nặng cho large forms
-3. **Không dùng Controller**: Custom components mất validation
-4. **Tất cả fields trong 1 component**: Toàn form re-render
-5. **Multiple setValue() không batch**: Nhiều re-renders không cần thiết
+1. **watch() toàn form**: Subscribe toàn bộ form (đăng ký toàn bộ form) → nhiều re-renders (nhiều render lại)
+2. **Validation mode onChange (Chế độ xác thực onChange)**: Quá nặng cho large forms (quá nặng cho form lớn)
+3. **Không dùng Controller**: Custom components mất validation (component tùy chỉnh mất xác thực)
+4. **Tất cả fields trong 1 component (Tất cả trường trong 1 component)**: Toàn form re-render (toàn bộ form render lại)
+5. **Multiple setValue() không batch (Nhiều setValue() không hàng loạt)**: Nhiều re-renders không cần thiết (nhiều render lại không cần thiết)
 
 ---
 
-## **💡 Real-World Scenarios**
+## **💡 Real-World Scenarios (Kịch Bản Thực Tế)**
 
-### **Scenario 1: Registration Form với Multi-step**
+### **Scenario 1: Registration Form với Multi-step (Form đăng ký nhiều bước)**
 
 ```typescript
 // Multi-step registration với validation từng step
+// (Đăng ký nhiều bước với xác thực từng bước)
 // Step 1: Personal Info → Step 2: Address → Step 3: Preferences
+// (Bước 1: Thông tin cá nhân → Bước 2: Địa chỉ → Bước 3: Tùy chọn)
 // Validate từng step trước khi chuyển step tiếp theo
+// (Xác thực từng bước trước khi chuyển sang bước tiếp theo)
 ```
 
-### **Scenario 2: Dynamic Product Form**
+### **Scenario 2: Dynamic Product Form (Form sản phẩm động)**
 
 ```typescript
 // Form với dynamic fields (add/remove variants)
+// (Form với trường động - thêm/xóa biến thể)
 // useFieldArray để quản lý array fields
+// (useFieldArray để quản lý trường mảng)
 // Validation cho từng variant
+// (Xác thực cho từng biến thể)
 ```
 
-### **Scenario 3: File Upload với Progress**
+### **Scenario 3: File Upload với Progress (Tải lên tệp với tiến trình)**
 
 ```typescript
 // Upload multiple files với validation
+// (Tải lên nhiều tệp với xác thực)
 // Show upload progress
+// (Hiển thị tiến trình tải lên)
 // Preview images trước khi upload
+// (Xem trước hình ảnh trước khi tải lên)
 ```
 
 ---
 
-**🎯 Remember:** "React Hook Form + Zod = Type-safe, performant forms. Use Controller for custom components, FormProvider to avoid prop drilling, and validation mode onBlur for better performance!"
+**🎯 Remember (Nhớ):** "React Hook Form + Zod = Type-safe (An toàn kiểu), performant forms (form hiệu năng cao). Use Controller for custom components (Sử dụng Controller cho component tùy chỉnh), FormProvider to avoid prop drilling (FormProvider để tránh truyền props qua nhiều lớp), and validation mode onBlur for better performance (và chế độ xác thực onBlur để hiệu năng tốt hơn)!"
