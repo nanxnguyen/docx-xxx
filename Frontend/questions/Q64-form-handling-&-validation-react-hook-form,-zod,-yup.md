@@ -77,19 +77,20 @@
 
 ## 📋 **Mục Lục**
 
-1. [Form Libraries Comparison](#1-form-libraries-comparison)
-2. [React Hook Form Deep Dive](#2-react-hook-form-deep-dive)
-3. [Validation Libraries (Zod vs Yup)](#3-validation-libraries-zod-vs-yup)
-4. [Form Patterns & Best Practices](#4-form-patterns--best-practices)
-5. [Complex Form Patterns](#5-complex-form-patterns)
-6. [Performance Optimization](#6-performance-optimization)
-7. [File Uploads & Advanced Features](#7-file-uploads--advanced-features)
+1. 🧰 [Form Libraries Comparison](#1-form-libraries-comparison)
+2. 🧠 [React Hook Form Deep Dive](#2-react-hook-form-deep-dive)
+3. 🛡️ [Validation Libraries (Zod vs Yup)](#3-validation-libraries-zod-vs-yup)
+4. 🧩 [Form Patterns & Best Practices](#4-form-patterns--best-practices)
+5. 🧙 [Complex Form Patterns](#5-complex-form-patterns)
+6. 🚀 [Performance Optimization](#6-performance-optimization)
+7. 📎 [File Uploads & Advanced Features](#7-file-uploads--advanced-features)
 
 ---
 
-## 1. Form Libraries Comparison
+<a id="1-form-libraries-comparison"></a>
+## 🧰 1. Form Libraries Comparison
 
-### **1.1. React Hook Form vs Formik**
+### **⚖️ 1.1. React Hook Form vs Formik**
 
 ```markdown
 # ===================================================
@@ -123,7 +124,7 @@
 - Controlled (Kiểm soát): Predictable state management (Quản lý trạng thái dễ đoán)
 ```
 
-### **1.2. Controlled vs Uncontrolled Forms**
+### **🔀 1.2. Controlled vs Uncontrolled Forms**
 
 ```typescript
 // ===================================================
@@ -196,9 +197,10 @@ function UncontrolledForm() {
 
 ---
 
-## 2. React Hook Form Deep Dive
+<a id="2-react-hook-form-deep-dive"></a>
+## 🧠 2. React Hook Form Deep Dive
 
-### **2.1. Basic React Hook Form**
+### **📝 2.1. Basic React Hook Form**
 
 ```typescript
 // ===================================================
@@ -278,7 +280,7 @@ function LoginForm() {
 }
 ```
 
-### **2.2. Controller for Custom Components**
+### **🎛️ 2.2. Controller for Custom Components**
 
 ```typescript
 // ===================================================
@@ -341,7 +343,7 @@ function CustomComponentsForm() {
 }
 ```
 
-### **2.3. FormProvider & useFormContext**
+### **🌐 2.3. FormProvider & useFormContext**
 
 ```typescript
 // ===================================================
@@ -422,7 +424,7 @@ function RegistrationForm() {
 }
 ```
 
-### **2.4. useWatch vs watch**
+### **👀 2.4. useWatch vs watch**
 
 ```typescript
 // ===================================================
@@ -458,9 +460,10 @@ function FormWithWatch() {
 
 ---
 
-## 3. Validation Libraries (Zod vs Yup)
+<a id="3-validation-libraries-zod-vs-yup"></a>
+## 🛡️ 3. Validation Libraries (Zod vs Yup)
 
-### **3.1. Zod - TypeScript-First Validation**
+### **🛡️ 3.1. Zod - TypeScript-First Validation**
 
 ```typescript
 // ===================================================
@@ -560,7 +563,7 @@ function ZodForm() {
 }
 ```
 
-### **3.2. Yup - Flexible Validation**
+### **🔄 3.2. Yup - Flexible Validation**
 
 ```typescript
 // ===================================================
@@ -639,7 +642,7 @@ function YupForm() {
 }
 ```
 
-### **3.3. Zod vs Yup Comparison**
+### **⚖️ 3.3. Zod vs Yup Comparison**
 
 ```markdown
 # ===================================================
@@ -675,9 +678,10 @@ function YupForm() {
 
 ---
 
-## 4. Form Patterns & Best Practices
+<a id="4-form-patterns--best-practices"></a>
+## 🧩 4. Form Patterns & Best Practices
 
-### **4.1. Validation Modes**
+### **⚙️ 4.1. Validation Modes**
 
 ```typescript
 // ===================================================
@@ -721,7 +725,7 @@ const form4 = useForm({
 // - Performance-critical: 'onSubmit'
 ```
 
-### **4.2. Field-Level Re-render Optimization**
+### **⚡ 4.2. Field-Level Re-render Optimization**
 
 ```typescript
 // ===================================================
@@ -777,7 +781,7 @@ const PersonalInfoSection = memo(() => {
 });
 ```
 
-### **4.3. Batch Updates**
+### **📦 4.3. Batch Updates**
 
 ```typescript
 // ===================================================
@@ -821,9 +825,10 @@ function FormWithBatchUpdates() {
 
 ---
 
-## 5. Complex Form Patterns
+<a id="5-complex-form-patterns"></a>
+## 🧙 5. Complex Form Patterns
 
-### **5.1. Multi-Step Forms (Wizard)**
+### **🧙 5.1. Multi-Step Forms (Wizard)**
 
 ```typescript
 // ===================================================
@@ -925,7 +930,7 @@ function MultiStepForm() {
 }
 ```
 
-### **5.2. Dynamic Fields (Add/Remove)**
+### **🔄 5.2. Dynamic Fields (Add/Remove)**
 
 ```typescript
 // ===================================================
@@ -1005,7 +1010,7 @@ function DynamicFieldsForm() {
 }
 ```
 
-### **5.3. Conditional Fields**
+### **🔀 5.3. Conditional Fields**
 
 ```typescript
 // ===================================================
@@ -1080,9 +1085,10 @@ function ConditionalFieldsForm() {
 
 ---
 
-## 6. Performance Optimization
+<a id="6-performance-optimization"></a>
+## 🚀 6. Performance Optimization
 
-### **6.1. Optimized Form Structure**
+### **⚡ 6.1. Optimized Form Structure**
 
 ```typescript
 // ===================================================
@@ -1178,7 +1184,7 @@ function OptimizedForm() {
 }
 ```
 
-### **6.2. Common Performance Pitfalls**
+### **🚩 6.2. Common Performance Pitfalls**
 
 ```typescript
 // ===================================================
@@ -1272,9 +1278,10 @@ function GoodForm4() {
 
 ---
 
-## 7. File Uploads & Advanced Features
+<a id="7-file-uploads--advanced-features"></a>
+## 📎 7. File Uploads & Advanced Features
 
-### **7.1. File Upload with Validation**
+### **📎 7.1. File Upload with Validation**
 
 ```typescript
 // ===================================================
@@ -1413,7 +1420,7 @@ function FileUploadForm() {
 }
 ```
 
-### **7.2. Async Validation**
+### **⏳ 7.2. Async Validation**
 
 ```typescript
 // ===================================================
@@ -1493,7 +1500,7 @@ function FormWithAsyncValidation() {
 }
 ```
 
-### **7.3. Form State Management**
+### **🔄 7.3. Form State Management**
 
 ```typescript
 // ===================================================
@@ -1612,7 +1619,7 @@ function FormWithStateManagement() {
 
 ## **💡 Real-World Scenarios (Kịch Bản Thực Tế)**
 
-### **Scenario 1: Registration Form với Multi-step (Form đăng ký nhiều bước)**
+### **🎬 Scenario 1: Registration Form với Multi-step (Form đăng ký nhiều bước)**
 
 ```typescript
 // Multi-step registration với validation từng step
@@ -1623,7 +1630,7 @@ function FormWithStateManagement() {
 // (Xác thực từng bước trước khi chuyển sang bước tiếp theo)
 ```
 
-### **Scenario 2: Dynamic Product Form (Form sản phẩm động)**
+### **🛒 Scenario 2: Dynamic Product Form (Form sản phẩm động)**
 
 ```typescript
 // Form với dynamic fields (add/remove variants)
@@ -1634,7 +1641,7 @@ function FormWithStateManagement() {
 // (Xác thực cho từng biến thể)
 ```
 
-### **Scenario 3: File Upload với Progress (Tải lên tệp với tiến trình)**
+### **📤 Scenario 3: File Upload với Progress (Tải lên tệp với tiến trình)**
 
 ```typescript
 // Upload multiple files với validation

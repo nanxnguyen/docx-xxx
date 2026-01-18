@@ -66,11 +66,14 @@
 1. [Core Web Vitals](#1-core-web-vitals)
 2. [Sentry Error Tracking](#2-sentry-error-tracking)
 3. [DataDog RUM (Real User Monitoring)](#3-datadog-rum-real-user-monitoring)
-4. [Performance Budgets](#4-performance-budgets)
-5. [Source Maps in Production](#5-source-maps-in-production)
-6. [Chrome DevTools Profiling](#6-chrome-devtools-profiling)
-7. [Custom Performance Metrics](#7-custom-performance-metrics)
-8. [Alerting & Monitoring Dashboard](#8-alerting--monitoring-dashboard)
+4. [Error Boundaries & Graceful Degradation](#4-error-boundaries--graceful-degradation)
+5. [Session Replay & User Analytics](#5-session-replay--user-analytics)
+6. [Distributed Tracing](#6-distributed-tracing)
+7. [Performance Budgets](#7-performance-budgets)
+8. [Source Maps in Production](#8-source-maps-in-production)
+9. [Alerting & Monitoring Dashboard](#9-alerting--monitoring-dashboard)
+10. [Cost Optimization & Sampling](#10-cost-optimization--sampling)
+11. [Synthetic Monitoring](#11-synthetic-monitoring)
 
 ---
 
@@ -675,5 +678,685 @@ npx lighthouse https://your-site.com --view
 ☑️  Không animate properties gây layout (width, height, top, left)
     → Dùng transform/opacity instead
 ```
+
+---
+
+## 4. Error Boundaries & Graceful Degradation
+
+### **4.1 React Error Boundaries**
+
+```typescript
+// ErrorBoundary.tsx
+import React, { ReactNode } from 'react';
+import * as Sentry from '@sentry/react';
+
+interface Props {
+  children: ReactNode;
+  fallback?: ReactNode;
+}
+
+interface State {
+  hasError: boolean;
+  error?: Error;
+}
+
+class ErrorBoundary extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // Log to Sentry
+    Sentry.captureException(error, {
+      contexts: {
+        react: {
+          componentStack: errorInfo.componentStack,
+        },
+      },
+    });
+
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        this.props.fallback || (
+          <div style={{ padding: '20px', textAlign: 'center' }}>
+            <h2>❌ Something went wrong</h2>
+            <p>{this.state.error?.message}</p>
+            <button onClick={() => window.location.reload()}>
+              🔄 Reload Page
+            </button>
+          </div>
+        )
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+export default Sentry.withErrorBoundary(ErrorBoundary, {
+  fallback: <div>Error Boundary Fallback</div>,
+});
+
+// Usage
+<ErrorBoundary fallback={<ErrorFallback />}>
+  <YourApp />
+</ErrorBoundary>
+```
+
+### **4.2 Graceful Degradation Patterns**
+
+```typescript
+// Pattern: Try-catch with fallback
+async function fetchWithFallback() {
+  try {
+    const data = await fetch('/api/data').then(r => r.json());
+    return data;
+  } catch (error) {
+    // Log error, use cached/default data
+    Sentry.captureException(error);
+    return getCachedData() || DEFAULT_DATA;
+  }
+}
+
+// Pattern: Suspense + lazy load
+const HeavyComponent = React.lazy(() => import('./Heavy'));
+
+<Suspense fallback={<div>Loading...</div>}>
+  <HeavyComponent />
+</Suspense>
+
+// Pattern: Feature flag fallback
+if (featureFlags.newCheckout) {
+  return <NewCheckout />;
+} else {
+  return <LegacyCheckout />;
+}
+```
+
+---
+
+## 5. Session Replay & User Analytics
+
+### **5.1 Session Replay Setup (FullStory)**
+
+```typescript
+// session-replay.ts
+import * as FS from '@fullstory/browser';
+
+export function initSessionReplay() {
+  FS.init({
+    orgId: 'YOUR_ORG_ID',
+    
+    // Privacy: Mask sensitive inputs
+    maskSelectors: [
+      '[data-sensitive]',
+      'input[type="password"]',
+      'input[type="credit-card"]',
+      '.credit-card-input',
+    ],
+    
+    // Privacy: Block sensitive data
+    recordScreenOnError: true, // Record screen when error occurs
+    
+    // Performance: Sample rate
+    sampleRate: 0.1, // 10% of users
+    
+    // Error context
+    onReady: () => {
+      console.log('SessionReplay initialized');
+      
+      // Log user ID
+      FS.setUserVars({
+        userId: getCurrentUserId(),
+        email: getCurrentUserEmail(),
+        plan: getUserPlan(),
+      });
+    },
+  });
+}
+
+// Link error to session
+Sentry.setContext('fullstory', {
+  sessionUrl: FS.getCurrentSessionURL(),
+});
+```
+
+### **5.2 Custom User Analytics**
+
+```typescript
+// analytics.ts
+import * as FS from '@fullstory/browser';
+
+export function trackUserAction(eventName: string, properties: Record<string, any>) {
+  // Track in FullStory
+  FS.event(eventName, {
+    ...properties,
+    timestamp: new Date().toISOString(),
+  });
+
+  // Also track in custom analytics
+  sendToAnalytics({
+    event: eventName,
+    properties,
+    userId: getCurrentUserId(),
+    sessionId: FS.getCurrentSessionID(),
+  });
+}
+
+// Usage
+trackUserAction('checkout_start', {
+  cartValue: 299.99,
+  itemCount: 3,
+});
+```
+
+---
+
+## 6. Distributed Tracing
+
+### **6.1 Setup W3C Trace Context**
+
+```typescript
+// tracing.ts
+import * as Sentry from '@sentry/react';
+
+export function initDistributedTracing() {
+  Sentry.init({
+    integrations: [
+      new Sentry.BrowserTracing({
+        // Capture breadcrumbs from XHR
+        shouldCreateSpanForRequest: (url) => {
+          return !url.includes('/health');
+        },
+      }),
+    ],
+    tracesSampleRate: 0.1, // 10%
+  });
+}
+
+// Auto-inject trace headers
+Sentry.addGlobalEventProcessor((event) => {
+  const currentSpan = Sentry.getActiveSpan();
+  if (currentSpan) {
+    event.contexts = event.contexts || {};
+    event.contexts.trace = {
+      span_id: currentSpan.spanId,
+      trace_id: currentSpan.traceId,
+    };
+  }
+  return event;
+});
+
+// Manual span creation
+const span = Sentry.startSpan(
+  {
+    op: 'http.client',
+    name: 'fetch /api/users',
+  },
+  async () => {
+    const response = await fetch('/api/users');
+    return response.json();
+  }
+);
+```
+
+### **6.2 Correlation ID Pattern**
+
+```typescript
+// correlationId.ts
+import { generateId } from './utils';
+
+const correlationIdMap = new WeakMap<Request, string>();
+
+export function getOrCreateCorrelationId(request: Request): string {
+  if (!correlationIdMap.has(request)) {
+    correlationIdMap.set(request, generateId());
+  }
+  return correlationIdMap.get(request)!;
+}
+
+// In fetch interceptor
+const originalFetch = window.fetch;
+window.fetch = function (input, init) {
+  const correlationId = generateId();
+  const headers = new Headers(init?.headers || {});
+  headers.set('X-Correlation-ID', correlationId);
+  
+  return originalFetch(input, {
+    ...init,
+    headers,
+  });
+};
+
+// In API response
+app.use((req, res, next) => {
+  const correlationId = req.headers['x-correlation-id'] || generateId();
+  res.set('X-Correlation-ID', correlationId);
+  
+  // Log with correlation ID
+  logger.info('Request', { correlationId, path: req.path });
+  
+  next();
+});
+```
+
+---
+
+## 7. Performance Budgets
+
+### **7.1 Webpack Bundle Budget**
+
+```typescript
+// webpack.config.js
+const BundleBudgetPlugin = require('bundle-budget-webpack-plugin');
+
+module.exports = {
+  plugins: [
+    new BundleBudgetPlugin({
+      budgets: [
+        {
+          type: 'bundle',
+          name: 'main',
+          maxSize: '200kb', // 200KB max
+        },
+        {
+          type: 'bundle',
+          name: 'vendor',
+          maxSize: '100kb',
+        },
+        {
+          type: 'asset',
+          name: '*.js',
+          maxSize: '50kb',
+        },
+      ],
+    }),
+  ],
+};
+```
+
+### **7.2 Lighthouse CI Budget**
+
+```json
+// lighthouserc.json
+{
+  "ci": {
+    "collect": {
+      "url": ["http://localhost:3000"],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "preset": "lighthouse:recommended",
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.9 }],
+        "categories:accessibility": ["error", { "minScore": 0.9 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "speed-index": ["error", { "maxNumericValue": 3000 }]
+      }
+    }
+  }
+}
+```
+
+### **7.3 CI Integration**
+
+```yaml
+# .github/workflows/performance.yml
+name: Performance Budget
+on: [pull_request]
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+      
+      - run: npm install
+      - run: npm run build
+      
+      # Check bundle size
+      - run: npm run bundle-budget
+        # Fails if bundle exceeds budget
+      
+      # Run Lighthouse
+      - run: npm install -g @lhci/cli@*
+      - run: lhci autorun
+        # Fails if Lighthouse score drops
+```
+
+---
+
+## 8. Source Maps in Production
+
+### **8.1 Hidden Source Maps Setup**
+
+```typescript
+// webpack.config.js (Production)
+module.exports = {
+  mode: 'production',
+  devtool: 'hidden-source-map', // ✅ Generate but don't reference
+  // NOT 'source-map' ❌ - would include source-map reference in JS
+  
+  plugins: [
+    // Upload source maps to Sentry
+    new SentryWebpackPlugin({
+      org: 'your-org',
+      project: 'your-project',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      include: './dist',
+      ignore: ['node_modules', 'webpack.config.js'],
+      release: process.env.RELEASE_VERSION,
+    }),
+  ],
+};
+
+// Verify: Production JS should NOT have sourceMappingURL comment
+// ❌ Bad: //# sourceMappingURL=bundle.js.map
+// ✅ Good: No sourceMappingURL
+```
+
+### **8.2 Upload to Sentry CLI**
+
+```bash
+# Release setup
+sentry-cli releases -o your-org -p your-project create v1.0.0
+sentry-cli releases -o your-org -p your-project files v1.0.0 upload-sourcemaps ./dist
+
+# Deployment
+sentry-cli releases -o your-org -p your-project deploys v1.0.0 new \
+  -e production
+```
+
+---
+
+## 9. Alerting & Monitoring Dashboard
+
+### **9.1 DataDog Alerting Rules**
+
+```python
+# Python: Create DataDog monitor via API
+from datadog import initialize, api
+
+options = {
+    'api_key': 'YOUR_API_KEY',
+    'app_key': 'YOUR_APP_KEY'
+}
+initialize(**options)
+
+# Alert on LCP > 2.5s (p95)
+lcp_alert = {
+    'name': 'High LCP - P95 > 2.5s',
+    'type': 'metric alert',
+    'query': 'avg:browser.performance.lcp{*}',
+    'thresholds': {
+        'critical': 2500, # milliseconds
+        'warning': 2000,
+    },
+    'notify_no_data': True,
+    'no_data_timeframe': 10,
+}
+
+# Alert on Error Rate > 5%
+error_rate_alert = {
+    'name': 'High Error Rate > 5%',
+    'type': 'metric alert',
+    'query': 'avg:browser.errors{*}.as_count()',
+    'thresholds': {
+        'critical': 5.0, # percent
+    },
+}
+
+# Create monitors
+api.Monitor.create(**lcp_alert)
+api.Monitor.create(**error_rate_alert)
+```
+
+### **9.2 Dashboard Setup**
+
+```typescript
+// datadog-dashboard.ts
+const dashboard = {
+  title: 'Frontend Performance & Health',
+  description: 'Real-time monitoring of Core Web Vitals',
+  widgets: [
+    {
+      type: 'timeseries',
+      title: 'LCP - P75',
+      query: 'p75:browser.performance.lcp{*}',
+      yaxis: { label: 'milliseconds' },
+    },
+    {
+      type: 'timeseries',
+      title: 'INP - P95',
+      query: 'p95:browser.performance.inp{*}',
+    },
+    {
+      type: 'timeseries',
+      title: 'CLS - P95',
+      query: 'p95:browser.performance.cls{*}',
+    },
+    {
+      type: 'query_value',
+      title: 'Error Rate',
+      query: 'avg:browser.errors{*}.as_count()',
+    },
+  ],
+};
+```
+
+---
+
+## 10. Cost Optimization & Sampling
+
+### **10.1 Intelligent Sampling Strategy**
+
+```typescript
+// sampling.ts
+import * as Sentry from '@sentry/react';
+
+Sentry.init({
+  dsn: 'YOUR_DSN',
+  
+  // Sample rates
+  tracesSampleRate: 0.1, // 10% overall
+  
+  // Dynamic sampling
+  tracesSampler: (samplingContext) => {
+    const { transactionContext, parentSampled } = samplingContext;
+    
+    // Always sample error transactions
+    if (transactionContext.op === 'http.server' && 
+        transactionContext.status === '500') {
+      return 1.0; // 100%
+    }
+    
+    // Sample high-priority routes more
+    if (transactionContext.name?.includes('checkout')) {
+      return 0.5; // 50%
+    }
+    
+    // Sample health checks less
+    if (transactionContext.name?.includes('health')) {
+      return 0.01; // 1%
+    }
+    
+    // Default
+    return 0.1; // 10%
+  },
+  
+  // Filter PII data
+  beforeSend(event) {
+    // Remove email from errors
+    if (event.request?.url) {
+      event.request.url = event.request.url.replace(/email=\w+@\w+.\w+/g, 'email=[REDACTED]');
+    }
+    
+    // Remove auth tokens from headers
+    if (event.request?.headers) {
+      event.request.headers['Authorization'] = '[REDACTED]';
+    }
+    
+    return event;
+  },
+});
+```
+
+### **10.2 Cost Monitoring**
+
+```typescript
+// Monitor quota usage
+async function checkSentryQuota() {
+  const response = await fetch('https://api.sentry.io/api/0/organizations/YOUR_ORG/', {
+    headers: { Authorization: `Bearer ${SENTRY_AUTH_TOKEN}` },
+  });
+  
+  const org = await response.json();
+  console.log('Events this month:', org.quota.monthlyUsed);
+  console.log('Quota limit:', org.quota.monthlyLimit);
+  
+  // Alert if approaching limit (>80%)
+  const percentUsed = (org.quota.monthlyUsed / org.quota.monthlyLimit) * 100;
+  if (percentUsed > 80) {
+    sendAlert(`⚠️ Sentry quota ${percentUsed.toFixed(1)}% used`);
+  }
+}
+```
+
+---
+
+## 11. Synthetic Monitoring
+
+### **11.1 Uptime Monitoring (Checkly)**
+
+```typescript
+// monitoring/uptime.check.js
+import { test, expect } from '@playwright/test';
+
+test('Homepage loads successfully', async ({ page }) => {
+  const start = Date.now();
+  
+  const response = await page.goto('https://your-site.com', {
+    waitUntil: 'networkidle',
+  });
+  
+  const duration = Date.now() - start;
+  
+  // Check status
+  expect(response?.status()).toBe(200);
+  
+  // Check performance
+  expect(duration).toBeLessThan(3000); // 3 seconds
+  
+  // Check content
+  await expect(page.locator('h1')).toBeVisible();
+});
+```
+
+### **11.2 API Endpoint Monitoring**
+
+```typescript
+// monitoring/api.check.js
+import { test, expect } from '@playwright/test';
+
+test('API responds with correct data', async ({ request }) => {
+  const response = await request.get('https://your-api.com/api/health', {
+    timeout: 5000,
+  });
+  
+  expect(response.status()).toBe(200);
+  
+  const data = await response.json();
+  expect(data.status).toBe('ok');
+  expect(data.version).toBeTruthy();
+});
+```
+
+### **11.3 Compare RUM vs Synthetic**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│         RUM (Real User Monitoring) vs Synthetic             │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  📊 Real User Monitoring (RUM):                            │
+│  ├─ Data from actual users (real network conditions)       │
+│  ├─ Captures real-world issues (slow connections, etc)     │
+│  ├─ Includes all variations (devices, browsers)            │
+│  ├─ Cost: Per-event pricing                                │
+│  └─ Best for: Performance trends, user experience          │
+│                                                              │
+│  🤖 Synthetic Monitoring:                                  │
+│  ├─ Simulated user journeys (consistent environment)       │
+│  ├─ Catches regressions before users see them              │
+│  ├─ Runs on fixed schedule (hourly, daily)                 │
+│  ├─ Cost: Fixed per check                                  │
+│  └─ Best for: Uptime, regression detection                 │
+│                                                              │
+│  🎯 Recommendation: Use BOTH                               │
+│  ├─ Synthetic: Catch issues early (fast feedback)          │
+│  └─ RUM: Validate real-world impact (ground truth)         │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## **💡 COMPLETE MONITORING SETUP CHECKLIST**
+
+```
+✅ MONITORING STACK CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+☑️  Setup Sentry for error tracking
+☑️  Implement Error Boundaries + fallback UI
+☑️  Configure DataDog/New Relic for RUM
+☑️  Setup session replay (privacy-safe)
+☑️  Enable distributed tracing (correlation IDs)
+☑️  Create performance budgets (Webpack + Lighthouse CI)
+☑️  Upload source maps securely (hidden-source-map)
+☑️  Create alerting rules (LCP, error rate, etc)
+☑️  Setup sampling strategy (cost optimization)
+☑️  Implement synthetic monitoring (uptime checks)
+☑️  Create monitoring dashboard (real-time metrics)
+☑️  Monitor quota usage (cost control)
+
+📊 Typical Monthly Cost (100K users):
+├─ Sentry: $29-299/month (depends on events)
+├─ DataDog: $100-500/month
+├─ Checkly: $50-200/month (uptime monitoring)
+└─ Total: $179-999/month for comprehensive monitoring
+```
+
+---
+
+## **🎯 INTERVIEW ANSWER TEMPLATE**
+
+When asked about APM setup:
+
+**"I've built comprehensive monitoring covering:**
+1. **Error Tracking** (Sentry) - captures errors with context
+2. **Performance Metrics** (DataDog RUM) - tracks Core Web Vitals
+3. **Error Boundaries** - graceful fallbacks when things break
+4. **Session Replay** - debug issues with privacy masking
+5. **Distributed Tracing** - trace requests end-to-end
+6. **Performance Budgets** - enforce limits with CI checks
+7. **Alerting** - PagerDuty/Slack alerts on thresholds
+8. **Cost Optimization** - intelligent sampling to manage costs
+
+Example: Reduced APM costs 30% while improving coverage by implementing hierarchical sampling (errors 100%, checkout 50%, static content 5%).
+
+This ensures **visibility without breaking the budget** ✅"
 
 Due to length, I'll continue with remaining files. **Q51 created successfully** with extensive APM monitoring content (~1000 lines). Continuing with Q52-Q57...
