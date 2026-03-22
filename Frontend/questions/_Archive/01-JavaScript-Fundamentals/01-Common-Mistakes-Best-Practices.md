@@ -9,27 +9,23 @@
 **🔑 5 Trụ Cột Nền Tảng:**
 
 1. **Kiểu Dữ Liệu & Bộ Nhớ**:
-
    - 7 kiểu nguyên thủy (number, string, boolean, null, undefined, symbol, bigint) + Object
    - Primitive = stack (theo giá trị), Reference = heap (theo tham chiếu)
    - GC tự động dọn bộ nhớ (Mark-and-Sweep algorithm)
 
 2. **Execution Context & Scope**:
-
    - Call Stack thực thi code đồng bộ (LIFO)
    - Scope chain: Global → Function → Block scope
    - Hoisting: `var` khởi tạo undefined, `let/const` trong TDZ
    - Closure = hàm + môi trường từ vựng xung quanh
 
 3. **Bất Đồng Bộ (Event Loop)**:
-
    - **Microtask Queue** (ưu tiên cao): Promise.then, queueMicrotask
    - **Macrotask Queue** (ưu tiên thấp): setTimeout, setInterval
    - Event Loop: Call Stack → Microtasks → UI Render → 1 Macrotask
    - Async patterns: Callbacks → Promises → Async/Await
 
 4. **OOP & Prototypes**:
-
    - Prototype chain: mỗi object có `__proto__` trỏ đến prototype
    - Class = syntactic sugar cho prototype-based inheritance
    - `this` binding: new → explicit (call/apply/bind) → implicit → default
@@ -82,24 +78,47 @@
 
 ```typescript
 /**
- * ┌──────────────────────────────────────────────────────────┐
- * │              JAVASCRIPT - HIGH-LEVEL OVERVIEW            │
- * ├──────────────────────────────────────────────────────────┤
- * │                                                          │
- * │  🎯 ĐỊNH NGHĨA:                                         │
- * │  • High-level programming language                      │
- * │  • Interpreted (JIT compiled)                           │
- * │  • Single-threaded                                      │
- * │  • Non-blocking (Event Loop)                            │
- * │  • Prototype-based OOP                                  │
- * │  • First-class functions                                │
- * │                                                          │
- * │  🌐 RUN ENVIRONMENTS:                                   │
- * │  • Browser (V8, SpiderMonkey, JavaScriptCore)          │
- * │  • Node.js (Server-side)                               │
- * │  • Deno, Bun (Modern runtimes)                         │
- * │                                                          │
- * └──────────────────────────────────────────────────────────┘
+ * ┌──────────────────────────────────┐
+ * │ JAVASCRIPT - TỔNG QUAN NỀN TẢNG │
+ * ├──────────────────────────────────┤
+ * │                                  │
+ * │ 🎯 ĐỊNH NGHĨA SIÊU DỄ HIỂU:      │
+ * │ • High-level: Ngôn ngữ "sang     │
+ * │   chảnh", gần gũi tiếng người.   │
+ * │   Bạn viết code, JS tự dọn rác   │
+ * │   bộ nhớ (Garbage Collection).  │
+ * │                                  │
+ * │ • Interpreted (JIT): Code chạy   │
+ * │   "nóng" luôn, không cần biên    │
+ * │   dịch. Engine vừa đọc vừa tối  │
+ * │   ưu code cực nhanh.             │
+ * │                                  │
+ * │ • Single-threaded: Giống quán ăn │
+ * │   chỉ có MỘT đầu bếp. Một lúc   │
+ * │   chỉ xào một chảo, nhưng cực   │
+ * │   nhanh tay (Event Loop).        │
+ * │                                  │
+ * │ • Non-blocking: Không "đứng      │
+ * │   hình" khi chờ I/O. Chờ món    │
+ * │   hầm thì đi thái hành, nhặt    │
+ * │   rau chứ không đứng nhìn nồi.  │
+ * │                                  │
+ * │ • Prototype-based OOP: Kế thừa   │
+ * │   kiểu "cha truyền con nối" bằng │
+ * │   cách mượn "vật mẫu". Object cũ │
+ * │   là khuôn đúc cho object mới.  │
+ * │                                  │
+ * │ • First-class functions: Hàm là  │
+ * │   "VIP". Hàm có thể gán vào biến,│
+ * │   truyền đi khắp nơi như dự tiệc.│
+ * │                                  │
+ * │ 🌐 MÔI TRƯỜNG CHẠY:              │
+ * │ • Browser: Chrome, Safari,       │
+ * │   Firefox (Client-side)          │
+ * │ • Node.js: Server backend        │
+ * │ • Deno, Bun: Modern runtime      │
+ * │                                  │
+ * └──────────────────────────────────┘
  */
 
 // JavaScript chạy ở đâu?
@@ -157,11 +176,19 @@ const big: bigint = 9007199254740991n;
 const obj: object = { name: 'John' };
 
 /**
- * 🎯 Key Concepts:
- * • Stack vs Heap memory
- * • Pass by value vs reference
- * • Shallow vs deep copy
- * • Immutability patterns
+ * 🎯 CÁC KHÁI NIỆM "SỐNG CÒN":
+ * • Stack (Ngăn xếp): Lưu các biến đơn giản như Number, String.
+ *   Hãy tưởng tượng nó như các ô tủ nhỏ, mở ra là thấy đồ ngay.
+ * • Heap (Bộ nhớ đống): Lưu Object, Array. Nó như một kho bãi
+ *   khổng lồ, ta phải có "địa chỉ" (Reference) mới tìm được đồ.
+ * • Pass by value: Copy hẳn một giá trị mới (Nhà ai nấy ở).
+ * • Pass by reference: Dùng chung một địa chỉ (Sửa một nơi,
+ *   tất cả những ai cầm chìa khóa địa chỉ đó đều thấy thay đổi).
+ * • Shallow copy: Copy "lớp vỏ" bên ngoài, ruột bên trong vẫn
+ *   dùng chung (Nguy hiểm!).
+ * • Deep copy: Nhân bản vô tính hoàn toàn, độc lập 100%.
+ * • Immutability: Không sửa cái cũ, luôn đẻ ra cái mới. Giúp
+ *   code sạch, dễ debug và tránh lỗi "phản ứng dây chuyền".
  *
  * 📚 Chi tiết: Q02-data-types-&-memory-management
  */
@@ -171,27 +198,27 @@ const obj: object = { name: 'John' };
 
 ```typescript
 /**
- * ⚠️ Type Coercion
+ * ⚠️ Type Coercion (Ép kiểu tự động)
  */
 
-// Implicit coercion
-console.log(5 + '5'); // '55' (number → string)
-console.log('5' - 2); // 3 (string → number)
-console.log(true + 1); // 2 (boolean → number)
+// Ép kiểu ngầm định (Implicit)
+console.log(5 + '5'); // '55' (số cộng chuỗi → chuỗi)
+console.log('5' - 2); // 3 (số trừ chuỗi → số)
+console.log(true + 1); // 2 (true coi là 1, false coi là 0)
 
-// Comparison
-console.log(5 == '5'); // true (loose equality)
-console.log(5 === '5'); // false (strict equality)
+// So sánh (Comparison)
+console.log(5 == '5'); // true (Loại bỏ kiểu dữ liệu, chỉ so giá trị)
+console.log(5 === '5'); // false (So sánh cả giá trị VÀ kiểu dữ liệu - LUÔN DÙNG)
 
-// Falsy values (8 values)
+// Falsy values (8 giá trị JS coi là "Sai")
 Boolean(false); // false
 Boolean(0); // false
-Boolean(''); // false
-Boolean(null); // false
-Boolean(undefined); // false
-Boolean(NaN); // false
+Boolean(''); // rỗng -> false
+Boolean(null); // rỗng -> false
+Boolean(undefined); // chưa xác định -> false
+Boolean(NaN); // Không phải số -> false
 Boolean(-0); // false
-Boolean(0n); // false
+Boolean(0n); // BigInt 0 -> false
 
 /**
  * 📚 Chi tiết: Q02 (Falsy/Truthy, == vs ===, null vs undefined)
@@ -232,14 +259,17 @@ function greet() {
 
 ```typescript
 /**
- * 🔒 CLOSURES
+ * 🔒 CLOSURES (Phép thuật "Bao đóng")
+ * Hiểu đơn giản: Một hàm có khả năng mang theo một cái "ba lô" chứa
+ * toàn bộ các biến ở môi trường xung quanh nó, ngay cả khi nó được
+ * gọi ở một nơi xa lắc xa lơ.
  */
 
 function createCounter() {
-  let count = 0; // Private variable
+  let count = 0; // Biến này nằm trong "ba lô" của counter
 
   return {
-    increment: () => ++count,
+    increment: () => ++count, // Luôn nhớ được 'count' là bao nhiêu
     getCount: () => count,
   };
 }
@@ -249,11 +279,10 @@ console.log(counter.increment()); // 1
 console.log(counter.getCount()); // 1
 
 /**
- * 🎯 Use cases:
- * • Data privacy
- * • Factory functions
- * • Event handlers
- * • Callbacks
+ * 🎯 Tại sao phải dùng?
+ * • Bảo mật (Private variables): Không cho ai sờ vào 'count' trực tiếp.
+ * • Lưu trạng thái (State memory): Ghi nhớ dữ liệu qua nhiều lần gọi.
+ * • Module pattern: Tạo ra các bộ công cụ riêng biệt, không đụng hàng.
  *
  * 📚 Chi tiết: Q08-closure-&-data-privacy
  */
@@ -263,27 +292,29 @@ console.log(counter.getCount()); // 1
 
 ```typescript
 /**
- * ⚡ EVENT LOOP
+ * ⚡ EVENT LOOP (Vòng lặp sự kiện)
+ * Hiểu đơn giản: JS là đơn luồng (một tay), Event Loop là cách nó
+ * sắp xếp công việc để không bị rảnh tay nào.
  */
 
-console.log('1: Sync');
+console.log('1: Sync'); // Tức thì (Call Stack)
 
-setTimeout(() => console.log('2: Macro task'), 0);
+setTimeout(() => console.log('2: Macro task'), 0); // Đợi sau cùng (Macrotask)
 
-Promise.resolve().then(() => console.log('3: Micro task'));
+Promise.resolve().then(() => console.log('3: Micro task')); // Ưu tiên cao hơn setTimeout (Microtask)
 
-console.log('4: Sync');
+console.log('4: Sync'); // Tức thì (Call Stack)
 
 /**
- * Output:
- * 1: Sync
- * 4: Sync
- * 3: Micro task
- * 2: Macro task
+ * Thứ tự chạy (Output):
+ * 1: Sync (Đồng bộ chạy trước)
+ * 4: Sync (Đồng bộ chạy tiếp)
+ * 3: Micro task (Lời hứa Promise được ưu tiên xử lý trước)
+ * 2: Macro task (setTimeout dù là 0ms vẫn phải đợi sau cùng)
  *
  * 📚 Chi tiết:
- * • Q06-event-loop (Technical deep dive)
- * • Q07-event-loop (Giải thích đời thường)
+ * • Q06-event-loop (Đi sâu kỹ thuật)
+ * • Q07-event-loop (Giải thích bằng ví dụ đời thực)
  */
 ```
 
@@ -295,10 +326,10 @@ console.log('4: Sync');
 
 ```typescript
 /**
- * 🔄 EVOLUTION OF ASYNC
+ * 🔄 SỰ TIẾN HÓA CỦA BẤT ĐỒNG BỘ
  */
 
-// 1. Callbacks (Callback hell)
+// 1. Callbacks (Gây ra "Callback hell" - lồng nhau sâu hoắm, khó đọc)
 getData((data) => {
   processData(data, (result) => {
     saveResult(result, () => {
@@ -307,22 +338,22 @@ getData((data) => {
   });
 });
 
-// 2. Promises (Better)
+// 2. Promises (Đỡ hơn, dùng chuỗi .then để dàn phẳng code)
 getData()
   .then(processData)
   .then(saveResult)
   .then(() => console.log('Done'))
   .catch(handleError);
 
-// 3. Async/Await (Best)
+// 3. Async/Await (Tốt nhất: Code bất đồng bộ nhìn như code đồng bộ, cực kỳ dễ đọc)
 async function workflow() {
   try {
-    const data = await getData();
-    const result = await processData(data);
-    await saveResult(result);
+    const data = await getData(); // "Chờ" lấy dữ liệu
+    const result = await processData(data); // "Chờ" xử lý
+    await saveResult(result); // "Chờ" lưu
     console.log('Done');
   } catch (error) {
-    handleError(error);
+    handleError(error); // Bắt lỗi gọn gàng bằng try/catch
   }
 }
 
@@ -364,12 +395,15 @@ const results = await Promise.allSettled([fetchUsers(), fetchPosts()]);
 
 ```typescript
 /**
- * 🏗️ OOP in JavaScript
+ * 🏗️ LẬP TRÌNH HƯỚNG ĐỐI TƯỢNG (OOP) TRONG JS
  */
 
-// ES6 Classes
+// ES6 Classes (Cách viết hiện đại, giống các ngôn ngữ như Java/C#)
 class Person {
-  constructor(public name: string, private age: number) {}
+  constructor(
+    public name: string,
+    private age: number,
+  ) {}
 
   greet() {
     return `Hi, I'm ${this.name}`;
@@ -378,9 +412,9 @@ class Person {
 
 const john = new Person('John', 30);
 
-// Prototype chain
-console.log(john.__proto__ === Person.prototype); // true
-console.log(Person.prototype.__proto__ === Object.prototype); // true
+// Prototype chain (Bản chất bên dưới của JS: Mọi thứ đều kế thừa qua "Vật mẫu")
+console.log(john.__proto__ === Person.prototype); // true (John lấy mẫu từ Person)
+console.log(Person.prototype.__proto__ === Object.prototype); // true (Person lấy mẫu từ Object gốc)
 
 /**
  * 📚 Chi tiết:
@@ -426,30 +460,30 @@ const loggedAdd = withLogging(add);
 
 ```typescript
 /**
- * ⚡ ESSENTIAL ES6+ FEATURES
+ * ⚡ CÁC TÍNH NĂNG ES6+ QUAN TRỌNG
  */
 
-// Destructuring
+// Destructuring (Phá vỡ cấu trúc để lấy giá trị nhanh)
 const { name, age } = user;
 const [first, second] = array;
 
-// Spread/Rest
-const merged = { ...obj1, ...obj2 };
-const combined = [...arr1, ...arr2];
+// Spread/Rest (Toán tử rải/gom)
+const merged = { ...obj1, ...obj2 }; // Gộp object
+const combined = [...arr1, ...arr2]; // Gộp mảng
 
-// Arrow functions
+// Arrow functions (Hàm mũi tên - ngắn gọn, giữ nguyên ngữ cảnh 'this')
 const multiply = (a, b) => a * b;
 
-// Template literals
+// Template literals (Dùng dấu huyền ` để chèn biến vào chuỗi)
 const greeting = `Hello, ${name}!`;
 
-// Optional chaining
+// Optional chaining (Dấu ?. giúp tránh lỗi "undefined" khi truy cập sâu)
 const city = user?.address?.city;
 
-// Nullish coalescing
+// Nullish coalescing (Dấu ?? lấy giá trị mặc định nếu là null hoặc undefined)
 const theme = settings?.theme ?? 'light';
 
-// Modules
+// Modules (Chia nhỏ code ra nhiều file)
 import { feature } from './module';
 export default MyComponent;
 
@@ -503,21 +537,21 @@ class User {
 
 ```typescript
 /**
- * 🌐 BROWSER APIs
+ * 🌐 CÁC API CỦA TRÌNH DUYỆT (BROWSER APIs)
  */
 
-// DOM manipulation
+// Thao tác với DOM (Cây thư mục HTML)
 const element = document.querySelector('.container');
 element?.addEventListener('click', handleClick);
 
-// Event delegation
+// Event delegation (Ủy quyền sự kiện) - Gắn 1 sự kiện ở cha để quản lý tất cả con
 document.body.addEventListener('click', (e) => {
   if ((e.target as HTMLElement).matches('.button')) {
     console.log('Button clicked');
   }
 });
 
-// Fetch API
+// Fetch API (Gọi dữ liệu từ Server)
 const response = await fetch('/api/users');
 const data = await response.json();
 
@@ -664,44 +698,44 @@ const advancedTopics = [
 
 ```typescript
 /**
- * 🎯 'this' KEYWORD - 4 BINDING RULES
+ * 🎯 TỪ KHÓA 'this' - 4 QUY TẮC RÀNG BUỘC (Dễ nhớ)
  */
 
 // ══════════════════════════════════════════════════════════
-// 1. DEFAULT BINDING (Global context)
+// 1. RÀNG BUỘC MẶC ĐỊNH (Ngữ cảnh toàn cục)
 // ══════════════════════════════════════════════════════════
 
 function showThis() {
-  console.log(); // Window (browser) or undefined (strict mode)
+  console.log(this); // Window (trình duyệt) hoặc undefined (nếu dùng strict mode)
 }
 
 showThis();
 
-// Strict mode
+// Strict mode (Chế độ nghiêm ngặt)
 ('use strict');
 function strictThis() {
-  console.log(this); // undefined
+  console.log(this); // undefined (Bảo mật hơn, tránh sờ vào Window)
 }
 
 // ══════════════════════════════════════════════════════════
-// 2. IMPLICIT BINDING (Object method)
+// 2. RÀNG BUỘC NGẦM ĐỊNH (Hàm thuộc về một Object)
 // ══════════════════════════════════════════════════════════
 
 const person = {
   name: 'John',
   greet() {
-    console.log(this.name); // 'John' (this = person)
+    console.log(this.name); // 'John' (this chính là person)
   },
 };
 
 person.greet(); // ✅ 'John'
 
-// ❌ Lost binding
+// ❌ Bị mất ràng buộc (Lost binding)
 const greetFn = person.greet;
-greetFn(); // undefined (this = window/undefined)
+greetFn(); // undefined (this bây giờ trỏ về window/undefined)
 
 // ══════════════════════════════════════════════════════════
-// 3. EXPLICIT BINDING (call, apply, bind)
+// 3. RÀNG BUỘC TƯỜNG MINH (call, apply, bind) - Ép 'this' phải là ai đó
 // ══════════════════════════════════════════════════════════
 
 function introduce(age: number, city: string) {
@@ -710,13 +744,13 @@ function introduce(age: number, city: string) {
 
 const user = { name: 'Alice' };
 
-// call: immediate invocation
+// call: Gọi hàm ngay lập tức, truyền tham số rời rạc
 introduce.call(user, 25, 'NYC'); // Alice, 25, NYC
 
-// apply: arguments as array
+// apply: Gọi hàm ngay lập tức, truyền tham số dưới dạng MẢNG
 introduce.apply(user, [25, 'NYC']); // Alice, 25, NYC
 
-// bind: returns new function
+// bind: Không gọi ngay, trả về một HÀM MỚI với 'this' đã được gắn chặt
 const boundIntroduce = introduce.bind(user);
 boundIntroduce(25, 'NYC'); // Alice, 25, NYC
 
@@ -790,7 +824,7 @@ function Animal(name: string) {
   this.name = name;
 }
 
-// Add method to prototype (shared across instances)
+// Thêm phương thức vào prototype (chia sẻ chung cho mọi instance để tiết kiệm bộ nhớ)
 Animal.prototype.speak = function () {
   return `${this.name} makes a sound`;
 };
@@ -798,12 +832,12 @@ Animal.prototype.speak = function () {
 const dog = new Animal('Dog');
 
 console.log(dog.speak()); // 'Dog makes a sound'
-console.log(dog.__proto__ === Animal.prototype); // true
+console.log(dog.__proto__ === Animal.prototype); // true (dog được tạo ra từ khuôn Animal)
 console.log(Animal.prototype.constructor === Animal); // true
 
 /**
- * Prototype chain:
- * dog → Animal.prototype → Object.prototype → null
+ * Chuỗi Prototype (Prototype chain):
+ * dog (tìm speak k thấy) → Animal.prototype (thấy speak) → Object.prototype → null
  */
 
 // ══════════════════════════════════════════════════════════
@@ -811,15 +845,15 @@ console.log(Animal.prototype.constructor === Animal); // true
 // ══════════════════════════════════════════════════════════
 
 function Dog(name: string, breed: string) {
-  Animal.call(this, name); // Call parent constructor
+  Animal.call(this, name); // Gọi constructor của cha (kế thừa thuộc tính)
   this.breed = breed;
 }
 
-// Set up inheritance
+// Thiết lập kế thừa prototype
 Dog.prototype = Object.create(Animal.prototype);
 Dog.prototype.constructor = Dog;
 
-// Override method
+// Ghi đè phương thức (Override)
 Dog.prototype.speak = function () {
   return `${this.name} barks`;
 };
@@ -834,7 +868,10 @@ console.log(husky instanceof Animal); // true
 // ══════════════════════════════════════════════════════════
 
 class Person {
-  constructor(public name: string, private age: number) {}
+  constructor(
+    public name: string,
+    private age: number,
+  ) {}
 
   greet() {
     return `Hi, I'm ${this.name}`;
@@ -852,11 +889,15 @@ class Person {
 }
 
 class Employee extends Person {
-  constructor(name: string, age: number, public role: string) {
-    super(name, age); // Call parent constructor
+  constructor(
+    name: string,
+    age: number,
+    public role: string,
+  ) {
+    super(name, age); // Gọi constructor của lớp cha
   }
 
-  // Override method
+  // Ghi đè phương thức (Override)
   greet() {
     return `${super.greet()}, I'm a ${this.role}`;
   }
@@ -866,11 +907,11 @@ const emp = new Employee('Alice', 30, 'Developer');
 console.log(emp.greet()); // "Hi, I'm Alice, I'm a Developer"
 
 /**
- * 🎯 Key Concepts:
+ * 🎯 Các khái niệm chính:
  * • Prototype chain: object → prototype → Object.prototype → null
- * • Shared methods: Define on prototype (memory efficient)
- * • Own properties: Define in constructor
- * • Inheritance: Object.create() or extends keyword
+ * • Shared methods: Định nghĩa ở prototype (tiết kiệm bộ nhớ)
+ * • Own properties: Định nghĩa trong constructor (riêng biệt cho từng object)
+ * • Inheritance: Dùng Object.create() hoặc từ khóa extends
  */
 ```
 
@@ -895,50 +936,50 @@ user = null; // No longer reachable → garbage collected
 // MEMORY LEAKS (Common Patterns)
 // ══════════════════════════════════════════════════════════
 
-// ❌ 1. Global variables
-window.leakedData = new Array(1000000); // Never collected
+// ❌ 1. Biến toàn cục (Global variables)
+window.leakedData = new Array(1000000); // Không bao giờ được dọn dẹp
 
-// ❌ 2. Forgotten timers
+// ❌ 2. Quên dọn dẹp timer
 setInterval(() => {
-  // References keep growing
+  // Tham chiếu cứ tăng dần mãi
   const data = fetchData();
 }, 1000);
 
-// ✅ Fix: Clear timer
+// ✅ Fix: Xóa timer khi không dùng
 const timerId = setInterval(/* ... */);
 clearInterval(timerId);
 
-// ❌ 3. Closures holding references
+// ❌ 3. Closures giữ tham chiếu lớn
 function createLeak() {
   const largeData = new Array(1000000);
 
   return function () {
-    console.log(largeData.length); // Keeps largeData in memory
+    console.log(largeData.length); // Vô tình giữ cả mảng largeData trong bộ nhớ
   };
 }
 
-// ❌ 4. DOM references
+// ❌ 4. Tham chiếu DOM
 const elements = [];
 for (let i = 0; i < 1000; i++) {
   const el = document.createElement('div');
-  elements.push(el); // Keeps all elements in memory
+  elements.push(el); // Giữ lỳ element trong mảng dù có thể đã xóa khỏi DOM
 }
 
-// ✅ Fix: Remove references when done
+// ✅ Fix: Xóa tham chiếu khi xong việc
 elements.length = 0;
 
-// ❌ 5. Event listeners
+// ❌ 5. Event listeners (Sự kiện)
 const button = document.querySelector('button');
-button?.addEventListener('click', handleClick); // Keeps button in memory
+button?.addEventListener('click', handleClick); // Button bị giữ trong bộ nhớ bởi listener
 
-// ✅ Fix: Remove listener
+// ✅ Fix: Gỡ bỏ sự kiện (removeEventListener)
 button?.removeEventListener('click', handleClick);
 
 // ══════════════════════════════════════════════════════════
-// WEAKMAP/WEAKSET (Auto garbage collection)
+// WEAKMAP/WEAKSET (Tự động dọn rác)
 // ══════════════════════════════════════════════════════════
 
-// ✅ WeakMap: Keys can be garbage collected
+// ✅ WeakMap: Key là object yếu, nếu không ai dùng sẽ tự biến mất
 const privateData = new WeakMap();
 
 class User {
@@ -1416,17 +1457,17 @@ if (user.age >= MINIMUM_AGE && user.accountBalance > MINIMUM_BALANCE) {
 }
 
 /**
- * 🎯 Code Quality Checklist:
- * ✅ Use immutable data structures
- * ✅ Write pure functions (no side effects)
- * ✅ Single responsibility per function
- * ✅ Early returns (guard clauses)
- * ✅ Descriptive variable/function names
- * ✅ Avoid magic numbers (use constants)
- * ✅ Keep functions small (<20 lines)
- * ✅ Use TypeScript for type safety
- * ✅ Comment complex logic
- * ✅ Write tests (unit, integration)
+ * 🎯 Checklist chất lượng code:
+ * ✅ Dùng cấu trúc dữ liệu bất biến (Immutable)
+ * ✅ Viết hàm thuần khiết (Pure functions - không side effect)
+ * ✅ Mỗi hàm chỉ làm 1 việc (Single responsibility)
+ * ✅ Return sớm để tránh if/else lồng nhau (Guard clauses)
+ * ✅ Đặt tên biến/hàm môt tả rõ nghĩa (Descriptive naming)
+ * ✅ Tránh "con số ma thuật" (Magic numbers) -> dùng hằng số (CONSTANTS)
+ * ✅ Giữ hàm ngắn gọn (<20 dòng)
+ * ✅ Dùng TypeScript để bắt lỗi kiểu dữ liệu
+ * ✅ Comment giải thích các logic phức tạp
+ * ✅ Viết test đầy đủ (Unit, Integration)
  */
 ```
 
@@ -1534,35 +1575,40 @@ function transferMoney(amount: number) {
 
 ```typescript
 /**
- * ┌──────────────────────────────────────────────────────────┐
- * │         JAVASCRIPT FUNDAMENTALS CHEAT SHEET              │
- * ├──────────────────────────────────────────────────────────┤
- * │                                                          │
- * │  📌 DATA TYPES:                                         │
- * │  • 7 Primitives + 1 Object                              │
- * │  • Stack (primitives) vs Heap (objects)                 │
- * │                                                          │
- * │  📌 EXECUTION:                                          │
- * │  • Hoisting: var (undefined), let/const (TDZ)          │
- * │  • Scope: Global, Function, Block                      │
- * │  • Closures: Functions remember outer scope            │
- * │                                                          │
- * │  📌 ASYNC:                                              │
- * │  • Event Loop: Call Stack → Micro → Macro             │
- * │  • Promises: then/catch chains                         │
- * │  • Async/Await: Syntactic sugar for promises          │
- * │                                                          │
- * │  📌 ES6+:                                               │
- * │  • Arrow functions, Destructuring, Spread              │
- * │  • Optional chaining (?.), Nullish coalescing (??)    │
- * │  • Modules (import/export)                             │
- * │                                                          │
- * │  📌 DOM:                                                │
- * │  • querySelector, addEventListener                      │
- * │  • Event bubbling/capturing                            │
- * │  • Fetch API, async requests                           │
- * │                                                          │
- * └──────────────────────────────────────────────────────────┘
+ * ┌──────────────────────────────────┐
+ * │ JAVASCRIPT FUNDAMENTALS CHEAT    │
+ * ├──────────────────────────────────┤
+ * │                                  │
+ * │ 📌 DATA TYPES:                   │
+ * │ • 7 Primitives + 1 Object        │
+ * │ • Stack (primitives) vs Heap     │
+ * │                                  │
+ * │ 📌 EXECUTION:                    │
+ * │ • Hoisting: var (undefined),     │
+ * │   let/const (TDZ)                │
+ * │ • Scope: Global, Function, Block │
+ * │ • Closures: Functions remember   │
+ * │   outer scope                    │
+ * │                                  │
+ * │ 📌 ASYNC:                        │
+ * │ • Event Loop: Call Stack →       │
+ * │   Micro → Macro                  │
+ * │ • Promises: then/catch chains    │
+ * │ • Async/Await: Syntactic sugar   │
+ * │                                  │
+ * │ 📌 ES6+:                         │
+ * │ • Arrow functions, Destructuring │
+ * │ • Optional chaining (?.)         │
+ * │ • Nullish coalescing (??)        │
+ * │ • Modules (import/export)        │
+ * │                                  │
+ * │ 📌 DOM:                          │
+ * │ • querySelector                  │
+ * │ • addEventListener               │
+ * │ • Event bubbling/capturing       │
+ * │ • Fetch API, async requests      │
+ * │                                  │
+ * └──────────────────────────────────┘
  */
 ```
 
@@ -1588,12 +1634,12 @@ const users = [
   // ... 10,000 users
 ];
 
-// ❌ Bad: 2 iterations (O(2n) = O(n))
+// ❌ Tệ: Chạy 2 vòng lặp (O(2n) = O(n))
 const activeUserNames = users
-  .filter((u) => u.active) // Iteration 1
-  .map((u) => u.name); // Iteration 2
+  .filter((u) => u.active) // Vòng lặp 1: Lọc
+  .map((u) => u.name); // Vòng lặp 2: Lấy tên
 
-// ✅ Good: 1 iteration with reduce (O(n))
+// ✅ Tốt: Chạy 1 vòng lặp với reduce (O(n))
 const activeUserNames = users.reduce((acc, user) => {
   if (user.active) {
     acc.push(user.name);
@@ -1610,24 +1656,27 @@ for (let i = 0; i < users.length; i++) {
 }
 
 /**
- * Performance comparison (10,000 items):
- * • filter + map: ~2ms
- * • reduce: ~1.2ms (40% faster)
- * • for loop: ~0.8ms (60% faster)
+ * 📊 SO SÁNH TỐC ĐỘ (Với 10.000 phần tử):
+ * • filter + map: ~2ms (Chạy 2 vòng lặp riêng biệt - O(2n))
+ * • reduce: ~1.2ms (Gộp lại chạy 1 vòng duy nhất - O(n)) - Nhanh hơn 40%
+ * • for loop: ~0.8ms (Tốc độ "bàn thờ", tối ưu nhất vì không tốn công gọi hàm callback liên tục)
+ *
+ * 💡 LỜI KHUYÊN: Nếu data ít thì dùng filter+map cho code đẹp.
+ * Nếu data lớn (hàng chục nghìn dòng), hãy dùng reduce hoặc for-loop.
  */
 
 // ══════════════════════════════════════════════════════════
 // MISTAKE 2: Multiple filter/map/reduce chains
 // ══════════════════════════════════════════════════════════
 
-// ❌ Bad: 4 iterations
+// ❌ Tệ: Chạy đến 4 vòng lặp
 const result = data
-  .filter((x) => x.age > 18) // Iteration 1
-  .map((x) => ({ ...x, adult: true })) // Iteration 2
-  .filter((x) => x.active) // Iteration 3
-  .map((x) => x.name); // Iteration 4
+  .filter((x) => x.age > 18) // Vòng lặp 1
+  .map((x) => ({ ...x, adult: true })) // Vòng lặp 2
+  .filter((x) => x.active) // Vòng lặp 3
+  .map((x) => x.name); // Vòng lặp 4
 
-// ✅ Good: 1 iteration
+// ✅ Tốt: Chỉ 1 vòng lặp duy nhất
 const result = data.reduce((acc, x) => {
   if (x.age > 18 && x.active) {
     acc.push(x.name);
@@ -1660,10 +1709,15 @@ const enrichedOrders = orders.map((order) => ({
 })); // O(n)
 
 /**
- * Performance comparison (1,000 items):
- * • find in loop: ~500ms (O(n²))
- * • Map lookup: ~2ms (O(n))
- * → 250x faster!
+ * 🚀 TẠI SAO LẠI NHANH HƠN 250 LẦN?
+ * • find in loop: Giống như bạn đi tìm chìa khóa trong 1000 cái túi,
+ *   mỗi lần tìm một túi lại phải bới tung cả 1000 túi khác (O(n²)).
+ * • Map lookup: Giống như bạn đánh số thứ tự cho 1000 cái túi.
+ *   Cần túi số 5? Bạn bốc ngay lập tức vì đã biết vị trí (O(n + 1)).
+ *
+ * 📊 KẾT QUẢ (1,000 items):
+ * • Cách cũ: ~500ms (Máy bắt đầu lag)
+ * • Cách mới (Map): ~2ms (Nhanh như chớp)
  */
 
 // ══════════════════════════════════════════════════════════
@@ -1675,15 +1729,15 @@ const allItems = [
   /* ... 10000 items */
 ];
 
-// ❌ Bad: O(n²)
+// ❌ Tệ: Độ phức tạp O(n²) - Chạy cực chậm
 const selectedItems = allItems.filter(
-  (item) => selectedIds.includes(item.id) // O(n) inside O(n)
+  (item) => selectedIds.includes(item.id), // O(n) lồng trong O(n)
 );
 
-// ✅ Good: O(n)
-const selectedIdsSet = new Set(selectedIds); // O(n)
+// ✅ Tốt: Độ phức tạp O(n) - Nhanh hơn nhiều
+const selectedIdsSet = new Set(selectedIds); // O(n) để tạo Set
 const selectedItems = allItems.filter(
-  (item) => selectedIdsSet.has(item.id) // O(1)
+  (item) => selectedIdsSet.has(item.id), // O(1) để kiểm tra
 );
 ```
 
@@ -1709,12 +1763,12 @@ const users = [
   // ... 10,000 users
 ];
 
-// ❌ Giải pháp A: map + filter (2 lần duyệt)
+// ❌ Giải pháp A: map + filter (Duyệt 2 lần)
 const activeAdminNames = users
   .filter((u) => u.active && u.role === 'admin') // Duyệt lần 1: O(n)
   .map((u) => u.name); // Duyệt lần 2: O(m) với m ≤ n
 
-// ✅ Giải pháp B: reduce (1 lần duyệt)
+// ✅ Giải pháp B: reduce (Duyệt 1 lần duy nhất)
 const activeAdminNames = users.reduce((acc, user) => {
   if (user.active && user.role === 'admin') {
     acc.push(user.name);
@@ -1761,12 +1815,15 @@ const electronicsInStock = products
   .map((p) => ({ id: p.id, price: p.price })); // Duyệt lần 3: O(k)
 
 // ✅ Giải pháp B: reduce (1 lần duyệt)
-const electronicsInStock = products.reduce((acc, product) => {
-  if (product.category === 'electronics' && product.inStock) {
-    acc.push({ id: product.id, price: product.price });
-  }
-  return acc;
-}, [] as Array<{ id: number; price: number }>);
+const electronicsInStock = products.reduce(
+  (acc, product) => {
+    if (product.category === 'electronics' && product.inStock) {
+      acc.push({ id: product.id, price: product.price });
+    }
+    return acc;
+  },
+  [] as Array<{ id: number; price: number }>,
+);
 // 💡 Chỉ duyệt 1 lần: O(n) - nhanh hơn ~66%
 
 // 📌 Ví dụ 4: Tạo object từ array với điều kiện
@@ -1780,18 +1837,24 @@ const items = [
 // ❌ Giải pháp A: filter + reduce (2 lần duyệt)
 const typeAItems = items
   .filter((item) => item.type === 'A') // Duyệt lần 1: O(n)
-  .reduce((acc, item) => {
-    acc[item.id] = item.name;
-    return acc;
-  }, {} as Record<number, string>); // Duyệt lần 2: O(m)
+  .reduce(
+    (acc, item) => {
+      acc[item.id] = item.name;
+      return acc;
+    },
+    {} as Record<number, string>,
+  ); // Duyệt lần 2: O(m)
 
 // ✅ Giải pháp B: reduce (1 lần duyệt)
-const typeAItems = items.reduce((acc, item) => {
-  if (item.type === 'A') {
-    acc[item.id] = item.name;
-  }
-  return acc;
-}, {} as Record<number, string>);
+const typeAItems = items.reduce(
+  (acc, item) => {
+    if (item.type === 'A') {
+      acc[item.id] = item.name;
+    }
+    return acc;
+  },
+  {} as Record<number, string>,
+);
 // 💡 Chỉ duyệt 1 lần: O(n) - nhanh hơn ~50%
 
 // ══════════════════════════════════════════════════════════
@@ -1809,14 +1872,14 @@ const users = [
 
 // ❌ Giải pháp A: includes() trong filter (O(n²))
 const authorizedUsers = users.filter(
-  (user) => allowedRoles.includes(user.role) // O(m) mỗi lần, với m = allowedRoles.length
+  (user) => allowedRoles.includes(user.role), // O(m) mỗi lần, với m = allowedRoles.length
 );
 // 💡 Tổng: O(n × m) - với n = 50,000, m = 3 → 150,000 operations
 
 // ✅ Giải pháp B: Set.has() (O(n))
 const allowedRolesSet = new Set(allowedRoles); // O(m) - chỉ làm 1 lần
 const authorizedUsers = users.filter(
-  (user) => allowedRolesSet.has(user.role) // O(1) mỗi lần
+  (user) => allowedRolesSet.has(user.role), // O(1) mỗi lần
 );
 // 💡 Tổng: O(m) + O(n) = O(n) - chỉ 50,003 operations
 // 💡 Nhanh hơn ~3 lần với m = 3, và càng nhiều hơn khi m tăng!
@@ -1827,7 +1890,7 @@ const numbers = [1, 2, 3, 2, 4, 3, 5, 1, 6, 2, 7, 3];
 
 // ❌ Giải pháp A: filter + indexOf (O(n²))
 const uniqueNumbers = numbers.filter(
-  (num, index) => numbers.indexOf(num) === index // O(n) mỗi lần
+  (num, index) => numbers.indexOf(num) === index, // O(n) mỗi lần
 );
 // 💡 Tổng: O(n²) - với n = 100,000 → 10 TỶ operations!
 
@@ -1851,14 +1914,14 @@ const incomingEmails = [
 
 // ❌ Giải pháp A: includes() trong filter (O(n × m))
 const validEmails = incomingEmails.filter(
-  (email) => !blacklistedEmails.includes(email.from) // O(m) mỗi lần
+  (email) => !blacklistedEmails.includes(email.from), // O(m) mỗi lần
 );
 // 💡 Tổng: O(n × m) - với n = 100,000, m = 1,000 → 100 TRIỆU operations!
 
 // ✅ Giải pháp B: Set.has() (O(n))
 const blacklistedSet = new Set(blacklistedEmails); // O(m) - chỉ làm 1 lần
 const validEmails = incomingEmails.filter(
-  (email) => !blacklistedSet.has(email.from) // O(1) mỗi lần
+  (email) => !blacklistedSet.has(email.from), // O(1) mỗi lần
 );
 // 💡 Tổng: O(m) + O(n) = O(n) - chỉ 101,000 operations
 // 💡 Nhanh hơn ~990 lần!
@@ -1870,14 +1933,14 @@ const array2 = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
 // ❌ Giải pháp A: filter + includes() (O(n × m))
 const intersection = array1.filter(
-  (item) => array2.includes(item) // O(m) mỗi lần
+  (item) => array2.includes(item), // O(m) mỗi lần
 );
 // 💡 Tổng: O(n × m) - với n = 10,000, m = 10,000 → 100 TRIỆU operations!
 
 // ✅ Giải pháp B: Set.has() (O(n + m))
 const array2Set = new Set(array2); // O(m)
 const intersection = array1.filter(
-  (item) => array2Set.has(item) // O(1) mỗi lần
+  (item) => array2Set.has(item), // O(1) mỗi lần
 );
 // 💡 Tổng: O(m) + O(n) = O(n + m) - chỉ 20,000 operations
 // 💡 Nhanh hơn ~5,000 lần!
@@ -1936,26 +1999,32 @@ const accounts = [
 ];
 
 // ❌ Giải pháp A: find() trong reduce (O(n²))
-const accountTotals = transactions.reduce((acc, transaction) => {
-  const account = accounts.find((a) => a.id === transaction.accountId); // O(m) mỗi lần
-  if (!acc[account.id]) {
-    acc[account.id] = { name: account.name, total: 0 };
-  }
-  acc[account.id].total += transaction.amount;
-  return acc;
-}, {} as Record<number, { name: string; total: number }>);
+const accountTotals = transactions.reduce(
+  (acc, transaction) => {
+    const account = accounts.find((a) => a.id === transaction.accountId); // O(m) mỗi lần
+    if (!acc[account.id]) {
+      acc[account.id] = { name: account.name, total: 0 };
+    }
+    acc[account.id].total += transaction.amount;
+    return acc;
+  },
+  {} as Record<number, { name: string; total: number }>,
+);
 // 💡 Tổng: O(n × m) - với n = 50,000, m = 1,000 → 50 TRIỆU operations!
 
 // ✅ Giải pháp B: Map.get() (O(n + m))
 const accountMap = new Map(accounts.map((a) => [a.id, a])); // O(m)
-const accountTotals = transactions.reduce((acc, transaction) => {
-  const account = accountMap.get(transaction.accountId); // O(1) mỗi lần
-  if (!acc[account.id]) {
-    acc[account.id] = { name: account.name, total: 0 };
-  }
-  acc[account.id].total += transaction.amount;
-  return acc;
-}, {} as Record<number, { name: string; total: number }>);
+const accountTotals = transactions.reduce(
+  (acc, transaction) => {
+    const account = accountMap.get(transaction.accountId); // O(1) mỗi lần
+    if (!acc[account.id]) {
+      acc[account.id] = { name: account.name, total: 0 };
+    }
+    acc[account.id].total += transaction.amount;
+    return acc;
+  },
+  {} as Record<number, { name: string; total: number }>,
+);
 // 💡 Tổng: O(m) + O(n) = O(n + m) - chỉ 51,000 operations
 // 💡 Nhanh hơn ~980 lần!
 
@@ -1979,15 +2048,18 @@ const result = data
   .map((x) => ({ name: `User ${x.id}`, score: x.score })); // Duyệt lần 4: O(k)
 
 // ✅ Giải pháp B: 1 lần duyệt với reduce
-const result = data.reduce((acc, x) => {
-  if (x.age > 18 && x.active) {
-    acc.push({
-      name: `User ${x.id}`,
-      score: x.score,
-    });
-  }
-  return acc;
-}, [] as Array<{ name: string; score: number }>);
+const result = data.reduce(
+  (acc, x) => {
+    if (x.age > 18 && x.active) {
+      acc.push({
+        name: `User ${x.id}`,
+        score: x.score,
+      });
+    }
+    return acc;
+  },
+  [] as Array<{ name: string; score: number }>,
+);
 // 💡 Chỉ duyệt 1 lần: O(n) - nhanh hơn ~75%
 
 // 📌 Ví dụ 2: Filter + map + sort
@@ -2007,12 +2079,15 @@ const topRatedInStock = items
 
 // ✅ Giải pháp B: 1 lần duyệt + sort chỉ top items
 const topRatedInStock = items
-  .reduce((acc, item) => {
-    if (item.inStock) {
-      acc.push({ id: item.id, price: item.price, rating: item.rating });
-    }
-    return acc;
-  }, [] as Array<{ id: number; price: number; rating: number }>)
+  .reduce(
+    (acc, item) => {
+      if (item.inStock) {
+        acc.push({ id: item.id, price: item.price, rating: item.rating });
+      }
+      return acc;
+    },
+    [] as Array<{ id: number; price: number; rating: number }>,
+  )
   .sort((a, b) => b.rating - a.rating)
   .slice(0, 10);
 // 💡 Vẫn phải sort, nhưng giảm số lần duyệt từ 2 → 1
@@ -2028,7 +2103,7 @@ const numbers = [1, 2, 3, 2, 4, 3, 5, 1, 6, 2, 7, 3];
 
 // ❌ Giải pháp A: filter + indexOf (O(n²))
 const unique = numbers.filter(
-  (num, index) => numbers.indexOf(num) === index // O(n) mỗi lần
+  (num, index) => numbers.indexOf(num) === index, // O(n) mỗi lần
 );
 // 💡 Tổng: O(n²) - với n = 100,000 → 10 TỶ operations!
 
@@ -2044,14 +2119,14 @@ const itemsToRemove = [2, 4, 6, 8];
 
 // ❌ Giải pháp A: filter + indexOf (O(n × m))
 const remainingItems = allItems.filter(
-  (item) => itemsToRemove.indexOf(item) === -1 // O(m) mỗi lần
+  (item) => itemsToRemove.indexOf(item) === -1, // O(m) mỗi lần
 );
 // 💡 Tổng: O(n × m) - với n = 50,000, m = 10,000 → 500 TRIỆU operations!
 
 // ✅ Giải pháp B: Set.has() (O(n + m))
 const itemsToRemoveSet = new Set(itemsToRemove); // O(m)
 const remainingItems = allItems.filter(
-  (item) => !itemsToRemoveSet.has(item) // O(1) mỗi lần
+  (item) => !itemsToRemoveSet.has(item), // O(1) mỗi lần
 );
 // 💡 Tổng: O(m) + O(n) = O(n + m) - chỉ 60,000 operations
 // 💡 Nhanh hơn ~8,333 lần!
@@ -2102,54 +2177,51 @@ const allowedStatusesSet = new Set(allowedStatuses); // O(m)
 const userMap = new Map(users.map((u) => [u.id, u])); // O(k)
 const productMap = new Map(products.map((p) => [p.id, p])); // O(j)
 
-const processedOrders = orders.reduce((acc, order) => {
-  // Check status với Set: O(1)
-  if (!allowedStatusesSet.has(order.status)) return acc;
+const processedOrders = orders.reduce(
+  (acc, order) => {
+    // Check status với Set: O(1)
+    if (!allowedStatusesSet.has(order.status)) return acc;
 
-  // Lookup user với Map: O(1)
-  const user = userMap.get(order.userId);
-  if (!user || !user.vip) return acc;
+    // Lookup user với Map: O(1)
+    const user = userMap.get(order.userId);
+    if (!user || !user.vip) return acc;
 
-  // Lookup products với Map: O(l) với l = số products trong order
-  const orderProducts = order.productIds
-    .map((pid) => productMap.get(pid))
-    .filter((p): p is NonNullable<typeof p> => p !== undefined && p.inStock);
+    // Lookup products với Map: O(l) với l = số products trong order
+    const orderProducts = order.productIds
+      .map((pid) => productMap.get(pid))
+      .filter((p): p is NonNullable<typeof p> => p !== undefined && p.inStock);
 
-  if (orderProducts.length === 0) return acc;
+    if (orderProducts.length === 0) return acc;
 
-  acc.push({
-    orderId: order.id,
-    userName: user.name,
-    productNames: orderProducts.map((p) => p.name),
-  });
+    acc.push({
+      orderId: order.id,
+      userName: user.name,
+      productNames: orderProducts.map((p) => p.name),
+    });
 
-  return acc;
-}, [] as Array<{ orderId: number; userName: string; productNames: string[] }>);
+    return acc;
+  },
+  [] as Array<{ orderId: number; userName: string; productNames: string[] }>,
+);
 // 💡 Tổng: O(m + k + j + n × l) = O(n × l) - NHANH HƠN RẤT NHIỀU!
 // 💡 Với n = 10,000, l trung bình = 2 → chỉ ~20,000 operations
 // 💡 So với giải pháp A có thể lên đến hàng trăm triệu operations!
 
 /**
- * 📊 TỔNG KẾT PERFORMANCE GAINS:
+ * 📊 BẢNG TỔNG KẾT TỐI ƯU HÓA:
  *
- * Pattern                    | Giải pháp A      | Giải pháp B      | Cải thiện
- * --------------------------|------------------|------------------|------------
- * map + filter              | O(2n)            | O(n)             | ~50%
- * includes() trong loop     | O(n × m)         | O(n + m)         | ~m lần
- * find() trong loop         | O(n × m)         | O(n + m)         | ~m lần
- * Multiple chains           | O(4n)            | O(n)             | ~75%
- * indexOf() trong loop      | O(n²)            | O(n)             | ~n lần
+ * Tên kỹ thuật               | Cách làm cũ (Chậm) | Cách làm mới (Nhanh) | Tốc độ cải thiện
+ * --------------------------|-------------------|--------------------|------------
+ * Duyệt mảng                | Chạy nhiều lần    | Gộp vào 1 lần       | ~50%
+ * Tìm đồ trong túi          | includes()        | Set.has()           | Cực nhiều (m lần)
+ * Tra cứu thông tin         | find()            | Map.get()           | Cực nhiều (m lần)
+ * Chuỗi hàm lồng nhau       | Filter + Map +... | Single reduce       | ~75%
+ * Tìm trùng lặp             | indexOf()         | Dùng Set            | Nhanh gấp tỷ lần
  *
- * 💡 Lưu ý: Performance gains phụ thuộc vào:
- *   - Kích thước dữ liệu (n, m, k...)
- *   - Số lần operations được gọi
- *   - Browser/JS engine optimization
- *
- * ✅ Best Practice:
- *   1. Luôn profile trước khi optimize
- *   2. Ưu tiên optimize hot paths (code chạy nhiều lần)
- *   3. Balance giữa readability và performance
- *   4. Document trade-offs khi optimize
+ * ✅ LƯU Ý CHO SENIOR:
+ *   1. Đừng tối ưu quá sớm (Premature Optimization), chỉ làm khi thấy lag.
+ *   2. Ưu tiên những đoạn code chạy trong vòng lặp lớn hoặc gọi API liên tục.
+ *   3. Giữ code dễ đọc là số 1, hiệu năng là số 2 (trừ khi cần xử lý data khủng).
  */
 ```
 
@@ -2172,9 +2244,9 @@ const users = [
   // ... 10,000 users
 ];
 
-// ❌ Bad: O(n) per lookup
+// ❌ Tệ: Tốn O(n) cho mỗi lần tìm kiếm
 function getUserName(userId: number) {
-  const user = users.find((u) => u.id === userId); // Linear search
+  const user = users.find((u) => u.id === userId); // Phải duyệt qua cả mảng
   return user?.name;
 }
 
@@ -2201,7 +2273,7 @@ const numbers = [1, 2, 3, 2, 4, 3, 5];
 
 // ❌ Bad: O(n²)
 const unique = numbers.filter(
-  (num, index) => numbers.indexOf(num) === index // O(n) inside O(n)
+  (num, index) => numbers.indexOf(num) === index, // O(n) inside O(n)
 );
 
 // ✅ Good: O(n) with Set
@@ -2216,7 +2288,7 @@ const unique = numbers.reduce(
     }
     return acc;
   },
-  { seen: {}, result: [] as number[] }
+  { seen: {}, result: [] as number[] },
 ).result;
 
 // ══════════════════════════════════════════════════════════
@@ -2236,14 +2308,14 @@ for (let i = 0; i < 100000; i++) {
   }
 }
 
-// ✅ Fast: Direct property access with optional chaining
+// ✅ Tốt: Truy cập trực tiếp (Optional chaining) - Nhanh
 for (let i = 0; i < 100000; i++) {
   if (config.apiUrl !== undefined) {
     // ...
   }
 }
 
-// ✅ Best: Use Map for dynamic keys
+// ✅ Tốt nhất: Dùng Map nếu key không cố định
 const configMap = new Map(Object.entries(config));
 configMap.has('apiUrl'); // Faster than hasOwnProperty
 ```
@@ -2313,13 +2385,13 @@ elements.forEach((el, i) => {
 // MISTAKE 10: querySelector in loops
 // ══════════════════════════════════════════════════════════
 
-// ❌ Bad: Re-query DOM every iteration
+// ❌ Tệ: Truy vấn lại DOM ở mỗi vòng lặp (Cực chậm)
 for (let i = 0; i < 1000; i++) {
-  const container = document.querySelector('.container'); // Query 1000 times!
+  const container = document.querySelector('.container'); // Truy vấn 1000 lần!
   container.innerHTML += `<div>Item ${i}</div>`;
 }
 
-// ✅ Good: Cache reference
+// ✅ Tốt: Lưu tham chiếu ra ngoài vòng lặp
 const container = document.querySelector('.container');
 let html = '';
 for (let i = 0; i < 1000; i++) {
@@ -2353,11 +2425,12 @@ function UserList() {
   );
 }
 
-// ✅ Good: Memoize or move outside component
+// ✅ Tốt: Tạo biến ở ngoài Component (Chỉ tạo 1 lần duy nhất)
 const CONFIG = { theme: 'dark', locale: 'en' };
 const FILTERS = ['active', 'verified'];
 
 function UserList() {
+  // Vì biến nằm ở ngoài, React thấy "đồ cũ" nên không render lại con một cách vô ích.
   return <ExpensiveChild config={CONFIG} filters={FILTERS} />;
 }
 
@@ -2377,7 +2450,7 @@ function UserList({ theme, showActive }) {
 // MISTAKE 12: Inline functions as props
 // ══════════════════════════════════════════════════════════
 
-// ❌ Bad: New function every render
+// ❌ Tệ: Tạo hàm mới ở mỗi lần render (Gây re-render con không cần thiết)
 function TodoList({ todos }) {
   return (
     <div>
@@ -2385,14 +2458,14 @@ function TodoList({ todos }) {
         <TodoItem
           key={todo.id}
           todo={todo}
-          onDelete={() => deleteTodo(todo.id)} // New function!
+          onDelete={() => deleteTodo(todo.id)} // Hàm mới được tạo ra liên tục!
         />
       ))}
     </div>
   );
 }
 
-// ✅ Good: useCallback or pass ID
+// ✅ Tốt: Dùng useCallback hoặc truyền ID xuống dưới
 function TodoList({ todos }) {
   const handleDelete = useCallback((id: number) => {
     deleteTodo(id);
@@ -2428,7 +2501,8 @@ items.map((item, index) => (
 // After:  [0: 'A', 1: 'C']
 // React thinks item at index 2 was removed, but it was 'B'!
 
-// ✅ Good: Stable unique ID
+// ✅ Tốt: Dùng ID duy nhất và cố định (như số CMND)
+// Dù có xóa hay đảo lộn, 'B' vẫn là 'B', React biết chính xác cái nào vừa biến mất.
 items.map((item) => <div key={item.id}>{item.name}</div>);
 
 // ══════════════════════════════════════════════════════════
@@ -2444,13 +2518,13 @@ function DataTable({ data, filter }) {
   return <Table data={sortedData} />;
 }
 
-// ✅ Good: Memoize calculation
+// ✅ Tốt: Memoize tính toán (Ghi nhớ kết quả)
 function DataTable({ data, filter }) {
   const sortedData = useMemo(() => {
     return data
       .filter((item) => item.status === filter)
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [data, filter]); // Only recalculate when dependencies change
+  }, [data, filter]); // Chỉ tính lại khi data hoặc filter thay đổi
 
   return <Table data={sortedData} />;
 }
@@ -2469,7 +2543,7 @@ function DataTable({ data, filter }) {
 // MISTAKE 15: Derived state instead of computation
 // ══════════════════════════════════════════════════════════
 
-// ❌ Bad: Duplicate source of truth
+// ❌ Tệ: Sao chép state (Dư thừa, dễ lỗi khi user thay đổi)
 function UserProfile({ user }) {
   const [fullName, setFullName] = useState('');
 
@@ -2480,7 +2554,7 @@ function UserProfile({ user }) {
   return <div>{fullName}</div>;
 }
 
-// ✅ Good: Compute during render
+// ✅ Tốt: Tính toán trực tiếp khi render (Derived state)
 function UserProfile({ user }) {
   const fullName = `${user.firstName} ${user.lastName}`;
   return <div>{fullName}</div>;
@@ -2510,9 +2584,9 @@ function Counter() {
   return <button onClick={increment}>{count}</button>;
 }
 
-// If count is already 5 and you set it to 5, React still re-renders!
+// Nếu count đang là 5 và bạn set lại là 5, React vẫn re-render!
 
-// ✅ Good: Use functional update or check before setting
+// ✅ Tốt: Dùng functional update hoặc kiểm tra trước khi set
 function Counter() {
   const [count, setCount] = useState(0);
 
@@ -2538,13 +2612,13 @@ const [user, setUser] = useState({
   profile: { name: 'John', address: { city: 'NYC' } },
 });
 
-// ❌ Bad: Mutation (doesn't trigger re-render)
+// ❌ Tệ: Đột biến trực tiếp (Mutation) -> React không biết để re-render
 const updateCity = (city: string) => {
-  user.profile.address.city = city; // Mutation!
-  setUser(user); // Same reference, no re-render
+  user.profile.address.city = city; // Sai lầm tai hại!
+  setUser(user); // Cùng tham chiếu object cũ, React sẽ lờ đi
 };
 
-// ✅ Good: Immutable update
+// ✅ Tốt: Cập nhật bất biến (Immutable update)
 const updateCity = (city: string) => {
   setUser((prev) => ({
     ...prev,
@@ -2583,16 +2657,16 @@ const updateCity = (city: string) => {
 // MISTAKE 18: Sequential awaits (should be parallel)
 // ══════════════════════════════════════════════════════════
 
-// ❌ Bad: Sequential (3 seconds total)
+// ❌ Tệ: Chạy tuần tự (Mất tổng cộng 3 giây)
 async function fetchData() {
-  const users = await fetchUsers(); // 1s
-  const posts = await fetchPosts(); // 1s
-  const comments = await fetchComments(); // 1s
+  const users = await fetchUsers(); // Đợi 1s
+  const posts = await fetchPosts(); // Đợi thêm 1s
+  const comments = await fetchComments(); // Đợi thêm 1s nữa -> Tổng 3s
 
   return { users, posts, comments };
 }
 
-// ✅ Good: Parallel (1 second total)
+// ✅ Tốt: Chạy song song (Chỉ mất 1 giây cho cả 3)
 async function fetchData() {
   const [users, posts, comments] = await Promise.all([
     fetchUsers(), // All start together
@@ -2604,10 +2678,10 @@ async function fetchData() {
 }
 
 /**
- * Performance:
- * • Sequential: 3s (1s + 1s + 1s)
- * • Parallel: 1s (max of all)
- * → 3x faster!
+ * 📊 SO SÁNH HIỆU NĂNG:
+ * • Chạy tuần tự (Sequential): 3 giây (Đợi xong món này mới nấu món kia)
+ * • Chạy song song (Parallel): Chỉ mất 1 giây (Bật 3 bếp nấu cùng lúc)
+ * → Tốc độ nhanh gấp 3 lần!
  */
 
 // ══════════════════════════════════════════════════════════
@@ -2616,14 +2690,14 @@ async function fetchData() {
 
 const userIds = [1, 2, 3, 4, 5];
 
-// ❌ Bad: Sequential (5 seconds)
+// ❌ Tệ: Lại chạy tuần tự trong vòng lặp (5 giây)
 const users = [];
 for (const id of userIds) {
-  const user = await fetchUser(id); // Wait for each!
+  const user = await fetchUser(id); // Chờ từng người một
   users.push(user);
 }
 
-// ✅ Good: Parallel (1 second)
+// ✅ Tốt: Chạy song song tất cả (1 giây)
 const users = await Promise.all(userIds.map((id) => fetchUser(id)));
 
 // ══════════════════════════════════════════════════════════
@@ -2688,6 +2762,7 @@ function Component() {
 
     window.addEventListener('scroll', handleScroll);
 
+    // Dọn dẹp trả lại bộ nhớ khi component bị hủy
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -2736,9 +2811,9 @@ function createHandler(items: LargeObject[]) {
   };
 }
 
-// ✅ Good: Extract only what you need
+// ✅ Tốt: Chỉ lấy những gì cần thiết
 function createHandler(items: LargeObject[]) {
-  const length = items.length; // Only store length
+  const length = items.length; // Chỉ lưu số lượng
 
   return () => {
     console.log(length);
@@ -2787,7 +2862,7 @@ function Dashboard() {
   );
 }
 
-// ✅ Good: Lazy load when needed
+// ✅ Tốt: Lazy load (Chỉ tải khi cần dùng tới)
 const Chart = lazy(() => import('heavy-chart-library'));
 
 function Dashboard() {
@@ -2806,10 +2881,10 @@ function Dashboard() {
 }
 
 /**
- * Bundle size:
- * • Before: 500KB loaded upfront
- * • After: 500KB loaded only when needed
- * → Initial load 500KB smaller!
+ * 📦 TỐI ƯU KÍCH THƯỚC FILE:
+ * • Trước: Tải cả cục 500KB ngay từ đầu (Dù chưa chắc user có xem biểu đồ không)
+ * • Sau: Chỉ tải 500KB đó KHI NÀO user bấm nút "Show Chart".
+ * → Trang web hiện lên nhanh hơn hẳn vì bớt được 500KB "nặng nợ".
  */
 
 // ══════════════════════════════════════════════════════════
@@ -3139,11 +3214,9 @@ function Component({ isPrimary }) {
 // REFLECTED XSS
 // ══════════════════════════════════════════════════════════
 
-// ❌ Vulnerable: URL parameter directly in HTML
-const searchQuery = new URLSearchParams(location.search).get('q');
+// ❌ Nguy hiểm: Chèn trực tiếp input của user vào HTML
+// Nếu user nhập: <script>alert('Bị hack rồi!')</script> -> Web bạn sẽ chạy script đó ngay!
 document.body.innerHTML = `<h1>Results for: ${searchQuery}</h1>`;
-
-// Attack: ?q=<script>alert(document.cookie)</script>
 
 // ✅ Fix 1: Use textContent
 document.querySelector('h1').textContent = `Results for: ${searchQuery}`;
@@ -3158,29 +3231,29 @@ document.body.innerHTML = DOMPurify.sanitize(
 // STORED XSS
 // ══════════════════════════════════════════════════════════
 
-// ❌ Vulnerable: User input stored and rendered
-const comment = await fetchComment(); // From database
-element.innerHTML = comment.text; // XSS if comment contains <script>
+// ❌ Lỗ hổng: Input của user được lưu và render lại mà không qua xử lý
+const comment = await fetchComment(); // Lấy từ database
+element.innerHTML = comment.text; // XSS nếu comment chứa thẻ <script>
 
-// ✅ Fix: Sanitize on display
+// ✅ Fix: Sanitize (làm sạch) trước khi hiển thị
 element.innerHTML = DOMPurify.sanitize(comment.text);
 
-// ✅ Better: Sanitize on server before storing
-// Backend validation + sanitization
+// ✅ Tốt hơn: Sanitize ngay từ server trước khi lưu
+// Validate ở Backend + Sanitize
 
 // ══════════════════════════════════════════════════════════
 // DOM-BASED XSS
 // ══════════════════════════════════════════════════════════
 
-// ❌ Vulnerable: eval() or Function()
+// ❌ Lỗ hổng: Sử dụng eval() hoặc Function() (Cấm kỵ!)
 const userCode = getUserInput();
-eval(userCode); // Never do this!
+eval(userCode); // Đừng bao giờ làm thế này!
 
-// ❌ Vulnerable: innerHTML with user data
+// ❌ Lỗ hổng: innerHTML với dữ liệu từ user
 const name = location.hash.slice(1);
 element.innerHTML = `<div>Hello ${name}</div>`;
 
-// ✅ Fix: Use safe DOM methods
+// ✅ Fix: Sử dụng các phương thức DOM an toàn
 const div = document.createElement('div');
 div.textContent = `Hello ${name}`;
 element.appendChild(div);
@@ -3220,11 +3293,12 @@ element.appendChild(div);
 // ══════════════════════════════════════════════════════════
 
 /**
- * User logged into bank.com
- * Attacker sends email with:
- * <img src="https://bank.com/transfer?to=attacker&amount=1000">
+ * KỊCH BẢN TẤN CÔNG:
+ * User đang đăng nhập bank.com.
+ * Kẻ xấu gửi email chứa một tấm ảnh "ma ma":
+ * <img src="https://bank.com/transfer?to=ke-xau&amount=1000">
  *
- * Browser automatically sends cookies → Money transferred!
+ * Trình duyệt tự động gửi kèm Cookie đăng nhập -> Tiền bay màu!
  */
 
 // ══════════════════════════════════════════════════════════
@@ -3234,7 +3308,7 @@ element.appendChild(div);
 // Server generates token per session/request
 // Backend sets token in cookie or meta tag
 
-// ✅ Include token in all state-changing requests
+// ✅ Gửi kèm token trong mọi request thay đổi dữ liệu (POST, PUT, DELETE)
 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
 fetch('/api/transfer', {
@@ -3246,7 +3320,7 @@ fetch('/api/transfer', {
   body: JSON.stringify({ to: 'recipient', amount: 1000 }),
 });
 
-// Server validates token matches session
+// Server sẽ kiểm tra token có khớp với session của user không
 
 // ══════════════════════════════════════════════════════════
 // PREVENTION 2: SameSite Cookies
@@ -3265,19 +3339,19 @@ fetch('/api/transfer', {
 // PREVENTION 3: Custom Headers
 // ══════════════════════════════════════════════════════════
 
-// Simple requests (GET, POST with simple content-type) auto-send cookies
-// But custom headers require preflight (CORS), which attacker can't do
+// Các request đơn giản (GET, POST dạng form) tự động gửi cookie
+// Nhưng custom headers yêu cầu preflight (CORS), hacker không thể giả mạo dễ dàng
 
 fetch('/api/transfer', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest', // Custom header
+    'X-Requested-With': 'XMLHttpRequest', // Header tự chế
   },
   body: JSON.stringify({ to: 'recipient', amount: 1000 }),
 });
 
-// Server checks for custom header presence
+// Server kiểm tra sự tồn tại của header này
 ```
 
 ---
@@ -3293,7 +3367,7 @@ fetch('/api/transfer', {
 // JWT vs SESSION COOKIES
 // ══════════════════════════════════════════════════════════
 
-// ❌ JWT in localStorage (Vulnerable to XSS)
+// ❌ JWT lưu trong localStorage (Dễ bị XSS đánh cắp)
 localStorage.setItem('token', jwt);
 
 fetch('/api/protected', {
@@ -3302,11 +3376,11 @@ fetch('/api/protected', {
   },
 });
 
-// ✅ HttpOnly cookies (Safe from XSS)
-// Server sets: Set-Cookie: session=abc123; HttpOnly; Secure; SameSite=Strict
+// ✅ HttpOnly cookies (An toàn với XSS vì JS không đọc được)
+// Server set: Set-Cookie: session=abc123; HttpOnly; Secure; SameSite=Strict
 
 fetch('/api/protected', {
-  credentials: 'include', // Send cookies automatically
+  credentials: 'include', // Tự động gửi cookie đi kèm
 });
 
 // ══════════════════════════════════════════════════════════
@@ -3350,14 +3424,14 @@ axios.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 // ══════════════════════════════════════════════════════════
 // PASSWORD SECURITY
 // ══════════════════════════════════════════════════════════
 
-// ✅ Client-side validation (UX)
+// ✅ Validate ở phía Client (Tăng trải nghiệm UX)
 function validatePassword(password: string) {
   const errors = [];
 
@@ -3389,8 +3463,8 @@ function validatePassword(password: string) {
   return errors;
 }
 
-// ✅ Backend hashing (NEVER store plaintext!)
-// bcrypt with salt rounds >= 12
+// ✅ Hash mật khẩu ở Backend (TUYỆT ĐỐI không lưu mật khẩu dạng chữ rõ!)
+// Dùng thư viện như bcrypt để "mã hóa" mật khẩu thành một chuỗi không ai đọc được.
 // const hash = await bcrypt.hash(password, 12);
 ```
 
@@ -3405,7 +3479,7 @@ function validatePassword(password: string) {
  * 📜 VIRTUAL SCROLLING
  */
 
-// ❌ Problem: Rendering 10,000 items = slow
+// ❌ Vấn đề: Render 10.000 items = Rất chậm
 function BadList({ items }) {
   return (
     <div>
@@ -3439,10 +3513,10 @@ function VirtualList({ items }) {
 }
 
 /**
- * Performance (10,000 items):
- * • Full render: ~500ms, 10,000 DOM nodes
- * • Virtual scroll: ~50ms, ~15 DOM nodes (only visible)
- * → 10x faster, 99% fewer DOM nodes!
+ * HIỆU NĂNG (Ghi chú Senior):
+ * • Render kiểu cũ: Mất 500ms, tạo 10.000 thẻ div (Làm trình duyệt đuối sức).
+ * • Virtual scroll: Chỉ mất 50ms, chỉ tạo ~15 thẻ div (Chỉ hiện cái user thấy).
+ * → Tiết kiệm 99% tài nguyên, web mượt như lụa!
  */
 ```
 
@@ -3540,7 +3614,7 @@ function Component() {
   const [result, setResult] = useState(null);
 
   const handleCalculate = () => {
-    // ❌ Blocks UI thread for 5 seconds
+    // ❌ Làm treo UI thread trong 5 giây (User không bấm gì được)
     const result = heavyComputation(largeDataset);
     setResult(result);
   };
@@ -3574,7 +3648,7 @@ function Component() {
   }, []);
 
   const handleCalculate = () => {
-    // ✅ Non-blocking: UI remains responsive
+    // ✅ Không chặn UI: Giao diện vẫn mượt mà
     workerRef.current?.postMessage(largeDataset);
   };
 
@@ -3635,12 +3709,12 @@ describe('LoginForm', () => {
 
     render(<LoginForm onSubmit={handleSubmit} />);
 
-    // Find by role/label (accessible)
+    // Tìm element bằng role/label (giống cách user dùng)
     await user.type(screen.getByLabelText(/email/i), 'user@example.com');
     await user.type(screen.getByLabelText(/password/i), 'password123');
     await user.click(screen.getByRole('button', { name: /login/i }));
 
-    // Assert behavior
+    // Khẳng định hành vi (Assert behavior)
     await waitFor(() => {
       expect(handleSubmit).toHaveBeenCalledWith({
         email: 'user@example.com',
@@ -3660,14 +3734,14 @@ describe('LoginForm', () => {
   });
 });
 
-// ❌ Bad: Testing implementation details
+// ❌ Tệ: Test chi tiết cài đặt (Implementation details)
 it('updates state on input change', () => {
   const { container } = render(<LoginForm />);
   const input = container.querySelector('input[name="email"]');
 
   fireEvent.change(input, { target: { value: 'test@example.com' } });
 
-  // Don't test state directly!
+  // Đừng test state trực tiếp! Nếu đổi tên state test sẽ tạch
   expect(wrapper.state('email')).toBe('test@example.com');
 });
 
@@ -3713,8 +3787,8 @@ it('renders correctly', () => {
   expect(container.firstChild).toMatchSnapshot();
 });
 
-// ✅ Use for: Static components, complex UI
-// ❌ Avoid for: Dynamic content, frequently changing
+// ✅ Dùng cho: Component tĩnh, UI phức tạp ít thay đổi
+// ❌ Tránh dùng cho: Nội dung động, thay đổi thường xuyên
 ```
 
 ---
@@ -3777,7 +3851,7 @@ test('handles API errors gracefully', async ({ page }) => {
 
   // Assert error message shown
   await expect(page.locator('.error-message')).toHaveText(
-    'Failed to load users'
+    'Failed to load users',
   );
 });
 ```
@@ -3790,18 +3864,18 @@ test('handles API errors gracefully', async ({ page }) => {
 
 ```typescript
 /**
- * 📋 SENIOR FRONTEND DEVELOPER CHECKLIST
+ * 📋 BẢNG KIỂM TRA CHO SENIOR FRONTEND (Mọi lúc mọi nơi)
  */
 
 const seniorDevHandbook = {
   // ═══════════════════════════════════════════════════════
   // CORE JAVASCRIPT
-  // ═══════════════════════════════════════════════════════
+  // ══════════════════════════════════════════════ ═════════
   javascript: {
     fundamentals: [
-      '✅ Closures, hoisting, scope chain',
-      '✅ Prototypes & inheritance',
-      '✅ this binding (4 rules)',
+      '✅ Closures, hoisting, scope chain (Chuỗi phạm vi)',
+      '✅ Prototypes & inheritance (Kế thừa)',
+      '✅ this binding (4 quy tắc)',
       '✅ Event loop (microtasks, macrotasks)',
       '✅ Promises, async/await',
       '✅ ES6+ features (destructuring, spread, optional chaining)',
@@ -3809,17 +3883,17 @@ const seniorDevHandbook = {
     advanced: [
       '✅ Generators & iterators',
       '✅ Proxy & Reflect',
-      '✅ WeakMap/WeakSet for memory management',
-      '✅ Symbol for private properties',
+      '✅ WeakMap/WeakSet (Quản lý bộ nhớ)',
+      '✅ Symbol (Thuộc tính ẩn)',
       '✅ Temporal Dead Zone (TDZ)',
       '✅ Module systems (ESM vs CommonJS)',
     ],
     performance: [
-      '✅ O(n²) → O(n) optimizations',
-      '✅ Map/Set for lookups',
-      '✅ Memoization patterns',
-      '✅ Debounce/throttle',
-      '✅ Web Workers for heavy tasks',
+      '✅ Tối ưu O(n²) → O(n)',
+      '✅ Dùng Map/Set để tra cứu nhanh',
+      '✅ Memoization patterns (Ghi nhớ kết quả)',
+      '✅ Debounce/throttle (Điều tiết sự kiện)',
+      '✅ Web Workers cho tác vụ nặng',
     ],
   },
 
@@ -4089,10 +4163,10 @@ export default seniorDevHandbook;
 // LAZY LOAD IMAGES
 // ══════════════════════════════════════════════════════════
 
-// ❌ Old way: Load all images immediately
+// ❌ Cách cũ: Tải tất cả ảnh ngay lập tức
 <img src="heavy-image.jpg" alt="..." />
 
-// ✅ New way: Load when visible
+// ✅ Cách mới: Chỉ tải khi user cuộn tới (Lazy loading)
 <img data-src="heavy-image.jpg" alt="..." loading="lazy" />
 
 const lazyLoadImages = () => {
@@ -4108,7 +4182,7 @@ const lazyLoadImages = () => {
       }
     });
   }, {
-    rootMargin: '50px' // Load 50px before visible
+    rootMargin: '50px' // Tải trước khi xuất hiện 50px
   });
 
   images.forEach(img => imageObserver.observe(img));
@@ -4214,33 +4288,34 @@ if ('serviceWorker' in navigator) {
 const CACHE_NAME = 'v1';
 const STATIC_ASSETS = [
   '/',
+  '/',
   '/index.html',
   '/styles.css',
   '/app.js',
   '/logo.png',
 ];
 
-// Install: Cache static assets
+// Install: Cache các tài nguyên tĩnh
 self.addEventListener('install', (event: ExtendableEvent) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)),
   );
 });
 
-// Activate: Clean old caches
+// Activate: Dọn dẹp cache cũ
 self.addEventListener('activate', (event: ExtendableEvent) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
           .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
+          .map((name) => caches.delete(name)),
       );
-    })
+    }),
   );
 });
 
-// Fetch: Network-first, fallback to cache
+// Fetch: Ưu tiên Network, fallback về Cache (Network-first)
 self.addEventListener('fetch', (event: FetchEvent) => {
   event.respondWith(
     fetch(event.request)
@@ -4257,7 +4332,7 @@ self.addEventListener('fetch', (event: FetchEvent) => {
       .catch(() => {
         // Network failed, try cache
         return caches.match(event.request);
-      })
+      }),
   );
 });
 
@@ -4271,7 +4346,7 @@ self.addEventListener('fetch', (event: FetchEvent) => {
       return caches.match(event.request).then((response) => {
         return response || caches.match('/offline.html');
       });
-    })
+    }),
   );
 });
 
@@ -4344,7 +4419,7 @@ self.addEventListener('push', (event: PushEvent) => {
         { action: 'open', title: 'Open App' },
         { action: 'close', title: 'Close' },
       ],
-    })
+    }),
   );
 });
 
@@ -4589,7 +4664,7 @@ if ('storage' in navigator && 'estimate' in navigator.storage) {
   navigator.storage.estimate().then((estimate) => {
     console.log(`Using ${estimate.usage} of ${estimate.quota} bytes`);
     console.log(
-      `${((estimate.usage! / estimate.quota!) * 100).toFixed(2)}% used`
+      `${((estimate.usage! / estimate.quota!) * 100).toFixed(2)}% used`,
     );
   });
 }
@@ -4630,15 +4705,15 @@ module.exports = {
 // COMMON BUNDLE BLOAT & FIXES
 // ══════════════════════════════════════════════════════════
 
-// ❌ Problem: Importing entire library
+// ❌ Vấn đề: Import toàn bộ thư viện (Nặng)
 import _ from 'lodash'; // 70KB
 import moment from 'moment'; // 230KB
 
-// ✅ Solution 1: Import specific functions
+// ✅ Giải pháp 1: Chỉ import hàm cần dùng
 import debounce from 'lodash/debounce'; // 2KB
 import format from 'date-fns/format'; // 2KB
 
-// ✅ Solution 2: Use babel-plugin-lodash
+// ✅ Giải pháp 2: Dùng plugin babel-plugin-lodash
 // .babelrc
 {
   "plugins": ["lodash"]
@@ -4651,10 +4726,10 @@ import { debounce, throttle } from 'lodash';
 // DYNAMIC IMPORTS
 // ══════════════════════════════════════════════════════════
 
-// ❌ Static import (always loaded)
+// ❌ Import tĩnh (Luôn tải về ngay từ đầu)
 import Chart from 'chart.js';
 
-// ✅ Dynamic import (loaded when needed)
+// ✅ Import động (Chỉ tải khi cần)
 button.addEventListener('click', async () => {
   const Chart = await import('chart.js');
   new Chart.default(ctx, config);
@@ -4726,16 +4801,20 @@ module.exports = {
   }
 };
 
+    }
+  }
+};
+
 /**
- * Before optimization: 1 file (500KB)
- * After optimization:
+ * Trước khi tối ưu: 1 file duy nhất (500KB)
+ * Sau khi tối ưu:
  * • main.js: 50KB
- * • react.js: 120KB (cached)
- * • vendors.js: 200KB (cached)
- * • common.js: 30KB (cached)
+ * • react.js: 120KB (được cache lâu dài)
+ * • vendors.js: 200KB (được cache)
+ * • common.js: 30KB (được cache)
  *
- * Total: 400KB (20% smaller)
- * Subsequent loads: 50KB only! (90% cached)
+ * Tổng: 400KB (nhẹ hơn 20%)
+ * Các lần tải sau: Chỉ cần tải 50KB main.js! (90% đã có trong cache)
  */
 ```
 
@@ -6474,15 +6553,4142 @@ function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
 
 ---
 
+## **XXV. 🔥 10 Trường Hợp Xử Lý Frontend Khó & Tâm Đắc Nhất**
+
+> **"Đây là 10 bài toán thực tế mà Senior Frontend Developer thường gặp — mỗi case đều có thể trở thành 'bẫy' nếu không hiểu sâu bản chất."**
+
+---
+
+### **25.1. 🏎️ Race Condition Trong Search/Autocomplete API Calls**
+
+**Vấn đề:** User gõ nhanh trong search input → nhiều request bắn liên tục → response cũ đến SAU response mới → UI hiển thị kết quả sai (stale data).
+
+```
+User gõ: "r" → "re" → "rea" → "reac" → "react"
+API calls:  ①    ②     ③      ④       ⑤
+
+Response order thực tế (network không đảm bảo thứ tự):
+⑤ "react" → trả về trước (nhanh)
+③ "rea"   → trả về SAU   (chậm) ← 💥 GHI ĐÈ kết quả đúng!
+```
+
+```typescript
+// ❌ SAI: Không xử lý race condition
+function useSearch(query: string) {
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    fetch(`/api/search?q=${query}`)
+      .then((res) => res.json())
+      .then((data) => setResults(data)); // Response cũ có thể ghi đè response mới!
+  }, [query]);
+
+  return results;
+}
+
+// ✅ ĐÚNG - Cách 1: AbortController (Native, Recommended)
+function useSearch(query: string) {
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
+
+    const controller = new AbortController();
+    setLoading(true);
+    setError(null);
+
+    fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+      signal: controller.signal,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        setResults(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (err.name !== 'AbortError') {
+          setError(err);
+          setLoading(false);
+        }
+        // AbortError = request bị cancel → KHÔNG update state (đây là key!)
+      });
+
+    // Cleanup: Hủy request cũ khi query thay đổi hoặc component unmount
+    return () => controller.abort();
+  }, [query]);
+
+  return { results, loading, error };
+}
+
+// ✅ ĐÚNG - Cách 2: Request ID tracking (cho trường hợp không dùng được AbortController)
+function useSearchWithId(query: string) {
+  const [results, setResults] = useState([]);
+  const latestRequestId = useRef(0);
+
+  useEffect(() => {
+    const requestId = ++latestRequestId.current; // Tăng ID mỗi lần gọi
+
+    fetch(`/api/search?q=${query}`)
+      .then((res) => res.json())
+      .then((data) => {
+        // Chỉ update nếu đây là request MỚI NHẤT
+        if (requestId === latestRequestId.current) {
+          setResults(data);
+        }
+        // Nếu không → bỏ qua response cũ (stale)
+      });
+  }, [query]);
+
+  return results;
+}
+
+// ✅ ĐÚNG - Cách 3: Kết hợp Debounce + AbortController (Production-grade)
+function useDebouncedSearch(query: string, delay = 300) {
+  const [results, setResults] = useState([]);
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+
+  // Bước 1: Debounce input (giảm số lượng API calls)
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(query), delay);
+    return () => clearTimeout(timer);
+  }, [query, delay]);
+
+  // Bước 2: Fetch với AbortController (xử lý race condition)
+  useEffect(() => {
+    if (!debouncedQuery) return;
+    const controller = new AbortController();
+
+    fetch(`/api/search?q=${debouncedQuery}`, { signal: controller.signal })
+      .then((res) => res.json())
+      .then(setResults)
+      .catch((err) => {
+        if (err.name !== 'AbortError') console.error(err);
+      });
+
+    return () => controller.abort();
+  }, [debouncedQuery]);
+
+  return results;
+}
+```
+
+**🧠 Bài học:**
+- **AbortController** là giải pháp native tốt nhất — hủy cả network request thật sự (tiết kiệm bandwidth)
+- **Request ID** là fallback khi API không support abort (WebSocket, GraphQL subscription)
+- **Debounce + Abort** là combo tối ưu cho production: giảm calls VÀ đúng thứ tự
+
+---
+
+### **25.2. 🧟 Memory Leak Trong SPA — "Sát Thủ Thầm Lặng"**
+
+**Vấn đề:** SPA không reload trang → memory tích lũy liên tục → app chậm dần → crash sau vài giờ sử dụng.
+
+```typescript
+/**
+ * 🔴 CÁC NGUỒN MEMORY LEAK PHỔ BIẾN:
+ *
+ * 1. Event listeners không remove
+ * 2. setInterval/setTimeout không clear
+ * 3. WebSocket/EventSource không close
+ * 4. Closure giữ reference đến DOM đã bị remove
+ * 5. Global variables tích lũy data
+ * 6. Detached DOM nodes (DOM zombie)
+ * 7. IntersectionObserver/MutationObserver không disconnect
+ * 8. Large object trong React state không cleanup
+ */
+
+// ❌ SAI: Leak ở KHẮP NƠI
+function LeakyComponent() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    // Leak 1: Event listener trên window không remove
+    window.addEventListener('resize', handleResize);
+
+    // Leak 2: setInterval chạy mãi
+    setInterval(() => {
+      fetch('/api/data').then((r) => r.json()).then(setData);
+    }, 5000);
+
+    // Leak 3: WebSocket không close
+    const ws = new WebSocket('ws://localhost:3000');
+    ws.onmessage = (e) => setData(JSON.parse(e.data));
+
+    // Leak 4: Subscription không unsubscribe
+    const subscription = eventBus.on('update', (newData) => {
+      setData(newData);
+    });
+
+    // Không return cleanup function! 💀
+  }, []);
+
+  return <div>{data.length} items</div>;
+}
+
+// ✅ ĐÚNG: Cleanup TRIỆT ĐỂ
+function CleanComponent() {
+  const [data, setData] = useState([]);
+  const wsRef = useRef<WebSocket | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    // 1. Event listener — lưu reference để remove chính xác
+    const handleResize = debounce(() => {
+      if (isMountedRef.current) {
+        console.log('Resized:', window.innerWidth);
+      }
+    }, 250);
+    window.addEventListener('resize', handleResize);
+
+    // 2. Interval — lưu ID để clear
+    const intervalId = setInterval(async () => {
+      try {
+        const res = await fetch('/api/data');
+        const json = await res.json();
+        if (isMountedRef.current) setData(json); // Guard: chỉ setState khi còn mount
+      } catch (e) {
+        console.error('Fetch failed:', e);
+      }
+    }, 5000);
+
+    // 3. WebSocket — lưu ref để close
+    const ws = new WebSocket('ws://localhost:3000');
+    wsRef.current = ws;
+    ws.onmessage = (e) => {
+      if (isMountedRef.current) {
+        setData(JSON.parse(e.data));
+      }
+    };
+
+    // 4. Subscription — lưu unsubscribe function
+    const unsubscribe = eventBus.on('update', (newData) => {
+      if (isMountedRef.current) setData(newData);
+    });
+
+    // ✅ CLEANUP: Dọn dẹp TẤT CẢ khi unmount
+    return () => {
+      isMountedRef.current = false;
+      window.removeEventListener('resize', handleResize);
+      handleResize.cancel?.(); // Cancel debounce pending
+      clearInterval(intervalId);
+      ws.close();
+      wsRef.current = null;
+      unsubscribe();
+    };
+  }, []);
+
+  return <div>{data.length} items</div>;
+}
+
+// ✅ ADVANCED: Custom hook tái sử dụng cho cleanup pattern
+function useCleanup() {
+  const cleanups = useRef<Array<() => void>>([]);
+
+  const addCleanup = useCallback((fn: () => void) => {
+    cleanups.current.push(fn);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      cleanups.current.forEach((fn) => fn());
+      cleanups.current = [];
+    };
+  }, []);
+
+  return addCleanup;
+}
+
+// Sử dụng:
+function MyComponent() {
+  const addCleanup = useCleanup();
+
+  useEffect(() => {
+    const handler = () => console.log('scroll');
+    window.addEventListener('scroll', handler);
+    addCleanup(() => window.removeEventListener('scroll', handler));
+
+    const id = setInterval(() => console.log('tick'), 1000);
+    addCleanup(() => clearInterval(id));
+  }, [addCleanup]);
+}
+```
+
+**🧠 Bài học:**
+- **Quy tắc vàng:** Mỗi `addEventListener` phải có `removeEventListener`, mỗi `setInterval` phải có `clearInterval`
+- Dùng `isMountedRef` guard cho async operations để tránh "setState on unmounted component"
+- Kiểm tra memory leak bằng Chrome DevTools → Memory tab → Heap Snapshot → Compare
+
+---
+
+### **25.3. 👻 Stale Closure Trong React Hooks — "Bóng Ma Giá Trị Cũ"**
+
+**Vấn đề:** Closure trong useEffect/useCallback/setTimeout capture giá trị tại thời điểm tạo → dùng giá trị cũ (stale) thay vì giá trị mới nhất.
+
+```typescript
+// ❌ SAI: Count luôn là 0 trong setInterval (Classic stale closure)
+function StaleCounter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      // ⚠️ count ở đây LUÔN = 0 (giá trị lúc useEffect chạy lần đầu)
+      // Vì closure "đóng băng" giá trị count = 0
+      console.log('Current count:', count); // Luôn log: 0
+      setCount(count + 1); // Luôn set: 0 + 1 = 1 → count "đứng yên" ở 1
+    }, 1000);
+    return () => clearInterval(id);
+  }, []); // deps rỗng = chỉ chạy 1 lần = closure chỉ capture count = 0
+
+  return <div>{count}</div>; // Hiển thị: luôn là 1
+}
+
+// ✅ ĐÚNG - Cách 1: Functional updater (đơn giản nhất)
+function CorrectCounter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      // Functional updater: nhận giá trị HIỆN TẠI (prev), không phụ thuộc closure
+      setCount((prev) => prev + 1); // prev luôn là giá trị mới nhất
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return <div>{count}</div>; // Hoạt động đúng: 1, 2, 3, 4...
+}
+
+// ✅ ĐÚNG - Cách 2: useRef cho giá trị luôn "tươi mới" (khi cần ĐỌC, không chỉ SET)
+function CounterWithRef() {
+  const [count, setCount] = useState(0);
+  const countRef = useRef(count);
+  countRef.current = count; // Luôn sync ref với state mới nhất
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      // Ref luôn trỏ đến giá trị mới nhất (không bị closure "đóng băng")
+      console.log('Current count:', countRef.current); // Giá trị đúng!
+      setCount((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return <div>{count}</div>;
+}
+
+// ✅ ĐÚNG - Cách 3: useEvent pattern (React RFC, tự implement)
+// Giải quyết triệt để: callback luôn "tươi" mà ref stable (không trigger re-render)
+function useEvent<T extends (...args: any[]) => any>(handler: T): T {
+  const handlerRef = useRef(handler);
+
+  // Luôn cập nhật ref khi handler thay đổi (mỗi render)
+  useLayoutEffect(() => {
+    handlerRef.current = handler;
+  });
+
+  // Return stable function (reference không đổi giữa các render)
+  return useCallback((...args: any[]) => {
+    return handlerRef.current(...args);
+  }, []) as T;
+}
+
+// Sử dụng useEvent:
+function ChatRoom({ roomId, onMessage }) {
+  // onSend luôn "thấy" roomId mới nhất, nhưng reference stable
+  const onSend = useEvent((text: string) => {
+    sendMessage(roomId, text); // roomId luôn mới nhất, không stale!
+  });
+
+  useEffect(() => {
+    const ws = connectToRoom(roomId);
+    ws.on('message', onSend); // Không cần onSend trong deps!
+    return () => ws.disconnect();
+  }, [roomId]); // Chỉ reconnect khi roomId đổi, không khi onSend đổi
+}
+```
+
+**🧠 Bài học:**
+- **Functional updater** (`setCount(prev => prev + 1)`) giải quyết 80% stale closure khi chỉ cần SET
+- **useRef** khi cần ĐỌC giá trị mới nhất trong async code (timer, event handler, WebSocket)
+- **useEvent** pattern khi cần callback stable nhưng luôn "thấy" props/state mới nhất
+- **Nguyên tắc:** Nếu closure cần giá trị "sống", hãy dùng ref. Nếu chỉ cần update state, dùng functional updater.
+
+---
+
+### **25.4. 🎭 Optimistic UI Updates Với Rollback — "Update Trước, Hỏi Sau"**
+
+**Vấn đề:** Chờ API response rồi mới update UI → UX chậm. Optimistic update UI ngay nhưng phải rollback nếu API fail → phức tạp khi có nhiều concurrent operations.
+
+```typescript
+// ❌ SAI: Chờ API xong mới update → UX "lag" 200-2000ms
+function PessimisticLike({ postId, initialLikes }) {
+  const [likes, setLikes] = useState(initialLikes);
+  const [loading, setLoading] = useState(false);
+
+  const handleLike = async () => {
+    setLoading(true);
+    try {
+      const result = await api.likePost(postId); // Chờ 200-2000ms
+      setLikes(result.likes); // Mới update UI → user cảm thấy "lag"
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button disabled={loading} onClick={handleLike}>
+      ❤️ {likes} {loading && '...'}
+    </button>
+  );
+}
+
+// ✅ ĐÚNG: Optimistic Update + Rollback + Error Recovery
+function useOptimisticMutation<TData, TVariables>({
+  mutationFn,
+  onMutate,   // Chạy TRƯỚC API call → update UI optimistic
+  onError,    // Rollback khi fail
+  onSuccess,  // Sync với server data
+  onSettled,  // Chạy cuối cùng (invalidate cache, v.v.)
+}: {
+  mutationFn: (variables: TVariables) => Promise<TData>;
+  onMutate?: (variables: TVariables) => any; // return context for rollback
+  onError?: (error: Error, variables: TVariables, context: any) => void;
+  onSuccess?: (data: TData, variables: TVariables) => void;
+  onSettled?: () => void;
+}) {
+  const [status, setStatus] = useState<'idle' | 'pending' | 'error'>('idle');
+  const contextRef = useRef<any>(null);
+
+  const mutate = useCallback(
+    async (variables: TVariables) => {
+      setStatus('pending');
+
+      // Bước 1: Lưu snapshot + update UI optimistic
+      const context = onMutate?.(variables);
+      contextRef.current = context;
+
+      try {
+        // Bước 2: Gọi API thật
+        const data = await mutationFn(variables);
+
+        // Bước 3: Thành công → sync server data
+        onSuccess?.(data, variables);
+        setStatus('idle');
+      } catch (error) {
+        // Bước 4: Thất bại → ROLLBACK về snapshot
+        onError?.(error as Error, variables, contextRef.current);
+        setStatus('error');
+      } finally {
+        onSettled?.();
+      }
+    },
+    [mutationFn, onMutate, onError, onSuccess, onSettled]
+  );
+
+  return { mutate, status };
+}
+
+// ✅ Sử dụng trong component:
+function OptimisticLike({ postId, initialLikes, isLiked: initialIsLiked }) {
+  const [likes, setLikes] = useState(initialLikes);
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
+
+  const { mutate: toggleLike, status } = useOptimisticMutation({
+    mutationFn: (variables: { postId: string }) =>
+      api.toggleLike(variables.postId),
+
+    onMutate: () => {
+      // Lưu snapshot TRƯỚC khi thay đổi
+      const snapshot = { likes, isLiked };
+
+      // Update UI NGAY LẬP TỨC (0ms delay!)
+      setIsLiked((prev) => !prev);
+      setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
+
+      return snapshot; // Return context cho rollback
+    },
+
+    onError: (_error, _variables, snapshot) => {
+      // API lỗi → ROLLBACK về trạng thái cũ
+      setLikes(snapshot.likes);
+      setIsLiked(snapshot.isLiked);
+      toast.error('Không thể thực hiện. Vui lòng thử lại.');
+    },
+
+    onSuccess: (serverData) => {
+      // Sync chính xác từ server (source of truth)
+      setLikes(serverData.likes);
+      setIsLiked(serverData.isLiked);
+    },
+  });
+
+  return (
+    <button
+      onClick={() => toggleLike({ postId })}
+      className={isLiked ? 'liked' : ''}
+      disabled={status === 'pending'}
+    >
+      {isLiked ? '❤️' : '🤍'} {likes}
+    </button>
+  );
+}
+
+// ✅ ADVANCED: Optimistic update cho TODO list (thêm/xóa/sửa)
+function useTodosOptimistic() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+
+  const addTodo = useOptimisticMutation({
+    mutationFn: (newTodo: Omit<Todo, 'id'>) => api.createTodo(newTodo),
+
+    onMutate: (newTodo) => {
+      const tempId = `temp-${Date.now()}`; // ID tạm
+      const optimisticTodo = { ...newTodo, id: tempId, _isOptimistic: true };
+      const snapshot = [...todos];
+
+      setTodos((prev) => [...prev, optimisticTodo]);
+      return { snapshot, tempId };
+    },
+
+    onError: (_err, _vars, ctx) => {
+      setTodos(ctx.snapshot); // Rollback toàn bộ list
+    },
+
+    onSuccess: (serverTodo, _vars) => {
+      // Thay thế todo tạm bằng todo thật từ server
+      setTodos((prev) =>
+        prev.map((t) => (t._isOptimistic ? serverTodo : t))
+      );
+    },
+  });
+
+  return { todos, addTodo: addTodo.mutate };
+}
+```
+
+**🧠 Bài học:**
+- **Optimistic UI** = update ngay → rollback nếu fail. Instagram, Twitter, Facebook đều dùng pattern này
+- Key: Luôn lưu **snapshot** trước khi optimistic update để có thể rollback chính xác
+- Dùng **tempId** cho item mới, replace bằng server ID khi success
+- TanStack Query (`useMutation` với `onMutate`) implement pattern này sẵn — nên dùng trong production
+
+---
+
+### **25.5. 📜 Virtualized List — Render 100K Items Mà Không Chết Browser**
+
+**Vấn đề:** Render danh sách lớn (10K-1M items) → tạo hàng nghìn DOM nodes → layout/paint chậm → scroll giật → browser freeze.
+
+```typescript
+/**
+ * 🔴 VẤN ĐỀ:
+ * - 10,000 items × ~10 DOM nodes/item = 100,000 DOM nodes
+ * - Browser phải layout, paint, composite TẤT CẢ
+ * - Scroll handler fire 60+ lần/giây
+ * - Memory: ~500MB cho 100K DOM nodes
+ *
+ * ✅ GIẢI PHÁP: Chỉ render items ĐANG THẤY trên màn hình
+ * - Viewport hiển thị ~20 items → chỉ tạo ~25 DOM nodes (có buffer)
+ * - Scroll → recycle DOM nodes (thay data, không tạo mới)
+ */
+
+// ✅ Custom Virtual List từ đầu (hiểu bản chất)
+function useVirtualList<T>({
+  items,
+  itemHeight,
+  containerHeight,
+  overscan = 5, // Số items render thêm bên trên/dưới viewport (smooth scroll)
+}: {
+  items: T[];
+  itemHeight: number;
+  containerHeight: number;
+  overscan?: number;
+}) {
+  const [scrollTop, setScrollTop] = useState(0);
+
+  // Tính toán items nào đang visible
+  const totalHeight = items.length * itemHeight; // Tổng chiều cao ảo
+  const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan);
+  const endIndex = Math.min(
+    items.length - 1,
+    Math.ceil((scrollTop + containerHeight) / itemHeight) + overscan
+  );
+
+  const visibleItems = items.slice(startIndex, endIndex + 1).map((item, i) => ({
+    item,
+    index: startIndex + i,
+    style: {
+      position: 'absolute' as const,
+      top: (startIndex + i) * itemHeight,
+      height: itemHeight,
+      width: '100%',
+    },
+  }));
+
+  const onScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    // requestAnimationFrame để batch scroll events → smooth
+    requestAnimationFrame(() => {
+      setScrollTop(e.currentTarget.scrollTop);
+    });
+  }, []);
+
+  return { visibleItems, totalHeight, onScroll };
+}
+
+// Sử dụng:
+function VirtualizedTable({ data }: { data: User[] }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { visibleItems, totalHeight, onScroll } = useVirtualList({
+    items: data,
+    itemHeight: 50,
+    containerHeight: 600,
+    overscan: 10,
+  });
+
+  return (
+    <div
+      ref={containerRef}
+      onScroll={onScroll}
+      style={{ height: 600, overflow: 'auto', position: 'relative' }}
+    >
+      {/* Spacer tạo scrollbar đúng kích thước */}
+      <div style={{ height: totalHeight, position: 'relative' }}>
+        {visibleItems.map(({ item, index, style }) => (
+          <div key={index} style={style}>
+            <UserRow user={item} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ✅ ADVANCED: Virtual List với DYNAMIC item height (khó hơn rất nhiều)
+function useDynamicVirtualList<T>({
+  items,
+  estimatedItemHeight,
+  containerHeight,
+  overscan = 5,
+}: {
+  items: T[];
+  estimatedItemHeight: number;
+  containerHeight: number;
+  overscan?: number;
+}) {
+  const [scrollTop, setScrollTop] = useState(0);
+  // Cache chiều cao thực của mỗi item sau khi render
+  const measuredHeights = useRef<Map<number, number>>(new Map());
+
+  // Tính vị trí Top của mỗi item dựa trên chiều cao đã measure
+  const getItemOffset = useCallback(
+    (index: number) => {
+      let offset = 0;
+      for (let i = 0; i < index; i++) {
+        offset += measuredHeights.current.get(i) ?? estimatedItemHeight;
+      }
+      return offset;
+    },
+    [estimatedItemHeight]
+  );
+
+  // Tìm item đầu tiên visible bằng binary search (O(log n) thay vì O(n))
+  const findStartIndex = useCallback(
+    (scrollPos: number) => {
+      let low = 0,
+        high = items.length - 1;
+      while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        const offset = getItemOffset(mid);
+        if (offset < scrollPos) low = mid + 1;
+        else high = mid - 1;
+      }
+      return Math.max(0, low - 1);
+    },
+    [items.length, getItemOffset]
+  );
+
+  // Measure item sau khi render
+  const measureItem = useCallback(
+    (index: number, element: HTMLElement | null) => {
+      if (element) {
+        const height = element.getBoundingClientRect().height;
+        if (measuredHeights.current.get(index) !== height) {
+          measuredHeights.current.set(index, height);
+        }
+      }
+    },
+    []
+  );
+
+  const startIndex = Math.max(0, findStartIndex(scrollTop) - overscan);
+  // ... tương tự tính endIndex
+
+  return { startIndex, measureItem /* ... */ };
+}
+```
+
+**🧠 Bài học:**
+- **Fixed height:** Dùng `react-window` hoặc `@tanstack/react-virtual` — đơn giản, hiệu quả
+- **Dynamic height:** Dùng `react-virtuoso` hoặc tự implement với ResizeObserver + height cache
+- Key insight: Không tạo DOM node cho item không visible → O(viewport) thay vì O(n)
+- Production: Luôn dùng thư viện đã battle-tested, chỉ tự implement khi cần custom đặc biệt
+
+---
+
+### **25.6. 🔌 WebSocket Reconnection Với Exponential Backoff**
+
+**Vấn đề:** WebSocket disconnect do mất mạng/server restart → cần auto-reconnect thông minh, không flood server, queue messages offline, sync state khi reconnect.
+
+```typescript
+/**
+ * 🔴 THỰC TẾ:
+ * - Mobile user vào tunnel → mất mạng 30 giây → cần auto reconnect
+ * - Server deploy mới → tất cả connections bị drop → 10K users reconnect cùng lúc
+ * - Nếu reconnect ngay lập tức → DDoS chính server của mình!
+ *
+ * ✅ GIẢI PHÁP: Exponential Backoff + Jitter + Message Queue
+ */
+
+type ConnectionState = 'connecting' | 'connected' | 'disconnected' | 'reconnecting';
+
+class ResilientWebSocket {
+  private ws: WebSocket | null = null;
+  private url: string;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 10;
+  private messageQueue: string[] = []; // Queue messages khi offline
+  private listeners = new Map<string, Set<Function>>();
+  private state: ConnectionState = 'disconnected';
+  private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+
+  constructor(url: string) {
+    this.url = url;
+    this.connect();
+  }
+
+  private connect() {
+    this.setState('connecting');
+
+    try {
+      this.ws = new WebSocket(this.url);
+
+      this.ws.onopen = () => {
+        console.log(`✅ WebSocket connected (attempt ${this.reconnectAttempts})`);
+        this.setState('connected');
+        this.reconnectAttempts = 0; // Reset counter on success
+
+        // Flush queued messages
+        this.flushMessageQueue();
+
+        // Start heartbeat (detect dead connections)
+        this.startHeartbeat();
+      };
+
+      this.ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type === 'pong') return; // Heartbeat response
+
+        // Emit to listeners
+        this.listeners.get(data.type)?.forEach((fn) => fn(data.payload));
+        this.listeners.get('*')?.forEach((fn) => fn(data)); // Wildcard
+      };
+
+      this.ws.onclose = (event) => {
+        console.log(`❌ WebSocket closed: code=${event.code} reason=${event.reason}`);
+        this.stopHeartbeat();
+
+        // 1000 = normal close (user navigated away) → don't reconnect
+        // 1001 = going away → don't reconnect
+        if (event.code !== 1000 && event.code !== 1001) {
+          this.scheduleReconnect();
+        } else {
+          this.setState('disconnected');
+        }
+      };
+
+      this.ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        // onclose sẽ fire sau onerror → reconnect logic ở onclose
+      };
+    } catch (error) {
+      console.error('WebSocket connection failed:', error);
+      this.scheduleReconnect();
+    }
+  }
+
+  // ⭐ EXPONENTIAL BACKOFF + JITTER
+  private getReconnectDelay(): number {
+    // Base delay: 1s, 2s, 4s, 8s, 16s, 32s (cap at 30s)
+    const baseDelay = Math.min(
+      1000 * Math.pow(2, this.reconnectAttempts),
+      30000
+    );
+
+    // Add jitter: ±30% randomness (tránh tất cả clients reconnect cùng lúc)
+    const jitter = baseDelay * 0.3 * (Math.random() * 2 - 1);
+
+    return Math.max(1000, baseDelay + jitter);
+  }
+
+  private scheduleReconnect() {
+    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+      console.error('❌ Max reconnect attempts reached. Giving up.');
+      this.setState('disconnected');
+      this.emit('max_retries_reached', null);
+      return;
+    }
+
+    const delay = this.getReconnectDelay();
+    this.reconnectAttempts++;
+    this.setState('reconnecting');
+
+    console.log(
+      `🔄 Reconnect attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts} in ${delay}ms`
+    );
+
+    this.reconnectTimer = setTimeout(() => this.connect(), delay);
+  }
+
+  // Queue messages khi offline → flush khi reconnect
+  send(type: string, payload: any) {
+    const message = JSON.stringify({ type, payload });
+
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.send(message);
+    } else {
+      console.log('📦 Queuing message (offline):', type);
+      this.messageQueue.push(message);
+    }
+  }
+
+  private flushMessageQueue() {
+    console.log(`📤 Flushing ${this.messageQueue.length} queued messages`);
+    while (this.messageQueue.length > 0) {
+      const msg = this.messageQueue.shift()!;
+      this.ws?.send(msg);
+    }
+  }
+
+  // Heartbeat: detect zombie connections (connected but not actually working)
+  private startHeartbeat() {
+    this.heartbeatTimer = setInterval(() => {
+      if (this.ws?.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify({ type: 'ping' }));
+      }
+    }, 30000); // Ping mỗi 30s
+  }
+
+  private stopHeartbeat() {
+    if (this.heartbeatTimer) {
+      clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
+    }
+  }
+
+  // Event system
+  on(event: string, callback: Function) {
+    if (!this.listeners.has(event)) this.listeners.set(event, new Set());
+    this.listeners.get(event)!.add(callback);
+    return () => this.listeners.get(event)?.delete(callback); // Unsubscribe fn
+  }
+
+  private emit(event: string, data: any) {
+    this.listeners.get(event)?.forEach((fn) => fn(data));
+  }
+
+  private setState(state: ConnectionState) {
+    this.state = state;
+    this.emit('connection_state', state);
+  }
+
+  destroy() {
+    this.reconnectTimer && clearTimeout(this.reconnectTimer);
+    this.stopHeartbeat();
+    this.ws?.close(1000, 'Client closing');
+    this.listeners.clear();
+    this.messageQueue = [];
+  }
+}
+
+// ✅ React Hook wrapper
+function useWebSocket(url: string) {
+  const wsRef = useRef<ResilientWebSocket | null>(null);
+  const [connectionState, setConnectionState] = useState<ConnectionState>('disconnected');
+
+  useEffect(() => {
+    const ws = new ResilientWebSocket(url);
+    wsRef.current = ws;
+
+    const unsub = ws.on('connection_state', setConnectionState);
+
+    return () => {
+      unsub();
+      ws.destroy();
+      wsRef.current = null;
+    };
+  }, [url]);
+
+  const send = useCallback((type: string, payload: any) => {
+    wsRef.current?.send(type, payload);
+  }, []);
+
+  const subscribe = useCallback((event: string, callback: Function) => {
+    return wsRef.current?.on(event, callback);
+  }, []);
+
+  return { send, subscribe, connectionState };
+}
+```
+
+**🧠 Bài học:**
+- **Exponential Backoff** tránh flood server: 1s → 2s → 4s → 8s → ... (cap at 30s)
+- **Jitter** (random delay) tránh "thundering herd" khi 10K clients reconnect cùng lúc
+- **Message Queue** không mất data khi offline
+- **Heartbeat** phát hiện "zombie connections" (TCP connected nhưng thực tế đã chết)
+
+---
+
+### **25.7. 🔄 Cross-Tab State Synchronization — Đồng Bộ Giữa Nhiều Tab**
+
+**Vấn đề:** User mở app trên nhiều tab → login/logout ở 1 tab nhưng tab khác không biết → inconsistent state, security risk (logout ở tab A nhưng tab B vẫn truy cập được).
+
+```typescript
+/**
+ * 🔴 THỰC TẾ:
+ * - User logout ở tab 1 → tab 2, 3 vẫn "logged in" → security risk
+ * - User thay đổi theme/language ở tab 1 → tab khác không đổi → UX không nhất quán
+ * - User thêm item vào cart ở tab 1 → tab 2 không thấy → data mismatch
+ *
+ * ✅ GIẢI PHÁP: BroadcastChannel API + Storage Event + Fallback
+ */
+
+// ✅ Cross-Tab Communication Service
+class CrossTabSync {
+  private channel: BroadcastChannel | null = null;
+  private listeners = new Map<string, Set<(data: any) => void>>();
+  private instanceId = crypto.randomUUID(); // Identify this tab
+
+  constructor(channelName = 'app-sync') {
+    // BroadcastChannel: Modern API, đáng tin cậy hơn storage event
+    if ('BroadcastChannel' in window) {
+      this.channel = new BroadcastChannel(channelName);
+      this.channel.onmessage = (event) => this.handleMessage(event.data);
+    }
+
+    // Fallback: localStorage event (hỗ trợ IE11+)
+    // Lưu ý: storage event chỉ fire ở TAB KHÁC, không ở tab hiện tại
+    window.addEventListener('storage', (event) => {
+      if (event.key === `__sync_${channelName}` && event.newValue) {
+        try {
+          this.handleMessage(JSON.parse(event.newValue));
+        } catch {}
+      }
+    });
+  }
+
+  // Broadcast message đến TẤT CẢ tab khác
+  broadcast(type: string, payload: any) {
+    const message = {
+      type,
+      payload,
+      senderId: this.instanceId,
+      timestamp: Date.now(),
+    };
+
+    // BroadcastChannel
+    this.channel?.postMessage(message);
+
+    // Fallback: localStorage (trigger storage event ở tab khác)
+    try {
+      localStorage.setItem(
+        '__sync_cross_tab',
+        JSON.stringify(message)
+      );
+      // Xóa ngay để có thể gửi cùng message lại
+      localStorage.removeItem('__sync_cross_tab');
+    } catch {}
+  }
+
+  private handleMessage(message: { type: string; payload: any; senderId: string }) {
+    // Ignore messages from self
+    if (message.senderId === this.instanceId) return;
+
+    this.listeners.get(message.type)?.forEach((fn) => fn(message.payload));
+    this.listeners.get('*')?.forEach((fn) => fn(message));
+  }
+
+  on(type: string, callback: (data: any) => void) {
+    if (!this.listeners.has(type)) this.listeners.set(type, new Set());
+    this.listeners.get(type)!.add(callback);
+    return () => this.listeners.get(type)?.delete(callback);
+  }
+
+  destroy() {
+    this.channel?.close();
+    this.listeners.clear();
+  }
+}
+
+// ✅ React Hook
+function useCrossTabSync() {
+  const syncRef = useRef<CrossTabSync | null>(null);
+
+  useEffect(() => {
+    syncRef.current = new CrossTabSync();
+    return () => syncRef.current?.destroy();
+  }, []);
+
+  return syncRef.current;
+}
+
+// ✅ SỬ DỤNG THỰC TẾ: Sync Auth State
+function useAuthSync() {
+  const sync = useCrossTabSync();
+  const { logout, setUser } = useAuth();
+
+  useEffect(() => {
+    if (!sync) return;
+
+    // Khi tab khác logout → tab này cũng logout
+    const unsubLogout = sync.on('AUTH_LOGOUT', () => {
+      console.log('🔒 Another tab logged out. Syncing...');
+      logout(); // Clear token, redirect to login
+    });
+
+    // Khi tab khác login → tab này cập nhật user
+    const unsubLogin = sync.on('AUTH_LOGIN', (user) => {
+      console.log('🔓 Another tab logged in:', user.email);
+      setUser(user);
+    });
+
+    // Khi tab khác refresh token → tab này dùng token mới
+    const unsubToken = sync.on('TOKEN_REFRESHED', (newToken) => {
+      localStorage.setItem('access_token', newToken);
+    });
+
+    return () => {
+      unsubLogout();
+      unsubLogin();
+      unsubToken();
+    };
+  }, [sync, logout, setUser]);
+
+  // Broadcast khi tab này thay đổi auth state
+  const broadcastLogout = useCallback(() => {
+    sync?.broadcast('AUTH_LOGOUT', null);
+  }, [sync]);
+
+  const broadcastLogin = useCallback(
+    (user: User) => {
+      sync?.broadcast('AUTH_LOGIN', user);
+    },
+    [sync]
+  );
+
+  return { broadcastLogout, broadcastLogin };
+}
+
+// ✅ SỬ DỤNG: Sync Theme/Language
+function useThemeSync() {
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const sync = useCrossTabSync();
+
+  useEffect(() => {
+    if (!sync) return;
+    return sync.on('THEME_CHANGED', (newTheme) => {
+      setTheme(newTheme);
+      document.documentElement.setAttribute('data-theme', newTheme);
+    });
+  }, [sync]);
+
+  const changeTheme = useCallback(
+    (newTheme: string) => {
+      setTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
+      document.documentElement.setAttribute('data-theme', newTheme);
+      sync?.broadcast('THEME_CHANGED', newTheme);
+    },
+    [sync]
+  );
+
+  return { theme, changeTheme };
+}
+```
+
+**🧠 Bài học:**
+- **BroadcastChannel** > **localStorage event** > **SharedWorker** (theo thứ tự dễ dùng)
+- **Auth sync** là use case quan trọng nhất — logout phải sync ngay lập tức (security)
+- Luôn ignore messages từ tab `self` (senderId check) để tránh infinite loop
+- **Leader Election** (chọn 1 tab làm "master") hữu ích cho single-connection resources (WebSocket, polling)
+
+---
+
+### **25.8. 🛡️ XSS Prevention Trong Rich Text Editor — "Sanitize Mà Không Phá Layout"**
+
+**Vấn đề:** Rich text editor cho user nhập HTML → phải cho phép `<b>`, `<i>`, `<img>` nhưng chặn `<script>`, `onerror`, `javascript:` → sanitize quá chặt thì mất formatting, quá lỏng thì bị XSS.
+
+```typescript
+/**
+ * 🔴 XSS ATTACK VECTORS TRONG RICH TEXT:
+ *
+ * 1. <script>alert('XSS')</script>                    ← Classic
+ * 2. <img src=x onerror="alert('XSS')">               ← Event handler
+ * 3. <a href="javascript:alert('XSS')">Click</a>      ← Protocol
+ * 4. <div style="background:url(javascript:alert(1))"> ← CSS expression
+ * 5. <svg onload="alert('XSS')">                       ← SVG events
+ * 6. <math><mi href="javascript:alert(1)">click</mi>   ← MathML
+ * 7. <details open ontoggle="alert('XSS')">            ← Attribute event
+ * 8. &#x3C;script&#x3E;alert(1)&#x3C;/script&#x3E;    ← HTML entities
+ */
+
+// ❌ SAI: innerHTML không sanitize
+function DangerousRenderer({ html }: { html: string }) {
+  return <div dangerouslySetInnerHTML={{ __html: html }} />; // 💀 XSS!
+}
+
+// ❌ SAI: Regex sanitize (LUÔN bị bypass)
+function naiveSanitize(html: string): string {
+  // Hacker bypass dễ dàng: <scr<script>ipt>, <SCRIPT>, <img src=x onerror=alert(1)>
+  return html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+}
+
+// ✅ ĐÚNG: Whitelist-based sanitization với DOMPurify
+import DOMPurify from 'dompurify';
+
+// Cấu hình whitelist chặt chẽ
+const SANITIZE_CONFIG: DOMPurify.Config = {
+  // Chỉ cho phép các tag an toàn
+  ALLOWED_TAGS: [
+    'p', 'br', 'b', 'i', 'u', 'strong', 'em', 'strike', 's',
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'ul', 'ol', 'li',
+    'a', 'img',
+    'blockquote', 'pre', 'code',
+    'table', 'thead', 'tbody', 'tr', 'th', 'td',
+    'span', 'div', 'sub', 'sup',
+  ],
+  // Chỉ cho phép attributes an toàn
+  ALLOWED_ATTR: [
+    'href', 'src', 'alt', 'title', 'width', 'height',
+    'class', 'id', 'target', 'rel',
+    'colspan', 'rowspan',
+    'style', // Cẩn thận với style — cần thêm CSS sanitizer
+  ],
+  // Chỉ cho phép protocol an toàn
+  ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
+
+  // Thêm rel="noopener noreferrer" cho tất cả links (chống tab-napping)
+  ADD_ATTR: ['target'],
+  FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover'], // Block event handlers
+  FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form', 'input'],
+};
+
+// Hook: afterSanitizeAttributes — thêm security attributes
+DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+  // Force all links to open in new tab safely
+  if (node.tagName === 'A') {
+    node.setAttribute('target', '_blank');
+    node.setAttribute('rel', 'noopener noreferrer');
+  }
+
+  // Remove dangerous CSS properties
+  if (node.hasAttribute('style')) {
+    const style = node.getAttribute('style') || '';
+    const dangerousPatterns = [
+      /expression\s*\(/gi,      // IE CSS expression
+      /javascript\s*:/gi,       // javascript protocol in CSS
+      /url\s*\(\s*['"]*\s*javascript/gi, // url(javascript:...)
+      /behavior\s*:/gi,         // IE behavior
+      /-moz-binding/gi,         // Firefox binding
+    ];
+    const isDangerous = dangerousPatterns.some((p) => p.test(style));
+    if (isDangerous) {
+      node.removeAttribute('style');
+    }
+  }
+});
+
+// ✅ Safe Rich Text Renderer
+function SafeRichTextRenderer({ html }: { html: string }) {
+  const sanitizedHtml = useMemo(
+    () => DOMPurify.sanitize(html, SANITIZE_CONFIG),
+    [html]
+  );
+
+  return (
+    <div
+      className="rich-text-content"
+      dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+    />
+  );
+}
+
+// ✅ ADVANCED: CSP (Content Security Policy) Headers
+/**
+ * Server-side headers (thêm vào nginx/express):
+ *
+ * Content-Security-Policy:
+ *   default-src 'self';
+ *   script-src 'self' 'nonce-abc123';     ← Chỉ chạy script có nonce
+ *   style-src 'self' 'unsafe-inline';     ← Cho phép inline CSS
+ *   img-src 'self' https: data:;          ← Images từ HTTPS + data URI
+ *   connect-src 'self' https://api.myapp.com; ← API calls chỉ đến domain tin cậy
+ *   frame-src 'none';                     ← Không cho phép iframe
+ *   object-src 'none';                    ← Chặn Flash/plugins
+ */
+```
+
+**🧠 Bài học:**
+- **KHÔNG BAO GIỜ** dùng regex để sanitize HTML — luôn bị bypass
+- **DOMPurify** là gold standard cho client-side HTML sanitization
+- **Whitelist** > **Blacklist**: Cho phép những gì cần, chặn mọi thứ khác
+- **Defense in Depth**: DOMPurify (client) + CSP headers (server) + HttpOnly cookies
+
+---
+
+### **25.9. ⚡ Concurrent Data Fetching Với Error Boundaries & Suspense**
+
+**Vấn đề:** Component cần data từ nhiều API → fetch tuần tự (waterfall) → chậm. Fetch song song nhưng phải xử lý: partial failure, loading states riêng biệt, error recovery cho từng phần.
+
+```typescript
+/**
+ * 🔴 WATERFALL PROBLEM:
+ *
+ * ❌ Tuần tự (3000ms total):
+ * ──[User API 1000ms]──[Posts API 1000ms]──[Comments API 1000ms]──
+ *
+ * ✅ Song song (1000ms total — nhanh gấp 3!):
+ * ──[User API    1000ms]──
+ * ──[Posts API   1000ms]──
+ * ──[Comments API 1000ms]──
+ */
+
+// ❌ SAI: Waterfall pattern (rất phổ biến ở Junior developers)
+function ProfilePage({ userId }) {
+  const [user, setUser] = useState(null);
+  const [posts, setPosts] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      const userData = await fetchUser(userId);     // 1000ms
+      setUser(userData);
+      const postsData = await fetchPosts(userId);   // + 1000ms (chờ user xong)
+      setPosts(postsData);
+      setLoading(false);                             // Total: 2000ms 😫
+    }
+    fetchData();
+  }, [userId]);
+  // ...
+}
+
+// ✅ ĐÚNG - Cách 1: Promise.allSettled (Song song + Partial failure handling)
+function useParallelFetch<T extends Record<string, () => Promise<any>>>(
+  fetchers: T
+): {
+  data: { [K in keyof T]: Awaited<ReturnType<T[K]>> | null };
+  errors: { [K in keyof T]: Error | null };
+  loading: boolean;
+  retry: (key: keyof T) => void;
+} {
+  type DataMap = { [K in keyof T]: any };
+
+  const [data, setData] = useState<DataMap>({} as DataMap);
+  const [errors, setErrors] = useState<{ [K in keyof T]: Error | null }>(
+    {} as any
+  );
+  const [loading, setLoading] = useState(true);
+  const fetchersRef = useRef(fetchers);
+  fetchersRef.current = fetchers;
+
+  const fetchAll = useCallback(async () => {
+    setLoading(true);
+    const keys = Object.keys(fetchersRef.current) as Array<keyof T>;
+
+    // Tất cả API gọi CÙNG LÚC
+    const results = await Promise.allSettled(
+      keys.map((key) => fetchersRef.current[key]())
+    );
+
+    const newData: any = {};
+    const newErrors: any = {};
+
+    results.forEach((result, index) => {
+      const key = keys[index];
+      if (result.status === 'fulfilled') {
+        newData[key] = result.value;
+        newErrors[key] = null;
+      } else {
+        newData[key] = null;
+        newErrors[key] = result.reason;
+      }
+    });
+
+    setData(newData);
+    setErrors(newErrors);
+    setLoading(false);
+  }, []);
+
+  // Retry individual failed request
+  const retry = useCallback(async (key: keyof T) => {
+    try {
+      const result = await fetchersRef.current[key]();
+      setData((prev) => ({ ...prev, [key]: result }));
+      setErrors((prev) => ({ ...prev, [key]: null }));
+    } catch (err) {
+      setErrors((prev) => ({ ...prev, [key]: err as Error }));
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAll();
+  }, [fetchAll]);
+
+  return { data, errors, loading, retry };
+}
+
+// Sử dụng:
+function ProfilePage({ userId }: { userId: string }) {
+  const { data, errors, loading, retry } = useParallelFetch({
+    user: () => fetchUser(userId),
+    posts: () => fetchPosts(userId),
+    comments: () => fetchComments(userId),
+    notifications: () => fetchNotifications(userId),
+  });
+
+  if (loading) return <FullPageSkeleton />;
+
+  return (
+    <div>
+      {/* User section - critical, show error prominently */}
+      {errors.user ? (
+        <ErrorCard
+          message="Không tải được thông tin user"
+          onRetry={() => retry('user')}
+        />
+      ) : (
+        <UserProfile user={data.user} />
+      )}
+
+      {/* Posts section - degrade gracefully */}
+      {errors.posts ? (
+        <InlineError onRetry={() => retry('posts')}>
+          Không tải được bài viết
+        </InlineError>
+      ) : (
+        <PostList posts={data.posts} />
+      )}
+
+      {/* Notifications - optional, hide on error */}
+      {data.notifications && (
+        <NotificationBadge count={data.notifications.length} />
+      )}
+    </div>
+  );
+}
+
+// ✅ ĐÚNG - Cách 2: React Suspense + Error Boundary (Declarative)
+// Tạo resource cho Suspense (React 18+)
+function createResource<T>(promise: Promise<T>) {
+  let status: 'pending' | 'success' | 'error' = 'pending';
+  let result: T;
+  let error: Error;
+
+  const suspender = promise.then(
+    (data) => {
+      status = 'success';
+      result = data;
+    },
+    (err) => {
+      status = 'error';
+      error = err;
+    }
+  );
+
+  return {
+    read(): T {
+      switch (status) {
+        case 'pending':
+          throw suspender; // Suspense catches this!
+        case 'error':
+          throw error; // Error Boundary catches this!
+        case 'success':
+          return result;
+      }
+    },
+  };
+}
+
+// Error Boundary component
+class ErrorBoundary extends React.Component<
+  { fallback: React.ComponentType<{ error: Error; retry: () => void }>; children: React.ReactNode },
+  { error: Error | null }
+> {
+  state = { error: null as Error | null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  retry = () => this.setState({ error: null });
+
+  render() {
+    if (this.state.error) {
+      const Fallback = this.props.fallback;
+      return <Fallback error={this.state.error} retry={this.retry} />;
+    }
+    return this.props.children;
+  }
+}
+
+// Declarative data fetching:
+function ProfilePageSuspense({ userId }) {
+  const userResource = useMemo(() => createResource(fetchUser(userId)), [userId]);
+  const postsResource = useMemo(() => createResource(fetchPosts(userId)), [userId]);
+
+  return (
+    <div>
+      <ErrorBoundary fallback={UserError}>
+        <Suspense fallback={<UserSkeleton />}>
+          <UserSection resource={userResource} />
+        </Suspense>
+      </ErrorBoundary>
+
+      <ErrorBoundary fallback={PostsError}>
+        <Suspense fallback={<PostsSkeleton />}>
+          <PostsSection resource={postsResource} />
+        </Suspense>
+      </ErrorBoundary>
+    </div>
+  );
+}
+
+function UserSection({ resource }) {
+  const user = resource.read(); // Suspense "pauses" render until data ready
+  return <UserProfile user={user} />;
+}
+```
+
+**🧠 Bài học:**
+- **Promise.allSettled** > **Promise.all** cho UI: allSettled không fail-fast, từng phần có thể thất bại độc lập
+- **Partial failure**: UI degrade gracefully — phần nào lỗi thì hiện error + retry, phần khác vẫn hoạt động
+- **Suspense** model: Declarative, clean code. Data fetching trở thành "synchronous-looking"
+- **Error Boundary** per section: Lỗi 1 phần không crash toàn bộ page
+
+---
+
+### **25.10. 🎨 Layout Shift Prevention & Skeleton UI — "Chống Nhảy Giao Diện"**
+
+**Vấn đề:** Content load không đều → layout nhảy lung tung (CLS — Cumulative Layout Shift) → user click nhầm button, UX tệ, Google SEO penalty.
+
+```typescript
+/**
+ * 🔴 CLS (Cumulative Layout Shift) — Core Web Vital:
+ * - Điểm CLS > 0.1 → Google coi là "poor experience" → giảm SEO ranking
+ * - Nguyên nhân phổ biến:
+ *   1. Image/video không có width/height → load xong mới biết kích thước → đẩy content
+ *   2. Font load muộn (FOUT/FOIT) → text nhảy khi font swap
+ *   3. Dynamic content inject (ads, banners) → đẩy content xuống
+ *   4. Async data load → skeleton → real content (height khác nhau)
+ */
+
+// ❌ SAI: Image không có kích thước → CLS khi load
+function BadImage() {
+  return <img src="/hero.jpg" />; // Browser không biết size → layout shift khi load xong
+}
+
+// ✅ ĐÚNG: Luôn specify dimensions hoặc aspect-ratio
+function GoodImage() {
+  return (
+    <img
+      src="/hero.jpg"
+      width={1200}
+      height={600}
+      alt="Hero banner"
+      loading="lazy"
+      decoding="async"
+      style={{ aspectRatio: '2/1', width: '100%', height: 'auto' }}
+    />
+  );
+}
+
+// ✅ Smart Skeleton component — Match kích thước thật để tránh CLS
+interface SkeletonProps {
+  width?: string | number;
+  height?: string | number;
+  variant?: 'text' | 'circular' | 'rectangular' | 'rounded';
+  lines?: number; // Số dòng text skeleton
+  animation?: 'pulse' | 'wave' | 'none';
+}
+
+function Skeleton({
+  width = '100%',
+  height = 20,
+  variant = 'text',
+  lines = 1,
+  animation = 'wave',
+}: SkeletonProps) {
+  const baseStyle: React.CSSProperties = {
+    backgroundColor: '#e0e0e0',
+    borderRadius:
+      variant === 'circular' ? '50%' : variant === 'rounded' ? 8 : 4,
+    width,
+    height,
+    display: 'block',
+  };
+
+  if (lines > 1) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {Array.from({ length: lines }).map((_, i) => (
+          <div
+            key={i}
+            className={`skeleton-${animation}`}
+            style={{
+              ...baseStyle,
+              // Dòng cuối ngắn hơn → trông tự nhiên hơn
+              width: i === lines - 1 ? '60%' : width,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return <div className={`skeleton-${animation}`} style={baseStyle} />;
+}
+
+// ✅ Content-Aware Skeleton: Match layout thật CHÍNH XÁC
+function PostCardSkeleton() {
+  return (
+    <div style={{ padding: 16, border: '1px solid #eee', borderRadius: 8 }}>
+      {/* Avatar + Name row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <Skeleton variant="circular" width={40} height={40} />
+        <div style={{ flex: 1 }}>
+          <Skeleton width="30%" height={16} />
+          <Skeleton width="20%" height={12} style={{ marginTop: 4 }} />
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ marginTop: 12 }}>
+        <Skeleton lines={3} height={14} />
+      </div>
+
+      {/* Image placeholder — SAME aspect ratio as real image */}
+      <Skeleton
+        variant="rounded"
+        width="100%"
+        height={200}
+        style={{ marginTop: 12 }}
+      />
+
+      {/* Actions row */}
+      <div style={{ display: 'flex', gap: 16, marginTop: 12 }}>
+        <Skeleton width={60} height={32} variant="rounded" />
+        <Skeleton width={60} height={32} variant="rounded" />
+        <Skeleton width={60} height={32} variant="rounded" />
+      </div>
+    </div>
+  );
+}
+
+// ✅ Smooth transition: Skeleton → Real Content (no jump)
+function PostCard({ post }: { post: Post | null }) {
+  if (!post) return <PostCardSkeleton />;
+
+  return (
+    <div style={{ padding: 16, border: '1px solid #eee', borderRadius: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <img
+          src={post.author.avatar}
+          width={40}
+          height={40}
+          style={{ borderRadius: '50%' }}
+          alt={post.author.name}
+        />
+        <div>
+          <strong>{post.author.name}</strong>
+          <div style={{ fontSize: 12, color: '#666' }}>{post.createdAt}</div>
+        </div>
+      </div>
+      <p style={{ marginTop: 12 }}>{post.content}</p>
+      {post.image && (
+        <img
+          src={post.image}
+          width={600}
+          height={200}
+          style={{ aspectRatio: '3/1', width: '100%', height: 'auto', borderRadius: 8 }}
+          alt=""
+          loading="lazy"
+        />
+      )}
+    </div>
+  );
+}
+
+// ✅ ADVANCED: Font Loading Strategy — Chống FOUT/FOIT
+/**
+ * CSS:
+ * @font-face {
+ *   font-family: 'CustomFont';
+ *   src: url('/fonts/custom.woff2') format('woff2');
+ *   font-display: swap;  ← Hiển thị fallback font ngay, swap khi custom font load xong
+ *                           (FOUT — Flash of Unstyled Text, tốt hơn FOIT — invisible text)
+ * }
+ *
+ * // Preload critical fonts
+ * <link rel="preload" href="/fonts/custom.woff2" as="font" type="font/woff2" crossorigin>
+ */
+
+// ✅ ADVANCED: Chống CLS cho dynamic content (ads, banners)
+function AdSlot({ width, height }: { width: number; height: number }) {
+  const [adLoaded, setAdLoaded] = useState(false);
+
+  return (
+    // Container có kích thước CỐ ĐỊNH trước → không shift khi ad load
+    <div
+      style={{
+        width,
+        height,
+        minHeight: height, // Guarantee minimum height
+        backgroundColor: adLoaded ? 'transparent' : '#f5f5f5',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        contain: 'layout size', // CSS Containment — isolate layout calculations
+      }}
+    >
+      {!adLoaded && (
+        <span style={{ color: '#999', fontSize: 12 }}>Advertisement</span>
+      )}
+      <AdComponent onLoad={() => setAdLoaded(true)} />
+    </div>
+  );
+}
+
+// ✅ CSS contain property — Giới hạn phạm vi layout recalculation
+/**
+ * .card {
+ *   contain: layout style paint;  ← Thay đổi bên trong card KHÔNG ảnh hưởng bên ngoài
+ *                                    → Performance tốt hơn khi render nhiều cards
+ * }
+ *
+ * .virtual-list-item {
+ *   contain: strict;  ← Cô lập hoàn toàn (layout + size + paint + style)
+ *                       → Tối ưu cho virtual list
+ * }
+ */
+```
+
+**🧠 Bài học:**
+- **Skeleton phải match layout thật** — cùng width, height, spacing → transition smooth, CLS = 0
+- **Image**: Luôn set `width`/`height` hoặc `aspect-ratio` → browser reserve space trước khi load
+- **Font**: `font-display: swap` + `<link rel="preload">` cho critical fonts
+- **Dynamic content**: Container cố định kích thước + `CSS contain` property
+- **Đo lường**: Chrome DevTools → Performance → Layout Shift regions, hoặc Web Vitals extension
+
+---
+
+### **25.11. 🔀 Drag & Drop Với Reorder, Nested Lists & Touch Support**
+
+**Vấn đề:** Implement drag & drop cho Kanban board, sortable list, nested categories — phải hoạt động smooth trên cả desktop (mouse) lẫn mobile (touch), xử lý auto-scroll khi drag gần edge, visual feedback, và data persistence.
+
+```typescript
+/**
+ * 🔴 ĐỘ KHÓ CỦA DRAG & DROP:
+ *
+ * 1. Mouse events ≠ Touch events (khác API hoàn toàn)
+ * 2. Touch: phải phân biệt scroll vs drag (cùng gesture!)
+ * 3. Nested sortable: drag item từ list A sang list B
+ * 4. Auto-scroll khi drag gần edge viewport
+ * 5. Performance: drag 60fps, không jank
+ * 6. Accessibility: keyboard navigation cho drag & drop
+ */
+
+// ✅ Custom useDragAndDrop hook — Unified mouse + touch
+interface DragState<T> {
+  isDragging: boolean;
+  draggedItem: T | null;
+  draggedIndex: number;
+  overIndex: number;
+  sourceList: string;
+  targetList: string;
+}
+
+function useSortableList<T extends { id: string }>({
+  items,
+  onReorder,
+  listId,
+  direction = 'vertical',
+}: {
+  items: T[];
+  onReorder: (items: T[], sourceListId: string, targetListId?: string) => void;
+  listId: string;
+  direction?: 'vertical' | 'horizontal';
+}) {
+  const [dragState, setDragState] = useState<DragState<T>>({
+    isDragging: false,
+    draggedItem: null,
+    draggedIndex: -1,
+    overIndex: -1,
+    sourceList: '',
+    targetList: '',
+  });
+
+  const dragNodeRef = useRef<HTMLElement | null>(null);
+  const autoScrollRef = useRef<number | null>(null);
+  const itemRefs = useRef<Map<number, HTMLElement>>(new Map());
+
+  // ⭐ Unified pointer handler (mouse + touch)
+  const handleDragStart = useCallback(
+    (index: number) => (e: React.PointerEvent) => {
+      // Capture pointer for smooth tracking across elements
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+
+      dragNodeRef.current = e.currentTarget as HTMLElement;
+      setDragState({
+        isDragging: true,
+        draggedItem: items[index],
+        draggedIndex: index,
+        overIndex: index,
+        sourceList: listId,
+        targetList: listId,
+      });
+
+      // Visual feedback
+      dragNodeRef.current.style.opacity = '0.5';
+      dragNodeRef.current.style.transform = 'scale(1.02)';
+      document.body.style.cursor = 'grabbing';
+      document.body.style.userSelect = 'none'; // Prevent text selection during drag
+    },
+    [items, listId]
+  );
+
+  const handleDragOver = useCallback(
+    (index: number) => (e: React.PointerEvent) => {
+      e.preventDefault();
+      if (!dragState.isDragging) return;
+
+      // Tính toán vị trí drop dựa trên pointer position vs element center
+      const element = e.currentTarget as HTMLElement;
+      const rect = element.getBoundingClientRect();
+      const midPoint =
+        direction === 'vertical'
+          ? rect.top + rect.height / 2
+          : rect.left + rect.width / 2;
+      const pointerPos =
+        direction === 'vertical' ? e.clientY : e.clientX;
+
+      // Nếu pointer ở nửa trên → insert trước, nửa dưới → insert sau
+      const adjustedIndex = pointerPos < midPoint ? index : index + 1;
+
+      if (adjustedIndex !== dragState.overIndex) {
+        setDragState((prev) => ({ ...prev, overIndex: adjustedIndex }));
+      }
+
+      // ⭐ Auto-scroll khi drag gần edge
+      startAutoScroll(e.clientY);
+    },
+    [dragState.isDragging, dragState.overIndex, direction]
+  );
+
+  const handleDrop = useCallback(() => {
+    if (!dragState.isDragging || dragState.draggedIndex === dragState.overIndex) {
+      resetDragState();
+      return;
+    }
+
+    // Reorder items
+    const newItems = [...items];
+    const [removed] = newItems.splice(dragState.draggedIndex, 1);
+    const insertIndex =
+      dragState.overIndex > dragState.draggedIndex
+        ? dragState.overIndex - 1
+        : dragState.overIndex;
+    newItems.splice(insertIndex, 0, removed);
+
+    onReorder(newItems, listId);
+    resetDragState();
+  }, [dragState, items, onReorder, listId]);
+
+  // Auto-scroll khi drag gần edge viewport
+  const startAutoScroll = useCallback((clientY: number) => {
+    const SCROLL_ZONE = 80; // pixels from edge
+    const SCROLL_SPEED = 10;
+
+    if (autoScrollRef.current) cancelAnimationFrame(autoScrollRef.current);
+
+    const scroll = () => {
+      if (clientY < SCROLL_ZONE) {
+        window.scrollBy(0, -SCROLL_SPEED);
+        autoScrollRef.current = requestAnimationFrame(scroll);
+      } else if (clientY > window.innerHeight - SCROLL_ZONE) {
+        window.scrollBy(0, SCROLL_SPEED);
+        autoScrollRef.current = requestAnimationFrame(scroll);
+      }
+    };
+    scroll();
+  }, []);
+
+  const resetDragState = useCallback(() => {
+    if (dragNodeRef.current) {
+      dragNodeRef.current.style.opacity = '1';
+      dragNodeRef.current.style.transform = '';
+    }
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    if (autoScrollRef.current) cancelAnimationFrame(autoScrollRef.current);
+
+    setDragState({
+      isDragging: false,
+      draggedItem: null,
+      draggedIndex: -1,
+      overIndex: -1,
+      sourceList: '',
+      targetList: '',
+    });
+  }, []);
+
+  // ✅ Accessibility: Keyboard drag
+  const handleKeyDown = useCallback(
+    (index: number) => (e: React.KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        // Toggle drag mode
+        if (!dragState.isDragging) {
+          setDragState({
+            isDragging: true,
+            draggedItem: items[index],
+            draggedIndex: index,
+            overIndex: index,
+            sourceList: listId,
+            targetList: listId,
+          });
+        } else {
+          handleDrop();
+        }
+      } else if (dragState.isDragging) {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          setDragState((prev) => ({
+            ...prev,
+            overIndex: Math.min(prev.overIndex + 1, items.length - 1),
+          }));
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          setDragState((prev) => ({
+            ...prev,
+            overIndex: Math.max(prev.overIndex - 1, 0),
+          }));
+        } else if (e.key === 'Escape') {
+          resetDragState();
+        }
+      }
+    },
+    [dragState, items, listId, handleDrop, resetDragState]
+  );
+
+  return {
+    dragState,
+    getItemProps: (index: number) => ({
+      onPointerDown: handleDragStart(index),
+      onPointerMove: handleDragOver(index),
+      onPointerUp: handleDrop,
+      onKeyDown: handleKeyDown(index),
+      tabIndex: 0,
+      role: 'listitem',
+      'aria-grabbed': dragState.isDragging && dragState.draggedIndex === index,
+      'aria-dropeffect': dragState.isDragging ? 'move' : 'none',
+      style: {
+        cursor: dragState.isDragging ? 'grabbing' : 'grab',
+        transition: 'transform 200ms ease',
+        transform:
+          dragState.isDragging && dragState.overIndex === index
+            ? `translateY(${direction === 'vertical' ? '40px' : '0'})`
+            : '',
+      },
+    }),
+  };
+}
+
+// Sử dụng:
+function KanbanColumn({ columnId, tasks, onReorder }) {
+  const { dragState, getItemProps } = useSortableList({
+    items: tasks,
+    onReorder,
+    listId: columnId,
+  });
+
+  return (
+    <div className="kanban-column" role="list" aria-label={`Column ${columnId}`}>
+      {tasks.map((task, index) => (
+        <div
+          key={task.id}
+          {...getItemProps(index)}
+          className={`task-card ${
+            dragState.isDragging && dragState.draggedIndex === index
+              ? 'dragging'
+              : ''
+          }`}
+        >
+          {task.title}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+**🧠 Bài học:**
+- **Pointer Events** API unify mouse + touch + pen — dùng thay vì viết riêng mouse/touch handlers
+- **setPointerCapture** giữ tracking pointer ngay cả khi di chuột ra ngoài element
+- **Auto-scroll** gần edge viewport là detail nhỏ nhưng UX impact rất lớn
+- Production: Dùng `@dnd-kit/core` hoặc `react-beautiful-dnd` — đã handle edge cases + a11y
+
+---
+
+### **25.12. 🌊 Infinite Scroll Với Bidirectional Loading & Scroll Restoration**
+
+**Vấn đề:** Chat app/feed cần scroll vô hạn cả 2 chiều (load tin cũ phía trên + tin mới phía dưới) → prepend items phía trên gây "scroll jump", quay lại trang phải restore đúng vị trí scroll cũ.
+
+```typescript
+/**
+ * 🔴 CÁC VẤN ĐỀ:
+ * 1. Prepend items phía trên → scrollTop bị đẩy → content nhảy
+ * 2. User quay lại (Back button) → mất vị trí scroll → phải load lại từ đầu
+ * 3. Append + Prepend cùng lúc → race condition
+ * 4. Memory: load 10K items → browser lag
+ */
+
+// ✅ Bidirectional Infinite Scroll với Scroll Anchoring
+function useBidirectionalScroll<T extends { id: string }>({
+  fetchOlder,     // Load items cũ hơn (prepend)
+  fetchNewer,     // Load items mới hơn (append)
+  pageSize = 20,
+  maxItems = 500, // Giới hạn items trong DOM (memory management)
+}: {
+  fetchOlder: (beforeId: string) => Promise<T[]>;
+  fetchNewer: (afterId: string) => Promise<T[]>;
+  pageSize?: number;
+  maxItems?: number;
+}) {
+  const [items, setItems] = useState<T[]>([]);
+  const [loadingOlder, setLoadingOlder] = useState(false);
+  const [loadingNewer, setLoadingNewer] = useState(false);
+  const [hasOlder, setHasOlder] = useState(true);
+  const [hasNewer, setHasNewer] = useState(true);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const topSentinelRef = useRef<HTMLDivElement>(null);
+  const bottomSentinelRef = useRef<HTMLDivElement>(null);
+
+  // ⭐ KEY: Preserve scroll position khi prepend
+  const loadOlderItems = useCallback(async () => {
+    if (loadingOlder || !hasOlder || items.length === 0) return;
+    setLoadingOlder(true);
+
+    const container = containerRef.current!;
+    const oldScrollHeight = container.scrollHeight;
+    const oldScrollTop = container.scrollTop;
+
+    try {
+      const olderItems = await fetchOlder(items[0].id);
+
+      if (olderItems.length < pageSize) setHasOlder(false);
+      if (olderItems.length === 0) {
+        setLoadingOlder(false);
+        return;
+      }
+
+      setItems((prev) => {
+        const merged = [...olderItems, ...prev];
+        // Trim từ dưới nếu vượt maxItems (memory management)
+        if (merged.length > maxItems) {
+          setHasNewer(true); // Items bị trim → có thể load lại
+          return merged.slice(0, maxItems);
+        }
+        return merged;
+      });
+
+      // ⭐ Restore scroll position sau prepend
+      // requestAnimationFrame đợi DOM update xong
+      requestAnimationFrame(() => {
+        const newScrollHeight = container.scrollHeight;
+        const heightDifference = newScrollHeight - oldScrollHeight;
+        container.scrollTop = oldScrollTop + heightDifference;
+      });
+    } catch (error) {
+      console.error('Failed to load older items:', error);
+    } finally {
+      setLoadingOlder(false);
+    }
+  }, [loadingOlder, hasOlder, items, fetchOlder, pageSize, maxItems]);
+
+  // Load newer items (append — đơn giản hơn, không cần scroll fix)
+  const loadNewerItems = useCallback(async () => {
+    if (loadingNewer || !hasNewer || items.length === 0) return;
+    setLoadingNewer(true);
+
+    try {
+      const newerItems = await fetchNewer(items[items.length - 1].id);
+
+      if (newerItems.length < pageSize) setHasNewer(false);
+
+      setItems((prev) => {
+        const merged = [...prev, ...newerItems];
+        // Trim từ trên nếu vượt maxItems
+        if (merged.length > maxItems) {
+          setHasOlder(true);
+          return merged.slice(-maxItems);
+        }
+        return merged;
+      });
+    } catch (error) {
+      console.error('Failed to load newer items:', error);
+    } finally {
+      setLoadingNewer(false);
+    }
+  }, [loadingNewer, hasNewer, items, fetchNewer, pageSize, maxItems]);
+
+  // IntersectionObserver: Auto-trigger load khi sentinel vào viewport
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          if (entry.target === topSentinelRef.current) loadOlderItems();
+          if (entry.target === bottomSentinelRef.current) loadNewerItems();
+        });
+      },
+      { root: containerRef.current, rootMargin: '200px', threshold: 0 }
+    );
+
+    if (topSentinelRef.current) observer.observe(topSentinelRef.current);
+    if (bottomSentinelRef.current) observer.observe(bottomSentinelRef.current);
+
+    return () => observer.disconnect();
+  }, [loadOlderItems, loadNewerItems]);
+
+  return {
+    items,
+    containerRef,
+    topSentinelRef,
+    bottomSentinelRef,
+    loadingOlder,
+    loadingNewer,
+    hasOlder,
+    hasNewer,
+  };
+}
+
+// ✅ Scroll Restoration khi navigate back
+function useScrollRestoration(key: string) {
+  const scrollPositions = useRef<Map<string, number>>(new Map());
+
+  useEffect(() => {
+    // Restore scroll position khi mount
+    const savedPosition = sessionStorage.getItem(`scroll_${key}`);
+    if (savedPosition) {
+      requestAnimationFrame(() => {
+        window.scrollTo(0, parseInt(savedPosition, 10));
+      });
+    }
+
+    // Save scroll position khi unmount hoặc navigate
+    const savePosition = () => {
+      sessionStorage.setItem(`scroll_${key}`, String(window.scrollY));
+    };
+
+    window.addEventListener('beforeunload', savePosition);
+    return () => {
+      savePosition(); // Save khi unmount (navigate away)
+      window.removeEventListener('beforeunload', savePosition);
+    };
+  }, [key]);
+}
+
+// Sử dụng:
+function ChatRoom({ roomId }) {
+  const {
+    items: messages,
+    containerRef,
+    topSentinelRef,
+    bottomSentinelRef,
+    loadingOlder,
+    loadingNewer,
+  } = useBidirectionalScroll({
+    fetchOlder: (beforeId) => api.getMessages(roomId, { before: beforeId }),
+    fetchNewer: (afterId) => api.getMessages(roomId, { after: afterId }),
+    maxItems: 200,
+  });
+
+  useScrollRestoration(`chat-${roomId}`);
+
+  return (
+    <div ref={containerRef} style={{ height: '100vh', overflowY: 'auto' }}>
+      {/* Top sentinel → triggers load older */}
+      <div ref={topSentinelRef}>
+        {loadingOlder && <Spinner />}
+      </div>
+
+      {messages.map((msg) => (
+        <MessageBubble key={msg.id} message={msg} />
+      ))}
+
+      {/* Bottom sentinel → triggers load newer */}
+      <div ref={bottomSentinelRef}>
+        {loadingNewer && <Spinner />}
+      </div>
+    </div>
+  );
+}
+```
+
+**🧠 Bài học:**
+- **Prepend scroll fix**: Đo `scrollHeight` trước và sau prepend → adjust `scrollTop` bằng delta
+- **Memory management**: Giới hạn max items trong DOM, trim từ đầu/cuối khi vượt limit
+- **IntersectionObserver** > scroll event listener: performance tốt hơn, không cần debounce
+- **Scroll restoration**: `sessionStorage` + `beforeunload` cho SPA navigation
+
+---
+
+### **25.13. 🧩 Micro-Frontend Communication — Independently Deployed Apps Talking**
+
+**Vấn đề:** Nhiều team build các micro-frontend apps riêng biệt, deploy độc lập → cần communicate giữa các apps mà không tạo tight coupling, share state mà không share code.
+
+```typescript
+/**
+ * 🔴 THÁCH THỨC:
+ * 1. App A (React 18) cần data từ App B (Vue 3) → khác framework!
+ * 2. Shared state (user info) phải sync across apps
+ * 3. Routing: navigate từ app A sang app B seamlessly
+ * 4. CSS isolation: styles không leak giữa các apps
+ * 5. Versioning: App A deploy v2 nhưng App B vẫn ở v1
+ */
+
+// ✅ Event Bus Pattern — Framework-agnostic communication
+class MicroFrontendBus {
+  private static instance: MicroFrontendBus;
+  private events = new Map<string, Set<Function>>();
+  private stateStore = new Map<string, any>();
+  private stateListeners = new Map<string, Set<(value: any) => void>>();
+
+  static getInstance(): MicroFrontendBus {
+    if (!MicroFrontendBus.instance) {
+      MicroFrontendBus.instance = new MicroFrontendBus();
+      // Expose globally for different framework apps
+      (window as any).__MFE_BUS__ = MicroFrontendBus.instance;
+    }
+    return MicroFrontendBus.instance;
+  }
+
+  // ── Event-based communication ──
+  emit(event: string, payload?: any) {
+    // Local listeners
+    this.events.get(event)?.forEach((fn) => fn(payload));
+
+    // Custom DOM Event (cho apps trong iframe hoặc Shadow DOM)
+    window.dispatchEvent(
+      new CustomEvent(`mfe:${event}`, {
+        detail: payload,
+        bubbles: true,
+        composed: true, // Cross Shadow DOM boundary
+      })
+    );
+  }
+
+  on(event: string, callback: Function): () => void {
+    if (!this.events.has(event)) this.events.set(event, new Set());
+    this.events.get(event)!.add(callback);
+
+    // Also listen for DOM custom events (from iframes/Shadow DOM)
+    const domHandler = (e: Event) => callback((e as CustomEvent).detail);
+    window.addEventListener(`mfe:${event}`, domHandler);
+
+    return () => {
+      this.events.get(event)?.delete(callback);
+      window.removeEventListener(`mfe:${event}`, domHandler);
+    };
+  }
+
+  // ── Shared State (Observable) ──
+  setState(key: string, value: any) {
+    const oldValue = this.stateStore.get(key);
+    this.stateStore.set(key, value);
+
+    // Notify only if value actually changed
+    if (!Object.is(oldValue, value)) {
+      this.stateListeners.get(key)?.forEach((fn) => fn(value));
+    }
+  }
+
+  getState<T>(key: string): T | undefined {
+    return this.stateStore.get(key);
+  }
+
+  subscribe(key: string, callback: (value: any) => void): () => void {
+    if (!this.stateListeners.has(key)) {
+      this.stateListeners.set(key, new Set());
+    }
+    this.stateListeners.get(key)!.add(callback);
+
+    // Emit current value immediately (like BehaviorSubject)
+    if (this.stateStore.has(key)) {
+      callback(this.stateStore.get(key));
+    }
+
+    return () => this.stateListeners.get(key)?.delete(callback);
+  }
+}
+
+// ✅ React Hook wrapper
+function useMFEState<T>(key: string, initialValue?: T): [T, (value: T) => void] {
+  const bus = MicroFrontendBus.getInstance();
+  const [value, setValue] = useState<T>(
+    () => bus.getState<T>(key) ?? initialValue!
+  );
+
+  useEffect(() => {
+    return bus.subscribe(key, setValue);
+  }, [key]);
+
+  const updateValue = useCallback(
+    (newValue: T) => {
+      bus.setState(key, newValue);
+    },
+    [key]
+  );
+
+  return [value, updateValue];
+}
+
+function useMFEEvent(event: string, handler: (payload: any) => void) {
+  useEffect(() => {
+    const bus = MicroFrontendBus.getInstance();
+    return bus.on(event, handler);
+  }, [event, handler]);
+}
+
+// ✅ SỬ DỤNG: App A (Header — React) share user data
+function HeaderApp() {
+  const [user, setUser] = useMFEState<User | null>('currentUser', null);
+
+  const handleLogin = async () => {
+    const user = await authService.login();
+    setUser(user); // All micro-frontends sẽ nhận được user data
+
+    // Emit event cho apps cần biết
+    MicroFrontendBus.getInstance().emit('user:login', user);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    MicroFrontendBus.getInstance().emit('user:logout');
+  };
+
+  return <header>{user ? `Hi ${user.name}` : <LoginButton onClick={handleLogin} />}</header>;
+}
+
+// ✅ SỬ DỤNG: App B (Dashboard — Vue hoặc bất kỳ framework nào)
+// Trong Vue:
+// const bus = window.__MFE_BUS__;
+// const user = ref(bus.getState('currentUser'));
+// bus.subscribe('currentUser', (newUser) => { user.value = newUser; });
+
+// ✅ CSS Isolation với Shadow DOM
+class MicroFrontendContainer extends HTMLElement {
+  connectedCallback() {
+    // Shadow DOM isolate CSS hoàn toàn
+    const shadow = this.attachShadow({ mode: 'open' });
+
+    // Load app CSS vào Shadow DOM (không leak ra ngoài)
+    const style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = '/apps/dashboard/styles.css';
+    shadow.appendChild(style);
+
+    // Mount React app vào Shadow DOM
+    const mountPoint = document.createElement('div');
+    shadow.appendChild(mountPoint);
+
+    import('/apps/dashboard/main.js').then((module) => {
+      module.mount(mountPoint);
+    });
+  }
+
+  disconnectedCallback() {
+    // Cleanup khi element bị remove
+    import('/apps/dashboard/main.js').then((module) => {
+      module.unmount();
+    });
+  }
+}
+
+customElements.define('mfe-dashboard', MicroFrontendContainer);
+```
+
+**🧠 Bài học:**
+- **Event Bus** là pattern đơn giản nhất cho micro-frontend communication
+- **Shared Observable State** (subset of Redux) cho data cần sync realtime
+- **Custom Elements + Shadow DOM** cho CSS isolation hoàn hảo
+- **Module Federation** (Webpack 5) hoặc **Import Maps** cho code sharing ở build level
+
+---
+
+### **25.14. 🔐 Token Refresh Queue — Xử Lý 401 Khi Nhiều Request Cùng Lúc**
+
+**Vấn đề:** Access token hết hạn → nhiều API requests cùng nhận 401 → tất cả đều trigger refresh token → gửi N refresh requests → server reject duplicate refresh → user bị force logout.
+
+```typescript
+/**
+ * 🔴 THỰC TẾ:
+ *
+ * Trang dashboard gọi 5 API cùng lúc:
+ * GET /user       → 401 → refresh token → ✅
+ * GET /posts      → 401 → refresh token → ❌ (token đã dùng rồi!)
+ * GET /comments   → 401 → refresh token → ❌
+ * GET /stats      → 401 → refresh token → ❌
+ * GET /notif      → 401 → refresh token → ❌
+ *
+ * → 4/5 requests fail! User bị logout!
+ */
+
+// ✅ ĐÚNG: Token Refresh Queue — Chỉ 1 refresh, tất cả chờ
+class AuthInterceptor {
+  private isRefreshing = false;
+  private failedQueue: Array<{
+    resolve: (token: string) => void;
+    reject: (error: Error) => void;
+  }> = [];
+
+  constructor(private httpClient: typeof fetch) {}
+
+  // Process tất cả queued requests sau khi refresh xong
+  private processQueue(error: Error | null, token: string | null) {
+    this.failedQueue.forEach(({ resolve, reject }) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(token!);
+      }
+    });
+    this.failedQueue = [];
+  }
+
+  async request(url: string, options: RequestInit = {}): Promise<Response> {
+    // Attach current access token
+    const accessToken = this.getAccessToken();
+    const headers = new Headers(options.headers);
+    if (accessToken) {
+      headers.set('Authorization', `Bearer ${accessToken}`);
+    }
+
+    const response = await this.httpClient(url, { ...options, headers });
+
+    // Nếu KHÔNG phải 401 → return bình thường
+    if (response.status !== 401) return response;
+
+    // ── 401 Handling ──
+
+    // Nếu ĐANG refresh → queue request này, chờ refresh xong
+    if (this.isRefreshing) {
+      return new Promise<Response>((resolve, reject) => {
+        this.failedQueue.push({
+          resolve: (newToken: string) => {
+            // Retry request với token mới
+            headers.set('Authorization', `Bearer ${newToken}`);
+            resolve(this.httpClient(url, { ...options, headers }));
+          },
+          reject,
+        });
+      });
+    }
+
+    // ⭐ Request ĐẦU TIÊN bị 401 → bắt đầu refresh
+    this.isRefreshing = true;
+
+    try {
+      const refreshToken = this.getRefreshToken();
+      if (!refreshToken) throw new Error('No refresh token');
+
+      const refreshResponse = await this.httpClient('/api/auth/refresh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!refreshResponse.ok) {
+        throw new Error('Refresh token expired');
+      }
+
+      const { accessToken: newToken, refreshToken: newRefreshToken } =
+        await refreshResponse.json();
+
+      // Lưu tokens mới
+      this.setAccessToken(newToken);
+      this.setRefreshToken(newRefreshToken);
+
+      // ⭐ Process tất cả queued requests với token mới
+      this.processQueue(null, newToken);
+
+      // Retry request gốc
+      headers.set('Authorization', `Bearer ${newToken}`);
+      return this.httpClient(url, { ...options, headers });
+    } catch (error) {
+      // Refresh failed → reject TẤT CẢ queued requests
+      this.processQueue(error as Error, null);
+
+      // Force logout
+      this.clearTokens();
+      window.location.href = '/login';
+
+      throw error;
+    } finally {
+      this.isRefreshing = false;
+    }
+  }
+
+  private getAccessToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
+  private getRefreshToken(): string | null {
+    return localStorage.getItem('refresh_token');
+  }
+  private setAccessToken(token: string) {
+    localStorage.setItem('access_token', token);
+  }
+  private setRefreshToken(token: string) {
+    localStorage.setItem('refresh_token', token);
+  }
+  private clearTokens() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+  }
+}
+
+// ✅ Axios Interceptor version (phổ biến trong production)
+import axios from 'axios';
+
+let isRefreshing = false;
+let failedQueue: Array<{ resolve: Function; reject: Function }> = [];
+
+function processQueue(error: any, token: string | null) {
+  failedQueue.forEach(({ resolve, reject }) => {
+    error ? reject(error) : resolve(token);
+  });
+  failedQueue = [];
+}
+
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status !== 401 || originalRequest._retry) {
+      return Promise.reject(error);
+    }
+
+    if (isRefreshing) {
+      // Queue request → chờ refresh xong
+      return new Promise((resolve, reject) => {
+        failedQueue.push({
+          resolve: (token: string) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            resolve(axios(originalRequest));
+          },
+          reject,
+        });
+      });
+    }
+
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+    try {
+      const { data } = await axios.post('/api/auth/refresh', {
+        refreshToken: localStorage.getItem('refresh_token'),
+      });
+
+      localStorage.setItem('access_token', data.accessToken);
+      localStorage.setItem('refresh_token', data.refreshToken);
+
+      axios.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
+      processQueue(null, data.accessToken);
+
+      originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+      return axios(originalRequest);
+    } catch (err) {
+      processQueue(err, null);
+      localStorage.clear();
+      window.location.href = '/login';
+      return Promise.reject(err);
+    } finally {
+      isRefreshing = false;
+    }
+  }
+);
+```
+
+**🧠 Bài học:**
+- **Singleton refresh**: Chỉ 1 refresh request tại một thời điểm, tất cả 401 khác queue lại
+- **Queue pattern**: Failed requests chờ trong Promise queue → resolve khi có token mới
+- **Retry original**: Sau refresh thành công, tự động retry request gốc với token mới
+- **Cross-tab sync** refresh token (kết hợp Case 7) để tránh nhiều tab refresh cùng lúc
+
+---
+
+### **25.15. 📸 Image Upload Với Preview, Compression, Crop & Progress**
+
+**Vấn đề:** Upload ảnh cần: preview ngay (trước khi upload), resize/compress client-side (giảm bandwidth), crop interactively, show progress %, handle retry, validate file type/size.
+
+```typescript
+/**
+ * 🔴 THỰC TẾ:
+ * - User chọn ảnh 15MB từ iPhone → upload chậm, tốn bandwidth
+ * - Server limit 5MB → phải compress client-side
+ * - Cần preview ngay khi chọn (không chờ upload)
+ * - Multiple files → parallel upload với individual progress
+ */
+
+// ✅ Image compression + preview hook
+function useImageUpload({
+  maxSizeMB = 5,
+  maxWidthOrHeight = 1920,
+  quality = 0.8,
+  allowedTypes = ['image/jpeg', 'image/png', 'image/webp'],
+}: {
+  maxSizeMB?: number;
+  maxWidthOrHeight?: number;
+  quality?: number;
+  allowedTypes?: string[];
+} = {}) {
+  const [files, setFiles] = useState<UploadFile[]>([]);
+
+  interface UploadFile {
+    id: string;
+    file: File;
+    preview: string;       // Object URL cho preview
+    compressed: Blob | null;
+    progress: number;       // 0-100
+    status: 'pending' | 'compressing' | 'uploading' | 'success' | 'error';
+    error: string | null;
+  }
+
+  // Validate file
+  const validateFile = useCallback(
+    (file: File): string | null => {
+      if (!allowedTypes.includes(file.type)) {
+        return `Chỉ chấp nhận: ${allowedTypes.join(', ')}`;
+      }
+      if (file.size > maxSizeMB * 1024 * 1024 * 3) {
+        // Allow 3x before compression
+        return `File quá lớn (max ${maxSizeMB * 3}MB trước khi nén)`;
+      }
+      return null;
+    },
+    [allowedTypes, maxSizeMB]
+  );
+
+  // ⭐ Compress image client-side using Canvas API
+  const compressImage = useCallback(
+    async (file: File): Promise<Blob> => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d')!;
+
+        img.onload = () => {
+          // Calculate new dimensions (maintain aspect ratio)
+          let { width, height } = img;
+          if (width > maxWidthOrHeight || height > maxWidthOrHeight) {
+            const ratio = Math.min(
+              maxWidthOrHeight / width,
+              maxWidthOrHeight / height
+            );
+            width *= ratio;
+            height *= ratio;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          // Draw và compress
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                console.log(
+                  `📦 Compressed: ${(file.size / 1024 / 1024).toFixed(1)}MB → ${(blob.size / 1024 / 1024).toFixed(1)}MB`
+                );
+                resolve(blob);
+              } else {
+                reject(new Error('Compression failed'));
+              }
+            },
+            'image/jpeg', // Output format
+            quality       // Quality: 0.8 = 80%
+          );
+
+          // Cleanup
+          URL.revokeObjectURL(img.src);
+        };
+
+        img.onerror = () => reject(new Error('Invalid image'));
+        img.src = URL.createObjectURL(file);
+      });
+    },
+    [maxWidthOrHeight, quality]
+  );
+
+  // ⭐ Upload with progress tracking
+  const uploadFile = useCallback(
+    async (uploadFile: UploadFile): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        formData.append(
+          'file',
+          uploadFile.compressed || uploadFile.file,
+          uploadFile.file.name
+        );
+
+        // Track upload progress
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const progress = Math.round((event.loaded / event.total) * 100);
+            setFiles((prev) =>
+              prev.map((f) =>
+                f.id === uploadFile.id ? { ...f, progress } : f
+              )
+            );
+          }
+        };
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const { url } = JSON.parse(xhr.responseText);
+            resolve(url);
+          } else {
+            reject(new Error(`Upload failed: ${xhr.status}`));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error('Network error'));
+
+        xhr.open('POST', '/api/upload');
+        xhr.setRequestHeader('Authorization', `Bearer ${getToken()}`);
+        xhr.send(formData);
+      });
+    },
+    []
+  );
+
+  // Main handler: select → validate → preview → compress → upload
+  const handleFiles = useCallback(
+    async (fileList: FileList) => {
+      const newFiles: UploadFile[] = Array.from(fileList).map((file) => ({
+        id: crypto.randomUUID(),
+        file,
+        preview: URL.createObjectURL(file), // Preview NGAY (0ms!)
+        compressed: null,
+        progress: 0,
+        status: 'pending' as const,
+        error: validateFile(file),
+      }));
+
+      setFiles((prev) => [...prev, ...newFiles]);
+
+      // Process each file: compress → upload (parallel)
+      await Promise.allSettled(
+        newFiles
+          .filter((f) => !f.error)
+          .map(async (f) => {
+            try {
+              // Compress
+              updateStatus(f.id, 'compressing');
+              const compressed = await compressImage(f.file);
+              setFiles((prev) =>
+                prev.map((pf) =>
+                  pf.id === f.id ? { ...pf, compressed } : pf
+                )
+              );
+
+              // Upload
+              updateStatus(f.id, 'uploading');
+              await uploadFile({ ...f, compressed });
+              updateStatus(f.id, 'success');
+            } catch (err) {
+              updateStatus(f.id, 'error', (err as Error).message);
+            }
+          })
+      );
+    },
+    [validateFile, compressImage, uploadFile]
+  );
+
+  const updateStatus = (id: string, status: UploadFile['status'], error?: string) => {
+    setFiles((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, status, error: error ?? null } : f))
+    );
+  };
+
+  // Retry failed upload
+  const retry = useCallback(
+    (id: string) => {
+      const file = files.find((f) => f.id === id);
+      if (file) {
+        updateStatus(id, 'uploading');
+        uploadFile(file)
+          .then(() => updateStatus(id, 'success'))
+          .catch((err) => updateStatus(id, 'error', err.message));
+      }
+    },
+    [files, uploadFile]
+  );
+
+  // Cleanup preview URLs on unmount
+  useEffect(() => {
+    return () => files.forEach((f) => URL.revokeObjectURL(f.preview));
+  }, []); // eslint-disable-line
+
+  const removeFile = (id: string) => {
+    setFiles((prev) => {
+      const file = prev.find((f) => f.id === id);
+      if (file) URL.revokeObjectURL(file.preview);
+      return prev.filter((f) => f.id !== id);
+    });
+  };
+
+  return { files, handleFiles, retry, removeFile };
+}
+
+// Sử dụng:
+function AvatarUpload() {
+  const { files, handleFiles, retry, removeFile } = useImageUpload({
+    maxSizeMB: 2,
+    maxWidthOrHeight: 800,
+    quality: 0.85,
+  });
+
+  return (
+    <div>
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={(e) => e.target.files && handleFiles(e.target.files)}
+      />
+
+      {files.map((f) => (
+        <div key={f.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <img src={f.preview} width={60} height={60} style={{ objectFit: 'cover' }} />
+          <div style={{ flex: 1 }}>
+            <div>{f.file.name}</div>
+            {f.status === 'compressing' && <div>🔧 Đang nén...</div>}
+            {f.status === 'uploading' && (
+              <progress value={f.progress} max={100} style={{ width: '100%' }} />
+            )}
+            {f.status === 'success' && <div>✅ Hoàn tất</div>}
+            {f.status === 'error' && (
+              <div>
+                ❌ {f.error} <button onClick={() => retry(f.id)}>Retry</button>
+              </div>
+            )}
+          </div>
+          <button onClick={() => removeFile(f.id)}>✕</button>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+**🧠 Bài học:**
+- **`URL.createObjectURL()`** cho preview NGAY (0ms) mà không cần upload trước
+- **Canvas API** compress ảnh client-side: 15MB → 1MB, giảm 90% bandwidth
+- **XMLHttpRequest** (`xhr.upload.onprogress`) cho progress tracking (fetch API chưa hỗ trợ upload progress)
+- **Cleanup**: Luôn `URL.revokeObjectURL()` khi không cần preview nữa (tránh memory leak)
+
+---
+
+### **25.16. ⌨️ Undo/Redo System Với Command Pattern**
+
+**Vấn đề:** Rich editor, design tool, form builder cần undo/redo → phải track mọi thay đổi, support batch undo (gộp nhiều thay đổi vào 1 undo step), handle branching (undo rồi thay đổi mới → redo history bị xóa).
+
+```typescript
+/**
+ * 🔴 ĐỘ KHÓ:
+ * - Mỗi action cần biết cách "undo" chính nó
+ * - Batch actions: drag + drop = 1 undo step (không phải 2)
+ * - Branching: undo 3 bước → thay đổi mới → redo stack bị clear
+ * - Memory: không lưu vô hạn snapshots → limit history size
+ */
+
+// ✅ Command Pattern: Mỗi action là 1 object biết cách do/undo
+interface Command {
+  id: string;
+  description: string;
+  execute: () => void;   // Do the action
+  undo: () => void;      // Reverse the action
+  timestamp: number;
+}
+
+class UndoRedoManager {
+  private undoStack: Command[] = [];
+  private redoStack: Command[] = [];
+  private maxHistory: number;
+  private batchCommands: Command[] | null = null; // Cho batch mode
+  private listeners = new Set<() => void>();
+
+  constructor(maxHistory = 100) {
+    this.maxHistory = maxHistory;
+  }
+
+  // Execute command và push vào undo stack
+  execute(command: Command) {
+    command.execute();
+
+    if (this.batchCommands) {
+      // Batch mode: gom commands
+      this.batchCommands.push(command);
+    } else {
+      this.undoStack.push(command);
+      this.redoStack = []; // ⭐ Clear redo khi có action mới (branching)
+
+      // Trim history nếu vượt limit
+      if (this.undoStack.length > this.maxHistory) {
+        this.undoStack.shift();
+      }
+    }
+
+    this.notify();
+  }
+
+  // ⭐ Batch: Gom nhiều commands thành 1 undo step
+  startBatch(description: string) {
+    this.batchCommands = [];
+  }
+
+  endBatch(description: string) {
+    if (!this.batchCommands || this.batchCommands.length === 0) {
+      this.batchCommands = null;
+      return;
+    }
+
+    const commands = [...this.batchCommands];
+    this.batchCommands = null;
+
+    // Tạo 1 composite command từ nhiều commands
+    const batchCommand: Command = {
+      id: crypto.randomUUID(),
+      description,
+      execute: () => commands.forEach((cmd) => cmd.execute()),
+      undo: () => [...commands].reverse().forEach((cmd) => cmd.undo()), // Undo theo thứ tự ngược
+      timestamp: Date.now(),
+    };
+
+    this.undoStack.push(batchCommand);
+    this.redoStack = [];
+    this.notify();
+  }
+
+  undo(): boolean {
+    const command = this.undoStack.pop();
+    if (!command) return false;
+
+    command.undo();
+    this.redoStack.push(command);
+    this.notify();
+    return true;
+  }
+
+  redo(): boolean {
+    const command = this.redoStack.pop();
+    if (!command) return false;
+
+    command.execute();
+    this.undoStack.push(command);
+    this.notify();
+    return true;
+  }
+
+  get canUndo() {
+    return this.undoStack.length > 0;
+  }
+  get canRedo() {
+    return this.redoStack.length > 0;
+  }
+  get history() {
+    return this.undoStack.map((cmd) => ({
+      id: cmd.id,
+      description: cmd.description,
+      timestamp: cmd.timestamp,
+    }));
+  }
+
+  subscribe(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notify() {
+    this.listeners.forEach((fn) => fn());
+  }
+
+  clear() {
+    this.undoStack = [];
+    this.redoStack = [];
+    this.notify();
+  }
+}
+
+// ✅ React Hook
+function useUndoRedo() {
+  const managerRef = useRef(new UndoRedoManager(50));
+  const [, forceUpdate] = useState({});
+
+  useEffect(() => {
+    return managerRef.current.subscribe(() => forceUpdate({}));
+  }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const isMac = navigator.platform.includes('Mac');
+      const modifier = isMac ? e.metaKey : e.ctrlKey;
+
+      if (modifier && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        managerRef.current.undo();
+      } else if (
+        (modifier && e.key === 'z' && e.shiftKey) || // Cmd+Shift+Z (Mac)
+        (modifier && e.key === 'y')                   // Ctrl+Y (Windows)
+      ) {
+        e.preventDefault();
+        managerRef.current.redo();
+      }
+    };
+
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  return managerRef.current;
+}
+
+// ✅ SỬ DỤNG: Canvas drawing app
+function DrawingApp() {
+  const undoRedo = useUndoRedo();
+  const [shapes, setShapes] = useState<Shape[]>([]);
+
+  const addShape = (shape: Shape) => {
+    undoRedo.execute({
+      id: crypto.randomUUID(),
+      description: `Add ${shape.type}`,
+      execute: () => setShapes((prev) => [...prev, shape]),
+      undo: () => setShapes((prev) => prev.filter((s) => s.id !== shape.id)),
+      timestamp: Date.now(),
+    });
+  };
+
+  const moveShape = (shapeId: string, from: Point, to: Point) => {
+    undoRedo.execute({
+      id: crypto.randomUUID(),
+      description: `Move shape`,
+      execute: () =>
+        setShapes((prev) =>
+          prev.map((s) => (s.id === shapeId ? { ...s, x: to.x, y: to.y } : s))
+        ),
+      undo: () =>
+        setShapes((prev) =>
+          prev.map((s) => (s.id === shapeId ? { ...s, x: from.x, y: from.y } : s))
+        ),
+      timestamp: Date.now(),
+    });
+  };
+
+  // Batch example: Align tất cả shapes (1 undo step)
+  const alignAllLeft = () => {
+    undoRedo.startBatch('Align all left');
+    shapes.forEach((shape) => {
+      const oldX = shape.x;
+      undoRedo.execute({
+        id: crypto.randomUUID(),
+        description: `Align ${shape.id}`,
+        execute: () =>
+          setShapes((prev) =>
+            prev.map((s) => (s.id === shape.id ? { ...s, x: 0 } : s))
+          ),
+        undo: () =>
+          setShapes((prev) =>
+            prev.map((s) => (s.id === shape.id ? { ...s, x: oldX } : s))
+          ),
+        timestamp: Date.now(),
+      });
+    });
+    undoRedo.endBatch('Align all shapes left');
+  };
+
+  return (
+    <div>
+      <div>
+        <button disabled={!undoRedo.canUndo} onClick={() => undoRedo.undo()}>
+          ↩️ Undo
+        </button>
+        <button disabled={!undoRedo.canRedo} onClick={() => undoRedo.redo()}>
+          ↪️ Redo
+        </button>
+      </div>
+      <Canvas shapes={shapes} />
+    </div>
+  );
+}
+```
+
+**🧠 Bài học:**
+- **Command Pattern** = mỗi action là object có `execute()` và `undo()` → flexible, extensible
+- **Batch commands** gộp nhiều thay đổi thành 1 undo step (undo ngược thứ tự)
+- **Branching**: Khi user undo rồi thay đổi mới → redo stack PHẢI bị clear
+- **Keyboard shortcut**: Cmd+Z / Ctrl+Z cho undo, Cmd+Shift+Z / Ctrl+Y cho redo
+
+---
+
+### **25.17. 🌐 Offline-First App Với Service Worker & IndexedDB**
+
+**Vấn đề:** App cần hoạt động khi mất mạng (offline-first) → cache assets + API responses, queue mutations offline, sync khi có mạng trở lại, handle conflict resolution.
+
+```typescript
+/**
+ * 🔴 OFFLINE CHALLENGES:
+ * 1. Cache trang nào? Bao lâu? Khi nào invalidate?
+ * 2. User thay đổi data offline → sync lên server khi online → conflict!
+ * 3. Network chập chờn (3G/tunnel) → request timeout, retry
+ * 4. Background sync khi app đóng
+ */
+
+// ✅ Service Worker: Cache Strategy
+// service-worker.js
+const CACHE_NAME = 'app-v1';
+const STATIC_ASSETS = ['/', '/index.html', '/main.js', '/styles.css'];
+
+// Install: Pre-cache static assets
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+  );
+  self.skipWaiting(); // Activate immediately
+});
+
+// Activate: Clean old caches
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((key) => key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      )
+    )
+  );
+  self.clients.claim(); // Take control immediately
+});
+
+// Fetch: Strategy per request type
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  if (request.method !== 'GET') {
+    // Non-GET → network only (mutations go through sync queue)
+    return;
+  }
+
+  if (STATIC_ASSETS.includes(url.pathname)) {
+    // Static assets: Cache First (fast, use cached version)
+    event.respondWith(cacheFirst(request));
+  } else if (url.pathname.startsWith('/api/')) {
+    // API calls: Network First (fresh data, fallback to cache)
+    event.respondWith(networkFirst(request));
+  } else {
+    // Other: Stale While Revalidate (show cached, update in background)
+    event.respondWith(staleWhileRevalidate(request));
+  }
+});
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  return cached || fetch(request).then((response) => {
+    const clone = response.clone();
+    caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+    return response;
+  });
+}
+
+async function networkFirst(request) {
+  try {
+    const response = await fetch(request);
+    const clone = response.clone();
+    caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+    return response;
+  } catch {
+    const cached = await caches.match(request);
+    return cached || new Response(JSON.stringify({ error: 'Offline' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+
+async function staleWhileRevalidate(request) {
+  const cached = await caches.match(request);
+  const networkPromise = fetch(request).then((response) => {
+    caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+    return response;
+  });
+  return cached || networkPromise;
+}
+
+// ✅ IndexedDB: Offline Mutation Queue
+class OfflineSyncQueue {
+  private dbName = 'offline-sync';
+  private storeName = 'mutations';
+
+  private async getDB(): Promise<IDBDatabase> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, 1);
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          db.createObjectStore(this.storeName, { keyPath: 'id', autoIncrement: true });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  // Queue một mutation khi offline
+  async enqueue(mutation: {
+    url: string;
+    method: string;
+    body: any;
+    timestamp: number;
+  }) {
+    const db = await this.getDB();
+    const tx = db.transaction(this.storeName, 'readwrite');
+    tx.objectStore(this.storeName).add(mutation);
+    return new Promise((resolve) => (tx.oncomplete = resolve));
+  }
+
+  // Get tất cả mutations đang chờ
+  async getAll(): Promise<any[]> {
+    const db = await this.getDB();
+    const tx = db.transaction(this.storeName, 'readonly');
+    const request = tx.objectStore(this.storeName).getAll();
+    return new Promise((resolve) => (request.onsuccess = () => resolve(request.result)));
+  }
+
+  // Xóa mutation đã sync thành công
+  async remove(id: number) {
+    const db = await this.getDB();
+    const tx = db.transaction(this.storeName, 'readwrite');
+    tx.objectStore(this.storeName).delete(id);
+  }
+
+  // ⭐ Sync tất cả queued mutations khi online
+  async syncAll(): Promise<{ synced: number; failed: number }> {
+    const mutations = await this.getAll();
+    let synced = 0, failed = 0;
+
+    for (const mutation of mutations) {
+      try {
+        const response = await fetch(mutation.url, {
+          method: mutation.method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(mutation.body),
+        });
+
+        if (response.ok) {
+          await this.remove(mutation.id);
+          synced++;
+        } else if (response.status === 409) {
+          // ⭐ Conflict! Server data đã thay đổi
+          console.warn('Conflict detected, needs manual resolution:', mutation);
+          // Handle conflict: last-write-wins, merge, hoặc prompt user
+          failed++;
+        } else {
+          failed++;
+        }
+      } catch {
+        failed++;
+        break; // Still offline, stop trying
+      }
+    }
+
+    return { synced, failed };
+  }
+}
+
+// ✅ React Hook: Online status + Auto sync
+function useOfflineSync() {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [pendingCount, setPendingCount] = useState(0);
+  const queueRef = useRef(new OfflineSyncQueue());
+
+  // Track online/offline status
+  useEffect(() => {
+    const handleOnline = async () => {
+      setIsOnline(true);
+      // Auto sync khi có mạng trở lại
+      const result = await queueRef.current.syncAll();
+      console.log(`🔄 Synced: ${result.synced}, Failed: ${result.failed}`);
+      updatePendingCount();
+    };
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const updatePendingCount = async () => {
+    const mutations = await queueRef.current.getAll();
+    setPendingCount(mutations.length);
+  };
+
+  // Smart fetch: online → network, offline → queue
+  const smartFetch = useCallback(
+    async (url: string, options: RequestInit = {}) => {
+      if (navigator.onLine) {
+        return fetch(url, options);
+      }
+
+      // Offline: queue non-GET requests
+      if (options.method && options.method !== 'GET') {
+        await queueRef.current.enqueue({
+          url,
+          method: options.method,
+          body: options.body ? JSON.parse(options.body as string) : null,
+          timestamp: Date.now(),
+        });
+        updatePendingCount();
+
+        // Return fake success response (optimistic)
+        return new Response(JSON.stringify({ queued: true }), { status: 202 });
+      }
+
+      // GET requests: try cache
+      return caches.match(url).then(
+        (cached) => cached || new Response('Offline', { status: 503 })
+      );
+    },
+    []
+  );
+
+  return { isOnline, pendingCount, smartFetch };
+}
+```
+
+**🧠 Bài học:**
+- **Cache strategies**: Cache First (static), Network First (API), Stale While Revalidate (hybrid)
+- **IndexedDB** cho offline mutation queue — persistent storage, không bị clear khi close tab
+- **Background Sync API** (`self.registration.sync.register`) để sync khi app đóng
+- **Conflict resolution**: Last-write-wins (đơn giản), CRDT (phức tạp), hoặc prompt user
+
+---
+
+### **25.18. 🎯 Form Validation Complex — Async, Cross-Field & Dynamic Rules**
+
+**Vấn đề:** Form phức tạp cần: async validation (check username trùng), cross-field validation (password confirm), dynamic rules (field B required nếu field A = "other"), debounced validation, và UX tốt (validate on blur, validate on submit).
+
+```typescript
+/**
+ * 🔴 ĐÂU LÀ PHẦN KHÓ:
+ * 1. Async validation: check email trùng → debounce → show pending state
+ * 2. Cross-field: confirmPassword phải match password → re-validate khi password đổi
+ * 3. Dynamic rules: "Nhập lý do khác" chỉ required khi chọn "Khác"
+ * 4. Nested objects: address.city, items[0].name
+ * 5. UX: validate on blur (first touch) → validate on change (after first error)
+ */
+
+// ✅ Custom validation engine
+type ValidationRule<T> = {
+  validate: (value: any, formValues: T) => boolean | Promise<boolean>;
+  message: string | ((value: any, formValues: T) => string);
+  debounceMs?: number; // Cho async validations
+};
+
+type FieldConfig<T> = {
+  rules: ValidationRule<T>[];
+  dependencies?: Array<keyof T>; // Re-validate khi dependencies thay đổi
+};
+
+type FormConfig<T> = {
+  [K in keyof T]?: FieldConfig<T>;
+};
+
+interface FieldState {
+  value: any;
+  error: string | null;
+  touched: boolean;
+  validating: boolean; // Async validation in progress
+  dirty: boolean;
+}
+
+function useFormValidation<T extends Record<string, any>>(
+  initialValues: T,
+  config: FormConfig<T>
+) {
+  const [values, setValues] = useState<T>(initialValues);
+  const [fields, setFields] = useState<Record<keyof T, FieldState>>(() => {
+    const initial: any = {};
+    for (const key of Object.keys(initialValues)) {
+      initial[key] = {
+        value: initialValues[key],
+        error: null,
+        touched: false,
+        validating: false,
+        dirty: false,
+      };
+    }
+    return initial;
+  });
+
+  const debounceTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+
+  // Validate single field
+  const validateField = useCallback(
+    async (name: keyof T, value: any, allValues: T): Promise<string | null> => {
+      const fieldConfig = config[name];
+      if (!fieldConfig) return null;
+
+      for (const rule of fieldConfig.rules) {
+        try {
+          if (rule.debounceMs) {
+            // Mark as validating (show spinner)
+            setFields((prev) => ({
+              ...prev,
+              [name]: { ...prev[name], validating: true },
+            }));
+          }
+
+          const isValid = await rule.validate(value, allValues);
+
+          if (!isValid) {
+            const message =
+              typeof rule.message === 'function'
+                ? rule.message(value, allValues)
+                : rule.message;
+            return message;
+          }
+        } catch {
+          return 'Validation error';
+        }
+      }
+
+      return null;
+    },
+    [config]
+  );
+
+  // Handle field change
+  const handleChange = useCallback(
+    (name: keyof T) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const value = e.target.type === 'checkbox'
+        ? (e.target as HTMLInputElement).checked
+        : e.target.value;
+
+      setValues((prev) => ({ ...prev, [name]: value }));
+      setFields((prev) => ({
+        ...prev,
+        [name]: { ...prev[name], value, dirty: true },
+      }));
+
+      // Validate on change ONLY if field was already touched (UX pattern)
+      if (fields[name]?.touched) {
+        const debounceMs = config[name]?.rules.find((r) => r.debounceMs)?.debounceMs;
+
+        if (debounceMs) {
+          // Debounced validation (async checks)
+          const existingTimer = debounceTimers.current.get(name as string);
+          if (existingTimer) clearTimeout(existingTimer);
+
+          debounceTimers.current.set(
+            name as string,
+            setTimeout(async () => {
+              const newValues = { ...values, [name]: value } as T;
+              const error = await validateField(name, value, newValues);
+              setFields((prev) => ({
+                ...prev,
+                [name]: { ...prev[name], error, validating: false },
+              }));
+            }, debounceMs)
+          );
+        } else {
+          // Instant validation
+          const newValues = { ...values, [name]: value } as T;
+          validateField(name, value, newValues).then((error) => {
+            setFields((prev) => ({
+              ...prev,
+              [name]: { ...prev[name], error, validating: false },
+            }));
+          });
+        }
+      }
+
+      // ⭐ Re-validate dependent fields
+      for (const [fieldName, fieldConfig] of Object.entries(config)) {
+        if (fieldConfig?.dependencies?.includes(name)) {
+          const newValues = { ...values, [name]: value } as T;
+          validateField(fieldName as keyof T, newValues[fieldName as keyof T], newValues).then(
+            (error) => {
+              setFields((prev) => ({
+                ...prev,
+                [fieldName]: { ...prev[fieldName as keyof T], error, validating: false },
+              }));
+            }
+          );
+        }
+      }
+    },
+    [values, fields, config, validateField]
+  );
+
+  // Handle blur → first validation
+  const handleBlur = useCallback(
+    (name: keyof T) => async () => {
+      setFields((prev) => ({
+        ...prev,
+        [name]: { ...prev[name], touched: true },
+      }));
+
+      const error = await validateField(name, values[name], values);
+      setFields((prev) => ({
+        ...prev,
+        [name]: { ...prev[name], error, validating: false },
+      }));
+    },
+    [values, validateField]
+  );
+
+  // Validate ALL fields (on submit)
+  const validateAll = useCallback(async (): Promise<boolean> => {
+    const errors: Partial<Record<keyof T, string | null>> = {};
+    let isValid = true;
+
+    await Promise.all(
+      Object.keys(values).map(async (name) => {
+        const error = await validateField(name as keyof T, values[name as keyof T], values);
+        errors[name as keyof T] = error;
+        if (error) isValid = false;
+      })
+    );
+
+    // Mark all fields as touched + set errors
+    setFields((prev) => {
+      const updated = { ...prev };
+      for (const [name, error] of Object.entries(errors)) {
+        updated[name as keyof T] = {
+          ...updated[name as keyof T],
+          touched: true,
+          error: error as string | null,
+          validating: false,
+        };
+      }
+      return updated;
+    });
+
+    return isValid;
+  }, [values, validateField]);
+
+  // Handle submit
+  const handleSubmit = useCallback(
+    (onSubmit: (values: T) => void | Promise<void>) =>
+      async (e: React.FormEvent) => {
+        e.preventDefault();
+        const isValid = await validateAll();
+        if (isValid) await onSubmit(values);
+      },
+    [values, validateAll]
+  );
+
+  // Helper: get field props
+  const getFieldProps = (name: keyof T) => ({
+    value: values[name],
+    onChange: handleChange(name),
+    onBlur: handleBlur(name),
+    'aria-invalid': !!fields[name]?.error,
+    'aria-describedby': fields[name]?.error ? `${String(name)}-error` : undefined,
+  });
+
+  const getFieldState = (name: keyof T) => fields[name];
+
+  return {
+    values,
+    getFieldProps,
+    getFieldState,
+    handleSubmit,
+    validateAll,
+    isValid: Object.values(fields).every((f) => !f.error),
+    isDirty: Object.values(fields).some((f) => f.dirty),
+  };
+}
+
+// ✅ SỬ DỤNG:
+function RegistrationForm() {
+  const form = useFormValidation(
+    { username: '', email: '', password: '', confirmPassword: '', reason: '', otherReason: '' },
+    {
+      username: {
+        rules: [
+          { validate: (v) => v.length >= 3, message: 'Tối thiểu 3 ký tự' },
+          { validate: (v) => /^[a-zA-Z0-9_]+$/.test(v), message: 'Chỉ chữ, số và _' },
+          {
+            // ⭐ Async validation + debounce
+            validate: async (v) => {
+              const res = await fetch(`/api/check-username?u=${v}`);
+              const { available } = await res.json();
+              return available;
+            },
+            message: 'Username đã tồn tại',
+            debounceMs: 500,
+          },
+        ],
+      },
+      email: {
+        rules: [
+          { validate: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), message: 'Email không hợp lệ' },
+        ],
+      },
+      password: {
+        rules: [
+          { validate: (v) => v.length >= 8, message: 'Tối thiểu 8 ký tự' },
+          { validate: (v) => /(?=.*[A-Z])(?=.*[0-9])/.test(v), message: 'Cần chữ hoa và số' },
+        ],
+      },
+      confirmPassword: {
+        rules: [
+          {
+            // ⭐ Cross-field validation
+            validate: (v, form) => v === form.password,
+            message: 'Mật khẩu không khớp',
+          },
+        ],
+        dependencies: ['password'], // Re-validate khi password đổi
+      },
+      otherReason: {
+        rules: [
+          {
+            // ⭐ Dynamic required: chỉ required khi reason = 'other'
+            validate: (v, form) => form.reason !== 'other' || v.length > 0,
+            message: 'Vui lòng nhập lý do',
+          },
+        ],
+        dependencies: ['reason'],
+      },
+    }
+  );
+
+  return (
+    <form onSubmit={form.handleSubmit(async (values) => {
+      await api.register(values);
+    })}>
+      <div>
+        <input placeholder="Username" {...form.getFieldProps('username')} />
+        {form.getFieldState('username')?.validating && <span>⏳ Checking...</span>}
+        {form.getFieldState('username')?.error && (
+          <span className="error">{form.getFieldState('username')!.error}</span>
+        )}
+      </div>
+      {/* ... other fields ... */}
+      <button type="submit" disabled={!form.isValid}>Đăng ký</button>
+    </form>
+  );
+}
+```
+
+**🧠 Bài học:**
+- **Validate on blur first, then on change** — UX pattern tốt nhất (không spam errors khi user đang gõ)
+- **Cross-field dependencies** phải tự re-validate khi dependency thay đổi
+- **Async validation** cần debounce + loading state + abort previous
+- Production: React Hook Form + Zod schema — đã optimize performance + handle edge cases
+
+---
+
+### **25.19. 📊 Real-time Dashboard Với WebSocket + Throttled UI Updates**
+
+**Vấn đề:** Dashboard nhận 100+ messages/giây qua WebSocket → update UI mỗi message → React re-render 100 lần/giây → browser freeze. Cần buffer data + throttle renders mà không mất precision.
+
+```typescript
+/**
+ * 🔴 VẤN ĐỀ PERFORMANCE:
+ * - WebSocket: 100-500 messages/giây (stock prices, sensor data, logs)
+ * - React setState mỗi message → 100-500 re-renders/giây
+ * - Browser chỉ paint 60fps → 440 renders/giây LÃNG PHÍ
+ * - GC pressure: tạo 100 state objects/giây → frequent GC pauses
+ *
+ * ✅ GIẢI PHÁP: Buffer messages + RAF-throttled renders
+ */
+
+// ✅ Custom hook: Buffer WebSocket data + Throttle UI updates
+function useRealtimeData<T>({
+  wsUrl,
+  transform,
+  maxDataPoints = 1000,
+  throttleMs = 100, // Update UI tối đa mỗi 100ms (10fps — đủ cho dashboard)
+}: {
+  wsUrl: string;
+  transform: (raw: any) => T;
+  maxDataPoints?: number;
+  throttleMs?: number;
+}) {
+  // ⭐ useRef cho data buffer — KHÔNG trigger re-render khi nhận message
+  const bufferRef = useRef<T[]>([]);
+  const dataRef = useRef<T[]>([]);
+
+  // State chỉ update theo throttle schedule
+  const [displayData, setDisplayData] = useState<T[]>([]);
+  const [stats, setStats] = useState({ messagesPerSec: 0, lastUpdate: 0 });
+
+  const messageCountRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+  const lastFlushRef = useRef(Date.now());
+
+  // ⭐ Flush buffer → state (throttled)
+  const flushBuffer = useCallback(() => {
+    const now = Date.now();
+
+    if (bufferRef.current.length === 0) return;
+    if (now - lastFlushRef.current < throttleMs) {
+      // Too soon → schedule next flush
+      if (!rafRef.current) {
+        rafRef.current = requestAnimationFrame(() => {
+          rafRef.current = null;
+          flushBuffer();
+        });
+      }
+      return;
+    }
+
+    // Merge buffer vào main data
+    const newData = [...dataRef.current, ...bufferRef.current];
+
+    // Trim nếu vượt maxDataPoints (sliding window)
+    const trimmed =
+      newData.length > maxDataPoints
+        ? newData.slice(-maxDataPoints)
+        : newData;
+
+    dataRef.current = trimmed;
+    bufferRef.current = []; // Clear buffer
+    lastFlushRef.current = now;
+
+    // ⭐ CHỈ setState ở đây — 1 lần mỗi throttleMs
+    setDisplayData(trimmed);
+    setStats({
+      messagesPerSec: messageCountRef.current,
+      lastUpdate: now,
+    });
+    messageCountRef.current = 0;
+  }, [throttleMs, maxDataPoints]);
+
+  // WebSocket connection
+  useEffect(() => {
+    const ws = new WebSocket(wsUrl);
+
+    ws.onmessage = (event) => {
+      const data = transform(JSON.parse(event.data));
+
+      // ⭐ Push to buffer (NO re-render!)
+      bufferRef.current.push(data);
+      messageCountRef.current++;
+
+      // Schedule flush
+      flushBuffer();
+    };
+
+    // Message rate counter (reset every second)
+    const rateInterval = setInterval(() => {
+      if (messageCountRef.current > 0) {
+        setStats((prev) => ({
+          ...prev,
+          messagesPerSec: messageCountRef.current,
+        }));
+        messageCountRef.current = 0;
+      }
+    }, 1000);
+
+    return () => {
+      ws.close();
+      clearInterval(rateInterval);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [wsUrl, transform, flushBuffer]);
+
+  return { data: displayData, stats };
+}
+
+// ✅ ADVANCED: Ring Buffer cho fixed-size data (zero allocation)
+class RingBuffer<T> {
+  private buffer: (T | undefined)[];
+  private head = 0;
+  private _size = 0;
+
+  constructor(private capacity: number) {
+    this.buffer = new Array(capacity);
+  }
+
+  push(item: T): void {
+    this.buffer[this.head] = item;
+    this.head = (this.head + 1) % this.capacity;
+    if (this._size < this.capacity) this._size++;
+  }
+
+  toArray(): T[] {
+    if (this._size < this.capacity) {
+      return this.buffer.slice(0, this._size) as T[];
+    }
+    // Wrap around: [head...end, start...head-1]
+    return [
+      ...this.buffer.slice(this.head),
+      ...this.buffer.slice(0, this.head),
+    ] as T[];
+  }
+
+  get size() {
+    return this._size;
+  }
+  get latest(): T | undefined {
+    return this.buffer[(this.head - 1 + this.capacity) % this.capacity];
+  }
+}
+
+// ✅ SỬ DỤNG: Stock price dashboard
+function StockDashboard() {
+  const { data: prices, stats } = useRealtimeData<StockPrice>({
+    wsUrl: 'wss://stream.example.com/stocks',
+    transform: (raw) => ({
+      symbol: raw.s,
+      price: parseFloat(raw.p),
+      volume: parseInt(raw.v),
+      timestamp: raw.t,
+    }),
+    maxDataPoints: 500,
+    throttleMs: 200, // Update chart 5 lần/giây (đủ smooth)
+  });
+
+  return (
+    <div>
+      <div className="stats-bar">
+        📡 {stats.messagesPerSec} msg/s | 📊 {prices.length} data points
+      </div>
+
+      {/* Chart chỉ re-render 5 lần/giây thay vì 500 lần */}
+      <PriceChart data={prices} />
+
+      {/* Latest prices — cũng throttled */}
+      <PriceTable data={prices.slice(-20)} />
+    </div>
+  );
+}
+
+// ✅ Memoize heavy chart component
+const PriceChart = React.memo(({ data }: { data: StockPrice[] }) => {
+  // Chart library chỉ nhận data mới 5 lần/giây
+  return <LineChart data={data} />;
+});
+```
+
+**🧠 Bài học:**
+- **useRef buffer** nhận data KHÔNG re-render → flush với throttle/RAF → setState 1 lần
+- **Throttle renders** ở 5-10fps cho dashboard là đủ smooth (mắt người không phân biệt > 10fps cho number/chart)
+- **Ring Buffer** (circular buffer) cho fixed-size data — zero memory allocation sau init
+- **React.memo** cho chart component — skip re-render nếu data reference giống
+
+---
+
+### **25.20. 🏗️ Complex State Machine Với useReducer + Context — "Quản Lý Multi-Step Wizard"**
+
+**Vấn đề:** Wizard/checkout flow có nhiều steps, mỗi step có validation riêng, navigation rules phức tạp (step 3 chỉ accessible nếu step 1+2 valid), async actions giữa steps, branching logic (different flows based on choices).
+
+```typescript
+/**
+ * 🔴 ĐỘ PHỨC TẠP:
+ * - 5+ steps, mỗi step có state riêng
+ * - Navigation rules: step 3 không accessible nếu step 2 chưa complete
+ * - Branching: chọn "doanh nghiệp" ở step 1 → hiện thêm step 2b "Thông tin công ty"
+ * - Async: step 2 submit → validate server → mới cho qua step 3
+ * - Persistence: user đóng tab → quay lại resume từ step cuối
+ */
+
+// ✅ State Machine approach
+type WizardStep =
+  | 'accountType'
+  | 'personalInfo'
+  | 'companyInfo'    // Chỉ hiện cho business accounts
+  | 'verification'
+  | 'payment'
+  | 'review'
+  | 'complete';
+
+type WizardEvent =
+  | { type: 'NEXT' }
+  | { type: 'BACK' }
+  | { type: 'GOTO'; step: WizardStep }
+  | { type: 'UPDATE_FIELD'; step: WizardStep; field: string; value: any }
+  | { type: 'VALIDATE_STEP'; step: WizardStep; errors: Record<string, string> }
+  | { type: 'ASYNC_START' }
+  | { type: 'ASYNC_SUCCESS'; data?: any }
+  | { type: 'ASYNC_ERROR'; error: string }
+  | { type: 'RESTORE'; state: WizardState };
+
+interface StepState {
+  data: Record<string, any>;
+  errors: Record<string, string>;
+  isValid: boolean;
+  isComplete: boolean;
+  visited: boolean;
+}
+
+interface WizardState {
+  currentStep: WizardStep;
+  steps: Record<WizardStep, StepState>;
+  accountType: 'personal' | 'business' | null;
+  isSubmitting: boolean;
+  asyncError: string | null;
+}
+
+// ⭐ Step flow definition — defines valid transitions
+const STEP_FLOW: Record<string, { next: (state: WizardState) => WizardStep | null; prev: WizardStep | null }> = {
+  accountType: {
+    next: (state) =>  'personalInfo',
+    prev: null,
+  },
+  personalInfo: {
+    next: (state) =>
+      state.accountType === 'business' ? 'companyInfo' : 'verification',
+    prev: 'accountType',
+  },
+  companyInfo: {
+    next: () => 'verification',
+    prev: 'personalInfo',
+  },
+  verification: {
+    next: () => 'payment',
+    prev: null, // Dynamically determined
+  },
+  payment: {
+    next: () => 'review',
+    prev: 'verification',
+  },
+  review: {
+    next: () => 'complete',
+    prev: 'payment',
+  },
+};
+
+// ✅ Reducer — Pure state transitions
+function wizardReducer(state: WizardState, event: WizardEvent): WizardState {
+  switch (event.type) {
+    case 'NEXT': {
+      const flow = STEP_FLOW[state.currentStep];
+      const nextStep = flow?.next(state);
+      if (!nextStep) return state;
+
+      // Guard: current step must be valid
+      if (!state.steps[state.currentStep].isValid) return state;
+
+      return {
+        ...state,
+        currentStep: nextStep,
+        steps: {
+          ...state.steps,
+          [state.currentStep]: {
+            ...state.steps[state.currentStep],
+            isComplete: true,
+          },
+          [nextStep]: {
+            ...state.steps[nextStep],
+            visited: true,
+          },
+        },
+      };
+    }
+
+    case 'BACK': {
+      const flow = STEP_FLOW[state.currentStep];
+      const prevStep = flow?.prev;
+      if (!prevStep) return state;
+      return { ...state, currentStep: prevStep };
+    }
+
+    case 'GOTO': {
+      // Guard: can only go to visited steps or previous steps
+      if (!state.steps[event.step]?.visited) return state;
+      return { ...state, currentStep: event.step };
+    }
+
+    case 'UPDATE_FIELD': {
+      const stepState = state.steps[event.step];
+      const newData = { ...stepState.data, [event.field]: event.value };
+      const newErrors = { ...stepState.errors };
+      delete newErrors[event.field]; // Clear error on change
+
+      return {
+        ...state,
+        accountType:
+          event.step === 'accountType' && event.field === 'type'
+            ? event.value
+            : state.accountType,
+        steps: {
+          ...state.steps,
+          [event.step]: {
+            ...stepState,
+            data: newData,
+            errors: newErrors,
+            isValid: Object.keys(newErrors).length === 0,
+          },
+        },
+      };
+    }
+
+    case 'VALIDATE_STEP': {
+      const hasErrors = Object.keys(event.errors).length > 0;
+      return {
+        ...state,
+        steps: {
+          ...state.steps,
+          [event.step]: {
+            ...state.steps[event.step],
+            errors: event.errors,
+            isValid: !hasErrors,
+          },
+        },
+      };
+    }
+
+    case 'ASYNC_START':
+      return { ...state, isSubmitting: true, asyncError: null };
+
+    case 'ASYNC_SUCCESS':
+      return { ...state, isSubmitting: false };
+
+    case 'ASYNC_ERROR':
+      return { ...state, isSubmitting: false, asyncError: event.error };
+
+    case 'RESTORE':
+      return event.state;
+
+    default:
+      return state;
+  }
+}
+
+// ✅ Context + Hook
+const WizardContext = createContext<{
+  state: WizardState;
+  dispatch: React.Dispatch<WizardEvent>;
+  next: () => Promise<boolean>;
+  back: () => void;
+  goTo: (step: WizardStep) => void;
+  updateField: (field: string, value: any) => void;
+} | null>(null);
+
+function WizardProvider({ children }: { children: React.ReactNode }) {
+  // Restore from sessionStorage
+  const savedState = sessionStorage.getItem('wizard_state');
+  const initialState: WizardState = savedState
+    ? JSON.parse(savedState)
+    : createInitialState();
+
+  const [state, dispatch] = useReducer(wizardReducer, initialState);
+
+  // ⭐ Auto-save to sessionStorage (persistence)
+  useEffect(() => {
+    sessionStorage.setItem('wizard_state', JSON.stringify(state));
+  }, [state]);
+
+  // Actions
+  const next = useCallback(async () => {
+    // Validate current step
+    const errors = await validateStep(state.currentStep, state.steps[state.currentStep].data);
+    dispatch({ type: 'VALIDATE_STEP', step: state.currentStep, errors });
+
+    if (Object.keys(errors).length > 0) return false;
+
+    // Async validation (e.g., server check)
+    if (state.currentStep === 'verification') {
+      dispatch({ type: 'ASYNC_START' });
+      try {
+        await api.verifyIdentity(state.steps.verification.data);
+        dispatch({ type: 'ASYNC_SUCCESS' });
+      } catch (err) {
+        dispatch({ type: 'ASYNC_ERROR', error: (err as Error).message });
+        return false;
+      }
+    }
+
+    dispatch({ type: 'NEXT' });
+    return true;
+  }, [state]);
+
+  const back = useCallback(() => dispatch({ type: 'BACK' }), []);
+  const goTo = useCallback((step: WizardStep) => dispatch({ type: 'GOTO', step }), []);
+  const updateField = useCallback(
+    (field: string, value: any) =>
+      dispatch({ type: 'UPDATE_FIELD', step: state.currentStep, field, value }),
+    [state.currentStep]
+  );
+
+  return (
+    <WizardContext.Provider value={{ state, dispatch, next, back, goTo, updateField }}>
+      {children}
+    </WizardContext.Provider>
+  );
+}
+
+function useWizard() {
+  const ctx = useContext(WizardContext);
+  if (!ctx) throw new Error('useWizard must be used within WizardProvider');
+  return ctx;
+}
+
+// ✅ Step indicators with navigation
+function StepIndicator() {
+  const { state, goTo } = useWizard();
+
+  const visibleSteps = getVisibleSteps(state); // Filter based on accountType
+
+  return (
+    <nav aria-label="Wizard steps">
+      <ol style={{ display: 'flex', gap: 16 }}>
+        {visibleSteps.map((step, i) => {
+          const stepState = state.steps[step];
+          const isCurrent = state.currentStep === step;
+
+          return (
+            <li key={step}>
+              <button
+                onClick={() => goTo(step)}
+                disabled={!stepState.visited}
+                aria-current={isCurrent ? 'step' : undefined}
+                style={{
+                  fontWeight: isCurrent ? 'bold' : 'normal',
+                  color: stepState.isComplete
+                    ? 'green'
+                    : isCurrent
+                      ? 'blue'
+                      : '#999',
+                }}
+              >
+                {stepState.isComplete ? '✅' : `${i + 1}.`} {getStepTitle(step)}
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
+
+// ✅ Step content renderer
+function WizardContent() {
+  const { state } = useWizard();
+
+  const StepComponent = STEP_COMPONENTS[state.currentStep];
+  return <StepComponent />;
+}
+
+// ✅ Navigation buttons
+function WizardNavigation() {
+  const { state, next, back } = useWizard();
+  const flow = STEP_FLOW[state.currentStep];
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
+      {flow?.prev && (
+        <button onClick={back} disabled={state.isSubmitting}>
+          ← Quay lại
+        </button>
+      )}
+      <button
+        onClick={next}
+        disabled={state.isSubmitting || !state.steps[state.currentStep].isValid}
+      >
+        {state.isSubmitting
+          ? '⏳ Đang xử lý...'
+          : state.currentStep === 'review'
+            ? '✅ Hoàn tất'
+            : 'Tiếp theo →'}
+      </button>
+    </div>
+  );
+}
+```
+
+**🧠 Bài học:**
+- **State Machine** (finite states + transitions) cho wizard → không thể ở state "bất hợp lệ"
+- **useReducer** > useState cho complex state với nhiều transitions liên quan nhau
+- **Branching flow**: Step flow dựa trên state (personal vs business → khác steps)
+- **Persistence**: `sessionStorage` auto-save → user quay lại resume đúng step
+- **Guards**: Mỗi transition có điều kiện (step phải valid mới cho next)
+- Production: XState library cho full state machine với visualization + testing
+
+---
+
+### **📊 Tổng Kết 20 Cases**
+
+| # | Case | Độ Khó | Keyword |
+|---|------|--------|---------|
+| 1 | Race Condition API | ⭐⭐⭐ | AbortController, Request ID, Debounce |
+| 2 | Memory Leak SPA | ⭐⭐⭐⭐ | Cleanup, WeakRef, isMountedRef |
+| 3 | Stale Closure Hooks | ⭐⭐⭐⭐ | Functional updater, useRef, useEvent |
+| 4 | Optimistic UI | ⭐⭐⭐⭐ | Snapshot, Rollback, TempId |
+| 5 | Virtualized List | ⭐⭐⭐⭐⭐ | Window rendering, Dynamic height, Binary search |
+| 6 | WebSocket Reconnect | ⭐⭐⭐⭐ | Exponential Backoff, Jitter, Heartbeat |
+| 7 | Cross-Tab Sync | ⭐⭐⭐ | BroadcastChannel, Storage Event |
+| 8 | XSS in Rich Text | ⭐⭐⭐⭐⭐ | DOMPurify, Whitelist, CSP |
+| 9 | Concurrent Fetching | ⭐⭐⭐⭐ | Promise.allSettled, Suspense, Error Boundary |
+| 10 | Layout Shift (CLS) | ⭐⭐⭐ | Skeleton, aspect-ratio, font-display, contain |
+| 11 | Drag & Drop Reorder | ⭐⭐⭐⭐ | Pointer Events, setPointerCapture, Auto-scroll, a11y |
+| 12 | Bidirectional Infinite Scroll | ⭐⭐⭐⭐⭐ | Scroll anchoring, IntersectionObserver, Memory trim |
+| 13 | Micro-Frontend Communication | ⭐⭐⭐⭐ | Event Bus, Custom Elements, Shadow DOM, Module Federation |
+| 14 | Token Refresh Queue | ⭐⭐⭐⭐ | Singleton refresh, Promise queue, Axios interceptor |
+| 15 | Image Upload Pipeline | ⭐⭐⭐ | Canvas compress, XHR progress, URL.createObjectURL |
+| 16 | Undo/Redo System | ⭐⭐⭐⭐⭐ | Command Pattern, Batch undo, Branching history |
+| 17 | Offline-First App | ⭐⭐⭐⭐⭐ | Service Worker, IndexedDB, Cache strategies, Conflict |
+| 18 | Complex Form Validation | ⭐⭐⭐⭐ | Async validate, Cross-field deps, Dynamic rules, Debounce |
+| 19 | Real-time Dashboard | ⭐⭐⭐⭐ | Ref buffer, RAF throttle, Ring buffer, React.memo |
+| 20 | Multi-Step Wizard State Machine | ⭐⭐⭐⭐⭐ | useReducer, Branching flow, Guards, sessionStorage |
+
+> **"Một Senior Frontend Developer không chỉ biết code chạy đúng, mà phải biết code chạy đúng TRONG MỌI ĐIỀU KIỆN — mất mạng, data lỗi, user thao tác bất thường, và performance scale."**
+
+---
+
 ## **📚 Related Questions**
 
-| Câu hỏi                                                                        | Chủ đề                 | Mức độ     |
-| ------------------------------------------------------------------------------ | ---------------------- | ---------- |
-| [Q02](./Q02-data-types-&-memory-management-tổng-hợp.md)                        | Data Types & Memory    | ⭐⭐⭐⭐   |
-| [Q03](./Q03-es5-vs-es6+-features-so-sánh-chi-tiết-&-cách-hoạt-động.md)         | ES6+ Features          | ⭐⭐⭐     |
-| [Q06](<./Q06-event-loop-cơ-chế-hoạt-động-javascript-(technical-deep-dive).md>) | Event Loop (Technical) | ⭐⭐⭐⭐⭐ |
-| [Q08](./Q08-closure-&-data-privacy.md)                                         | Closures               | ⭐⭐⭐⭐   |
-| [Q13](./Q13-asyncawait-vs-promises-vs-callbacks-&-promise.allanyrace.md)       | Async/Await            | ⭐⭐⭐⭐   |
+| File | Chủ đề | Mức độ |
+| ---- | ------ | ------ |
+| [Q02](./Q02-data-types-&-memory-management-tổng-hợp.md) | Data Types & Memory | ⭐⭐⭐⭐ |
+| [Q03](./Q03-es5-vs-es6+-features-so-sánh-chi-tiết-&-cách-hoạt-động.md) | ES6+ Features | ⭐⭐⭐ |
+| [Q06](<./Q06-event-loop-cơ-chế-hoạt-động-javascript-(technical-deep-dive).md>) | Event Loop | ⭐⭐⭐⭐⭐ |
+| [Q08](./Q08-closure-&-data-privacy.md) | Closures | ⭐⭐⭐⭐ |
+| [Q13](./Q13-asyncawait-vs-promises-vs-callbacks-&-promise.allanyrace.md) | Async/Await | ⭐⭐⭐⭐ |
 
 ---
 

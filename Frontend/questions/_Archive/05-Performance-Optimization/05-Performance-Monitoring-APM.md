@@ -951,260 +951,9 @@ app.use((req, res, next) => {
 
 ---
 
-## 7. Chrome DevTools Profiling - Phân Tích Hiệu Suất
+## 7. Performance Budgets
 
-### **7.1. Performance Panel**
-
-> **Performance Panel** trong Chrome DevTools giúp phân tích **hiệu suất runtime** của app (CPU usage, rendering, network...).
-
-**📌 Các bước profiling:**
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│         CHROME DEVTOOLS PERFORMANCE PROFILING               │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  1️⃣ Mở Chrome DevTools → Tab "Performance"                │
-│                                                             │
-│  2️⃣ Click "Record" 🔴                                      │
-│                                                             │
-│  3️⃣ Thực hiện hành động cần test:                         │
-│     - Load trang                                            │
-│     - Click button                                          │
-│     - Scroll                                                │
-│     - Navigate giữa các routes                             │
-│                                                             │
-│  4️⃣ Click "Stop" ⏹️                                        │
-│                                                             │
-│  5️⃣ Phân tích kết quả:                                    │
-│     📊 FPS Chart: Xem có bị drop frame không (< 60fps)     │
-│     🔥 CPU Chart: Phần nào tốn CPU (Scripting/Rendering)   │
-│     🎨 Main Thread: Xem long tasks (> 50ms)                │
-│     🌐 Network: Xem requests nào chậm                      │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**📌 Phân tích Long Tasks:**
-
-```typescript
-// 🇻🇳 CÁCH PHÁT HIỆN LONG TASKS TRONG CODE
-
-// ❌ VÍ DỤ: Long Task (blocking main thread)
-function processLargeData(data: any[]) {
-  // 🚨 Loop qua 10,000 items → Block main thread 2-3 giây!
-  const result = [];
-  for (let i = 0; i < 10000; i++) {
-    result.push(heavyCalculation(data[i])); // Mỗi lần tính 0.3ms → Tổng 3 giây!
-  }
-  return result;
-}
-
-// ✅ GIẢI PHÁP 1: Dùng Web Worker (chạy ở background thread)
-// worker.ts
-self.addEventListener('message', (e) => {
-  const { data } = e.data;
-  
-  // 🇻🇳 Chạy heavy calculation trong worker (không block UI)
-  const result = data.map(item => heavyCalculation(item));
-  
-  // 🇻🇳 Gửi kết quả về main thread
-  self.postMessage({ result });
-});
-
-// main.ts
-const worker = new Worker(new URL('./worker.ts', import.meta.url));
-
-function processLargeDataAsync(data: any[]): Promise<any[]> {
-  return new Promise((resolve) => {
-    worker.postMessage({ data });
-    
-    worker.addEventListener('message', (e) => {
-      resolve(e.data.result);
-    }, { once: true });
-  });
-}
-
-// ✅ GIẢI PHÁP 2: Chia nhỏ task (chunking)
-async function processLargeDataChunked(data: any[]) {
-  const CHUNK_SIZE = 100; // 🇻🇳 Mỗi lần xử lý 100 items
-  const result = [];
-  
-  for (let i = 0; i < data.length; i += CHUNK_SIZE) {
-    const chunk = data.slice(i, i + CHUNK_SIZE);
-    
-    // 🇻🇳 Xử lý 1 chunk
-    result.push(...chunk.map(item => heavyCalculation(item)));
-    
-    // ✅ Yield về main thread để browser có thể render
-    await new Promise(resolve => setTimeout(resolve, 0));
-  }
-  
-  return result;
-}
-```
-
----
-
-## 8. Custom Performance Metrics - Chỉ Số Tùy Chỉnh
-
-### **8.1. Performance API**
-
-```typescript
-// ===================================================
-// ⏱️  **PERFORMANCE.MARK() & PERFORMANCE.MEASURE()**
-// ===================================================
-
-// 🇻🇳 Đo thời gian CHÍNH XÁC của 1 đoạn code
-
-// ✅ Đánh dấu thời điểm BẮT ĐẦU
-performance.mark('data-fetch-start');
-
-// ... fetch data từ API
-await fetchData();
-
-// ✅ Đánh dấu thời điểm KẾT THÚC
-performance.mark('data-fetch-end');
-
-// ✅ Tính thời gian giữa 2 marks
-performance.measure(
-  'data-fetch-duration',    // 🇻🇳 Tên measure
-  'data-fetch-start',       // 🇻🇳 Start mark
-  'data-fetch-end'          // 🇻🇳 End mark
-);
-
-// ✅ Lấy kết quả
-const measure = performance.getEntriesByName('data-fetch-duration')[0];
-console.log(`Data fetch took: ${measure.duration}ms`);
-
-// ✅ Gửi lên analytics
-sendToAnalytics({
-  metric: 'data-fetch-duration',
-  value: measure.duration,
-});
-
-// ===================================================
-// 🎯 **VÍ DỤ THỰC TẾ: ĐO THỜI GIAN RENDER COMPONENT**
-// ===================================================
-
-import { useEffect } from 'react';
-
-const HeavyComponent = () => {
-  useEffect(() => {
-    // ✅ Đánh dấu khi component mount
-    performance.mark('heavy-component-mount-end');
-    
-    // ✅ Tính thời gian từ khi navigation start đến khi component mount
-    performance.measure(
-      'heavy-component-mount-time',
-      'navigationStart', // 🇻🇳 Built-in mark của browser
-      'heavy-component-mount-end'
-    );
-    
-    const measure = performance.getEntriesByName('heavy-component-mount-time')[0];
-    
-    // 🇻🇳 Gửi lên DataDog/Sentry
-    datadogRum.addTiming('heavy-component-mount', measure.duration);
-  }, []);
-  
-  return <div>...</div>;
-};
-```
-
-### **8.2. User Timing API - Đo các metrics tùy chỉnh**
-
-```typescript
-// ===================================================
-// 📊 **ĐO THỜI GIAN INTERACTIVE CỦA FORM**
-// ===================================================
-
-const LoginForm = () => {
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    
-    // ✅ Bắt đầu đo
-    performance.mark('login-start');
-    
-    try {
-      const response = await login(username, password);
-      
-      // ✅ Đo thời gian thành công
-      performance.mark('login-success');
-      performance.measure('login-duration-success', 'login-start', 'login-success');
-      
-      const measure = performance.getEntriesByName('login-duration-success')[0];
-      
-      // 🇻🇳 Gửi metric: Thời gian login thành công
-      datadogRum.addTiming('login-success-time', measure.duration);
-      
-    } catch (error) {
-      // ✅ Đo thời gian thất bại
-      performance.mark('login-error');
-      performance.measure('login-duration-error', 'login-start', 'login-error');
-      
-      const measure = performance.getEntriesByName('login-duration-error')[0];
-      
-      // 🇻🇳 Gửi metric: Thời gian login thất bại (để detect slow API)
-      datadogRum.addTiming('login-error-time', measure.duration);
-    }
-  };
-  
-  return <form onSubmit={handleSubmit}>...</form>;
-};
-```
-
----
-
-## 9. Performance Budgets - Ngân Sách Hiệu Suất
-
-### **9.1. Performance Budget là gì?**
-
-> **Performance Budget** là **ngân sách hiệu suất** - giới hạn cứng cho các metrics (bundle size, load time...). Nếu vượt budget → **build fail!**
-
-**📌 Tại sao cần Performance Budget?**
-
-```
-🚨 VẤN ĐỀ THƯỜNG GẶP:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-❌ Dev thêm library → Bundle tăng từ 200KB lên 500KB
-❌ Không ai để ý → Deploy lên production
-❌ User phàn nàn trang load chậm
-❌ SEO ranking giảm
-❌ Conversion rate giảm
-
-✅ GIẢI PHÁP: PERFORMANCE BUDGET
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Set limit: "Bundle chính không được > 300KB"
-✅ CI/CD check mỗi commit
-✅ Vượt budget → Build fail → Force developer optimize
-```
-
-### **9.2. Webpack Performance Config**
-
-```javascript
-// webpack.config.js
-export default {
-  // ... other config
-  
-  performance: {
-    // 🇻🇳 Cảnh báo khi vượt ngưỡng (không block build)
-    hints: 'warning', // 'warning' | 'error' | false
-    
-    // 🇻🇳 Giới hạn kích thước ENTRYPOINT (main bundle) - 250KB
-    maxEntrypointSize: 250 * 1024, // 250KB
-    
-    // 🇻🇳 Giới hạn kích thước mỗi FILE asset (JS/CSS/Image) - 300KB
-    maxAssetSize: 300 * 1024, // 300KB
-    
-    // 🇻🇳 Chỉ check các file .js
-    assetFilter: function(assetFilename) {
-      return assetFilename.endsWith('.js');
-    },
-  },
-};
-```
-
-### **9.3 Webpack Bundle Budget**
+### **7.1 Webpack Bundle Budget**
 
 ```typescript
 // webpack.config.js
@@ -1235,173 +984,66 @@ module.exports = {
 };
 ```
 
-### **9.4 Lighthouse CI Budget**
+### **7.2 Lighthouse CI Budget**
 
 ```json
 // lighthouserc.json
 {
   "ci": {
     "collect": {
-      "numberOfRuns": 3 // 🇻🇳 Chạy Lighthouse 3 lần lấy trung bình
+      "url": ["http://localhost:3000"],
+      "numberOfRuns": 3
     },
     "assert": {
-      "preset": "lighthouse:recommended", // 🇻🇳 Dùng preset khuyến nghị của Google
+      "preset": "lighthouse:recommended",
       "assertions": {
-        // 🇻🇳 Core Web Vitals budgets
-        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }], // ≤ 2.5s
-        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],   // ≤ 0.1
-        "total-blocking-time": ["error", { "maxNumericValue": 300 }],       // ≤ 300ms
-        
-        // 🇻🇳 Performance score phải ≥ 90/100
-        "performance-budget": ["error", { "minScore": 0.9 }],
-        
-        // 🇻🇳 Resource budgets
-        "resource-summary:document:size": ["error", { "maxNumericValue": 50000 }],  // HTML ≤ 50KB
-        "resource-summary:script:size": ["error", { "maxNumericValue": 300000 }],   // JS ≤ 300KB
-        "resource-summary:stylesheet:size": ["error", { "maxNumericValue": 50000 }], // CSS ≤ 50KB
-        "resource-summary:image:size": ["error", { "maxNumericValue": 500000 }],    // Images ≤ 500KB
-        "resource-summary:font:size": ["error", { "maxNumericValue": 100000 }],     // Fonts ≤ 100KB
-        
-        // 🇻🇳 Không được có quá nhiều requests
-        "resource-summary:third-party:count": ["warn", { "maxNumericValue": 10 }]  // ≤ 10 third-party requests
+        "categories:performance": ["error", { "minScore": 0.9 }],
+        "categories:accessibility": ["error", { "minScore": 0.9 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "speed-index": ["error", { "maxNumericValue": 3000 }]
       }
-    },
-    "upload": {
-      "target": "temporary-public-storage" // 🇻🇳 Hoặc upload lên Lighthouse CI server riêng
     }
   }
 }
 ```
 
-### **9.5 GitHub Actions - Lighthouse CI**
+### **7.3 CI Integration**
 
 ```yaml
-# .github/workflows/lighthouse-ci.yml
-name: Lighthouse CI
+# .github/workflows/performance.yml
+name: Performance Budget
 on: [pull_request]
 
 jobs:
-  lighthouse:
+  performance:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '18'
       
-      - name: Install dependencies
-        run: npm ci
+      - run: npm install
+      - run: npm run build
       
-      - name: Build app
-        run: npm run build
+      # Check bundle size
+      - run: npm run bundle-budget
+        # Fails if bundle exceeds budget
       
-      - name: Run Lighthouse CI
-        run: |
-          npm install -g @lhci/cli
-          lhci autorun
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-      
-      # 🇻🇳 Kết quả sẽ comment trực tiếp vào PR
-      # ✅ Pass: Performance score 92/100, all budgets met
-      # ❌ Fail: LCP 3.2s (budget: 2.5s), JS bundle 450KB (budget: 300KB)
+      # Run Lighthouse
+      - run: npm install -g @lhci/cli@*
+      - run: lhci autorun
+        # Fails if Lighthouse score drops
 ```
 
 ---
 
-## 10. Source Maps in Production
+## 8. Source Maps in Production
 
-### **10.1 Hidden Source Maps Setup**
-
-```typescript
-// ===================================================
-// 🔧 **VITE SOURCE MAPS CONFIG**
-// ===================================================
-
-// vite.config.ts
-import { defineConfig } from 'vite';
-
-export default defineConfig({
-  build: {
-    // 🇻🇳 Loại source map (trade-off giữa tốc độ build và chất lượng map)
-    sourcemap: 'hidden', // 'hidden' | true | false | 'inline'
-    
-    // 🇻🇳 Các loại source map:
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // 'hidden':  Tạo .map file NHƯNG không reference trong .js
-    //            → User không download, chỉ upload lên Sentry
-    //            → TỐT NHẤT cho production
-    //
-    // true:      Tạo .map file VÀ reference trong .js
-    //            → User sẽ download .map file
-    //            → Tốt cho staging/dev
-    //
-    // 'inline':  Embed source map vào trong .js file
-    //            → File .js rất lớn
-    //            → CHỈ dùng cho dev
-    //
-    // false:     KHÔNG tạo source map
-    //            → Không debug được trong production
-    //            → CHỈ dùng khi đã có monitoring tốt
-  },
-});
-```
+### **8.1 Hidden Source Maps Setup**
 
 ```typescript
-// ===================================================
-// 🚀 **UPLOAD SOURCE MAPS LÊN SENTRY**
-// ===================================================
-
-// vite.config.ts
-import { defineConfig } from 'vite';
-import { sentryVitePlugin } from '@sentry/vite-plugin';
-
-export default defineConfig({
-  build: {
-    sourcemap: 'hidden', // 🇻🇳 Tạo .map file nhưng không expose cho user
-  },
-  
-  plugins: [
-    // ✅ Plugin tự động upload source maps lên Sentry khi build
-    sentryVitePlugin({
-      // 🇻🇳 Sentry org & project
-      org: 'your-org',
-      project: 'your-project',
-      
-      // 🇻🇳 Auth token (lấy từ Sentry settings)
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      
-      // 🇻🇳 Tự động tạo release trong Sentry
-      release: {
-        name: process.env.VITE_APP_VERSION, // e.g. "1.2.3"
-        uploadSourceMaps: true,
-        cleanArtifacts: true, // 🇻🇳 Xóa source maps cũ
-      },
-      
-      // 🇻🇳 CHỈ upload trong production build
-      disable: process.env.NODE_ENV !== 'production',
-      
-      // 🇻🇳 Silent mode (không log ra console)
-      silent: true,
-    }),
-  ],
-});
-
-// 🇻🇳 CÁCH HOẠT ĐỘNG:
-// 1. Build app → Tạo main.js + main.js.map
-// 2. sentryVitePlugin upload main.js.map lên Sentry
-// 3. XÓA main.js.map trên server production (không deploy file .map)
-// 4. Deploy chỉ có main.js (không có .map reference)
-// 5. Khi có lỗi → Sentry dùng .map đã upload để hiển thị code gốc
-```
-
-```typescript
-// ===================================================
-// 📦 **WEBPACK SOURCE MAPS CONFIG**
-// ===================================================
-
 // webpack.config.js (Production)
 module.exports = {
   mode: 'production',
@@ -1426,7 +1068,7 @@ module.exports = {
 // ✅ Good: No sourceMappingURL
 ```
 
-### **10.2 Upload to Sentry CLI**
+### **8.2 Upload to Sentry CLI**
 
 ```bash
 # Release setup

@@ -69,7 +69,6 @@ Lỗi hay gặp: Dùng Redux cho server state (nên dùng React Query), Context 
 - Props drilling shallow (2-3 levels)
 - Static/rarely-changing values
 
-
 // ❌ TUYỆT ĐỐI KHÔNG DÙNG CHO:
 - Global state thường xuyên thay đổi
 - State phức tạp → re-render toàn tree → performance disaster
