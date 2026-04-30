@@ -1,4 +1,4 @@
-# ▲ Q26: Next.js - React Framework for Production
+# ▲ Q26: Next.js - React Framework for Production, Workflow & Version Comparison
 
 ## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
@@ -917,284 +917,191 @@ export default function Page() {
 
 ---
 
-#### **📚 PHẦN 6: NEXT.JS 14 vs 15 vs 16 - SỰ KHÁC BIỆT**
+#### **📚 PHẦN 6: WORKFLOW, HYDRATION & VERSION COMPARISON**
 
-##### **6.1. Next.js 14 (October 2023)**
+##### **6.1. Next.js Request Workflow**
 
-**🎯 Key Features:**
+```text
+Browser Request
+  -> Next.js Router (App Router / Pages Router)
+  -> Layout segment (app/layout.tsx)
+  -> Page segment (app/**/page.tsx)
+  -> Rendering strategy (SSR / SSG / ISR / CSR)
+  -> Data fetching and cache policy
+  -> React Server Component render
+  -> HTML + RSC payload sent to client
+  -> Hydration for Client Components
+  -> Client-side navigation via <Link>
+```
+
+**Điểm cần nắm khi trả lời senior:**
+
+- Next.js không chỉ là router cho React, mà là application runtime xử lý routing, rendering, cache, streaming, API/server actions và deployment.
+- App Router mặc định dùng Server Components, vì vậy phần không cần tương tác sẽ render trên server và không ship JavaScript tương ứng xuống client.
+- Mỗi route nên được quyết định rõ: static, dynamic, revalidate định kỳ hay client-only.
+
+##### **6.2. File-Based Routing & App Router**
 
 ```typescript
-// 1. Turbopack (Beta) - Faster dev server
-// next.config.js
-module.exports = {
-  experimental: {
-    turbo: {}, // Opt-in Turbopack (5000+ tests passing)
-  },
-};
+app/
+  layout.tsx              // Root layout, bọc toàn app
+  page.tsx                // /
+  blog/
+    page.tsx              // /blog
+    [slug]/
+      page.tsx            // /blog/:slug
+  (dashboard)/
+    settings/
+      page.tsx            // /settings, route group không ảnh hưởng URL
+  api/
+    users/
+      route.ts            // /api/users
+```
 
-// 2. Server Actions (Stable)
-// app/actions.ts
-('use server');
+**Quy tắc chính:**
 
-export async function createPost(formData: FormData) {
-  const title = formData.get('title');
-  await db.posts.create({ title });
-  revalidatePath('/posts');
+- `layout.tsx`: shared UI, giữ state giữa các route con.
+- `page.tsx`: route leaf được render cho URL.
+- `loading.tsx`: fallback khi segment đang stream/load.
+- `error.tsx`: error boundary ở cấp route segment.
+- `route.ts`: route handler cho API/server endpoint.
+
+##### **6.3. Hydration & Hydration Mismatch**
+
+**Hydration** là quá trình React gắn event handlers và state vào HTML đã được render từ server. User có thể thấy UI sớm nhờ HTML, nhưng phần tương tác chỉ hoạt động sau khi JavaScript được tải và hydrate.
+
+**Hydration mismatch** xảy ra khi HTML server render khác với render đầu tiên ở client.
+
+```typescript
+// ❌ Sai: server và client có thể render khác nhau
+export default function Clock() {
+  return <time>{new Date().toLocaleString()}</time>;
 }
 
-// app/page.tsx
-export default function Page() {
+// ✅ Đúng hơn: giữ first render giống nhau, rồi update sau hydration
+'use client';
+
+import { useEffect, useState } from 'react';
+
+export default function Clock() {
+  const [time, setTime] = useState<string | null>(null);
+
+  useEffect(() => {
+    setTime(new Date().toLocaleString());
+  }, []);
+
+  return <time>{time ?? 'Loading time...'}</time>;
+}
+```
+
+**Nguyên nhân thường gặp:**
+
+- Dùng `Math.random()`, `Date.now()`, `new Date()` trực tiếp trong JSX.
+- Đọc `window`, `document`, `localStorage` trước khi component mount.
+- Render dữ liệu user-specific khác nhau giữa server và client.
+- CSS-in-JS hoặc third-party widget tạo markup không ổn định.
+
+**Cách tránh:**
+
+- Đảm bảo server render và first client render giống nhau.
+- Đưa browser-only logic vào `useEffect`.
+- Lazy load component browser-only bằng `next/dynamic`.
+- Chỉ dùng `suppressHydrationWarning` cho case hợp lý như timestamp.
+
+##### **6.4. `"use server"` vs `"use client"` Strategy**
+
+**Default strategy:** giữ component là Server Component nếu không cần tương tác.
+
+```text
+Component cần fetch DB / đọc secret / render content tĩnh?
+  -> Server Component
+
+Component cần useState / useEffect / onClick / localStorage / chart library?
+  -> Client Component với "use client"
+
+Form mutation, create/update/delete, auth action?
+  -> Server Action với "use server"
+```
+
+```typescript
+// Server Component: fetch trên server, không ship JS cho phần này
+export default async function ProductPage({ params }) {
+  const product = await getProduct(params.id);
+
   return (
-    <form action={createPost}>
-      <input name="title" />
-      <button type="submit">Create</button>
-    </form>
+    <main>
+      <h1>{product.name}</h1>
+      <p>{product.description}</p>
+      <AddToCartButton productId={product.id} />
+    </main>
   );
 }
 
-// 3. Partial Prerendering (Preview) - Hybrid SSR + Static
-// Combines static shell + dynamic content
-export const experimental_ppr = true; // Per-route
+// Client Component: chỉ phần cần tương tác mới hydrate
+'use client';
 
-// 4. Metadata Improvements
-export const metadata = {
-  metadataBase: new URL('https://example.com'),
-  alternates: {
-    canonical: '/',
-    languages: { 'en-US': '/en-US', 'vi-VN': '/vi-VN' },
-  },
-};
-```
+import { useState } from 'react';
 
-**📊 Next.js 14 Highlights:**
+export function AddToCartButton({ productId }: { productId: string }) {
+  const [pending, setPending] = useState(false);
 
-- ✅ Turbopack dev mode (53% faster)
-- ✅ Server Actions stable
-- ✅ Partial Prerendering preview
-- ✅ Improved `next/image`
-
----
-
-##### **6.2. Next.js 15 (October 2024)**
-
-**🎯 Key Features:**
-
-```typescript
-// 1. React 19 Support
-// - React Compiler (automatic memoization)
-// - New hooks: useFormStatus, useOptimistic
-// - Server Components improvements
-
-// 2. Async Request APIs (Breaking Change)
-// Before (Next 14): Synchronous
-import { cookies, headers } from 'next/headers';
-const cookieStore = cookies();
-
-// After (Next 15): Async
-const cookieStore = await cookies();
-const headersList = await headers();
-
-// 3. Caching Behavior Changes
-// Next 14: fetch() cached by default
-// Next 15: fetch() NOT cached by default (opt-in caching)
-
-// Opt-in caching
-fetch('https://api.example.com', { cache: 'force-cache' });
-
-// 4. Turbopack Dev (Stable)
-// No longer experimental, default in development
-// next.config.js - Auto-enabled
-
-// 5. Hydration Error Improvements
-// Better error messages with source code context
-// Automatic suggestions for common issues
-
-// 6. Static Route Indicator
-// Dev overlay shows which routes are static/dynamic
-// <NextIndicator /> shows route type
-
-// 7. Form Submissions
-import { useFormStatus } from 'react-dom';
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return <button disabled={pending}>Submit</button>;
-}
-```
-
-**📊 Next.js 15 Highlights:**
-
-- ✅ React 19 RC support
-- ✅ Async request APIs (breaking)
-- ✅ Caching opt-in (breaking)
-- ✅ Turbopack stable in dev
-- ✅ Better hydration errors
-- ⚠️ Breaking changes from 14
-
----
-
-##### **6.3. Next.js 16 (Expected Q1 2025)**
-
-**🎯 Expected Features (Based on Roadmap):**
-
-```typescript
-// 1. Turbopack Build (Production)
-// Currently dev-only, production builds will use Turbopack
-// Faster builds, less memory usage
-
-// 2. Partial Prerendering (Stable)
-// pages/product/[id].tsx
-export const experimental_ppr = true;
-
-export default async function Product({ params }) {
-  // Static shell renders immediately
   return (
-    <div>
-      <h1>Product {params.id}</h1>
-
-      {/* Dynamic content loads after */}
-      <Suspense fallback={<Skeleton />}>
-        <ProductDetails id={params.id} />
-      </Suspense>
-
-      <Suspense fallback={<Skeleton />}>
-        <Reviews id={params.id} />
-      </Suspense>
-    </div>
+    <button disabled={pending} onClick={() => setPending(true)}>
+      Add to cart
+    </button>
   );
 }
-
-// 3. Enhanced React Compiler Integration
-// Auto-optimize components without manual memo/useCallback
-function Component({ items }) {
-  // Automatically optimized by React Compiler
-  const filtered = items.filter((item) => item.active);
-  return <List items={filtered} />;
-}
-
-// 4. Improved Streaming
-// Better support for streaming SSR
-// Selective hydration improvements
-
-// 5. Edge Runtime Enhancements
-// More Node.js APIs available in Edge Runtime
-// Better compatibility with existing packages
 ```
 
-**📊 Next.js 16 Expected Features:**
+**Senior takeaway:** đặt boundary `"use client"` càng nhỏ càng tốt. Đừng biến cả page thành Client Component chỉ vì một button, chart hoặc form nhỏ.
 
-- ✅ Turbopack production builds
-- ✅ PPR stable (game-changer for performance)
-- ✅ React Compiler default
-- ✅ Better streaming & hydration
-- ✅ Edge Runtime maturity
+##### **6.5. Next.js 14 vs 15 vs 16**
 
----
+| Feature | Next.js 14 | Next.js 15 | Next.js 16 |
+| --- | --- | --- | --- |
+| React | React 18 | React 19 support | React 19 |
+| App Router | Stable | Enhanced | Optimized |
+| Server Actions | Stable | Stable | Improved DX |
+| Request APIs | Sync `cookies()`, `headers()` | Async `cookies()`, `headers()` | Async |
+| `fetch()` cache | Cached by default in more cases | Default uncached, opt-in cache | Cache APIs/behavior refined |
+| Turbopack | Dev beta/stabilizing | Dev stable/improved | Build/dev improvements |
+| Partial Prerendering | Preview/experimental | Experimental | More mature |
+| Hydration errors | Basic | Improved messages | Improved diagnostics |
 
-##### **6.4. Comparison Table: Next.js 14 vs 15 vs 16**
-
-| Feature              | Next.js 14 | Next.js 15                | Next.js 16 (Expected) |
-| -------------------- | ---------- | ------------------------- | --------------------- |
-| **React Version**    | 18         | 19 RC                     | 19 Stable             |
-| **Turbopack Dev**    | Beta       | ✅ Stable                 | ✅ Stable             |
-| **Turbopack Build**  | ❌         | ❌                        | ✅ Stable             |
-| **Server Actions**   | ✅ Stable  | ✅ Stable                 | ✅ Enhanced           |
-| **PPR**              | Preview    | Experimental              | ✅ Stable             |
-| **Request APIs**     | Sync       | ⚠️ Async (breaking)       | Async                 |
-| **Caching**          | Default ON | ⚠️ Default OFF (breaking) | Opt-in                |
-| **React Compiler**   | ❌         | Experimental              | ✅ Default            |
-| **Hydration Errors** | Basic      | ✅ Improved               | Enhanced              |
-| **Edge Runtime**     | Basic      | Improved                  | ✅ Mature             |
-
----
-
-##### **6.5. Migration Guide: 14 → 15 → 16**
+**Migration notes:**
 
 ```typescript
-// ══════════════════════════════════════════════════════════
-// NEXT 14 → 15 (Breaking Changes)
-// ══════════════════════════════════════════════════════════
-
-// 1. Update async request APIs
-// Before (14)
+// Next 14
 import { cookies } from 'next/headers';
+
 const cookieStore = cookies();
 
-// After (15)
+// Next 15+
 const cookieStore = await cookies();
 
-// 2. Update caching behavior
-// Before (14) - cached by default
-fetch('https://api.example.com');
+// Next 15+: be explicit about cache behavior
+await fetch('https://api.example.com/products', {
+  cache: 'force-cache',
+});
 
-// After (15) - opt-in caching
-fetch('https://api.example.com', { cache: 'force-cache' });
+await fetch('https://api.example.com/profile', {
+  cache: 'no-store',
+});
 
-// 3. Update next.config.js
-// Remove experimental turbo flag (now default)
-module.exports = {
-  // experimental: { turbo: {} }, // Remove this
-};
-
-// ══════════════════════════════════════════════════════════
-// NEXT 15 → 16 (Expected Changes)
-// ══════════════════════════════════════════════════════════
-
-// 1. Enable PPR for production
-export const experimental_ppr = true; // Becomes stable
-
-// 2. Remove manual optimizations (React Compiler handles)
-// Before (15)
-const memoized = useMemo(() => compute(data), [data]);
-const callback = useCallback(() => handleClick(), []);
-
-// After (16) - Compiler auto-optimizes
-const memoized = compute(data); // Auto-memoized
-const callback = () => handleClick(); // Auto-memoized
-
-// 3. Turbopack production builds
-// package.json
-{
-  "scripts": {
-    "build": "next build" // Uses Turbopack automatically
-  }
-}
+await fetch('https://api.example.com/catalog', {
+  next: { revalidate: 60 },
+});
 ```
 
----
+**Khi nào upgrade:**
 
-##### **6.6. Khi nào nên upgrade?**
-
-**📌 Next.js 14:**
-
-- ✅ Production-ready, stable
-- ✅ Good for existing projects
-- ✅ Server Actions stable
-- ⚠️ Will need migration to 15 eventually
-
-**📌 Next.js 15:**
-
-- ✅ Latest stable (as of Oct 2024)
-- ✅ React 19 RC support
-- ✅ Better DX (Turbopack, hydration errors)
-- ⚠️ Breaking changes from 14
-- ⚠️ Caching behavior changes need attention
-
-**📌 Next.js 16:**
-
-- 🔮 Not released yet (Q1 2025)
-- ✅ Wait for: PPR stable, Turbopack build, React Compiler
-- ⚠️ Early adoption may have bugs
-
-**💡 Recommendation:**
-
-- **New projects**: Next.js 15 (latest stable)
-- **Existing projects**: Stay on 14 until 15.1+ (bug fixes)
-- **Enterprise**: Wait for 15.2+ or LTS versions
+- Project mới: dùng version stable mới nhất nếu dependency ecosystem đã hỗ trợ.
+- Project production lớn: audit breaking changes trước, đặc biệt request APIs và caching behavior.
+- Enterprise app: upgrade theo staged rollout, đo lại Web Vitals, cache hit rate, build time và lỗi hydration.
 
 ---
 
-#### **🎯 TÓM TẮT Q40 - NEXT.JS**
+#### **🎯 TÓM TẮT Q26 - NEXT.JS**
 
 **✅ Core Features:**
 

@@ -3623,102 +3623,6 @@ Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functio
 
 ---
 
-## Q31: Next.js Workflow & Version Comparison - Next.js 14 vs 15 vs 16 (So Sánh Phiên Bản)
-
-### 🎯 Trả Lời Ngắn Gọn (2-3 phút):
-
-**"Next.js evolution (tiến hóa): Pages Router (v12 trở về trước) → App Router (v13+). Next.js 14: Stable App Router, Server Actions, Turbopack beta (5x nhanh hơn). Next.js 15: Turbopack stable (ổn định), Partial Pre-rendering (PPR - render 1 phần), React 19 support. Version 16: TBD (chưa rõ - tương lai)."**
-
-### 📊 So Sánh Từng Phiên Bản (Timeline):
-
-**Next.js 13 (Oct 2022 - Bước Ngoặt Lớn):**
-
-- **App Router beta** - React Server Components (kiến trúc mới)
-- **Nested layouts** - Layouts lồng nhau (share UI across pages)
-- **Streaming SSR** - Render từng phần (progressive)
-- **New `app/` directory** - Cấu trúc thư mục mới (khác `pages/`)
-
-**Next.js 14 (Nov 2023 - Cải Thiện Performance):**
-
-- **Turbopack beta** - Rust-based bundler, 5x faster HMR (Hot Module Replacement)
-- **Server Actions stable** - Call server functions từ client (không cần API routes)
-- **Partial Pre-rendering (PPR) experimental** - Hybrid static + dynamic
-- **Improved dev mode** - Faster refresh, better error messages
-
-**Next.js 15 (Oct 2024 - Maturity & React 19):**
-
-- **Turbopack stable** ✅ - Replace Webpack hoàn toàn cho dev mode
-- **React 19 support** ✅ - Actions, `useActionState`, `use()` hook
-- **PPR stable** ✅ - Hybrid static shell + dynamic holes (best of both worlds)
-- **Improved caching strategies** - Fine-grained control, better revalidation
-
-### 🔑 Key Features Chi Tiết:
-
-**App Router Advantages (Ưu Điểm App Router):**
-
-- **Server Components** (RSC):
-
-  - Zero JS bundle cho non-interactive components
-  - Chỉ HTML được gửi → faster load, smaller bundle
-
-- **Streaming** (Render từng phần):
-
-  - Progressive rendering với Suspense boundaries
-  - Faster TTFB (Time To First Byte) - user thấy content sớm hơn
-
-- **Nested Layouts** (Layouts lồng nhau):
-
-  - Shared UI persists across navigations (không re-render)
-  - Layout hierarchy: `app/layout.js` → `app/dashboard/layout.js`
-
-- **Parallel Routes** (Routes song song):
-  - Render multiple pages simultaneously trong same layout
-  - Ví dụ: Dashboard sidebar + main content load independently
-
-**Pages Router (Legacy - Cũ nhưng vẫn support):**
-
-- **Simpler mental model** - Dễ hiểu hơn cho beginners
-- **Wider ecosystem** - Nhiều tutorials, examples cũ dùng Pages Router
-- **Migration path** exists - Có thể migrate từ từ sang App Router
-
-### ⚠️ Lỗi Thường Gặp:
-
-- **Mix Pages + App Router haphazardly** → confusion (rối loạn)
-  - ✅ Plan migration strategy: Migrate từng route một, không làm cùng lúc
-- **Dùng Client Components cho everything** → miss Server Component benefits
-  - ✅ Dùng Server Components mặc định, chỉ dùng Client Components khi cần (interactivity)
-- **Aggressive caching không revalidation** → stale data (dữ liệu cũ)
-  - ✅ Set `revalidate` phù hợp hoặc dùng `revalidatePath()` khi data thay đổi
-- **Không hiểu streaming** → layout shifts (CLS issues - content nhảy)
-  - ✅ Dùng Suspense boundaries đúng, set skeleton placeholders
-
-### 💡 Kiến Thức Senior:
-
-- **Turbopack** (Rust-based):
-
-  - 5-10x faster HMR than Webpack (projects lớn hưởng lợi nhất)
-  - Incremental compilation (chỉ rebuild phần thay đổi)
-  - Built-in CSS, image optimization
-
-- **PPR (Partial Pre-rendering)**:
-
-  - Static shell (layout, navigation) + dynamic holes (user data)
-  - Best of both worlds: Fast static + fresh dynamic
-  - Auto-detect static vs dynamic parts
-
-- **Migration strategy** (Chiến lược migrate):
-
-  - Incremental: Add `app/` directory alongside `pages/`
-  - Migrate từng route một (route-by-route)
-  - Test thoroughly trước khi xóa Pages Router
-
-- **React 19 alignment**:
-  - Next.js 15+ optimized cho React 19 features
-  - Server Actions integrate với React 19 Actions
-  - Better Suspense, improved hydration
-
----
-
 ## Q32: AG Grid - Enterprise Data Grid Performance & Best Practices (Bảng Dữ Liệu Enterprise)
 
 ### 🎯 Trả Lời Ngắn Gọn (2 phút):
@@ -5810,4 +5714,4 @@ Secure auth flow: Access Token (short-lived, 15min, memory) + Refresh Token (lon
 
 **🎯 Kết Luận Tổng Thể:**
 
-Bản tóm tắt này bao gồm 60 câu hỏi Frontend Senior, từ JavaScript fundamentals (Q01-Q19), React/Modern frameworks (Q17, Q25, Q26, Q31, Q48), System design & Architecture (Q42-Q44, Q49), Testing & Quality (Q50, Q54), Performance & Monitoring (Q18, Q20, Q38, Q51), đến Advanced topics (TypeScript Q52, CI/CD Q53, GraphQL Q55, Accessibility Q56, State Management Q57, CSS Q59, Design Patterns Q60). Mỗi câu được tổng hợp ngắn gọn, tập trung vào khái niệm cốt lõi, so sánh, best practices, common mistakes và senior insights - format dễ scan, không code (chỉ concepts), phù hợp cho ôn tập phỏng vấn Senior/Staff level.
+Bản tóm tắt này bao gồm các câu hỏi Frontend Senior, từ JavaScript fundamentals (Q01-Q19), React/Modern frameworks (Q17, Q25, Q26, Q48), System design & Architecture (Q42-Q44, Q49), Testing & Quality (Q50, Q54), Performance & Monitoring (Q18, Q20, Q38, Q51), đến Advanced topics (TypeScript Q52, CI/CD Q53, GraphQL Q55, Accessibility Q56, State Management Q57, CSS Q59, Design Patterns Q60). Mỗi câu được tổng hợp ngắn gọn, tập trung vào khái niệm cốt lõi, so sánh, best practices, common mistakes và senior insights - format dễ scan, không code (chỉ concepts), phù hợp cho ôn tập phỏng vấn Senior/Staff level.

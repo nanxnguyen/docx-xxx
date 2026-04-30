@@ -1299,7 +1299,7 @@
   ```
   Tháng 1: Event Loop sâu (Q06), Closures (Q08)
   Tháng 2: React Query (Q17), Performance (Q38)
-  Tháng 3: Next.js (Q26, Q31), TypeScript (Q52)
+  Tháng 3: Next.js (Q26), TypeScript (Q52)
   Tháng 4: Testing (Q50), State Management (Q57)
   ```
 

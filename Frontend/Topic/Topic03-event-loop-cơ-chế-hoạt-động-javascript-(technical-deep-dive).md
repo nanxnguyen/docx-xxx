@@ -2786,7 +2786,7 @@ Làm xong việc đang làm
 
 ---
 
-# ⏱️ Q15: Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao
+# ⏱️ Advanced Deferring Execution Techniques - Kỹ Thuật Trì Hoãn Thực Thi Nâng Cao
 
 ## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 

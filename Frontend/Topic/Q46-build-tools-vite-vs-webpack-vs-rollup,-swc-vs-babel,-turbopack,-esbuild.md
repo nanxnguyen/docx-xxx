@@ -2902,13 +2902,13 @@ Hiện tại Turbopack production **rất tốt cho Next.js**, nhưng chưa gene
 
 ---
 
-## Bạn muốn tiếp tục Q31 về **esbuild vs swc vs turbopack — mã nguồn Rust/Go/JS ảnh hưởng thế nào đến tốc độ bundling & transform** không?
+## Bổ sung Q46: **esbuild vs swc vs turbopack — mã nguồn Rust/Go/JS ảnh hưởng thế nào đến tốc độ bundling & transform**
 
-Dưới đây là **câu trả lời hoàn chỉnh cho Q31 – mức Senior/Staff-level**, so sánh **esbuild (Go) vs SWC (Rust) vs Turbopack (Rust)** và lý do vì sao Rust/Go nhanh hơn JavaScript trong build tools.
+Dưới đây là **câu trả lời hoàn chỉnh cho Q46 – mức Senior/Staff-level**, so sánh **esbuild (Go) vs SWC (Rust) vs Turbopack (Rust)** và lý do vì sao Rust/Go nhanh hơn JavaScript trong build tools.
 
 ---
 
-# 🚀 \*\*Q31 — So sánh esbuild vs SWC vs Turbopack
+# 🚀 \*\*Q46 — So sánh esbuild vs SWC vs Turbopack
 
 Tại sao Rust/Go nhanh hơn JavaScript trong bundling & transform?
 Điểm mạnh – điểm yếu – khi nào nên dùng từng công cụ?\*\*
