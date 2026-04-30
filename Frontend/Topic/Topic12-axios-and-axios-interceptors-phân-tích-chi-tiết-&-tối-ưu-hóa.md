@@ -1390,7 +1390,144 @@ const mainAPI = axios.create(config); // 🆕 Tạo instance với config
 
 ---
 
-### **5. Request Queue & Rate Limiting**
+### **5. Micro-Frontend Case - Dùng Axios Instance Trong Micro FE**
+
+Trong kiến trúc **micro-frontend (MFE)**, mỗi remote app có lifecycle, domain nghiệp vụ và release cycle riêng. Vì vậy **không nên dùng global axios/default axios** cho toàn hệ thống, vì interceptor/config của remote này có thể ảnh hưởng remote khác.
+
+**Nguyên tắc senior:**
+
+- **Shell/host quản lý context chung**: auth token provider, tenant, locale, correlation id, environment config.
+- **Mỗi remote tạo axios instance riêng** bằng factory, không mutate global `axios.defaults`.
+- **Interceptor phải scoped theo instance** và cleanup khi remote unmount nếu interceptor được đăng ký trong runtime lifecycle.
+- **Auth/refresh dùng instance riêng** để tránh infinite loop.
+- **Không share mutable singleton bừa bãi** giữa các remote, vì dễ gây coupling, duplicate interceptor và khó debug.
+
+```typescript
+// shared/http/createHttpClient.ts
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+
+type HttpClientOptions = {
+  baseURL: string;
+  getAccessToken?: () => string | null | Promise<string | null>;
+  getTenantId?: () => string | null;
+  onUnauthorized?: () => void;
+};
+
+export function createHttpClient(options: HttpClientOptions): AxiosInstance {
+  const client = axios.create({
+    baseURL: options.baseURL,
+    timeout: 10000,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  client.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+    const token = await options.getAccessToken?.();
+    const tenantId = options.getTenantId?.();
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    if (tenantId) {
+      config.headers['X-Tenant-ID'] = tenantId;
+    }
+
+    return config;
+  });
+
+  client.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        options.onUnauthorized?.();
+      }
+
+      return Promise.reject(error);
+    }
+  );
+
+  return client;
+}
+```
+
+Remote app tạo instance riêng từ context do shell truyền vào:
+
+```typescript
+// remote-order/bootstrap.ts
+import { createHttpClient } from '@shared/http/createHttpClient';
+
+type ShellContext = {
+  apiBaseUrls: {
+    order: string;
+  };
+  auth: {
+    getAccessToken: () => Promise<string | null>;
+    logout: () => void;
+  };
+  tenant: {
+    getTenantId: () => string | null;
+  };
+};
+
+export function createOrderApi(shellContext: ShellContext) {
+  return createHttpClient({
+    baseURL: shellContext.apiBaseUrls.order,
+    getAccessToken: shellContext.auth.getAccessToken,
+    getTenantId: shellContext.tenant.getTenantId,
+    onUnauthorized: shellContext.auth.logout,
+  });
+}
+```
+
+Nếu remote cần interceptor tạm thời theo màn hình/component, phải eject khi unmount:
+
+```typescript
+useEffect(() => {
+  const requestId = orderAPI.interceptors.request.use((config) => {
+    config.headers['X-Feature-Name'] = 'order-ticket';
+    return config;
+  });
+
+  return () => {
+    orderAPI.interceptors.request.eject(requestId);
+  };
+}, [orderAPI]);
+```
+
+**Pattern nên dùng trong Micro FE:**
+
+| Case | Nên làm |
+| --- | --- |
+| Nhiều remote gọi nhiều backend khác nhau | Mỗi remote/service có axios instance riêng |
+| Auth token dùng chung | Shell expose `getAccessToken()`, remote không tự đọc storage nếu không cần |
+| Refresh token | Dùng `authAPI` riêng hoặc để shell/auth module xử lý |
+| Remote mount/unmount nhiều lần | Eject interceptors runtime để tránh duplicate |
+| Multi-tenant/locale/correlation id | Inject qua request interceptor từ shell context |
+| Debug production | Thêm `X-Request-ID`/correlation id per request |
+
+**Anti-patterns trong Micro FE:**
+
+```typescript
+// ❌ Remote mutate global axios: ảnh hưởng shell và remote khác
+axios.defaults.baseURL = '/order-api';
+axios.interceptors.request.use(addOrderHeaders);
+
+// ❌ Remote tự đọc token từ localStorage ở nhiều nơi: coupling với auth implementation
+const token = localStorage.getItem('accessToken');
+
+// ❌ Mỗi lần mount lại add interceptor nhưng không eject
+orderAPI.interceptors.request.use(addFeatureHeader);
+```
+
+**Cách trả lời phỏng vấn:**
+
+> Trong micro-frontend, tôi không dùng global axios vì interceptor là global side effect. Tôi tạo axios instance bằng factory cho từng remote/service, inject auth/env/tenant từ shell context, tách auth refresh bằng instance riêng, và cleanup interceptor khi remote/component unmount. Cách này tránh cross-remote pollution, duplicate interceptors và giúp debug request rõ hơn.
+
+---
+
+### **6. Request Queue & Rate Limiting**
 
 ```typescript
 // ═══════════════════════════════════════════════════════════

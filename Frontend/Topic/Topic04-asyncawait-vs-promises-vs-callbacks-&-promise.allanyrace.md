@@ -1071,6 +1071,113 @@ const results = await items.reduce(async (prevPromise, item) => {
 }, Promise.resolve([]));
 ```
 
+#### **2.1. Generator Functions & Async Generators - Nền Tảng**
+
+Generator function là function có thể **pause/resume**. Nó dùng `function*` và `yield`.
+
+Khi gọi generator function, code **chưa chạy ngay**. Nó trả về một generator object. Mỗi lần gọi `.next()`, function chạy đến `yield` tiếp theo và trả `{ value, done }`.
+
+```typescript
+function* numbers() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+const gen = numbers();
+
+gen.next(); // { value: 1, done: false }
+gen.next(); // { value: 2, done: false }
+gen.next(); // { value: 3, done: false }
+gen.next(); // { value: undefined, done: true }
+```
+
+Ý chính:
+
+- `function*`: khai báo generator.
+- `yield`: trả giá trị và tạm dừng function.
+- `.next()`: resume generator.
+- `done: true`: generator đã chạy xong.
+- Generator object chỉ iterate được **một lần**.
+
+`for...of` tự gọi `.next()` đến khi `done: true`, nhưng chỉ lấy giá trị từ `yield`, không lấy giá trị `return`.
+
+```typescript
+function* demo() {
+  yield 1;
+  return 99;
+}
+
+console.log([...demo()]); // [1]
+```
+
+`yield*` dùng để delegate sang iterable/generator khác.
+
+```typescript
+function* first() {
+  yield 1;
+  yield 2;
+}
+
+function* second() {
+  yield 3;
+  yield 4;
+}
+
+function* combined() {
+  yield* first();
+  yield* second();
+}
+
+console.log([...combined()]); // [1, 2, 3, 4]
+```
+
+Generator cũng có thể nhận dữ liệu từ bên ngoài khi resume bằng `.next(value)`.
+
+```typescript
+function* askName() {
+  const name = yield 'What is your name?';
+  yield `Hello ${name}`;
+}
+
+const question = askName();
+
+question.next().value; // What is your name?
+question.next('An').value; // Hello An
+```
+
+Giá trị truyền vào `.next(value)` trở thành kết quả của biểu thức `yield` đang bị pause.
+
+Async generator dùng `async function*`, bên trong dùng được `await`, bên ngoài đọc bằng `for await...of`. Nó phù hợp với stream, pagination, file chunks hoặc long-running jobs.
+
+```typescript
+async function* fetchUsersByPage() {
+  let page = 1;
+
+  while (true) {
+    const response = await fetch(`/api/users?page=${page}`);
+    const users = await response.json();
+
+    if (users.length === 0) return;
+
+    yield users;
+    page += 1;
+  }
+}
+
+for await (const users of fetchUsersByPage()) {
+  console.log('Processing page:', users);
+}
+```
+
+Nên dùng generator khi cần lazy iteration, custom iterator, sequence lớn/vô hạn, state machine hoặc async iteration. Không nên dùng nếu `map/filter/reduce` hoặc function thường đã đủ rõ.
+
+Lỗi thường gặp:
+
+- Quên dấu `*`: phải viết `function* gen()`.
+- Tưởng generator dùng lại được: generator chạy hết thì exhausted, muốn chạy lại phải tạo generator mới.
+- Dùng `for...of` với async generator: phải dùng `for await...of`.
+
 #### **3. Generator Pattern - Pattern Generator**
 
 ```typescript
@@ -1094,6 +1201,79 @@ for await (const result of processWithProgress(items)) {
 // - Có thể cancel giữa chừng nếu cần
 // ✅ Dùng khi: Cần hiển thị progress, xử lý dữ liệu lớn
 ```
+
+#### **3.1. Xử Lý Bất Đồng Bộ Bằng Generator Function**
+
+Trước khi `async/await` phổ biến, generator thường được dùng để viết async flow theo kiểu "nhìn giống synchronous". Ý tưởng là:
+
+- Generator `yield` ra Promise.
+- Một runner ở bên ngoài đợi Promise resolve.
+- Khi Promise xong, runner gọi `.next(resolvedValue)` để đưa kết quả vào lại generator.
+- Nếu Promise reject, runner gọi `.throw(error)` để generator xử lý bằng `try/catch`.
+
+```typescript
+function runGenerator<T>(generatorFn: () => Generator<Promise<any>, T, any>) {
+  const iterator = generatorFn();
+
+  function step(nextFn: () => IteratorResult<Promise<any>, T>): Promise<T> {
+    let result: IteratorResult<Promise<any>, T>;
+
+    try {
+      result = nextFn();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+
+    if (result.done) {
+      return Promise.resolve(result.value);
+    }
+
+    return Promise.resolve(result.value).then(
+      (value) => step(() => iterator.next(value)),
+      (error) => step(() => iterator.throw(error))
+    );
+  }
+
+  return step(() => iterator.next());
+}
+
+function* loadUserFlow() {
+  try {
+    const user = yield fetch('/api/user').then((r) => r.json());
+    const posts = yield fetch(`/api/users/${user.id}/posts`).then((r) => r.json());
+
+    return { user, posts };
+  } catch (error) {
+    console.error('Load user failed:', error);
+    throw error;
+  }
+}
+
+const result = await runGenerator(loadUserFlow);
+```
+
+Code trên tương đương với `async/await`:
+
+```typescript
+async function loadUserFlow() {
+  try {
+    const user = await fetch('/api/user').then((r) => r.json());
+    const posts = await fetch(`/api/users/${user.id}/posts`).then((r) => r.json());
+
+    return { user, posts };
+  } catch (error) {
+    console.error('Load user failed:', error);
+    throw error;
+  }
+}
+```
+
+**Senior note:**
+
+- Generator async runner là nền tảng ý tưởng của thư viện như `co`.
+- Redux-Saga dùng generator để mô tả side effects bằng `yield call(...)`, `yield put(...)`.
+- Trong code app hiện đại, `async/await` thường dễ đọc hơn. Generator vẫn đáng biết vì giúp hiểu lịch sử async JS, state machine, saga/effect orchestration.
+- Đừng nhầm pattern này với `async function*`: generator runner dùng `yield Promise` để điều phối flow; async generator dùng `yield` để phát data bất đồng bộ cho `for await...of`.
 
 #### **4. Batched (Cân bằng Speed + Server Load)**
 

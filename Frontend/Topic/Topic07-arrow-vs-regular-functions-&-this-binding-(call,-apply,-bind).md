@@ -841,5 +841,7 @@ class SearchBox {
 - 🔗 **bind**: Tạo function mới → event handlers, partial application
 
 **Remember:**
-> "Arrow function = lexical this (từ outer scope). Regular function = dynamic this (runtime). Dùng call/apply khi cần gọi ngay, bind khi cần function mới với this cố định!" 🎯
+> "Arrow function = lexical this (từ outer scope). 
+> Regular function = dynamic this (runtime). 
+> Dùng call/apply khi cần gọi ngay, bind khi cần function mới với this cố định!" 🎯
 
