@@ -1,3 +1,18 @@
+  Bạn là senior/Stafff Fronteend Hãy gíup tôi trả lời các câu hỏi theo format
+
+🧭 Điểm interviewer đang muốn nghe
+
+━━━━━━━━━━━━━━
+✅ Trả lời mẫu ngắn tự nhiên dễ hiểu
+Em ...
+━━━━━━━━━━━━━━
+🔬 Trả lời sâu hơn và trade off
+━━━━━━━━━━━━━━
+🔁 Các câu hỏi liên quan đến chủ đề kèm câu trả lời 
+
+🔎 Giải thích thuật ngữ của topic đó
+  
+  
   # 🧠 FRONTEND DEVELOPER KNOWLEDGE MINDMAP
 
   ## 📊 **VISUAL MINDMAP**

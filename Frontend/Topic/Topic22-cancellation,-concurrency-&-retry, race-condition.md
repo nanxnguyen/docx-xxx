@@ -1,13 +1,13 @@
-# ⏹️ Q28: Cancellation, Concurrency & Retry
+# ⏹️ Q28: Cancellation, Concurrency & Retry, Race-condition
 
 ## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
 ### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
 
-**"Cancellation dùng AbortController để hủy requests, Concurrency control giới hạn parallel tasks, Retry implement exponential backoff cho failed requests."**
+**"Cancellation dùng AbortController để hủy requests, Concurrency control giới hạn parallel tasks, Retry implement exponential backoff cho failed requests, Race condition guard đảm bảo response cũ không ghi đè state mới."**
 
-**🔑 3 Pattern Chính:**
-
+**🔑 4 Pattern Chính:**
+  
 **1. Cancellation - AbortController:**
 
 - `const controller = new AbortController(); fetch(url, {signal: controller.signal})`
@@ -29,12 +29,20 @@
 - **Jitter** (random noise): tránh "thundering herd" (nhiều clients retry cùng lúc)
 - Max attempts + total timeout để không retry vô hạn
 
+**4. Race Condition - Last Request Wins / Ignore Stale Result:**
+
+- Race condition xảy ra khi **nhiều async operations cùng cập nhật một state/resource**, nhưng thứ tự hoàn thành không giống thứ tự bắt đầu
+- Ví dụ search: request `q=a` chậm hơn request `q=ab`, nhưng `q=a` về sau và ghi đè kết quả mới
+- Cách xử lý: cancel request cũ, dùng `requestId/sequence`, check `signal.aborted`, hoặc để library như React Query/SWR quản lý stale data
+- Nguyên tắc: chỉ request mới nhất được quyền commit state
+
 **⚠️ Lỗi Thường Gặp:**
 
 - Không cleanup AbortController khi unmount → memory leak
 - Retry **mọi lỗi** (kể cả 4xx) → spam server, waste resources
 - Concurrency limit quá thấp → chậm, quá cao → overload
 - Không cancel previous search request → race condition (results out of order)
+- Chỉ debounce nhưng không guard stale response → vẫn có thể bị request cũ ghi đè
 
 **💡 Kiến Thức Senior:**
 
@@ -42,31 +50,36 @@
 - **Circuit Breaker pattern**: Dừng hẳn requests sau N failures liên tiếp, chờ recover
 - **`AbortSignal.timeout(ms)`** (native) thay `setTimeout + abort`
 - **Stale-While-Revalidate**: Return cached data ngay, fetch mới background, update sau
+- **Last-write-wins vs last-request-wins**: Với UI search/filter thường cần last-request-wins, không phải request nào về sau thì thắng
 - React Query/SWR **built-in** retry + cancellation + concurrency control
 
-**Trả lời:\*\***
+**Trả lời:**
 
 - Hủy bỏ: `AbortController/AbortSignal` cho fetch/task dài; truyền `signal` xuyên suốt để hủy chuỗi async.
 - Giới hạn đồng thời: dùng semaphore/pool để kiểm soát số tác vụ chạy song song, tránh nghẽn băng thông hay quota.
 - Retry: áp dụng backoff + jitter cho lỗi tạm thời, kèm tổng timeout để không treo vô hạn.
+- Race condition: bảo đảm chỉ async result còn hợp lệ mới được cập nhật state, thường bằng cancel request cũ hoặc request id.
 
 Hoạt động:
 
 - Abort: `controller.abort()` phát tín hiệu; fetch/reader/listener có `signal` sẽ throw DOMException('AbortError') và dừng sớm.
 - Concurrency: hàng đợi đợi slot trống; xong 1 tác vụ thì phát tín hiệu cho tác vụ kế.
 - Retry: vòng lặp bắt lỗi, đợi theo backoff (exponential + jitter), dừng khi đạt số lần tối đa.
+- Race condition: mỗi request có "phiên bản"; khi response về, so với phiên bản hiện tại trước khi commit state.
 
 Ưu điểm:
 
 - Chủ động dừng tác vụ thừa (chuyển trang, đóng modal).
 - Giảm tải server/trình duyệt, tránh bão request.
 - Tăng độ tin cậy khi mạng không ổn định.
+- Tránh UI hiển thị dữ liệu cũ dù user đã chọn filter/query mới.
 
 Nhược điểm:
 
 - Cần lan truyền `signal` qua nhiều lớp API.
 - Retry sai loại lỗi có thể tệ hơn (spam server).
 - Tối ưu concurrency không đúng ngữ cảnh vẫn có thể nghẽn.
+- Guard race condition bằng flag/request id không giảm tải network nếu không cancel request cũ.
 
 Chú thích: Chỉ retry lỗi tạm thời (5xx, ECONNRESET); không retry 4xx trừ khi có lý do rõ ràng.
 
@@ -147,6 +160,25 @@ async function retry<T>(op: () => Promise<T>, tries = 3) {
     }
   }
 }
+
+// ===================================================
+// 4) Race condition guard - chỉ response mới nhất được cập nhật state
+// ===================================================
+let latestRequestId = 0;
+
+async function search(query: string) {
+  // Mỗi lần search tăng version/requestId
+  const requestId = ++latestRequestId;
+
+  const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+  const data = await res.json();
+
+  // Nếu trong lúc chờ đã có request mới hơn, bỏ qua response cũ
+  if (requestId !== latestRequestId) return;
+
+  // Chỉ request mới nhất được quyền update UI/state
+  setResults(data);
+}
 ```
 
 **Best Practices:**
@@ -154,6 +186,7 @@ async function retry<T>(op: () => Promise<T>, tries = 3) {
 - Truyền `signal` xuyên suốt chain APIs để hủy gọn
 - Đặt timeout tổng; đo và điều chỉnh max concurrency theo tài nguyên
 - Chỉ retry cho lỗi tạm thời (5xx, network)
+- Với search/filter, kết hợp debounce + cancel request cũ + guard requestId để chống stale response
 
 **Mistakes (Lỗi Thường Gặp):**
 
@@ -228,6 +261,37 @@ function GoodComponent() {
     fetch('/api/data', { signal: controller.signal });
     return () => controller.abort(); // ✅ Cleanup
   }, []);
+}
+
+// ===================================================
+// ❌ SAI LẦM 4: Race condition - response cũ ghi đè response mới
+// ===================================================
+function BadSearch({ query }) {
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    fetch(`/api/search?q=${query}`)
+      .then((r) => r.json())
+      .then(setResults); // ❌ Request cũ về sau vẫn update state
+  }, [query]);
+}
+
+// ✅ ĐÚNG: Hủy request cũ khi query đổi
+function GoodSearch({ query }) {
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetch(`/api/search?q=${query}`, { signal: controller.signal })
+      .then((r) => r.json())
+      .then(setResults)
+      .catch((err) => {
+        if (err.name !== 'AbortError') console.error(err);
+      });
+
+    return () => controller.abort(); // ✅ query đổi → hủy request cũ
+  }, [query]);
 }
 ```
 
@@ -635,12 +699,202 @@ async function safeFetchWithRetry(url: string) {
 
 ---
 
-### 4. Kết hợp Cancellation + Concurrency + Retry trong thực tế
+### 4. Race Condition – Kết quả cũ ghi đè kết quả mới
+
+**Vấn đề:**
+
+- Race condition xảy ra khi **nhiều async operations cùng chạy**, nhưng **thứ tự hoàn thành không đoán trước được**.
+- Trong frontend, case phổ biến nhất là search/filter/detail page:
+  - User chọn/gõ giá trị mới.
+  - Request mới được gửi.
+  - Request cũ vẫn đang chạy.
+  - Request cũ về sau và ghi đè state mới.
+
+**Ví dụ timeline lỗi:**
+
+```ts
+// T=0ms:   User gõ "r"     → request A: /api/search?q=r
+// T=50ms:  User gõ "react" → request B: /api/search?q=react
+// T=120ms: Request B về trước → UI hiển thị kết quả "react" ✅
+// T=500ms: Request A về sau  → UI bị ghi đè thành kết quả "r" ❌
+```
+
+**Sai ở đâu?**
+
+- Code chỉ quan tâm "request nào vừa resolve" chứ không kiểm tra "request đó còn hợp lệ không".
+- `Promise` resolve theo tốc độ network/server, không theo thứ tự user action.
+- Debounce chỉ giảm số request, **không đảm bảo** response cũ không về sau.
+
+```ts
+// ===================================================
+// ❌ RACE CONDITION: response nào về sau thì thắng
+// ===================================================
+function SearchBox({ query }: { query: string }) {
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    fetch(`/api/search?q=${encodeURIComponent(query)}`)
+      .then((r) => r.json())
+      .then(setResults); // ❌ Không biết query này còn là query mới nhất không
+  }, [query]);
+}
+```
+
+**Cách xử lý 1: Cancel request cũ bằng `AbortController`**
+
+- Đây là cách tốt nhất khi API hỗ trợ cancellation vì vừa tránh stale update, vừa tiết kiệm network.
+- Khi `query` đổi, cleanup của effect cũ chạy và abort request cũ.
+
+```ts
+// ===================================================
+// ✅ CÁCH 1: Abort request cũ khi query đổi
+// ===================================================
+function SearchBox({ query }: { query: string }) {
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    if (!query) {
+      setResults([]);
+      return;
+    }
+
+    const controller = new AbortController();
+
+    async function load() {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+          signal: controller.signal,
+        });
+        const data = await res.json();
+
+        // ✅ Nếu đã abort sau khi fetch xong nhưng trước khi parse/update, bỏ qua
+        if (controller.signal.aborted) return;
+
+        setResults(data);
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') return;
+        console.error(err);
+      }
+    }
+
+    load();
+
+    return () => controller.abort();
+  }, [query]);
+}
+```
+
+**Cách xử lý 2: Request ID / Sequence number**
+
+- Dùng khi không thể hủy request thật sự, ví dụ library không nhận `AbortSignal`, hoặc task async không cancel được.
+- Ý tưởng: mỗi request có `requestId`; response chỉ được update nếu id của nó vẫn là id mới nhất.
+
+```ts
+// ===================================================
+// ✅ CÁCH 2: Last request wins bằng requestId
+// ===================================================
+function SearchBox({ query }: { query: string }) {
+  const [results, setResults] = useState([]);
+  const latestRequestId = useRef(0);
+
+  useEffect(() => {
+    if (!query) {
+      setResults([]);
+      return;
+    }
+
+    const requestId = ++latestRequestId.current;
+
+    async function load() {
+      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+
+      // ✅ Có request mới hơn rồi → bỏ qua response cũ
+      if (requestId !== latestRequestId.current) return;
+
+      setResults(data);
+    }
+
+    load().catch(console.error);
+  }, [query]);
+}
+```
+
+**Cách xử lý 3: Ignore flag trong `useEffect`**
+
+- Pattern đơn giản, dễ giải thích khi phỏng vấn.
+- Cleanup đổi flag thành `true`; async callback cũ kiểm tra flag trước khi set state.
+- Cách này **không hủy network**, chỉ chặn state update.
+
+```ts
+// ===================================================
+// ✅ CÁCH 3: Ignore stale result bằng cleanup flag
+// ===================================================
+useEffect(() => {
+  let ignore = false;
+
+  async function load() {
+    const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    if (ignore) return; // ✅ Effect cũ đã bị cleanup
+    setResults(data);
+  }
+
+  load().catch(console.error);
+
+  return () => {
+    ignore = true;
+  };
+}, [query]);
+```
+
+**Cách xử lý 4: Data-fetching library**
+
+- React Query/SWR thường đã xử lý nhiều vấn đề liên quan:
+  - Cache theo key (`['search', query]`).
+  - Dedupe request trùng.
+  - Stale-while-revalidate.
+  - Retry/backoff.
+  - Không update nhầm view nếu query key đã đổi.
+
+```ts
+// Ý tưởng với React Query:
+const { data, isFetching } = useQuery({
+  queryKey: ['search', query],
+  queryFn: ({ signal }) =>
+    fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal }).then((r) =>
+      r.json()
+    ),
+  enabled: query.length > 0,
+});
+```
+
+**Khi nào dùng cách nào?**
+
+- **AbortController**: ưu tiên cho `fetch`, search, filter, autocomplete, route change.
+- **Request ID**: dùng khi task không cancel được nhưng cần đảm bảo last-request-wins.
+- **Ignore flag**: phù hợp cho effect nhỏ, demo/phỏng vấn, hoặc code đơn giản.
+- **React Query/SWR**: dùng trong app production có cache, retry, refetch, loading/error state phức tạp.
+
+**Điểm senior cần nói rõ:**
+
+- Race condition không chỉ là "multi-thread bug"; trong JS single-thread vẫn xảy ra vì async completion order không deterministic.
+- `await` không làm request chạy theo thứ tự mong muốn nếu bạn tạo nhiều async flow độc lập.
+- Cần phân biệt:
+  - **Last response wins**: response nào về cuối thì update UI. Đây thường là bug.
+  - **Last request wins**: request mới nhất theo ý định user mới được update UI. Đây thường là đúng.
+- Cancellation là giải pháp tốt hơn ignore-only vì giảm cả stale update lẫn tài nguyên lãng phí.
+
+---
+
+### 5. Kết hợp Cancellation + Concurrency + Retry + Race Condition trong thực tế
 
 - Một flow thực tế thường gồm:
   - **Giới hạn concurrency** để bảo vệ client/server.
   - **Retry có kiểm soát** cho lỗi tạm thời.
   - **Cancellation** để dừng những thứ không còn cần.
+  - **Race condition guard** để response cũ không ghi đè state mới.
 
 **Ví dụ kịch bản thực tế:** User gõ search liên tục:
 
@@ -650,32 +904,38 @@ async function safeFetchWithRetry(url: string) {
 function SearchComponent() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const latestRequestId = useRef(0);
 
   useEffect(() => {
     if (!query) return;
 
     // 🎮 Tạo controller mới mỗi lần query đổi
     const controller = new AbortController();
+    const requestId = ++latestRequestId.current;
 
     // ⏱️ Debounce: Đợi 300ms sau khi user ngừng gõ
     const timeoutId = setTimeout(async () => {
       try {
-        // 📡 Fetch với signal → có thể hủy
-        const res = await fetch(`/api/search?q=${query}`, {
-          signal: controller.signal,
-        });
-
-        // 🔄 Retry nếu lỗi 5xx (với backoff)
+        // 🔄 Retry cả fetch nếu lỗi tạm thời
         const data = await retry(async () => {
+          // 📡 Fetch với signal → có thể hủy
+          const res = await fetch(`/api/search?q=${query}`, {
+            signal: controller.signal,
+          });
+
           if (!res.ok && res.status >= 500) {
             throw new Error('Server error');
           }
+
           return res.json();
         }, 2);
 
+        // 🧯 Race guard: nếu đã có request mới hơn, bỏ qua response cũ
+        if (requestId !== latestRequestId.current) return;
+
         setResults(data);
       } catch (err) {
-        if (err.name !== 'AbortError') {
+        if (!(err instanceof DOMException && err.name === 'AbortError')) {
           console.error('Search error:', err);
         }
       }
@@ -701,15 +961,16 @@ function SearchComponent() {
 //          → Nếu user gõ tiếp → Request này bị hủy (controller.abort())
 ```
 
-**Kết hợp 3 pattern:**
+**Kết hợp 4 pattern:**
 
 1. **Cancellation**: Hủy request cũ khi user gõ tiếp → Tránh race condition
 2. **Retry**: Retry 1-2 lần nếu backend 502 → Tăng độ tin cậy
 3. **Concurrency**: Nếu user mở 20 tab → Giới hạn max 5 requests cùng lúc → Bảo vệ server
+4. **Race condition guard**: Nếu không cancel được request, dùng requestId để chỉ commit response mới nhất
 
 ---
 
-### 5. Tóm tắt để ôn phỏng vấn
+### 6. Tóm tắt để ôn phỏng vấn
 
 - **Cancellation:**
 
@@ -724,3 +985,8 @@ function SearchComponent() {
 - **Retry:**
   - Chỉ retry lỗi tạm thời; dùng **exponential backoff + jitter**.
   - Thiết lập số lần tối đa + timeout tổng, cân nhắc circuit breaker.
+
+- **Race condition:**
+  - Xảy ra khi async result cũ về sau và ghi đè state mới.
+  - Ưu tiên cancel request cũ; nếu không cancel được thì dùng requestId/ignore flag.
+  - Với UI tương tác nhanh, mục tiêu thường là **last-request-wins**, không phải **last-response-wins**.

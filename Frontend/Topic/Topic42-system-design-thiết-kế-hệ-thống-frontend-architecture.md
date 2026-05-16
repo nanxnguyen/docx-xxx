@@ -69,6 +69,7 @@
 7. [Feature Flags System](#7-feature-flags-system)
 8. [CDN & Edge Computing](#8-cdn--edge-computing)
 9. [Real-World System Design Questions](#9-real-world-system-design-questions)
+10. [Production-Ready Frontend Project](#10-production-ready-frontend-project)
 
 ---
 
@@ -1848,6 +1849,52 @@ const CollaborativeEditor = ({ documentId, userId }) => {
 ```
 
 ---
+
+## 10. Production-Ready Frontend Project
+
+### **10.1. Câu Trả Lời Ngắn Gọn Khi Phỏng Vấn**
+
+**"Để build một frontend project từ zero đến production-ready, em sẽ đi theo 8 bước: foundation, architecture, code quality, performance, testing, CI/CD, monitoring và scalability. Mục tiêu không chỉ là app chạy được, mà còn phải dễ maintain, dễ scale team, dễ deploy và dễ debug khi có lỗi production."**
+
+**Cách em triển khai:**
+
+1. **Foundation:** Chọn stack phù hợp như React/Next.js/Vite, TypeScript strict mode, package manager ổn định như pnpm, setup env rõ ràng cho local/staging/production.
+2. **Architecture:** Thiết kế folder theo feature, tách shared UI/utils/API/types, dùng path alias, tránh import vòng, chuẩn bị monorepo nếu có nhiều app/lib hoặc nhiều team.
+3. **Code Quality:** Bắt buộc ESLint, Prettier, Husky, lint-staged, commit convention, TypeScript strict, schema validation bằng Zod/Yup cho API/form data.
+4. **State Management:** Tách rõ local state, global UI state, server state và URL state. Ví dụ React Query/SWR cho server cache, Zustand/Redux cho global state thật sự cần chia sẻ.
+5. **Performance:** Code splitting theo route/component, lazy loading, bundle analysis, image optimization, cache static assets bằng CDN, đặt performance budget và đo Lighthouse/Web Vitals.
+6. **Testing:** Unit test cho logic, component test cho UI behavior, integration test cho flow quan trọng, E2E test bằng Playwright/Cypress cho login, checkout, payment hoặc critical journey.
+7. **CI/CD:** Pipeline phải chạy lint, type-check, test, build, security/dependency check, preview deploy cho PR, auto deploy staging/production có approval hoặc rollback strategy.
+8. **Monitoring:** Tích hợp Sentry/DataDog/New Relic, log lỗi có context, đo Core Web Vitals, tracking API failure, alert khi error rate hoặc latency vượt ngưỡng.
+
+### **10.2. Checklist Production-Ready**
+
+```markdown
+□ TypeScript strict mode, noImplicitAny, strictNullChecks
+□ ESLint + Prettier + Husky + lint-staged
+□ Feature-based folder structure, shared libraries rõ ràng
+□ API client có interceptors, retry, timeout, error normalization
+□ State được phân lớp: local/global/server/url
+□ Error Boundary + fallback UI + Sentry integration
+□ Lazy loading, code splitting, bundle analyzer
+□ Performance budget cho JS/CSS/image và Core Web Vitals
+□ Unit, integration, E2E tests cho critical flows
+□ CI/CD chạy lint, type-check, test, build trước deploy
+□ Env management an toàn, không hardcode secret/config
+□ Monitoring, analytics, logging, alerting sau khi release
+□ Documentation cho setup, architecture decisions, onboarding
+```
+
+### **10.3. Điểm Senior Cần Nhấn Mạnh**
+
+- **Trade-off:** Không chọn micro-frontend/monorepo chỉ vì hiện đại. Nếu team nhỏ và app đơn giản, modular monolith thường tốt hơn.
+- **Maintainability:** Folder structure, naming convention, shared libraries và rule import quan trọng hơn việc dùng tool mới.
+- **Scalability:** Scale frontend không chỉ là performance, mà còn là scale team, scale deployment, scale ownership và scale debugging.
+- **Reliability:** Production-ready nghĩa là khi lỗi xảy ra, team biết lỗi ở đâu, ảnh hưởng ai, rollback thế nào và fix theo hướng không tái diễn.
+- **Business impact:** Senior không chỉ nói "dùng tool gì", mà phải giải thích tool đó giảm bug, giảm lead time, tăng tốc deploy hoặc bảo vệ user experience như thế nào.
+
+**Câu chốt phỏng vấn:**  
+**"Em sẽ bắt đầu đơn giản nhưng có guardrails tốt: TypeScript strict, architecture rõ, CI/CD tự động, test critical flows, performance budget và monitoring từ đầu. Khi traffic hoặc team tăng, mình mới nâng cấp dần sang monorepo, micro-frontend hoặc edge architecture dựa trên pain point thật."**
 
 ## 📚 **Tài Liệu Tham Khảo**
 
