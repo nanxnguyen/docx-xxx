@@ -511,13 +511,6 @@ React.useEffect(() => {
 - Task có thể bị user hủy → `AbortController`.
 - Data đến theo stream/cursor → `for await...of`.
 
-**Trước khi tối ưu:**
-
-- Đã biết Big O chưa?
-- Có nested loop nào đổi được sang `Map`/`Set` không?
-- Bottleneck là CPU, DOM, React render, network, hay backend?
-- Có profile trên device/browser mục tiêu chưa?
-- Có test lỗi, cancellation, retry/rate-limit chưa?
 
 ## 🗣️ Short Interview Answer
 

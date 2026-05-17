@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic06 - Closure & Data Privacy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Serif+4:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root{--bg:#f6efdf;--paper:#fbf5e8;--ink:#15120d;--muted:#5d5346;--line:#201a13;--accent:#d24a2d;--accent-2:#1f5f7a;--shadow:8px 8px 0 rgba(21,18,13,.12);--display:'Bebas Neue',cursive;--body:'Source Serif 4',serif;--mono:'IBM Plex Mono',monospace;--pad:20px;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);background:var(--bg);color:var(--ink);overflow-x:hidden;font-size:16px;line-height:1.7}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");mix-blend-mode:multiply;z-index:30}
+a{color:inherit}
+.topbar{position:sticky;top:0;z-index:20;height:56px;border-bottom:2px solid var(--line);background:rgba(246,239,223,.94);backdrop-filter:blur(8px);display:flex;align-items:center;gap:12px;padding:0 var(--pad)}
+.brand{flex:0 0 auto;min-width:44px;height:44px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--line);text-decoration:none;font-family:var(--display);font-size:24px;letter-spacing:.04em;background:var(--paper)}
+.nav-scroll{min-width:0;display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;-ms-overflow-style:none}
+.nav-scroll::-webkit-scrollbar{display:none}
+.nav-pill{scroll-snap-align:start;flex:0 0 auto;min-width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 14px;text-decoration:none;border:2px solid var(--line);background:var(--paper);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;max-width:min(42vw,160px);overflow:hidden;text-overflow:ellipsis}
+.nav-pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.hero{min-height:calc(100svh - 56px);padding:24px var(--pad) 28px;display:flex;align-items:flex-end;position:relative;background:linear-gradient(180deg,rgba(210,74,45,.06),transparent 55%)}
+.hero::after{content:'';position:absolute;inset:20px;border:2px solid var(--line);pointer-events:none}
+.hero-inner{position:relative;z-index:1;max-width:920px;margin:0 auto;width:100%}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--display);font-size:clamp(56px,17vw,136px);line-height:.9;letter-spacing:.02em;margin:0 0 14px;text-transform:uppercase}
+.hero p{max-width:760px;font-size:18px;color:var(--muted);margin:0 0 22px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.stat{border:2px solid var(--line);background:var(--paper);padding:12px 14px;min-height:84px}
+.stat-num{display:block;font-family:var(--display);font-size:40px;line-height:1;color:var(--accent)}
+.stat-label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+main{padding:32px var(--pad) 80px}
+.content{max-width:920px;margin:0 auto}
+.panel{border:2px solid var(--line);background:var(--paper);box-shadow:var(--shadow);padding:20px}
+.viz{margin:0 0 24px}
+.viz h2{margin-top:0}
+.bar-list{display:grid;gap:10px}
+.bar-row{display:grid;grid-template-columns:96px minmax(0,1fr) 54px;align-items:center;gap:10px}
+.bar-label,.bar-val{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bar-track{height:14px;border:2px solid var(--line);background:#efe4cf;overflow:hidden}
+.bar-fill{height:100%;width:0;transition:width .9s ease;background:var(--accent)}
+section.reveal, .reveal{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease}
+section.reveal.in-view, .reveal.in-view{opacity:1;transform:none}
+h1,h2,h3,h4{scroll-margin-top:72px}
+h2{font-family:var(--display);font-size:clamp(34px,8vw,58px);line-height:.92;letter-spacing:.02em;text-transform:uppercase;margin:34px 0 14px}
+h3{font-family:var(--display);font-size:clamp(24px,6vw,38px);line-height:1.02;letter-spacing:.02em;margin:26px 0 10px;text-transform:uppercase}
+h4{font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin:18px 0 8px}
+p{margin:0 0 16px}
+strong{font-weight:700}
+em{font-style:italic;color:var(--accent-2)}
+code{font-family:var(--mono);font-size:.9em;padding:2px 6px;border:1px solid var(--line);background:#efe4cf}
+ul,ol{padding-left:20px;margin:0 0 16px}
+li{margin:0 0 8px}
+.callout{margin:18px 0;padding:14px 16px;border-left:5px solid var(--accent);background:#efe4cf}
+.divider{height:2px;background:var(--line);margin:28px 0}
+.table-wrap{overflow-x:auto;margin:18px 0 24px;border:2px solid var(--line);background:var(--paper)}
+table{border-collapse:collapse;min-width:100%;width:100%}
+th,td{padding:12px 14px;border-bottom:2px solid rgba(32,26,19,.14);text-align:left;vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:#efe4cf}
+.code-wrap{margin:18px 0 24px;border:2px solid var(--line);background:#15120d;color:#f7f0e0;box-shadow:var(--shadow)}
+.code-top{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:2px solid rgba(247,240,224,.12)}
+.traffic{display:flex;gap:6px} .traffic i{width:10px;height:10px;border-radius:50%;display:block;background:#f7f0e0} .traffic i:nth-child(2){background:#d24a2d} .traffic i:nth-child(3){background:#1f5f7a}
+.code-lang{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#d1c4ab}
+pre{margin:0;overflow-x:auto;padding:16px;font-family:var(--mono);font-size:13px;line-height:1.75;white-space:pre}
+.kw{color:#ff9a76} .fn{color:#88d3ff} .st{color:#f4d58d} .cm{color:#8e8577;font-style:italic} .nu{color:#ffcf6b} .ty{color:#9ad7b8}
+.compare-grid{display:grid;gap:14px;margin:18px 0 24px}
+.compare-card{border:2px solid var(--line);background:var(--paper);padding:16px;box-shadow:var(--shadow)}
+.compare-card h3{margin-top:0}
+.timeline{display:grid;gap:12px;margin:18px 0 24px}
+.step{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;align-items:start}
+.dot{width:20px;height:20px;border:2px solid var(--line);background:var(--accent);margin-top:4px}
+.step .panelish{border:2px solid var(--line);background:var(--paper);padding:14px}
+.checklist{list-style:none;padding:0;margin:0 0 16px}
+.check-item{display:flex;gap:10px;align-items:flex-start;min-height:44px;padding:10px 12px;border:2px solid var(--line);background:var(--paper)}
+.check-item input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);flex:0 0 auto}
+.check-item span{transition:.2s ease;color:var(--ink)}
+.check-item input:checked + span{text-decoration:line-through;color:var(--muted)}
+footer{padding:0 var(--pad) 48px} .foot{max-width:920px;margin:0 auto;border:2px solid var(--line);background:var(--paper);padding:16px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+@media (min-width:700px){:root{--pad:40px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.compare-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:1100px){:root{--pad:60px}.hero{padding-top:44px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#top">T06</a>
+  <nav class="nav-scroll" aria-label="Topic sections"><a class="nav-pill" href="#1-seniorstaff-summary" data-target="1-seniorstaff-summary">Senior/Staff Sum</a><a class="nav-pill" href="#2-key-mental-model" data-target="2-key-mental-model">Key Mental Model</a><a class="nav-pill" href="#3-main-concepts" data-target="3-main-concepts">Main Concepts</a><a class="nav-pill" href="#4-practical-typescript-examples" data-target="4-practical-typescript-examples">Practical TypeSc</a><a class="nav-pill" href="#5-production-notes-react-implications" data-target="5-production-notes-react-implications">Production Notes</a><a class="nav-pill" href="#6-common-pitfalls" data-target="6-common-pitfalls">Common Pitfalls</a><a class="nav-pill" href="#7-decision-guide" data-target="7-decision-guide">Decision Guide</a><a class="nav-pill" href="#8-short-interview-answer" data-target="8-short-interview-answer">Short Interview </a></nav>
+</header>
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <p class="kicker">Frontend Topic / Fixed Template</p>
+    <h1>Closure<br>&amp; Privacy</h1>
+    <p>Closure = function + lexical environment; nó giữ reference, không giữ snapshot.</p>
+    <div class="stats">
+      <div class="stat"><span class="stat-num">8</span><span class="stat-label">Core Sections</span></div>
+      <div class="stat"><span class="stat-num">10</span><span class="stat-label">Code Blocks</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Privacy Models</span></div>
+      <div class="stat"><span class="stat-num">64</span><span class="stat-label">Closure Mentions</span></div>
+    </div>
+  </div>
+</section>
+<main>
+  <div class="content">
+    <section class="panel viz reveal">
+      <h2>Quick Map</h2>
+      <div class="compare-grid">
+        <article class="compare-card"><h3>Closure</h3><p>Phù hợp cho factory, private state, debounce, memoize, custom store, không cần <code>this</code>.</p></article>
+        <article class="compare-card"><h3>#field</h3><p>Rõ ràng hơn khi có class nhiều method, cần true private và debugger inspect tự nhiên.</p></article>
+        <article class="compare-card"><h3>WeakMap</h3><p>Hợp khi private data gắn với object bên ngoài như DOM element và muốn auto-GC theo key.</p></article>
+      </div>
+      <div class="timeline">
+        <div class="step"><div class="dot"></div><div class="panelish"><strong>Define</strong><p>Function được tạo ra trong một lexical scope cụ thể.</p></div></div>
+        <div class="step"><div class="dot"></div><div class="panelish"><strong>Capture</strong><p>Inner function giữ reference tới biến outer qua environment.</p></div></div>
+        <div class="step"><div class="dot"></div><div class="panelish"><strong>Retain</strong><p>Environment sống tiếp nếu callback hoặc handler còn bị reference.</p></div></div>
+        <div class="step"><div class="dot"></div><div class="panelish"><strong>Release</strong><p>Khi listener/timer/subscriber cleanup xong, object mới đủ điều kiện cho GC.</p></div></div>
+      </div>
+      <div class="bar-list" data-animate-bars>
+        <div class="bar-row"><span class="bar-label">Sections</span><div class="bar-track"><div class="bar-fill" data-width="100%"></div></div><span class="bar-val">8</span></div>
+        <div class="bar-row"><span class="bar-label">Patterns</span><div class="bar-track"><div class="bar-fill" data-width="72%" style="background:var(--accent-2)"></div></div><span class="bar-val">Store</span></div>
+        <div class="bar-row"><span class="bar-label">Risk</span><div class="bar-track"><div class="bar-fill" data-width="84%"></div></div><span class="bar-val">Stale</span></div>
+      </div>
+    </section>
+    <section class="reveal"><h1>🔐 Topic 06 — Closure &amp; Data Privacy</h1>
+<h2 id="1-seniorstaff-summary">⭐ 1. Senior/Staff Summary</h2>
+<p>&gt;</p>
+<blockquote class="callout"><p><strong>Closure</strong> = <code>function + lexical environment</code> của scope nơi nó được định nghĩa. Inner function giữ <strong>reference</strong> (không phải copy) đến biến outer, ngay cả khi outer đã return.</p><p>Closure là cơ chế nền cho rất nhiều pattern FE hằng ngày: <strong>private state</strong> (Zustand store, factory), <strong>memoization / debounce / throttle</strong>, <strong>currying &amp; partial application</strong>, <strong>event handler giữ ngữ cảnh</strong>, và là nguồn gốc của <strong>stale closure bug</strong> trong React hooks.</p></blockquote>
+<p>Senior cần biết: closure giữ <em>reference</em>, không phải snapshot → đó là lý do hooks có dependency array, và là lý do <code>setInterval</code> + <code>useState</code> dễ bị stale. Closure cũng là một <strong>nguồn rò rỉ bộ nhớ</strong> thường gặp nếu giữ DOM/Array lớn sống ngoài vòng đời mong đợi.</p>
+<div class="divider"></div>
+<h2 id="2-key-mental-model">🧠 2. Key Mental Model</h2>
+<p>- 🔒 <strong>Closure</strong> — kinh điển, không runtime cost ngoài việc giữ env sống. - 🆕 <strong>Class private field <code>#x</code></strong> (ES2022) — true private ở engine level. - 🗂️ <strong><code>WeakMap&lt;instance, privateData&gt;</code></strong> — auto GC khi instance không còn referenced.</p>
+<ul><li>Closure không phải &quot;biến private&quot; — nó là <strong>một function nhớ scope ngoài</strong>. Data privacy là <em>use case</em>, không phải định nghĩa.</li><li>Inner function giữ <strong><code>[[Environment]]</code></strong> trỏ tới lexical environment của outer. Khi outer return, environment vẫn được giữ sống nếu còn function nào reference nó.</li><li><strong>Closure giữ reference</strong>, không phải value snapshot → biến outer thay đổi sau khi closure tạo ra, closure đọc giá trị mới (đây là gốc rễ của stale closure trong React).</li><li>3 cách &quot;private&quot; data trên JS hiện đại:</li><li>Closure không &quot;chậm&quot; — V8 tối ưu rất tốt. Vấn đề chỉ là <strong>memory retention</strong> (giữ env sống lâu hơn cần) và <strong>stale value</strong> trong async/React.</li></ul>
+<div class="divider"></div>
+<h2 id="3-main-concepts">📚 3. Main Concepts</h2>
+<h3>3.1. Closure = Function + Lexical Environment</h3>
+<div class="code-wrap"><div class="code-top"><span class="traffic"><i></i><i></i><i></i></span><span class="code-lang">ts</span></div><pre><code><span class="kw">function</span> <span class="fn">makeAdder</span>(x: <span class="ty">number</span>) {
+  <span class="kw">return</span> <span class="kw">function</span> (y: <span class="ty">number</span>) {
+    <span class="kw">return</span> x + y;          <span <span class="kw">class</span>="cm">// x sống trong closure environment</span>
+  };
+}
+
+<span class="kw">const</span> add5 = <span class="fn">makeAdder</span>(<span <span class="kw">class</span>="nu">5</span>);
+<span class="fn">add5</span>(<span <span class="kw">class</span>="nu">3</span>);                   <span <span class="kw">class</span>="cm">// 8 — makeAdder đã <span class="kw">return</span>, x vẫn được giữ</span></code></pre></div>
+<p>Mental model: <code>add5</code> mang theo một object <code>{ x: 5 }</code> ẩn — đó là lexical environment.</p>
+<h3>3.2. Data Privacy — 3 cách trên JS hiện đại</h3>
+<div class="code-wrap"><div class="code-top"><span class="traffic"><i></i><i></i><i></i></span><span class="code-lang">ts</span></div><pre><code><span <span class="kw">class</span>="cm">// 1️⃣ <span class="ty">Closure</span> (kinh điển)</span>
+<span class="kw">function</span> <span class="fn">createCounter</span>() {
+  <span class="kw">let</span> count = <span <span class="kw">class</span>="nu">0</span>;
+  <span class="kw">return</span> {
+    inc: () =&gt; ++count,
+    <span class="kw">get</span>: () =&gt; count,
+  };
+}
+
+<span <span class="kw">class</span>="cm">// 2️⃣ <span class="ty">Class</span> private field — <span class="ty">ES2022</span>, <span class="kw">true</span> private ở engine level</span>
+<span class="kw">class</span> <span class="ty">Counter</span> {
+  #count = <span <span class="kw">class</span>="nu">0</span>;
+  <span class="fn">inc</span>() { <span class="kw">return</span> ++<span class="kw">this</span>.#count; }
+  <span class="kw">get</span> <span class="fn">count</span>() { <span class="kw">return</span> <span class="kw">this</span>.#count; }
+}
+
+<span <span class="kw">class</span>="cm">// 3️⃣ <span class="ty">WeakMap</span> — private + auto <span class="ty">GC</span> theo instance</span>
+<span class="kw">const</span> _state = <span class="kw">new</span> <span class="ty">WeakMap</span>&lt;<span class="ty">Counter2</span>, { count: <span class="ty">number</span> }&gt;();
+<span class="kw">class</span> <span class="ty">Counter2</span> {
+  <span class="fn">constructor</span>() { _state.<span class="fn">set</span>(<span class="kw">this</span>, { count: <span <span class="kw">class</span>="nu">0</span> }); }
+  <span class="fn">inc</span>() { <span class="kw">return</span> ++_state.<span class="kw">get</span>(<span class="kw">this</span>)!.count; }
+}</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Cách</th><th>Privacy</th><th>GC behavior</th><th>Trade-off</th></tr></thead><tbody>
+<tr><td>Closure</td><td>Bằng scope</td><td>Env sống đến khi không ai reference function</td><td>Mỗi instance một bản method (memory)</td></tr>
+<tr><td><code>#field</code></td><td>Engine-level</td><td>GC theo instance</td><td>Modern, type-safe, native debugger inspect</td></tr>
+<tr><td><code>WeakMap</code></td><td>Module-scope</td><td>Auto-GC theo key</td><td>Verbose, ngày nay ít dùng do <code>#field</code></td></tr>
+</tbody></table></div>
+<h3>3.3. Loop + <code>var</code> — closure share cùng binding</h3>
+<div class="code-wrap"><div class="code-top"><span class="traffic"><i></i><i></i><i></i></span><span class="code-lang">ts</span></div><pre><code><span <span class="kw">class</span>="cm">// ❌ <span class="kw">var</span>: 1 binding chia sẻ — <span class="kw">in</span> 3, 3, 3</span>
+<span class="kw">for</span> (<span class="kw">var</span> i = <span <span class="kw">class</span>="nu">0</span>; i &lt; <span <span class="kw">class</span>="nu">3</span>; i++) {
+  <span class="fn">setTimeout</span>(() =&gt; console.<span class="fn">log</span>(i), <span <span class="kw">class</span>="nu">0</span>);
+}
+
+<span <span class="kw">class</span>="cm">// ✅ <span class="kw">let</span>: mỗi vòng 1 binding mới — <span class="kw">in</span> 0, 1, 2</span>
+<span class="kw">for</span> (<span class="kw">let</span> i = <span <span class="kw">class</span>="nu">0</span>; i &lt; <span <span class="kw">class</span>="nu">3</span>; i++) {
+  <span class="fn">setTimeout</span>(() =&gt; console.<span class="fn">log</span>(i), <span <span class="kw">class</span>="nu">0</span>);
+}
+
+<span <span class="kw">class</span>="cm">// ✅ Trước <span class="ty">ES6</span>: <span class="ty">IIFE</span> để tạo scope riêng</span>
+<span class="kw">for</span> (<span class="kw">var</span> i = <span <span class="kw">class</span>="nu">0</span>; i &lt; <span <span class="kw">class</span>="nu">3</span>; i++) {
+  ((idx) =&gt; <span class="fn">setTimeout</span>(() =&gt; console.<span class="fn">log</span>(idx), <span <span class="kw">class</span>="nu">0</span>))(i);
+}</code></pre></div>
+<blockquote class="callout"><p>💡 Đây là <em>câu hỏi closure kinh điển nhất</em>. Hiểu được = hiểu reference vs snapshot.</p></blockquote>
+<h3>3.4. Module Pattern — IIFE giờ chỉ thấy trong bundler</h3>
+<div class="code-wrap"><div class="code-top"><span class="traffic"><i></i><i></i><i></i></span><span class="code-lang">ts</span></div><pre><code><span <span class="kw">class</span>="cm">// Trước <span class="ty">ES</span> modules: <span class="ty">IIFE</span> + closure</span>
+<span class="kw">const</span> userModule = (() =&gt; {
+  <span class="kw">let</span> users: <span class="ty">string</span>[] = [];
+  <span class="kw">return</span> {
+    add: (n: <span class="ty">string</span>) =&gt; users.<span class="fn">push</span>(n),
+    list: () =&gt; [...users],   <span <span class="kw">class</span>="cm">// ✅ <span class="ty">Return</span> copy, không expose ref</span>
+  };
+})();</code></pre></div>
+<p>Ngày nay: ES modules + <code>const</code> thay được hoàn toàn. IIFE chủ yếu xuất hiện trong <strong>bundler output</strong> (Webpack/Rollup UMD wrap).</p>
+<h3>3.5. Closure trong store (Zustand-style)</h3>
+<div class="code-wrap"><div class="code-top"><span class="traffic"><i></i><i></i><i></i></span><span class="code-lang">ts</span></div><pre><code><span class="kw">type</span> <span class="ty">Listener</span>&lt;<span class="ty">T</span>&gt; = (state: <span class="ty">T</span>, prev: <span class="ty">T</span>) =&gt; <span class="kw">void</span>;
+
+<span class="kw">function</span> createStore&lt;<span class="ty">T</span>&gt;(
+  initializer: (set: (p: <span class="ty">Partial</span>&lt;<span class="ty">T</span>&gt; | ((s: <span class="ty">T</span>) =&gt; <span class="ty">Partial</span>&lt;<span class="ty">T</span>&gt;)) =&gt; <span class="kw">void</span>, <span class="kw">get</span>: () =&gt; <span class="ty">T</span>) =&gt; <span class="ty">T</span>
+) {
+  <span class="kw">let</span> state: <span class="ty">T</span>;                               <span <span class="kw">class</span>="cm">// 🔒 private</span>
+  <span class="kw">const</span> listeners = <span class="kw">new</span> <span class="ty">Set</span>&lt;<span class="ty">Listener</span>&lt;<span class="ty">T</span>&gt;&gt;();   <span <span class="kw">class</span>="cm">// 🔒 private</span>
+
+  <span class="kw">const</span> <span class="kw">get</span> = () =&gt; state;
+  <span class="kw">const</span> set = (patch: <span class="ty">Partial</span>&lt;<span class="ty">T</span>&gt; | ((s: <span class="ty">T</span>) =&gt; <span class="ty">Partial</span>&lt;<span class="ty">T</span>&gt;)) =&gt; {
+    <span class="kw">const</span> prev = state;
+    <span class="kw">const</span> next = <span class="kw">typeof</span> patch === &#x27;<span class="kw">function</span>&#x27; ? <span class="fn">patch</span>(prev) : patch;
+    state = { ...prev, ...next };
+    listeners.<span class="fn">forEach</span>(l =&gt; <span class="fn">l</span>(state, prev));
+  };
+
+  state = <span class="fn">initializer</span>(set, <span class="kw">get</span>);
+  <span class="kw">return</span> {
+    getState: <span class="kw">get</span>,
+    setState: set,
+    subscribe: (l: <span class="ty">Listener</span>&lt;<span class="ty">T</span>&gt;) =&gt; (listeners.<span class="fn">add</span>(l), () =&gt; listeners.<span class="fn">delete</span>(l)),
+  };
+}</code></pre></div>
+<p>Closure giúp:</p>
+<ul><li>🔒 <code>state</code> / <code>listeners</code> không truy cập trực tiếp được — chỉ qua API.</li><li>🏗️ Mỗi <code>createStore()</code> ra <strong>một scope mới</strong> → multi-store, test isolation, SSR-safe.</li><li>⚡ Không cần <code>this</code> binding (khác class), không Proxy overhead.</li></ul>
+<h3>3.6. Closure-based utilities</h3>
+<div class="code-wrap"><div class="code-top"><span class="traffic"><i></i><i></i><i></i></span><span class="code-lang">ts</span></div><pre><code><span <span class="kw">class</span>="cm">// once: chạy đúng 1 lần</span>
+<span class="kw">function</span> once&lt;<span class="ty">A</span> <span class="kw">extends</span> <span class="ty">unknown</span>[], <span class="ty">R</span>&gt;(fn: (...a: <span class="ty">A</span>) =&gt; <span class="ty">R</span>) {
+  <span class="kw">let</span> called = <span class="kw">false</span>, value: <span class="ty">R</span>;
+  <span class="kw">return</span> (...args: <span class="ty">A</span>) =&gt; {
+    <span class="kw">if</span> (!called) { called = <span class="kw">true</span>; value = <span class="fn">fn</span>(...args); }
+    <span class="kw">return</span> value;
+  };
+}
+
+<span <span class="kw">class</span>="cm">// debounce</span>
+<span class="kw">function</span> debounce&lt;<span class="ty">A</span> <span class="kw">extends</span> <span class="ty">unknown</span>[]&gt;(fn: (...a: <span class="ty">A</span>) =&gt; <span class="kw">void</span>, ms: <span class="ty">number</span>) {
+  <span class="kw">let</span> t: <span class="ty">ReturnType</span>&lt;<span class="kw">typeof</span> setTimeout&gt; | <span class="kw">undefined</span>;
+  <span class="kw">return</span> (...args: <span class="ty">A</span>) =&gt; {
+    <span class="kw">if</span> (t) <span class="fn">clearTimeout</span>(t);
+    t = <span class="fn">setTimeout</span>(() =&gt; <span class="fn">fn</span>(...args), ms);
+  };
+}
+
+<span <span class="kw">class</span>="cm">// memoize</span>
+<span class="kw">function</span> memoize&lt;<span class="ty">A</span> <span class="kw">extends</span> <span class="ty">unknown</span>[], <span class="ty">R</span>&gt;(fn: (...a: <span class="ty">A</span>) =&gt; <span class="ty">R</span>) {
+  <span class="kw">const</span> cache = <span class="kw">new</span> <span class="ty">Map</span>&lt;<span class="ty">string</span>, <span class="ty">R</span>&gt;();
+  <span class="kw">return</span> (...args: <span class="ty">A</span>) =&gt; {
+    <span class="kw">const</span> key = <span class="ty">JSON</span>.<span class="fn">stringify</span>(args);
+    <span class="kw">if</span> (!cache.<span class="fn">has</span>(key)) cache.<span class="fn">set</span>(key, <span class="fn">fn</span>(...args));
+    <span class="kw">return</span> cache.<span class="kw">get</span>(key)!;
+  };
+}</code></pre></div>
+<p>Tất cả đều có cùng pattern: <strong>HOF return inner function, inner function close over state riêng</strong>.</p>
+<div class="divider"></div>
+<h2 id="4-practical-typescript-examples">🛠 4. Practical TypeScript Examples</h2>
+<h3>4.1. Factory thay class cho simple service</h3>
+<div class="code-wrap"><div class="code-top"><span class="traffic"><i></i><i></i><i></i></span><span class="code-lang">ts</span></div><pre><code><span class="kw">function</span> <span class="fn">createApiClient</span>(baseUrl: <span class="ty">string</span>, token: <span class="ty">string</span>) {
+  <span class="kw">const</span> headers = { <span class="ty">Authorization</span>: <span <span class="kw">class</span>="st">`<span class="ty">Bearer</span> ${token}`</span> };   <span <span class="kw">class</span>="cm">// 🔒 closure</span>
+
+  <span class="kw">return</span> {
+    <span class="kw">get</span>: &lt;<span class="ty">T</span>&gt;(path: <span class="ty">string</span>) =&gt;
+      <span class="fn">fetch</span>(<span <span class="kw">class</span>="st">`${baseUrl}${path}`</span>, { headers }).<span class="fn">then</span>(r =&gt; r.<span class="fn">json</span>() as <span class="ty">Promise</span>&lt;<span class="ty">T</span>&gt;),
+    post: &lt;<span class="ty">T</span>&gt;(path: <span class="ty">string</span>, body: <span class="ty">unknown</span>) =&gt;
+      <span class="fn">fetch</span>(<span <span class="kw">class</span>="st">`${baseUrl}${path}`</span>, {
+        method: &#x27;<span class="ty">POST</span>&#x27;,
+        headers: { ...headers, &#x27;<span class="ty">Content</span>-<span class="ty">Type</span>&#x27;: &#x27;application/json&#x27; },
+        body: <span class="ty">JSON</span>.<span class="fn">stringify</span>(body),
+      }).<span class="fn">then</span>(r =&gt; r.<span class="fn">json</span>() as <span class="ty">Promise</span>&lt;<span class="ty">T</span>&gt;),
+  };
+}
+
+<span class="kw">const</span> api = <span class="fn">createApiClient</span>(&#x27;https:<span <span class="kw">class</span>="cm">//api.x&#x27;, &#x27;abc&#x27;);</span>
+api.<span class="kw">get</span>&lt;<span class="ty">User</span>&gt;(&#x27;/me&#x27;);</code></pre></div>
+<p>Lợi ích: không lo <code>this</code> binding khi destructure (<code>const { get } = api</code>), test mock dễ.</p>
+<h3>4.2. Cleanup closure để tránh leak</h3>
+<div class="code-wrap"><div class="code-top"><span class="traffic"><i></i><i></i><i></i></span><span class="code-lang">ts</span></div><pre><code><span class="kw">function</span> <span class="fn">setupHeavyListener</span>() {
+  <span class="kw">const</span> huge = <span class="kw">new</span> <span class="ty">Array</span>(<span <span class="kw">class</span>="nu">1_000_000</span>).<span class="fn">fill</span>(<span <span class="kw">class</span>="nu">0</span>);     <span <span class="kw">class</span>="cm">// ⚠️ ~8MB</span>
+
+  <span class="kw">const</span> onClick = () =&gt; console.<span class="fn">log</span>(huge.length); <span <span class="kw">class</span>="cm">// closure giữ huge</span>
+  document.<span class="fn">getElementById</span>(&#x27;btn&#x27;)!.<span class="fn">addEventListener</span>(&#x27;click&#x27;, onClick);
+
+  <span <span class="kw">class</span>="cm">// ✅ Trả về dispose để cleanup</span>
+  <span class="kw">return</span> () =&gt; {
+    document.<span class="fn">getElementById</span>(&#x27;btn&#x27;)!.<span class="fn">removeEventListener</span>(&#x27;click&#x27;, onClick);
+    <span <span class="kw">class</span>="cm">// huge sẽ được <span class="ty">GC</span> sau khi onClick không còn reference</span>
+  };
+}</code></pre></div>
+<h3>4.3. Stale closure — bug kinh điển trong React</h3>
+<div class="code-wrap"><div class="code-top"><span class="traffic"><i></i><i></i><i></i></span><span class="code-lang">tsx</span></div><pre><code><span <span class="kw">class</span>="cm">// ❌ count luôn là 0 — closure capture count tại render đầu tiên</span>
+<span class="kw">function</span> <span class="ty">Counter</span>() {
+  <span class="kw">const</span> [count, setCount] = <span class="fn">useState</span>(<span <span class="kw">class</span>="nu">0</span>);
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="kw">const</span> id = <span class="fn">setInterval</span>(() =&gt; {
+      <span class="fn">setCount</span>(count + <span <span class="kw">class</span>="nu">1</span>);            <span <span class="kw">class</span>="cm">// stale: count đóng băng = 0</span>
+    }, <span <span class="kw">class</span>="nu">1000</span>);
+    <span class="kw">return</span> () =&gt; <span class="fn">clearInterval</span>(id);
+  }, []);                              <span <span class="kw">class</span>="cm">// deps rỗng → effect không chạy lại</span>
+  <span class="kw">return</span> &lt;div&gt;{count}&lt;/div&gt;;
+}
+
+<span <span class="kw">class</span>="cm">// ✅ <span class="ty">Functional</span> updater — không phụ thuộc closure</span>
+<span class="fn">useEffect</span>(() =&gt; {
+  <span class="kw">const</span> id = <span class="fn">setInterval</span>(() =&gt; <span class="fn">setCount</span>(c =&gt; c + <span <span class="kw">class</span>="nu">1</span>), <span <span class="kw">class</span>="nu">1000</span>);
+  <span class="kw">return</span> () =&gt; <span class="fn">clearInterval</span>(id);
+}, []);
+
+<span <span class="kw">class</span>="cm">// ✅ Hoặc dùng useRef để giữ giá trị mới nhất</span>
+<span class="kw">const</span> countRef = <span class="fn">useRef</span>(count);
+<span class="fn">useEffect</span>(() =&gt; { countRef.current = count; });</code></pre></div>
+<h3>4.4. <code>WeakMap</code> để private + cho phép GC</h3>
+<div class="code-wrap"><div class="code-top"><span class="traffic"><i></i><i></i><i></i></span><span class="code-lang">ts</span></div><pre><code><span class="kw">const</span> dom = <span class="kw">new</span> <span class="ty">WeakMap</span>&lt;<span class="ty">HTMLElement</span>, { clicks: <span class="ty">number</span> }&gt;();
+
+<span class="kw">function</span> <span class="fn">track</span>(el: <span class="ty">HTMLElement</span>) {
+  <span class="kw">if</span> (!dom.<span class="fn">has</span>(el)) dom.<span class="fn">set</span>(el, { clicks: <span <span class="kw">class</span>="nu">0</span> });
+  el.<span class="fn">addEventListener</span>(&#x27;click&#x27;, () =&gt; dom.<span class="kw">get</span>(el)!.clicks++);
+}
+<span <span class="kw">class</span>="cm">// <span class="ty">Khi</span> `el` bị remove khỏi <span class="ty">DOM</span> và không còn reference, entry trong <span class="ty">WeakMap</span> tự <span class="ty">GC</span>.</span></code></pre></div>
+<div class="divider"></div>
+<h2 id="5-production-notes-react-implications">⚛️ 5. Production Notes / React Implications</h2>
+<ul><li><strong>Stale closure</strong> = bug #1 với <code>useEffect</code>/<code>useCallback</code>/<code>useMemo</code> khi deps thiếu. Fix: functional updater (<code>setX(prev =&gt; …)</code>), <code>useRef</code>, hoặc thêm vào deps + accept re-run.</li><li><strong><code>useRef.current</code> không trigger render</strong>, nhưng đọc nó luôn cho giá trị mới nhất → công cụ để &quot;vượt qua&quot; stale closure trong subscribe handler.</li><li><strong>Event handler / timer / WebSocket subscriber</strong> dễ giữ component đã unmount sống → leak. Luôn cleanup trong <code>useEffect</code> return.</li><li><strong><code>useCallback</code> thay đổi closure khi deps đổi</strong> → child memo re-render. Đó là tính năng, không phải bug — nhưng nếu deps không stable, <code>useCallback</code> vô dụng.</li><li><strong>Zustand / Jotai / Redux Toolkit</strong> đều dùng closure để giữ store state. Hiểu pattern này giúp viết custom store / selector đúng.</li><li><strong>Tree-shaking</strong>: factory function (closure) thường tree-shake tốt hơn class với side-effect static init.</li><li><strong>SSR safety</strong>: closure-based factory tạo <em>instance per request</em> dễ hơn so với class singleton — tránh state leak giữa request.</li><li><strong>DevTools</strong>: Chrome → Memory → Heap Snapshot → &quot;Retainers&quot; — xem closure nào đang giữ object sống.</li></ul>
+<div class="divider"></div>
+<h2 id="6-common-pitfalls">⚠️ 6. Common Pitfalls</h2>
+<ul><li>❌ <strong>Stale closure trong React</strong>: <code>useEffect(() =&gt; setInterval(...), [])</code> đọc state cũ. Dùng functional updater hoặc <code>useRef</code>.</li><li>❌ <strong>Loop + <code>var</code> + async callback</strong>: closure share cùng binding → cùng giá trị cuối. Dùng <code>let</code> hoặc IIFE.</li><li>❌ <strong>Closure giữ DOM/Array lớn sống lâu hơn cần</strong>: chừng nào callback còn được tham chiếu (event listener, timer), data còn sống. Nhớ <code>removeEventListener</code> / <code>clearTimeout</code>.</li><li>❌ <strong>Return reference của private data</strong>: <code>return users</code> thay vì <code>return [...users]</code> → caller mutate được private state.</li><li>❌ <strong>Tin closure là snapshot</strong>: nó là <em>reference</em>. Outer thay đổi sau khi closure tạo, closure đọc giá trị mới.</li><li>❌ <strong>Lạm dụng closure cho mọi private</strong>: với class hiện đại, <code>#field</code> rõ ràng và type-safe hơn. Closure chỉ thắng khi cần factory/multi-instance không-<code>this</code>.</li><li>❌ <strong><code>JSON.stringify(args)</code> làm cache key</strong> trong memoize-closure: function/Date/circular/<code>undefined</code>/<code>NaN</code> gây sai key.</li><li>❌ <strong><code>useCallback</code> với deps không stable</strong>: tạo closure mới mỗi render → vô tác dụng. Dùng <code>useRef</code> để giữ deps stable.</li><li>⚠️ <strong>Closure trong long-lived listener</strong> (analytics, EventSource): nhớ unsubscribe khi navigation/unmount, không chỉ trông cậy &quot;trang sẽ refresh&quot;.</li></ul>
+<div class="divider"></div>
+<h2 id="7-decision-guide">✅ 7. Decision Guide</h2>
+<p><strong>Khi nào dùng closure cho private state?</strong></p>
+<ul><li>✅ Factory tạo <em>nhiều instance độc lập</em> (store, API client, debouncer).</li><li>✅ Không muốn dính <code>this</code> binding (hook, callback truyền đi xa).</li><li>✅ Tree-shakable utility (no class side-effects).</li></ul>
+<p><strong>Khi nào dùng <code>#field</code> (class private)?</strong></p>
+<ul><li>✅ Có inheritance / nhiều method dùng chung instance state.</li><li>✅ Muốn debugger inspect tự nhiên qua class.</li><li>✅ Type-safe + IDE support tốt hơn.</li></ul>
+<p><strong>Khi nào dùng <code>WeakMap</code>?</strong></p>
+<ul><li>✅ Cần associate data với external object mình không kiểm soát (DOM element).</li><li>✅ Muốn private + auto-GC theo key.</li></ul>
+<p><strong>Checklist trước khi merge:</strong></p>
+<ul class="checklist"><li><label class="check-item"><input type="checkbox"><span>Closure không vô tình giữ DOM/Array lớn sống ngoài vòng đời?</span></label></li><li><label class="check-item"><input type="checkbox"><span>Event listener / timer có <code>remove</code> / <code>clear</code> trong cleanup?</span></label></li><li><label class="check-item"><input type="checkbox"><span>Trong React: hooks không bị stale closure (functional updater / ref / đủ deps)?</span></label></li><li><label class="check-item"><input type="checkbox"><span>Private data return ra ngoài đều là <em>copy</em>, không expose reference gốc?</span></label></li><li><label class="check-item"><input type="checkbox"><span>Loop async callback dùng <code>let</code> / <code>const</code>, không <code>var</code>?</span></label></li><li><label class="check-item"><input type="checkbox"><span>Cân nhắc <code>#field</code> thay closure nếu là class có nhiều method?</span></label></li></ul>
+<p><strong>So sánh nhanh — vì sao closure thắng class/Proxy/global cho store:</strong></p>
+<ul><li>🆚 <strong>Class + <code>this</code></strong>: dễ mất context khi destructure method.</li><li>🆚 <strong>Proxy</strong>: trap overhead + debug khó, không cần thiết cho pub/sub.</li><li>🆚 <strong>Global singleton</strong>: leak state giữa test/SSR, không tạo được multi-instance.</li></ul>
+<div class="divider"></div>
+<h2 id="8-short-interview-answer">💬 8. Short Interview Answer</h2>
+<p>&gt;</p>
+<p>&gt;</p>
+<p>&gt;</p>
+<blockquote class="callout"><p>Em định nghĩa closure là <strong>function cộng với lexical environment</strong> của scope nơi nó được định nghĩa — inner function giữ <em>reference</em> đến biến outer, không phải snapshot. Đó là điểm em hay nhấn vì nó giải thích được luôn cả stale closure trong React.</p><p>Use case em hay dùng nhất là <strong>private state qua factory function</strong> — kiểu Zustand: mỗi lần gọi <code>createStore</code> ra một scope mới, <code>state</code> và <code>listeners</code> private trong closure, ngoài chỉ thấy <code>getState/setState/subscribe</code>. Em thích pattern này hơn class ở 3 điểm: không lo <code>this</code> binding khi destructure, dễ tạo nhiều instance độc lập cho SSR/test, và tree-shake tốt hơn.</p><p>Ngày nay nếu là class có nhiều method dùng chung state, em sẽ chọn <strong><code>#field</code> (ES2022)</strong> thay closure vì true private ở engine level, type-safe hơn, debugger inspect tự nhiên. Còn <code>WeakMap</code> em chỉ dùng khi cần gắn data với external object như DOM element và muốn auto-GC.</p><p>Trap em luôn nhắc team là <strong>stale closure trong hooks</strong> — <code>useEffect</code> với deps rỗng + <code>setInterval</code> đọc <code>count</code> cũ vì closure capture render đầu. Em fix bằng functional updater <code>setCount(c =&gt; c + 1)</code> hoặc <code>useRef</code> để giữ giá trị mới nhất. Và đừng quên cleanup event listener / timer — closure giữ DOM/Array lớn sống là một nguồn leak rất phổ biến.</p></blockquote>
+<div class="divider"></div>
+<p><strong>📌 Ghi nhớ nhanh:</strong></p>
+<ul><li>🔥 <strong>Closure</strong> = function + lexical env; giữ <em>reference</em>, không snapshot.</li><li>🔒 <strong>Privacy hiện đại</strong>: closure (factory) | <code>#field</code> (class) | <code>WeakMap</code> (external object).</li><li>⚛️ <strong>Stale closure</strong>: functional updater / <code>useRef</code> / đủ deps.</li><li>🧹 <strong>Leak</strong>: event listener / timer / huge array trong closure → cleanup.</li><li>🔁 <strong>Loop + var</strong> = share binding → dùng <code>let</code>.</li><li>🏗️ <strong>Zustand pattern</strong>: closure cho state + listeners, multi-instance, SSR-safe.</li></ul></section>
+  </div>
+</main>
+<footer><div class="foot">Template cố định / warm brutalist / mobile-first / topic06-closure-data-privacy.html</div></footer>
+<script>
+const revealObserver=new IntersectionObserver((entries)=>{entries.forEach((entry)=>{if(entry.isIntersecting) entry.target.classList.add('in-view');});},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach((node)=>revealObserver.observe(node));
+const navLinks=[...document.querySelectorAll('.nav-pill')];
+const sections=[...document.querySelectorAll('h2[id]')];
+const activeObserver=new IntersectionObserver((entries)=>{
+  const visible=entries.filter((entry)=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+  if(!visible) return;
+  const id=visible.target.id;
+  navLinks.forEach((link)=>{
+    const active=link.dataset.target===id;
+    link.classList.toggle('active',active);
+    if(active) link.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+  });
+},{threshold:[0.35,0.6],rootMargin:'-64px 0px -45% 0px'});
+sections.forEach((section)=>activeObserver.observe(section));
+const barRoot=document.querySelector('[data-animate-bars]');
+if(barRoot){
+  const barObserver=new IntersectionObserver((entries)=>{entries.forEach((entry)=>{if(entry.isIntersecting){barRoot.querySelectorAll('.bar-fill').forEach((bar)=>bar.style.width=bar.dataset.width||'0%');barObserver.disconnect();}});},{threshold:0.35});
+  barObserver.observe(barRoot);
+}
+</script>
+</body>
+</html>

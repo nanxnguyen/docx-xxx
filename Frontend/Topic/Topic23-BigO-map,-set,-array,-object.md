@@ -526,19 +526,6 @@ result.reverse();
 | Dictionary với untrusted keys | `Map` hoặc `Object.create(null)` | Giảm prototype pollution risk |
 | Metadata gắn với object lifecycle | `WeakMap` | Không giữ object khỏi GC |
 
-### Checklist trước khi tối ưu
-
-```txt
-□ Dữ liệu có đủ lớn hoặc path có đủ nóng không?
-□ Lookup/search có lặp lại nhiều lần không?
-□ Có cần giữ thứ tự render không?
-□ Key là primitive hay object reference?
-□ Có đi qua JSON/API/SSR/localStorage boundary không?
-□ React state update có tạo reference mới không?
-□ Có rủi ro prototype pollution từ user input không?
-□ Có test cho duplicate, missing key, empty list, numeric key không?
-□ Đã đo bằng profiler/benchmark trong context thật chưa?
-```
 
 ## 8. 🗣️ Short Interview Answer
 
