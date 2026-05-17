@@ -1,2541 +1,1192 @@
-# ⚛️ Q48: React 19 Migration Guide - Upgrade từ React 18 sang 19
+# ⚛️ Topic 34: React 19 Migration Guide - Upgrade từ React 18 sang React 19
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## 1. ⭐ Senior/Staff Summary
 
-### **🎯 Câu Trả Lời Ngắn Gọn (4-5 phút):**
+React 19 không chỉ là bản nâng cấp API. Nó thay đổi cách React xử lý **async UI**, **form submission**, **optimistic update**, **ref**, **document metadata**, **resource loading**, **error reporting** và một số API legacy đã bị loại bỏ.
 
-**"React 19 thêm Actions (async transitions), new hooks (useActionState, useOptimistic, use), ref as prop. Breaking: PropTypes removed, createElement → jsx(), StrictMode 2 renders. Migration: npx codemod + manual fixes."**
+Điểm quan trọng khi migrate từ React 18 sang React 19:
 
-**🔑 New Features:**
+- ✅ **Nâng React 18.3 trước** nếu dự án lớn, vì React 18.3 gần giống 18.2 nhưng thêm warning cho các API sẽ lỗi khi lên React 19.
+- ✅ **Chạy official codemod**, sau đó review thủ công. Codemod giúp nhanh, nhưng không thay senior judgment.
+- ✅ **Bật new JSX transform** (`react-jsx` / automatic runtime). React 19 yêu cầu transform mới để hỗ trợ `ref` as prop và tối ưu JSX.
+- ✅ **Kiểm tra legacy API**: `ReactDOM.render`, `ReactDOM.hydrate`, `unmountComponentAtNode`, `findDOMNode`, string refs, legacy context, `react-dom/test-utils`.
+- ✅ **Cập nhật TypeScript types** vì React 19 có thay đổi đáng kể ở `ref`, `useReducer`, JSX namespace và form/action typing.
+- ✅ **Adopt feature mới theo nhu cầu**, không rewrite toàn bộ app: dùng Actions cho mutation/form phức tạp, `useOptimistic` cho UX cần phản hồi tức thì, `use()` chủ yếu khi framework/runtime hỗ trợ Suspense tốt.
 
-**1. ⚡ Actions - Async State Transitions (Chuyển Trạng Thái Bất Đồng Bộ):**
+> 💡 Mental model: **React 19 làm mutation async trở thành first-class citizen**. Trước đây form/mutation thường là `useState + loading + error + try/catch + rollback`; React 19 đưa những pattern này vào core API để UI async nhất quán hơn.
 
-- **🔄 Tự động handle** pending/error states trong async operations (tự động xử lý trạng thái đang tải/lỗi)
-- 💡 `useTransition` + async functions = Actions (kết hợp useTransition với hàm async)
-- 🎯 `useActionState(action, initialState)` - all-in-one hook (thay thế useState + useTransition)
-  - ✅ Tự động quản lý: pending state, error state, form reset
-  - ✅ Progressive enhancement: Form vẫn submit được khi tắt JavaScript
-- 📝 Form Actions: `<form action={serverAction}>` - auto pending/error
-  - 💡 Không cần tự quản lý loading/error state nữa!
+## 2. 🧠 Key Mental Model
 
-**2. 🪝 New Hooks (Hooks Mới):**
+### 2.1. React 18 vs React 19 trong một bảng
 
-- **`useActionState`**: 🔄 Combine useState + useTransition + error handling (gộp 3 hooks thành 1)
+| Mảng | React 18 | React 19 |
+|---|---|---|
+| Form async | Tự quản lý `isLoading`, `error`, submit handler | `<form action>`, `useActionState`, `useFormStatus` |
+| Mutation UX | Tự code optimistic + rollback | `useOptimistic` hỗ trợ state optimistic |
+| Promise trong render | Chủ yếu qua framework/Suspense patterns | `use(promise)` cho Suspense-aware rendering |
+| Ref custom component | Thường cần `forwardRef` | Function component có thể nhận `ref` như prop |
+| Metadata | Thường dùng framework hoặc `react-helmet` | Có thể render `<title>`, `<meta>`, `<link>` trong component |
+| Resource loading | Manual preload/preconnect hoặc framework | `preload`, `preinit`, `preconnect`, `prefetchDNS` từ `react-dom` |
+| Legacy APIs | Nhiều API cũ còn warning | Nhiều API cũ bị remove hoặc deprecated mạnh hơn |
+| Error reporting | Render error có thể bị log/rethrow trùng | Có `onCaughtError`, `onUncaughtError` ở root |
 
-  - 💡 Thay thế: useState + useTransition + manual error handling
-  - ✅ Tự động: pending state, error state, form reset
+### 2.2. Migration đúng cách
 
-- **`useOptimistic`**: ⚡ Optimistic UI updates (cập nhật UI lạc quan)
-
-  - 🎯 Show immediately (hiển thị ngay lập tức) → Better UX
-  - 🔄 Rollback if fail (tự động quay lại nếu lỗi) → Không cần tự code rollback
-
-- **`use(promise)`**: 📥 Read promises/context in render (đọc promise/context trong render)
-  - 💡 Suspense integration (tích hợp với Suspense)
-  - ✅ Có thể gọi conditional (khác useContext phải gọi đầu component)
-
-**3. 🎯 Ref Simplification (Đơn Giản Hóa Ref):**
-
-- **`ref` as regular prop** - không cần `forwardRef` wrapper
-  - ✅ Trước: Phải dùng `forwardRef` để nhận ref
-  - ✅ Giờ: `ref` là prop bình thường như `className`, `onClick`
-- 💻 `<Component ref={myRef} />` works directly (hoạt động trực tiếp)
-  - ✅ Không cần wrap component trong forwardRef
-  - ✅ Code sạch hơn, ít boilerplate
-- 🧹 Cleaner component APIs (API component gọn gàng hơn)
-
-**4. ⏳ Improved Suspense (Cải Thiện Suspense):**
-
-- 🔄 Sibling Suspense boundaries không block nhau (các Suspense cùng cấp không chặn nhau)
-  - ✅ Trước: 1 Suspense loading → block tất cả siblings
-  - ✅ Giờ: Mỗi Suspense độc lập → UX tốt hơn
-- 🛡️ Better error boundaries integration (tích hợp Error Boundary tốt hơn)
-  - ✅ Error handling mượt mà hơn
-  - ✅ Fallback UI hiển thị chính xác hơn
-
-**🔑 Breaking Changes:**
-
-**1. 🗑️ PropTypes Removed (Xóa PropTypes):**
-
-- ⚠️ PropTypes đã bị xóa khỏi React core
-- ✅ Dùng **TypeScript** hoặc **Zod** thay vì
-  - 💡 TypeScript: Type checking tại compile time (tốt hơn runtime)
-  - 💡 Zod: Runtime validation với TypeScript integration
-- 🔧 Codemod tự động: `npx codemod react/19/remove-prop-types`
-  - ✅ Tool tự động xóa PropTypes và migrate sang TypeScript
-
-**2. 🔄 StrictMode Double Render (Render 2 Lần):**
-
-- ⚠️ Luôn render 2 lần trong dev (even production builds)
-  - 💡 Component function chạy 2 lần để detect side effects
-  - ✅ Effects (useEffect) chỉ chạy 1 lần (khác React 18)
-- 🎯 Để detect side effects (phát hiện side effects)
-  - ✅ Giúp tìm bugs sớm hơn
-  - ✅ Không ảnh hưởng performance production (chỉ dev mode)
-
-**3. 🔧 createElement → jsx() (Thay Đổi Nội Bộ):**
-
-- ⚙️ Internal change (thay đổi nội bộ), build tools auto-handle (tự động xử lý)
-  - 💡 React 19 dùng `jsx()` thay vì `createElement()` bên trong
-  - ✅ Build tools (Vite, Webpack) tự động transform
-- 📝 Update Babel/SWC config nếu custom setup (cập nhật nếu có cấu hình tùy chỉnh)
-  - ✅ Babel: `runtime: "automatic"`
-  - ✅ TypeScript: `"jsx": "react-jsx"`
-
-**4. 🔄 Context Changes (Thay Đổi Context):**
-
-- ⚠️ `<Context.Provider>` deprecated → dùng `<Context>` directly
-  - ✅ Trước: `<ThemeContext.Provider value="dark">`
-  - ✅ Giờ: `<ThemeContext value="dark">` (ngắn gọn hơn)
-- ⚠️ `Context.Consumer` deprecated → dùng `useContext` hook
-  - ✅ Trước: `<Context.Consumer>{value => ...}</Context.Consumer>`
-  - ✅ Giờ: `const value = useContext(Context)` (đơn giản hơn)
-
-**⚠️ Lỗi Thường Gặp:**
-
-- Dùng PropTypes → runtime error, migrate sang TypeScript
-- Rely on single render trong StrictMode → side effects leak
-- Forget `use()` chỉ call trong render (không trong conditions/loops)
-- `useOptimistic` không rollback on error → phải manual handle
-
-**💡 Kiến Thức Senior:**
-
-- **Migration strategy**: Codemod → fix errors → incremental adoption (không cần rewrite all)
-- **Server Components**: React 19 stable support (Next.js App Router)
-- **Compiler (React Forget)**: Auto-memoization (experimental, beta 2024)
-- **Actions vs Mutations**: Actions = client transitions, Server Actions = server mutations
-
-**⚡ Quick Summary:**
-
-> React 19 = Actions + useActionState + useOptimistic + ref as prop + no forwardRef. Breaking changes: React.createElement → jsx(), StrictMode 2 renders, PropTypes removed. Migration: npx codemod + manual fixes.
-
-**💡 Ghi Nhớ:**
-
-- 🎯 **Actions**: Async transitions tự động handle pending/error/optimistic updates
-- 🔧 **New Hooks**: useActionState, useOptimistic, use (read promises/context)
-- 🚀 **Ref Simplification**: ref as prop, no forwardRef needed
-- ⚠️ **Breaking**: PropTypes removed, StrictMode double render, createElement → jsx()
-
----
-
-## **1. React 19 - Tính Năng Mới**
-
-### **1.1. Actions - Async State Updates**
-
-**Vấn đề trước đây:**
-
-```typescript
-// ❌ React 18 - Manual pending/error handling (Xử lý thủ công)
-function UpdateName() {
-  const [name, setName] = useState(''); // Tên người dùng
-  const [error, setError] = useState(null); // Lỗi (phải tự quản lý)
-  const [isPending, setIsPending] = useState(false); // Trạng thái loading (phải tự quản lý)
-
-  const handleSubmit = async () => {
-    setIsPending(true); // 👉 Bật loading thủ công
-    setError(null); // 👉 Reset lỗi thủ công
-
-    try {
-      const response = await updateName(name); // Gọi API
-      if (response.error) {
-        setError(response.error); // 👉 Set lỗi thủ công
-      } else {
-        redirect('/success'); // Chuyển trang khi thành công
-      }
-    } catch (err) {
-      setError(err.message); // 👉 Bắt lỗi thủ công
-    } finally {
-      setIsPending(false); // 👉 Tắt loading thủ công
-    }
-  };
-
-  return (
-    <div>
-      <input value={name} onChange={(e) => setName(e.target.value)} />
-      <button onClick={handleSubmit} disabled={isPending}>
-        {isPending ? 'Updating...' : 'Update'}
-      </button>
-      {error && <p className="error">{error}</p>}
-    </div>
-  );
-}
+```text
+React 18.2
+  ↓
+React 18.3 để thấy warning sớm
+  ↓
+Branch migration riêng
+  ↓
+Upgrade react/react-dom/@types
+  ↓
+Run React 19 codemods
+  ↓
+Fix TypeScript + tests + console warnings
+  ↓
+Manual QA: forms, auth, routing, hydration, SSR
+  ↓
+Deploy staging/canary
 ```
 
-**✅ React 19 - Actions tự động:**
+### 2.3. Không nên hiểu React 19 như một yêu cầu rewrite
 
-```typescript
-// ✅ React 19 - useTransition tự động xử lý pending
-function UpdateName() {
-  const [name, setName] = useState(''); // Tên người dùng
-  const [error, setError] = useState(null); // Chỉ cần quản lý lỗi
-  const [isPending, startTransition] = useTransition(); // ⚡ isPending tự động!
+React 19 cho phép code gọn hơn, nhưng migration tốt thường là:
 
-  const handleSubmit = () => {
-    // 🎯 Wrap async function trong startTransition → Tạo Action
-    // 💡 React tự động quản lý isPending state
-    startTransition(async () => {
-      // 🔐 Gọi API update tên
-      const error = await updateName(name);
+- **Phase 1**: làm app chạy ổn trên React 19.
+- **Phase 2**: thay legacy API và fix warning.
+- **Phase 3**: adopt Actions / `useActionState` / `useOptimistic` ở những flow có lợi rõ ràng.
+- **Phase 4**: tối ưu SSR, metadata, resource loading, testing và observability.
 
-      if (error) {
-        // ❌ Có lỗi → set error state
-        setError(error);
-        return;
-      }
+## 3. 📚 Main Concepts
 
-      // ✅ Thành công → chuyển trang
-      redirect('/success');
-    });
-    // ⚡ isPending tự động = true khi bắt đầu, false khi kết thúc!
-    // 💡 Không cần setIsPending(true/false) nữa!
-  };
+### 3.1. ✅ Actions - async transition cho mutation
 
-  return (
-    <div>
-      <input value={name} onChange={(e) => setName(e.target.value)} />
-      <button onClick={handleSubmit} disabled={isPending}>
-        Update
-      </button>
-      {error && <p>{error}</p>}
-    </div>
-  );
-}
+**Actions** là pattern cho async state transition. Một Action thường là async function được gọi trong context mà React hiểu được, ví dụ:
 
-/**
- * ✅ Actions tự động:
- * - Set isPending = true khi bắt đầu
- * - Set isPending = false khi kết thúc
- * - Không cần try/catch cho pending state
- * - Tự động revert optimistic updates khi error
- */
-```
+- `startTransition(async () => { ... })`
+- `<form action={actionFn}>`
+- `useActionState(actionFn, initialState)`
 
----
+React dùng Action để quản lý pending state, optimistic state và thứ tự cập nhật UI tốt hơn.
 
-### **1.2. useActionState - Form Handling**
+#### Trước React 19
 
-```typescript
-// ✅ React 19 - useActionState (thay thế useFormState)
-function ChangeName() {
-  // 🎯 useActionState: All-in-one hook cho form handling
-  // 📦 Returns: [state, action, isPending]
-  // 💡 Thay thế: useState + useTransition + manual error handling
-  const [error, submitAction, isPending] = useActionState(
-    // ⚡ Action function - nhận previousState và formData
-    // 📝 previousState: State trước đó (có thể dùng để update)
-    // 📝 formData: FormData object từ form submit
-    async (previousState, formData) => {
-      // 📥 Lấy giá trị từ form (tự động từ FormData)
-      const name = formData.get('name');
+```tsx
+import { useState } from 'react';
 
-      // 🔐 Gọi API update tên
-      const error = await updateName(name);
-
-      if (error) {
-        // ❌ Return error → error state được cập nhật tự động
-        return error;
-      }
-
-      // ✅ Thành công → chuyển trang
-      redirect('/success');
-
-      // 🧹 Return null → error = null (clear error state)
-      return null;
-    },
-    null // 🎯 Initial state (error ban đầu = null)
-  );
-
-  return (
-    <form action={submitAction}>
-      <input type="text" name="name" />
-      <button type="submit" disabled={isPending}>
-        Update
-      </button>
-      {error && <p>{error}</p>}
-    </form>
-  );
-}
-
-/**
- * ✅ useActionState features:
- * - Wraps async function as Action
- * - Returns [state, action, isPending]
- * - Auto-resets form after success
- * - Supports progressive enhancement (works without JS)
- */
-```
-
-**Form Actions với useFormStatus:**
-
-```typescript
-// Component con có thể đọc form status từ parent form
-import { useFormStatus } from 'react-dom';
-
-function SubmitButton() {
-  // ⚡ useFormStatus: Đọc form status từ parent <form>
-  // 💡 Tự động biết form đang submit hay không (không cần props!)
-  // 🎯 Chỉ dùng được trong component con của <form>
-  const { pending } = useFormStatus(); // pending = true khi form đang submit
-
-  return (
-    <button type="submit" disabled={pending}>
-      {/* 💬 Hiển thị text động dựa trên pending state */}
-      {pending ? 'Đang gửi...' : 'Gửi'}
-    </button>
-  );
-}
-
-// Parent form
-function MyForm() {
-  return (
-    <form action={submitAction}>
-      {' '}
-      {/* submitAction từ useActionState */}
-      <input name="email" placeholder="Email của bạn" />
-      <SubmitButton /> {/* ⚡ Tự động có pending state mà không cần props! */}
-    </form>
-  );
-}
-```
-
----
-
-### **1.3. useOptimistic - Optimistic Updates**
-
-```typescript
-function ChangeName({ currentName, onUpdateName }) {
-  // 🎯 useOptimistic: Optimistic UI updates (cập nhật UI lạc quan)
-  // 📦 Returns: [optimisticState, setOptimisticState]
-  // 💡 optimisticState = giá trị hiển thị ngay (có thể chưa confirm từ server)
-  const [optimisticName, setOptimisticName] = useOptimistic(currentName);
-
-  const submitAction = async (formData) => {
-    // 📥 Lấy tên mới từ form
-    const newName = formData.get('name');
-
-    // ⚡ Set optimistic state NGAY LẬP TỨC (UI update instant!)
-    // 🎯 UI hiển thị "Nguyễn Văn B" ngay lập tức → Better UX!
-    setOptimisticName(newName);
-
-    // 🌐 Call API (mất 2-3 giây...)
-    // ⏳ User thấy UI đã update → không phải đợi
-    const updatedName = await updateName(newName);
-
-    // ✅ Update real state sau khi API thành công
-    onUpdateName(updatedName);
-
-    // 🔄 optimisticName tự động sync với currentName
-    // 💡 Nếu API fail → React tự động revert về currentName
-  };
-
-  return (
-    <form action={submitAction}>
-      <p>Your name is: {optimisticName}</p>
-      <input
-        type="text"
-        name="name"
-        disabled={currentName !== optimisticName}
-      />
-    </form>
-  );
-}
-
-/**
- * 🎯 useOptimistic workflow:
- *
- * 1. User clicks "Update"
- * 2. setOptimisticName('New Name') → UI shows "New Name" ngay
- * 3. API call starts (network delay...)
- * 4. API success → onUpdateName() updates real state
- * 5. optimisticName auto reverts to currentName
- *
- * ❌ Nếu API fails:
- * - React tự động revert optimisticName về currentName
- * - Không cần manual rollback!
- */
-```
-
----
-
-### **1.4. New API: use() - Read Promises & Context**
-
-**Read Promises:**
-
-```typescript
-import { use, Suspense } from 'react';
-
-function Comments({ commentsPromise }) {
-  // 🎯 use(): Đọc promise trong render (tích hợp với Suspense)
-  // ✅ use() suspends cho đến khi promise resolve
-  // 💡 Khác với useEffect: use() chạy trong render, không phải effect
-  const comments = use(commentsPromise);
-
-  // 📊 Flow hoạt động:
-  // 1️⃣ Promise chưa xong → Component "suspend" → Hiển thị fallback từ Suspense
-  // 2️⃣ Promise xong → Component render với data
-  // 3️⃣ Promise reject → Throw error → Error Boundary catch
-
-  return comments.map((comment) => (
-    <p key={comment.id}>{comment.text}</p> // 📝 Render danh sách comments
-  ));
-}
-
-function Page({ commentsPromise }) {
-  return (
-    <Suspense fallback={<div>Đang tải bình luận...</div>}>
-      {' '}
-      {/* Hiển thị khi loading */}
-      <Comments commentsPromise={commentsPromise} /> {/* Pass promise vào */}
-    </Suspense>
-  );
-}
-
-/**
- * ⚠️ IMPORTANT:
- * - Promise PHẢI được tạo BÊN NGOÀI component (cache)
- * - KHÔNG tạo promise trong render:
- *
- * ❌ BAD:
- * const promise = fetch('/api/comments'); // Recreate mỗi render!
- * const data = use(promise);
- *
- * ✅ GOOD:
- * const promise = useMemo(() => fetch('/api/comments'), []);
- * const data = use(promise);
- */
-```
-
-**Read Context conditionally:**
-
-```typescript
-import { use } from 'react';
-import ThemeContext from './ThemeContext';
-
-function Heading({ children }) {
-  // 🚪 Early return (thoát sớm nếu không có children)
-  if (children == null) {
-    return null;
-  }
-
-  // ✅ use() CÓ THỂ gọi sau early return (khác useContext)
-  // 💡 useContext: Phải gọi ở đầu component (Rules of Hooks)
-  // 💡 use(): Linh hoạt hơn - gọi được ở bất cứ đâu trong component
-  const theme = use(ThemeContext); // 📖 Đọc theme từ Context
-
-  // 🎨 Dùng màu từ theme để style
-  return <h1 style={{ color: theme.color }}>{children}</h1>;
-}
-
-/**
- * ❌ useContext KHÔNG được gọi conditional:
- *
- * if (children == null) return null;
- * const theme = useContext(ThemeContext); // ❌ ERROR
- *
- * ✅ use() CÓ THỂ gọi conditional:
- *
- * if (children == null) return null;
- * const theme = use(ThemeContext); // ✅ OK
- */
-```
-
----
-
-### **1.5. ref as Prop - No forwardRef**
-
-**❌ React 18:**
-
-```typescript
-import { forwardRef } from 'react';
-
-const MyInput = forwardRef(({ placeholder }, ref) => {
-  return <input placeholder={placeholder} ref={ref} />;
-});
-
-// Usage
-<MyInput ref={inputRef} placeholder="Enter name" />;
-```
-
-**✅ React 19:**
-
-```typescript
-// ✅ React 19: ref là prop bình thường, không cần forwardRef
-// 💡 Trước: Phải dùng forwardRef wrapper
-// 💡 Giờ: ref là prop như className, onClick...
-function MyInput({ placeholder, ref }) {
-  // 📦 ref giờ là prop như bình thường
-  // 🎯 Không cần forwardRef wrapper nữa!
-  return <input placeholder={placeholder} ref={ref} />; // 🔗 Truyền ref vào input
-}
-
-// 💻 Usage (cách dùng giống React 18)
-<MyInput ref={inputRef} placeholder="Nhập tên" />;
-// ✅ Truyền ref như prop bình thường
-// ✅ Không cần forwardRef wrapper
-
-/**
- * ✅ Advantages:
- * - Đơn giản hơn, less boilerplate
- * - Consistent với các props khác
- * - Tree shaking tốt hơn (không bundle forwardRef nếu không dùng)
- *
- * ⚠️ Migration:
- * - React 19 có codemod tự động: npx codemod react/19/replace-forward-ref
- */
-```
-
-**Ref cleanup:**
-
-```typescript
-// ✅ React 19 - Return cleanup function (Hàm dọn dẹp)
-// 💡 Mới trong React 19: ref callback có thể return cleanup function
-<input
-  ref={(ref) => {
-    // 🎯 Khi component mount → ref callback được gọi với DOM element
-    console.log('Ref được tạo:', ref);
-
-    // 💡 Ví dụ: Thêm event listener, focus input, setup observers...
-    ref?.focus(); // 🎯 Focus vào input khi mount
-
-    // ✅ Return cleanup function (mới trong React 19)
-    // 🧹 Khi component unmount → cleanup function được gọi
-    return () => {
-      console.log('Dọn dẹp ref:', ref);
-      // 💡 Ví dụ: Remove event listener, clear timers, disconnect observers...
-      // ⚠️ Quan trọng: Tránh memory leaks!
-    };
-  }}
-/>
-
-/**
- * Lifecycle:
- * 1. Component mount → ref callback called với DOM element
- * 2. Component unmount → cleanup function called
- *
- * ❌ React 18:
- * - Unmount → ref callback called với null
- * - Không có cleanup function
- */
-```
-
----
-
-### **1.6. Context as Provider**
-
-**❌ React 18:**
-
-```typescript
-const ThemeContext = createContext('light');
-
-function App({ children }) {
-  return <ThemeContext.Provider value="dark">{children}</ThemeContext.Provider>;
-}
-```
-
-**✅ React 19:**
-
-```typescript
-const ThemeContext = createContext('light'); // Default value = 'light'
-
-function App({ children }) {
-  // ✅ React 19: Render <Context> trực tiếp thay vì <Context.Provider>
-  // 💡 Ngắn gọn hơn, dễ đọc hơn
-  return (
-    <ThemeContext value="dark">
-      {/* 🎨 Cung cấp value = 'dark' cho tất cả children */}
-      {children}
-      {/* 📖 Các component con có thể đọc theme = 'dark' bằng useContext */}
-    </ThemeContext>
-    // 📊 So sánh:
-    // ❌ React 18: <ThemeContext.Provider value="dark">
-    // ✅ React 19: <ThemeContext value="dark"> (ngắn gọn hơn)
-  );
-}
-
-/**
- * ⚠️ Migration:
- * - <Context.Provider> vẫn work trong React 19
- * - Sẽ deprecated trong future versions
- * - Codemod: npx codemod react/19/replace-context-provider
- */
-```
-
----
-
-### **1.7. Document Metadata**
-
-**❌ React 18:**
-
-```typescript
-import { Helmet } from 'react-helmet';
-
-function BlogPost({ post }) {
-  return (
-    <>
-      <Helmet>
-        <title>{post.title}</title>
-        <meta name="description" content={post.excerpt} />
-      </Helmet>
-      <article>{post.content}</article>
-    </>
-  );
-}
-```
-
-**✅ React 19:**
-
-```typescript
-// ✅ React 19: Native support - không cần react-helmet
-// 💡 React tự động hoist metadata tags lên <head>
-function BlogPost({ post }) {
-  return (
-    <article>
-      {/* 📄 Metadata tags - React tự động đưa lên <head> */}
-      {/* 🎯 Title hiển thị trên tab browser */}
-      <title>{post.title}</title>
-      {/* 🔍 Mô tả cho SEO (Google, Facebook...) */}
-      <meta name="description" content={post.excerpt} />
-      {/* 🏷️ Keywords cho SEO */}
-      <meta name="keywords" content={post.tags.join(', ')} />
-      {/* 🔗 URL chính thức (tránh duplicate content) */}
-      <link rel="canonical" href={`https://example.com/blog/${post.slug}`} />
-      {/* 📝 Nội dung bài viết */}
-      <h1>{post.title}</h1> {/* Tiêu đề bài viết */}
-      <p>{post.content}</p> {/* Nội dung */}
-    </article>
-  );
-}
-
-/**
- * ✅ React tự động hoist <title>, <meta>, <link> lên <head>
- *
- * 🎯 Works with:
- * - Client-only apps
- * - SSR (Server-Side Rendering)
- * - Server Components
- *
- * ⚠️ Note:
- * - react-helmet vẫn hữu ích cho advanced cases (overriding, precedence)
- */
-```
-
----
-
-### **1.8. Stylesheet Support**
-
-```typescript
-function ComponentA() {
-  return (
-    <div>
-      {/* 📦 Component tự quản lý CSS của mình */}
-      {/* 🎨 CSS theme - precedence="default" (load sau) */}
-      <link rel="stylesheet" href="/styles/theme.css" precedence="default" />
-
-      {/* ⚡ CSS quan trọng - precedence="high" (load trước) */}
-      {/* 💡 Critical CSS load trước → tránh FOUC (Flash of Unstyled Content) */}
-      <link rel="stylesheet" href="/styles/critical.css" precedence="high" />
-
-      <p className="theme-text">Nội dung A</p>
-    </div>
-  );
-}
-
-function ComponentB() {
-  return (
-    <div>
-      {/* 👇 Component khác cũng có CSS riêng */}
-      <link
-        rel="stylesheet"
-        href="/styles/layout.css"
-        precedence="default"
-      /> {/* CSS layout */}
-      <p className="layout-text">Nội dung B</p>
-      {/* ⚡ React tự động de-duplicate nếu cùng href */}
-    </div>
-  );
-}
-
-/**
- * ✅ React handles:
- * - De-duplication (same href chỉ load 1 lần)
- * - Ordering theo precedence (high → default → low)
- * - Suspense integration (wait for CSS load trước khi render)
- *
- * 📊 Precedence order:
- * precedence="high"    → Load trước
- * precedence="default" → Load sau
- * precedence="low"     → Load cuối
- *
- * 🎯 Use cases:
- * - Component-scoped styles
- * - Code splitting styles với components
- * - Avoid FOUC (Flash of Unstyled Content)
- */
-```
-
----
-
-## **2. Breaking Changes & Migration**
-
-### **2.1. Removed: PropTypes**
-
-**❌ React 18:**
-
-```typescript
-import PropTypes from 'prop-types';
-
-function MyComponent({ name, age }) {
-  return (
-    <div>
-      {name} - {age}
-    </div>
-  );
-}
-
-MyComponent.propTypes = {
-  name: PropTypes.string.isRequired,
-  age: PropTypes.number,
-};
-```
-
-**✅ React 19 - Use TypeScript:**
-
-```typescript
-interface MyComponentProps {
-  name: string;
-  age?: number;
-}
-
-function MyComponent({ name, age }: MyComponentProps) {
-  return (
-    <div>
-      {name} - {age}
-    </div>
-  );
-}
-
-/**
- * ⚠️ PropTypes REMOVED trong React 19:
- * - prop-types package vẫn có thể cài riêng
- * - Khuyến nghị: Migrate sang TypeScript
- *
- * 🔧 Migration:
- * npx codemod react/19/remove-prop-types
- */
-```
-
----
-
-### **2.2. StrictMode Double Rendering**
-
-**❌ React 18:**
-
-```typescript
-// StrictMode render 2 lần trong DEV mode
-<React.StrictMode>
-  <App />
-</React.StrictMode>
-
-// Console logs:
-// Render 1
-// Render 2 (duplicate for detecting side effects)
-```
-
-**✅ React 19:**
-
-```typescript
-// StrictMode vẫn render 2 lần NHƯNG:
-// - Chỉ re-run component function, KHÔNG re-run effects
-// - useEffect, useLayoutEffect chỉ chạy 1 lần
-// - Giảm confusion khi debug
-
-<React.StrictMode>
-  <App />
-</React.StrictMode>
-
-/**
- * 🎯 React 19 StrictMode changes:
- *
- * ✅ Render function: 2 lần (same)
- * ✅ useEffect: 1 lần (changed!)
- * ✅ useLayoutEffect: 1 lần (changed!)
- * ✅ useState initializer: 2 lần (same)
- * ✅ useMemo: 2 lần (same)
- */
-```
-
----
-
-### **2.3. React.createElement → jsx()**
-
-**⚠️ Internal Change:**
-
-```typescript
-/**
- * React 19 internally:
- * - createElement() → jsx() runtime
- * - Affects bundler config (Babel, TypeScript)
- *
- * ❌ Old transform (React 17):
- * import React from 'react';
- * React.createElement('div', null, 'Hello');
- *
- * ✅ New transform (React 19):
- * import { jsx } from 'react/jsx-runtime';
- * jsx('div', { children: 'Hello' });
- *
- * 🔧 Migration:
- * - Update tsconfig.json: "jsx": "react-jsx"
- * - Update Babel: @babel/preset-react with runtime: "automatic"
- */
-```
-
-**tsconfig.json:**
-
-```json
-{
-  "compilerOptions": {
-    "jsx": "react-jsx", // ✅ React 19
-    // "jsx": "react",  // ❌ Old (React 17)
-    "target": "ES2015",
-    "module": "ESNext"
-  }
-}
-```
-
-**Babel config:**
-
-```json
-{
-  "presets": [
-    [
-      "@babel/preset-react",
-      {
-        "runtime": "automatic" // ✅ React 19
-      }
-    ]
-  ]
-}
-```
-
----
-
-### **2.4. useDeferredValue Initial Value**
-
-**✅ React 19:**
-
-```typescript
-function Search({ query }) {
-  // ✅ useDeferredValue(value, initialValue)
-  // 👉 Lần render đầu: deferredQuery = '' (initialValue)
-  // 👉 Lần render sau: deferredQuery = query (giá trị thật)
-  const deferredQuery = useDeferredValue(query, ''); // Defer query updates
-
-  return <Results query={deferredQuery} />;
-  {
-    /* Hiển thị kết quả */
-  }
-  // 📊 Timeline:
-  // T0: query = 'React' → deferredQuery = '' → Hiển thị kết quả rỗng ngay
-  // T1: Re-render → deferredQuery = 'React' → Hiển thị kết quả search 'React'
-}
-
-/**
- * 🎯 Workflow:
- *
- * 1. First render:
- *    - deferredQuery = '' (initialValue)
- *    - Shows empty results instantly
- *
- * 2. Background re-render:
- *    - deferredQuery = query (actual value)
- *    - Updates results with real query
- *
- * ✅ Advantages:
- * - Avoid blank screen during initial load
- * - Show placeholder/skeleton immediately
- */
-```
-
----
-
-## **3. Migration Guide - Step by Step**
-
-### **📋 CÁCH 1: Migration Tự Động Bằng Tool (Khuyến Nghị)**
-
-**Bước 1: 💾 Backup code hiện tại**
-
-```bash
-# 📝 Commit tất cả changes trước khi migrate
-# ⚠️ Quan trọng: Backup trước khi thay đổi!
-git add .
-git commit -m "chore: backup before React 19 migration"
-
-# 🌿 Tạo branch mới để migrate (an toàn hơn)
-# 💡 Nếu có lỗi → có thể quay lại main branch
-git checkout -b feature/react-19-migration
-```
-
----
-
-**Bước 2: 🤖 Chạy React 19 Upgrade Script (Official Tool)**
-
-```bash
-# 🎯 CÁCH DỄ NHẤT: Dùng official upgrade script
-# 💡 Tool tự động migrate code → tiết kiệm thời gian!
-npx react-codemod@latest upgrade
-
-# 📋 Tool sẽ hỏi các câu hỏi:
-# ? Which React version are you upgrading to?
-# → Chọn: 19
-
-# ? Select transforms to apply:
-# → Chọn ALL (chọn tất cả để migrate đầy đủ):
-#   ✅ replace-reactdom-render (React 18 → 19)
-#   ✅ replace-forward-ref (Remove forwardRef)
-#   ✅ replace-context-provider (Context.Provider → Context)
-#   ✅ remove-prop-types (Remove PropTypes)
-
-# ? Select files/directories to transform:
-# → Nhập: src (hoặc đường dẫn đến code của bạn)
-# 💡 Có thể chọn: src, apps, libs... (tùy cấu trúc project)
-```
-
-**Output mẫu:**
-
-```bash
-🔍 Scanning files...
-Found 127 files to transform
-
-🔧 Applying transforms...
-✅ replace-reactdom-render: 3 files modified
-✅ replace-forward-ref: 15 files modified
-✅ replace-context-provider: 8 files modified
-✅ remove-prop-types: 42 files modified
-
-📊 Summary:
-- 68 files modified
-- 59 files unchanged
-- 0 errors
-
-⚠️  Please review changes before committing!
-```
-
----
-
-**Bước 3: 📦 Update Dependencies (Cập Nhật Thư Viện)**
-
-```bash
-# 🗑️ Xóa node_modules và package-lock.json
-# 💡 Để đảm bảo cài đặt sạch, không conflict với version cũ
-rm -rf node_modules package-lock.json
-
-# ⚛️ Update React packages lên version 19
-npm install react@19 react-dom@19
-
-# 📝 Update TypeScript types cho React 19
-# 💡 Quan trọng: Phải update types để TypeScript hiểu React 19 APIs
-npm install --save-dev @types/react@19 @types/react-dom@19
-
-# 🧪 Update testing libraries
-# 💡 Đảm bảo testing library tương thích với React 19
-npm install --save-dev @testing-library/react@latest
-
-# 🔄 Reinstall tất cả packages
-# 💡 Cài lại tất cả dependencies với version mới
-npm install
-```
-
----
-
-**Bước 4: Update Config Files**
-
-**tsconfig.json:**
-
-```json
-{
-  "compilerOptions": {
-    "jsx": "react-jsx", // ✅ Bắt buộc cho React 19
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true
-  }
-}
-```
-
-**vite.config.ts (nếu dùng Vite):**
-
-```typescript
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-
-export default defineConfig({
-  plugins: [
-    react({
-      // ✅ React 19 sử dụng automatic JSX runtime
-      jsxRuntime: 'automatic',
-    }),
-  ],
-});
-```
-
-**babel.config.js (nếu dùng Babel):**
-
-```javascript
-module.exports = {
-  presets: [
-    [
-      '@babel/preset-react',
-      {
-        runtime: 'automatic', // ✅ React 19 requirement
-      },
-    ],
-  ],
-};
-```
-
----
-
-**Bước 5: Review Changes Tự Động**
-
-```bash
-# Xem tất cả files đã thay đổi
-git diff
-
-# Một số thay đổi phổ biến:
-```
-
-**forwardRef removed:**
-
-```typescript
-// ❌ BEFORE (React 18):
-const MyInput = forwardRef(({ placeholder }, ref) => {
-  return <input placeholder={placeholder} ref={ref} />;
-});
-
-// ✅ AFTER (React 19 - tự động):
-function MyInput({ placeholder, ref }) {
-  return <input placeholder={placeholder} ref={ref} />;
-}
-```
-
-**Context.Provider simplified:**
-
-```typescript
-// ❌ BEFORE:
-<ThemeContext.Provider value="dark">
-  {children}
-</ThemeContext.Provider>
-
-// ✅ AFTER (tự động):
-<ThemeContext value="dark">
-  {children}
-</ThemeContext>
-```
-
-**PropTypes removed:**
-
-```typescript
-// ❌ BEFORE:
-import PropTypes from 'prop-types';
-MyComponent.propTypes = {
-  name: PropTypes.string,
-};
-
-// ✅ AFTER (tự động xóa):
-// (Nếu có TypeScript, tool giữ nguyên interface)
-```
-
----
-
-**Bước 6: Fix Manual Changes**
-
-```bash
-# Chạy TypeScript check
-npm run tsc --noEmit
-
-# Nếu có lỗi, fix thủ công:
-```
-
-**Common issues:**
-
-```typescript
-// ❌ Error: ref type mismatch
-function MyComponent({ ref, ...props }: Props) {
-  //                    ^^^ Type error
-
-// ✅ Fix: Add ref type
-import { Ref } from 'react';
-
-function MyComponent({ ref, ...props }: Props & { ref?: Ref<HTMLInputElement> }) {
-  return <input ref={ref} {...props} />;
-}
-```
-
----
-
-**Bước 7: Run Tests**
-
-```bash
-# Chạy tất cả tests
-npm test
-
-# Nếu có test fails:
-# - Update snapshots: npm test -- -u
-# - Fix component logic nếu cần
-```
-
----
-
-**Bước 8: Test App Locally**
-
-```bash
-# Start dev server
-npm run dev
-
-# ✅ Checklist test thủ công:
-# - [ ] Forms submit correctly
-# - [ ] Context providers work
-# - [ ] Refs work in custom components
-# - [ ] No console errors
-# - [ ] Performance seems normal
-```
-
----
-
-**Bước 9: Commit Changes**
-
-```bash
-# Review tất cả changes một lần nữa
-git diff
-
-# Add và commit
-git add .
-git commit -m "feat: migrate to React 19
-
-- Run react-codemod upgrade script
-- Update dependencies to React 19
-- Update TypeScript types
-- Update tsconfig.json jsx setting
-- Fix type errors
-- All tests passing"
-
-# Push branch
-git push origin feature/react-19-migration
-```
-
----
-
-**Bước 10: Create PR & Deploy**
-
-```bash
-# Tạo Pull Request trên GitHub/GitLab
-# ✅ PR Checklist:
-# - [ ] All tests passing
-# - [ ] No TypeScript errors
-# - [ ] No console errors in browser
-# - [ ] Reviewed codemod changes
-# - [ ] Updated package.json
-# - [ ] Updated tsconfig.json
-
-# Sau khi PR approved → Merge
-git checkout main
-git merge feature/react-19-migration
-
-# Deploy lên staging trước
-npm run deploy:staging
-
-# Test trên staging → OK → Deploy production
-npm run deploy:production
-```
-
----
-
-### **📋 CÁCH 2: Migration Thủ Công (Không Dùng Tool)**
-
-<details>
-<summary><strong>👉 Click để xem chi tiết (dùng khi tool không work)</strong></summary>
-
-### **3.1. Install React 19**
-
-```bash
-# NPM
-npm install react@19 react-dom@19
-
-# Yarn
-yarn add react@19 react-dom@19
-
-# PNPM
-pnpm add react@19 react-dom@19
-```
-
----
-
-### **3.2. Update TypeScript Types**
-
-```bash
-npm install --save-dev @types/react@19 @types/react-dom@19
-```
-
-**tsconfig.json:**
-
-```json
-{
-  "compilerOptions": {
-    "jsx": "react-jsx", // ✅ Update
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true
-  }
-}
-```
-
----
-
-### **3.3. Run Codemods Riêng Lẻ**
-
-```bash
-# Install codemod CLI
-npx codemod@latest
-
-# Replace forwardRef
-npx codemod react/19/replace-forward-ref
-
-# Replace Context.Provider
-npx codemod react/19/replace-context-provider
-
-# Remove PropTypes
-npx codemod react/19/remove-prop-types
-
-# Replace ReactDOM.render (if not migrated to React 18)
-npx codemod react/19/replace-reactdom-render
-```
-
-**Manual review sau khi chạy codemods:**
-
-```typescript
-// ❌ Codemod có thể tạo code như này:
-function MyComponent({ ref, ...props }) {
-  return <input ref={ref} {...props} />;
-}
-
-// ✅ Review và simplify:
-function MyComponent({ ref, ...props }) {
-  return <input ref={ref} {...props} />;
-}
-```
-
-</details>
-
----
-
-### **3.4. Update Form Handling**
-
-**❌ Old (React 18):**
-
-```typescript
-function ContactForm() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      await submitForm({ name, email });
-      alert('Success!');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input value={name} onChange={(e) => setName(e.target.value)} />
-      <input value={email} onChange={(e) => setEmail(e.target.value)} />
-      <button disabled={loading}>Submit</button>
-      {error && <p>{error}</p>}
-    </form>
-  );
-}
-```
-
-**✅ New (React 19):**
-
-```typescript
-function ContactForm() {
-  // 👉 useActionState tự động quản lý form state
-  const [error, submitAction, isPending] = useActionState(
-    async (prevState, formData) => {
-      // 👇 Lấy data từ form
-      const data = {
-        name: formData.get('name'), // Tên người dùng
-        email: formData.get('email'), // Email người dùng
-      };
-
-      try {
-        await submitForm(data); // Gửi form lên server
-        return null; // ✅ Thành công → error = null
-      } catch (err) {
-        return err.message; // ❌ Lỗi → error = message
-      }
-    },
-    null // Initial error = null
-  );
-
-  return (
-    <form action={submitAction}>
-      {' '}
-      {/* submitAction tự động handle submit */}
-      <input name="name" placeholder="Tên của bạn" />
-      <input name="email" placeholder="Email của bạn" />
-      <button disabled={isPending}>Gửi</button> {/* isPending tự động */}
-      {error && <p className="error">{error}</p>} {/* Hiển thị lỗi nếu có */}
-    </form>
-  );
-}
-
-/**
- * ✅ Benefits:
- * - Less code (no useState for loading/error)
- * - Auto form reset
- * - Progressive enhancement (works without JS)
- * - Better UX với isPending state
- */
-```
-
----
-
-### **3.5. Remove react-helmet (Optional)**
-
-**❌ Old:**
-
-```typescript
-import { Helmet } from 'react-helmet';
-
-function Page() {
-  return (
-    <>
-      <Helmet>
-        <title>My Page</title>
-        <meta name="description" content="..." />
-      </Helmet>
-      <div>Content</div>
-    </>
-  );
-}
-```
-
-**✅ New:**
-
-```typescript
-function Page() {
-  return (
-    <div>
-      <title>My Page</title>
-      <meta name="description" content="..." />
-      <div>Content</div>
-    </div>
-  );
-}
-
-// Uninstall
-npm uninstall react-helmet
-```
-
----
-
-## **4. Performance Optimizations**
-
-### **4.1. Server Components (RSC)**
-
-**✅ React 19 stable support:**
-
-```typescript
-// app/page.tsx (Server Component - Chạy trên server)
-async function BlogPost({ params }) {
-  // ✅ Fetch data TRỰC TIẾP từ DATABASE trên SERVER
-  const post = await db.posts.findById(params.id); // Query database
-  // 👉 Không cần useEffect, không cần useState
-  // 👉 Code này chạy trên server, KHÔNG gửi xuống client
-  // 👉 Client chỉ nhận HTML đã render sẵn
-
-  return (
-    <article>
-      <title>{post.title}</title> {/* SEO-friendly */}
-      <h1>{post.title}</h1> {/* Tiêu đề bài viết */}
-      <p>{post.content}</p> {/* Nội dung bài viết */}
-    </article>
-    // ⚡ HTML này được render sẵn trên server → Tốc độ cực nhanh!
-  );
-}
-
-/**
- * ✅ Benefits:
- * - Zero client JS for data fetching
- * - Direct database access
- * - Faster initial load
- * - SEO-friendly
- *
- * 🎯 Use with:
- * - Next.js 14+ (App Router)
- * - Remix (experimental)
- */
-```
-
----
-
-### **4.2. Preload Resources**
-
-```typescript
-import { preload, preinit, prefetchDNS } from 'react-dom';
-
-function App() {
-  // ✅ Preload font - Tải trước font để tránh chữ nhấp nháy
-  preload('/fonts/roboto.woff2', { as: 'font', type: 'font/woff2' });
-  // 👉 Browser tải font NGAY khi parse HTML (không đợi CSS)
-
-  // ✅ Preinit script - Tải VÀ chạy script ngay lập tức
-  preinit('/analytics.js', { as: 'script' });
-  // 👉 Script được tải + execute sớm nhất có thể
-
-  // ✅ Prefetch DNS - Resolve DNS trước để tiết kiệm thời gian
-  prefetchDNS('https://api.example.com');
-  // 👉 DNS lookup trước → Khi fetch API sẽ nhanh hơn
-
-  return <div>App</div>;
-}
-
-/**
- * ✅ Result HTML:
- * <head>
- *   <link rel="preload" href="/fonts/roboto.woff2" as="font" type="font/woff2" />
- *   <script async src="/analytics.js"></script>
- *   <link rel="dns-prefetch" href="https://api.example.com" />
- * </head>
- *
- * 🎯 Performance gains:
- * - Fonts load earlier (avoid FOIT)
- * - Scripts execute ASAP
- * - DNS resolved trước khi fetch
- */
-```
-
----
-
-### **4.3. Suspense Improvements**
-
-**Pre-warming:**
-
-```typescript
-<Suspense fallback={<Spinner />}>
-  <LazyComponent />
-</Suspense>
-
-/**
- * ✅ React 19 pre-warming:
- * - Khi LazyComponent suspend, React "pre-warms" cây con
- * - Chuẩn bị render trước khi data arrives
- * - Faster transition từ fallback → content
- *
- * 📊 Before (React 18):
- * Data arrives → Start render → Paint (slower)
- *
- * 📊 After (React 19):
- * Data arrives → Already prepared → Paint (faster)
- */
-```
-
----
-
-## **5. Compatibility & Testing**
-
-### **5.1. React 19 + React 18 Libraries**
-
-```typescript
-/**
- * ✅ React 19 backward compatible với React 18 libraries
- *
- * Libraries vẫn work:
- * - react-router-dom v6
- * - redux, zustand
- * - react-query (TanStack Query)
- * - formik, react-hook-form
- * - material-ui, chakra-ui
- *
- * ⚠️ Check compatibility:
- * https://react.dev/blog/2024/04/25/react-19-upgrade-guide#libraries
- */
-```
-
----
-
-### **5.2. Testing Updates**
-
-**React Testing Library:**
-
-```bash
-# Update to latest version
-npm install --save-dev @testing-library/react@latest
-
-# React 19 compatible version: v14+
-```
-
-**Update tests:**
-
-```typescript
-// ✅ React 19 - No changes needed for most tests
-import { render, screen } from '@testing-library/react';
-
-test('renders button', () => {
-  render(<button>Click me</button>);
-  expect(screen.getByRole('button')).toHaveTextContent('Click me');
-});
-
-// ✅ Test Actions
-test('form submission', async () => {
-  const mockSubmit = jest.fn();
-
-  render(<MyForm onSubmit={mockSubmit} />);
-
-  await userEvent.type(screen.getByRole('textbox'), 'John');
-  await userEvent.click(screen.getByRole('button', { name: /submit/i }));
-
-  expect(mockSubmit).toHaveBeenCalledWith({ name: 'John' });
-});
-```
-
----
-
-## **6. Migration Checklist**
-
-```typescript
-/**
- * ✅ MIGRATION CHECKLIST:
- *
- * 📦 Dependencies:
- * - [ ] Update react@19 react-dom@19
- * - [ ] Update @types/react@19 @types/react-dom@19
- * - [ ] Update testing libraries
- *
- * 🔧 Config:
- * - [ ] tsconfig.json: "jsx": "react-jsx"
- * - [ ] Babel: runtime: "automatic"
- * - [ ] ESLint: update react version
- *
- * 🤖 Codemods:
- * - [ ] npx codemod react/19/replace-forward-ref
- * - [ ] npx codemod react/19/replace-context-provider
- * - [ ] npx codemod react/19/remove-prop-types
- *
- * 📝 Manual Updates:
- * - [ ] Replace PropTypes với TypeScript
- * - [ ] Migrate forms sang useActionState
- * - [ ] Update ref callbacks (return cleanup)
- * - [ ] Review StrictMode behavior
- *
- * 🧪 Testing:
- * - [ ] Run test suite
- * - [ ] Test forms với Actions
- * - [ ] Test Suspense boundaries
- * - [ ] Visual regression testing
- *
- * 📊 Performance:
- * - [ ] Add preload() cho critical resources
- * - [ ] Consider Server Components (Next.js 14+)
- * - [ ] Profile với React DevTools Profiler
- */
-```
-
----
-
-## **7. Common Issues & Solutions**
-
-### **Issue 1: forwardRef TypeScript errors**
-
-```typescript
-// ❌ Error: Type 'ForwardRefExoticComponent' is not assignable
-const MyComponent = forwardRef<HTMLInputElement, Props>((props, ref) => {
-  return <input ref={ref} {...props} />;
-});
-
-// ✅ Solution: Remove forwardRef
-function MyComponent({
-  ref,
-  ...props
-}: Props & { ref?: Ref<HTMLInputElement> }) {
-  return <input ref={ref} {...props} />;
-}
-```
-
----
-
-### **Issue 2: StrictMode console spam**
-
-```typescript
-// ❌ React 18: useEffect runs 2 times in DEV
-useEffect(() => {
-  console.log('Effect'); // Logs 2 times
-}, []);
-
-// ✅ React 19: useEffect runs 1 time in DEV
-useEffect(() => {
-  console.log('Effect'); // Logs 1 time
-}, []);
-```
-
----
-
-### **Issue 3: PropTypes removed**
-
-```typescript
-// ❌ Error: Module not found: 'prop-types'
-import PropTypes from 'prop-types';
-
-MyComponent.propTypes = {
-  name: PropTypes.string
-};
-
-// ✅ Solution 1: Install prop-types separately
-npm install prop-types
-
-// ✅ Solution 2: Migrate to TypeScript
-interface Props {
-  name: string;
-}
-
-function MyComponent({ name }: Props) {
-  // ...
-}
-```
-
----
-
-## **8. React 19 + React Query Best Practices**
-
-### **8.1. Tổng Quan: Khi Nào Dùng React Query vs Actions**
-
-```typescript
-/**
- * 🎯 STRATEGY GUIDE:
- *
- * ✅ React Query (TanStack Query) - Dùng khi:
- * - Cần cache management phức tạp (stale time, cache invalidation)
- * - Data fetching với retry logic, polling
- * - Background refetching, prefetching
- * - Sync data across components
- * - Optimistic updates với rollback tự động
- *
- * ✅ React 19 Actions - Dùng khi:
- * - Form submissions đơn giản
- * - Progressive enhancement (no JS support)
- * - Server Actions trong Next.js
- * - Không cần cache phức tạp
- *
- * 🔥 COMBINE CẢ HAI - Best of both worlds:
- * - React Query: Data fetching + caching
- * - Actions: Form handling + optimistic updates
- */
-```
-
----
-
-### **8.2. Pattern 1: useMutation + useActionState**
-
-**❌ Anti-pattern - Duplicate logic:**
-
-```typescript
-// ❌ BAD: Logic bị duplicate giữa React Query và form handling
-function UpdateProfileForm() {
-  const [name, setName] = useState('');
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
-
-  // React Query mutation
-  const mutation = useMutation({
-    mutationFn: updateProfile,
-    onSuccess: () => queryClient.invalidateQueries(['profile']),
+async function updateProfile(name: string) {
+  const response = await fetch('/api/profile', {
+    method: 'POST',
+    body: JSON.stringify({ name }),
   });
 
-  // Manual form handling (duplicate với mutation)
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  if (!response.ok) {
+    throw new Error('Update failed');
+  }
+}
+
+export function ProfileForm() {
+  const [name, setName] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
+
+  async function handleSubmit() {
     setIsPending(true);
     setError(null);
 
     try {
-      await mutation.mutateAsync({ name });
+      await updateProfile(name);
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setIsPending(false);
     }
-  };
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input value={name} onChange={(e) => setName(e.target.value)} />
-      <button disabled={isPending || mutation.isPending}>Update</button>
-      {(error || mutation.error) && <p>{error || mutation.error.message}</p>}
-    </form>
+    <section>
+      <input value={name} onChange={(event) => setName(event.target.value)} />
+      <button disabled={isPending} onClick={handleSubmit}>
+        {isPending ? 'Saving...' : 'Save'}
+      </button>
+      {error && <p role="alert">{error}</p>}
+    </section>
   );
 }
 ```
 
-**✅ Best Practice - Kết hợp useMutation + Actions:**
+#### React 19 với `useTransition`
 
-```typescript
-import { useActionState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+```tsx
+import { useState, useTransition } from 'react';
 
-function UpdateProfileForm() {
-  const queryClient = useQueryClient();
+export function ProfileForm() {
+  const [name, setName] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
-  // 🎯 React Query mutation - Handle cache invalidation
-  const mutation = useMutation({
-    mutationFn: updateProfile,
-    onSuccess: () => {
-      // ✅ Invalidate cache để refetch data mới
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-    },
-  });
-
-  // 🎯 React 19 Action - Handle form state
-  const [error, submitAction, isPending] = useActionState(
-    async (prevState, formData) => {
-      const name = formData.get('name');
+  function handleSubmit() {
+    startTransition(async () => {
+      setError(null);
 
       try {
-        // ⚡ Dùng mutation từ React Query
-        await mutation.mutateAsync({ name });
-        return null; // Success
+        await updateProfile(name);
       } catch (err) {
-        return err.message; // Error
+        setError(err instanceof Error ? err.message : 'Unknown error');
       }
-    },
-    null
-  );
+    });
+  }
 
   return (
-    <form action={submitAction}>
-      <input name="name" required />
-      <button type="submit" disabled={isPending}>
-        {isPending ? 'Đang cập nhật...' : 'Cập nhật'}
+    <section>
+      <input value={name} onChange={(event) => setName(event.target.value)} />
+      <button disabled={isPending} onClick={handleSubmit}>
+        {isPending ? 'Saving...' : 'Save'}
       </button>
-      {error && <p className="error">{error}</p>}
+      {error && <p role="alert">{error}</p>}
+    </section>
+  );
+}
+```
+
+**Điểm cần nhớ:**
+
+- Action không thay thế toàn bộ data library.
+- Action hợp nhất cho mutation/form UX.
+- Với app có cache phức tạp, vẫn cần React Query, SWR, Relay hoặc framework cache.
+
+### 3.2. ✅ `useActionState` - form state + action result + pending
+
+`useActionState` nhận một Action và trả về:
+
+```tsx
+const [state, formAction, isPending] = useActionState(action, initialState);
+```
+
+Nó phù hợp khi form cần:
+
+- pending state
+- validation result
+- error message
+- state trả về từ server/API
+- progressive enhancement khi framework hỗ trợ form action tốt
+
+```tsx
+import { useActionState } from 'react';
+
+type FormState = {
+  ok: boolean;
+  message: string;
+};
+
+async function submitEmail(
+  _previousState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const email = String(formData.get('email') ?? '');
+
+  if (!email.includes('@')) {
+    return { ok: false, message: 'Email không hợp lệ' };
+  }
+
+  const response = await fetch('/api/newsletter', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    return { ok: false, message: 'Không thể đăng ký lúc này' };
+  }
+
+  return { ok: true, message: 'Đã đăng ký thành công' };
+}
+
+export function NewsletterForm() {
+  const [state, action, isPending] = useActionState(submitEmail, {
+    ok: false,
+    message: '',
+  });
+
+  return (
+    <form action={action}>
+      <input name="email" type="email" autoComplete="email" />
+      <button disabled={isPending}>
+        {isPending ? 'Đang gửi...' : 'Đăng ký'}
+      </button>
+      {state.message && (
+        <p role={state.ok ? 'status' : 'alert'}>{state.message}</p>
+      )}
     </form>
   );
 }
-
-/**
- * ✅ Benefits:
- * - React Query: Cache management, invalidation
- * - Actions: Form state management (pending, error)
- * - Không duplicate logic
- * - Progressive enhancement support
- */
 ```
 
----
+> ⚠️ React Canary từng có `useFormState` từ `react-dom`. React 19 dùng `useActionState` từ `react`.
 
-### **8.3. Pattern 2: Optimistic Updates - useOptimistic + React Query**
+### 3.3. ✅ `useFormStatus` - pending state cho submit button con
 
-**✅ Best Practice - Kết hợp useOptimistic với React Query:**
+`useFormStatus` nằm trong `react-dom`, dùng để đọc trạng thái của form cha gần nhất. Nó rất hữu ích khi tách `SubmitButton` thành component riêng.
 
-```typescript
-import { useOptimistic } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+```tsx
+import { useFormStatus } from 'react-dom';
 
-function TodoList() {
-  const queryClient = useQueryClient();
-
-  // 📊 Fetch todos với React Query
-  const { data: todos = [] } = useQuery({
-    queryKey: ['todos'],
-    queryFn: fetchTodos,
-  });
-
-  // 🎯 useOptimistic - React 19 optimistic state
-  const [optimisticTodos, setOptimisticTodos] = useOptimistic(todos);
-
-  // 🔄 React Query mutation
-  const addTodoMutation = useMutation({
-    mutationFn: addTodo,
-    onMutate: async (newTodo) => {
-      // ⚡ Set optimistic state NGAY LẬP TỨC
-      // 💡 UI update instant → Better UX
-      setOptimisticTodos((current) => [...current, { ...newTodo, id: 'temp' }]);
-
-      // 🛡️ Cancel ongoing queries để tránh overwrite
-      await queryClient.cancelQueries({ queryKey: ['todos'] });
-
-      // 📸 Snapshot previous value for rollback
-      const previousTodos = queryClient.getQueryData(['todos']);
-      return { previousTodos };
-    },
-    onError: (err, variables, context) => {
-      // ❌ API failed → React Query tự động rollback
-      // 💡 useOptimistic cũng tự động revert về todos gốc
-      queryClient.setQueryData(['todos'], context.previousTodos);
-    },
-    onSuccess: () => {
-      // ✅ API success → Invalidate để fetch data mới
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
-    },
-  });
-
-  const handleAddTodo = async (formData) => {
-    const text = formData.get('text');
-    await addTodoMutation.mutateAsync({ text });
-  };
+function SubmitButton() {
+  const { pending } = useFormStatus();
 
   return (
-    <div>
-      <form action={handleAddTodo}>
-        <input name="text" placeholder="Thêm todo..." />
-        <button type="submit">Thêm</button>
+    <button disabled={pending} type="submit">
+      {pending ? 'Saving...' : 'Save'}
+    </button>
+  );
+}
+
+export function SettingsForm({ action }: { action: (formData: FormData) => void }) {
+  return (
+    <form action={action}>
+      <input name="displayName" />
+      <SubmitButton />
+    </form>
+  );
+}
+```
+
+**Pitfall phổ biến:** gọi `useFormStatus` ngay trong component render `<form>` sẽ không đọc đúng form đó. Hook này nên nằm ở child component bên trong form.
+
+### 3.4. ✅ `useOptimistic` - optimistic UI có kiểm soát
+
+`useOptimistic` giúp hiển thị state tạm thời trong khi mutation đang chạy.
+
+```tsx
+import { useOptimistic } from 'react';
+
+type Comment = {
+  id: string;
+  text: string;
+  pending?: boolean;
+};
+
+async function createComment(text: string): Promise<Comment> {
+  const response = await fetch('/api/comments', {
+    method: 'POST',
+    body: JSON.stringify({ text }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Cannot create comment');
+  }
+
+  return response.json();
+}
+
+export function CommentList({ comments }: { comments: Comment[] }) {
+  const [optimisticComments, addOptimisticComment] = useOptimistic(
+    comments,
+    (currentComments, text: string) => [
+      { id: crypto.randomUUID(), text, pending: true },
+      ...currentComments,
+    ]
+  );
+
+  async function action(formData: FormData) {
+    const text = String(formData.get('text') ?? '').trim();
+
+    if (!text) return;
+
+    addOptimisticComment(text);
+    await createComment(text);
+  }
+
+  return (
+    <>
+      <form action={action}>
+        <input name="text" />
+        <button type="submit">Comment</button>
       </form>
 
       <ul>
-        {optimisticTodos.map((todo) => (
-          <li
-            key={todo.id}
-            style={{ opacity: todo.id === 'temp' ? 0.5 : 1 }}
-          >
-            {todo.text}
+        {optimisticComments.map((comment) => (
+          <li key={comment.id}>
+            {comment.text}
+            {comment.pending && <small> Đang gửi...</small>}
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 }
-
-/**
- * ✅ Double safety:
- * - useOptimistic: UI rollback tự động
- * - React Query: Cache rollback với onError
- *
- * 🎯 Best of both:
- * - Instant UI feedback
- * - Automatic error recovery
- * - Cache consistency
- */
 ```
 
----
+**Senior note:**
 
-### **8.4. Pattern 3: Server Actions + React Query (Next.js 14+)**
+- Optimistic UI tốt cho like, comment, add-to-cart, toggle trạng thái.
+- Không nên optimistic cho giao dịch tiền, thanh toán, phân quyền, dữ liệu pháp lý.
+- Vẫn cần strategy khi request fail: show error, refetch, rollback hoặc reconcile với server response.
 
-**✅ Server Actions với React Query cache:**
+### 3.5. ✅ `use()` - đọc Promise hoặc Context trong render
 
-```typescript
-// app/actions.ts (Server Action)
-'use server';
+`use()` cho phép component đọc Promise hoặc Context trong render path. Khi đọc Promise chưa resolved, React có thể suspend và để `Suspense` xử lý fallback.
 
-export async function updateUserAction(formData: FormData) {
-  const name = formData.get('name') as string;
-  const user = await db.users.update({ name });
+```tsx
+import { Suspense, use } from 'react';
 
-  // ✅ Revalidate Next.js cache
-  revalidatePath('/profile');
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+};
 
-  return user;
-}
-
-// app/profile/page.tsx (Client Component)
-'use client';
-
-import { useActionState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { updateUserAction } from './actions';
-
-function ProfileForm({ initialData }) {
-  const queryClient = useQueryClient();
-
-  const [error, submitAction, isPending] = useActionState(
-    async (prevState, formData) => {
-      try {
-        // 🔐 Call Server Action
-        const updatedUser = await updateUserAction(formData);
-
-        // ✅ Update React Query cache
-        queryClient.setQueryData(['user'], updatedUser);
-
-        return null;
-      } catch (err) {
-        return err.message;
-      }
-    },
-    null
-  );
+function ProductDetails({ productPromise }: { productPromise: Promise<Product> }) {
+  const product = use(productPromise);
 
   return (
-    <form action={submitAction}>
-      <input name="name" defaultValue={initialData.name} />
-      <button disabled={isPending}>Cập nhật</button>
-      {error && <p>{error}</p>}
-    </form>
+    <article>
+      <h2>{product.name}</h2>
+      <p>{product.price.toLocaleString('vi-VN')}đ</p>
+    </article>
   );
 }
 
-/**
- * 🎯 Workflow:
- * 1. User submits form → Server Action executes
- * 2. revalidatePath() → Next.js cache cleared
- * 3. setQueryData() → React Query cache updated
- * 4. UI rerenders với data mới
- *
- * ✅ Benefits:
- * - Type-safe server mutations
- * - Zero client JS for data fetching
- * - React Query cache sync
- */
-```
-
----
-
-### **8.5. Pattern 4: Prefetching với use() + React Query**
-
-**✅ Streaming data với use() và React Query:**
-
-```typescript
-import { use, Suspense } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
-// 🎯 Component đọc promise với use()
-function UserProfile({ userPromise }) {
-  // ⚡ use() suspends component cho đến khi promise resolve
-  const userData = use(userPromise);
-
-  // 📊 React Query caching cho subsequent requests
-  const { data: posts } = useQuery({
-    queryKey: ['posts', userData.id],
-    queryFn: () => fetchUserPosts(userData.id),
-    // ✅ initialData từ use() để avoid loading state
-    initialData: userData.posts,
-  });
-
+export function ProductPage({ productPromise }: { productPromise: Promise<Product> }) {
   return (
-    <div>
-      <h1>{userData.name}</h1>
-      <ul>
-        {posts.map((post) => (
-          <li key={post.id}>{post.title}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-// Parent component
-function ProfilePage({ userId }) {
-  // 🚀 Prefetch user data (start fetching ASAP)
-  const userPromise = useMemo(
-    () => fetchUser(userId), // Promise được tạo 1 lần
-    [userId]
-  );
-
-  return (
-    <Suspense fallback={<ProfileSkeleton />}>
-      <UserProfile userPromise={userPromise} />
+    <Suspense fallback={<p>Đang tải sản phẩm...</p>}>
+      <ProductDetails productPromise={productPromise} />
     </Suspense>
   );
 }
-
-/**
- * ✅ Benefits:
- * - Prefetching starts before component renders
- * - React Query cache subsequent requests
- * - Suspense integration for loading states
- * - Faster perceived performance
- *
- * 🎯 Use case:
- * - Route transitions (prefetch next page data)
- * - Hover prefetching (preload on hover)
- * - Parallel data fetching
- */
 ```
 
----
+Khác với Hooks thông thường, `use()` có thể được gọi trong điều kiện hoặc vòng lặp. Tuy nhiên, nó vẫn phải nằm trong render của component/hook và cần hiểu rõ Suspense behavior.
 
-### **8.6. Pattern 5: Background Sync với React Query**
+```tsx
+import { createContext, use } from 'react';
 
-**✅ Infinite stale time + background refetch:**
+const ThemeContext = createContext<'light' | 'dark'>('light');
 
-```typescript
-import { useQuery } from '@tanstack/react-query';
+function Label({ compact }: { compact: boolean }) {
+  if (compact) {
+    return <span>Compact</span>;
+  }
 
-function UserDashboard() {
-  // 🎯 React Query với background sync
-  const { data: user } = useQuery({
-    queryKey: ['user'],
-    queryFn: fetchUser,
+  const theme = use(ThemeContext);
+  return <span data-theme={theme}>Full label</span>;
+}
+```
 
-    // ⚡ Cache settings
-    staleTime: 5 * 60 * 1000, // 5 phút - Data fresh trong 5 phút
-    gcTime: 10 * 60 * 1000, // 10 phút - Cache memory retention
+### 3.6. ✅ `ref` as prop - giảm phụ thuộc vào `forwardRef`
 
-    // 🔄 Background refetch
-    refetchOnWindowFocus: true, // Refetch khi user quay lại tab
-    refetchInterval: 60 * 1000, // Poll every 1 minute
+Trong React 19, function component có thể nhận `ref` như prop.
 
-    // ✅ Optimistic updates
-    placeholderData: (previousData) => previousData, // Giữ old data khi refetch
-  });
+```tsx
+import type { ComponentProps, Ref } from 'react';
 
-  // 🎯 Mutation với optimistic update
-  const mutation = useMutation({
-    mutationFn: updateUser,
-    onMutate: async (newData) => {
-      // Cancel ongoing queries
-      await queryClient.cancelQueries({ queryKey: ['user'] });
+type InputProps = ComponentProps<'input'> & {
+  ref?: Ref<HTMLInputElement>;
+};
 
-      // Snapshot previous
-      const previous = queryClient.getQueryData(['user']);
+function TextInput({ ref, ...props }: InputProps) {
+  return <input ref={ref} {...props} />;
+}
+```
 
-      // ⚡ Optimistically update
-      queryClient.setQueryData(['user'], (old) => ({ ...old, ...newData }));
+Trước React 19:
 
-      return { previous };
-    },
-    onError: (err, variables, context) => {
-      // Rollback on error
-      queryClient.setQueryData(['user'], context.previous);
-    },
-    onSettled: () => {
-      // Always refetch after mutation
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-    },
-  });
+```tsx
+import { forwardRef } from 'react';
 
+const TextInput = forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
+  function TextInput(props, ref) {
+    return <input ref={ref} {...props} />;
+  }
+);
+```
+
+**Migration note:**
+
+- Component mới có thể dùng `ref` prop.
+- Không cần migrate mọi `forwardRef` ngay lập tức nếu code đang ổn.
+- `forwardRef` chưa phải lúc nào cũng biến mất khỏi ecosystem, vì library types và backward compatibility cần thời gian.
+- `element.ref` bị deprecated; dùng `element.props.ref`.
+
+### 3.7. ✅ Context as provider
+
+React 19 cho phép render context object trực tiếp như provider:
+
+```tsx
+import { createContext, useContext } from 'react';
+
+const AuthContext = createContext<{ userId: string | null }>({ userId: null });
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  return <AuthContext value={{ userId: 'u_123' }}>{children}</AuthContext>;
+}
+
+export function UserBadge() {
+  const auth = useContext(AuthContext);
+  return <span>{auth.userId ?? 'Guest'}</span>;
+}
+```
+
+Cách cũ vẫn quen thuộc:
+
+```tsx
+return (
+  <AuthContext.Provider value={{ userId: 'u_123' }}>
+    {children}
+  </AuthContext.Provider>
+);
+```
+
+**Production note:** migration này nên làm bằng codemod hoặc từng vùng code. Đừng trộn quá nhiều style trong cùng một module nếu team chưa thống nhất convention.
+
+### 3.8. ✅ Document Metadata
+
+React 19 hỗ trợ render metadata trong component và tự hoist vào `<head>`:
+
+```tsx
+type BlogPost = {
+  title: string;
+  description: string;
+  tags: string[];
+};
+
+export function BlogPostPage({ post }: { post: BlogPost }) {
   return (
-    <div>
-      <h1>{user?.name}</h1>
-      {/* Form với React 19 Actions */}
-      <UpdateForm mutation={mutation} />
-    </div>
+    <article>
+      <title>{post.title}</title>
+      <meta name="description" content={post.description} />
+      <meta name="keywords" content={post.tags.join(',')} />
+
+      <h1>{post.title}</h1>
+      <p>{post.description}</p>
+    </article>
   );
 }
-
-/**
- * ✅ Best practices:
- * - staleTime = 5 min → Reduce unnecessary requests
- * - refetchOnWindowFocus → Always fresh when user returns
- * - placeholderData → Prevent UI flicker
- * - Optimistic updates → Instant feedback
- */
 ```
 
----
+Điều này hữu ích cho client-only app, streaming SSR và Server Components. Tuy nhiên:
 
-### **8.7. Pattern 6: Error Handling - Error Boundary + React Query**
+- Framework như Next.js vẫn có metadata API riêng mạnh hơn cho route-based metadata.
+- App lớn vẫn cần policy về title override, canonical URL, Open Graph, robots, i18n SEO.
+- Không nên thay toàn bộ metadata solution nếu framework hiện tại đã quản lý tốt.
 
-**✅ Centralized error handling:**
+### 3.9. ✅ Stylesheets, async scripts và resource preloading
 
-```typescript
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
-import { ErrorBoundary } from 'react-error-boundary';
+React 19 hỗ trợ tốt hơn cho tài nguyên nằm sâu trong component tree.
 
-function App() {
+```tsx
+export function ChartWidget() {
   return (
-    <QueryErrorResetBoundary>
-      {({ reset }) => (
-        <ErrorBoundary
-          onReset={reset}
-          fallbackRender={({ error, resetErrorBoundary }) => (
-            <div>
-              <h1>Có lỗi xảy ra!</h1>
-              <p>{error.message}</p>
-              <button onClick={resetErrorBoundary}>Thử lại</button>
-            </div>
-          )}
-        >
-          <Dashboard />
-        </ErrorBoundary>
-      )}
-    </QueryErrorResetBoundary>
+    <section>
+      <link rel="stylesheet" href="/charts.css" precedence="default" />
+      <h2>Revenue</h2>
+      <div id="chart" />
+    </section>
   );
 }
-
-// Component với use() + error handling
-function Dashboard() {
-  const { data, error, isError } = useQuery({
-    queryKey: ['dashboard'],
-    queryFn: fetchDashboard,
-    // ⚡ Throw errors to Error Boundary
-    throwOnError: true,
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-  });
-
-  if (isError) throw error; // Throw to ErrorBoundary
-
-  return <div>{/* Dashboard UI */}</div>;
-}
-
-/**
- * ✅ Benefits:
- * - Centralized error UI
- * - Reset button clears React Query errors
- * - Automatic retry with exponential backoff
- * - Works with Suspense + use()
- */
 ```
 
----
+Async script có thể được render ở nơi component cần, React sẽ deduplicate:
 
-### **8.8. Migration Guide: React Query v4 → v5 + React 19**
+```tsx
+export function PaymentWidget() {
+  return (
+    <section>
+      <script async src="https://example.com/payment-sdk.js" />
+      <button>Pay</button>
+    </section>
+  );
+}
+```
 
-**Step-by-step migration:**
+Resource hint APIs từ `react-dom`:
+
+```tsx
+import { preconnect, prefetchDNS, preinit, preload } from 'react-dom';
+
+export function ProductPageShell() {
+  preconnect('https://cdn.example.com');
+  prefetchDNS('https://analytics.example.com');
+  preload('/fonts/inter.woff2', { as: 'font' });
+  preinit('/checkout.js', { as: 'script' });
+
+  return <main>...</main>;
+}
+```
+
+**Khi dùng:**
+
+- `preconnect`: cần kết nối sớm tới origin quan trọng.
+- `prefetchDNS`: chỉ resolve DNS, nhẹ hơn `preconnect`.
+- `preload`: resource cần sớm trong current navigation.
+- `preinit`: script/style cần load và init sớm.
+
+### 3.10. ✅ Improved Suspense và hydration tolerance
+
+React 19 cải thiện behavior quanh Suspense, hydration và third-party scripts/extensions:
+
+- Hydration ít bị ảnh hưởng hơn bởi tag bất ngờ trong `<head>` hoặc `<body>` do extension/script chèn vào.
+- Error reporting bớt trùng lặp hơn.
+- Stylesheets có thể phối hợp tốt hơn với Suspense/streaming để tránh reveal UI trước khi CSS cần thiết load xong.
+
+Điều này không có nghĩa là bỏ qua hydration mismatch. Các lỗi sau vẫn cần fix:
+
+- render `Date.now()` hoặc `Math.random()` trực tiếp trong SSR markup
+- đọc `localStorage` trong render server/client không nhất quán
+- format locale/timezone khác nhau server và client
+- branch theo `window` trong render path
+
+### 3.11. ⚠️ Breaking changes quan trọng
+
+| Breaking change | Trước đây | React 19 | Cách xử lý |
+|---|---|---|---|
+| New JSX Transform required | Có thể dùng classic transform | React 19 yêu cầu transform mới cho feature/tối ưu mới | `tsconfig.jsx = react-jsx`, Babel/SWC automatic runtime |
+| Render errors | Có thể rethrow/log trùng | Không rethrow như trước; root có error callbacks | Cập nhật monitoring |
+| Function `propTypes` | Runtime check trong dev | Bị ignore cho function component | Dùng TypeScript/Zod |
+| Function `defaultProps` | Hoạt động | Bị remove cho function component | Dùng default parameters |
+| Legacy context | `contextTypes`, `getChildContext` | Removed | Dùng `createContext` |
+| String refs | `"myRef"` | Removed | Dùng callback ref hoặc `createRef` |
+| Module pattern factories | Return object có `render` | Removed | Dùng function component |
+| `React.createFactory` | Tạo element factory | Removed | Dùng JSX |
+| `react-dom/test-utils` | Nhiều helper cũ | Removed, chỉ còn hướng migrate `act` | Import `act` từ `react`, dùng Testing Library |
+| `ReactDOM.render` | Legacy root | Removed | `createRoot` |
+| `ReactDOM.hydrate` | Legacy hydrate | Removed | `hydrateRoot` |
+| `unmountComponentAtNode` | Unmount root cũ | Removed | `root.unmount()` |
+| `findDOMNode` | Escape hatch DOM | Removed | Dùng explicit ref |
+| UMD builds | Có thể load UMD script | Removed | Dùng ESM CDN hoặc bundler |
+| `react-test-renderer` | Snapshot/render tree tests | Deprecated | Prefer React Testing Library |
+
+### 3.12. TypeScript changes cần để ý
+
+#### `useReducer` typing
+
+React 19 cải thiện inference cho `useReducer`, nhưng cách truyền generic cũ có thể lỗi.
+
+```tsx
+import { useReducer } from 'react';
+
+type State = { count: number };
+type Action = { type: 'increment' } | { type: 'decrement' };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+  }
+}
+
+export function Counter() {
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+  return (
+    <button onClick={() => dispatch({ type: 'increment' })}>
+      {state.count}
+    </button>
+  );
+}
+```
+
+#### JSX namespace
+
+Nếu project/library khai báo global `JSX` types, cần kiểm tra lại vì React 19 có thay đổi về typing quanh JSX namespace. Library nội bộ nên chạy TypeScript check kỹ sau khi upgrade `@types/react`.
+
+### 3.13. React Server Components và Server Actions
+
+React 19 ổn định phần React Server Components dành cho framework/library, nhưng app không tự nhiên có RSC chỉ vì nâng React.
+
+| Khái niệm | Ý nghĩa |
+|---|---|
+| Server Components | Component render trước ở môi trường server/build, không ship JS client không cần thiết |
+| Server Actions | Async function chạy ở server và có thể được gọi từ client qua framework hỗ trợ |
+| `"use server"` | Directive cho Server Action, không phải marker cho Server Component |
+| `"use client"` | Directive của framework để đánh dấu boundary client component |
+
+**Senior note:** Nếu dùng Next.js App Router, React 19 feature sẽ đi cùng framework constraints. Nếu dùng Vite SPA thuần, bạn vẫn có Actions/form hooks client-side, nhưng không tự có Server Actions/RSC như full-stack framework.
+
+### 3.14. React Compiler không phải “mặc định có trong React 19”
+
+React Compiler là hướng tối ưu tự động memoization, nhưng không nên xem nó là phần migration mặc định của React 19 app.
+
+Khi phỏng vấn hoặc review migration, nói rõ:
+
+- React 19 cung cấp API/runtime mới.
+- React Compiler là tool/compiler riêng, cần cấu hình và maturity check.
+- Không dùng compiler để che lỗi render architecture, state quá rộng hoặc component boundary sai.
+
+## 4. 💻 Practical TypeScript/JavaScript Examples
+
+### 4.1. Install và codemod
 
 ```bash
-# 1. Update dependencies
-npm install @tanstack/react-query@latest react@19 react-dom@19
+# Khuyến nghị cho dự án lớn: nâng lên React 18.3 trước để thấy warning migration.
+npm install --save-exact react@18.3.1 react-dom@18.3.1
 
-# 2. Update TypeScript types
-npm install --save-dev @types/react@19 @types/react-dom@19
+# Sau khi xử lý warning chính, nâng lên React 19.
+npm install --save-exact react@^19.0.0 react-dom@^19.0.0
+npm install --save-dev --save-exact @types/react@^19.0.0 @types/react-dom@^19.0.0
+
+# Chạy recipe migration chính thức.
+npx codemod@latest react/19/migration-recipe
 ```
 
-**Breaking changes:**
+Codemod recipe thường bao gồm:
 
-```typescript
-// ❌ React Query v4
-import { useQuery } from 'react-query';
+- `replace-reactdom-render`
+- `replace-string-ref`
+- `replace-act-import`
+- `replace-use-form-state`
+- `prop-types-typescript`
 
-const { data } = useQuery('todos', fetchTodos, {
-  cacheTime: 5 * 60 * 1000,
-});
+> ⚠️ Official recipe không bao phủ mọi TypeScript edge case. Sau codemod vẫn phải chạy `tsc`, tests và QA thủ công.
 
-// ✅ React Query v5 + React 19
-import { useQuery } from '@tanstack/react-query';
+### 4.2. Update JSX transform
 
-const { data } = useQuery({
-  queryKey: ['todos'], // ⚠️ Must be array
-  queryFn: fetchTodos,
-  gcTime: 5 * 60 * 1000, // ⚠️ cacheTime → gcTime
-});
+`tsconfig.json`:
 
-/**
- * 🔧 v5 Breaking changes:
- * - cacheTime → gcTime
- * - Query keys must be arrays
- * - Package name: react-query → @tanstack/react-query
- * - onSuccess/onError removed from useQuery (use onSettled)
- */
+```json
+{
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
+}
 ```
 
----
+Babel:
 
-### **8.9. Performance Checklist**
-
-```typescript
-/**
- * ✅ REACT 19 + REACT QUERY PERFORMANCE CHECKLIST:
- *
- * 📊 Data Fetching:
- * - [ ] Use staleTime để reduce unnecessary requests (5-10 min default)
- * - [ ] Enable refetchOnWindowFocus cho real-time data
- * - [ ] Use placeholderData để prevent UI flicker
- * - [ ] Prefetch với use() cho faster page loads
- *
- * 🚀 Mutations:
- * - [ ] Optimistic updates với useOptimistic + React Query
- * - [ ] Cancel ongoing queries trong onMutate
- * - [ ] Invalidate queries sau mutation success
- * - [ ] Rollback on error với onError
- *
- * 💾 Caching:
- * - [ ] Set appropriate gcTime (10 min default)
- * - [ ] Use queryClient.setQueryData cho manual cache updates
- * - [ ] Prefetch critical data với queryClient.prefetchQuery
- * - [ ] Remove unused cache với queryClient.removeQueries
- *
- * 🎯 Forms:
- * - [ ] Use useActionState cho form handling
- * - [ ] Combine với useMutation cho cache management
- * - [ ] Progressive enhancement với Server Actions
- * - [ ] Form validation trước khi call mutation
- *
- * 🛡️ Error Handling:
- * - [ ] Error Boundary + QueryErrorResetBoundary
- * - [ ] Retry logic với exponential backoff
- * - [ ] Toast notifications cho user feedback
- * - [ ] Log errors sang monitoring service (Sentry)
- *
- * 📈 Monitoring:
- * - [ ] React Query DevTools trong development
- * - [ ] Track mutation success/error rates
- * - [ ] Monitor cache hit rates
- * - [ ] Profile với React DevTools Profiler
- */
+```json
+{
+  "presets": [
+    ["@babel/preset-react", { "runtime": "automatic" }]
+  ]
+}
 ```
 
----
+### 4.3. `ReactDOM.render` sang `createRoot`
 
-### **8.10. Common Anti-Patterns to Avoid**
+```tsx
+// Before
+import { render } from 'react-dom';
+import { App } from './App';
 
-```typescript
-// ❌ ANTI-PATTERN 1: Creating promises in render
-function BadComponent() {
-  // ❌ Promise recreated every render!
-  const data = use(fetch('/api/data'));
-  return <div>{data}</div>;
+render(<App />, document.getElementById('root'));
+```
+
+```tsx
+// After
+import { createRoot } from 'react-dom/client';
+import { App } from './App';
+
+const container = document.getElementById('root');
+
+if (!container) {
+  throw new Error('Root container not found');
 }
 
-// ✅ CORRECT: Memoize promise
-function GoodComponent() {
-  const promise = useMemo(() => fetch('/api/data'), []);
-  const data = use(promise);
-  return <div>{data}</div>;
+createRoot(container).render(<App />);
+```
+
+### 4.4. `hydrate` sang `hydrateRoot`
+
+```tsx
+import { hydrateRoot } from 'react-dom/client';
+import { App } from './App';
+
+const container = document.getElementById('root');
+
+if (!container) {
+  throw new Error('Root container not found');
 }
 
-// ❌ ANTI-PATTERN 2: Duplicate state management
-function BadForm() {
-  const [data, setData] = useState(null);
-  const { data: queryData } = useQuery(['data'], fetchData);
+hydrateRoot(container, <App />);
+```
 
-  // ❌ Duplicate state!
-  useEffect(() => {
-    setData(queryData);
-  }, [queryData]);
-}
+### 4.5. Root error callbacks cho monitoring
 
-// ✅ CORRECT: Single source of truth
-function GoodForm() {
-  // ✅ React Query as single source
-  const { data } = useQuery({ queryKey: ['data'], queryFn: fetchData });
-  return <div>{data}</div>;
-}
+```tsx
+import { createRoot } from 'react-dom/client';
+import { App } from './App';
+import { reportError } from './observability';
 
-// ❌ ANTI-PATTERN 3: Not canceling queries before optimistic update
-const mutation = useMutation({
-  mutationFn: updateTodo,
-  onMutate: async (newTodo) => {
-    // ❌ Missing cancelQueries → race condition!
-    queryClient.setQueryData(['todos'], (old) => [...old, newTodo]);
+createRoot(document.getElementById('root')!, {
+  onCaughtError(error, errorInfo) {
+    reportError(error, {
+      type: 'react-caught-error',
+      componentStack: errorInfo.componentStack,
+    });
   },
-});
-
-// ✅ CORRECT: Cancel queries first
-const mutation = useMutation({
-  mutationFn: updateTodo,
-  onMutate: async (newTodo) => {
-    // ✅ Cancel ongoing queries
-    await queryClient.cancelQueries({ queryKey: ['todos'] });
-    const previous = queryClient.getQueryData(['todos']);
-    queryClient.setQueryData(['todos'], (old) => [...old, newTodo]);
-    return { previous };
+  onUncaughtError(error, errorInfo) {
+    reportError(error, {
+      type: 'react-uncaught-error',
+      componentStack: errorInfo.componentStack,
+    });
   },
-});
-
-/**
- * ⚠️ Common mistakes:
- * - Not memoizing promises with use()
- * - Duplicate state (React Query + useState)
- * - Missing cancelQueries → race conditions
- * - Not handling rollback on error
- * - Fetching in useEffect instead of React Query
- */
+}).render(<App />);
 ```
 
----
+### 4.6. `defaultProps` sang default parameter
 
-### **8.11. Real-World Example: E-commerce Cart**
+```tsx
+// Before
+type ButtonProps = {
+  variant?: 'primary' | 'secondary';
+};
 
-```typescript
-import { useActionState, useOptimistic } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+function Button({ variant }: ButtonProps) {
+  return <button data-variant={variant}>Save</button>;
+}
 
-function ShoppingCart() {
+Button.defaultProps = {
+  variant: 'primary',
+};
+```
+
+```tsx
+// After
+type ButtonProps = {
+  variant?: 'primary' | 'secondary';
+};
+
+function Button({ variant = 'primary' }: ButtonProps) {
+  return <button data-variant={variant}>Save</button>;
+}
+```
+
+### 4.7. `findDOMNode` sang explicit ref
+
+```tsx
+// Before
+import { findDOMNode } from 'react-dom';
+
+class LegacyInput extends React.Component {
+  focus() {
+    const node = findDOMNode(this) as HTMLInputElement | null;
+    node?.focus();
+  }
+
+  render() {
+    return <input />;
+  }
+}
+```
+
+```tsx
+// After
+import { createRef } from 'react';
+
+class LegacyInput extends React.Component {
+  private inputRef = createRef<HTMLInputElement>();
+
+  focus() {
+    this.inputRef.current?.focus();
+  }
+
+  render() {
+    return <input ref={this.inputRef} />;
+  }
+}
+```
+
+### 4.8. React Query + React 19 Actions
+
+React Query vẫn mạnh cho server-state cache, retry, invalidation, pagination, background refetch. React 19 Actions mạnh cho form/mutation UX. Hai thứ có thể phối hợp.
+
+```tsx
+import { useActionState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+
+type ActionState = {
+  ok: boolean;
+  message: string;
+};
+
+export function RenameProjectForm({ projectId }: { projectId: string }) {
   const queryClient = useQueryClient();
 
-  // 📊 Fetch cart data
-  const { data: cart = [] } = useQuery({
-    queryKey: ['cart'],
-    queryFn: fetchCart,
-    staleTime: 2 * 60 * 1000, // 2 minutes
-  });
+  const [state, action, isPending] = useActionState(
+    async (_previousState: ActionState, formData: FormData) => {
+      const name = String(formData.get('name') ?? '').trim();
 
-  // 🎯 Optimistic cart state
-  const [optimisticCart, setOptimisticCart] = useOptimistic(cart);
-
-  // ➕ Add to cart mutation
-  const addMutation = useMutation({
-    mutationFn: addToCart,
-    onMutate: async (item) => {
-      // ⚡ Optimistic update
-      setOptimisticCart((current) => [...current, item]);
-
-      await queryClient.cancelQueries({ queryKey: ['cart'] });
-      const previous = queryClient.getQueryData(['cart']);
-
-      queryClient.setQueryData(['cart'], (old = []) => [...old, item]);
-
-      return { previous };
-    },
-    onError: (err, item, context) => {
-      // ❌ Rollback
-      queryClient.setQueryData(['cart'], context.previous);
-      toast.error('Không thể thêm vào giỏ hàng');
-    },
-    onSuccess: () => {
-      // ✅ Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-      queryClient.invalidateQueries({ queryKey: ['cart-count'] });
-      toast.success('Đã thêm vào giỏ hàng');
-    },
-  });
-
-  // 🗑️ Remove from cart mutation
-  const removeMutation = useMutation({
-    mutationFn: removeFromCart,
-    onMutate: async (itemId) => {
-      setOptimisticCart((current) => current.filter((i) => i.id !== itemId));
-
-      await queryClient.cancelQueries({ queryKey: ['cart'] });
-      const previous = queryClient.getQueryData(['cart']);
-
-      queryClient.setQueryData(['cart'], (old = []) =>
-        old.filter((i) => i.id !== itemId)
-      );
-
-      return { previous };
-    },
-    onError: (err, itemId, context) => {
-      queryClient.setQueryData(['cart'], context.previous);
-      toast.error('Không thể xóa sản phẩm');
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-      queryClient.invalidateQueries({ queryKey: ['cart-count'] });
-    },
-  });
-
-  // 🛒 Checkout action
-  const [checkoutError, checkoutAction, isCheckingOut] = useActionState(
-    async (prevState, formData) => {
-      try {
-        const shippingInfo = {
-          address: formData.get('address'),
-          phone: formData.get('phone'),
-        };
-
-        await checkout({ cart, shippingInfo });
-
-        // ✅ Clear cart sau checkout
-        queryClient.setQueryData(['cart'], []);
-        queryClient.invalidateQueries({ queryKey: ['orders'] });
-
-        toast.success('Đặt hàng thành công!');
-        return null;
-      } catch (err) {
-        return err.message;
+      if (!name) {
+        return { ok: false, message: 'Tên project là bắt buộc' };
       }
+
+      const response = await fetch(`/api/projects/${projectId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ name }),
+      });
+
+      if (!response.ok) {
+        return { ok: false, message: 'Không thể đổi tên project' };
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+      await queryClient.invalidateQueries({ queryKey: ['projects'] });
+
+      return { ok: true, message: 'Đã cập nhật project' };
     },
-    null
+    { ok: false, message: '' }
   );
 
   return (
-    <div>
-      <h2>Giỏ hàng ({optimisticCart.length})</h2>
-
-      {optimisticCart.map((item) => (
-        <div key={item.id} className="cart-item">
-          <h3>{item.name}</h3>
-          <p>{item.price.toLocaleString('vi-VN')} ₫</p>
-          <button
-            onClick={() => removeMutation.mutate(item.id)}
-            disabled={removeMutation.isPending}
-          >
-            Xóa
-          </button>
-        </div>
-      ))}
-
-      <form action={checkoutAction}>
-        <input name="address" placeholder="Địa chỉ giao hàng" required />
-        <input name="phone" placeholder="Số điện thoại" required />
-        <button type="submit" disabled={isCheckingOut || cart.length === 0}>
-          {isCheckingOut ? 'Đang xử lý...' : 'Đặt hàng'}
-        </button>
-        {checkoutError && <p className="error">{checkoutError}</p>}
-      </form>
-    </div>
+    <form action={action}>
+      <input name="name" />
+      <button disabled={isPending}>{isPending ? 'Saving...' : 'Save'}</button>
+      {state.message && (
+        <p role={state.ok ? 'status' : 'alert'}>{state.message}</p>
+      )}
+    </form>
   );
 }
-
-/**
- * ✅ Features demonstrated:
- * - Optimistic updates (instant UI feedback)
- * - Multiple mutations (add, remove, checkout)
- * - Cache invalidation strategy
- * - Error handling với rollback
- * - Toast notifications
- * - Form handling với Actions
- */
 ```
 
----
+### 4.9. E-commerce cart với optimistic UI
 
-## **9. Resources**
+```tsx
+import { useOptimistic } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
-```typescript
-/**
- * 📚 Official Docs:
- * - React 19 Release: https://react.dev/blog/2024/12/05/react-19
- * - Upgrade Guide: https://react.dev/blog/2024/04/25/react-19-upgrade-guide
- * - Actions: https://react.dev/reference/react/useActionState
- * - Server Components: https://react.dev/reference/rsc/server-components
- * - TanStack Query v5: https://tanstack.com/query/latest
- * - React Query + Next.js: https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr
- *
- * 🛠️ Tools:
- * - Codemods: npx codemod@latest
- * - React DevTools: https://react.dev/learn/react-developer-tools
- * - React Query DevTools: @tanstack/react-query-devtools
- *
- * 🎯 Migration Timeline:
- * - Week 1: Update dependencies, run codemods
- * - Week 2: Manual fixes, TypeScript migration
- * - Week 3: Testing, form migrations
- * - Week 4: Performance optimizations, deploy
- */
+type CartItem = {
+  sku: string;
+  name: string;
+  quantity: number;
+};
+
+async function addToCart(sku: string) {
+  const response = await fetch('/api/cart/items', {
+    method: 'POST',
+    body: JSON.stringify({ sku }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Cannot add item');
+  }
+}
+
+export function AddToCartButton({
+  sku,
+  initialCart,
+}: {
+  sku: string;
+  initialCart: CartItem[];
+}) {
+  const queryClient = useQueryClient();
+  const [optimisticCart, addOptimistic] = useOptimistic(
+    initialCart,
+    (cart, itemSku: string) =>
+      cart.map((item) =>
+        item.sku === itemSku ? { ...item, quantity: item.quantity + 1 } : item
+      )
+  );
+
+  async function action() {
+    addOptimistic(sku);
+
+    try {
+      await addToCart(sku);
+      await queryClient.invalidateQueries({ queryKey: ['cart'] });
+    } catch {
+      await queryClient.invalidateQueries({ queryKey: ['cart'] });
+    }
+  }
+
+  const quantity = optimisticCart.find((item) => item.sku === sku)?.quantity ?? 0;
+
+  return (
+    <form action={action}>
+      <button type="submit">Add to cart ({quantity})</button>
+    </form>
+  );
+}
 ```
 
----
+**Note:** Khi fail, example trên refetch lại cart để reconcile với server. Với flow nhạy cảm, nên show error rõ ràng thay vì im lặng.
 
-**💡 Remember:**
+### 4.10. Test update: import `act` từ `react`
 
-> "React 19 = Less boilerplate + Better DX + Faster apps. Migration effort: Medium. Worth it: 100%!" 🚀
-
-# 🧠 **MINDMAP – React 19 (Tóm gọn toàn bộ trong 1 trang)**
-
-```
-React 19
-│
-├── 1) Actions (Async State & Form)
-│     ├── useActionState
-│     ├── useFormStatus
-│     ├── Progressive enhancement (no JS vẫn submit được)
-│     ├── Auto: pending, error, reset form
-│     └── Replace: manual loading/error logic
-│
-├── 2) useOptimistic
-│     ├── Optimistic UI ngay lập tức
-│     ├── Auto rollback khi error
-│     └── Không cần tự viết rollback logic
-│
-├── 3) New Hook: use()
-│     ├── Read promise (suspend)
-│     ├── Read context ANYWHERE (not like useContext)
-│     ├── Conditional OK
-│     └── Enable streaming + Suspense
-│
-├── 4) New Ref Model
-│     ├── ref là prop → không cần forwardRef
-│     ├── ref callback return cleanup
-│     └── Đơn giản hoá ref lifecycle
-│
-├── 5) New Context API
-│     ├── <Context value="...">
-│     ├── <Context.Provider> dần deprecated
-│     └── Dễ đọc, ít boilerplate
-│
-├── 6) Metadata (title, meta, link)
-│     ├── Đặt trong component
-│     ├── React auto-hoist lên <head>
-│     └── Không cần react-helmet
-│
-├── 7) Stylesheet
-│     ├── <link rel="stylesheet" precedence="...">
-│     ├── De-duplicate
-│     ├── Coordinate với Suspense
-│     └── Tránh FOUC
-│
-├── 8) SSR/Streaming
-│     ├── Fast Refresh tốt hơn
-│     ├── Pre-warm Suspense
-│     └── Hỗ trợ Server Components tốt hơn
-│
-├── 9) Breaking Changes
-│     ├── remove PropTypes
-│     ├── forwardRef optional
-│     ├── createElement → jsx()
-│     └── StrictMode: effects chạy đúng 1 lần
-│
-└── 10) Migration
-       ├── npx react-codemod upgrade
-       ├── update tsconfig ("jsx": "react-jsx")
-       ├── update dependencies
-       └── Manual fix ref, context, propTypes
+```tsx
+// Before
+import { act } from 'react-dom/test-utils';
 ```
 
----
+```tsx
+// After
+import { act } from 'react';
+```
 
-# 🎤 **Q&A – Bộ câu trả lời React 19 chuẩn Senior (ngắn – sắc – đúng trọng tâm)**
+Với component tests, ưu tiên test theo hành vi người dùng bằng Testing Library:
 
-## **Q1. React 19 khác React 18 ở điểm gì?**
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
-**Senior Answer:**
+test('submits newsletter form', async () => {
+  render(<NewsletterForm />);
 
-> “React 19 tập trung vào DX: loại bỏ boilerplate, thống nhất mô hình async thông qua Actions, hỗ trợ optimistic UI gốc, ref/context đơn giản hơn, metadata/styling built-in và tăng khả năng streaming cho SSR. Đây là bản làm React ‘nhẹ đầu’ hơn rất nhiều.”
+  await userEvent.type(screen.getByRole('textbox'), 'team@example.com');
+  await userEvent.click(screen.getByRole('button', { name: /đăng ký/i }));
 
----
+  expect(await screen.findByRole('status')).toHaveTextContent('thành công');
+});
+```
 
-## **Q2. Actions là gì và tại sao quan trọng?**
+## 5. 🏗️ Production Notes / React Implications
 
-**Senior Answer:**
+### 5.1. Migration strategy cho production app
 
-> “Actions là cách React chuẩn hóa xử lý async (đặc biệt form). Không cần tự quản lý pending/error/reset. Nó giúp UI có progressive enhancement — form submit được cả khi tắt JS. Đây là bước quan trọng đồng bộ hóa Client Actions và Server Actions.”
+| Giai đoạn | Việc cần làm | Lý do |
+|---|---|---|
+| Inventory | Tìm legacy API bằng `rg` | Biết blast radius trước khi sửa |
+| Dependency audit | Check React peer deps của UI libs, router, testing, state libs | Lib dùng internals có thể block upgrade |
+| React 18.3 | Nâng tạm để thấy warnings | Giảm bất ngờ khi lên 19 |
+| Codemod | Chạy official recipe | Giảm thao tác thủ công |
+| TypeScript | Chạy `tsc --noEmit` | Bắt lỗi type từ `ref`, JSX, reducer |
+| Tests | Unit/integration/e2e | Bắt regression form, routing, auth |
+| Manual QA | Form, modal, focus, SSR/hydration, dashboard flow | Các lỗi UI async khó bắt bằng unit test |
+| Staging/canary | Deploy nhỏ trước | Giảm rủi ro production |
 
----
+### 5.2. Dependency audit nên kiểm tra gì?
 
-## **Q3. useOptimistic giải quyết vấn đề gì?**
+```bash
+rg "ReactDOM.render|ReactDOM.hydrate|findDOMNode|unmountComponentAtNode" .
+rg "react-dom/test-utils|react-test-renderer|contextTypes|getChildContext" .
+rg "propTypes|defaultProps|string ref|ref=\"" src
+rg "SECRET_INTERNALS|__SECRET_INTERNALS" .
+```
 
-**Senior Answer:**
+Kiểm tra thêm:
 
-> “Nó cho phép UI hiển thị kết quả ngay lập tức trước khi server trả lời, và tự rollback nếu có lỗi. Trước đây phải tự code rollback khá phức tạp.”
+- `@testing-library/react` version tương thích React 19.
+- UI libraries có hỗ trợ React 19 peer dependency.
+- Router/framework version tương thích.
+- State/data libs có test với React 19.
+- Custom Babel/SWC/Vite/Webpack config có JSX automatic runtime.
 
----
+### 5.3. Forms: Actions không thay thế validation strategy
 
-## **Q4. use() khác gì useContext?**
+React 19 giúp form submit gọn hơn, nhưng production form vẫn cần:
 
-**Senior Answer:**
+- client validation cho UX nhanh
+- server validation là nguồn sự thật
+- accessible error message (`role="alert"`, `aria-describedby`)
+- disable duplicate submit hoặc idempotency key
+- error mapping theo field
+- analytics/observability cho failed submit
 
-> “use() cho phép đọc promise + context ở bất kỳ chỗ nào, kể cả trong branches. Đây là nền tảng giúp React 19 hỗ trợ Streaming + Suspense ở mức tốt hơn.”
+### 5.4. Error reporting thay đổi
 
----
+Nếu monitoring đang rely vào render error bị rethrow, React 19 có thể làm metric thay đổi. Nên wire root callbacks:
 
-## **Q5. Vì sao React 19 bỏ forwardRef?**
+- `onCaughtError` cho lỗi đã vào Error Boundary
+- `onUncaughtError` cho lỗi chưa được Error Boundary bắt
 
-**Senior Answer:**
+Khi dùng framework, kiểm tra framework có expose root options hay có reporting layer riêng không.
 
-> “Ref trở thành một prop bình thường — điều này làm cho component API nhất quán hơn với tất cả props khác và dễ tree-shake hơn.”
+### 5.5. SSR/hydration
 
----
+React 19 dễ chịu hơn với third-party script/extension, nhưng SSR app vẫn phải tránh mismatch:
 
-## **Q6. Metadata trong React 19 hoạt động thế nào?**
+- Không render dữ liệu browser-only trực tiếp trên server.
+- Không tạo ID random trong render nếu server/client không đồng bộ.
+- Dùng `useId` cho ID cần stable.
+- Đặt Suspense boundary hợp lý quanh phần data async.
+- Test production build, không chỉ dev mode.
 
-**Senior Answer:**
+### 5.6. React Query, SWR, Relay vẫn có chỗ đứng
 
-> “Chỉ cần đặt `<title>`, `<meta>`, `<link>` trong component, React sẽ tự hoist lên `<head>`. Không cần react-helmet nữa.”
+React 19 Actions không thay thế server-state management.
 
----
+| Nhu cầu | Dùng React 19 Action | Dùng React Query/SWR/Relay |
+|---|---|---|
+| Submit form đơn giản | ✅ Rất hợp | Có thể không cần |
+| Pending/error form state | ✅ Rất hợp | Hợp nếu đã có mutation layer |
+| Cache list/detail | Không đủ | ✅ Rất hợp |
+| Pagination/infinite query | Không phải mục tiêu chính | ✅ Rất hợp |
+| Retry/backoff/background sync | Không phải mục tiêu chính | ✅ Rất hợp |
+| Optimistic mutation có cache | Cần phối hợp | ✅ Rất hợp |
 
-## **Q7. Migration khó không?**
+### 5.7. Accessibility khi đổi form
 
-**Senior Answer:**
+Khi refactor sang Actions:
 
-> “Tương đối nhẹ. 80% có thể dùng codemod để migrate: forwardRef → ref as prop, Provider → Context, remove PropTypes. Chỉ cần update tsconfig và review một số ref callback.”
+- Button submit phải có text rõ ràng khi pending.
+- Error phải được screen reader đọc (`role="alert"`).
+- Success message nên dùng `role="status"`.
+- Focus nên được đưa tới lỗi đầu tiên khi validation fail phức tạp.
+- Không chỉ đổi màu để biểu thị error.
 
---
+## 6. ⚠️ Common Pitfalls
+
+### 6.1. Nghĩ PropTypes gây runtime error trong React 19
+
+Sai. Với function component, `propTypes` bị bỏ check/ignore, nên nguy hiểm hơn ở chỗ lỗi có thể im lặng. Migration nên chuyển sang TypeScript hoặc runtime schema như Zod ở API boundary.
+
+```tsx
+import { z } from 'zod';
+
+const UserSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+async function fetchUser() {
+  const response = await fetch('/api/me');
+  return UserSchema.parse(await response.json());
+}
+```
+
+### 6.2. Dùng `useOptimistic` cho mọi mutation
+
+Không phải mutation nào cũng nên optimistic. Ví dụ payment, permission, banking transfer nên ưu tiên confirmed state.
+
+### 6.3. Bỏ qua duplicate submit
+
+`isPending` giúp disable button, nhưng production API vẫn nên idempotent. User có thể double click, retry, back/forward hoặc submit từ nhiều tab.
+
+### 6.4. Chạy codemod rồi merge ngay
+
+Codemod có thể đổi đúng syntax nhưng sai intention. Cần review những vùng:
+
+- forwarded refs ở component library
+- context provider public API
+- tests dùng implementation details
+- old class components
+- custom JSX factory/runtime config
+
+### 6.5. Dùng `use()` mà không có Suspense boundary
+
+Nếu Promise suspend mà không có boundary hợp lý, UX loading sẽ xấu hoặc error khó debug.
+
+### 6.6. Nhầm `"use server"` là Server Component marker
+
+`"use server"` dùng cho Server Actions. Server Components không có directive riêng. Framework quyết định server/client boundary.
+
+### 6.7. Dùng metadata native thay toàn bộ framework metadata
+
+React 19 metadata native hữu ích, nhưng route-level metadata, canonical, Open Graph và i18n SEO thường framework xử lý tốt hơn.
+
+### 6.8. Không update tests
+
+`react-dom/test-utils` và `react-test-renderer` là vùng rủi ro lớn. Test nên chuyển dần sang user behavior thay vì snapshot tree quá chi tiết.
+
+### 6.9. Không kiểm tra third-party dependency dùng React internals
+
+Lib dùng `SECRET_INTERNALS` hoặc assumptions về Fiber internals có thể vỡ khi nâng React. Đây là rủi ro production hơn là lỗi syntax.
+
+### 6.10. Đổi `forwardRef` hàng loạt trong library public API
+
+Nếu package được nhiều app dùng, migration `ref` as prop cần cân nhắc versioning. Public types thay đổi có thể ảnh hưởng consumer đang ở React 18.
+
+## 7. ✅ Decision Guide / Checklist
+
+### 7.1. Khi nào nên migrate lên React 19?
+
+| Tình huống | Khuyến nghị |
+|---|---|
+| App mới, stack hiện đại | Nên dùng React 19 |
+| App React 18 ít legacy API | Migrate khá thẳng |
+| App dùng nhiều class/legacy context/findDOMNode | Audit kỹ trước |
+| Design system dùng `forwardRef` nhiều | Migrate từng bước, giữ compatibility |
+| App SSR/Next/Remix lớn | Check framework version trước |
+| Test suite phụ thuộc `react-test-renderer` | Plan refactor tests |
+| Có nhiều dependency cũ | Kiểm tra peer dependency và issue tracker |
+
+### 7.2. Checklist trước khi upgrade
+
+- [ ] Tạo branch riêng.
+- [ ] Commit sạch trước khi chạy codemod.
+- [ ] Nâng thử React 18.3 và xử lý warnings chính.
+- [ ] Audit legacy APIs bằng `rg`.
+- [ ] Kiểm tra framework/router/test libs hỗ trợ React 19.
+- [ ] Bật new JSX transform.
+- [ ] Cập nhật `react`, `react-dom`, `@types/react`, `@types/react-dom`.
+- [ ] Chạy `npx codemod@latest react/19/migration-recipe`.
+- [ ] Chạy TypeScript check.
+- [ ] Chạy unit/integration/e2e tests.
+- [ ] QA form submit, auth, modal/focus, routing, SSR/hydration.
+- [ ] Kiểm tra console warning/error trong production build.
+- [ ] Deploy staging/canary trước production full rollout.
+
+### 7.3. Checklist code review migration
+
+- [ ] Không còn `ReactDOM.render` / `ReactDOM.hydrate`.
+- [ ] Không còn `findDOMNode`.
+- [ ] Không còn string refs.
+- [ ] Không còn legacy context (`contextTypes`, `getChildContext`).
+- [ ] Function component không dựa vào `defaultProps`.
+- [ ] `propTypes` đã được thay bằng TypeScript hoặc runtime schema phù hợp.
+- [ ] `act` import từ `react`.
+- [ ] Form Actions có accessible error/success state.
+- [ ] Optimistic UI có failure strategy.
+- [ ] Root error reporting đã được kiểm tra.
+- [ ] SSR/hydration không có mismatch mới.
+
+### 7.4. Chọn API React 19 nào?
+
+| Nhu cầu | API nên dùng | Lưu ý |
+|---|---|---|
+| Form submit trả về message/error | `useActionState` | Tốt cho form local/route mutation |
+| Submit button nằm component con | `useFormStatus` | Hook phải ở trong form descendant |
+| UI phản hồi ngay trước khi server confirm | `useOptimistic` | Cần rollback/reconcile |
+| Promise render với Suspense | `use()` | Cần boundary tốt và framework support |
+| Custom input expose DOM node | `ref` as prop | Check library compatibility |
+| Route/page title đơn giản | metadata tags | Framework metadata vẫn có thể tốt hơn |
+| Preload font/script/style | `preload`, `preinit`, `preconnect` | Dùng có chủ đích, tránh spam hints |
+
+## 8. 🎤 Short Interview Answer
+
+Theo em, React 19 đáng chú ý nhất ở chỗ nó đưa async mutation và form handling thành pattern chính thức hơn. Trước đây trong React 18, mỗi form thường tự quản lý `loading`, `error`, `try/catch`, optimistic state và rollback. React 19 có Actions, `useActionState`, `useFormStatus` và `useOptimistic`, nên code form/mutation có thể ngắn hơn và nhất quán hơn.
+
+Khi migrate, em không rewrite app ngay. Em sẽ nâng lên React 18.3 trước để thấy warning, audit legacy API như `ReactDOM.render`, `findDOMNode`, string refs, legacy context, `propTypes/defaultProps`, rồi mới nâng `react`, `react-dom`, `@types/react` lên 19 và chạy official codemod. Sau đó em chạy TypeScript, tests, kiểm tra form/auth/routing/hydration và deploy staging hoặc canary.
+
+Điểm senior cần để ý là React 19 không thay thế data fetching/cache library như React Query. Actions hợp cho mutation/form UX, còn cache, retry, invalidation, pagination vẫn cần data layer. Ngoài ra phải update error reporting vì React 19 thay đổi cách report render errors, và không nên optimistic UI cho flow nhạy cảm như payment hoặc permission.
+
+## 9. 🧾 Ghi nhớ nhanh
+
+- **React 19 = async UI tốt hơn**, không phải rewrite toàn bộ app.
+- **Upgrade an toàn**: React 18.3 → React 19 → codemod → TypeScript/tests → staging.
+- **Actions**: async transition cho mutation.
+- **`useActionState`**: action result + pending + form integration.
+- **`useFormStatus`**: trạng thái form cho submit button con.
+- **`useOptimistic`**: optimistic UI, cần rollback/reconcile.
+- **`use()`**: đọc Promise/Context trong render, phối hợp với Suspense.
+- **`ref` as prop**: giảm nhu cầu `forwardRef` cho component mới.
+- **PropTypes/defaultProps function component**: không còn là strategy tốt; dùng TypeScript/default parameter.
+- **Legacy ReactDOM APIs**: chuyển sang `createRoot`, `hydrateRoot`, `root.unmount`.
+- **Testing**: import `act` từ `react`, giảm phụ thuộc `react-test-renderer`.
+- **RSC/Server Actions**: cần framework hỗ trợ, không tự có trong SPA chỉ vì nâng React.
+
+## 10. 📖 Giải thích các thuật ngữ trong topic
+
+| Thuật ngữ | Giải thích ngắn |
+|---|---|
+| Action | Async function được React hiểu như một state transition/mutation |
+| `useActionState` | Hook quản lý state trả về từ Action và pending state |
+| `useFormStatus` | Hook đọc trạng thái submit của form cha gần nhất |
+| `useOptimistic` | Hook tạo state tạm thời trong khi mutation chưa hoàn tất |
+| `use()` | API đọc Promise hoặc Context trong render, có thể suspend |
+| Suspense | Cơ chế cho UI hiển thị fallback khi data/component chưa sẵn sàng |
+| Optimistic UI | UI giả định mutation thành công trước khi server xác nhận |
+| Reconcile | Đồng bộ lại UI/cache với dữ liệu thật từ server |
+| Hydration | Quá trình React gắn event/state vào HTML đã render từ server |
+| Hydration mismatch | Khi HTML server và render client không khớp |
+| `forwardRef` | API cũ để truyền ref qua function component |
+| `ref` as prop | React 19 cho phép function component nhận `ref` như prop |
+| Legacy Context | Context API cũ dùng `contextTypes` và `getChildContext` |
+| New JSX Transform | JSX runtime mới không cần import React chỉ để dùng JSX |
+| `createRoot` | API tạo root cho client rendering từ React 18+ |
+| `hydrateRoot` | API hydrate HTML SSR từ React 18+ |
+| `findDOMNode` | API cũ lấy DOM node từ component instance, đã bị remove |
+| UMD build | Dạng bundle script global cũ, React 19 không còn phát hành UMD |
+| React Server Components | Component render ở server/build environment để giảm JS client |
+| Server Actions | Function chạy ở server, được framework expose cho client gọi |
+| React Query | Library quản lý server-state cache, mutations, retry, invalidation |
+| Error Boundary | Component bắt lỗi render bên dưới tree để show fallback UI |
+
+## 11. 📚 Nguồn chính thức đã đối chiếu
+
+- React 19 Upgrade Guide: <https://react.dev/blog/2024/04/25/react-19-upgrade-guide>
+- React 19 Release: <https://react.dev/blog/2024/12/05/react-19>
+- `useActionState`: <https://react.dev/reference/react/useActionState>

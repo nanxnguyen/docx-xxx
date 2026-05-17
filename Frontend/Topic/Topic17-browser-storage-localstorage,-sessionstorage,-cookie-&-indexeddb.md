@@ -1,899 +1,443 @@
-# 💽 Q30: Browser Storage - LocalStorage, SessionStorage, Cookie & IndexedDB
+# 💽 Topic 17: Browser Storage - `localStorage`, `sessionStorage`, Cookie & IndexedDB
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## 1. ⭐ Senior/Staff Summary
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+Browser có nhiều cơ chế lưu trữ client-side, nhưng không có loại nào “tốt nhất cho mọi thứ”. Chọn đúng storage phụ thuộc vào **dữ liệu có nhạy cảm không**, **có cần gửi server không**, **dung lượng bao nhiêu**, **API sync hay async**, **có cần offline/query/index không**, và **rủi ro security**.
 
-**"Browser có 4 storage options: Cookie (4KB, gửi server), LocalStorage (5-10MB, persistent), SessionStorage (5-10MB, tab-scoped), IndexedDB (50MB+, async database)."**
+| Storage | Dung lượng thường gặp | Lifetime | API | Gửi server tự động | Use case chính |
+|---|---:|---|---|---|---|
+| 🍪 Cookie | khoảng 4KB/cookie | Theo `Expires`/`Max-Age` hoặc session | String, sync | ✅ Có | Auth session, CSRF token, server-readable state nhỏ |
+| 💾 `localStorage` | thường 5-10MB/origin | Persistent đến khi bị xoá | String, sync | ❌ Không | Theme, language, non-sensitive preferences |
+| 📝 `sessionStorage` | thường 5-10MB/origin | Theo tab/session | String, sync | ❌ Không | Draft tạm, wizard state, tab-specific state |
+| 🗄️ IndexedDB | lớn hơn nhiều, tùy quota | Persistent đến khi bị xoá/evict | Async database | ❌ Không | Offline data, large datasets, blobs/files, structured cache |
 
-**🔑 So Sánh 4 Loại Storage:**
+> 🔥 Senior point: **Không lưu access token/sensitive data trong `localStorage`** nếu app có rủi ro XSS. Với auth session, ưu tiên cookie `HttpOnly + Secure + SameSite` do server set.
 
-| **Tiêu Chí** | **Cookie** | **LocalStorage** | **SessionStorage** | **IndexedDB** |
-|-------------|-----------|-----------------|-------------------|---------------|
-| **Dung lượng** | 4KB | 5-10MB | 5-10MB | 50MB-unlimited |
-| **Tồn tại** | Expiry date | Mãi mãi | Đóng tab mất | Mãi mãi |
-| **API** | Sync (string) | Sync (string) | Sync (string) | **Async** |
-| **Gửi server** | ✅ Auto | ❌ Không | ❌ Không | ❌ Không |
-| **Use Case** | Auth tokens | Settings | Form data | Large datasets |
+## 2. 🧠 Key Mental Model or Key Points
 
-**🔑 Chi Tiết Từng Loại:**
+- 🍪 **Cookie là dữ liệu HTTP.** Browser tự gửi cookie theo request matching domain/path, nên hợp cho server-side session nhưng tốn bandwidth và cần flag bảo mật.
+- 💾 **`localStorage` là key-value sync storage.** Dễ dùng nhưng block main thread, chỉ lưu string, JS đọc được, không phù hợp dữ liệu nhạy cảm.
+- 📝 **`sessionStorage` giống `localStorage` nhưng scoped theo tab.** Đóng tab là mất; duplicate tab có thể clone state ban đầu tùy browser.
+- 🗄️ **IndexedDB là database async trên browser.** Hợp offline-first, dữ liệu lớn, query theo index, file/blob.
+- 🔐 **Client storage không phải nơi tin cậy.** User có thể sửa, xoá, inspect. Server phải validate mọi thứ.
+- ⚠️ **Storage quota không cố định.** Browser, device, private mode, storage pressure đều ảnh hưởng.
+- ⚛️ **React/SSR:** Browser storage chỉ tồn tại trên client. Đọc storage trong render SSR sẽ lỗi hoặc hydration mismatch.
 
-**1. Cookie:**
-- **Tự động gửi** kèm mọi HTTP request → dùng cho authentication
-- Flags: `HttpOnly` (JS không đọc), `Secure` (chỉ HTTPS), `SameSite` (CSRF protection)
-- Tốn bandwidth (gửi mọi request) → giữ nhỏ
+## 3. 📚 Main Concepts
 
-**2. LocalStorage:**
-- **Persistent** (không mất khi đóng tab), **synchronous API**
-- Use case: User preferences, theme, language, cached data
-- ⚠️ KHÔNG dùng cho sensitive data (không encrypt, XSS vulnerable)
+### 3.1. 🍪 Cookie - “tem dán lên mọi request”
 
-**3. SessionStorage:**
-- **Tab-scoped** (mỗi tab riêng biệt), mất khi đóng tab
-- Use case: Form wizards, temporary shopping cart, session-specific state
-- Duplicate tab = duplicate sessionStorage (không share)
+Cookie là cơ chế lưu key-value nhỏ, được browser gửi tự động trong HTTP request nếu domain/path khớp.
 
-**4. IndexedDB:**
-- **Async database** (transactions, indexes, queries)
-- Store **objects, files, blobs** (không chỉ strings)
-- Use case: Offline apps, large datasets, binary files (images, videos)
-- Libraries: Dexie.js, localForage (simplified API)
+**Điểm mạnh**
 
-**⚠️ Lỗi Thường Gặp:**
-- Lưu sensitive data (tokens) vào localStorage → **XSS attack** đọc được, dùng `HttpOnly` cookies thay vì
-- Stringify/parse mỗi lần access localStorage → performance issue, cache parsed value
-- Không handle `QuotaExceededError` → app crash khi storage đầy
-- Dùng IndexedDB synchronously (blocking API) → dùng promises/async
+- Server đọc được tự động.
+- Có expiry bằng `Expires` hoặc `Max-Age`.
+- Có security flags mạnh: `HttpOnly`, `Secure`, `SameSite`.
+- Hợp cho session authentication và CSRF-related state nhỏ.
 
-**💡 Kiến Thợc Senior:**
-- **Security**: Tokens trong `HttpOnly + Secure + SameSite=Strict` cookies, không localStorage
-- **Storage events**: `window.addEventListener('storage')` để sync giữa tabs (chỉ localStorage)
-- **Quota API**: `navigator.storage.estimate()` check available space
-- **Cache API** (Service Workers): Khác localStorage, dùng cho HTTP responses caching
-- Performance: localStorage **blocking I/O** → avoid trong hot paths, dùng in-memory cache
+**Điểm yếu**
 
+- Dung lượng nhỏ.
+- Gửi kèm request nên tăng bandwidth.
+- Nếu không cấu hình đúng, dễ gặp CSRF/session leakage.
+- Cookie đọc bằng JS không thể có `HttpOnly`; `HttpOnly` phải set từ server qua `Set-Cookie`.
 
+Security flags cần nhớ:
 
+| Flag | Ý nghĩa | Vì sao quan trọng |
+|---|---|---|
+| `HttpOnly` | JavaScript không đọc được cookie | Giảm impact của XSS với session token |
+| `Secure` | Chỉ gửi qua HTTPS | Tránh lộ cookie qua HTTP |
+| `SameSite=Strict` | Không gửi cross-site navigation phần lớn trường hợp | CSRF protection mạnh, nhưng có thể ảnh hưởng OAuth |
+| `SameSite=Lax` | Gửi trong top-level navigation an toàn hơn | Default thực tế phổ biến cho session |
+| `SameSite=None; Secure` | Cho cross-site cookie | Cần cho embedded/third-party flow, rủi ro cao hơn |
+| `Path`/`Domain` | Giới hạn phạm vi cookie | Giảm cookie gửi thừa |
+| `Max-Age`/`Expires` | Vòng đời cookie | Tự hết hạn |
 
-**Trả lời:****
+> ✅ Auth session production thường là server set cookie: `Set-Cookie: session=...; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=...`
 
-Browser cung cấp **4 cách lưu trữ data** ở client-side, mỗi cách phù hợp cho use case khác nhau:
+### 3.2. 💾 `localStorage` - persistent key-value storage
 
-- **Cookie**: Nhỏ (4KB), gửi kèm mỗi HTTP request, có expiry, dùng cho auth tokens
-- **LocalStorage**: 5-10MB, persistent (không mất khi đóng tab), sync API, dùng cho settings/preferences
-- **SessionStorage**: 5-10MB, mất khi đóng tab, sync API, dùng cho temporary data
-- **IndexedDB**: 50MB-unlimited, async, database-like, dùng cho large datasets
+`localStorage` lưu string theo origin và tồn tại sau khi đóng tab/browser.
 
-#### **📊 So Sánh 4 Loại Storage**
-
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                    BROWSER STORAGE COMPARISON                          │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│  Tiêu Chí          │ Cookie    │ LocalStorage │ SessionStorage │ IndexedDB │
-│  ─────────────────────────────────────────────────────────────────── │
-│  Dung lượng        │ 4KB       │ 5-10MB       │ 5-10MB         │ 50MB+     │
-│  Tồn tại           │ Expiry    │ Mãi mãi      │ Đóng tab mất   │ Mãi mãi   │
-│  API               │ Sync      │ Sync         │ Sync           │ Async     │
-│  Gửi server        │ ✅ Tự động│ ❌ Không     │ ❌ Không       │ ❌ Không  │
-│  Complexity        │ Medium    │ Easy         │ Easy           │ Hard      │
-│  Use Case          │ Auth      │ Settings     │ Form data      │ Big data  │
-│  ─────────────────────────────────────────────────────────────────── │
-│                                                                        │
-│  🍪 Cookie:        Như tem dán lên thư gửi đi (mọi request)          │
-│  💾 LocalStorage:  Như USB drive (cắm mãi mãi)                        │
-│  📝 SessionStorage: Như giấy nháp (hết giờ là vứt)                    │
-│  🗄️ IndexedDB:     Như kho chứa lớn (chứa cả thùng hàng)             │
-└────────────────────────────────────────────────────────────────────────┘
+```ts
+localStorage.setItem("theme", "dark");
+const theme = localStorage.getItem("theme");
+localStorage.removeItem("theme");
 ```
 
----
+Object phải serialize:
 
-#### **🍪 1. Cookie - "Tem Dán Lên Mọi Request"**
+```ts
+type Preferences = {
+  theme: "light" | "dark";
+  language: "vi" | "en";
+};
 
-**Đặc điểm:**
-- Dung lượng nhỏ: **4KB** (chỉ lưu được text ngắn)
-- Tự động gửi kèm **mọi HTTP request** tới server
-- Có **expiry date** (tự động xóa sau thời gian)
-- Dùng cho: **Authentication tokens, user tracking**
+const preferences: Preferences = { theme: "dark", language: "vi" };
 
-**Ưu điểm:**
-- ✅ Server tự động nhận (không cần JS)
-- ✅ Có expiry (tự động dọn dẹp)
-- ✅ Secure flag (HTTPS only), HttpOnly (JS không đọc được)
+localStorage.setItem("preferences", JSON.stringify(preferences));
 
-**Nhược điểm:**
-- ❌ Nhỏ (4KB) - không lưu nhiều
-- ❌ Tốn bandwidth (gửi kèm mọi request)
-- ❌ Phức tạp hơn localStorage
-
-**Code Example:**
-
-```typescript
-// ============================================
-// COOKIE - Ví Dụ Đơn Giản
-// ============================================
-
-// 1️⃣ SET Cookie - Lưu token
-function setCookie(name: string, value: string, days: number = 7) {
-  const date = new Date();
-  date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000); // Tính expiry
-  const expires = `expires=${date.toUTCString()}`;
-  
-  // Lưu cookie
-  document.cookie = `${name}=${value}; ${expires}; path=/; SameSite=Strict`;
-  // path=/     → cookie có hiệu lực toàn site
-  // SameSite   → bảo mật CSRF
-}
-
-// Usage: Lưu auth token
-setCookie('authToken', 'abc123xyz', 7); // Hết hạn sau 7 ngày
-
-// 2️⃣ GET Cookie - Đọc token
-function getCookie(name: string): string | null {
-  // document.cookie = "authToken=abc123; userId=456; theme=dark"
-  const cookies = document.cookie.split('; ');
-  
-  for (const cookie of cookies) {
-    const [key, value] = cookie.split('=');
-    if (key === name) return value;
-  }
-  
-  return null; // Không tìm thấy
-}
-
-// Usage: Đọc auth token
-const token = getCookie('authToken');
-console.log(token); // "abc123xyz"
-
-// 3️⃣ DELETE Cookie - Xóa token (set expiry = quá khứ)
-function deleteCookie(name: string) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
-}
-
-// Usage: Logout - xóa token
-deleteCookie('authToken');
-
-// ============================================
-// Thực Tế: Cookie Helper Class
-// ============================================
-class CookieManager {
-  // Set cookie
-  static set(name: string, value: string, days: number = 7): void {
-    const expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Strict`;
-  }
-  
-  // Get cookie
-  static get(name: string): string | null {
-    return document.cookie
-      .split('; ')
-      .find(row => row.startsWith(name + '='))
-      ?.split('=')[1] || null;
-  }
-  
-  // Delete cookie
-  static delete(name: string): void {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
-  }
-}
-
-// Usage: Clean API
-CookieManager.set('user', 'John', 30); // Lưu 30 ngày
-const user = CookieManager.get('user'); // "John"
-CookieManager.delete('user'); // Xóa
+const raw = localStorage.getItem("preferences");
+const parsed = raw ? (JSON.parse(raw) as Preferences) : null;
 ```
 
----
+**Dùng tốt cho**
 
-#### **💾 2. LocalStorage - "USB Drive - Lưu Mãi Mãi"**
+- Theme, language, display density.
+- Dismissed banners.
+- Non-sensitive user preferences.
+- Small client-only cache không quan trọng.
 
-**Đặc điểm:**
-- Dung lượng lớn: **5-10MB** (tuỳ browser)
-- **Persistent** - không mất khi đóng tab/browser
-- **Sync API** - dễ dùng
-- Dùng cho: **User settings, preferences, cache data**
+**Không dùng cho**
 
-**Ưu điểm:**
-- ✅ Dễ dùng (getItem/setItem)
-- ✅ Lưu mãi mãi (không tự xóa)
-- ✅ Dung lượng lớn (5-10MB)
+- Access token, refresh token, PII, permission quyết định bảo mật.
+- Dữ liệu lớn hoặc đọc/ghi liên tục trong hot path.
+- Data cần query/index.
 
-**Nhược điểm:**
-- ❌ Sync API (block main thread nếu dùng nhiều)
-- ❌ Chỉ lưu string (phải JSON.stringify object)
-- ❌ Không secure (JS đọc được → XSS risk)
+> ⚠️ `localStorage` là synchronous API. Đọc/ghi nhiều hoặc parse JSON lớn có thể block main thread.
 
-**Code Example:**
+### 3.3. 📝 `sessionStorage` - tab-scoped temporary storage
 
-```typescript
-// ============================================
-// LOCALSTORAGE - Ví Dụ Đơn Giản
-// ============================================
+`sessionStorage` có API giống `localStorage`, nhưng lifetime theo tab/session.
 
-// 1️⃣ LƯU DATA (setItem)
-// Lưu string
-localStorage.setItem('username', 'John Doe');
-
-// Lưu object (phải stringify)
-const user = { id: 1, name: 'John', role: 'admin' };
-localStorage.setItem('user', JSON.stringify(user));
-
-// Lưu array
-const cart = [
-  { id: 1, name: 'iPhone', price: 999 },
-  { id: 2, name: 'AirPods', price: 199 },
-];
-localStorage.setItem('cart', JSON.stringify(cart));
-
-// 2️⃣ ĐỌC DATA (getItem)
-// Đọc string
-const username = localStorage.getItem('username');
-console.log(username); // "John Doe"
-
-// Đọc object (phải parse)
-const userStr = localStorage.getItem('user');
-const userObj = userStr ? JSON.parse(userStr) : null;
-console.log(userObj); // { id: 1, name: 'John', role: 'admin' }
-
-// Đọc array
-const cartStr = localStorage.getItem('cart');
-const cartArray = cartStr ? JSON.parse(cartStr) : [];
-console.log(cartArray); // [{ id: 1, ... }, { id: 2, ... }]
-
-// 3️⃣ XÓA DATA
-// Xóa 1 item
-localStorage.removeItem('username');
-
-// Xóa tất cả
-localStorage.clear();
-
-// 4️⃣ CHECK TỒN TẠI
-if (localStorage.getItem('user')) {
-  console.log('User logged in');
-} else {
-  console.log('Guest');
-}
-
-// ============================================
-// Thực Tế: LocalStorage Helper
-// ============================================
-class LocalStorageHelper {
-  // Set data (tự động stringify)
-  static set<T>(key: string, value: T): void {
-    try {
-      const serialized = JSON.stringify(value);
-      localStorage.setItem(key, serialized);
-    } catch (error) {
-      console.error('LocalStorage set error:', error);
-    }
-  }
-  
-  // Get data (tự động parse)
-  static get<T>(key: string, defaultValue: T | null = null): T | null {
-    try {
-      const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : defaultValue;
-    } catch (error) {
-      console.error('LocalStorage get error:', error);
-      return defaultValue;
-    }
-  }
-  
-  // Remove item
-  static remove(key: string): void {
-    localStorage.removeItem(key);
-  }
-  
-  // Clear all
-  static clear(): void {
-    localStorage.clear();
-  }
-}
-
-// Usage: Clean API
-interface User {
-  id: number;
-  name: string;
-  role: string;
-}
-
-const user: User = { id: 1, name: 'John', role: 'admin' };
-LocalStorageHelper.set('user', user); // Tự stringify
-
-const savedUser = LocalStorageHelper.get<User>('user'); // Tự parse
-console.log(savedUser?.name); // "John"
-
-LocalStorageHelper.remove('user'); // Xóa
-
-// ============================================
-// Use Case Thực Tế: Theme Switcher
-// ============================================
-function saveTheme(theme: 'light' | 'dark') {
-  localStorage.setItem('theme', theme);
-  document.body.className = theme; // Apply theme
-}
-
-function loadTheme() {
-  const theme = localStorage.getItem('theme') || 'light';
-  document.body.className = theme;
-}
-
-// On page load
-loadTheme();
-
-// On theme button click
-document.getElementById('themeBtn')?.addEventListener('click', () => {
-  const current = localStorage.getItem('theme') || 'light';
-  const newTheme = current === 'light' ? 'dark' : 'light';
-  saveTheme(newTheme);
-});
+```ts
+sessionStorage.setItem("checkoutStep", "shipping");
+const step = sessionStorage.getItem("checkoutStep");
 ```
 
----
+Phù hợp cho:
 
-#### **📝 3. SessionStorage - "Giấy Nháp - Đóng Tab Là Mất"**
+- Wizard state tạm trong một tab.
+- Draft form không cần giữ sau khi đóng tab.
+- UI state theo tab, ví dụ filter tạm.
+- OAuth/redirect state ngắn hạn nếu không cần server đọc.
 
-**Đặc điểm:**
-- Dung lượng: **5-10MB** (giống localStorage)
-- **Mất khi đóng tab** (không persistent)
-- **Sync API** - giống localStorage
-- Dùng cho: **Form data, wizard steps, temporary state**
+Không phù hợp cho:
 
-**Ưu điểm:**
-- ✅ API giống localStorage (dễ học)
-- ✅ Tự động dọn dẹp (đóng tab = xóa)
-- ✅ Mỗi tab có storage riêng
+- Dữ liệu cần share giữa tabs.
+- Persistent preferences.
+- Sensitive tokens.
 
-**Nhược điểm:**
-- ❌ Mất khi đóng tab (không persistent)
-- ❌ Không share giữa tabs
-- ❌ Sync API (block main thread)
+> 💡 `sessionStorage` không bắn `storage` event giữa tab giống `localStorage` theo cách hữu ích, vì mỗi tab có session riêng.
 
-**Code Example:**
+### 3.4. 🗄️ IndexedDB - database async trong browser
 
-```typescript
-// ============================================
-// SESSIONSTORAGE - Ví Dụ Đơn Giản
-// ============================================
+IndexedDB là object database async, hỗ trợ transactions, object stores, indexes, cursor, structured clone, Blob/File.
 
-// API GIỐNG HỆT LOCALSTORAGE, CHỈ KHÁC TÊN!
+Phù hợp cho:
 
-// 1️⃣ LƯU DATA
-sessionStorage.setItem('formData', JSON.stringify({
-  step: 1,
-  name: 'John',
-  email: 'john@example.com'
-}));
+- Offline-first app.
+- Large datasets: catalog, messages, maps, documents.
+- File/blob cache.
+- Queue mutation khi offline.
+- Client-side search/filter cần index.
 
-// 2️⃣ ĐỌC DATA
-const formDataStr = sessionStorage.getItem('formData');
-const formData = formDataStr ? JSON.parse(formDataStr) : null;
-console.log(formData?.step); // 1
+Không nên dùng IndexedDB nếu chỉ lưu một preference nhỏ. API native khá verbose; production thường dùng wrapper như Dexie hoặc localForage.
 
-// 3️⃣ XÓA DATA
-sessionStorage.removeItem('formData');
-sessionStorage.clear(); // Xóa tất cả
+Ví dụ native tối giản:
 
-// ============================================
-// Use Case: Multi-Step Form (Wizard)
-// ============================================
-interface FormState {
-  currentStep: number;
-  data: {
-    name?: string;
-    email?: string;
-    address?: string;
-  };
-}
-
-class FormWizard {
-  private static KEY = 'wizardState';
-  
-  // Lưu state hiện tại
-  static saveState(state: FormState): void {
-    sessionStorage.setItem(this.KEY, JSON.stringify(state));
-  }
-  
-  // Đọc state (auto-load khi refresh page)
-  static loadState(): FormState | null {
-    const data = sessionStorage.getItem(this.KEY);
-    return data ? JSON.parse(data) : null;
-  }
-  
-  // Xóa state (sau khi submit)
-  static clearState(): void {
-    sessionStorage.removeItem(this.KEY);
-  }
-}
-
-// Usage:
-// Step 1: Save form data
-FormWizard.saveState({
-  currentStep: 1,
-  data: { name: 'John', email: 'john@example.com' }
-});
-
-// User refresh page → auto-restore
-const state = FormWizard.loadState();
-if (state) {
-  console.log(`Resume from step ${state.currentStep}`);
-  // Fill form với data đã lưu
-}
-
-// Step 3: Submit success → clear
-FormWizard.clearState();
-
-// ============================================
-// So Sánh LocalStorage vs SessionStorage
-// ============================================
-
-// Scenario 1: User settings (dùng localStorage)
-localStorage.setItem('language', 'vi'); // Lưu mãi mãi
-// → User quay lại sau 1 tháng vẫn thấy tiếng Việt
-
-// Scenario 2: Shopping cart (dùng localStorage)
-localStorage.setItem('cart', JSON.stringify(items)); // Lưu mãi mãi
-// → User đóng tab rồi mở lại, cart vẫn còn
-
-// Scenario 3: Form draft (dùng sessionStorage)
-sessionStorage.setItem('draft', JSON.stringify(formData)); // Mất khi đóng tab
-// → User đóng tab = mất draft (không spam localStorage)
-
-// Scenario 4: Search filters (dùng sessionStorage)
-sessionStorage.setItem('filters', JSON.stringify(filters)); // Per-tab
-// → Mỗi tab có filter riêng, không conflict
-```
-
----
-
-#### **🗄️ 4. IndexedDB - "Kho Chứa Lớn - Database Trên Browser"**
-
-**Đặc điểm:**
-- Dung lượng: **50MB - unlimited** (chrome: 60% disk)
-- **Async API** - không block UI
-- **Database-like**: tables, indexes, queries, transactions
-- Dùng cho: **Large datasets, offline apps, caching**
-
-**Ưu điểm:**
-- ✅ Dung lượng lớn (GB nếu user cho phép)
-- ✅ Async (không block UI)
-- ✅ Indexes, queries (như SQL)
-- ✅ Transactions (ACID)
-
-**Nhược điểm:**
-- ❌ API phức tạp (callback hell)
-- ❌ Khó học
-- ❌ Overkill cho data nhỏ
-
-**Code Example:**
-
-```typescript
-// ============================================
-// INDEXEDDB - Ví Dụ Đơn Giản (Simplified với Promise)
-// ============================================
-
-// 1️⃣ MỞ DATABASE
-function openDB(dbName: string, version: number = 1): Promise<IDBDatabase> {
+```ts
+function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(dbName, version);
-    
-    // onupgradeneeded: Chạy khi tạo DB lần đầu hoặc upgrade version
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      
-      // Tạo "table" (gọi là objectStore)
-      if (!db.objectStoreNames.contains('users')) {
-        const store = db.createObjectStore('users', { keyPath: 'id' });
-        // keyPath: 'id' → dùng field 'id' làm primary key
-        
-        // Tạo index (giống SQL index)
-        store.createIndex('email', 'email', { unique: true });
-        store.createIndex('name', 'name', { unique: false });
-      }
+    const request = indexedDB.open("app-db", 1);
+
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      const store = db.createObjectStore("notes", { keyPath: "id" });
+      store.createIndex("updatedAt", "updatedAt");
     };
-    
+
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
 }
-
-// 2️⃣ THÊM DATA (INSERT)
-async function addUser(db: IDBDatabase, user: any): Promise<void> {
-  return new Promise((resolve, reject) => {
-    // Tạo transaction (như BEGIN TRANSACTION trong SQL)
-    const tx = db.transaction('users', 'readwrite'); // readwrite = có thể ghi
-    const store = tx.objectStore('users');
-    
-    // Thêm data
-    const request = store.add(user);
-    
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-  });
-}
-
-// 3️⃣ ĐỌC DATA (SELECT)
-async function getUser(db: IDBDatabase, id: number): Promise<any> {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction('users', 'readonly'); // readonly = chỉ đọc
-    const store = tx.objectStore('users');
-    
-    const request = store.get(id); // Tìm theo primary key
-    
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-// 4️⃣ ĐỌC TẤT CẢ (SELECT *)
-async function getAllUsers(db: IDBDatabase): Promise<any[]> {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction('users', 'readonly');
-    const store = tx.objectStore('users');
-    
-    const request = store.getAll(); // Lấy tất cả
-    
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-// 5️⃣ CẬP NHẬT (UPDATE)
-async function updateUser(db: IDBDatabase, user: any): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction('users', 'readwrite');
-    const store = tx.objectStore('users');
-    
-    const request = store.put(user); // put = thêm hoặc update
-    
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-  });
-}
-
-// 6️⃣ XÓA (DELETE)
-async function deleteUser(db: IDBDatabase, id: number): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction('users', 'readwrite');
-    const store = tx.objectStore('users');
-    
-    const request = store.delete(id);
-    
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-  });
-}
-
-// ============================================
-// USAGE - Sử Dụng Thực Tế
-// ============================================
-async function demo() {
-  // Mở database
-  const db = await openDB('MyAppDB', 1);
-  
-  // Thêm users
-  await addUser(db, { id: 1, name: 'John', email: 'john@example.com' });
-  await addUser(db, { id: 2, name: 'Jane', email: 'jane@example.com' });
-  
-  // Đọc 1 user
-  const user = await getUser(db, 1);
-  console.log(user); // { id: 1, name: 'John', email: 'john@example.com' }
-  
-  // Đọc tất cả users
-  const users = await getAllUsers(db);
-  console.log(users); // [{ id: 1, ... }, { id: 2, ... }]
-  
-  // Update user
-  await updateUser(db, { id: 1, name: 'John Doe', email: 'john@example.com' });
-  
-  // Xóa user
-  await deleteUser(db, 2);
-  
-  // Đóng database
-  db.close();
-}
-
-demo();
-
-// ============================================
-// Use Case Thực Tế: Offline App
-// ============================================
-class OfflineCache {
-  private db: IDBDatabase | null = null;
-  
-  async init() {
-    this.db = await openDB('OfflineCache', 1);
-  }
-  
-  // Cache API response
-  async cacheArticle(article: any) {
-    if (!this.db) return;
-    await addUser(this.db, article);
-  }
-  
-  // Get từ cache
-  async getArticle(id: number) {
-    if (!this.db) return null;
-    return await getUser(this.db, id);
-  }
-}
-
-// Usage:
-const cache = new OfflineCache();
-await cache.init();
-
-// Online: Fetch từ API + cache
-const article = await fetch('/api/article/1').then(r => r.json());
-await cache.cacheArticle(article);
-
-// Offline: Đọc từ cache
-const cached = await cache.getArticle(1);
 ```
 
----
+> ✅ IndexedDB là async nên tốt hơn `localStorage` cho dữ liệu lớn, nhưng cần handle versioning, transaction error và migration.
 
-#### **🎯 Khi Nào Dùng Storage Nào?**
+### 3.5. 📣 Storage event và sync giữa tabs
 
-```typescript
-// ============================================
-// DECISION TREE - Chọn Storage Phù Hợp
-// ============================================
+Khi một tab thay đổi `localStorage`, tab khác cùng origin có thể nhận `storage` event.
 
-function selectStorage(requirement: Requirement): Storage {
-  // 1. Cần gửi server? → Cookie
-  if (requirement.sendToServer) {
-    return 'Cookie'; // Auth tokens, session IDs
+```ts
+window.addEventListener("storage", (event) => {
+  if (event.key === "theme") {
+    console.log("Theme changed in another tab:", event.newValue);
   }
-  
-  // 2. Data lớn (>5MB)? → IndexedDB
-  if (requirement.size > 5_000_000) {
-    return 'IndexedDB'; // Images, videos, large datasets
-  }
-  
-  // 3. Cần persistent (lưu mãi mãi)? → LocalStorage
-  if (requirement.persistent) {
-    return 'LocalStorage'; // Settings, preferences, cart
-  }
-  
-  // 4. Temporary (đóng tab = mất)? → SessionStorage
-  if (requirement.temporary) {
-    return 'SessionStorage'; // Form drafts, wizard steps
-  }
-  
-  // Default: LocalStorage
-  return 'LocalStorage';
-}
-
-// ============================================
-// Use Cases Thực Tế
-// ============================================
-
-// ✅ Cookie:
-// - Authentication tokens (JWT)
-// - Session IDs
-// - User tracking, analytics
-
-// ✅ LocalStorage:
-// - User settings (theme, language)
-// - Shopping cart
-// - Cached data (API responses)
-// - Recently viewed items
-
-// ✅ SessionStorage:
-// - Multi-step form data
-// - Wizard progress
-// - Search filters (per-tab)
-// - Temporary state
-
-// ✅ IndexedDB:
-// - Offline apps (PWA)
-// - Large datasets (1000+ items)
-// - Images, videos
-// - Full-text search indexes
+});
 ```
 
----
+Điểm cần nhớ:
 
-#### **📋 Best Practices (Thực Hành Tốt)**
+- Event thường không fire trong chính tab đã gọi `setItem`.
+- Chỉ dùng cho sync state nhỏ như logout/theme.
+- Với sync phức tạp, cân nhắc `BroadcastChannel`.
 
-```typescript
-// 1️⃣ ALWAYS TRY-CATCH (storage có thể full hoặc disabled)
-function safeSetItem(key: string, value: any) {
+### 3.6. 📦 Quota, eviction và private mode
+
+Storage quota phụ thuộc browser/device/origin. Không giả định “luôn còn chỗ”.
+
+```ts
+async function logStorageEstimate() {
+  if (!navigator.storage?.estimate) return;
+
+  const estimate = await navigator.storage.estimate();
+  console.log({
+    usage: estimate.usage,
+    quota: estimate.quota,
+  });
+}
+```
+
+Browser có thể evict storage khi device thiếu dung lượng, đặc biệt với data không được persist. Có thể request persistent storage:
+
+```ts
+async function requestPersistence() {
+  if (!navigator.storage?.persist) return false;
+  return navigator.storage.persist();
+}
+```
+
+> ⚠️ Private/incognito mode có quota thấp hơn hoặc behavior khác. Luôn handle lỗi khi storage unavailable/full.
+
+### 3.7. 🧰 Cache API khác gì Browser Storage?
+
+Cache API thường dùng với Service Worker để cache HTTP `Request`/`Response`, không phải general key-value app state.
+
+| Nhu cầu | Chọn |
+|---|---|
+| Cache HTML/CSS/JS/image/API response cho offline | Cache API |
+| Lưu user preferences nhỏ | `localStorage` |
+| Lưu session/tab draft | `sessionStorage` |
+| Lưu database offline có query/index | IndexedDB |
+| Server cần đọc session trên request | Cookie |
+
+## 4. 🧪 Practical TypeScript/JavaScript Examples
+
+### 4.1. ✅ Typed `localStorage` helper có error handling
+
+```ts
+type StorageResult<T> =
+  | { ok: true; value: T }
+  | { ok: false; error: "missing" | "parse-error" | "quota" | "unavailable" };
+
+export function readJson<T>(key: string): StorageResult<T> {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    const raw = window.localStorage.getItem(key);
+    if (raw === null) return { ok: false, error: "missing" };
+
+    return { ok: true, value: JSON.parse(raw) as T };
+  } catch {
+    return { ok: false, error: "parse-error" };
+  }
+}
+
+export function writeJson<T>(key: string, value: T): StorageResult<T> {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+    return { ok: true, value };
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'QuotaExceededError') {
-      console.error('Storage full!');
-      // Clear old data hoặc notify user
+    if (error instanceof DOMException && error.name === "QuotaExceededError") {
+      return { ok: false, error: "quota" };
+    }
+
+    return { ok: false, error: "unavailable" };
+  }
+}
+```
+
+### 4.2. ✅ React hook đọc storage an toàn với SSR
+
+```tsx
+function useStoredTheme() {
+  const [theme, setTheme] = React.useState<"light" | "dark">("light");
+
+  React.useEffect(() => {
+    const stored = window.localStorage.getItem("theme");
+    if (stored === "light" || stored === "dark") {
+      setTheme(stored);
+    }
+  }, []);
+
+  const updateTheme = React.useCallback((nextTheme: "light" | "dark") => {
+    setTheme(nextTheme);
+    window.localStorage.setItem("theme", nextTheme);
+  }, []);
+
+  return { theme, setTheme: updateTheme };
+}
+```
+
+> 💡 Không đọc `localStorage` trực tiếp trong render server. Dùng `useEffect`, client-only boundary, hoặc initial value từ server.
+
+### 4.3. ✅ Cookie helper cho non-HttpOnly cookie
+
+```ts
+function setClientCookie(name: string, value: string, maxAgeSeconds: number) {
+  document.cookie = [
+    `${encodeURIComponent(name)}=${encodeURIComponent(value)}`,
+    `Max-Age=${maxAgeSeconds}`,
+    "Path=/",
+    "SameSite=Lax",
+    location.protocol === "https:" ? "Secure" : "",
+  ]
+    .filter(Boolean)
+    .join("; ");
+}
+
+function getClientCookie(name: string): string | null {
+  const encodedName = `${encodeURIComponent(name)}=`;
+
+  return (
+    document.cookie
+      .split("; ")
+      .find((row) => row.startsWith(encodedName))
+      ?.slice(encodedName.length) ?? null
+  );
+}
+```
+
+⚠️ Client-side cookie không thể set `HttpOnly`. Auth/session cookie nên được set từ server.
+
+### 4.4. ✅ IndexedDB với Dexie-style abstraction
+
+Native IndexedDB dài; trong production thường dùng wrapper. Ví dụ concept:
+
+```ts
+type Note = {
+  id: string;
+  title: string;
+  body: string;
+  updatedAt: number;
+};
+
+interface NotesRepository {
+  get(id: string): Promise<Note | undefined>;
+  put(note: Note): Promise<void>;
+  listRecent(limit: number): Promise<Note[]>;
+}
+```
+
+Repository boundary giúp UI không phụ thuộc trực tiếp vào IndexedDB implementation. Sau này có thể đổi từ native IndexedDB sang Dexie/localForage mà ít ảnh hưởng component.
+
+### 4.5. ✅ Sync logout giữa tabs bằng `storage`
+
+```ts
+function broadcastLogout() {
+  localStorage.setItem("auth:logout", String(Date.now()));
+}
+
+function listenForLogout(onLogout: () => void) {
+  function handleStorage(event: StorageEvent) {
+    if (event.key === "auth:logout") {
+      onLogout();
     }
   }
-}
 
-// 2️⃣ CHECK AVAILABILITY
-function isLocalStorageAvailable(): boolean {
-  try {
-    const test = '__test__';
-    localStorage.setItem(test, test);
-    localStorage.removeItem(test);
-    return true;
-  } catch {
-    return false; // User disabled hoặc browser không support
-  }
-}
-
-// 3️⃣ NAMESPACE KEYS (tránh conflict)
-const STORAGE_PREFIX = 'myapp_';
-
-function setAppData(key: string, value: any) {
-  localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(value));
-}
-
-function getAppData(key: string) {
-  const item = localStorage.getItem(STORAGE_PREFIX + key);
-  return item ? JSON.parse(item) : null;
-}
-
-// Usage:
-setAppData('user', { name: 'John' }); // Lưu: "myapp_user"
-
-// 4️⃣ VERSIONING (để migration)
-interface StorageData<T> {
-  version: number;
-  data: T;
-}
-
-function setVersionedData<T>(key: string, data: T, version: number = 1) {
-  const wrapper: StorageData<T> = { version, data };
-  localStorage.setItem(key, JSON.stringify(wrapper));
-}
-
-function getVersionedData<T>(key: string, currentVersion: number): T | null {
-  const item = localStorage.getItem(key);
-  if (!item) return null;
-  
-  const wrapper: StorageData<T> = JSON.parse(item);
-  
-  if (wrapper.version !== currentVersion) {
-    // Migration logic here
-    console.warn('Old data version, migrating...');
-    return null;
-  }
-  
-  return wrapper.data;
-}
-
-// 5️⃣ EXPIRY for LocalStorage (giống cookie)
-interface CachedData<T> {
-  data: T;
-  expiry: number; // timestamp
-}
-
-function setWithExpiry<T>(key: string, value: T, ttlMs: number) {
-  const item: CachedData<T> = {
-    data: value,
-    expiry: Date.now() + ttlMs,
-  };
-  localStorage.setItem(key, JSON.stringify(item));
-}
-
-function getWithExpiry<T>(key: string): T | null {
-  const itemStr = localStorage.getItem(key);
-  if (!itemStr) return null;
-  
-  const item: CachedData<T> = JSON.parse(itemStr);
-  
-  // Check expiry
-  if (Date.now() > item.expiry) {
-    localStorage.removeItem(key); // Expired, xóa đi
-    return null;
-  }
-  
-  return item.data;
-}
-
-// Usage: Cache API response trong 1 giờ
-setWithExpiry('apiCache', { users: [...] }, 60 * 60 * 1000); // 1 hour
-
-const cached = getWithExpiry('apiCache');
-if (cached) {
-  console.log('Use cache');
-} else {
-  console.log('Cache expired, fetch new');
+  window.addEventListener("storage", handleStorage);
+  return () => window.removeEventListener("storage", handleStorage);
 }
 ```
 
----
+## 5. 🏭 Production Notes / React Implications
 
-#### **❌ Common Mistakes (Lỗi Thường Gặp)**
+- 🔐 **Auth:** Prefer `HttpOnly + Secure + SameSite` cookies for session. Không lưu token nhạy cảm trong `localStorage`.
+- 🧨 **XSS:** Nếu attacker chạy được JS, họ đọc được `localStorage`, `sessionStorage`, non-HttpOnly cookies và IndexedDB.
+- 🛡️ **CSRF:** Cookie auth cần `SameSite`, CSRF token hoặc server-side CSRF mitigation tùy flow.
+- ⚛️ **React hydration:** Đọc storage sau mount hoặc inject server initial state để tránh mismatch.
+- 🚀 **Performance:** `localStorage`/`sessionStorage` sync và JSON parse/stringify có thể block render. Cache parsed value trong memory nếu dùng nhiều.
+- 🗄️ **Offline:** IndexedDB + Service Worker + Cache API thường đi cùng nhau cho offline-first.
+- 🧹 **Schema migration:** Dữ liệu persistent cần versioning và migration; nếu parse fail, clear/reset gracefully.
+- 📦 **Quota:** Luôn catch `QuotaExceededError`. Với IndexedDB lớn, hiển thị UX dọn cache hoặc retry.
+- 🧪 **Testing:** Mock storage trong unit tests, test private mode/unavailable storage, malformed JSON, quota failure, multi-tab sync.
+- ♿ **UX:** Nếu storage fail, app vẫn nên degrade được: default settings, retry, hoặc server source of truth.
 
-```typescript
-// ❌ LỖI 1: Lưu object trực tiếp (không stringify)
-localStorage.setItem('user', { name: 'John' }); // ❌ Lưu "[object Object]"
+## 6. ⚠️ Common Pitfalls
 
-// ✅ ĐÚNG: Stringify trước
-localStorage.setItem('user', JSON.stringify({ name: 'John' }));
+- ❌ Lưu access token/refresh token/PII trong `localStorage`.
+- ❌ Nghĩ client storage là trusted source; user có thể sửa mọi thứ.
+- ❌ Đọc `localStorage` trong SSR render gây crash hoặc hydration mismatch.
+- ❌ Không catch `JSON.parse`, làm app crash vì dữ liệu cũ/malformed.
+- ❌ Không handle `QuotaExceededError`.
+- ❌ Lưu object lớn vào `localStorage` rồi parse trong render path.
+- ❌ Dùng cookie cho data lớn, làm mọi request nặng hơn.
+- ❌ Quên cookie `Secure`, `HttpOnly`, `SameSite`.
+- ❌ Dùng IndexedDB cho preference nhỏ làm complexity tăng không cần thiết.
+- ❌ Không version schema IndexedDB/local persisted data.
+- ❌ Dùng `localStorage.clear()` trong app shared origin, xoá nhầm key của module khác.
+- ❌ Tin `storage` event fire trong cùng tab thay đổi data.
 
-// ❌ LỖI 2: Quên parse khi đọc
-const user = localStorage.getItem('user'); // ❌ user là string!
-console.log(user.name); // undefined
+## 7. ✅ Decision Guide or Checklist
 
-// ✅ ĐÚNG: Parse sau khi đọc
-const userStr = localStorage.getItem('user');
-const user = userStr ? JSON.parse(userStr) : null;
-console.log(user?.name); // "John"
+### Chọn storage nào?
 
-// ❌ LỖI 3: Lưu sensitive data vào localStorage
-localStorage.setItem('password', 'secret123'); // ❌ Không secure!
+| Nhu cầu | Chọn | Lý do |
+|---|---|---|
+| Server cần tự đọc session trên request | Cookie | Browser tự gửi kèm HTTP request |
+| Auth session production | Server-set `HttpOnly` cookie | JS không đọc được token |
+| Theme/language/preference nhỏ | `localStorage` | Persistent, dễ dùng |
+| Draft tạm theo tab | `sessionStorage` | Đóng tab là mất, không share tab |
+| Offline data lớn/query/index | IndexedDB | Async database, store object/blob |
+| Cache HTTP response/assets | Cache API | Thiết kế cho Request/Response |
+| Sync logout/theme giữa tabs | `localStorage` event hoặc `BroadcastChannel` | Cross-tab communication |
+| Sensitive data client-side | Tránh lưu, hoặc mã hóa + threat model rõ | Browser storage không phải secure vault |
 
-// ✅ ĐÚNG: Chỉ lưu non-sensitive data
-// Sensitive data (passwords, credit cards) → server session hoặc httpOnly cookie
+### Checklist trước khi lưu dữ liệu
 
-// ❌ LỖI 4: Không check quota exceeded
-for (let i = 0; i < 10000; i++) {
-  localStorage.setItem(`key${i}`, 'x'.repeat(1000)); // ❌ Có thể full!
-}
-
-// ✅ ĐÚNG: Try-catch
-try {
-  localStorage.setItem('key', largeData);
-} catch (error) {
-  if (error.name === 'QuotaExceededError') {
-    console.error('Storage full, clearing old data');
-    localStorage.clear();
-  }
-}
-
-// ❌ LỖI 5: Dùng IndexedDB cho data nhỏ
-await openDB(...); // ❌ Overkill cho lưu 1 string
-await addUser(db, { name: 'John' });
-
-// ✅ ĐÚNG: LocalStorage cho data nhỏ
-localStorage.setItem('name', 'John'); // Đơn giản hơn nhiều
-
-// ❌ LỖI 6: Quên đóng IndexedDB connection
-const db = await openDB('MyDB', 1);
-// ... use db
-// ❌ Không đóng → memory leak
-
-// ✅ ĐÚNG: Luôn đóng
-const db = await openDB('MyDB', 1);
-try {
-  // ... use db
-} finally {
-  db.close(); // Always close
-}
+```txt
+□ Dữ liệu có nhạy cảm không?
+□ Server có cần đọc tự động trên request không?
+□ Dữ liệu cần sống bao lâu?
+□ Có cần share giữa tabs không?
+□ Dung lượng có thể lớn không?
+□ API sync có ảnh hưởng render/hot path không?
+□ Có cần query/index/offline không?
+□ Có schema version và migration chưa?
+□ Có catch parse/quota/unavailable storage chưa?
+□ SSR/hydration có đọc storage đúng client-only chưa?
+□ Có kế hoạch clear/logout/privacy không?
 ```
 
----
+## 8. 🗣️ Short Interview Answer
 
-#### **💡 Summary (Tóm Tắt)**
+Theo em, browser storage nên chọn theo use case chứ không chọn theo thói quen. Cookie nhỏ nhưng được gửi tự động lên server, nên phù hợp cho session/auth nếu được set bằng `HttpOnly`, `Secure`, `SameSite`. `localStorage` persistent và dễ dùng cho theme hoặc preference, nhưng là sync API và JavaScript đọc được nên không nên lưu token nhạy cảm. `sessionStorage` giống localStorage nhưng scoped theo tab, hợp cho draft hoặc wizard tạm.
 
-**Cookie 🍪**
-- **4KB**, gửi kèm mọi request, có expiry
-- **Dùng cho**: Auth tokens, session IDs
-- **API**: `document.cookie`
+Với dữ liệu lớn hoặc offline-first, em sẽ dùng IndexedDB vì nó async, hỗ trợ object store, index, transaction và Blob/File. Trong production em luôn nghĩ thêm về XSS, CSRF, quota, private mode, schema migration và SSR/hydration. Điểm quan trọng là client storage không đáng tin cậy; server vẫn phải validate mọi dữ liệu quan trọng.
 
-**LocalStorage 💾**
-- **5-10MB**, lưu mãi mãi, sync API
-- **Dùng cho**: Settings, preferences, cart
-- **API**: `localStorage.getItem/setItem`
+## 9. 🧾 Ghi nhớ nhanh
 
-**SessionStorage 📝**
-- **5-10MB**, mất khi đóng tab, sync API
-- **Dùng cho**: Form drafts, temporary state
-- **API**: `sessionStorage.getItem/setItem`
+- Cookie tự gửi server; `localStorage`, `sessionStorage`, IndexedDB thì không.
+- Auth session nên dùng server-set `HttpOnly + Secure + SameSite` cookie.
+- `localStorage` persistent nhưng sync và JS đọc được.
+- `sessionStorage` theo tab, đóng tab là mất.
+- IndexedDB async, hợp dữ liệu lớn/offline/query/blob.
+- `localStorage` chỉ lưu string, object phải `JSON.stringify`.
+- Luôn catch `JSON.parse` và `QuotaExceededError`.
+- Không đọc browser storage trong SSR render.
+- `storage` event hữu ích để sync giữa tabs, nhưng không fire trong cùng tab.
+- Cache API dành cho HTTP responses, không thay thế IndexedDB/localStorage cho app state.
 
-**IndexedDB 🗄️**
-- **50MB+**, async, database-like
-- **Dùng cho**: Large datasets, offline apps
-- **API**: `indexedDB.open`, transactions, objectStores
+## 10. 📖 Giải thích các thuật ngữ trong topic
 
-**Key Takeaway:**
-- Data nhỏ + simple → **LocalStorage/SessionStorage**
-- Gửi server → **Cookie**
-- Data lớn + complex → **IndexedDB**
-- Luôn **try-catch**, **check availability**, **namespace keys**
-
----
+- `Origin`: Bộ ba scheme + host + port, ví dụ `https://example.com:443`.
+- `Cookie`: Key-value nhỏ do browser lưu và gửi kèm HTTP request phù hợp.
+- `HttpOnly`: Cookie flag khiến JavaScript không đọc được cookie.
+- `Secure`: Cookie flag chỉ gửi qua HTTPS.
+- `SameSite`: Cookie flag kiểm soát cookie có được gửi trong cross-site request không.
+- `CSRF`: Tấn công lợi dụng browser tự gửi cookie để thực hiện request ngoài ý muốn.
+- `XSS`: Tấn công chạy JavaScript độc hại trong site, có thể đọc browser storage JS-accessible.
+- `localStorage`: Persistent synchronous key-value storage theo origin.
+- `sessionStorage`: Synchronous key-value storage theo tab/session.
+- `IndexedDB`: Async object database trong browser.
+- `Object store`: “Bảng” trong IndexedDB để lưu object.
+- `Index`: Cấu trúc giúp query IndexedDB theo field khác key chính.
+- `Transaction`: Nhóm thao tác IndexedDB được commit/rollback cùng nhau.
+- `Quota`: Giới hạn dung lượng storage browser cho origin.
+- `Eviction`: Browser xoá dữ liệu storage khi thiếu dung lượng hoặc theo policy.
+- `Storage event`: Event bắn ở tab khác khi `localStorage` thay đổi.
+- `BroadcastChannel`: API giao tiếp giữa tabs/windows cùng origin.
+- `Cache API`: API cache HTTP Request/Response, thường dùng với Service Worker.
+- `Hydration mismatch`: Lỗi khi HTML server render không khớp render đầu tiên trên client.
+- `Schema migration`: Quá trình nâng version dữ liệu đã lưu khi shape thay đổi.

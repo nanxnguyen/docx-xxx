@@ -1,2433 +1,942 @@
-# 🎨 Q53: Component Libraries Comparison
+# 🎨 Topic 43: Component Libraries Comparison - MUI, Ant Design, Chakra, Mantine, Radix, Headless UI & shadcn/ui
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## 1. ⭐ Senior/Staff Summary
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+Component library giúp team ship UI nhanh hơn bằng cách cung cấp sẵn `Button`, `Input`, `Modal`, `Select`, `Table`, `DatePicker`, `Toast`, `Tooltip`, keyboard interaction, focus management và accessibility baseline. Nhưng chọn sai library có thể tạo **bundle bloat**, UI khó customize, accessibility giả an toàn, vendor lock-in và design system rời rạc.
 
-**"Component Libraries = pre-built UI components để tăng tốc development. MUI = Material Design, enterprise-ready. Ant Design = enterprise admin dashboards. Chakra UI = simple, customizable. Radix UI = headless, accessible. Shadcn/ui = copy-paste components. Chọn library dựa trên: design system, bundle size, customization needs, accessibility requirements."**
+Điểm senior cần nhìn:
 
-**🔑 Top Component Libraries (Thư Viện Component Hàng Đầu):**
+- ✅ **MUI**: mạnh cho enterprise app cần Material Design, ecosystem lớn, MUI X mạnh cho Data Grid/Date Picker nhưng customization sâu có thể tốn công.
+- ✅ **Ant Design**: rất hợp admin dashboard, back-office, data-heavy app; nhiều component enterprise sẵn có nhưng style/opinion khá mạnh.
+- ✅ **Chakra UI**: DX tốt, style props dễ học, hợp app cần UI nhanh và accessible defaults; cần kiểm soát design token để tránh inline-style feeling.
+- ✅ **Mantine**: full-featured, nhiều hooks/components, hợp product app cần form/date/table-like primitives nhanh; API thực dụng.
+- ✅ **Radix UI**: headless primitives, accessibility/focus behavior tốt, hợp custom design system; cần tự styling và tự build layer component.
+- ✅ **Headless UI**: unstyled accessible components từ Tailwind Labs, hợp Tailwind app cần primitives đơn giản; coverage ít hơn Radix.
+- ✅ **shadcn/ui**: không phải package component library truyền thống; là collection component copy vào codebase, thường dựa trên Radix + Tailwind. Hợp team muốn sở hữu code và customize sâu.
 
-| Library (Thư viện) | Bundle Size (Kích thước bundle)         | Design System (Hệ thống thiết kế) | Customization (Tùy chỉnh)             | Accessibility (Khả năng truy cập) | Best For (Tốt nhất cho)                        |
-| ------------------ | --------------------------------------- | --------------------------------- | ------------------------------------- | --------------------------------- | ---------------------------------------------- |
-| **🏗️ MUI**         | ⚠️ Large (~300KB) (Lớn)                 | Material Design                   | ✅ Theme-based (Dựa trên theme)       | ✅ WCAG 2.1                       | Enterprise apps (Ứng dụng doanh nghiệp)        |
-| **📊 Ant Design**  | ⚠️ Large (~500KB) (Rất lớn)             | Ant Design                        | ✅ Theme-based (Dựa trên theme)       | ✅ Good (Tốt)                     | Admin dashboards (Bảng điều khiển quản trị)    |
-| **🎨 Chakra UI**   | ✅ Medium (~150KB) (Trung bình)         | Custom (Tùy chỉnh)                | ✅ Props-based (Dựa trên props)       | ✅ Excellent (Xuất sắc)           | Modern apps (Ứng dụng hiện đại)                |
-| **⚡ Mantine**     | ✅ Medium (~200KB) (Trung bình)         | Custom (Tùy chỉnh)                | ✅ Props-based (Dựa trên props)       | ✅ Excellent (Xuất sắc)           | Full-featured apps (Ứng dụng đầy đủ tính năng) |
-| **🧩 Radix UI**    | ✅ Small (~50KB) (Nhỏ)                  | Headless (Không style)            | ✅ Full control (Kiểm soát hoàn toàn) | ✅ Excellent (Xuất sắc)           | Custom designs (Thiết kế tùy chỉnh)            |
-| **📋 Shadcn/ui**   | ✅ Zero (copy code) (Không - copy code) | Tailwind                          | ✅ Full control (Kiểm soát hoàn toàn) | ✅ Excellent (Xuất sắc)           | Tailwind projects (Dự án Tailwind)             |
+> 💡 Mental model: **Component library không chỉ là “giao diện đẹp”**. Nó là quyết định kiến trúc ảnh hưởng tới design system, accessibility, bundle, SSR/RSC, testing, team velocity và chi phí maintain nhiều năm.
 
-**🔑 Key Features (Tính Năng Chính):**
+## 2. 🧠 Key Mental Model
 
-**1. 🏗️ Material-UI (MUI):**
+### 2.1. Ba nhóm component library
 
-- **Material Design 3** - Google's design system (Hệ thống thiết kế của Google)
-- **Theming (Giao diện)** - Powerful theme customization (Tùy chỉnh theme mạnh mẽ)
-- **Enterprise-ready (Sẵn sàng doanh nghiệp)** - Production-tested (Đã được kiểm thử sản xuất)
-- **Large ecosystem (Hệ sinh thái lớn)** - Many components (Nhiều components)
-- **Bundle size (Kích thước bundle)** - Large (~300KB gzipped) (Lớn)
+```text
+Styled / Opinionated
+  MUI, Ant Design, Chakra UI, Mantine
+  → Ship nhanh, nhiều component, có design language sẵn.
 
-**2. 📊 Ant Design:**
+Headless / Primitive
+  Radix UI, Headless UI
+  → Có behavior + accessibility, tự quyết định styling.
 
-- **Enterprise focus (Tập trung doanh nghiệp)** - Admin dashboards, data tables (Bảng điều khiển quản trị, bảng dữ liệu)
-- **Rich components (Components phong phú)** - Forms, tables, charts (Form, bảng, biểu đồ)
-- **Chinese origin (Nguồn gốc Trung Quốc)** - Popular in Asia (Phổ biến ở Châu Á)
-- **Bundle size (Kích thước bundle)** - Very large (~500KB) (Rất lớn)
-
-**3. 🎨 Chakra UI:**
-
-- **Simple API (API đơn giản)** - Easy to learn (Dễ học)
-- **Props-based styling (Styling dựa trên props)** - No CSS needed (Không cần CSS)
-- **Accessibility (Khả năng truy cập)** - Built-in a11y (Tích hợp sẵn)
-- **Bundle size (Kích thước bundle)** - Medium (~150KB) (Trung bình)
-
-**4. 🧩 Radix UI:**
-
-- **Headless (Không style)** - No styles, full control (Không có style, kiểm soát hoàn toàn)
-- **Accessible (Có thể truy cập)** - WCAG 2.1 compliant (Tuân thủ WCAG 2.1)
-- **Composable (Có thể kết hợp)** - Mix and match (Trộn và kết hợp)
-- **Bundle size (Kích thước bundle)** - Small (~50KB per component) (Nhỏ - mỗi component)
-
-**5. 📋 Shadcn/ui:**
-
-- **Copy-paste (Sao chép-dán)** - Own the code (Sở hữu code)
-- **Tailwind CSS** - Utility-first (Ưu tiên utility)
-- **Customizable (Có thể tùy chỉnh)** - Full control (Kiểm soát hoàn toàn)
-- **Bundle size (Kích thước bundle)** - Zero (you copy code) (Không - bạn copy code)
-
-**⚠️ Lỗi Thường Gặp (Common Mistakes):**
-
-- ❌ Chọn library quá lớn cho simple app → bundle bloat (Choose library too large for simple app → bundle bloat)
-- ❌ Không customize theme → app giống demo (Don't customize theme → app looks like demo)
-- ❌ Ignore accessibility → không pass WCAG (Ignore accessibility → doesn't pass WCAG)
-- ❌ Mix nhiều libraries → inconsistent design (Mix multiple libraries → inconsistent design)
-- ❌ Không tree-shake → import toàn bộ library (Don't tree-shake → import entire library)
-
-**💡 Kiến Thức Senior (Senior Knowledge):**
-
-- **🌳 Tree-shaking**: Import specific components (not entire library) (Import components cụ thể - không phải toàn bộ thư viện)
-- **🎨 Theme customization**: Override design tokens, not CSS (Ghi đè design tokens, không phải CSS)
-- **♿ Accessibility**: Use semantic HTML, ARIA attributes (Sử dụng HTML ngữ nghĩa, thuộc tính ARIA)
-- **📦 Bundle optimization**: Code splitting, lazy loading (Tối ưu bundle - chia code, tải lười)
-- **🎨 Design system**: Consistent spacing, colors, typography (Hệ thống thiết kế - khoảng cách, màu sắc, typography nhất quán)
-
-> **Câu hỏi phỏng vấn Senior Frontend Developer** > **Độ khó:** ⭐⭐⭐ (Intermediate-Advanced)
-> **Thời gian trả lời:** 10-12 phút
-
----
-
-## 📋 **Mục Lục**
-
-1. [Component Libraries Overview](#1-component-libraries-overview)
-2. [Material-UI (MUI)](#2-material-ui-mui)
-3. [Ant Design](#3-ant-design)
-4. [Chakra UI](#4-chakra-ui)
-5. [Mantine](#5-mantine)
-6. [Radix UI](#6-radix-ui)
-7. [Headless UI](#7-headless-ui)
-8. [Shadcn/ui](#8-shadcnui)
-9. [Comparison Matrix](#9-comparison-matrix)
-10. [Choosing the Right Library](#10-choosing-the-right-library)
-11. [Best Practices](#11-best-practices)
-
----
-
-## 1. Component Libraries Overview
-
-### **1.1. What are Component Libraries?**
-
-```typescript
-/**
- * 🎨 COMPONENT LIBRARIES = Pre-built UI components để tăng tốc development
- *
- * 💡 Thay vì tự code từ đầu:
- * - Button, Input, Modal, Table, Form...
- * - Mỗi component cần: styling, accessibility, keyboard navigation, responsive...
- * - Tốn thời gian: 1-2 tuần chỉ để build basic components
- *
- * ✅ Dùng Component Library:
- * - Import và dùng ngay: <Button>Click me</Button>
- * - Đã có: styling, accessibility, responsive, keyboard support
- * - Tiết kiệm: 80% thời gian development
- * - Consistent: Design system nhất quán
- */
-
-// ❌ TỰ CODE TỪ ĐẦU (không dùng library - without using library)
-const CustomButton = ({ children, onClick }) => {
-  // 💡 children: Nội dung bên trong button (Content inside button)
-  // 💡 onClick: Hàm xử lý khi click (Click handler function)
-
-  return (
-    <button
-      onClick={onClick} // 🖱️ Xử lý sự kiện click (Handle click event)
-      style={{
-        padding: '8px 16px', // 📏 Padding trên/dưới 8px, trái/phải 16px
-        backgroundColor: '#1976d2', // 🎨 Màu nền xanh dương (Blue background color)
-        color: 'white', // ⚪ Màu chữ trắng (White text color)
-        border: 'none', // 🚫 Không có viền (No border)
-        borderRadius: '4px', // 📐 Bo góc 4px (4px border radius)
-        cursor: 'pointer', // 🖱️ Con trỏ chuột thành pointer khi hover (Pointer cursor on hover)
-        // ... 50+ dòng CSS nữa (50+ more lines of CSS)
-        // ❌ Thiếu: focus states, disabled states, loading states, accessibility...
-        // (Missing: focus states, disabled states, loading states, accessibility...)
-      }}
-    >
-      {children} {/* 📝 Hiển thị nội dung button (Display button content) */}
-    </button>
-  );
-};
-// 💥 Vấn đề (Problems):
-// - Tốn thời gian code (Time-consuming to code)
-// - Không consistent với design system (Not consistent with design system)
-// - Thiếu accessibility (keyboard navigation, screen reader support)
-//   (Missing accessibility - keyboard navigation, screen reader support)
-// - Không responsive (Not responsive)
-// - Phải maintain code (Must maintain code)
-
-// ✅ DÙNG COMPONENT LIBRARY (MUI) - Using Component Library (MUI)
-import { Button } from '@mui/material'; // 📦 Import Button component từ MUI
-
-const MyButton = () => {
-  // 💡 Component function không nhận props (Component function doesn't receive props)
-
-  return (
-    <Button
-      variant="contained" // 🎨 Kiểu button: contained (có nền), outlined (có viền), text (chỉ chữ)
-      // (Button style: contained - with background, outlined - with border, text - text only)
-      onClick={handleClick} // 🖱️ Hàm xử lý khi click (Click handler function)
-    >
-      Click me {/* 📝 Nội dung button (Button content) */}
-    </Button>
-  );
-};
-// 🚀 Ưu điểm (Advantages):
-// - Code ngắn gọn (1 dòng) (Concise code - 1 line)
-// - Đã có: styling, accessibility, responsive, keyboard support
-//   (Already has: styling, accessibility, responsive, keyboard support)
-// - Consistent với Material Design (Consistent with Material Design)
-// - Production-ready (Sẵn sàng cho production)
+Copy-owned components
+  shadcn/ui
+  → Copy code vào repo, team sở hữu và chỉnh sửa như code nội bộ.
 ```
 
-### **1.2. When to Use Component Libraries?**
+### 2.2. Tradeoff cốt lõi
 
-```typescript
-/**
- * ✅ NÊN DÙNG COMPONENT LIBRARY KHI:
- *
- * 1️⃣ 🚀 Tăng tốc development
- *    - Deadline gấp, cần ship nhanh
- *    - Team nhỏ, không có designer chuyên nghiệp
- *    - MVP/Prototype cần làm nhanh
- *
- * 2️⃣ 🎨 Cần design system nhất quán
- *    - Enterprise app với nhiều screens
- *    - Team lớn, cần consistency
- *    - Brand guidelines rõ ràng
- *
- * 3️⃣ ♿ Accessibility là requirement
- *    - Government/Healthcare apps (bắt buộc WCAG 2.1)
- *    - Public-facing apps
- *    - Libraries đã test accessibility sẵn
- *
- * 4️⃣ 📦 Cần nhiều components phức tạp
- *    - Data tables với sorting, filtering, pagination
- *    - Date pickers, rich text editors
- *    - Charts, graphs
- *    - Tự code tốn thời gian
- *
- * ❌ KHÔNG NÊN DÙNG KHI:
- *
- * 1️⃣ 🎨 Design độc đáo, không theo standard
- *    - Custom design system riêng
- *    - Brand identity đặc biệt
- *    - Library không match design
- *
- * 2️⃣ 📦 Bundle size là concern chính
- *    - Mobile app, cần tối ưu size
- *    - Library quá lớn (>500KB)
- *    - Chỉ cần 1-2 components đơn giản
- *
- * 3️⃣ 🔧 Cần control hoàn toàn
- *    - Custom behavior phức tạp
- *    - Performance critical
- *    - Library không đáp ứng được
- */
-```
+| Trục đánh giá | Styled library | Headless library | shadcn/ui |
+|---|---|---|---|
+| Ship nhanh | ✅ Cao | ⚠️ Trung bình | ✅ Cao nếu dùng Tailwind |
+| Custom brand | ⚠️ Tùy library | ✅ Rất tốt | ✅ Rất tốt |
+| Accessibility behavior | ✅ Có sẵn nhiều | ✅ Rất mạnh | ✅ Dựa nhiều vào Radix |
+| Bundle control | ⚠️ Phải kiểm tra | ✅ Tốt hơn | ✅ Bạn kiểm soát code |
+| Maintenance | ✅ Library update hộ | ⚠️ Tự build wrapper | ⚠️ Tự merge update |
+| Design consistency | ✅ Nếu dùng theme đúng | ✅ Nếu design token tốt | ✅ Nếu governance tốt |
+| Vendor lock-in | ⚠️ Trung bình/cao | ✅ Thấp hơn | ✅ Thấp hơn nhưng code fork nhiều |
 
----
+### 2.3. Một câu hỏi quyết định
 
-## 2. Material-UI (MUI)
+Trước khi chọn library, hỏi:
 
-### **2.1. Overview**
+> Team cần **ship nhanh theo design có sẵn**, hay cần **xây design system riêng có kiểm soát lâu dài**?
 
-```typescript
-/**
- * 🎨 MATERIAL-UI (MUI) = Component library theo Material Design của Google
- *
- * ✅ ƯU ĐIỂM:
- * - Material Design 3: Design system chuẩn của Google
- * - Enterprise-ready: Được dùng bởi nhiều công ty lớn
- * - Rich components: 100+ components (Button, Table, Form, DatePicker...)
- * - Theming: Customize theme dễ dàng
- * - TypeScript: Full TypeScript support
- * - Documentation: Tài liệu rất chi tiết
- * - Community: Large community, nhiều resources
- *
- * ❌ NHƯỢC ĐIỂM:
- * - Bundle size: Lớn (~300KB gzipped)
- * - Learning curve: Cần học Material Design concepts
- * - Customization: Khó customize sâu (phải override nhiều)
- * - Design: Material Design có thể không phù hợp mọi brand
- *
- * 🎯 USE CASES:
- * - Enterprise applications
- * - Admin dashboards
- * - Apps cần Material Design look
- * - Large teams cần consistency
- */
+Nếu ship nhanh cho admin/internal tool, chọn MUI/Ant/Mantine thường hợp lý. Nếu xây product brand riêng hoặc design system nhiều năm, Radix/shadcn/headless approach thường dễ kiểm soát hơn.
 
-// 📦 INSTALLATION
-// npm install @mui/material @emotion/react @emotion/styled
-// hoặc
-// npm install @mui/material @mui/styled-engine-sc styled-components
+## 3. 📚 Main Concepts
 
-// ✅ BASIC USAGE (Cách Sử Dụng Cơ Bản)
-import { Button, TextField, Box, Stack } from '@mui/material';
-// 📦 Import các components cần thiết từ MUI
-// (Import necessary components from MUI)
+### 3.1. Component library giải quyết gì?
 
-function LoginForm() {
-  // 💡 Component form đăng nhập (Login form component)
+Một component production không chỉ là CSS:
 
-  return (
-    <Box sx={{ p: 3 }}>
-      {/* 📦 Box = div với sx prop (styling)
-          (Box = div with sx prop for styling)
-          💡 sx={{ p: 3 }} = padding: 24px (3 * 8px base spacing)
-          (sx={{ p: 3 }} = padding: 24px - 3 times base spacing of 8px) */}
-      <Stack spacing={2}>
-        {/* 📊 Stack = flex container với spacing
-            (Stack = flex container with spacing)
-            💡 spacing={2} = khoảng cách giữa các items: 16px (2 * 8px)
-            (spacing={2} = gap between items: 16px - 2 times base spacing) */}
+- visual states: default, hover, active, disabled, loading, error
+- keyboard interaction: `Tab`, `Enter`, `Escape`, arrow keys
+- focus management: focus trap trong modal, restore focus sau khi đóng
+- accessibility: semantic HTML, ARIA, screen reader behavior
+- responsiveness: layout, touch target, mobile behavior
+- theming: color, spacing, typography, radius, shadow, dark mode
+- integration: form library, router, SSR, RSC, testing
+- maintenance: breaking changes, token migration, browser support
 
-        <TextField
-          label="Email" // 🏷️ Label hiển thị trên input (Label displayed on input)
-          type="email" // 📧 Kiểu input: email (Input type: email)
-          variant="outlined" // 🎨 Variant: outlined (có viền), filled (có nền), standard (chuẩn)
-          // (Variant: outlined - with border, filled - with background, standard - default)
-          fullWidth // 📏 Chiếm full width của container (Takes full width of container)
-        />
+Ví dụ `Select` tốt phải xử lý:
 
-        <TextField
-          label="Password" // 🏷️ Label: Password (Label: Password)
-          type="password" // 🔒 Kiểu input: password (ẩn ký tự) (Input type: password - hides characters)
-          variant="outlined" // 🎨 Variant: outlined (Variant: outlined)
-          fullWidth // 📏 Chiếm full width (Full width)
-        />
+- keyboard navigation
+- screen reader announcement
+- virtualized long list nếu nhiều option
+- search/filter
+- controlled/uncontrolled state
+- portal positioning
+- mobile UX
+- validation/error message
 
-        <Button
-          variant="contained" // 🎨 Variant: contained (có nền), outlined (có viền), text (chỉ chữ)
-          // (Variant: contained - with background, outlined - with border, text - text only)
-          color="primary" // 🎨 Color: primary (màu chính), secondary, error, warning, info, success
-          // (Color: primary - main color, secondary, error, warning, info, success)
-          size="large" // 📏 Size: small (nhỏ), medium (trung bình), large (lớn)
-          // (Size: small, medium, large)
-          fullWidth // 📏 Chiếm full width (Full width)
-        >
-          Login {/* 📝 Nội dung button (Button content) */}
-        </Button>
-      </Stack>
-    </Box>
-  );
-}
-```
+### 3.2. MUI - Material UI
 
-### **2.2. Theming System**
+MUI là React component library triển khai Material Design. Nó có ecosystem lớn, docs tốt và các package nâng cao như MUI X.
 
-```typescript
-/**
- * 🎨 MUI THEMING - Customize design system toàn bộ app
- *
- * 💡 Theme object chứa:
- * - Colors (primary, secondary, error...)
- * - Typography (font families, sizes...)
- * - Spacing (margins, paddings...)
- * - Breakpoints (responsive breakpoints...)
- * - Components (default props cho components...)
- */
+**Hợp khi:**
 
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-// 📦 createTheme: Tạo theme object tùy chỉnh (Create custom theme object)
-// 📦 ThemeProvider: Component cung cấp theme cho toàn bộ app (Component that provides theme to entire app)
-import { CssBaseline } from '@mui/material';
-// 📦 CssBaseline: Reset CSS và áp dụng base styles (Reset CSS and apply base styles)
+- Enterprise app cần component ổn định, phổ biến.
+- Team chấp nhận Material Design hoặc có thể theme theo brand.
+- Cần Data Grid, Date Picker, Charts, Tree View hoặc component nâng cao từ MUI X.
+- Dự án cần docs nhiều, cộng đồng lớn, hiring dễ.
 
-// 🎨 CREATE CUSTOM THEME (Tạo Theme Tùy Chỉnh)
+**Cẩn thận khi:**
+
+- Brand khác xa Material Design.
+- Muốn override style quá sâu ở mọi component.
+- Bundle/performance là constraint lớn trên mobile.
+- Không muốn phụ thuộc vào CSS-in-JS/theming model của MUI.
+
+```tsx
+import { Button, Stack, TextField, ThemeProvider, createTheme } from '@mui/material';
+
 const theme = createTheme({
-  // 💡 createTheme() nhận object config để tạo theme (createTheme() receives config object to create theme)
-
-  // 🎨 COLOR PALETTE - Định nghĩa màu sắc (Define colors)
   palette: {
-    // 💡 palette: Định nghĩa bảng màu cho app (Define color palette for app)
-    primary: {
-      // 🔵 Màu chính của app (Main color of app)
-      main: '#1976d2', // 🔵 Màu chính (blue) - Dùng cho buttons, links chính (Used for main buttons, links)
-      light: '#42a5f5', // 🔵 Màu nhạt hơn - Dùng cho hover states (Lighter color - used for hover states)
-      dark: '#1565c0', // 🔵 Màu đậm hơn - Dùng cho active/pressed states (Darker color - used for active/pressed states)
-      contrastText: '#fff', // ⚪ Màu chữ trên nền primary - Đảm bảo đọc được (Text color on primary background - ensures readability)
-    },
-    secondary: {
-      // 🔴 Màu phụ của app (Secondary color of app)
-      main: '#dc004e', // 🔴 Màu phụ (pink) - Dùng cho actions phụ (Secondary color - used for secondary actions)
-    },
-    error: {
-      // ❌ Màu lỗi (Error color)
-      main: '#f44336', // ❌ Màu lỗi (red) - Dùng cho error messages, danger buttons (Used for error messages, danger buttons)
-    },
-    background: {
-      // ⚪ Màu nền (Background colors)
-      default: '#f5f5f5', // ⚪ Màu nền mặc định của app (Default background color of app)
-      paper: '#ffffff', // 📄 Màu nền của Paper component (Background color of Paper component)
-    },
+    primary: { main: '#2563eb' },
   },
-
-  // 📝 TYPOGRAPHY - Định nghĩa font chữ (Define typography)
-  typography: {
-    // 💡 typography: Định nghĩa font chữ, kích thước, độ đậm cho text (Define fonts, sizes, weights for text)
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    // 🔤 Font family mặc định - Thứ tự ưu tiên: Roboto → Helvetica → Arial → sans-serif
-    // (Default font family - Priority order: Roboto → Helvetica → Arial → sans-serif)
-    h1: {
-      // 📝 Heading 1 style
-      fontSize: '2.5rem', // 📏 Kích thước heading 1: 2.5rem = 40px (Heading 1 size: 2.5rem = 40px)
-      fontWeight: 500, // 💪 Độ đậm: 500 (medium) (Font weight: 500 - medium)
-    },
-    h2: {
-      // 📝 Heading 2 style
-      fontSize: '2rem', // 📏 Kích thước heading 2: 2rem = 32px (Heading 2 size: 2rem = 32px)
-      fontWeight: 500, // 💪 Độ đậm: 500 (Font weight: 500)
-    },
-    body1: {
-      // 📝 Body text style (mặc định cho <p>, <span>)
-      // (Default style for <p>, <span>)
-      fontSize: '1rem', // 📏 Kích thước body text: 1rem = 16px (Body text size: 1rem = 16px)
-      lineHeight: 1.5, // 📏 Khoảng cách dòng: 1.5 (Line height: 1.5 - 1.5 times font size)
-    },
-  },
-
-  // 📏 SPACING - Định nghĩa khoảng cách (Define spacing)
-  spacing: 8,
-  // 🔢 Base spacing unit: 8px (Base spacing unit: 8px)
-  // 💡 Tất cả spacing trong MUI dựa trên giá trị này (All spacing in MUI is based on this value)
-  // 💡 sx={{ p: 2 }} = padding: 16px (2 * 8) (sx={{ p: 2 }} = padding: 16px - 2 times base spacing)
-  // 💡 sx={{ m: 3 }} = margin: 24px (3 * 8) (sx={{ m: 3 }} = margin: 24px - 3 times base spacing)
-
-  // 📱 BREAKPOINTS - Responsive breakpoints (Điểm ngắt responsive)
-  breakpoints: {
-    // 💡 breakpoints: Định nghĩa các điểm ngắt cho responsive design (Define breakpoints for responsive design)
-    values: {
-      xs: 0, // 📱 Mobile: từ 0px trở lên (Mobile: from 0px and up)
-      sm: 600, // 📱 Tablet: từ 600px trở lên (Tablet: from 600px and up)
-      md: 900, // 💻 Desktop: từ 900px trở lên (Desktop: from 900px and up)
-      lg: 1200, // 💻 Large desktop: từ 1200px trở lên (Large desktop: from 1200px and up)
-      xl: 1536, // 💻 Extra large: từ 1536px trở lên (Extra large: from 1536px and up)
-    },
-  },
-
-  // 🧩 COMPONENTS - Override default props cho components (Ghi đè props mặc định cho components)
-  components: {
-    // 💡 components: Tùy chỉnh default props và styles cho từng component (Customize default props and styles for each component)
-    MuiButton: {
-      // 🎯 Tùy chỉnh Button component (Customize Button component)
-      defaultProps: {
-        // 💡 defaultProps: Props mặc định cho tất cả Button (Default props for all Buttons)
-        variant: 'contained', // 🎨 Mặc định dùng contained variant (có nền) (Default to contained variant - with background)
-        size: 'medium', // 📏 Mặc định size medium (Default size: medium)
-      },
-      styleOverrides: {
-        // 💡 styleOverrides: Ghi đè styles mặc định (Override default styles)
-        root: {
-          // 🎯 root: Style cho element gốc của Button (Style for Button's root element)
-          textTransform: 'none', // 🔤 Không uppercase text - Giữ nguyên chữ hoa/thường (No text transform - keep original case)
-          borderRadius: 8, // 📐 Bo góc 8px (Border radius: 8px)
-        },
-      },
-    },
-    MuiTextField: {
-      // 🎯 Tùy chỉnh TextField component (Customize TextField component)
-      defaultProps: {
-        variant: 'outlined', // 🎨 Mặc định dùng outlined variant (có viền) (Default to outlined variant - with border)
-      },
-    },
+  shape: {
+    borderRadius: 6,
   },
 });
 
-// 🎯 WRAP APP VỚI THEME PROVIDER (Bọc App với Theme Provider)
-function App() {
-  // 💡 Component gốc của app (Root component of app)
-
+export function LoginForm() {
   return (
     <ThemeProvider theme={theme}>
-      {/* 🎨 ThemeProvider: Cung cấp theme cho tất cả components bên trong
-          (ThemeProvider: Provides theme to all components inside)
-          💡 Tất cả components con có thể dùng theme qua useTheme() hook
-          (All child components can use theme via useTheme() hook) */}
-      <CssBaseline />
-      {/* 🎨 Reset CSS và apply base styles
-          (Reset CSS and apply base styles)
-          💡 Xóa margin/padding mặc định của browser, set font family mặc định
-          (Removes default browser margin/padding, sets default font family) */}
-      <LoginForm /> {/* 📝 Component form đăng nhập (Login form component) */}
+      <Stack component="form" spacing={2} maxWidth={360}>
+        <TextField label="Email" name="email" type="email" />
+        <TextField label="Password" name="password" type="password" />
+        <Button type="submit" variant="contained">
+          Login
+        </Button>
+      </Stack>
     </ThemeProvider>
   );
 }
-
-// 💡 USAGE TRONG COMPONENTS (Cách Sử Dụng Trong Components)
-import { useTheme } from '@mui/material/styles';
-// 📦 useTheme: Hook để lấy theme object trong component (Hook to get theme object in component)
-
-function ThemedComponent() {
-  // 💡 Component sử dụng theme (Component that uses theme)
-  const theme = useTheme();
-  // 🎨 Lấy theme object - Có thể truy cập palette, typography, spacing, breakpoints
-  // (Get theme object - Can access palette, typography, spacing, breakpoints)
-
-  return (
-    <Box
-      sx={{
-        // 🎨 Dùng theme values (Use theme values)
-        // 💡 sx prop: Styling prop của MUI, nhận object hoặc function
-        // (sx prop: MUI styling prop, accepts object or function)
-
-        color: theme.palette.primary.main,
-        // 🔵 Màu primary - Lấy từ theme.palette.primary.main
-        // (Primary color - Get from theme.palette.primary.main)
-
-        backgroundColor: theme.palette.background.paper,
-        // 📄 Màu nền paper - Lấy từ theme.palette.background.paper
-        // (Paper background color - Get from theme.palette.background.paper)
-
-        padding: theme.spacing(2),
-        // 📏 Padding 16px (2 * 8) - theme.spacing(2) = 16px
-        // (Padding 16px - theme.spacing(2) = 16px)
-
-        // 📱 Responsive với breakpoints (Responsive with breakpoints)
-        [theme.breakpoints.down('sm')]: {
-          // 📱 Khi màn hình < 600px (When screen < 600px)
-          // 💡 theme.breakpoints.down('sm'): Media query cho màn hình nhỏ hơn sm
-          // (theme.breakpoints.down('sm'): Media query for screens smaller than sm)
-          fontSize: '14px', // 📏 Font size nhỏ hơn cho mobile (Smaller font size for mobile)
-        },
-        [theme.breakpoints.up('md')]: {
-          // 💻 Khi màn hình >= 900px (When screen >= 900px)
-          // 💡 theme.breakpoints.up('md'): Media query cho màn hình lớn hơn hoặc bằng md
-          // (theme.breakpoints.up('md'): Media query for screens >= md)
-          fontSize: '18px', // 📏 Font size lớn hơn cho desktop (Larger font size for desktop)
-        },
-      }}
-    >
-      Responsive Text{' '}
-      {/* 📝 Text thay đổi theo kích thước màn hình (Text that changes with screen size) */}
-    </Box>
-  );
-}
 ```
 
-### **2.3. Advanced Patterns**
+**Senior note:** Với MUI, hãy customize qua theme/design tokens trước. Đừng rải `sx` override khắp app nếu muốn maintain design system lâu dài.
 
-```typescript
-/**
- * 🚀 MUI ADVANCED PATTERNS - Production-ready patterns
- */
+### 3.3. Ant Design
 
-// ✅ PATTERN 1: Form với React Hook Form + MUI (Form with React Hook Form + MUI)
-import { useForm, Controller } from 'react-hook-form';
-// 📦 useForm: Hook quản lý form state và validation (Hook to manage form state and validation)
-// 📦 Controller: Component để kết nối MUI components với React Hook Form (Component to connect MUI components with React Hook Form)
-import { TextField, Button, Alert } from '@mui/material';
-// 📦 Import MUI components (Import MUI components)
+Ant Design là React UI library hướng mạnh vào enterprise web applications: dashboard, admin, CRUD, form lớn, table nhiều cột, filter, pagination.
 
-interface FormData {
-  // 💡 Interface định nghĩa cấu trúc dữ liệu form (Interface defines form data structure)
-  email: string; // 📧 Email field (Email field)
-  password: string; // 🔒 Password field (Password field)
-}
+**Hợp khi:**
 
-function LoginForm() {
-  // 💡 Component form đăng nhập (Login form component)
+- Back-office/admin dashboard.
+- Data-heavy app cần `Table`, `Form`, `DatePicker`, `Select`, `Tree`, `Upload`.
+- Team không có design system riêng nhưng cần UI nhất quán nhanh.
+- Sản phẩm nội bộ ưu tiên tốc độ ship hơn brand uniqueness.
 
-  const {
-    control, // 🎮 Controller để control MUI components - Quản lý state của form fields
-    // (Controller to control MUI components - Manages form fields state)
-    handleSubmit, // 📤 Handle form submission - Xử lý khi submit form
-    // (Handle form submission - Processes form submission)
-    formState: { errors }, // ❌ Form errors - Object chứa lỗi validation của từng field
-    // (Form errors - Object containing validation errors for each field)
-  } = useForm<FormData>();
-  // 💡 useForm<FormData>: Khởi tạo form với type FormData (Initialize form with FormData type)
+**Cẩn thận khi:**
 
-  const onSubmit = (data: FormData) => {
-    // 💡 Hàm xử lý khi form submit thành công (Function to handle successful form submission)
-    // 💡 data đã được validate, đảm bảo đúng format (data has been validated, ensures correct format)
-    console.log('Form data:', data); // 📊 Data đã validate - In ra console (Validated data - Log to console)
-  };
+- Public-facing product cần brand riêng mạnh.
+- App cần semantic HTML cực chặt, accessibility audit nghiêm ngặt.
+- Muốn design tối giản, nhẹ, ít opinion.
+- Muốn mix với Tailwind/custom CSS nhiều mà không có governance.
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {/* 📝 HTML form element với handleSubmit wrapper
-          (HTML form element with handleSubmit wrapper)
-          💡 handleSubmit(onSubmit): Tự động validate trước khi gọi onSubmit
-          (handleSubmit(onSubmit): Automatically validates before calling onSubmit) */}
+```tsx
+import { Button, Form, Input, Table } from 'antd';
 
-      {/* 🎮 Controller wrapper cho MUI TextField (Controller wrapper for MUI TextField) */}
-      <Controller
-        name="email" // 🏷️ Field name - Tên field trong form state (Field name in form state)
-        control={control} // 🎮 Control object từ useForm (Control object from useForm)
-        rules={{
-          // 💡 rules: Validation rules cho field này (Validation rules for this field)
-          required: 'Email là bắt buộc',
-          // ❌ Validation rule: Bắt buộc phải có giá trị (Required - must have value)
-          pattern: {
-            // 🔍 Pattern validation: Kiểm tra format email (Pattern validation: Check email format)
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            // 💡 Regex pattern: Kiểm tra format email hợp lệ (Regex pattern: Check valid email format)
-            message: 'Email không hợp lệ', // ❌ Message lỗi nếu không match pattern (Error message if pattern doesn't match)
-          },
-        }}
-        render={(
-          { field } // 🎨 Render function - Nhận field object chứa value, onChange, onBlur...
-        ) => (
-          // (Render function - Receives field object containing value, onChange, onBlur...)
-          <TextField
-            {...field}
-            // 📤 Spread field props: value, onChange, onBlur, name, ref
-            // (Spread field props: value, onChange, onBlur, name, ref)
-            // 💡 Tự động bind value và event handlers với React Hook Form
-            // (Automatically binds value and event handlers with React Hook Form)
-            label="Email" // 🏷️ Label hiển thị trên input (Label displayed on input)
-            error={!!errors.email}
-            // ❌ Hiển lỗi nếu có - !!errors.email convert thành boolean
-            // (Show error if exists - !!errors.email converts to boolean)
-            helperText={errors.email?.message}
-            // 📝 Hiển message lỗi - Optional chaining để tránh lỗi nếu errors.email = undefined
-            // (Display error message - Optional chaining to avoid error if errors.email = undefined)
-            fullWidth // 📏 Chiếm full width (Full width)
-            margin="normal" // 📏 Margin: normal (có margin), dense (margin nhỏ), none (không margin)
-            // (Margin: normal - has margin, dense - small margin, none - no margin)
-          />
-        )}
-      />
-
-      <Controller
-        name="password" // 🏷️ Field name: password (Field name: password)
-        control={control} // 🎮 Control object (Control object)
-        rules={{
-          // 💡 Validation rules cho password field (Validation rules for password field)
-          required: 'Password là bắt buộc',
-          // ❌ Bắt buộc phải có giá trị (Required - must have value)
-          minLength: {
-            // 📏 Minimum length validation (Minimum length validation)
-            value: 8, // 🔢 Độ dài tối thiểu: 8 ký tự (Minimum length: 8 characters)
-            message: 'Password phải có ít nhất 8 ký tự',
-            // ❌ Message lỗi nếu độ dài < 8 (Error message if length < 8)
-          },
-        }}
-        render={({ field }) => (
-          // 💡 Render function nhận field object (Render function receives field object)
-          <TextField
-            {...field}
-            // 📤 Spread field props: value, onChange, onBlur, name, ref
-            // (Spread field props: value, onChange, onBlur, name, ref)
-            type="password"
-            // 🔒 Type: password - Ẩn ký tự khi gõ (Type: password - Hides characters when typing)
-            label="Password" // 🏷️ Label: Password (Label: Password)
-            error={!!errors.password}
-            // ❌ Hiển lỗi nếu có (Show error if exists)
-            helperText={errors.password?.message}
-            // 📝 Hiển message lỗi (Display error message)
-            fullWidth // 📏 Chiếm full width (Full width)
-            margin="normal" // 📏 Margin: normal (Margin: normal)
-          />
-        )}
-      />
-
-      {errors.root && (
-        // ❌ Global errors - Lỗi toàn cục (không thuộc field cụ thể)
-        // (Global errors - Global errors not belonging to specific field)
-        // 💡 errors.root: Lỗi từ server hoặc validation custom
-        // (errors.root: Errors from server or custom validation)
-        <Alert severity="error">
-          {/* 🚨 Alert component hiển thị lỗi (Alert component displays error)
-              💡 severity="error": Màu đỏ, icon lỗi (severity="error": Red color, error icon) */}
-          {errors.root.message}
-          {/* 📝 Hiển message lỗi toàn cục (Display global error message) */}
-        </Alert>
-      )}
-
-      <Button
-        type="submit"
-        // 📤 Type: submit - Kích hoạt form submission (Type: submit - Triggers form submission)
-        variant="contained"
-        // 🎨 Variant: contained (có nền) (Variant: contained - with background)
-        fullWidth
-        // 📏 Chiếm full width (Full width)
-      >
-        Login {/* 📝 Nội dung button (Button content) */}
-      </Button>
-    </form>
-  );
-}
-
-// ✅ PATTERN 2: Data Table với MUI Table (Data Table with MUI Table)
-import {
-  Table, // 📊 Table component - Container cho table (Table component - Container for table)
-  TableBody, // 📋 TableBody - Body của table (chứa data rows) (TableBody - Body of table containing data rows)
-  TableCell, // 📄 TableCell - Cell trong table (TableCell - Cell in table)
-  TableContainer, // 📦 TableContainer - Container với scroll (TableContainer - Container with scroll)
-  TableHead, // 📑 TableHead - Header của table (chứa column headers) (TableHead - Header of table containing column headers)
-  TableRow, // 📊 TableRow - Row trong table (TableRow - Row in table)
-  TableSortLabel, // 🔄 TableSortLabel - Header với sort functionality (TableSortLabel - Header with sort functionality)
-  Paper, // 📄 Paper - Card-like container (Paper - Card-like container)
-} from '@mui/material';
-
-interface Data {
-  // 💡 Interface định nghĩa cấu trúc dữ liệu (Interface defines data structure)
-  id: number; // 🔑 ID duy nhất (Unique ID)
-  name: string; // 👤 Tên (Name)
-  email: string; // 📧 Email (Email)
-  role: string; // 🎭 Vai trò (Role)
-}
-
-function DataTable({ rows }: { rows: Data[] }) {
-  // 💡 Component hiển thị bảng dữ liệu (Component displays data table)
-  // 💡 rows: Props nhận array Data[] (rows: Props receives Data[] array)
-
-  const [orderBy, setOrderBy] = useState<keyof Data>('name');
-  // 📊 Cột đang sort - keyof Data đảm bảo chỉ sort theo key hợp lệ
-  // (Column being sorted - keyof Data ensures only sorting by valid keys)
-  // 💡 'name' là giá trị mặc định (default value)
-
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  // 🔄 Hướng sort: 'asc' (tăng dần) hoặc 'desc' (giảm dần)
-  // (Sort direction: 'asc' - ascending or 'desc' - descending)
-  // 💡 'asc' là giá trị mặc định (default value)
-
-  // 🔄 Handle sort click (Xử lý khi click sort)
-  const handleSort = (property: keyof Data) => {
-    // 💡 property: Tên cột muốn sort (property: Column name to sort)
-    const isAsc = orderBy === property && order === 'asc';
-    // 💡 Kiểm tra: Nếu đang sort cột này và đang tăng dần → đổi thành giảm dần
-    // (Check: If sorting this column and ascending → change to descending)
-    setOrder(isAsc ? 'desc' : 'asc');
-    // 🔄 Đổi hướng sort (Change sort direction)
-    setOrderBy(property);
-    // 📊 Set cột đang sort (Set column being sorted)
-  };
-
-  // 📊 Sort rows (Sắp xếp rows)
-  const sortedRows = [...rows].sort((a, b) => {
-    // 💡 [...rows]: Tạo copy của array để không mutate original (Create copy to avoid mutating original)
-    // 💡 .sort(): Sắp xếp array (Sort array)
-    if (order === 'asc') {
-      // 📈 Nếu sort tăng dần (If ascending sort)
-      return a[orderBy] > b[orderBy] ? 1 : -1;
-      // 💡 So sánh: a > b → return 1 (a đứng sau b), ngược lại return -1 (a đứng trước b)
-      // (Compare: a > b → return 1 - a after b, otherwise return -1 - a before b)
-    }
-    // 📉 Nếu sort giảm dần (If descending sort)
-    return a[orderBy] < b[orderBy] ? 1 : -1;
-    // 💡 So sánh ngược lại: a < b → return 1 (a đứng sau b)
-    // (Compare reverse: a < b → return 1 - a after b)
-  });
-
-  return (
-    <TableContainer component={Paper}>
-      {/* 📦 TableContainer: Container với scroll khi table quá lớn
-          (TableContainer: Container with scroll when table is too large)
-          💡 component={Paper}: Dùng Paper làm container (có shadow, border radius)
-          (component={Paper}: Use Paper as container - has shadow, border radius) */}
-      <Table>
-        {/* 📊 Table: Component table chính (Main table component) */}
-        <TableHead>
-          {/* 📑 TableHead: Header của table (chứa column headers)
-              (TableHead: Header of table containing column headers) */}
-          <TableRow>
-            {/* 📊 TableRow: Row trong header (Row in header) */}
-            <TableCell>
-              {/* 📄 TableCell: Cell trong header (Cell in header) */}
-              <TableSortLabel
-                active={orderBy === 'name'}
-                // ✅ Highlight nếu đang sort cột này - active={true} khi orderBy === 'name'
-                // (Highlight if sorting this column - active={true} when orderBy === 'name')
-                direction={orderBy === 'name' ? order : 'asc'}
-                // 🔄 Hiển mũi tên sort - 'asc' (↑) hoặc 'desc' (↓)
-                // (Display sort arrow - 'asc' (↑) or 'desc' (↓))
-                // 💡 Nếu đang sort cột này → hiển order hiện tại, ngược lại → 'asc'
-                // (If sorting this column → show current order, otherwise → 'asc')
-                onClick={() => handleSort('name')}
-                // 🖱️ Click để sort cột 'name' (Click to sort 'name' column)
-              >
-                Name {/* 📝 Tên cột (Column name) */}
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>Email</TableCell>
-            {/* 📄 Cell: Email - Không có sort (Cell: Email - No sort) */}
-            <TableCell>Role</TableCell>
-            {/* 📄 Cell: Role - Không có sort (Cell: Role - No sort) */}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {/* 📋 TableBody: Body của table (chứa data rows)
-              (TableBody: Body of table containing data rows) */}
-          {sortedRows.map((row) => (
-            // 💡 .map(): Render mỗi row trong sortedRows (Render each row in sortedRows)
-            <TableRow key={row.id}>
-              {/* 📊 TableRow: Row chứa data (Row containing data)
-                  💡 key={row.id}: React key để optimize re-render (React key to optimize re-render) */}
-              <TableCell>{row.name}</TableCell>
-              {/* 📄 Cell: Hiển tên (Cell: Display name) */}
-              <TableCell>{row.email}</TableCell>
-              {/* 📄 Cell: Hiển email (Cell: Display email) */}
-              <TableCell>{row.role}</TableCell>
-              {/* 📄 Cell: Hiển role (Cell: Display role) */}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-}
-
-// ✅ PATTERN 3: Responsive Layout với MUI Grid (Responsive Layout with MUI Grid)
-import { Grid, Container } from '@mui/material';
-// 📦 Grid: Component grid system (12 columns) (Grid: Grid system component - 12 columns)
-// 📦 Container: Container với max width và padding (Container with max width and padding)
-
-function ResponsiveLayout() {
-  // 💡 Component layout responsive (Responsive layout component)
-
-  return (
-    <Container maxWidth="lg">
-      {/* 📦 Container: Container với max width
-          (Container: Container with max width)
-          💡 maxWidth="lg": Max width = 1200px (theo MUI breakpoints)
-          (maxWidth="lg": Max width = 1200px according to MUI breakpoints)
-          💡 Tự động center và có padding (Automatically centered with padding) */}
-      <Grid container spacing={3}>
-        {/* 📊 Grid container: Container cho grid system
-            (Grid container: Container for grid system)
-            💡 container: Bật grid layout (Enables grid layout)
-            💡 spacing={3}: Khoảng cách giữa các items = 24px (3 * 8px)
-            (spacing={3}: Gap between items = 24px - 3 times base spacing) */}
-
-        {/* 📱 Responsive Grid Items:
-            (Responsive Grid Items:)
-            💡 xs={12}: Mobile (0px+): 12/12 cols = 100% width (full width)
-            (xs={12}: Mobile (0px+): 12/12 cols = 100% width)
-            💡 sm={6}: Tablet (600px+): 6/12 cols = 50% width
-            (sm={6}: Tablet (600px+): 6/12 cols = 50% width)
-            💡 md={4}: Desktop (900px+): 4/12 cols = 33.33% width
-            (md={4}: Desktop (900px+): 4/12 cols = 33.33% width) */}
-
-        <Grid item xs={12} sm={6} md={4}>
-          {/* 📊 Grid item: Item trong grid (Grid item: Item in grid)
-              💡 item: Bật grid item (Enables grid item)
-              💡 xs={12}: Mobile = full width (Mobile = full width)
-              💡 sm={6}: Tablet = 50% width (Tablet = 50% width)
-              💡 md={4}: Desktop = 33% width (Desktop = 33% width) */}
-          <Paper>Card 1</Paper>
-          {/* 📄 Paper: Card component (Card component) */}
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          {/* 📊 Grid item thứ 2 (Second grid item) */}
-          <Paper>Card 2</Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          {/* 📊 Grid item thứ 3 (Third grid item) */}
-          <Paper>Card 3</Paper>
-        </Grid>
-      </Grid>
-    </Container>
-  );
-}
-```
-
----
-
-## 3. Ant Design
-
-### **3.1. Overview**
-
-```typescript
-/**
- * 🎨 ANT DESIGN = Component library cho enterprise admin dashboards
- *
- * ✅ ƯU ĐIỂM:
- * - Enterprise focus: Components phù hợp admin dashboards
- * - Rich components: Form, Table, DatePicker, Charts...
- * - Chinese origin: Popular ở Trung Quốc, Đông Nam Á
- * - Documentation: Tài liệu chi tiết, nhiều examples
- * - TypeScript: Full TypeScript support
- *
- * ❌ NHƯỢC ĐIỂM:
- * - Bundle size: Rất lớn (~500KB gzipped)
- * - Design: Ant Design style (có thể không phù hợp mọi brand)
- * - Customization: Khó customize sâu
- * - Less popular: Ít popular hơn MUI ở phương Tây
- *
- * 🎯 USE CASES:
- * - Admin dashboards
- * - Data-heavy applications
- * - Enterprise internal tools
- * - Apps cần nhiều form/table components
- */
-
-// 📦 INSTALLATION
-// npm install antd
-
-// ✅ BASIC USAGE (Cách Sử Dụng Cơ Bản)
-import { Button, Input, Form, Table, DatePicker } from 'antd';
-// 📦 Import các components từ Ant Design (Import components from Ant Design)
-import 'antd/dist/reset.css';
-// 🎨 Import CSS - Reset styles và apply Ant Design styles
-// (Import CSS - Reset styles and apply Ant Design styles)
-// 💡 Hoặc dùng CSS-in-JS (Or use CSS-in-JS)
-
-function AdminDashboard() {
-  // 💡 Component dashboard quản trị (Admin dashboard component)
-
-  return (
-    <div>
-      <Form
-        layout="vertical"
-        // 📋 Layout: vertical (label trên input), horizontal (label bên cạnh), inline (cùng dòng)
-        // (Layout: vertical - label above input, horizontal - label beside, inline - same line)
-        onFinish={(values) => {
-          // 📤 Callback khi form submit thành công (Callback when form submits successfully)
-          // 💡 values: Object chứa tất cả form values (Object containing all form values)
-          console.log('Form values:', values); // 📊 In ra console (Log to console)
-        }}
-      >
-        <Form.Item
-          // 📋 Form.Item: Wrapper cho form field (Wrapper for form field)
-          label="Username"
-          // 🏷️ Label hiển thị cho field (Label displayed for field)
-          name="username"
-          // 🔑 Tên field trong form state (Field name in form state)
-          rules={[{ required: true, message: 'Vui lòng nhập username' }]}
-          // ❌ Validation rules: required = bắt buộc, message = message lỗi
-          // (Validation rules: required = mandatory, message = error message)
-        >
-          <Input placeholder="Enter username" />
-          {/* 📝 Input component - placeholder hiển thị khi input trống
-              (Input component - placeholder displays when input is empty) */}
-        </Form.Item>
-
-        <Form.Item
-          label="Password" // 🏷️ Label: Password (Label: Password)
-          name="password" // 🔑 Field name: password (Field name: password)
-          rules={[{ required: true, message: 'Vui lòng nhập password' }]}
-          // ❌ Validation: Bắt buộc (Validation: Required)
-        >
-          <Input.Password placeholder="Enter password" />
-          {/* 🔒 Input.Password: Input type password (ẩn ký tự)
-              (Input.Password: Password input type - hides characters)
-              💡 Có icon eye để show/hide password (Has eye icon to show/hide password) */}
-        </Form.Item>
-
-        <Form.Item>
-          {/* 📋 Form.Item không có label/name: Container cho button
-              (Form.Item without label/name: Container for button) */}
-          <Button
-            type="primary"
-            // 🎨 Type: primary (màu chính), default, dashed, link, text
-            // (Type: primary - main color, default, dashed, link, text)
-            htmlType="submit"
-            // 📤 htmlType: submit - Kích hoạt form submission
-            // (htmlType: submit - Triggers form submission)
-          >
-            Submit {/* 📝 Nội dung button (Button content) */}
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-}
-```
-
-### **3.2. Advanced Table Features**
-
-```typescript
-/**
- * 📊 ANT DESIGN TABLE - Powerful data table với nhiều features
- */
-
-import { Table, Button, Space, Tag } from 'antd';
-// 📦 Import Ant Design components (Import Ant Design components)
-import type { ColumnsType } from 'antd/es/table';
-// 📦 ColumnsType: Type cho columns definition (Type for columns definition)
-
-interface User {
-  // 💡 Interface định nghĩa cấu trúc User (Interface defines User structure)
-  id: number; // 🔑 ID duy nhất (Unique ID)
-  name: string; // 👤 Tên (Name)
-  email: string; // 📧 Email (Email)
-  status: 'active' | 'inactive'; // 🎭 Trạng thái: active hoặc inactive (Status: active or inactive)
-  createdAt: string; // 📅 Ngày tạo (Created date)
-}
-
-function UserTable() {
-  // 💡 Component bảng người dùng (User table component)
-
-  const columns: ColumnsType<User> = [
-    // 💡 columns: Định nghĩa các cột của table (Defines table columns)
-    // 💡 ColumnsType<User>: Type-safe với User interface (Type-safe with User interface)
-    {
-      title: 'ID', // 📝 Tiêu đề cột (Column title)
-      dataIndex: 'id',
-      // 🔑 Key trong data object - Lấy giá trị từ row.id
-      // (Key in data object - Gets value from row.id)
-      key: 'id',
-      // 🔑 React key cho column (React key for column)
-      sorter: (a, b) => a.id - b.id,
-      // 🔄 Sorting function - Sắp xếp theo ID (tăng dần)
-      // (Sorting function - Sort by ID ascending)
-      // 💡 a.id - b.id: Số dương nếu a > b, số âm nếu a < b
-      // (a.id - b.id: Positive if a > b, negative if a < b)
-      width: 80,
-      // 📏 Độ rộng cột: 80px (Column width: 80px)
-    },
-    {
-      title: 'Name', // 📝 Tiêu đề cột: Name (Column title: Name)
-      dataIndex: 'name',
-      // 🔑 Key trong data object - Lấy giá trị từ row.name
-      // (Key in data object - Gets value from row.name)
-      key: 'name', // 🔑 React key (React key)
-      sorter: (a, b) => a.name.localeCompare(b.name),
-      // 🔄 Sorting function - Sắp xếp theo tên (alphabetical)
-      // (Sorting function - Sort by name alphabetically)
-      // 💡 localeCompare(): So sánh chuỗi theo locale (locale-aware string comparison)
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
-        // 🔍 Custom filter dropdown - Dropdown tùy chỉnh cho filter
-        // (Custom filter dropdown - Custom dropdown for filter)
-        // 💡 setSelectedKeys: Set giá trị filter (Set filter value)
-        // 💡 selectedKeys: Giá trị filter hiện tại (Current filter value)
-        // 💡 confirm: Xác nhận filter (Confirm filter)
-        <div style={{ padding: 8 }}>
-          {/* 📦 Container với padding (Container with padding) */}
-          <Input
-            placeholder="Search name"
-            // 📝 Placeholder: Tìm kiếm tên (Placeholder: Search name)
-            value={selectedKeys[0]}
-            // 💡 Giá trị input = giá trị filter đầu tiên (Input value = first filter value)
-            onChange={
-              (e) => setSelectedKeys(e.target.value ? [e.target.value] : [])
-              // 💡 Khi thay đổi input → update filter value
-              // (When input changes → update filter value)
-              // 💡 Nếu có giá trị → set array [value], ngược lại → []
-              // (If has value → set array [value], otherwise → [])
-            }
-            onPressEnter={() => confirm()}
-            // ⌨️ Khi nhấn Enter → xác nhận filter (When press Enter → confirm filter)
-          />
-        </div>
-      ),
-      onFilter: (value, record) =>
-        // 🔍 Filter function - Lọc rows dựa trên giá trị filter
-        // (Filter function - Filter rows based on filter value)
-        // 💡 value: Giá trị filter (Filter value)
-        // 💡 record: Row data (Row data)
-        record.name.toLowerCase().includes(value.toString().toLowerCase()),
-      // 💡 Kiểm tra: Tên có chứa giá trị filter (không phân biệt hoa/thường)
-      // (Check: Name contains filter value - case insensitive)
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    },
-    {
-      title: 'Status', // 📝 Tiêu đề cột: Status (Column title: Status)
-      dataIndex: 'status',
-      // 🔑 Key trong data object - Lấy giá trị từ row.status
-      // (Key in data object - Gets value from row.status)
-      key: 'status', // 🔑 React key (React key)
-      render: (
-        status: string // 🎨 Custom render function - Hàm render tùy chỉnh
-        // 💡 status: Giá trị của field status (Value of status field)
-      ) => (
-        <Tag color={status === 'active' ? 'green' : 'red'}>
-          {/* 🏷️ Tag component - Hiển thị status với màu
-              (Tag component - Display status with color)
-              💡 color: green nếu active, red nếu inactive
-              (color: green if active, red if inactive) */}
-          {status.toUpperCase()}
-          {/* 📝 Hiển status dạng chữ hoa (Display status in uppercase) */}
-        </Tag>
-      ),
-      filters: [
-        // 🔍 Filter options - Các tùy chọn filter
-        // (Filter options - Filter choices)
-        { text: 'Active', value: 'active' },
-        // 📝 Option 1: Active (text hiển thị, value để filter)
-        // (Option 1: Active - display text, value for filtering)
-        { text: 'Inactive', value: 'inactive' },
-        // 📝 Option 2: Inactive (Option 2: Inactive)
-      ],
-      onFilter: (value, record) => record.status === value,
-      // 🔍 Filter function - Lọc rows có status = value
-      // (Filter function - Filter rows with status = value)
-    },
-    {
-      title: 'Actions', // 📝 Tiêu đề cột: Actions (Column title: Actions)
-      key: 'actions',
-      // 🔑 React key - Không có dataIndex vì không lấy từ data
-      // (React key - No dataIndex because not getting from data)
-      render: (
-        _,
-        // 💡 _: Giá trị cell (không dùng vì không có dataIndex)
-        // (Cell value - not used because no dataIndex)
-        record // 🎨 Render actions column - Record data (toàn bộ row)
-        // 💡 record: Toàn bộ row data (Entire row data)
-      ) => (
-        <Space>
-          {/* 📦 Space: Container với spacing giữa các buttons
-              (Space: Container with spacing between buttons) */}
-          <Button
-            size="small"
-            // 📏 Size: small (nhỏ), middle (trung bình), large (lớn)
-            // (Size: small, middle, large)
-            onClick={() => handleEdit(record.id)}
-            // 🖱️ Click handler - Gọi hàm edit với record.id
-            // (Click handler - Call edit function with record.id)
-          >
-            Edit {/* 📝 Nội dung button (Button content) */}
-          </Button>
-          <Button
-            size="small"
-            danger
-            // ⚠️ danger: Màu đỏ (danger color - red)
-            onClick={() => handleDelete(record.id)}
-            // 🖱️ Click handler - Gọi hàm delete với record.id
-            // (Click handler - Call delete function with record.id)
-          >
-            Delete {/* 📝 Nội dung button (Button content) */}
-          </Button>
-        </Space>
-      ),
-    },
-  ];
-
-  const data: User[] = [
-    // 💡 data: Array chứa dữ liệu hiển thị trong table (Array containing data to display in table)
-    {
-      id: 1, // 🔑 ID: 1 (ID: 1)
-      name: 'John Doe', // 👤 Tên: John Doe (Name: John Doe)
-      email: 'john@example.com', // 📧 Email: john@example.com (Email: john@example.com)
-      status: 'active', // 🎭 Trạng thái: active (Status: active)
-      createdAt: '2024-01-01', // 📅 Ngày tạo: 2024-01-01 (Created date: 2024-01-01)
-    },
-    {
-      id: 2, // 🔑 ID: 2 (ID: 2)
-      name: 'Jane Smith', // 👤 Tên: Jane Smith (Name: Jane Smith)
-      email: 'jane@example.com', // 📧 Email: jane@example.com (Email: jane@example.com)
-      status: 'inactive', // 🎭 Trạng thái: inactive (Status: inactive)
-      createdAt: '2024-01-02', // 📅 Ngày tạo: 2024-01-02 (Created date: 2024-01-02)
-    },
-  ];
-
-  return (
-    <Table
-      columns={columns}
-      // 📋 columns: Định nghĩa các cột (Column definitions)
-      dataSource={data}
-      // 📊 dataSource: Dữ liệu hiển thị (Data to display)
-      rowKey="id"
-      // 🔑 Unique key cho mỗi row - Dùng id làm key
-      // (Unique key for each row - Use id as key)
-      // 💡 React cần key để optimize re-render (React needs key to optimize re-render)
-      pagination={{
-        // 📄 Pagination: Phân trang (Pagination: Page navigation)
-        pageSize: 10,
-        // 📄 Số rows mỗi trang: 10 rows (Number of rows per page: 10 rows)
-        showSizeChanger: true,
-        // ✅ Cho phép đổi page size - Hiển dropdown để chọn số rows/trang
-        // (Allow changing page size - Show dropdown to select rows per page)
-        showTotal: (total) => `Total ${total} items`,
-        // 📊 Hiển tổng số items - Function nhận total và return string
-        // (Display total items - Function receives total and returns string)
-        // 💡 Ví dụ: "Total 25 items" (Example: "Total 25 items")
-      }}
-      scroll={{ x: 800 }}
-      // 📱 Horizontal scroll khi màn hình nhỏ - x: 800 = min width 800px
-      // (Horizontal scroll when screen is small - x: 800 = min width 800px)
-      // 💡 Khi table width > viewport → hiển horizontal scrollbar
-      // (When table width > viewport → show horizontal scrollbar)
-    />
-  );
-}
-```
-
----
-
-## 4. Chakra UI
-
-### **4.1. Overview**
-
-```typescript
-/**
- * 🎨 CHAKRA UI = Simple, modular component library
- *
- * ✅ ƯU ĐIỂM:
- * - Simple API: Dễ học, dễ dùng
- * - Props-based styling: Không cần CSS, style qua props
- * - Accessibility: Built-in a11y support
- * - Bundle size: Medium (~150KB)
- * - Customizable: Dễ customize
- * - Dark mode: Built-in dark mode support
- *
- * ❌ NHƯỢC ĐIỂM:
- * - Less components: Ít components hơn MUI/Ant Design
- * - Design: Không theo design system cụ thể
- * - Community: Nhỏ hơn MUI
- *
- * 🎯 USE CASES:
- * - Modern web apps
- * - Startups/MVPs
- * - Apps cần custom design
- * - Projects dùng Emotion (CSS-in-JS)
- */
-
-// 📦 INSTALLATION
-// npm install @chakra-ui/react @emotion/react @emotion/styled framer-motion
-
-// ✅ SETUP (Thiết Lập)
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-// 📦 ChakraProvider: Cung cấp theme cho toàn bộ app (Provides theme to entire app)
-// 📦 extendTheme: Mở rộng theme mặc định (Extends default theme)
-
-const theme = extendTheme({
-  // 💡 extendTheme(): Mở rộng theme mặc định với custom config (Extends default theme with custom config)
-  colors: {
-    // 🎨 colors: Định nghĩa màu sắc tùy chỉnh (Define custom colors)
-    brand: {
-      // 💡 brand: Tên color scheme tùy chỉnh (Custom color scheme name)
-      50: '#e3f2fd',
-      // 🎨 Color scale (50-900) - Màu nhạt nhất (Lightest color)
-      // 💡 50: Màu nhạt nhất, dùng cho hover states (Lightest color, used for hover states)
-      100: '#bbdefb',
-      // 🎨 Màu nhạt (Light color)
-      500: '#2196f3',
-      // 🔵 Main color - Màu chính (Main color)
-      // 💡 500: Màu chính, dùng cho buttons, links (Main color, used for buttons, links)
-      900: '#0d47a1',
-      // 🎨 Màu đậm nhất (Darkest color)
-      // 💡 900: Màu đậm nhất, dùng cho text trên nền sáng (Darkest color, used for text on light background)
-    },
-  },
-});
-
-function App() {
-  // 💡 Component gốc của app (Root component of app)
-  return (
-    <ChakraProvider theme={theme}>
-      {/* 🎨 ChakraProvider: Cung cấp theme cho tất cả components bên trong
-          (ChakraProvider: Provides theme to all components inside)
-          💡 Tất cả Chakra components có thể dùng theme colors, spacing...
-          (All Chakra components can use theme colors, spacing...) */}
-      <YourApp /> {/* 📝 Component app của bạn (Your app component) */}
-    </ChakraProvider>
-  );
-}
-
-// ✅ BASIC USAGE (Cách Sử Dụng Cơ Bản)
-import {
-  Button, // 🔘 Button component (Button component)
-  Input, // 📝 Input component (Input component)
-  Box, // 📦 Box component (div với styling props) (Box component - div with styling props)
-  Stack, // 📊 Stack component (flex container) (Stack component - flex container)
-  FormControl, // 📋 FormControl component (wrapper cho form field) (FormControl - wrapper for form field)
-  FormLabel, // 🏷️ FormLabel component (label cho form field) (FormLabel - label for form field)
-} from '@chakra-ui/react';
-
-function LoginForm() {
-  // 💡 Component form đăng nhập (Login form component)
-
-  return (
-    <Box p={4}>
-      {/* 📦 Box = div với styling props
-          (Box = div with styling props)
-          💡 p={4}: padding = 16px (4 * 4px base spacing)
-          (p={4}: padding = 16px - 4 times base spacing of 4px) */}
-      <Stack spacing={4}>
-        {/* 📊 Stack = flex container với spacing
-            (Stack = flex container with spacing)
-            💡 spacing={4}: Khoảng cách giữa các items = 16px (4 * 4px)
-            (spacing={4}: Gap between items = 16px - 4 times base spacing) */}
-
-        <FormControl>
-          {/* 📋 FormControl: Wrapper cho form field (có label, error handling)
-              (FormControl: Wrapper for form field - has label, error handling) */}
-          <FormLabel>Email</FormLabel>
-          {/* 🏷️ FormLabel: Label cho input (Label for input) */}
-          <Input
-            type="email"
-            // 📧 Type: email - Kiểm tra format email (Type: email - Validates email format)
-            placeholder="Enter email"
-            // 📝 Placeholder: Hiển khi input trống (Placeholder: Displays when input is empty)
-          />
-        </FormControl>
-
-        <FormControl>
-          {/* 📋 FormControl: Wrapper cho password field (FormControl: Wrapper for password field) */}
-          <FormLabel>Password</FormLabel>
-          {/* 🏷️ FormLabel: Label cho password (Label for password) */}
-          <Input
-            type="password"
-            // 🔒 Type: password - Ẩn ký tự khi gõ (Type: password - Hides characters when typing)
-            placeholder="Enter password"
-            // 📝 Placeholder: Hiển khi input trống (Placeholder: Displays when input is empty)
-          />
-        </FormControl>
-
-        <Button
-          colorScheme="blue"
-          // 🎨 Color scheme: blue (màu xanh), green, red, purple...
-          // (Color scheme: blue, green, red, purple...)
-          // 💡 colorScheme tự động tạo các variants: 50, 100, 500, 900
-          // (colorScheme automatically creates variants: 50, 100, 500, 900)
-          size="lg"
-          // 📏 Size: sm (nhỏ), md (trung bình), lg (lớn)
-          // (Size: sm - small, md - medium, lg - large)
-          width="full"
-          // 📏 Full width - Chiếm 100% width của container
-          // (Full width - Takes 100% width of container)
-        >
-          Login {/* 📝 Nội dung button (Button content) */}
-        </Button>
-      </Stack>
-    </Box>
-  );
-}
-```
-
-### **4.2. Props-based Styling**
-
-```typescript
-/**
- * 🎨 CHAKRA UI PROPS-BASED STYLING - Style components qua props
- *
- * 💡 Không cần CSS, style trực tiếp qua props
- * 💡 Responsive: Dùng array values [mobile, tablet, desktop]
- */
-
-import { Box, Button, Text, Flex } from '@chakra-ui/react';
-
-function ResponsiveComponent() {
-  // 💡 Component responsive với props-based styling (Responsive component with props-based styling)
-
-  return (
-    <Box
-      // 📦 Box component - div với styling props (Box component - div with styling props)
-
-      // 📏 SPACING - Padding, margin qua props (Spacing - Padding, margin via props)
-      p={4}
-      // 📱 Padding: 16px (4 * 4px base spacing)
-      // (Padding: 16px - 4 times base spacing of 4px)
-      // 💡 p = padding all sides (padding tất cả các phía)
-      m={2}
-      // 📱 Margin: 8px (2 * 4px)
-      // (Margin: 8px - 2 times base spacing)
-      // 💡 m = margin all sides (margin tất cả các phía)
-      px={6}
-      // 📱 Padding horizontal: 24px (6 * 4px) - padding left & right
-      // (Padding horizontal: 24px - padding left & right)
-      // 💡 px = padding x-axis (padding trục x)
-      py={8}
-      // 📱 Padding vertical: 32px (8 * 4px) - padding top & bottom
-      // (Padding vertical: 32px - padding top & bottom)
-      // 💡 py = padding y-axis (padding trục y)
-
-      // 🎨 COLORS (Màu sắc)
-      bg="blue.500"
-      // 🔵 Background color: blue.500 (từ theme)
-      // (Background color: blue.500 from theme)
-      // 💡 blue.500 = màu chính của blue color scheme (main color of blue color scheme)
-      color="white"
-      // ⚪ Text color: white (Màu chữ: trắng)
-      // (Text color: white)
-
-      // 📐 BORDERS (Viền)
-      borderWidth="1px"
-      // 📏 Border width: 1px (Độ dày viền: 1px)
-      // (Border width: 1px)
-      borderColor="gray.200"
-      // 🎨 Border color: gray.200 (từ theme) (Màu viền: gray.200 từ theme)
-      // (Border color: gray.200 from theme)
-      borderRadius="md"
-      // 📐 Border radius: md = 8px (Bo góc: md = 8px)
-      // (Border radius: md = 8px)
-      // 💡 md = medium (trung bình)
-
-      // 📱 RESPONSIVE - Array values [mobile, tablet, desktop]
-      // (Responsive - Array values [mobile, tablet, desktop])
-      width={['100%', '50%', '33%']}
-      // 📱 Mobile (0px+): 100% width, Tablet (768px+): 50% width, Desktop (1024px+): 33% width
-      // (Mobile: 100% width, Tablet: 50% width, Desktop: 33% width)
-      // 💡 Array index: [0] = mobile, [1] = tablet, [2] = desktop
-      fontSize={['14px', '16px', '18px']}
-      // 📱 Responsive font size: Mobile 14px, Tablet 16px, Desktop 18px
-      // (Responsive font size: Mobile 14px, Tablet 16px, Desktop 18px)
-
-      // 🎨 SHADOWS (Bóng đổ)
-      boxShadow="md"
-      // 🌑 Shadow: md (medium) - sm (small), md (medium), lg (large), xl (extra large)
-      // (Shadow: md - sm, md, lg, xl)
-
-      // 🖱️ HOVER STATES (Trạng thái hover)
-      _hover={{
-        // 🎯 Pseudo-class hover - Styles khi hover chuột
-        // (Pseudo-class hover - Styles when hovering mouse)
-        bg: 'blue.600',
-        // 🔵 Đổi màu nền khi hover: blue.600 (darker blue)
-        // (Change background color on hover: blue.600 - darker blue)
-        transform: 'scale(1.05)',
-        // 🔄 Phóng to khi hover: scale 1.05 (tăng 5%)
-        // (Scale up on hover: scale 1.05 - increase 5%)
-      }}
-      // 🎯 FOCUS STATES (Trạng thái focus)
-      _focus={{
-        // 🎯 Pseudo-class focus - Styles khi focus (keyboard navigation)
-        // (Pseudo-class focus - Styles when focused - keyboard navigation)
-        outline: '2px solid',
-        // 📐 Outline: 2px solid (Viền focus: 2px solid)
-        // (Outline: 2px solid)
-        outlineColor: 'blue.500',
-        // 🎨 Màu outline: blue.500 (Màu viền focus: blue.500)
-        // (Outline color: blue.500)
-      }}
-    >
-      Responsive Box {/* 📝 Nội dung (Content) */}
-    </Box>
-  );
-}
-
-// ✅ COMPONENT COMPOSITION (Kết Hợp Components)
-function Card({ children }: { children: React.ReactNode }) {
-  // 💡 Component Card tái sử dụng được (Reusable Card component)
-  // 💡 children: Nội dung bên trong Card (Content inside Card)
-
-  return (
-    <Box
-      p={6}
-      // 📏 Padding: 24px (6 * 4px) (Padding: 24px)
-      bg="white"
-      // ⚪ Background: white (Nền: trắng)
-      borderRadius="lg"
-      // 📐 Border radius: lg = 16px (Bo góc: lg = 16px)
-      boxShadow="lg"
-      // 🌑 Shadow: lg (large) - Bóng đổ lớn (Large shadow)
-      _hover={{
-        // 🖱️ Hover state (Trạng thái hover)
-        boxShadow: 'xl',
-        // 🌑 Shadow: xl (extra large) - Bóng đổ lớn hơn khi hover
-        // (Shadow: xl - larger shadow on hover)
-        transform: 'translateY(-4px)',
-        // 🔄 Di chuyển lên 4px khi hover (Move up 4px on hover)
-        // (Transform: translateY(-4px) - move up 4px)
-        transition: 'all 0.2s',
-        // ⏱️ Transition: 0.2s cho tất cả properties (Smooth animation)
-        // (Transition: 0.2s for all properties - smooth animation)
-      }}
-    >
-      {children}
-      {/* 📝 Hiển nội dung children (Display children content) */}
-    </Box>
-  );
-}
-
-function ProductCard({ product }: { product: Product }) {
-  // 💡 Component card sản phẩm (Product card component)
-  // 💡 product: Props nhận product object (Props receives product object)
-
-  return (
-    <Card>
-      {/* 📦 Sử dụng Card component (Use Card component) */}
-      <Text fontSize="xl" fontWeight="bold">
-        {/* 📝 Text component - fontSize: xl (extra large), fontWeight: bold (đậm)
-            (Text component - fontSize: xl, fontWeight: bold) */}
-        {product.name}
-        {/* 📝 Hiển tên sản phẩm (Display product name) */}
-      </Text>
-      <Text color="gray.600" mt={2}>
-        {/* 📝 Text component - color: gray.600, mt={2} = margin-top: 8px
-            (Text component - color: gray.600, mt={2} = margin-top: 8px) */}
-        {product.description}
-        {/* 📝 Hiển mô tả sản phẩm (Display product description) */}
-      </Text>
-      <Flex justify="space-between" align="center" mt={4}>
-        {/* 📦 Flex component - flex container
-            (Flex component - flex container)
-            💡 justify="space-between": Căn items cách đều (space between items)
-            (justify="space-between": Space items evenly)
-            💡 align="center": Căn giữa theo trục dọc (align center vertically)
-            (align="center": Align center vertically)
-            💡 mt={4}: margin-top: 16px (4 * 4px) */}
-        <Text fontSize="2xl" fontWeight="bold" color="blue.500">
-          {/* 📝 Text component - fontSize: 2xl (rất lớn), fontWeight: bold, color: blue.500
-              (Text component - fontSize: 2xl - very large, fontWeight: bold, color: blue.500) */}
-          ${product.price}
-          {/* 💰 Hiển giá sản phẩm (Display product price) */}
-        </Text>
-        <Button colorScheme="blue">
-          {/* 🔘 Button component - colorScheme: blue
-              (Button component - colorScheme: blue) */}
-          Buy {/* 📝 Nội dung button (Button content) */}
-        </Button>
-      </Flex>
-    </Card>
-  );
-}
-```
-
----
-
-## 5. Mantine
-
-### **5.1. Overview**
-
-```typescript
-/**
- * 🎨 MANTINE = Full-featured React components library
- *
- * ✅ ƯU ĐIỂM:
- * - Full-featured: Nhiều components, hooks, utilities
- * - TypeScript: Excellent TypeScript support
- * - Accessibility: WCAG 2.1 compliant
- * - Dark mode: Built-in dark mode
- * - Form library: Built-in form library (react-hook-form based)
- * - Date picker: Powerful date picker
- * - Bundle size: Medium (~200KB)
- *
- * ❌ NHƯỢC ĐIỂM:
- * - Learning curve: Cần học API
- * - Less popular: Ít popular hơn MUI/Chakra
- * - Documentation: Tốt nhưng ít examples hơn MUI
- *
- * 🎯 USE CASES:
- * - Full-featured applications
- * - Apps cần form library tích hợp
- * - Projects cần date picker mạnh
- */
-
-// 📦 INSTALLATION
-// npm install @mantine/core @mantine/hooks
-
-// ✅ SETUP (Thiết Lập)
-import { MantineProvider } from '@mantine/core';
-// 📦 MantineProvider: Cung cấp theme và context cho toàn bộ app
-// (MantineProvider: Provides theme and context to entire app)
-import '@mantine/core/styles.css';
-// 🎨 Import CSS styles của Mantine (Import Mantine CSS styles)
-
-function App() {
-  // 💡 Component gốc của app (Root component of app)
-  return (
-    <MantineProvider>
-      {/* 🎨 MantineProvider: Wrap app để cung cấp theme và context
-          (MantineProvider: Wrap app to provide theme and context)
-          💡 Tất cả Mantine components có thể dùng theme, dark mode...
-          (All Mantine components can use theme, dark mode...) */}
-      <YourApp /> {/* 📝 Component app của bạn (Your app component) */}
-    </MantineProvider>
-  );
-}
-
-// ✅ BASIC USAGE (Cách Sử Dụng Cơ Bản)
-import { Button, TextInput, Stack, Paper } from '@mantine/core';
-// 📦 Import Mantine components (Import Mantine components)
-
-function LoginForm() {
-  // 💡 Component form đăng nhập (Login form component)
-
-  return (
-    <Paper p="md" shadow="sm">
-      {/* 📄 Paper = card container với padding và shadow
-          (Paper = card container with padding and shadow)
-          💡 p="md": padding = medium (16px) (padding = medium - 16px)
-          💡 shadow="sm": shadow = small (Bóng đổ nhỏ) (shadow = small) */}
-      <Stack gap="md">
-        {/* 📊 Stack = flex container với gap
-            (Stack = flex container with gap)
-            💡 gap="md": gap = medium (16px) giữa các items
-            (gap="md": gap = medium - 16px between items) */}
-
-        <TextInput
-          label="Email"
-          // 🏷️ Label hiển thị cho input (Label displayed for input)
-          placeholder="Enter email"
-          // 📝 Placeholder: Hiển khi input trống (Placeholder: Displays when input is empty)
-          required
-          // ✅ Required field - Bắt buộc phải có giá trị (Required - must have value)
-          // 💡 Tự động hiển dấu * và validation (Automatically shows * and validation)
-        />
-
-        <TextInput
-          label="Password"
-          // 🏷️ Label: Password (Label: Password)
-          type="password"
-          // 🔒 Type: password - Ẩn ký tự khi gõ (Type: password - Hides characters)
-          placeholder="Enter password"
-          // 📝 Placeholder: Hiển khi input trống (Placeholder: Displays when input is empty)
-          required
-          // ✅ Required field (Bắt buộc) (Required field)
-        />
-
-        <Button fullWidth>
-          {/* 🔘 Button component - fullWidth: Chiếm 100% width
-              (Button component - fullWidth: Takes 100% width) */}
-          Login {/* 📝 Nội dung button (Button content) */}
-        </Button>
-      </Stack>
-    </Paper>
-  );
-}
-```
-
-### **5.2. Form Library**
-
-```typescript
-/**
- * 📋 MANTINE FORM LIBRARY - Built-in form library dựa trên react-hook-form
- */
-
-import { useForm } from '@mantine/form';
-import { TextInput, Button, Stack, Alert } from '@mantine/core';
-
-interface FormValues {
+type User = {
+  id: string;
+  name: string;
   email: string;
-  password: string;
+};
+
+const columns = [
+  { title: 'Name', dataIndex: 'name', key: 'name' },
+  { title: 'Email', dataIndex: 'email', key: 'email' },
+];
+
+export function UsersAdmin({ users }: { users: User[] }) {
+  return (
+    <section>
+      <Form layout="inline">
+        <Form.Item name="keyword">
+          <Input.Search placeholder="Search users" />
+        </Form.Item>
+        <Button type="primary">Create user</Button>
+      </Form>
+
+      <Table rowKey="id" columns={columns} dataSource={users} />
+    </section>
+  );
 }
+```
 
-function LoginForm() {
-  // 💡 Component form đăng nhập với Mantine form library
-  // (Login form component with Mantine form library)
+**Senior note:** Ant Design rất mạnh cho CRUD productivity, nhưng nên wrap các component quan trọng (`AppTable`, `AppForm`, `AppModal`) để giảm lock-in và áp design convention của team.
 
-  const form = useForm<FormValues>({
-    // 💡 useForm: Hook quản lý form state và validation (Hook manages form state and validation)
-    // 💡 <FormValues>: Type-safe với FormValues interface (Type-safe with FormValues interface)
-    initialValues: {
-      // 💡 initialValues: Giá trị ban đầu của form fields (Initial values of form fields)
-      email: '', // 📧 Email: rỗng (Email: empty)
-      password: '', // 🔒 Password: rỗng (Password: empty)
-    },
+### 3.4. Chakra UI
+
+Chakra UI nổi bật với style props, component API dễ đọc và accessible defaults. Chakra v3 đi theo hướng composition/token tốt hơn, nhưng team vẫn cần governance để tránh mỗi màn hình style một kiểu.
+
+**Hợp khi:**
+
+- Team muốn DX nhanh, dễ học.
+- Product app vừa và nhỏ cần UI hiện đại, dark mode, responsive props.
+- Team thích style props thay vì viết CSS file nhiều.
+- Cần build component wrapper nhanh.
+
+**Cẩn thận khi:**
+
+- Design system lớn cần token governance chặt.
+- Team lạm dụng style props trực tiếp trong feature code.
+- App cần SSR/RSC rất nghiêm ngặt, phải kiểm tra provider/client boundary.
+
+```tsx
+import { Button, Field, Input, Stack } from '@chakra-ui/react';
+
+export function ProfileForm() {
+  return (
+    <Stack as="form" gap="4" maxW="sm">
+      <Field.Root required>
+        <Field.Label>Display name</Field.Label>
+        <Input name="displayName" />
+        <Field.HelperText>Tên này sẽ hiển thị trong workspace.</Field.HelperText>
+      </Field.Root>
+
+      <Button type="submit" colorPalette="blue">
+        Save
+      </Button>
+    </Stack>
+  );
+}
+```
+
+**Senior note:** Với Chakra, nên tạo layer design-system component như `PrimaryButton`, `FormField`, `PageStack` để tránh feature code chứa quá nhiều quyết định visual.
+
+### 3.5. Mantine
+
+Mantine là library thực dụng, nhiều component và hooks, có form utilities, notifications, modals, dates, charts ecosystem. Nó thường hợp product team muốn nhiều building blocks nhưng không muốn Material/Ant look quá rõ.
+
+**Hợp khi:**
+
+- SaaS/product app cần nhiều component nhanh.
+- Team cần form/date/notification/hooks tiện.
+- Muốn theming tốt nhưng không quá bị ràng buộc bởi Material Design.
+- Prototype đến production với API tương đối đầy đủ.
+
+**Cẩn thận khi:**
+
+- Team đã có design system rất riêng.
+- Muốn headless hoàn toàn.
+- Không kiểm soát import và style provider.
+
+```tsx
+import { Button, Group, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
+
+export function InviteMemberForm() {
+  const form = useForm({
+    initialValues: { email: '' },
     validate: {
-      // 💡 validate: Validation functions cho từng field (Validation functions for each field)
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Email không hợp lệ'),
-      // 📧 Email validation: Kiểm tra format email
-      // (Email validation: Check email format)
-      // 💡 Regex: /^\S+@\S+$/ - Kiểm tra format email cơ bản
-      // (Regex: /^\S+@\S+$/ - Check basic email format)
-      // 💡 Return null nếu hợp lệ, return string nếu không hợp lệ
-      // (Return null if valid, return string if invalid)
-      password: (value) =>
-        value.length < 8 ? 'Password phải có ít nhất 8 ký tự' : null,
-      // 🔒 Password validation: Kiểm tra độ dài tối thiểu
-      // (Password validation: Check minimum length)
-      // 💡 Nếu length < 8 → return error message, ngược lại → null
-      // (If length < 8 → return error message, otherwise → null)
     },
   });
 
-  const handleSubmit = (values: FormValues) => {
-    // 💡 Hàm xử lý khi form submit thành công (Function handles successful form submission)
-    // 💡 values đã được validate, đảm bảo đúng format (values have been validated, ensures correct format)
-    console.log('Form values:', values); // 📊 In ra console (Log to console)
-  };
-
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
-      {/* 📝 HTML form element
-          💡 form.onSubmit(handleSubmit): Tự động validate trước khi gọi handleSubmit
-          (form.onSubmit(handleSubmit): Automatically validates before calling handleSubmit) */}
-      <Stack gap="md">
-        {/* 📊 Stack với gap medium (Stack with medium gap) */}
-
-        <TextInput
-          label="Email"
-          // 🏷️ Label: Email (Label: Email)
-          placeholder="Enter email"
-          // 📝 Placeholder (Placeholder)
-          {...form.getInputProps('email')}
-          // 🎮 Auto bind value, onChange, error - Tự động bind với form state
-          // (Auto bind value, onChange, error - Automatically binds with form state)
-          // 💡 getInputProps('email') trả về: { value, onChange, onBlur, error }
-          // (getInputProps('email') returns: { value, onChange, onBlur, error })
-          // 💡 Tương đương với:
-          // (Equivalent to:)
-          // value={form.values.email}
-          // onChange={(e) => form.setFieldValue('email', e.target.value)}
-          // error={form.errors.email}
-        />
-
-        <TextInput
-          label="Password"
-          // 🏷️ Label: Password (Label: Password)
-          type="password"
-          // 🔒 Type: password (Type: password)
-          placeholder="Enter password"
-          // 📝 Placeholder (Placeholder)
-          {...form.getInputProps('password')}
-          // 🎮 Auto bind với form state (Auto bind with form state)
-        />
-
-        {form.errors.root && (
-          // ❌ Global errors - Lỗi toàn cục (không thuộc field cụ thể)
-          // (Global errors - Global errors not belonging to specific field)
-          <Alert color="red">
-            {/* 🚨 Alert component - color: red (Alert component - color: red) */}
-            {form.errors.root}
-            {/* 📝 Hiển message lỗi toàn cục (Display global error message) */}
-          </Alert>
-        )}
-
-        <Button type="submit">
-          {/* 🔘 Button - type: submit (Button - type: submit) */}
-          Login {/* 📝 Nội dung button (Button content) */}
-        </Button>
-      </Stack>
+    <form onSubmit={form.onSubmit((values) => console.log(values))}>
+      <TextInput
+        label="Email"
+        placeholder="teammate@example.com"
+        {...form.getInputProps('email')}
+      />
+      <Group mt="md">
+        <Button type="submit">Invite</Button>
+      </Group>
     </form>
   );
 }
 ```
 
----
+**Senior note:** Mantine có nhiều “batteries included”; hãy chuẩn hóa wrapper và tokens sớm để app không thành tập hợp component dùng tùy hứng.
 
-## 6. Radix UI
+### 3.6. Radix UI
 
-### **6.1. Overview**
+Radix UI là headless/unstyled primitives tập trung vào accessibility, keyboard interaction và composability. Nó không quyết định visual style.
 
-```typescript
-/**
- * 🎨 RADIX UI = Headless, accessible component primitives
- *
- * ✅ ƯU ĐIỂM:
- * - Headless: Không có styles, bạn tự style
- * - Accessible: WCAG 2.1 compliant, keyboard navigation
- * - Composable: Mix and match components
- * - Small bundle: Chỉ import components cần (~50KB per component)
- * - Unstyled: Full control over styling
- * - TypeScript: Excellent TypeScript support
- *
- * ❌ NHƯỢC ĐIỂM:
- * - No styles: Phải tự style (có thể tốn thời gian)
- * - Learning curve: Cần hiểu accessibility concepts
- * - Composition: Cần hiểu cách compose components
- *
- * 🎯 USE CASES:
- * - Custom design systems
- * - Apps cần full control styling
- * - Projects dùng Tailwind CSS
- * - Accessibility-critical apps
- */
+**Hợp khi:**
 
-// 📦 INSTALLATION
-// npm install @radix-ui/react-dialog @radix-ui/react-dropdown-menu
+- Team có design riêng hoặc design system nội bộ.
+- Cần accessible behavior cho Dialog, Dropdown, Popover, Select, Tooltip.
+- Muốn kiểm soát CSS/Tailwind/CSS Modules/stitches riêng.
+- Cần composition linh hoạt, ví dụ `asChild`.
 
-// ✅ BASIC USAGE - Dialog (Cách Sử Dụng Cơ Bản - Dialog)
+**Cẩn thận khi:**
+
+- Team muốn UI đẹp ngay mà không có designer/CSS capacity.
+- Không có người đủ kinh nghiệm xây design token/component layer.
+- Expect Radix là full component library giống MUI/Ant.
+
+```tsx
 import * as Dialog from '@radix-ui/react-dialog';
-// 📦 Import Dialog components - * as Dialog để dùng Dialog.Root, Dialog.Trigger...
-// (Import Dialog components - * as Dialog to use Dialog.Root, Dialog.Trigger...)
 
-function MyDialog() {
-  // 💡 Component Dialog tùy chỉnh (Custom Dialog component)
-
+export function ConfirmDeleteDialog() {
   return (
     <Dialog.Root>
-      {/* 🎮 Root component - Quản lý state (open/close) của Dialog
-          (Root component - Manages Dialog state - open/close)
-          💡 Không có styles, chỉ quản lý logic (No styles, only manages logic) */}
       <Dialog.Trigger asChild>
-        {/* 🖱️ Trigger button - Button để mở Dialog
-            (Trigger button - Button to open Dialog)
-            💡 asChild: Render children thay vì tạo button mới (Render children instead of creating new button)
-            💡 Cho phép dùng button tùy chỉnh (Allows using custom button) */}
-        <button>Open Dialog</button>
-        {/* 🔘 Button tùy chỉnh - Bạn tự style (Custom button - You style it) */}
+        <button className="btn btn-danger">Delete</button>
       </Dialog.Trigger>
+
       <Dialog.Portal>
-        {/* 🌐 Portal - Render Dialog outside DOM tree (thường là body)
-            (Portal - Render Dialog outside DOM tree - usually body)
-            💡 Tránh z-index issues, overflow issues (Avoids z-index issues, overflow issues) */}
         <Dialog.Overlay className="dialog-overlay" />
-        {/* 🎨 Overlay backdrop - Lớp phủ phía sau Dialog
-            (Overlay backdrop - Layer behind Dialog)
-            💡 className: Bạn tự style với CSS/Tailwind (You style with CSS/Tailwind)
-            💡 Thường dùng: position: fixed, inset: 0, background: rgba(0,0,0,0.5)
-            (Usually: position: fixed, inset: 0, background: rgba(0,0,0,0.5)) */}
         <Dialog.Content className="dialog-content">
-          {/* 📄 Dialog content - Nội dung Dialog
-              (Dialog content - Dialog content)
-              💡 className: Bạn tự style (You style it)
-              💡 Thường dùng: position: fixed, center, background: white, padding...
-              (Usually: position: fixed, center, background: white, padding...) */}
-          <Dialog.Title>Dialog Title</Dialog.Title>
-          {/* 📝 Title - Tiêu đề Dialog (Title - Dialog title)
-              💡 Tự động có ARIA attributes cho accessibility (Automatically has ARIA attributes for accessibility) */}
-          <Dialog.Description>Dialog description text</Dialog.Description>
-          {/* 📝 Description - Mô tả Dialog (Description - Dialog description)
-              💡 Tự động có ARIA attributes (Automatically has ARIA attributes) */}
-          <Dialog.Close asChild>
-            {/* ❌ Close button - Button để đóng Dialog
-                (Close button - Button to close Dialog)
-                💡 asChild: Render children thay vì tạo button mới (Render children instead of creating new button) */}
-            <button>Close</button>
-            {/* 🔘 Button tùy chỉnh (Custom button) */}
-          </Dialog.Close>
+          <Dialog.Title>Xóa project?</Dialog.Title>
+          <Dialog.Description>
+            Hành động này không thể hoàn tác.
+          </Dialog.Description>
+
+          <div className="dialog-actions">
+            <Dialog.Close asChild>
+              <button>Cancel</button>
+            </Dialog.Close>
+            <button className="btn btn-danger">Confirm</button>
+          </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
   );
 }
-
-// 💡 STYLING VỚI CSS/Tailwind
-// .dialog-overlay {
-//   position: fixed;
-//   inset: 0;
-//   background: rgba(0, 0, 0, 0.5);
-// }
-//
-// .dialog-content {
-//   position: fixed;
-//   top: 50%;
-//   left: 50%;
-//   transform: translate(-50%, -50%);
-//   background: white;
-//   padding: 24px;
-//   border-radius: 8px;
-// }
 ```
 
-### **6.2. Composable Pattern**
+**Senior note:** Radix thường là nền tốt cho design system, không phải câu trả lời cuối cùng. Team vẫn cần API wrapper, styling convention, testing và docs.
 
-```typescript
-/**
- * 🧩 RADIX UI COMPOSABLE PATTERN - Mix and match components
- */
+### 3.7. Headless UI
 
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-// 📦 Import DropdownMenu components (Import DropdownMenu components)
+Headless UI là unstyled accessible component library từ Tailwind Labs. Nó phù hợp với Tailwind app cần primitives như Dialog, Menu, Listbox, Combobox, Switch, Tabs.
 
-function UserMenu() {
-  // 💡 Component menu người dùng (User menu component)
+**Hợp khi:**
 
-  return (
-    <DropdownMenu.Root>
-      {/* 🎮 Root component - Quản lý state (open/close) của DropdownMenu
-          (Root component - Manages DropdownMenu state - open/close) */}
-      <DropdownMenu.Trigger asChild>
-        {/* 🖱️ Trigger button - Button để mở menu
-            (Trigger button - Button to open menu)
-            💡 asChild: Render children thay vì tạo button mới (Render children instead of creating new button) */}
-        <button>User Menu</button>
-        {/* 🔘 Button tùy chỉnh (Custom button) */}
-      </DropdownMenu.Trigger>
+- Project dùng Tailwind.
+- Cần headless primitives đơn giản.
+- Team muốn API ít hơn Radix, dễ tiếp cận.
+- UI không cần quá nhiều component enterprise.
 
-      <DropdownMenu.Portal>
-        {/* 🌐 Portal - Render menu outside DOM tree (Portal - Render menu outside DOM tree) */}
-        <DropdownMenu.Content>
-          {/* 📄 Menu content - Container cho menu items
-              (Menu content - Container for menu items)
-              💡 Bạn tự style với CSS/Tailwind (You style with CSS/Tailwind) */}
-          <DropdownMenu.Item>Profile</DropdownMenu.Item>
-          {/* 📋 Menu item: Profile (Menu item: Profile)
-              💡 Tự động có keyboard navigation, focus management
-              (Automatically has keyboard navigation, focus management) */}
-          <DropdownMenu.Item>Settings</DropdownMenu.Item>
-          {/* 📋 Menu item: Settings (Menu item: Settings) */}
-          <DropdownMenu.Separator />
-          {/* ➖ Separator - Đường phân cách giữa các items
-              (Separator - Divider between items) */}
-          <DropdownMenu.Item>Logout</DropdownMenu.Item>
-          {/* 📋 Menu item: Logout (Menu item: Logout) */}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
-  );
-}
+**Cẩn thận khi:**
 
-// ✅ ACCESSIBILITY FEATURES (tự động có) (Accessibility Features - automatically included)
-// - Keyboard navigation (Arrow keys, Enter, Escape)
-//   (Điều hướng bàn phím - Phím mũi tên, Enter, Escape)
-//   (Keyboard navigation - Arrow keys, Enter, Escape)
-// - Focus management (Quản lý focus tự động)
-//   (Focus management - Automatic focus management)
-// - ARIA attributes (Thuộc tính ARIA tự động)
-//   (ARIA attributes - Automatic ARIA attributes)
-// - Screen reader support (Hỗ trợ screen reader)
-//   (Screen reader support)
-```
+- Cần coverage component rộng.
+- Cần primitives chi tiết như Radix.
+- Không dùng Tailwind hoặc không thích class-heavy styling.
 
----
+```tsx
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
-## 7. Headless UI
-
-### **7.1. Overview**
-
-```typescript
-/**
- * 🎨 HEADLESS UI = Unstyled, accessible components (by Tailwind team)
- *
- * ✅ ƯU ĐIỂM:
- * - Tailwind CSS: Designed for Tailwind CSS
- * - Accessible: WCAG 2.1 compliant
- * - Simple API: Dễ dùng
- * - Small bundle: Chỉ import cần (~30KB per component)
- *
- * ❌ NHƯỢC ĐIỂM:
- * - Limited components: Ít components hơn Radix UI
- * - Tailwind focus: Tối ưu cho Tailwind (có thể khó dùng với CSS khác)
- *
- * 🎯 USE CASES:
- * - Projects dùng Tailwind CSS
- * - Custom design systems với Tailwind
- */
-
-// 📦 INSTALLATION
-// npm install @headlessui/react
-
-// ✅ BASIC USAGE - Dialog (Cách Sử Dụng Cơ Bản - Dialog)
-import { Dialog } from '@headlessui/react';
-// 📦 Import Dialog component từ Headless UI (Import Dialog component from Headless UI)
-
-function MyDialog({
-  isOpen, // 💡 isOpen: Boolean - Dialog đang mở hay đóng (Boolean - Dialog is open or closed)
-  onClose, // 💡 onClose: Function - Hàm đóng Dialog (Function - Close Dialog function)
+export function SettingsDialog({
+  open,
+  onClose,
 }: {
-  isOpen: boolean; // 📝 Type: boolean (Type: boolean)
-  onClose: () => void; // 📝 Type: function không return (Type: function that returns void)
+  open: boolean;
+  onClose: () => void;
 }) {
-  // 💡 Component Dialog tùy chỉnh (Custom Dialog component)
-
   return (
-    <Dialog open={isOpen} onClose={onClose}>
-      {/* 🎮 Dialog component - Quản lý state và accessibility
-          (Dialog component - Manages state and accessibility)
-          💡 open: Control Dialog mở/đóng (Control Dialog open/close)
-          💡 onClose: Callback khi đóng Dialog (Callback when closing Dialog) */}
-      <Dialog.Backdrop />
-      {/* 🎨 Backdrop overlay - Lớp phủ phía sau Dialog
-          (Backdrop overlay - Layer behind Dialog)
-          💡 Bạn tự style với Tailwind: className="fixed inset-0 bg-black/50"
-          (You style with Tailwind: className="fixed inset-0 bg-black/50") */}
-      <Dialog.Panel>
-        {/* 📄 Dialog panel - Nội dung Dialog
-            (Dialog panel - Dialog content)
-            💡 Bạn tự style với Tailwind: className="bg-white p-6 rounded-lg"
-            (You style with Tailwind: className="bg-white p-6 rounded-lg") */}
-        <Dialog.Title>Dialog Title</Dialog.Title>
-        {/* 📝 Title - Tiêu đề Dialog (Title - Dialog title)
-            💡 Tự động có ARIA attributes (Automatically has ARIA attributes) */}
-        <Dialog.Description>Dialog description</Dialog.Description>
-        {/* 📝 Description - Mô tả Dialog (Description - Dialog description)
-            💡 Tự động có ARIA attributes (Automatically has ARIA attributes) */}
-        <button onClick={onClose}>Close</button>
-        {/* 🔘 Button đóng Dialog (Button to close Dialog) */}
-      </Dialog.Panel>
+    <Dialog open={open} onClose={onClose} className="relative z-50">
+      <div className="fixed inset-0 bg-black/30" />
+      <div className="fixed inset-0 flex items-center justify-center p-4">
+        <DialogPanel className="w-full max-w-md rounded bg-white p-6">
+          <DialogTitle className="text-lg font-semibold">Settings</DialogTitle>
+          <p className="mt-2 text-sm text-gray-600">Update workspace settings.</p>
+        </DialogPanel>
+      </div>
     </Dialog>
   );
 }
-
-// ✅ DROPDOWN MENU (Menu Thả Xuống)
-import { Menu } from '@headlessui/react';
-// 📦 Import Menu component (Import Menu component)
-
-function UserMenu() {
-  // 💡 Component menu người dùng (User menu component)
-
-  return (
-    <Menu>
-      {/* 🎮 Menu component - Quản lý state và accessibility
-          (Menu component - Manages state and accessibility) */}
-      <Menu.Button>Options</Menu.Button>
-      {/* 🖱️ Menu button - Button để mở menu
-          (Menu button - Button to open menu)
-          💡 Tự động có ARIA attributes (Automatically has ARIA attributes) */}
-      <Menu.Items>
-        {/* 📋 Menu items container - Container cho menu items
-            (Menu items container - Container for menu items)
-            💡 Bạn tự style với Tailwind: className="bg-white shadow-lg rounded"
-            (You style with Tailwind: className="bg-white shadow-lg rounded") */}
-        <Menu.Item>
-          {/* 📋 Menu item - Item trong menu (Menu item - Item in menu) */}
-          {({ active }) => (
-            // 💡 Render prop - Nhận { active } object
-            // (Render prop - Receives { active } object)
-            // 💡 active: Boolean - Item đang được hover/focus (Boolean - Item is hovered/focused)
-            <a className={active ? 'bg-blue-500' : ''}>
-              {/* 🔗 Link - active ? 'bg-blue-500' : '' (màu nền khi active)
-                  (Link - active ? 'bg-blue-500' : '' - background color when active) */}
-              Profile {/* 📝 Nội dung item (Item content) */}
-            </a>
-          )}
-        </Menu.Item>
-        <Menu.Item>
-          {/* 📋 Menu item: Settings (Menu item: Settings) */}
-          <a>Settings</a>
-          {/* 🔗 Link: Settings (Link: Settings) */}
-        </Menu.Item>
-      </Menu.Items>
-    </Menu>
-  );
-}
 ```
 
----
+### 3.8. shadcn/ui
 
-## 8. Shadcn/ui
+shadcn/ui là collection component bạn copy vào project. Nó thường dùng Radix primitives, Tailwind CSS và `class-variance-authority`. Vì code nằm trong repo, team có toàn quyền chỉnh sửa.
 
-### **8.1. Overview**
+**Hợp khi:**
 
-```typescript
-/**
- * 🎨 SHADCN/UI = Copy-paste components (not a library!)
- *
- * ✅ ƯU ĐIỂM:
- * - Copy code: Bạn sở hữu code, tự maintain
- * - Tailwind CSS: Built với Tailwind CSS
- * - Customizable: Dễ customize (vì bạn có code)
- * - Zero bundle: Không tăng bundle size (chỉ code bạn copy)
- * - Radix UI: Built trên Radix UI (accessible)
- * - Modern: Design hiện đại, đẹp
- *
- * ❌ NHƯỢC ĐIỂM:
- * - Manual updates: Phải tự update khi có version mới
- * - Setup: Cần setup Tailwind CSS + Radix UI
- * - Learning curve: Cần hiểu Tailwind + Radix
- *
- * 🎯 USE CASES:
- * - Projects dùng Tailwind CSS
- * - Apps cần custom design
- * - Teams muốn own the code
- */
+- Project dùng Tailwind.
+- Team muốn sở hữu component code.
+- Cần UI hiện đại nhanh nhưng vẫn customize sâu.
+- Muốn tránh lock-in vào package component runtime.
+- Build design system vừa và nhỏ.
 
-// 📦 SETUP (one-time) (Thiết Lập - một lần)
-// npx shadcn-ui@latest init
-// 💡 Lệnh này tạo cấu trúc thư mục và config Tailwind
-// (This command creates directory structure and Tailwind config)
+**Cẩn thận khi:**
 
-// ✅ USAGE - Copy component code vào project (Cách Sử Dụng - Copy component code vào project)
-// Components được copy vào src/components/ui/
-// (Components are copied to src/components/ui/)
-// 💡 Chạy: npx shadcn-ui@latest add button (Run: npx shadcn-ui@latest add button)
-// 💡 Component code được copy vào src/components/ui/button.tsx
-// (Component code is copied to src/components/ui/button.tsx)
+- Team không muốn maintain copied code.
+- Không có convention cho update upstream.
+- Copy nhiều component nhưng không chuẩn hóa design token.
+- Nhiều project cùng dùng nhưng không có shared package/registry nội bộ.
 
+```tsx
 import { Button } from '@/components/ui/button';
-// 📦 Import Button từ thư mục components/ui (Import Button from components/ui folder)
-// 💡 @/ = alias cho src/ (thường config trong tsconfig.json)
-// (@/ = alias for src/ - usually configured in tsconfig.json)
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-// 📦 Import Input từ thư mục components/ui (Import Input from components/ui folder)
 
-function LoginForm() {
-  // 💡 Component form đăng nhập (Login form component)
-
-  return (
-    <div>
-      <Input
-        type="email"
-        // 📧 Type: email (Type: email)
-        placeholder="Email"
-        // 📝 Placeholder: Email (Placeholder: Email)
-      />
-      <Input
-        type="password"
-        // 🔒 Type: password (Type: password)
-        placeholder="Password"
-        // 📝 Placeholder: Password (Placeholder: Password)
-      />
-      <Button>Login</Button>
-      {/* 🔘 Button component - Bạn có thể customize code trong button.tsx
-          (Button component - You can customize code in button.tsx) */}
-    </div>
-  );
-}
-
-// 💡 COMPONENT STRUCTURE (sau khi copy) (Component Structure - after copying)
-// src/components/ui/button.tsx
-// 💡 File này chứa code Button component (This file contains Button component code)
-// - Code component với Tailwind classes (Component code with Tailwind classes)
-//   💡 Ví dụ: className="bg-blue-500 hover:bg-blue-600"
-//   (Example: className="bg-blue-500 hover:bg-blue-600")
-// - Bạn có thể sửa trực tiếp (You can edit directly)
-//   💡 Sửa code trong file này → thay đổi ngay lập tức
-//   (Edit code in this file → changes immediately)
-// - Không phụ thuộc vào npm package (Not dependent on npm package)
-//   💡 Không cần update package, chỉ cần sửa code
-//   (No need to update package, just edit code)
-```
-
----
-
-## 📊 9. Comparison Matrix (Ma Trận So Sánh)
-
-### **📋 9.1. Detailed Comparison (So Sánh Chi Tiết)**
-
-**📊 Bảng So Sánh Component Libraries (Component Libraries Comparison Table):**
-
-| Library (Thư viện)       | Bundle Size (Kích thước)    | Components (Số lượng)           | Customization (Tùy chỉnh)             | Accessibility (Khả năng truy cập)       | TypeScript      | Learning Curve (Độ khó học)     | Design System (Hệ thống thiết kế) | Best For (Tốt nhất cho)                  |
-| ------------------------ | --------------------------- | ------------------------------- | ------------------------------------- | --------------------------------------- | --------------- | ------------------------------- | --------------------------------- | ---------------------------------------- |
-| **🏗️ Material-UI (MUI)** | ⚠️ ~300KB (Lớn)             | ✅ 100+ (Nhiều)                 | ✅ Theme-based (Dựa trên theme)       | ✅ WCAG 2.1 (Xuất sắc)                  | ✅ Full support | 📚 Medium (Trung bình)          | 🎨 Material Design                | Enterprise apps, Admin dashboards        |
-| **📊 Ant Design**        | ⚠️ ~500KB (Rất lớn)         | ✅ 60+ (Nhiều)                  | ✅ Theme-based (Dựa trên theme)       | ✅ Good (Tốt)                           | ✅ Full support | 📚 Medium (Trung bình)          | 🎨 Ant Design                     | Admin dashboards, Data-heavy apps        |
-| **🎨 Chakra UI**         | ✅ ~150KB (Trung bình)      | ✅ 50+ (Tốt)                    | ✅ Props-based (Dựa trên props)       | ✅ WCAG 2.1 (Xuất sắc)                  | ✅ Full support | 📚 Low (Dễ)                     | 🎨 Custom (Tùy chỉnh)             | Modern apps, MVPs                        |
-| **⚡ Mantine**           | ✅ ~200KB (Trung bình)      | ✅ 100+ (Nhiều)                 | ✅ Props-based (Dựa trên props)       | ✅ WCAG 2.1 (Xuất sắc)                  | ✅ Excellent    | 📚 Medium (Trung bình)          | 🎨 Custom (Tùy chỉnh)             | Full-featured apps, Form-heavy apps      |
-| **🧩 Radix UI**          | ✅ ~50KB/component (Nhỏ)    | ✅ 20+ primitives (Nguyên thủy) | ✅ Full control (Kiểm soát hoàn toàn) | ✅ WCAG 2.1 (Xuất sắc)                  | ✅ Excellent    | 📚 Medium-High (Trung bình-Cao) | 🎨 Headless (Không style)         | Custom design systems, Tailwind projects |
-| **📋 Shadcn/ui**         | ✅ Zero (Không - copy code) | ✅ 30+ (Đang phát triển)        | ✅ Full control (Kiểm soát hoàn toàn) | ✅ WCAG 2.1 (Xuất sắc - dựa trên Radix) | ✅ Excellent    | 📚 Medium (Trung bình)          | 🎨 Tailwind CSS                   | Tailwind projects, Custom designs        |
-
-### **📦 9.2. Bundle Size Comparison (So Sánh Kích Thước Bundle)**
-
-**📊 Bundle Size Comparison (gzipped) (So Sánh Kích Thước Bundle - đã nén):**
-
-**❌ VERY LARGE (>400KB) (Rất Lớn):**
-
-- 📊 Ant Design: ~500KB
-- 🏗️ Material-UI: ~300KB
-
-**⚠️ MEDIUM (100-300KB) (Trung Bình):**
-
-- ⚡ Mantine: ~200KB
-- 🎨 Chakra UI: ~150KB
-
-**✅ SMALL (<100KB) (Nhỏ):**
-
-- 🧩 Radix UI: ~50KB per component (chỉ import cần - only import needed)
-- 🎯 Headless UI: ~30KB per component
-- 📋 Shadcn/ui: 0KB (copy code, không phải library - copy code, not a library)
-
-**💡 TREE-SHAKING TIPS (Mẹo Tree-Shaking):**
-
-- ✅ Import specific components: `import { Button } from '@mui/material'` (Import components cụ thể)
-- ❌ Không import entire library: `import * from '@mui/material'` (Don't import entire library)
-- ✅ Use path imports: `import Button from '@mui/material/Button'` (Sử dụng path imports)
-
-```typescript
-// ❌ BAD: Import entire library (TỒI - Import toàn bộ thư viện)
-import * as MUI from '@mui/material';
-// 💥 Import TẤT CẢ components → bundle size lớn
-// (Import ALL components → large bundle size)
-
-// ✅ GOOD: Import specific components (TỐT - Import components cụ thể)
-import { Button, TextField } from '@mui/material';
-// 🚀 Chỉ import components cần → tree-shaking hoạt động
-// (Only import needed → tree-shaking works)
-
-// ✅ BETTER: Path imports (smaller bundle) (TỐT HƠN - Path imports - bundle nhỏ hơn)
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-// 🚀 Path imports → bundle size nhỏ hơn
-// (Path imports → smaller bundle size)
-```
-
----
-
-## 10. Choosing the Right Library
-
-### **10.1. Decision Tree**
-
-```typescript
-/**
- * 🎯 DECISION TREE - Chọn library phù hợp
- *
- * ┌─────────────────────────────────────────┐
- * │         BẮT ĐẦU CHỌN LIBRARY            │
- * └─────────────────────────────────────────┘
- *                    │
- *                    ▼
- *         ┌──────────────────────┐
- *         │  Cần Material Design?│
- *         └──────────────────────┘
- *              │           │
- *         YES │           │ NO
- *              ▼           ▼
- *         ┌────────┐  ┌──────────────────┐
- *         │  MUI   │  │ Dùng Tailwind CSS?│
- *         └────────┘  └──────────────────┘
- *                          │        │
- *                      YES │        │ NO
- *                          ▼        ▼
- *                   ┌──────────┐  ┌──────────────────┐
- *                   │ Shadcn/ui│  │ Cần full control?│
- *                   └──────────┘  └──────────────────┘
- *                                      │        │
- *                                  YES │        │ NO
- *                                      ▼        ▼
- *                               ┌──────────┐  ┌──────────────────┐
- *                               │ Radix UI │  │ Enterprise app?  │
- *                               └──────────┘  └──────────────────┘
- *                                                  │        │
- *                                              YES │        │ NO
- *                                                  ▼        ▼
- *                                           ┌──────────┐  ┌──────────┐
- *                                           │ Ant Design│ │ Chakra UI│
- *                                           └──────────┘  └──────────┘
- */
-
-// ✅ DECISION CRITERIA
-
-const SELECTION_CRITERIA = {
-  // 🎨 DESIGN SYSTEM
-  materialDesign: 'MUI',
-  antDesign: 'Ant Design',
-  customDesign: 'Chakra UI, Mantine, Radix UI, Shadcn/ui',
-
-  // 📦 BUNDLE SIZE
-  smallBundle: 'Radix UI, Headless UI, Shadcn/ui',
-  mediumBundle: 'Chakra UI, Mantine',
-  largeBundle: 'MUI, Ant Design',
-
-  // 🎯 USE CASE
-  enterprise: 'MUI, Ant Design',
-  adminDashboard: 'Ant Design, MUI',
-  mvp: 'Chakra UI, Shadcn/ui',
-  customDesign: 'Radix UI, Shadcn/ui',
-
-  // ♿ ACCESSIBILITY
-  criticalA11y: 'Radix UI, MUI, Chakra UI, Mantine',
-
-  // 🎨 CUSTOMIZATION
-  fullControl: 'Radix UI, Shadcn/ui',
-  themeBased: 'MUI, Ant Design, Chakra UI, Mantine',
-};
-```
-
-### **10.2. Real-World Examples**
-
-```typescript
-/**
- * 💼 REAL-WORLD USE CASES
- */
-
-// ✅ CASE 1: Enterprise Admin Dashboard
-// Requirements: Data tables, forms, charts, Material Design
-// Choice: Material-UI (MUI)
-// Reason: Enterprise-ready, rich components, Material Design
-
-// ✅ CASE 2: Startup MVP
-// Requirements: Fast development, modern design, small bundle
-// Choice: Chakra UI hoặc Shadcn/ui
-// Reason: Simple API, quick setup, customizable
-
-// ✅ CASE 3: Custom Design System
-// Requirements: Full control, Tailwind CSS, accessible
-// Choice: Shadcn/ui + Radix UI
-// Reason: Own the code, full control, accessible
-
-// ✅ CASE 4: Government/Healthcare App
-// Requirements: WCAG 2.1 AA, keyboard navigation, screen readers
-// Choice: Radix UI hoặc MUI
-// Reason: Excellent accessibility, tested
-
-// ✅ CASE 5: E-commerce Platform
-// Requirements: Forms, date pickers, tables, modern design
-// Choice: Mantine hoặc Chakra UI
-// Reason: Good form library, modern components
-```
-
----
-
-## 11. Best Practices
-
-### **11.1. Tree-Shaking & Bundle Optimization**
-
-```typescript
-/**
- * 📦 TREE-SHAKING BEST PRACTICES
- *
- * 💡 Tree-shaking = Loại bỏ code không dùng trong bundle
- * 💡 Chỉ hoạt động với ES modules (import/export)
- */
-
-// ❌ BAD: Import entire library
-import * as MUI from '@mui/material';
-// 💥 Import TẤT CẢ → bundle size lớn (~300KB)
-
-// ✅ GOOD: Import specific components
-import { Button, TextField, Box } from '@mui/material';
-// 🚀 Chỉ import cần → bundle size nhỏ hơn (~50KB)
-
-// ✅ BETTER: Path imports (smallest bundle)
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-// 🚀 Path imports → bundle size nhỏ nhất (~30KB)
-
-// ✅ BEST: Use babel plugin (MUI)
-// babel.config.js
-module.exports = {
-  plugins: [
-    [
-      'babel-plugin-import',
-      {
-        libraryName: '@mui/material',
-        libraryDirectory: '',
-        camel2DashComponentName: false,
-      },
-      'core',
-    ],
-  ],
-};
-// 🚀 Tự động convert imports → path imports
-```
-
-### **11.2. Theme Customization**
-
-```typescript
-/**
- * 🎨 THEME CUSTOMIZATION BEST PRACTICES
- */
-
-// ✅ PATTERN 1: Extend default theme (MUI)
-import { createTheme } from '@mui/material/styles';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1976d2', // 🔵 Override primary color
-    },
-  },
-  typography: {
-    fontFamily: '"Roboto", "Arial", sans-serif',
-  },
-});
-
-// ✅ PATTERN 2: Use design tokens (Chakra UI)
-const theme = extendTheme({
-  colors: {
-    brand: {
-      50: '#e3f2fd',
-      500: '#2196f3',
-      900: '#0d47a1',
-    },
-  },
-  components: {
-    Button: {
-      defaultProps: {
-        colorScheme: 'brand', // 🎨 Dùng brand color
-      },
-    },
-  },
-});
-
-// ✅ PATTERN 3: CSS Variables (Radix UI + Tailwind)
-// tailwind.config.js
-module.exports = {
-  theme: {
-    extend: {
-      colors: {
-        primary: 'var(--color-primary)', // 🎨 CSS variable
-      },
-    },
-  },
-};
-
-// ✅ PATTERN 4: Design tokens file
-// tokens.ts
-export const tokens = {
-  colors: {
-    primary: '#1976d2',
-    secondary: '#dc004e',
-  },
-  spacing: {
-    xs: '4px',
-    sm: '8px',
-    md: '16px',
-    lg: '24px',
-  },
-};
-// 💡 Dùng tokens trong theme config
-```
-
-### **11.3. Component Composition**
-
-```typescript
-/**
- * 🧩 COMPONENT COMPOSITION BEST PRACTICES
- */
-
-// ✅ PATTERN 1: Compose với wrapper components
-function Card({ children }: { children: React.ReactNode }) {
-  return (
-    <Box p={4} bg="white" borderRadius="lg" boxShadow="md">
-      {children}
-    </Box>
-  );
-}
-
-function ProductCard({ product }: { product: Product }) {
+export function BillingCard() {
   return (
     <Card>
-      <Text fontSize="xl">{product.name}</Text>
-      <Text>{product.description}</Text>
+      <CardHeader>
+        <CardTitle>Billing email</CardTitle>
+        <CardDescription>Nhận invoice và payment notification.</CardDescription>
+      </CardHeader>
+      <CardContent className="flex gap-2">
+        <Input type="email" placeholder="finance@example.com" />
+        <Button>Save</Button>
+      </CardContent>
     </Card>
   );
 }
+```
 
-// ✅ PATTERN 2: Compound components (Radix UI pattern)
-function Dialog({ children }: { children: React.ReactNode }) {
-  return <Dialog.Root>{children}</Dialog.Root>;
+**Senior note:** Với shadcn/ui, “dependency” không chỉ nằm trong `package.json`; dependency nằm ở code copy về. Cần ownership rõ: ai update, ai review accessibility, ai chuẩn hóa variants.
+
+### 3.9. Comparison Matrix
+
+| Library | Kiểu | Strength | Weakness | Best for |
+|---|---|---|---|---|
+| MUI | Styled/opinionated | Ecosystem lớn, docs tốt, MUI X mạnh | Material look, customization sâu tốn công | Enterprise app, app cần Material |
+| Ant Design | Styled/opinionated | Admin/data components mạnh | Opinionated, brand riêng khó | Internal tools, dashboard |
+| Chakra UI | Styled/system props | DX tốt, accessible defaults | Dễ lạm dụng style props | SaaS app, team nhỏ/vừa |
+| Mantine | Styled/full-featured | Nhiều component/hooks/form | Cần governance để không tùy hứng | Product app, prototype-to-prod |
+| Radix UI | Headless primitives | A11y/focus/composition mạnh | Cần tự style/build wrappers | Custom design system |
+| Headless UI | Headless primitives | Hợp Tailwind, API đơn giản | Coverage ít hơn | Tailwind app cần primitives |
+| shadcn/ui | Copy-owned | Sở hữu code, đẹp nhanh, customize sâu | Tự maintain/update | Tailwind + custom design |
+
+### 3.10. Bundle size và performance
+
+Không nên tin tuyệt đối các con số bundle size trong blog cũ vì version, bundler, import style và app code khác nhau. Senior approach là đo trong project thật.
+
+```bash
+npm run build
+npx source-map-explorer 'dist/assets/*.js'
+```
+
+Hoặc với Next.js:
+
+```bash
+ANALYZE=true npm run build
+```
+
+Các yếu tố ảnh hưởng bundle:
+
+- import theo path hay barrel import
+- tree-shaking có hoạt động không
+- CSS-in-JS runtime hay static CSS
+- icon package import sai
+- date library dependency
+- data grid/date picker/charts thường nặng hơn button/input
+- client boundary trong Next.js App Router
+
+### 3.11. Accessibility không phải “library có là xong”
+
+Library tốt giúp baseline, nhưng app vẫn có thể fail WCAG nếu dùng sai:
+
+- Dialog không có title/description.
+- Button icon không có accessible name.
+- Error message không liên kết với field.
+- Color contrast không đạt sau khi customize theme.
+- Table thiếu header/scope hoặc dùng table cho layout.
+- Dropdown custom không test keyboard.
+- Toast chứa thông tin quan trọng nhưng không có persistent fallback.
+
+### 3.12. SSR, RSC và Next.js App Router
+
+Khi dùng Next.js App Router hoặc React Server Components:
+
+- Nhiều UI libraries cần provider ở Client Component.
+- Component có event handler, state, effect phải nằm trong `"use client"` boundary.
+- Headless primitives như Dialog/Popover thường client-side.
+- CSS-in-JS cần setup SSR đúng để tránh flash/mismatch.
+- shadcn/ui có lợi vì component nằm trong codebase, nhưng nhiều component vẫn dùng Radix client-side.
+
+```tsx
+// app/providers.tsx
+'use client';
+
+import { ThemeProvider } from '@mui/material/styles';
+import { theme } from '@/design/theme';
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 }
+```
 
-Dialog.Trigger = Dialog.Trigger;
-Dialog.Content = Dialog.Content;
-Dialog.Title = Dialog.Title;
+### 3.13. Design tokens và theming
 
-// Usage
-<Dialog>
-  <Dialog.Trigger>Open</Dialog.Trigger>
-  <Dialog.Content>
-    <Dialog.Title>Title</Dialog.Title>
-  </Dialog.Content>
-</Dialog>;
+Design token là contract giữa design và code:
 
-// ✅ PATTERN 3: Render props (flexible composition)
-function DataTable<T>({
-  data,
-  columns,
-  renderRow,
-}: {
-  data: T[];
-  columns: Column[];
-  renderRow: (item: T) => React.ReactNode;
-}) {
+- color: `primary`, `danger`, `surface`, `border`
+- spacing: `xs`, `sm`, `md`, `lg`
+- typography: `body`, `label`, `heading`
+- radius: `none`, `sm`, `md`
+- shadow/elevation
+- motion duration/easing
+
+**Rule tốt:** feature code không nên hardcode màu/spacing tùy tiện. Hãy dùng token hoặc wrapper component.
+
+```tsx
+// ❌ Khó maintain nếu rải khắp app
+<Button sx={{ backgroundColor: '#1d4ed8', borderRadius: '13px' }}>Save</Button>
+
+// ✅ Tốt hơn: token nằm trong theme hoặc variant
+<Button color="primary" variant="contained">Save</Button>
+```
+
+### 3.14. Wrapper layer để giảm lock-in
+
+Không cần wrap mọi component ngay từ ngày đầu. Nhưng nên wrap component có business/design rule quan trọng:
+
+- `AppButton`
+- `AppModal`
+- `AppTable`
+- `FormField`
+- `DateRangePicker`
+- `EmptyState`
+- `PageHeader`
+- `DataToolbar`
+
+```tsx
+import { Button as MuiButton } from '@mui/material';
+import type { ButtonProps as MuiButtonProps } from '@mui/material';
+
+type AppButtonProps = MuiButtonProps & {
+  trackingId?: string;
+};
+
+export function AppButton({ trackingId, onClick, ...props }: AppButtonProps) {
   return (
-    <Table>
-      {data.map((item) => (
-        <TableRow key={item.id}>{renderRow(item)}</TableRow>
-      ))}
-    </Table>
+    <MuiButton
+      {...props}
+      onClick={(event) => {
+        if (trackingId) {
+          console.log('track', trackingId);
+        }
+        onClick?.(event);
+      }}
+    />
   );
 }
 ```
 
-### **11.4. Performance Optimization**
+Wrapper có ích khi:
 
-```typescript
-/**
- * ⚡ PERFORMANCE OPTIMIZATION BEST PRACTICES
- */
+- cần analytics
+- cần consistent loading state
+- cần policy accessibility
+- cần theme variants
+- cần đổi library sau này
 
-// ✅ PATTERN 1: Lazy load components
-import { lazy, Suspense } from 'react';
+Wrapper quá mức gây hại khi:
 
-const HeavyDataTable = lazy(() => import('./HeavyDataTable'));
+- chỉ pass-through 100% props mà không thêm rule
+- che mất API hữu ích của library
+- tạo layer khó debug
 
-function App() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <HeavyDataTable />
-    </Suspense>
-  );
+## 4. 💻 Practical TypeScript/JavaScript Examples
+
+### 4.1. Decision scorecard
+
+```ts
+type LibraryScore = {
+  velocity: number;
+  customization: number;
+  accessibility: number;
+  bundleControl: number;
+  enterpriseComponents: number;
+  maintenanceCost: number;
+};
+
+const weights = {
+  velocity: 2,
+  customization: 3,
+  accessibility: 3,
+  bundleControl: 2,
+  enterpriseComponents: 2,
+  maintenanceCost: -2,
+};
+
+function scoreLibrary(score: LibraryScore) {
+  return Object.entries(weights).reduce((total, [key, weight]) => {
+    return total + score[key as keyof LibraryScore] * weight;
+  }, 0);
 }
 
-// ✅ PATTERN 2: Memoize expensive components
-import { memo } from 'react';
-import { Table } from '@mui/material';
-
-const ExpensiveTable = memo(({ data }: { data: Data[] }) => {
-  // Expensive rendering logic
-  return <Table>{/* ... */}</Table>;
+const radixForDesignSystem = scoreLibrary({
+  velocity: 3,
+  customization: 5,
+  accessibility: 5,
+  bundleControl: 5,
+  enterpriseComponents: 2,
+  maintenanceCost: 4,
 });
 
-// ✅ PATTERN 3: Virtual scrolling cho large lists
-import { FixedSizeList } from 'react-window';
+console.log(radixForDesignSystem);
+```
 
-function LargeList({ items }: { items: Item[] }) {
+Scorecard không thay quyết định kỹ thuật, nhưng giúp team nói chuyện bằng tiêu chí rõ ràng thay vì “em thích library này”.
+
+### 4.2. App-level component boundary
+
+```tsx
+// components/ui/AppTextField.tsx
+import { TextField } from '@mui/material';
+import type { TextFieldProps } from '@mui/material';
+
+type AppTextFieldProps = TextFieldProps & {
+  errorText?: string;
+};
+
+export function AppTextField({ errorText, helperText, ...props }: AppTextFieldProps) {
   return (
-    <FixedSizeList height={600} itemCount={items.length} itemSize={50}>
-      {({ index, style }) => <div style={style}>{items[index].name}</div>}
-    </FixedSizeList>
-  );
-}
-
-// ✅ PATTERN 4: Code splitting per route
-import { lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
-
-const Dashboard = lazy(() => import('./Dashboard'));
-const Settings = lazy(() => import('./Settings'));
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/settings" element={<Settings />} />
-    </Routes>
+    <TextField
+      {...props}
+      error={Boolean(errorText) || props.error}
+      helperText={errorText ?? helperText}
+      slotProps={{
+        htmlInput: {
+          'aria-invalid': Boolean(errorText) || props.error || undefined,
+          ...props.slotProps?.htmlInput,
+        },
+      }}
+    />
   );
 }
 ```
 
----
+### 4.3. Avoid mixing libraries trong cùng một form
 
-**🎯 Remember:** "Choose component library based on your needs: design system, bundle size, customization, and accessibility requirements. Don't over-engineer - sometimes a simple library is better than a complex one!"
+```tsx
+// ❌ UI không nhất quán, validation state khó đồng bộ
+import { Button } from '@mui/material';
+import { Input } from 'antd';
+import { Select } from '@chakra-ui/react';
+
+export function MixedForm() {
+  return (
+    <form>
+      <Input />
+      <Select />
+      <Button>Save</Button>
+    </form>
+  );
+}
+```
+
+```tsx
+// ✅ Chọn một visual system cho một surface
+import { Button, Form, Input, Select } from 'antd';
+
+export function UserForm() {
+  return (
+    <Form layout="vertical">
+      <Form.Item label="Name" name="name">
+        <Input />
+      </Form.Item>
+      <Form.Item label="Role" name="role">
+        <Select options={[{ label: 'Admin', value: 'admin' }]} />
+      </Form.Item>
+      <Button type="primary">Save</Button>
+    </Form>
+  );
+}
+```
+
+### 4.4. Icon import đúng cách
+
+```tsx
+// ❌ Có thể kéo nhiều code không cần thiết tùy package/bundler
+import * as Icons from '@mui/icons-material';
+
+export function SaveButton() {
+  return <Icons.Save />;
+}
+```
+
+```tsx
+// ✅ Import icon cụ thể
+import SaveIcon from '@mui/icons-material/Save';
+
+export function SaveButton() {
+  return <SaveIcon fontSize="small" />;
+}
+```
+
+### 4.5. Accessible icon button
+
+```tsx
+import { X } from 'lucide-react';
+
+export function CloseButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button aria-label="Đóng hộp thoại" type="button" onClick={onClick}>
+      <X aria-hidden="true" size={16} />
+    </button>
+  );
+}
+```
+
+Library có thể cung cấp `IconButton`, nhưng accessible name vẫn là trách nhiệm của app code.
+
+### 4.6. Testing component library usage
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+test('opens settings dialog', async () => {
+  render(<SettingsPage />);
+
+  await userEvent.click(screen.getByRole('button', { name: /settings/i }));
+
+  expect(
+    screen.getByRole('dialog', { name: /workspace settings/i })
+  ).toBeInTheDocument();
+});
+```
+
+Test theo role/name giúp bắt lỗi accessibility thật hơn snapshot class name.
+
+## 5. 🏗️ Production Notes / React Implications
+
+### 5.1. React rendering và performance
+
+Component library có thể làm render tree sâu hơn. Điều này không luôn xấu, nhưng cần để ý:
+
+- Table lớn cần virtualization.
+- Dropdown/Popover dùng portal cần test z-index/focus.
+- Theme object phải stable, tránh tạo theme trong render.
+- Wrapper component không nên tạo object/function mới quá nhiều trong hot path.
+- CSS-in-JS runtime có thể ảnh hưởng SSR và initial render nếu setup sai.
+
+```tsx
+// ❌ Theme được tạo lại mỗi render
+function App({ children }: { children: React.ReactNode }) {
+  const theme = createTheme({ palette: { mode: 'light' } });
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+}
+
+// ✅ Theme stable ngoài render
+const theme = createTheme({ palette: { mode: 'light' } });
+
+function App({ children }: { children: React.ReactNode }) {
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+}
+```
+
+### 5.2. Security
+
+UI library không tự giải quyết security:
+
+- Rich text, markdown preview, HTML injection vẫn cần sanitize.
+- Upload component vẫn cần server-side validation.
+- Table export CSV cần tránh formula injection.
+- Link/button external cần `rel="noopener noreferrer"` nếu `target="_blank"`.
+- Form validation client chỉ là UX, không phải security boundary.
+
+### 5.3. Observability
+
+Với design system lớn, nên track:
+
+- component usage inventory
+- bundle impact theo route
+- accessibility violations trong CI
+- visual regression
+- error rate ở form/modal/checkout flow
+- design token drift
+
+### 5.4. Migration strategy nếu muốn đổi library
+
+Đổi component library là migration tốn kém vì ảnh hưởng markup, styling, behavior, tests và design review.
+
+Chiến lược ít rủi ro:
+
+- Không đổi toàn app một lần.
+- Bắt đầu từ route ít rủi ro.
+- Tạo wrapper cho component core.
+- Freeze feature mới trên library cũ nếu cần.
+- Dùng visual regression để bắt khác biệt.
+- Có guideline rõ: library cũ được dùng ở đâu, library mới dùng ở đâu.
+
+## 6. ⚠️ Common Pitfalls
+
+### 6.1. Chọn library theo popularity thay vì requirement
+
+Star GitHub không nói app của bạn cần gì. Hãy map requirement: admin table, custom brand, a11y audit, mobile performance, SSR, team skill.
+
+### 6.2. Tin “accessible by default” tuyệt đối
+
+Library có thể xử lý keyboard/focus tốt, nhưng app vẫn phải cung cấp label, error text, contrast, DOM structure và flow đúng.
+
+### 6.3. Mix nhiều visual libraries
+
+MUI button + Ant form + Chakra modal thường tạo UX thiếu nhất quán và bundle lớn. Có thể mix headless primitive với styled system, nhưng phải có design rule rõ.
+
+### 6.4. Override CSS bằng selector sâu
+
+```css
+/* ❌ Dễ vỡ khi library đổi DOM */
+.MuiButton-root > span:nth-child(2) {
+  margin-left: 12px;
+}
+```
+
+Ưu tiên theme token, variant, slot props hoặc wrapper API.
+
+### 6.5. Không đo bundle thực tế
+
+Bundle size trên website không phản ánh route của bạn. Phải đo sau build production.
+
+### 6.6. Không chuẩn hóa form pattern
+
+Mỗi library có form story khác nhau. Nếu app dùng React Hook Form/Zod, cần convention rõ cho integration với field/error/helper text.
+
+### 6.7. Copy shadcn/ui nhưng không maintain
+
+Copy code nghĩa là team chịu trách nhiệm update, security, accessibility, API consistency. Không có `npm update` tự động sửa component đã customize.
+
+### 6.8. Dùng Data Table built-in cho mọi thứ
+
+Table đơn giản khác với data grid enterprise. Sorting/filtering server-side, virtualization, column pinning, row selection, export và permission đều cần thiết kế rõ.
+
+### 6.9. Không test mobile/touch
+
+Popover, Select, DatePicker, Drawer có thể ổn desktop nhưng tệ trên mobile. Touch target, keyboard mobile và viewport resize cần QA thật.
+
+### 6.10. Không có ownership
+
+Design system cần người/chapter ownership. Nếu không, library sẽ bị dùng tùy hứng, token drift và duplicate component tăng dần.
+
+## 7. ✅ Decision Guide / Checklist
+
+### 7.1. Chọn nhanh theo use case
+
+| Use case | Nên cân nhắc |
+|---|---|
+| Admin dashboard ship nhanh | Ant Design, MUI, Mantine |
+| Enterprise app Material Design | MUI |
+| Internal CRUD nhiều form/table | Ant Design, Mantine |
+| SaaS app cần DX nhanh | Chakra UI, Mantine, shadcn/ui |
+| Custom brand/design system | Radix UI, shadcn/ui, Headless UI |
+| Tailwind-first app | shadcn/ui, Headless UI, Radix UI |
+| Accessibility primitives | Radix UI, Headless UI |
+| Data grid nâng cao | MUI X, Ant Design Table, TanStack Table + custom UI |
+| Muốn sở hữu component code | shadcn/ui hoặc internal library |
+
+### 7.2. Checklist trước khi chọn library
+
+- [ ] Có đủ component cho 80% screen không?
+- [ ] Có support TypeScript tốt không?
+- [ ] Có accessibility baseline và docs rõ không?
+- [ ] Theming có map được với design tokens không?
+- [ ] Bundle impact sau build production ra sao?
+- [ ] Có hoạt động tốt với SSR/RSC/framework hiện tại không?
+- [ ] Có form integration rõ với React Hook Form/Zod không?
+- [ ] Có date picker/table/modal phù hợp requirement không?
+- [ ] Team có đủ skill để customize/maintain không?
+- [ ] License phù hợp không?
+- [ ] Community và release cadence ổn không?
+- [ ] Migration/escape hatch nếu đổi library là gì?
+
+### 7.3. Checklist khi đưa vào production
+
+- [ ] Tạo theme/tokens trước khi build nhiều screen.
+- [ ] Tạo wrapper cho component core có business rule.
+- [ ] Viết docs ngắn: dùng component nào, variant nào, spacing nào.
+- [ ] Setup a11y test (`axe`, Testing Library role queries).
+- [ ] Setup bundle analyzer.
+- [ ] Test modal/select/date picker bằng keyboard.
+- [ ] Test mobile/touch.
+- [ ] Test dark mode nếu có.
+- [ ] Kiểm tra SSR hydration warnings.
+- [ ] Định nghĩa ownership cho design system.
+
+### 7.4. Decision tree
+
+```text
+Bạn cần admin/data-heavy app nhanh?
+  → Ant Design hoặc MUI/Mantine.
+
+Bạn cần custom brand mạnh?
+  → Radix UI hoặc shadcn/ui.
+
+Bạn dùng Tailwind và muốn component đẹp nhanh?
+  → shadcn/ui.
+
+Bạn muốn headless primitives ít opinion?
+  → Radix UI hoặc Headless UI.
+
+Bạn cần ecosystem enterprise và docs lớn?
+  → MUI.
+
+Bạn cần nhiều component thực dụng cho SaaS app?
+  → Mantine hoặc Chakra UI.
+```
+
+## 8. 🎤 Short Interview Answer
+
+Theo em, chọn component library không nên chỉ nhìn “cái nào đẹp” hoặc “cái nào nhiều star”. Em sẽ bắt đầu từ requirement: app là admin dashboard hay product public-facing, có design system riêng không, accessibility audit có nghiêm không, SSR/RSC dùng framework gì, bundle budget ra sao và team có đủ khả năng maintain customization không.
+
+Nếu cần ship internal dashboard nhanh, em thường cân nhắc Ant Design, MUI hoặc Mantine vì có nhiều component như form, table, date picker. Nếu sản phẩm cần brand riêng và design system lâu dài, em nghiêng về Radix hoặc shadcn/ui vì kiểm soát styling tốt hơn. Chakra UI hợp khi team muốn DX nhanh và API dễ học, nhưng vẫn cần governance về token và wrapper.
+
+Điểm quan trọng là library không thay thế design system. Production app vẫn cần token, accessibility checks, wrapper layer hợp lý, bundle analysis, form convention, SSR setup và ownership rõ. Một library tốt dùng sai vẫn tạo ra UI rời rạc và khó maintain.
+
+## 9. 🧾 Ghi nhớ nhanh
+
+- **MUI**: enterprise + Material Design + ecosystem lớn.
+- **Ant Design**: admin dashboard + data-heavy CRUD.
+- **Chakra UI**: DX dễ, style props, accessible defaults.
+- **Mantine**: full-featured, thực dụng, nhiều hooks/components.
+- **Radix UI**: headless primitives, accessibility/focus mạnh.
+- **Headless UI**: headless đơn giản, hợp Tailwind.
+- **shadcn/ui**: copy code, Tailwind + Radix, sở hữu component.
+- **Đừng chọn theo star**: chọn theo requirement, team skill và maintenance cost.
+- **A11y không tự xong**: vẫn cần label, focus, contrast, testing.
+- **Bundle size phải đo thật**: build production + analyzer.
+- **Wrapper vừa đủ**: wrap component có rule, không wrap pass-through vô nghĩa.
+- **Design token là contract** giữa design và code.
+
+## 10. 📖 Giải thích các thuật ngữ trong topic
+
+| Thuật ngữ | Giải thích ngắn |
+|---|---|
+| Component library | Bộ component UI dùng sẵn như Button, Modal, Table |
+| Design system | Hệ thống quy tắc UI gồm token, component, pattern, docs |
+| Design token | Giá trị chuẩn cho màu, spacing, typography, radius, shadow |
+| Headless component | Component có behavior/accessibility nhưng không áp style |
+| Primitive | Building block cấp thấp để tạo component phức tạp hơn |
+| Styled library | Library có sẵn visual design và theme |
+| Opinionated | Có cách làm/design mạnh, ít trung lập |
+| Accessibility / a11y | Khả năng sử dụng bởi người dùng keyboard/screen reader/assistive tech |
+| WCAG | Bộ tiêu chuẩn accessibility cho web |
+| Focus management | Điều khiển focus khi mở/đóng modal, menu, popover |
+| Focus trap | Giữ focus trong modal/dialog khi đang mở |
+| Portal | Render UI ra vị trí DOM khác, thường dùng cho modal/popover |
+| Tree-shaking | Loại bỏ code không dùng khỏi bundle |
+| Bundle bloat | Bundle JS/CSS phình to do import/dependency không cần thiết |
+| CSS-in-JS | Viết/generate CSS trong JavaScript runtime/build |
+| SSR | Server-Side Rendering |
+| RSC | React Server Components |
+| Hydration | React gắn logic client vào HTML render từ server |
+| Vendor lock-in | Bị phụ thuộc vào API/style/behavior của một vendor/library |
+| Wrapper component | Component nội bộ bọc library component để áp convention |
+| Visual regression | Test so sánh ảnh để phát hiện UI thay đổi ngoài ý muốn |
+
+## 11. 📚 Nguồn chính thức đã đối chiếu
+
+- MUI: <https://mui.com/material-ui/>
+- Ant Design: <https://ant.design/docs/react/introduce/>
+- Chakra UI: <https://chakra-ui.com/docs/components/concepts/overview>
+- Mantine: <https://mantine.dev/>
+- Radix UI: <https://www.radix-ui.com/primitives/docs/overview/introduction>
+- shadcn/ui: <https://ui.shadcn.com/docs/components>

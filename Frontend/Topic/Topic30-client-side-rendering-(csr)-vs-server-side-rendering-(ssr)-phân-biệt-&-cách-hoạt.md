@@ -548,23 +548,29 @@ Không nên tranh luận CSR vs SSR bằng cảm tính. Phải đo TTFB, LCP, IN
 
 ## ✅ 13. Checklist phỏng vấn
 
-```txt
-□ Giải thích được CSR render ở browser
-□ Giải thích được SSR render HTML ở server
-□ Biết hydration là gì
-□ Biết HTML visible khác fully interactive
-□ Biết CSR mạnh/yếu ở đâu
-□ Biết SSR mạnh/yếu ở đâu
-□ Biết SSR không tự động nhanh hơn mọi thứ
-□ Biết TTFB, FCP, LCP, INP, CLS
-□ Biết hydration mismatch và nguyên nhân
-□ Biết browser API không dùng trực tiếp khi SSR
-□ Biết data fetching CSR vs SSR
-□ Biết cache SSR/CDN/data cache
-□ Biết tránh cache private data
-□ Biết SSG, ISR, Streaming SSR
-□ Biết partial hydration/islands
-□ Biết React Server Components boundary
-□ Biết chọn rendering mode theo từng route
-□ Có thể đưa ví dụ route architecture cho app thực tế
-```
+| Câu hỏi | Trả lời ngắn |
+|---|---|
+| CSR render ở đâu? | CSR render UI trong browser sau khi tải và chạy JavaScript. |
+| SSR render ở đâu? | SSR render HTML có content trên server rồi gửi về browser. |
+| Hydration là gì? | Client JS gắn event/state vào HTML đã render từ server. |
+| HTML visible khác fully interactive thế nào? | User thấy content trước, nhưng phải đợi hydration xong mới tương tác đầy đủ. |
+| CSR mạnh ở đâu? | App tương tác nhiều, sau login, dashboard, deploy static đơn giản. |
+| CSR yếu ở đâu? | Initial load, SEO, bundle lớn và device yếu. |
+| SSR mạnh ở đâu? | SEO, social preview, first content nhanh, page public/dynamic theo request. |
+| SSR yếu ở đâu? | Tăng server load, TTFB, complexity và hydration cost. |
+| SSR có luôn nhanh hơn CSR không? | Không; SSR chỉ giúp content sớm hơn, vẫn có thể chậm nếu server/hydration nặng. |
+| TTFB là gì? | Thời gian nhận byte đầu tiên; SSR có thể làm TTFB tăng. |
+| FCP/LCP là gì? | FCP là content đầu tiên; LCP là phần tử lớn nhất render xong. |
+| INP/CLS là gì? | INP đo độ phản hồi tương tác; CLS đo layout shift. |
+| Hydration mismatch do đâu? | Server/client render khác nhau vì `Date.now`, `Math.random`, browser API, locale, data lệch. |
+| Browser API dùng thế nào trong SSR? | Không dùng trực tiếp trong render server; đưa vào `useEffect` hoặc lấy từ request/cookie. |
+| CSR data fetching khác SSR thế nào? | CSR fetch sau khi JS chạy; SSR fetch trên server trước khi gửi HTML. |
+| SSR cần cache gì? | CDN/edge cache, server response cache, data/API cache và framework cache. |
+| Tránh cache private data thế nào? | Dùng `private`, `no-store`, cache theo user hoặc không cache account/order/payment. |
+| SSG là gì? | Render HTML tại build time, hợp docs/blog/landing page ít đổi. |
+| ISR là gì? | Static page có revalidate định kỳ, hợp product/news/category đổi không quá realtime. |
+| Streaming SSR là gì? | Server gửi HTML từng phần để user thấy shell/content sớm hơn. |
+| Partial hydration/islands là gì? | Chỉ hydrate widget cần tương tác thay vì toàn page. |
+| RSC boundary là gì? | Server Component chạy server, không dùng hooks/browser API; Client Component dùng interactivity. |
+| Chọn rendering mode theo route thế nào? | Public SEO dùng SSG/ISR/SSR; dashboard sau login dùng CSR; checkout dùng dynamic no-store. |
+| Ví dụ route architecture thực tế? | `/blog` SSG, `/products/[id]` ISR/SSR, `/search` SSR, `/dashboard` CSR, `/checkout` no-store. |

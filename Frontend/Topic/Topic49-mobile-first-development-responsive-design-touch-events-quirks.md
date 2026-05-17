@@ -1,1556 +1,639 @@
-# 📱 Q70: Mobile-First Development & Responsive Design - Touch Events, Performance & Device Quirks
+# 📱 Topic 49: Mobile-First Development, Responsive Design, Touch Events & Device Quirks
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## 1. ⭐ Senior/Staff Summary
 
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
+`Mobile-first` nghĩa là thiết kế và implement từ ràng buộc nhỏ nhất trước: màn hình hẹp, network chậm, CPU yếu, touch input, viewport thay đổi, browser quirks và accessibility. Sau đó mới enhance dần cho tablet/desktop.
 
-**"Mobile-first = Build for mobile constraints, enhance for desktop"**
-// 💡 Mobile-first: Ưu tiên mobile trước (Mobile-first)
-// 💡 Build for mobile constraints: Xây dựng cho giới hạn mobile (Build for mobile constraints)
-// 💡 enhance for desktop: Mở rộng cho desktop (Enhance for desktop)
-// 💡 Approach: Bắt đầu từ mobile, sau đó mở rộng (Start from mobile, then expand)
+Các key cần nắm:
 
-**Why:** 60% of web traffic is mobile, but devs often build desktop-first
-// 💡 Why: Tại sao cần mobile-first (Why need mobile-first)
-// 💡 60% of web traffic is mobile: 60% lưu lượng web là mobile (60% of web traffic is mobile)
-// 💡 devs often build desktop-first: Dev thường build desktop trước (Devs often build desktop-first)
-// 💡 Vấn đề: Desktop-first → mobile không tối ưu (Problem: Desktop-first → mobile not optimized)
+- 🎨 **Responsive design:** fluid layout, CSS Grid/Flexbox, media queries, container queries, safe max-width.
+- 👁️ **Viewport:** meta viewport đúng, `viewport-fit=cover`, safe-area insets cho notch.
+- 👆 **Touch UX:** touch target tối thiểu, pointer/touch events, gesture, scroll, hit area, hover fallback.
+- ⚡ **Mobile performance:** image optimization, lazy loading, code splitting, reduce JS, avoid long tasks.
+- 🍎 **iOS Safari quirks:** `100vh`, dynamic address bar, input zoom, safe-area, fixed/sticky edge cases.
+- 🤖 **Android Chrome quirks:** keyboard resize, back button, viewport changes, device fragmentation.
+- 🧪 **Testing:** real device testing, remote debugging, network throttling, automated visual/e2e tests.
+- ♿ **Accessibility:** zoom không bị tắt, target đủ lớn, reduced motion, keyboard/screen reader không bị bỏ quên.
 
-**🏗️ Core Pillars:** (Trụ Cột Chính)
-// 💡 Core Pillars: Trụ cột chính (Core pillars)
-// 💡 4 yếu tố quan trọng (4 important factors)
+> 🔥 Senior point: mobile-first không chỉ là `@media (min-width)`. Nó là cách thiết kế product dưới constraint thật: slow network, touch ergonomics, browser quirks, viewport động, memory thấp và Core Web Vitals trên thiết bị thật.
 
-1. **🎨 Responsive Design** - Fluid layouts (CSS Grid, Flexbox, media queries)
-   // 💡 Responsive Design: Thiết kế đáp ứng (Responsive design)
-   // 💡 Fluid layouts: Layout linh hoạt (Fluid layouts)
-   // 💡 CSS Grid, Flexbox: Layout systems (Layout systems)
-   // 💡 media queries: Truy vấn media (Media queries)
-   // 💡 Thích ứng với mọi kích thước màn hình (Adapt to all screen sizes)
+## 2. 🧠 Key Mental Model or Key Points
 
-2. **👆 Touch Events** - Handle touch differently than mouse (longer press, multi-touch)
-   // 💡 Touch Events: Sự kiện chạm (Touch events)
-   // 💡 Handle touch differently: Xử lý touch khác mouse (Handle touch differently)
-   // 💡 longer press: Nhấn giữ lâu (Long press)
-   // 💡 multi-touch: Đa điểm chạm (Multi-touch)
-   // 💡 Touch có hành vi khác mouse (Touch has different behavior than mouse)
+- **Start small, enhance upward:** CSS base cho mobile, breakpoint chỉ thêm layout khi màn hình đủ rộng.
+- **Content first:** Layout phải phục vụ nội dung và action chính, không ép desktop UI xuống mobile.
+- **Viewport không cố định:** Mobile browser có address bar, keyboard, notch, orientation, zoom.
+- **Touch khác mouse:** Không có hover ổn định, tap target cần lớn, gesture có xung đột với scroll.
+- **Performance budget nhỏ hơn desktop:** Mobile CPU/network yếu hơn, JS parse/execute có thể là bottleneck lớn.
+- **Device quirks là production reality:** Emulator không thay thế real iOS/Android devices.
+- **Responsive ≠ adaptive only by width:** Cần nghĩ thêm input type, pointer precision, motion preference, orientation, container size.
 
-3. **⚡ Performance** - Images lazy-load, code split, mobile-specific bundles
-   // 💡 Performance: Hiệu suất (Performance)
-   // 💡 Images lazy-load: Lazy load hình ảnh (Lazy load images)
-   // 💡 code split: Chia nhỏ code (Code splitting)
-   // 💡 mobile-specific bundles: Bundles riêng cho mobile (Mobile-specific bundles)
-   // 💡 Tối ưu cho mobile (Optimize for mobile)
+## 3. 📚 Main Concepts
 
-4. **🎭 Device Quirks** - iOS Safari 100vh bug, Android input behavior, viewport scaling
-   // 💡 Device Quirks: Đặc điểm riêng của thiết bị (Device quirks)
-   // 💡 iOS Safari 100vh bug: Lỗi 100vh của iOS Safari (iOS Safari 100vh bug)
-   // 💡 Android input behavior: Hành vi input của Android (Android input behavior)
-   // 💡 viewport scaling: Tỷ lệ viewport (Viewport scaling)
-   // 💡 Cần xử lý riêng cho từng platform (Need to handle separately for each platform)
+### 3.1. 🎨 Mobile-First CSS
 
-**🚀 Tôi đã implement mobile-first app cho e-commerce:**
-
-- **🎨 Responsive Design** (mobile-first CSS)
-  - 📱 Mobile: 375px → 1x column layout
-  - 📲 Tablet: 768px → 2x grid
-  - 💻 Desktop: 1920px → 3x grid
-- **👆 Touch Optimization**
-  - 📐 44px min touch target (vs 12px font)
-  - ⏱️ Prevent double-tap zoom delay (on iOS)
-  - 🎮 Gestures: swipe, pinch, long-press
-- **⚡ Performance Optimization**
-  - 🖼️ Image lazy loading (50KB → 5KB initial)
-  - 📦 Dynamic imports (split code by route)
-  - 📊 Mobile bundle: 200KB (vs 800KB desktop)
-- **🔧 Handled Device Quirks**
-  - 🍎 iOS: 100vh bug (doesn't include address bar)
-  - 🍎 iOS: input[type=date] custom styling issues
-  - 🤖 Android: back button handling
-  - 🔐 All: notch/safe area support
-
-**📈 Results:** (Kết Quả)
-// 💡 Results: Kết quả đạt được (Results achieved)
-// 💡 Metrics sau khi optimize (Metrics after optimization)
-
-- ✅ 🎯 85% reduction in bounce rate on mobile
-  // 💡 85% reduction: Giảm 85% (85% reduction)
-  // 💡 bounce rate: Tỷ lệ thoát (Bounce rate)
-  // 💡 on mobile: Trên mobile (On mobile)
-  // 💡 User ở lại lâu hơn (Users stay longer)
-
-- ✅ 🚀 LCP from 4.5s → 2.2s (mobile 3G)
-  // 💡 LCP: Largest Contentful Paint (Largest Contentful Paint)
-  // 💡 from 4.5s → 2.2s: Từ 4.5s xuống 2.2s (From 4.5s to 2.2s)
-  // 💡 mobile 3G: Trên mạng 3G mobile (On mobile 3G network)
-  // 💡 Cải thiện 51% (51% improvement)
-
-- ✅ 📲 Can install as PWA (mobile-first)
-  // 💡 Can install: Có thể cài đặt (Can install)
-  // 💡 as PWA: Như PWA (As PWA)
-  // 💡 mobile-first: Ưu tiên mobile (Mobile-first)
-  // 💡 Trải nghiệm như app native (Experience like native app)
-
-- ✅ 🌐 Works on iOS 12+, Android 5+
-  // 💡 Works on: Hoạt động trên (Works on)
-  // 💡 iOS 12+: iOS 12 trở lên (iOS 12 and above)
-  // 💡 Android 5+: Android 5 trở lên (Android 5 and above)
-  // 💡 Hỗ trợ rộng rãi (Wide support)
-
-**💎 Key Insights:** (Hiểu Biết Quan Trọng)
-// 💡 Key Insights: Những hiểu biết quan trọng (Important insights)
-// 💡 Lessons learned (Lessons learned)
-
-- **📝 Mobile-first CSS** (100% smaller than desktop-first)
-  // 💡 Mobile-first CSS: CSS mobile-first (Mobile-first CSS)
-  // 💡 100% smaller: Nhỏ hơn 100% (100% smaller)
-  // 💡 than desktop-first: So với desktop-first (Than desktop-first)
-  // 💡 File size nhỏ hơn (Smaller file size)
-
-- **🖼️ Images** (60-80% of page weight) → aggressive lazy loading
-  // 💡 Images: Hình ảnh (Images)
-  // 💡 60-80% of page weight: 60-80% trọng lượng trang (60-80% of page weight)
-  // 💡 aggressive lazy loading: Lazy loading tích cực (Aggressive lazy loading)
-  // 💡 Chỉ load khi cần (Only load when needed)
-
-- **🎯 Touch targets** 44x44px min (not 12px!)
-  // 💡 Touch targets: Vùng chạm (Touch targets)
-  // 💡 44x44px min: Tối thiểu 44x44px (Minimum 44x44px)
-  // 💡 not 12px!: Không phải 12px! (Not 12px!)
-  // 💡 Đủ lớn để chạm dễ dàng (Large enough for easy touch)
-
-- **🎭 Device quirks matter** (iOS 100vh != real viewport)
-  // 💡 Device quirks matter: Đặc điểm thiết bị quan trọng (Device quirks matter)
-  // 💡 iOS 100vh != real viewport: iOS 100vh không bằng viewport thực (iOS 100vh != real viewport)
-  // 💡 Cần xử lý riêng (Need special handling)
-  // 💡 iOS Safari có address bar (iOS Safari has address bar)
-
----
-
-## **📋 GIẢI THÍCH CHI TIẾT CẤP SENIOR/STAFF**
-
-### **1️⃣ Responsive Design: Mobile-First Approach**
-
-#### **1.1 🎨 Mobile-First CSS (Recommended)**
+Mobile-first CSS đặt style mặc định cho mobile, sau đó dùng `min-width` để enhance.
 
 ```css
-/* MOBILE-FIRST (start small, enhance) (Mobile-First - bắt đầu nhỏ, mở rộng) */
-// 💡 Mobile-First: Viết CSS cho mobile trước, sau đó enhance cho desktop (Write CSS for mobile first, then enhance for desktop)
-// 💡 Advantages: File size nhỏ hơn, tốt hơn cho mobile (Advantages: Smaller file size, better for mobile)
 .product-grid {
-  // 💡 .product-grid: Grid hiển thị products (Grid to display products)
   display: grid;
-  // 💡 display: grid: CSS Grid layout (CSS Grid layout)
-  // 💡 Grid: Layout system mạnh mẽ (Powerful layout system)
-
   grid-template-columns: 1fr;
-  // ✅ Mobile: 1 column (Mobile: 1 cột)
-  // 💡 1fr: 1 fraction - 1 cột chiếm toàn bộ width (1 fraction - 1 column takes full width)
-  // 💡 Mobile: 1 cột vì màn hình nhỏ (Mobile: 1 column because small screen)
-
   gap: 12px;
-  // 💡 gap: Khoảng cách giữa các items (Space between items)
-  // 💡 12px: Khoảng cách nhỏ cho mobile (Small gap for mobile)
-
   padding: 16px;
-  // 💡 padding: Khoảng cách bên trong (Inner spacing)
-  // 💡 16px: Padding nhỏ cho mobile (Small padding for mobile)
 }
 
-/* Tablet (Máy tính bảng) */
 @media (min-width: 768px) {
-  // 💡 @media: Media query (Media query)
-  // 💡 min-width: 768px: Khi màn hình >= 768px (When screen >= 768px)
-  // 💡 768px: Breakpoint cho tablet (Breakpoint for tablet)
-
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
-    // ✅ 2 columns (2 cột)
-    // 💡 repeat(2, 1fr): Lặp lại 2 lần, mỗi cột 1fr (Repeat 2 times, each column 1fr)
-    // 💡 Tablet: 2 cột vì màn hình rộng hơn (Tablet: 2 columns because wider screen)
-
     gap: 16px;
-    // 💡 gap: Tăng khoảng cách (Increase gap)
-    // 💡 16px: Khoảng cách lớn hơn (Larger gap)
-
     padding: 24px;
-    // 💡 padding: Tăng padding (Increase padding)
-    // 💡 24px: Padding lớn hơn (Larger padding)
   }
 }
 
-/* Desktop (Máy tính để bàn) */
 @media (min-width: 1024px) {
-  // 💡 min-width: 1024px: Khi màn hình >= 1024px (When screen >= 1024px)
-  // 💡 1024px: Breakpoint cho desktop (Breakpoint for desktop)
-
   .product-grid {
     grid-template-columns: repeat(3, 1fr);
-    // ✅ 3 columns (3 cột)
-    // 💡 repeat(3, 1fr): 3 cột, mỗi cột 1fr (3 columns, each 1fr)
-    // 💡 Desktop: 3 cột vì màn hình rất rộng (Desktop: 3 columns because very wide screen)
-
-    gap: 24px;
-    // 💡 gap: Khoảng cách lớn hơn (Larger gap)
-
-    padding: 32px;
-    // 💡 padding: Padding lớn hơn (Larger padding)
+    max-width: 1200px;
+    margin-inline: auto;
   }
 }
-
-/* Large Desktop (Màn hình lớn) */
-@media (min-width: 1920px) {
-  // 💡 min-width: 1920px: Khi màn hình >= 1920px (When screen >= 1920px)
-  // 💡 1920px: Breakpoint cho large desktop (Breakpoint for large desktop)
-
-  .product-grid {
-    grid-template-columns: repeat(4, 1fr);
-    // ✅ 4 columns (4 cột)
-    // 💡 repeat(4, 1fr): 4 cột, mỗi cột 1fr (4 columns, each 1fr)
-    // 💡 Large desktop: 4 cột (Large desktop: 4 columns)
-
-    max-width: 1440px;
-    // 💡 max-width: Giới hạn chiều rộng tối đa (Maximum width limit)
-    // 💡 1440px: Không để quá rộng (Don't make too wide)
-    // 💡 Tối ưu cho đọc (Optimize for reading)
-
-    margin: 0 auto;
-    // 💡 margin: 0 auto: Căn giữa (Center)
-    // 💡 0: Top/bottom margin = 0 (Top/bottom margin = 0)
-    // 💡 auto: Left/right margin tự động → căn giữa (Left/right margin auto → center)
-  }
-}
-
-/* ✅ Mobile-first CSS advantages:
- * 💻 Smaller file size (only additions, not overrides)
- * 💡 Better cascading (mobile styles first)
- * 🏗️ Forced thinking about mobile (can't ignore)
- * 🚀 Faster on slow networks
- */
 ```
 
-#### **1.2 👁 Viewport Configuration**
+✅ Lợi ích:
+
+- CSS cascade tự nhiên hơn.
+- Mobile không phải tải nhiều override desktop.
+- Bắt buộc team nghĩ về flow nhỏ trước.
+- Dễ giữ UI usable khi breakpoint chưa match.
+
+⚠️ Không nên dùng breakpoint theo device cụ thể quá nhiều. Ưu tiên breakpoint theo layout/content: “khi card đủ rộng thì lên 2 cột”, không phải “iPad thì 2 cột”.
+
+### 3.2. 👁️ Viewport Meta và Safe Area
+
+Viewport meta gần như bắt buộc cho responsive mobile:
 
 ```html
-<!-- Critical for mobile responsiveness! -->
 <meta
   name="viewport"
-  content="width=device-width,
-               initial-scale=1.0,
-               viewport-fit=cover,
-               maximum-scale=5.0,
-               user-scalable=yes"
+  content="width=device-width, initial-scale=1, viewport-fit=cover"
 />
-
-<!-- Breakdown:
-  width=device-width        - Use device viewport width (not 980px default)
-  initial-scale=1.0        - Don't zoom on page load
-  viewport-fit=cover       - Extend to notch/safe areas (iPhone X+)
-  maximum-scale=5.0        - Allow zoom (don't disable!)
-  user-scalable=yes        - Let user pinch zoom (accessibility!)
--->
-
-<!-- Safe area insets (for notch/rounded corners) -->
-<style>
-  body {
-    padding-top: max(16px, env(safe-area-inset-top));
-    padding-left: max(16px, env(safe-area-inset-left));
-    padding-right: max(16px, env(safe-area-inset-right));
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
-  }
-
-  /* Fixed header with notch support */
-  .header {
-    padding-top: env(safe-area-inset-top);
-    position: fixed;
-    top: 0;
-  }
-</style>
 ```
 
-#### **1.3 💬 Common Device Breakpoints**
+Giải thích:
+
+- `width=device-width`: dùng width thật của device, không dùng layout viewport mặc định cũ.
+- `initial-scale=1`: không zoom tự động khi load.
+- `viewport-fit=cover`: cho phép layout đi vào vùng notch/safe area trên iOS.
+
+Safe area:
 
 ```css
-/* 🏇 Industry standard breakpoints */
-
-/* 📱 Mobile: 320px - 479px */
-@media (max-width: 479px) {
-  /* iPhone SE, basic phones */
-}
-
-/* 📱 Mobile: 480px - 767px */
-@media (min-width: 480px) {
-  /* iPhone 6+, Galaxy S series */
-}
-
-/* 📲 Tablet: 768px - 1023px */
-@media (min-width: 768px) {
-  /* iPad, Galaxy Tab */
-}
-
-/* 💻 Desktop: 1024px - 1919px */
-@media (min-width: 1024px) {
-  /* Laptop, Desktop */
-}
-
-/* 💻 Large Desktop: 1920px+ */
-@media (min-width: 1920px) {
-  /* 4K monitors, TVs */
-}
-
-/* 🔄 Orientation-specific */
-@media (orientation: landscape) {
-  /* Landscape mode (phone rotated) */
-}
-
-@media (orientation: portrait) {
-  /* Portrait mode (normal phone) */
-}
-
-/* 💷 High DPI (Retina displays) */
-@media (min-device-pixel-ratio: 2) {
-  /* iPhone, Galaxy with 2x pixel density */
-  /* Use high-res images: image@2x.png */
+.app-shell {
+  min-height: 100dvh;
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-right: max(16px, env(safe-area-inset-right));
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  padding-left: max(16px, env(safe-area-inset-left));
 }
 ```
 
-#### **1.4 📋 Mobile-First Layout Pattern**
+> ♿ Không tắt zoom bằng `user-scalable=no` hoặc `maximum-scale=1` nếu không có lý do cực kỳ rõ. Đây là accessibility issue.
 
-```typescript
-// App.tsx - Responsive layout
+### 3.3. 📐 Breakpoints, Container Queries và Fluid Sizing
 
-export function App() {
+Breakpoint tham khảo:
+
+| Range | Ý nghĩa thực tế | Lưu ý |
+|---|---|---|
+| `320-479px` | điện thoại nhỏ | ưu tiên single column |
+| `480-767px` | điện thoại lớn | tăng spacing/card density vừa phải |
+| `768-1023px` | tablet | cân nhắc 2 columns/sidebar nhẹ |
+| `1024px+` | desktop/laptop | layout nhiều cột, hover enhancement |
+| `1440px+` | wide desktop | giới hạn max-width để dễ đọc |
+
+Fluid sizing giúp tránh quá nhiều breakpoint:
+
+```css
+.page {
+  width: min(100% - 32px, 1120px);
+  margin-inline: auto;
+}
+
+.title {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+}
+```
+
+Container queries hữu ích khi component nằm trong nhiều layout khác nhau:
+
+```css
+.card-list {
+  container-type: inline-size;
+}
+
+@container (min-width: 520px) {
+  .product-card {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+  }
+}
+```
+
+### 3.4. 🧱 Mobile Layout Patterns
+
+Các pattern phổ biến:
+
+- **Single column first:** mobile đọc từ trên xuống, action chính rõ.
+- **Bottom navigation:** hợp app có 3-5 tab chính.
+- **Drawer/sidebar:** mobile drawer, desktop fixed sidebar.
+- **Sticky CTA:** checkout/book/submit action luôn dễ bấm.
+- **Progressive disclosure:** ẩn detail phụ sau accordion/sheet thay vì nhồi vào màn hình nhỏ.
+
+Ví dụ shell:
+
+```tsx
+export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="app-container">
-      {/* Mobile: Full width drawer that slides out */}
-      {/* Desktop: Fixed sidebar */}
-      <nav className="sidebar">
-        <NavMenu />
-      </nav>
-
-      <main className="main-content">
-        <Routes />
-      </main>
-
-      {/* Mobile: Bottom navigation */}
-      {/* Desktop: Hidden */}
-      <nav className="mobile-nav">
-        <BottomNav />
-      </nav>
+    <div className="app-shell">
+      <aside className="sidebar">...</aside>
+      <main className="content">{children}</main>
+      <nav className="bottom-nav">...</nav>
     </div>
   );
 }
+```
 
-// CSS
-const styles = `
-  .app-container {
-    display: flex;
-    flex-direction: column; /* Mobile: Stack vertically */
-    height: 100vh;
+```css
+.app-shell {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.sidebar {
+  display: none;
+}
+
+.bottom-nav {
+  position: sticky;
+  bottom: 0;
+}
+
+@media (min-width: 1024px) {
+  .app-shell {
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: 1fr;
   }
 
   .sidebar {
-    position: fixed;
-    left: -100%;
-    width: 80vw;
-    max-width: 320px;
-    height: 100vh;
-    background: white;
-    z-index: 1000;
-    transition: left 0.3s ease;
-    /* Drawer hidden on mobile, slides in on tap */
+    display: block;
   }
 
-  .sidebar.open {
-    left: 0;
+  .bottom-nav {
+    display: none;
   }
-
-  .main-content {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: 60px; /* Space for bottom nav on mobile */
-  }
-
-  .mobile-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: space-around;
-  }
-
-  @media (min-width: 768px) {
-    .app-container {
-      flex-direction: row; /* Tablet+: Side by side */
-    }
-
-    .sidebar {
-      position: static;
-      width: 280px;
-      left: auto;
-      transition: none;
-    }
-
-    .main-content {
-      padding-bottom: 0;
-    }
-
-    .mobile-nav {
-      display: none; /* Hide bottom nav on desktop */
-    }
-  }
-`;
-```
-
----
-
-### **2️⃣ 👆 Touch Events & Gestures**
-
-#### **2.1 🎮 Touch Events vs Mouse Events**
-
-```typescript
-// 👆 Key differences:
-// 🐮 Mouse: hover state available
-// 👆 Touch: NO hover, only touchstart/end
-// 🎮 Touch: Multi-touch support (2+ fingers)
-// ⏱️ Touch: 300ms delay on click (wait for double-tap)
-
-class TouchHandler {
-  // ❌ BAD: Only mouse events
-  handleBadClick = () => {
-    element.addEventListener('click', () => {
-      // Works on touch but with 300ms delay!
-    });
-  };
-
-  // ✅ GOOD: Handle touch & mouse separately
-  handleGoodClick = () => {
-    let touchStartTime = 0;
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    element.addEventListener('touchstart', (e) => {
-      touchStartTime = Date.now();
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-    });
-
-    element.addEventListener('touchend', (e) => {
-      const duration = Date.now() - touchStartTime;
-      const deltaX = Math.abs(e.changedTouches[0].clientX - touchStartX);
-      const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY);
-
-      // Tap: Short duration, minimal movement
-      if (duration < 200 && deltaX < 10 && deltaY < 10) {
-        this.handleTap();
-      }
-    });
-
-    // Still support mouse for desktop
-    element.addEventListener('click', () => {
-      this.handleTap();
-    });
-  };
-
-  private handleTap = () => {
-    console.log('✅🚀 Tapped (no 300ms delay)');
-  };
 }
 ```
 
-#### **2.2 🔍 Touch Events Detailed**
+### 3.5. 👆 Touch Events, Pointer Events và Gestures
 
-```typescript
-// Comprehensive touch event handling
+Modern recommendation: ưu tiên `Pointer Events` vì gom mouse, touch, pen vào cùng model.
 
-class GestureRecognizer {
-  // Prevent 300ms tap delay on iOS
-  static removeClickDelay() {
-    document.addEventListener(
-      'touchstart',
-      () => {
-        // Touch detected, browser can skip click delay
-      },
-      { passive: true }
-    );
-  }
+| API | Dùng khi | Ghi chú |
+|---|---|---|
+| `click` | button/link bình thường | Browser xử lý activation/accessibility tốt |
+| `pointerdown/move/up` | drag/swipe/custom gesture | Hỗ trợ mouse/touch/pen |
+| `touchstart/move/end` | legacy hoặc cần touch-specific | Cẩn thận passive listeners |
+| `wheel` | trackpad/mouse wheel | Không đại diện touch scroll |
 
-  // Tap detection
-  static detectTap(element: HTMLElement) {
-    let startTime = 0;
-    let startX = 0;
-    let startY = 0;
+Touch target:
 
-    element.addEventListener('touchstart', (e) => {
-      startTime = Date.now();
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-    });
+- ✅ Nên tối thiểu khoảng `44x44px`.
+- ✅ Có spacing giữa các target để tránh bấm nhầm.
+- ✅ Đừng chỉ dựa vào hover để lộ action.
+- ✅ Dùng real button/link để giữ accessibility.
 
-    element.addEventListener('touchend', (e) => {
-      const elapsed = Date.now() - startTime;
-      const dx = e.changedTouches[0].clientX - startX;
-      const dy = e.changedTouches[0].clientY - startY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+```css
+.icon-button {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-grid;
+  place-items: center;
+  touch-action: manipulation;
+}
+```
 
-      if (elapsed < 300 && distance < 10) {
-        element.dispatchEvent(new CustomEvent('tap'));
-      }
-    });
-  }
+Gesture cần tránh xung đột với scroll:
 
-  // Swipe detection
-  static detectSwipe(element: HTMLElement) {
-    let startX = 0;
-    let startY = 0;
+```css
+.carousel {
+  touch-action: pan-y;
+}
+```
 
-    element.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-    });
+`touch-action: pan-y` nói với browser: vertical scroll vẫn thuộc browser, component chỉ xử lý horizontal gesture.
 
-    element.addEventListener('touchend', (e) => {
-      const endX = e.changedTouches[0].clientX;
-      const endY = e.changedTouches[0].clientY;
+### 3.6. ⚡ Mobile Performance Optimization
 
-      const dx = endX - startX;
-      const dy = endY - startY;
+Mobile performance thường nghẽn ở:
 
-      // Swipe right: dx > 50px, minimal vertical
-      if (dx > 50 && Math.abs(dy) < 50) {
-        element.dispatchEvent(
-          new CustomEvent('swiperight', { detail: { dx } })
-        );
-      }
+- JS bundle lớn: parse/compile/execute chậm.
+- Image quá nặng.
+- Font blocking.
+- Main-thread long tasks.
+- Layout/repaint lớn.
+- Third-party scripts.
 
-      // Swipe left: dx < -50px
-      if (dx < -50 && Math.abs(dy) < 50) {
-        element.dispatchEvent(new CustomEvent('swipeleft', { detail: { dx } }));
-      }
+Image:
 
-      // Swipe down: dy > 50px
-      if (dy > 50 && Math.abs(dx) < 50) {
-        element.dispatchEvent(new CustomEvent('swipedown', { detail: { dy } }));
-      }
+```html
+<img
+  src="/products/shoe-640.webp"
+  srcset="/products/shoe-320.webp 320w, /products/shoe-640.webp 640w, /products/shoe-960.webp 960w"
+  sizes="(min-width: 768px) 33vw, 100vw"
+  width="640"
+  height="480"
+  loading="lazy"
+  decoding="async"
+  alt="Giày chạy bộ màu đen"
+/>
+```
 
-      // Swipe up: dy < -50px
-      if (dy < -50 && Math.abs(dx) < 50) {
-        element.dispatchEvent(new CustomEvent('swipeup', { detail: { dy } }));
-      }
-    });
-  }
+Code splitting:
 
-  // Pinch zoom detection
-  static detectPinch(element: HTMLElement) {
-    let initialDistance = 0;
+```tsx
+const ProductReviews = React.lazy(() => import("./ProductReviews"));
 
-    element.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 2) {
-        const touch1 = e.touches[0];
-        const touch2 = e.touches[1];
+function ProductPage() {
+  return (
+    <React.Suspense fallback={<ReviewsSkeleton />}>
+      <ProductReviews />
+    </React.Suspense>
+  );
+}
+```
 
-        const dx = touch2.clientX - touch1.clientX;
-        const dy = touch2.clientY - touch1.clientY;
-        initialDistance = Math.sqrt(dx * dx + dy * dy);
-      }
-    });
+Performance budget gợi ý:
 
-    element.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 2) {
-        const touch1 = e.touches[0];
-        const touch2 = e.touches[1];
+- Critical JS càng nhỏ càng tốt.
+- Defer non-critical scripts.
+- Lazy load below-the-fold images/components.
+- Preload hero image/font quan trọng có kiểm soát.
+- Đo LCP/INP/CLS trên device thật hoặc lab profile mobile.
 
-        const dx = touch2.clientX - touch1.clientX;
-        const dy = touch2.clientY - touch1.clientY;
-        const currentDistance = Math.sqrt(dx * dx + dy * dy);
+### 3.7. 🍎 iOS Safari Quirks
 
-        const scale = currentDistance / initialDistance;
+Các vấn đề thường gặp:
 
-        element.dispatchEvent(new CustomEvent('pinch', { detail: { scale } }));
-      }
-    });
-  }
+**`100vh` không khớp viewport thật**
 
-  // Long press detection
-  static detectLongPress(element: HTMLElement, duration = 500) {
-    let timeout: NodeJS.Timeout;
+iOS Safari có dynamic address bar. Dùng viewport units mới khi có thể:
 
-    element.addEventListener('touchstart', () => {
-      timeout = setTimeout(() => {
-        element.dispatchEvent(new CustomEvent('longpress'));
-      }, duration);
-    });
-
-    element.addEventListener('touchend', () => {
-      clearTimeout(timeout);
-    });
-
-    element.addEventListener('touchmove', () => {
-      clearTimeout(timeout);
-    });
-  }
+```css
+.full-screen {
+  min-height: 100dvh;
 }
 
-// Usage
-GestureRecognizer.removeClickDelay();
-GestureRecognizer.detectSwipe(carouselElement);
-GestureRecognizer.detectPinch(imageElement);
-GestureRecognizer.detectLongPress(buttonElement);
+@supports not (height: 100dvh) {
+  .full-screen {
+    min-height: 100vh;
+  }
+}
+```
 
-carouselElement.addEventListener('swipeleft', () => {
-  nextSlide();
-});
+**Input zoom**
 
-carouselElement.addEventListener('swiperight', () => {
-  prevSlide();
+iOS có thể zoom khi input font-size nhỏ. Giữ font-size input ít nhất `16px`.
+
+```css
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+```
+
+**Safe area / notch**
+
+Dùng `env(safe-area-inset-*)` cho fixed header/footer/bottom nav.
+
+**Fixed/sticky + keyboard**
+
+Khi keyboard mở, viewport thay đổi. Tránh giả định fixed footer luôn nằm đúng; test form trên real iPhone.
+
+### 3.8. 🤖 Android Chrome Quirks
+
+Các vấn đề thường gặp:
+
+- Keyboard làm viewport resize khác nhau theo browser/device.
+- Back button cần hành vi rõ với modal/drawer.
+- Device fragmentation: RAM/CPU/GPU/browser version rất đa dạng.
+- Một số WebView cũ thiếu feature hoặc có bug khác Chrome mới.
+- Address bar show/hide làm viewport height thay đổi.
+
+Back button với modal:
+
+```ts
+function openModalWithHistory() {
+  window.history.pushState({ modal: true }, "");
+  openModal();
+}
+
+window.addEventListener("popstate", () => {
+  if (isModalOpen()) {
+    closeModal();
+  }
 });
 ```
 
-#### **2.3 🎨 Touch-optimized UI Components**
+> ⚠️ Đừng phá browser back navigation. Với SPA, back button nên đóng modal/drawer trước, sau đó mới rời route nếu phù hợp.
 
-```typescript
-// Mobile-optimized button
+### 3.9. 🧪 Testing: Device, Emulator, Automation
 
-export function TouchButton({ onClick, children }: any) {
-  const [active, setActive] = useState(false);
+Emulator tốt để iterate nhanh, nhưng không đủ cho production mobile.
 
-  return (
-    <button
-      className={`touch-button ${active ? 'active' : ''}`}
-      style={{
-        minHeight: '44px', // ✅ 🎯 Apple's recommended minimum
-        minWidth: '44px',
-        padding: '12px 16px',
-        fontSize: '16px', // 🔐 Prevents iOS auto-zoom on input!
-        borderRadius: '8px',
-        border: 'none',
-        backgroundColor: '#007AFF',
-        color: 'white',
-        cursor: 'pointer',
-        userSelect: 'none', // 📐 Prevent text selection on long press
-        WebkitTouchCallout: 'none', // 🔨 Prevent iOS context menu
-        WebkitUserSelect: 'none', // 🍎 iOS specific
-      }}
-      onTouchStart={() => setActive(true)}
-      onTouchEnd={() => {
-        setActive(false);
-        onClick?.();
-      }}
-      onMouseDown={() => setActive(true)}
-      onMouseUp={() => setActive(false)}
-    >
-      {children}
-    </button>
-  );
-}
+Test matrix tối thiểu:
 
-// CSS
-const styles = `
-  .touch-button {
-    transition: background-color 0.2s ease;
-    -webkit-tap-highlight-color: transparent; /* Remove default iOS tap color */
-  }
+- iOS Safari real device.
+- Android Chrome real device.
+- Small phone width khoảng 320-360px.
+- Low/mid-range Android nếu target user phổ biến.
+- Slow 3G/4G throttling.
+- Portrait và landscape.
+- Keyboard open/close.
+- Notch/safe area.
+- Reduced motion / larger text.
 
-  .touch-button.active {
-    background-color: #0051D5;
-    transform: scale(0.98); /* Visual feedback */
-  }
+Remote debugging:
 
-  /* Prevent double-tap zoom delay on iOS */
-  @media (hover: none) and (pointer: coarse) {
-    .touch-button {
-      touch-action: manipulation;
-    }
-  }
-`;
-```
+- Android: Chrome `chrome://inspect`.
+- iOS: Safari Develop menu với device thật.
+- Performance: record trace trên device thật, không chỉ desktop throttling.
 
----
+Automated testing:
 
-### **3️⃣ ⚡ Mobile Performance Optimization**
+- Playwright/Cypress viewport tests.
+- Visual regression ở vài viewport chính.
+- Lighthouse/WebPageTest mobile profile.
+- BrowserStack/Sauce Labs khi cần device coverage rộng.
 
-#### **3.1 🖼️ Image Lazy Loading**
+## 4. 🧪 Practical TypeScript/JavaScript Examples
 
-```typescript
-// 💻 Native lazy loading (browser-supported)
-<img src="product.jpg"
-     alt="Product"
-     loading="lazy"
-     srcset="product-small.jpg 320w, product.jpg 800w"
-     sizes="(max-width: 600px) 100vw, 50vw">
+### 4.1. ✅ Hook phát hiện coarse pointer
 
-// 🔍 Intersection Observer (for older browsers)
-class LazyImageLoader {
-  constructor(selector = 'img[data-lazy]') {
-    const images = document.querySelectorAll(selector);
+```tsx
+function useIsTouchLikePointer() {
+  const [isTouchLike, setIsTouchLike] = React.useState(false);
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const img = entry.target as HTMLImageElement;
-          img.src = img.dataset.src!;
-          img.removeAttribute('data-lazy');
-          observer.unobserve(img);
-        }
-      });
-    });
+  React.useEffect(() => {
+    const media = window.matchMedia("(pointer: coarse)");
 
-    images.forEach((img) => observer.observe(img));
-  }
-}
-
-// Usage
-<img data-lazy src="placeholder.jpg" data-src="actual-image.jpg" alt="..." />
-
-// React component
-export function LazyImage({ src, alt, ...props }: any) {
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && imgRef.current) {
-        imgRef.current.src = src;
-        observer.disconnect();
-      }
-    });
-
-    if (imgRef.current) {
-      observer.observe(imgRef.current);
+    function update() {
+      setIsTouchLike(media.matches);
     }
 
-    return () => observer.disconnect();
-  }, [src]);
+    update();
+    media.addEventListener("change", update);
 
-  return <img ref={imgRef} src="data:image/svg+xml,%3Csvg/%3E" alt={alt} {...props} />;
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  return isTouchLike;
 }
 ```
 
-#### **3.2 📦 Dynamic Imports & Code Splitting**
+> 💡 Dùng để điều chỉnh UI density hoặc interaction hint, không dùng để phân biệt tuyệt đối “mobile vs desktop”.
 
-```typescript
-// 📦 Split code by route (mobile loads only what's needed)
+### 4.2. ✅ Swipe gesture bằng Pointer Events
 
-// ❌ Before: All code in one bundle (800KB)
-// ✅ After: Split by route (200KB initial + 100KB per route)
+```tsx
+function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
+  const startX = React.useRef<number | null>(null);
 
-// 🔄 React Router with code splitting
-const HomePage = lazy(() => import('./pages/Home'));
-const ProductPage = lazy(() => import('./pages/Product'));
-const CheckoutPage = lazy(() => import('./pages/Checkout'));
+  const onPointerDown = React.useCallback((event: React.PointerEvent) => {
+    startX.current = event.clientX;
+  }, []);
 
-export function AppRoutes() {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/product/:id" element={<ProductPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-      </Routes>
-    </Suspense>
-  );
-}
+  const onPointerUp = React.useCallback(
+    (event: React.PointerEvent) => {
+      if (startX.current === null) return;
 
-// 📘 Dynamic import for heavy libraries
-async function loadChartLibrary() {
-  const { Chart } = await import('chart.js');
-  return Chart;
-}
+      const deltaX = event.clientX - startX.current;
+      startX.current = null;
 
-// 🎯 Only import ECharts when user navigates to chart page
-const charts = await loadChartLibrary();
-
-// 🔧 Webpack magic comments
-const DataProcessor = lazy(
-  () =>
-    import(
-      /* webpackChunkName: "data-processor" */
-      /* webpackPrefetch: true */
-      './workers/data-processor'
-    )
-);
-```
-
-#### **3.3 📊 Mobile-Specific Bundles**
-
-```json
-// package.json
-{
-  "scripts": {
-    "build": "npm run build:mobile && npm run build:desktop",
-    "build:mobile": "webpack --config webpack.mobile.js",
-    "build:desktop": "webpack --config webpack.desktop.js",
-    "serve": "npm run build && http-server dist"
-  }
-}
-```
-
-```javascript
-// webpack.mobile.js
-module.exports = {
-  mode: 'production',
-  entry: './src/index.tsx',
-  output: {
-    filename: 'mobile.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          compress: {
-            drop_console: true, // Remove console in production
-          },
-        },
-      }),
-    ],
-  },
-  resolve: {
-    alias: {
-      // Use mobile-optimized versions
-      './components/Navigation': './components/Navigation.mobile',
-      './styles': './styles/mobile.css',
+      if (Math.abs(deltaX) < 48) return;
+      if (deltaX < 0) onSwipeLeft();
+      else onSwipeRight();
     },
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(jpg|png|gif)$/,
-        type: 'asset',
-        parser: {
-          dataUrlCondition: { maxSize: 1024 }, // Inline only <1KB images
-        },
-      },
-    ],
-  },
+    [onSwipeLeft, onSwipeRight],
+  );
+
+  return { onPointerDown, onPointerUp };
+}
+```
+
+Usage:
+
+```tsx
+function ProductCarousel() {
+  const swipeHandlers = useSwipe(showNext, showPrevious);
+
+  return (
+    <div className="carousel" {...swipeHandlers}>
+      ...
+    </div>
+  );
+}
+```
+
+```css
+.carousel {
+  touch-action: pan-y;
+}
+```
+
+### 4.3. ✅ Safe-area bottom navigation
+
+```css
+.bottom-nav {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  min-height: calc(56px + env(safe-area-inset-bottom));
+  background: Canvas;
+  border-top: 1px solid color-mix(in srgb, CanvasText 12%, transparent);
+}
+
+.bottom-nav button {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+```
+
+### 4.4. ✅ Responsive e-commerce product grid
+
+```css
+.product-page {
+  width: min(100% - 32px, 1180px);
+  margin-inline: auto;
+  padding-block: 16px 80px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+}
+```
+
+### 4.5. ✅ React image component có kích thước ổn định
+
+```tsx
+type ResponsiveImageProps = {
+  alt: string;
+  src: string;
+  srcSet: string;
+  sizes: string;
+  width: number;
+  height: number;
 };
 
-// webpack.desktop.js (similar but different optimizations)
-```
-
-#### **3.4 🎨 Image Optimization**
-
-```typescript
-// 🎨 Use modern formats (WebP with JPEG fallback)
-
-<picture>
-  {/* 🚀 Modern format for supported browsers */}
-  <source srcset="image.webp" type="image/webp" />
-
-  {/* ✅ Fallback for older browsers */}
-  <source srcset="image.jpg" type="image/jpeg" />
-
-  <img src="image.jpg" alt="..." />
-</picture>
-
-// 🟇 Responsive images with srcset
-<img
-  srcset="
-    image-small.jpg 480w,
-    image-medium.jpg 800w,
-    image-large.jpg 1200w
-  "
-  sizes="
-    (max-width: 480px) 100vw,
-    (max-width: 800px) 50vw,
-    33vw
-  "
-  src="image-medium.jpg"
-  alt="Product"
-/>
-
-// 🚀 Next.js Image component (automatic optimization)
-import Image from 'next/image';
-
-export function ProductImage() {
+function ResponsiveImage(props: ResponsiveImageProps) {
   return (
-    <Image
-      src="/product.jpg"
-      alt="Product"
-      width={800}
-      height={600}
-      // 🚀 Automatically optimizes for:
-      // ✅ Responsive srcset
-      // ✅ WebP conversion
-      // ✅ Lazy loading
-      // ✅ LQIP (low-quality image placeholder)
-      placeholder="blur"
-      blurDataURL="data:image/jpeg;base64,..."
+    <img
+      {...props}
+      loading="lazy"
+      decoding="async"
+      style={{
+        width: "100%",
+        height: "auto",
+        aspectRatio: `${props.width} / ${props.height}`,
+      }}
     />
   );
 }
 ```
 
----
-
-### **4️⃣ 🍎 iOS Safari Quirks & Workarounds**
-
-#### **4.1 📈 100vh Bug**
-
-```css
-/* ❌ Problem: 100vh includes address bar height on iOS */
-.full-screen {
-  height: 100vh; /* 🔐 Extends below viewport on iOS! */
-}
-
-/* ✅ Solution 1: Use dvh (dynamic viewport height) */
-.full-screen {
-  height: 100dvh; /* 🚀 Accounts for address bar */
-}
-
-/* ✅ Solution 2: Use max-height with safe area */
-.full-screen {
-  height: 100%;
-  max-height: 100vh;
-  max-height: 100dvh;
-  max-height: calc(100vh - env(safe-area-inset-bottom));
-}
-
-/* ✅ Solution 3: JavaScript workaround */
-<style>
-  :root {
-    --vh: 1vh;
-  }
-</style>
-
-<script>
-  function setViewportHeight() {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  }
-
-  setViewportHeight();
-  window.addEventListener('resize', setViewportHeight);
-  window.addEventListener('orientationchange', setViewportHeight);
-</script>
-
-<style>
-  .full-screen {
-    height: calc(var(--vh, 1vh) * 100);
-  }
-</style>
-```
-
-#### **4.2 ⌨️ Input Behavior Issues**
-
-```css
-/* ❌ Problem 1: iOS zooms to 16px font on input focus */
-input {
-  font-size: 14px; /* 🔐 Gets zoomed to 16px on iOS */
-}
-
-/* ✅ Solution: Use 16px minimum */
-input {
-  font-size: 16px; /* ✅ No zoom on iOS */
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-/* ❌ Problem 2: Select dropdown styling broken on iOS */
-select {
-  -webkit-appearance: none; /* 🔧 Removes default styling */
-  appearance: none;
-  background-image: url('dropdown-arrow.svg');
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  padding-right: 32px;
-}
-
-/* ❌ Problem 3: Date input styling broken */
-input[type='date'] {
-  font-size: 16px; /* 🔐 Prevent zoom */
-  /* ✅ iOS date picker is native, can't customize */
-}
-
-/* ✅ Solution: Use date library for iOS */
-import { DatePicker } from 'react-datepicker';
-<DatePicker selected={date} onChange={setDate} />
-```
-
-#### **4.3 🔐 Notch & Safe Area Handling**
-
-```css
-/* iPhone X+ have notch and rounded corners */
-/* Use viewport-fit=cover in meta tag, then safe areas */
-
-.header {
-  padding-top: max(16px, env(safe-area-inset-top));
-  padding-left: max(16px, env(safe-area-inset-left));
-  padding-right: max(16px, env(safe-area-inset-right));
-}
-
-.bottom-sheet {
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
-  border-radius: 16px 16px 0 0;
-}
-
-/* Fixed positioned elements */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding-bottom: env(safe-area-inset-bottom);
-  /* Now extends into safe area properly */
-}
-```
-
-#### **4.4 🔨 iOS Specific Workarounds**
-
-```typescript
-// Detect iOS
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-const isSafari = /Safari/.test(navigator.userAgent);
-
-// 🍎 iOS specific fixes
-if (isIOS) {
-  // 🔧 Fix: Prevent bounce scrolling
-  document.addEventListener('touchmove', (e) => {
-    if (e.target === document.body) {
-      e.preventDefault();
-    }
-  });
-
-  // 🔨 Fix: Prevent zoom on double tap
-  let lastTouchEnd = 0;
-  document.addEventListener('touchend', (e) => {
-    const now = Date.now();
-    if (now - lastTouchEnd <= 300) {
-      e.preventDefault();
-    }
-    lastTouchEnd = now;
-  });
-
-  // 📈 Fix: 100vh issue
-  const setVH = () => {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  };
-  setVH();
-  window.addEventListener('resize', setVH);
-  window.addEventListener('orientationchange', setVH);
-}
-
-// Disable user-select on buttons to prevent selection
-if (isIOS) {
-  const buttons = document.querySelectorAll('button');
-  buttons.forEach((btn) => {
-    btn.style.userSelect = 'none';
-    btn.style.WebkitUserSelect = 'none';
-    btn.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      // Manually trigger click logic
-      btn.click();
-    });
-  });
-}
-```
-
----
-
-### **5️⃣ 🤖 Android Chrome Quirks & Workarounds**
-
-#### **5.1 ⚠️ Common Android Issues**
-
-```typescript
-// 🤖 Detect Android
-const isAndroid = /Android/.test(navigator.userAgent);
-
-if (isAndroid) {
-  // 🔙 Issue 1: Back button behavior
-  window.addEventListener('popstate', () => {
-    // User tapped back button
-    // Handle accordingly
-  });
-
-  // ⌨️ Issue 2: Soft keyboard affects layout
-  // Listen for keyboard show/hide
-  let lastWindowHeight = window.innerHeight;
-
-  window.addEventListener('resize', () => {
-    if (window.innerHeight < lastWindowHeight) {
-      // ⏱️ Keyboard appeared
-      console.log('⌨️ Keyboard shown');
-    } else if (window.innerHeight > lastWindowHeight) {
-      // 📋 Keyboard hidden
-      console.log('📋 Keyboard hidden');
-    }
-    lastWindowHeight = window.innerHeight;
-  });
-
-  // 💪 Issue 3: Poor performance with many DOM nodes
-  // Use virtual scrolling for long lists
-  // Use CSS containment to optimize rendering
-
-  // 🖣️ Issue 4: Memory leaks on long-lived apps
-  // Remove event listeners, clean up timers
-}
-
-// CSS containment for better performance
-.list-item {
-  contain: layout style paint;
-  /* Tells browser this element is self-contained */
-  /* Doesn't affect siblings → faster rendering */
-}
-```
-
-#### **5.2 🎨 Android Specific Styling**
-
-```css
-/* Android-specific fixes */
-
-/* Android Chrome: 56px address bar collapse */
-body {
-  padding-top: 56px;
-  /* Account for address bar on Android */
-}
-
-/* Android: Prevent input zoom on focus */
-input {
-  font-size: 16px; /* Required on Android too */
-  padding: 12px;
-}
-
-/* Android: Handle -webkit-fill-available for 100% width */
-.full-width {
-  width: 100%;
-  width: -webkit-fill-available; /* Android fix */
-}
-
-/* Android: Software keyboard safe area */
-@supports (padding: max(0px)) {
-  .bottom-content {
-    padding-bottom: max(16px, env(keyboard-inset-height));
-  }
-}
-```
-
----
-
-### **6️⃣ 🔍 Testing: Devices vs Emulators**
-
-#### **6.1 ✅ Real Device Testing**
-
-```typescript
-// 🚀 Why real devices matter:
-// ✅ 💪 Actual performance (CPU, RAM, network)
-// ✅ 👆 Real touch response (latency, feedback)
-// ✅ 🎭 Actual device bugs/quirks
-// ❌ 💻 Emulators: Too fast, no real touch, simplified GPU
-// ✅ Actual device bugs/quirks
-// ❌ Emulators: Too fast, no real touch, simplified GPU
-```
-
-#### **6.2 👁 Chrome DevTools Mobile Emulation**
-
-```javascript
-// 👁 Chrome DevTools: Device Mode
-// 1. 📝 Open DevTools (F12)
-// 2. 👆 Click mobile icon (top-left)
-// 3. 📱 Select device (iPhone 12, Pixel 5, etc)
-// 4. 🚀 Features:
-//    - 🟇 Viewport size matches device
-//    - 👆 Touch events enabled
-//    - ⚡ 3G/4G throttling
-//    - 📄 User agent string correct
-//    - 💷 Device pixel ratio matches
-//
-// ⚠️ Limitations:
-// - 💻 Still running desktop Chrome engine
-// - 🎮 GPU acceleration different
-// - 💪 Memory/performance not accurate
-// - 🔍 No real device sensors (gyro, etc)
-```
-
-#### **6.3 📲 Mobile Device Testing Setup**
-
-```bash
-# 💲 Connect physical device via USB
-
-# 1. 🔐 Enable Developer Mode
-# 🤖 Android: Settings → About → Tap Build Number 7x
-# 🍎 iOS: Settings → Developer (must use physical device)
-
-# 2. 🔧 Enable USB Debugging (Android)
-# 🤖 Settings → Developer Options → USB Debugging
-
-# 3. 👁 Chrome Remote Debugging (Android)
-# 📝 Open chrome://inspect on desktop
-# 🏇 See connected devices
-# 💪 Can inspect/debug live
-
-# 4. 🍎 Safari (iOS)
-# 👁 Develop → Device → Select app
-# 💶 Need to be on same Wi-Fi network
-
-# 5. 🌐 WebRTC loopback testing
-# 📝 Use localhost with tunneling
-npm install -g ngrok
-ngrok http 3000
-# 📱 Use ngrok URL on mobile device
-
-# 6. 💯 Performance profiling on device
-# 👁 Chrome DevTools → Performance tab
-# 🏇 Record on real device
-# 📊 Analyze real-world performance
-```
-
-#### **6.4 🤠 Automated Testing on Multiple Devices**
-
-```typescript
-// BrowserStack: Test on real devices
-
-import { Builder } from 'selenium-webdriver';
-
-const capabilities = {
-  'bstack:options': {
-    osVersion: '14',
-    deviceName: 'iPhone 12',
-    realMobile: true,
-    buildName: 'Mobile E-commerce Tests',
-    sessionName: 'iOS Test',
-  },
-  browserName: 'iPhone',
-  browserVersion: 'latest',
-};
-
-async function testOnRealDevice() {
-  const driver = await new Builder()
-    .usingServer('http://hub.browserstack.com/wd/hub')
-    .withCapabilities(capabilities)
-    .build();
-
-  try {
-    // Navigate to app
-    await driver.get('https://myapp.com');
-
-    // Test touch interactions
-    const button = await driver.findElement({ id: 'submit-btn' });
-    await button.click(); // Simulates real tap
-
-    // Test viewport
-    const windowSize = await driver.manage().window().getSize();
-    console.log('Device size:', windowSize);
-
-    // Test on slow network
-    // BrowserStack can throttle network
-
-    // Test on multiple devices
-    // Run same test on iPhone, Android, etc
-  } finally {
-    await driver.quit();
-  }
-}
-```
-
----
-
-### **7️⃣ 📄 Complete Mobile-First Example: E-commerce Product Page**
-
-```typescript
-// ProductPage.tsx - Mobile-first responsive
-
-import { useState, useEffect } from 'react';
-
-export function ProductPage({ productId }: any) {
-  const [product, setProduct] = useState(null);
-  const [isSideBySide, setIsSideBySide] = useState(false);
-
-  // Detect if desktop (for side-by-side layout)
-  useEffect(() => {
-    const checkLayout = () => {
-      setIsSideBySide(window.innerWidth >= 768);
-    };
-
-    checkLayout();
-    window.addEventListener('resize', checkLayout);
-    return () => window.removeEventListener('resize', checkLayout);
-  }, []);
-
-  return (
-    <div className="product-page">
-      {/* Mobile: Image gallery (fullscreen) */}
-      {/* Tablet+: Image + Info side-by-side */}
-      <div
-        className={`product-layout ${
-          isSideBySide ? 'side-by-side' : 'stacked'
-        }`}
-      >
-        <section className="image-section">
-          <ImageGallery productId={productId} />
-        </section>
-
-        <section className="info-section">
-          <ProductInfo productId={productId} />
-          <AddToCartButton productId={productId} />
-        </section>
-      </div>
-
-      <section className="reviews-section">
-        <Reviews productId={productId} />
-      </section>
-    </div>
-  );
-}
-
-// ImageGallery.tsx - Touch-optimized
-function ImageGallery({ productId }: any) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const images = []; // Load from API
-
-  const handleSwipeLeft = () => {
-    setCurrentIndex((i) => (i + 1) % images.length);
-  };
-
-  const handleSwipeRight = () => {
-    setCurrentIndex((i) => (i - 1 + images.length) % images.length);
-  };
-
-  return (
-    <div
-      className="image-gallery"
-      onSwipeLeft={handleSwipeLeft}
-      onSwipeRight={handleSwipeRight}
-    >
-      <img
-        src={images[currentIndex]}
-        alt="Product"
-        loading="lazy"
-        // Mobile: Full width, Desktop: 50%
-        style={{
-          width: '100%',
-          maxWidth: '600px',
-          aspectRatio: '1',
-          objectFit: 'cover',
-        }}
-      />
-
-      {/* Thumbnail indicators */}
-      <div className="thumbnails">
-        {images.map((_, i) => (
-          <div
-            key={i}
-            className={`thumbnail ${i === currentIndex ? 'active' : ''}`}
-            onClick={() => setCurrentIndex(i)}
-            role="button"
-            tabIndex={0}
-            // Min 44px touch target
-            style={{ minWidth: '44px', minHeight: '44px' }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// CSS
-const styles = `
-  .product-page {
-    display: flex;
-    flex-direction: column; /* Mobile: Stack */
-    padding: 16px;
-  }
-
-  .product-layout {
-    gap: 16px;
-  }
-
-  .product-layout.stacked {
-    flex-direction: column;
-  }
-
-  .image-section {
-    flex: 1;
-  }
-
-  .info-section {
-    flex: 1;
-  }
-
-  @media (min-width: 768px) {
-    .product-layout.side-by-side {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-    }
-
-    .image-section {
-      position: sticky;
-      top: 0;
-      height: fit-content;
-    }
-  }
-
-  .image-gallery {
-    position: relative;
-    touch-action: pan-y; /* Allow vertical scroll, not horizontal */
-  }
-
-  .thumbnails {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    overflow-x: auto;
-  }
-
-  .thumbnail {
-    cursor: pointer;
-    border: 2px solid transparent;
-    border-radius: 4px;
-    transition: border-color 0.2s;
-  }
-
-  .thumbnail.active {
-    border-color: #007AFF;
-  }
-`;
-```
-
----
-
-## **� SENIOR TIPS & BEST PRACTICES**
-
-```
-✅ MOBILE-FIRST CHECKLIST
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-☑️  Mobile-first CSS (start small, enhance)
-☑️  Viewport meta tag (width=device-width, viewport-fit=cover)
-☑️  44x44px minimum touch targets
-☑️  Handle touch events (not just click)
-☑️  Image lazy loading + srcset for responsive
-☑️  Dynamic imports for code splitting
-☑️  Test on real devices (not just emulator)
-☑️  Handle notch/safe areas (iPhone X+)
-☑️  iOS: Fix 100vh, input zoom, select styling
-☑️  Android: Back button, keyboard, address bar
-☑️  Network throttling tests (3G, 4G)
-☑️  Lighthouse mobile score (90+)
-☑️  Monitor Core Web Vitals on real devices
-
-📊 MOBILE PERFORMANCE TARGETS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-└─ FCP: < 2.5s (3G)
-└─ LCP: < 2.5s (3G)
-└─ CLS: < 0.1
-└─ INP: < 200ms
-└─ Bundle size: < 200KB (gzip, mobile)
-└─ Images: < 100KB initial (lazy load rest)
-```
-
----
-
-## **⚠️ COMMON MISTAKES**
-
-```js
-// ❌ Desktop-first CSS (bloated mobile)
-.container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Desktop */
-}
-@media (max-width: 768px) {
-  .container {
-    grid-template-columns: 1fr; /* Override */
-  }
-}
-// Result: Mobile downloads desktop CSS rules, overrides them
-
-// ✅ Mobile-first CSS (lean mobile)
-.container {
-  display: grid;
-  grid-template-columns: 1fr; /* Mobile */
-}
-@media (min-width: 768px) {
-  .container {
-    grid-template-columns: repeat(4, 1fr); /* Enhance */
-  }
-}
-// Result: Mobile only gets mobile rules
-
-// ❌ No viewport meta tag
-// Browser defaults to 980px viewport on mobile
-// Content zoomed out, unreadable
-
-// ✅ Always include
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-// ❌ Using 12px buttons (impossible to tap)
-button { width: 12px; height: 12px; }
-
-// ✅ 44px minimum (Apple standard)
-button { min-width: 44px; min-height: 44px; }
-
-// ❌ Only mouse events
-element.addEventListener('click', handleClick);
-// Slower on touch (300ms delay for double-tap)
-
-// ✅ Touch-specific handling
-element.addEventListener('touchstart', handleTouch);
-element.addEventListener('touchend', handleEnd);
-
-// ❌ Full-size images for all devices
-<img src="image-2000px.jpg"> {/* 2MB on mobile! */}
-
-// ✅ Responsive images
-<img srcset="small.jpg 480w, large.jpg 1200w" />
-
-// ❌ Not testing on real devices
-// Emulator is too fast, doesn't have real quirks
-
-// ✅ Test on actual iPhone/Android devices
-// Use Chrome remote debugging or BrowserStack
-```
-
----
-
-## **🎯 INTERVIEW ANSWER**
-
-"Mobile-first development means building for mobile constraints first, then enhancing for desktop.
-
-**3 core areas:**
-
-1. **Responsive Design**
-
-   - Mobile-first CSS (smaller, faster)
-   - CSS Grid/Flexbox for layouts
-   - Breakpoints: 480px (mobile), 768px (tablet), 1024px (desktop)
-
-2. **Touch Optimization**
-
-   - Handle touchstart/touchend (not just click)
-   - 44x44px minimum touch targets (Apple standard)
-   - Detect gestures: swipe, pinch, long-press
-   - Remove 300ms click delay on iOS
-
-3. **Performance**
-   - Images lazy-load (50% of page weight)
-   - Dynamic imports by route (200KB initial)
-   - Mobile-specific bundles
-   - Test on 3G network simulation
-
-**Device-specific quirks handled:**
-
-- iOS: 100vh bug (use dvh or max-height), input zoom (16px font), select styling
-- Android: Back button, keyboard affecting layout, address bar 56px
-- Both: Notch/safe areas (viewport-fit=cover + env())
-
-**Real example:** E-commerce app:
-
-- Mobile: 375px single column, lazy-loaded images, swipe carousel
-- Tablet: 768px 2-column grid
-- Desktop: 1920px 4-column, sticky sidebar
-- Result: 85% reduction in mobile bounce rate, 2.2s LCP
-
-**Testing:**
-
-- Real devices (Chrome Remote Debugging)
-- DevTools Mobile Emulation for quick iteration
-- Network throttling (3G simulation)
-- Lighthouse audit (90+ score)
-- Monitor Core Web Vitals in production
-
-Key insight: Mobile is majority of traffic, but requires different UX thinking (touch gestures, network, device quirks). Not just 'shrinking desktop'."
-
-This demonstrates **deep understanding of mobile constraints and practical implementation** ✅
+## 5. 🏭 Production Notes / React Implications
+
+- ⚛️ **Hydration:** Đừng render khác nhau giữa server/client chỉ vì đọc `window.innerWidth`. Dùng CSS responsive trước, JS sau mount khi thật sự cần.
+- 📦 **Bundle:** Mobile-first cần giảm JS, không chỉ CSS. Route splitting, defer third-party, tránh ship desktop-only code sớm.
+- 🖼️ **Images:** Set `width/height` hoặc `aspect-ratio` để tránh CLS. Dùng responsive images và modern formats.
+- 👆 **Touch:** Button/link thật tốt hơn div clickable. Giữ hit target đủ lớn và focus state rõ.
+- ♿ **Accessibility:** Không disable zoom, hỗ trợ reduced motion, screen reader, keyboard, text scaling.
+- 🧪 **Testing:** Test iOS Safari thật cho `100vh`, keyboard, safe area. Test Android thật cho back button, keyboard, low-end performance.
+- 🔐 **Security:** Mobile WebView/in-app browsers có behavior khác; auth redirect, cookie, storage và deep link cần test riêng.
+- 🚀 **Performance:** Đo LCP/INP/CLS trên mobile profile. INP thường bị ảnh hưởng bởi long JS tasks và heavy event handlers.
+- 🧱 **Maintainability:** Tạo design tokens cho spacing/breakpoints/touch target thay vì hardcode rải rác.
+- 🧯 **Fallback:** Feature mới như container queries/dynamic viewport units cần fallback hoặc support matrix rõ.
+
+## 6. ⚠️ Common Pitfalls
+
+- ❌ Build desktop trước rồi cố thu nhỏ xuống mobile.
+- ❌ Dùng breakpoint theo device name thay vì theo content/layout.
+- ❌ Tắt zoom bằng `user-scalable=no`.
+- ❌ Touch target quá nhỏ, icon button chỉ 24px nhưng hit area không đủ.
+- ❌ Dựa vào hover để hiện action quan trọng trên mobile.
+- ❌ Dùng `100vh` cũ cho full-screen mobile mà không test iOS Safari.
+- ❌ Không xử lý safe-area cho bottom nav/fixed CTA.
+- ❌ Load ảnh desktop lớn cho mobile.
+- ❌ Ship bundle desktop-heavy cho mobile.
+- ❌ Gesture custom chặn scroll tự nhiên.
+- ❌ Không cleanup event listeners trong React hooks.
+- ❌ Chỉ test bằng Chrome DevTools emulator, không test device thật.
+- ❌ Quên keyboard open/close trong form và checkout flow.
+- ❌ Không đo LCP/INP/CLS trên mobile.
+
+## 7. ✅ Decision Guide or Checklist + câu trả lời ngắn
+
+### Chọn kỹ thuật nào?
+
+| Nhu cầu | Chọn | Trả lời ngắn |
+|---|---|---|
+| Layout responsive cơ bản | Mobile-first CSS + `min-width` queries | Base mobile, enhance dần cho màn hình rộng. |
+| Component phụ thuộc width của container | Container queries | Tốt hơn breakpoint global khi component tái sử dụng nhiều nơi. |
+| Full-screen mobile | `100dvh` + fallback | Tránh bug dynamic address bar của mobile browser. |
+| Notch/bottom home indicator | `env(safe-area-inset-*)` | Cần cho fixed header/footer/bottom nav. |
+| Button/icon touch | `min-width/min-height: 44px` | Giảm bấm nhầm, tốt cho accessibility. |
+| Custom swipe/drag | Pointer Events + `touch-action` | Hỗ trợ mouse/touch/pen và tránh chặn scroll sai. |
+| Product/list dài | Pagination hoặc virtualization | Giảm DOM, memory và render cost. |
+| Ảnh responsive | `srcset`, `sizes`, WebP/AVIF, dimensions | Giảm LCP/CLS và bandwidth. |
+| Code lớn theo route | Dynamic import / route splitting | Mobile không tải JS chưa cần. |
+| Mobile browser bug | Feature detection + real device test | Đừng chỉ UA sniff nếu có thể tránh. |
+
+### Checklist trước khi merge mobile UI
+
+| Câu hỏi | Trả lời ngắn |
+|---|---|
+| Base CSS đã mobile-first chưa? | Nên có mobile layout trước, desktop chỉ là enhancement. |
+| Meta viewport đúng chưa? | Cần `width=device-width, initial-scale=1`; không disable zoom. |
+| Touch targets đủ lớn chưa? | Nên tối thiểu khoảng `44x44px`, có spacing chống bấm nhầm. |
+| Có phụ thuộc hover không? | Action quan trọng phải dùng được bằng tap/focus. |
+| Full-screen có dùng `100dvh` hoặc fallback chưa? | Cần để tránh `100vh` sai trên mobile Safari/Chrome. |
+| Fixed bottom/header có safe-area chưa? | Cần `env(safe-area-inset-*)` cho notch/home indicator. |
+| Ảnh có responsive + dimensions chưa? | Cần `srcset/sizes` và `width/height` hoặc `aspect-ratio`. |
+| JS mobile có quá nặng không? | Kiểm tra bundle, code split và defer third-party. |
+| Gesture có chặn scroll không? | Dùng `touch-action` và test scroll thật. |
+| Form đã test keyboard chưa? | Test focus, viewport resize, sticky CTA và submit trên device. |
+| Đã test real iOS/Android chưa? | Cần ít nhất một iPhone Safari và một Android Chrome thật. |
+| LCP/INP/CLS mobile ổn chưa? | Đo bằng Lighthouse/WebPageTest/field data nếu có. |
+
+## 8. 🗣️ Short Interview Answer
+
+Theo em, mobile-first không chỉ là viết media query từ nhỏ lên lớn. Nó là cách build UI từ constraint thật của mobile: màn hình nhỏ, touch input, network chậm, CPU yếu, browser viewport thay đổi và nhiều quirks trên iOS/Android. Em thường viết CSS base cho mobile trước, dùng `min-width` hoặc container queries để enhance, giữ touch target đủ lớn và không phụ thuộc hover cho action quan trọng.
+
+Về performance, em ưu tiên giảm JS và ảnh cho mobile: responsive images, lazy loading, route-level code splitting, defer third-party và đo LCP/INP/CLS trên mobile profile. Với device quirks, em chú ý `100vh` trên iOS, safe-area cho notch, input zoom, keyboard resize và Android back button. Em không chỉ tin emulator; flow quan trọng như login, checkout, form và sticky CTA phải test trên thiết bị thật.
+
+## 9. 🧾 Ghi nhớ nhanh
+
+- Mobile-first = base mobile, enhance desktop.
+- Breakpoint nên theo content/layout, không theo tên device.
+- Không disable zoom; đây là accessibility issue.
+- Touch target nên khoảng `44x44px`.
+- Hover không đáng tin trên touch devices.
+- Dùng `100dvh` cho full-screen mobile khi support cho phép.
+- Safe area cần cho notch/home indicator.
+- Ảnh và JS thường là bottleneck lớn nhất trên mobile.
+- Dùng Pointer Events cho gesture hiện đại.
+- `touch-action` giúp tránh gesture chặn scroll sai.
+- iOS Safari và Android Chrome phải test thật.
+- Đo LCP/INP/CLS trên mobile, không đo mỗi desktop.
+
+## 10. 📖 Giải thích các thuật ngữ trong topic
+
+- `Mobile-first`: Cách thiết kế/implement từ mobile constraint trước, rồi mở rộng cho màn hình lớn.
+- `Responsive design`: UI thích ứng với kích thước viewport/container khác nhau.
+- `Breakpoint`: Ngưỡng width/container size nơi layout thay đổi.
+- `Media query`: CSS rule áp dụng theo điều kiện như width, orientation, pointer.
+- `Container query`: CSS rule áp dụng theo kích thước container của component.
+- `Viewport`: Vùng hiển thị trang web trong browser.
+- `Dynamic viewport`: Viewport thay đổi khi address bar/keyboard show-hide trên mobile.
+- `100vh`: 100% viewport height kiểu cũ, có thể sai trên mobile browser.
+- `100dvh`: Dynamic viewport height, phản ánh viewport hiện tại tốt hơn.
+- `Safe area`: Vùng tránh notch, rounded corners, home indicator.
+- `Touch target`: Vùng có thể chạm để kích hoạt control.
+- `Pointer Events`: Event model thống nhất cho mouse, touch và pen.
+- `Touch Events`: Event model touch-specific cũ hơn.
+- `Gesture`: Tương tác như swipe, pinch, long press, drag.
+- `touch-action`: CSS khai báo gesture nào browser được xử lý mặc định.
+- `Lazy loading`: Trì hoãn tải tài nguyên đến khi gần cần dùng.
+- `Code splitting`: Chia bundle để chỉ tải phần code cần thiết.
+- `LCP`: Largest Contentful Paint, đo tốc độ nội dung chính hiển thị.
+- `INP`: Interaction to Next Paint, đo độ phản hồi sau tương tác.
+- `CLS`: Cumulative Layout Shift, đo layout shift ngoài ý muốn.
+- `PWA`: Progressive Web App, web app có thể cài đặt/offline/tích hợp native-like.
+- `Remote debugging`: Debug web trên device thật từ desktop DevTools.

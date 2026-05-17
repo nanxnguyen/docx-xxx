@@ -1,1176 +1,585 @@
-# 📈 Q35: Độ Phức Tạp Thuật Toán (Big O) - Map, Set, Array, Object
+# 📈 Topic 23: Big O với `Map`, `Set`, `Array`, `Object`
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## 1. ⭐ Senior/Staff Summary
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+`Big O` mô tả chi phí của thuật toán khi dữ liệu tăng lên. Trong frontend, nó quyết định cách ta xử lý search, filter, dedupe, table lớn, state normalization, cache, permission checks và render performance.
 
-**"Big O mô tả performance khi data scale. Map/Set = O(1) average (hash table), Array = O(1) index access nhưng O(n) search, Object = O(1) property access."**
+Ý chính cần nói trong phỏng vấn:
 
-**🔑 Performance Comparison:**
+- `Map`/`Set`: `get`, `set`, `has`, `delete` là **O(1) average** nhờ hash table, nhưng có worst case khi collision nhiều.
+- `Object`: property access thường **O(1) average**, hợp cho plain data/JSON/config, nhưng key chỉ là `string`/`symbol` và có rủi ro prototype.
+- `Array`: truy cập theo index là **O(1)**, nhưng search bằng `find`, `includes`, `indexOf` là **O(n)**; insert/delete đầu hoặc giữa thường **O(n)**.
+- Performance tốt không chỉ là chọn cấu trúc nhanh nhất, mà là chọn đúng theo **access pattern**, dữ liệu lớn cỡ nào, có qua JSON/API boundary không, và React state có update immutable không.
 
-| **Operation** | **Map/Set**     | **Object**       | **Array**                       |
-| ------------- | --------------- | ---------------- | ------------------------------- |
-| **Access**    | O(1) avg        | O(1)             | O(1) - index, O(n) - search     |
-| **Insert**    | O(1) avg        | O(1)             | O(1) - end, O(n) - start/middle |
-| **Delete**    | O(1) avg        | O(1)             | O(1) - end, O(n) - start/middle |
-| **Search**    | O(1) - `.has()` | O(n) - loop keys | O(n) - `.indexOf()`             |
-| **Iterate**   | O(n)            | O(n)             | O(n)                            |
+### 🔑 Performance Comparison
 
-**🔑 Chi Tiết Từng Cấu Trúc:**
+| Operation | `Array` | `Object` | `Map` | `Set` |
+|---|---:|---:|---:|---:|
+| Access by index/key | `arr[i]`: O(1) | O(1) average | O(1) average | N/A |
+| Search by value | O(n) | O(n) | O(n) | membership `.has()`: O(1) average |
+| Insert | cuối: O(1) amortized, đầu/giữa: O(n) | O(1) average | O(1) average | O(1) average |
+| Delete | cuối: O(1), đầu/giữa: O(n) | O(1) average, có thể deopt | O(1) average | O(1) average |
+| Iterate | O(n) | O(n) | O(n) | O(n) |
+| Size | `.length`: O(1) | `Object.keys(obj).length`: O(n) | `.size`: O(1) | `.size`: O(1) |
 
-**1. Map/Set - Hash Table (O(1) average):**
+⚠️ Câu senior nên dùng: `Map`/`Set` là **O(1) trung bình**, không phải “luôn O(1)”. Collision, resize, memory overhead và engine implementation vẫn ảnh hưởng trong hot path.
 
-- **Internal**: Hash function → bucket index → direct access
-- **Collision**: Cùng hash → linked list/tree trong bucket
-- **Average O(1)**: Hash function phân bố đều → ít collision
-- **Worst O(n)**: Tất cả keys cùng hash (rất hiếm)
+## 2. 🧠 Key Mental Model or Key Points
 
-**2. Object - Similar Map (O(1) average):**
+- `Array` tối ưu cho **ordered list** và render UI bằng `.map()`. Nếu lookup theo `id` lặp lại nhiều lần, scan array sẽ tốn O(n) mỗi lần.
+- `Map` tối ưu cho **dynamic key-value lookup**: cache, index theo id, composite key, key là object/function/Date.
+- `Set` tối ưu cho **membership và uniqueness**: selected IDs, visited IDs, dedupe primitive values, permission checks.
+- `Object` tối ưu cho **plain record**: API response, DTO, config, component props, JSON serialization.
+- Big O nói về tốc độ tăng trưởng, không thay thế profiling. Với data nhỏ, readability thường quan trọng hơn micro-optimization.
+- Trong React, `Map`, `Set`, `Array`, `Object` đều phải update immutable nếu nằm trong state, vì React dựa vào `reference equality`.
 
-- **Keys**: Chỉ strings/symbols (Map dùng any type)
-- **Property access**: `obj.prop` hoặc `obj['prop']` → O(1)
-- **Search value**: Phải loop `Object.values()` → O(n)
-- **Prototype chain**: Lookup theo chain nếu không có own property
+## 3. 📚 Main Concepts
 
-**3. Array - Contiguous Memory (mixed):**
+### 3.1. Big O là gì?
 
-- **Index access**: `arr[5]` → O(1) (direct memory offset)
-- **Search**: `.indexOf()`, `.includes()` → **O(n)** (linear scan)
-- **Push/pop** (end): O(1) - không shift
-- **Unshift/shift** (start): **O(n)** - phải shift tất cả elements
-- **Splice** (middle): **O(n)** - shift elements sau insertion point
+`Big O` mô tả xu hướng tăng chi phí khi input lớn lên.
 
-**⚠️ Lỗi Thường Gặp:**
+- `O(1)`: gần như không đổi theo số lượng phần tử.
+- `O(n)`: tăng tuyến tính theo số phần tử.
+- `O(n log n)`: thường gặp ở sort hiệu quả.
+- `O(n²)`: thường xuất hiện khi loop lồng nhau hoặc search tuyến tính bên trong loop.
 
-- Dùng `array.indexOf()` trong loop → O(n²), dùng Set cho O(n)
-- `array.unshift()` nhiều lần → O(n²), dùng `.push()` rồi `.reverse()`
-- Nghĩ Object lookup **luôn O(1)** → Sai! Prototype chain có thể O(k) với k = chain depth
-- Dùng `delete obj.key` trong hot path → deoptimize V8, dùng `obj.key = undefined` thay vì
+Ví dụ dễ thấy:
 
-**💡 Kiến Thức Senior:**
+```ts
+const users = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
-- **Map vs Object performance**: Map nhanh hơn cho **frequent add/delete** (Object shape changes → deoptimize)
-- **Set for uniqueness**: `[...new Set(arr)]` dedup = O(n), `arr.filter((v,i,a) => a.indexOf(v)===i)` = O(n²)
-- **Sparse arrays**: `arr[1000] = 1` tạo holes → kiểu dữ liệu thay đổi (dictionary mode), chậm hơn
-- **WeakMap/WeakSet**: O(1) nhưng không prevent GC, không iterable
-
-**Trả lời:\*\***
-
-- Khái niệm: Big O notation mô tả hiệu năng thuật toán khi data tăng lên; quan trọng để chọn cấu trúc dữ liệu phù hợp.
-- Map/Set: O(1) average cho get/set/delete nhờ hash table; O(n) worst case khi hash collision nhiều (rất hiếm).
-- Object: O(1) average cho property access; tương tự Map nhưng chỉ key string/symbol.
-- Array: O(1) index access; O(n) search (indexOf, includes); O(n) insert/delete đầu/giữa (phải shift elements).
-
-**Hoạt động Chi Tiết:**
-
-**Map/Set - Tại sao O(1)?**
-
-1. **Hash Function**: Key được hash thành index (0-buckets.length)
-2. **Direct Access**: Truy cập bucket qua index → O(1)
-3. **Collision Handling**: Cùng hash → lưu linked list/tree trong bucket
-4. **Average Case**: Ít collision → O(1); hash tốt phân bố đều
-5. **Worst Case**: Nhiều collision → O(n) (tất cả key cùng bucket)
-
-**Internal Structure:**
-
+users[0]; // O(1)
+users.find((user) => user.id === 3); // O(n)
 ```
+
+### 3.2. `Array`: tốt cho thứ tự, không tốt cho lookup lặp lại
+
+`Array` phù hợp nhất cho list UI vì giữ thứ tự và có API tiện như `.map()`, `.filter()`, `.reduce()`.
+
+| Operation | Big O | Ghi chú |
+|---|---:|---|
+| `arr[i]` | O(1) | Truy cập index trực tiếp |
+| `push`, `pop` | O(1) amortized | Có lúc resize nội bộ, nhưng trung bình vẫn O(1) |
+| `find`, `includes`, `indexOf` | O(n) | Duyệt tuyến tính |
+| `shift`, `unshift` | O(n) | Phải dời phần tử |
+| `splice` đầu/giữa | O(n) | Phải dời phần sau điểm insert/delete |
+| `sort` | thường O(n log n) | Tùy engine, comparator và dữ liệu |
+
+⚠️ `arr[1000] = value` trên array nhỏ có thể tạo sparse array/hole. Engine có thể chuyển representation từ packed sang holey/dictionary mode, làm nhiều thao tác chậm hơn.
+
+### 3.3. `Map`: dynamic dictionary rõ nghĩa hơn `Object`
+
+`Map` lưu key-value, key có thể là primitive hoặc object reference.
+
+```ts
+type User = { id: number; name: string };
+
+const usersById = new Map<number, User>();
+
+usersById.set(42, { id: 42, name: "Ada" }); // O(1) average
+usersById.get(42); // O(1) average
+usersById.has(42); // O(1) average
+usersById.delete(42); // O(1) average
+```
+
+Dùng `Map` khi:
+
+- Key không chỉ là `string`/`symbol`.
+- Thêm/xóa thường xuyên.
+- Cần `.size` O(1).
+- Cần giữ insertion order khi iterate.
+- Làm cache, lookup table, normalized index nội bộ.
+
+⚠️ `Map` không JSON-serializable trực tiếp:
+
+```ts
+const serialized = JSON.stringify([...usersById]);
+const restored = new Map<number, User>(JSON.parse(serialized));
+```
+
+Nếu dùng `Object.fromEntries(map)`, key number sẽ thành string. Chỉ làm vậy khi boundary chấp nhận key string.
+
+### 3.4. `Set`: membership và uniqueness
+
+`Set` lưu các giá trị unique và rất hợp cho membership check.
+
+```ts
+const selectedIds = new Set<number>([1, 2, 3]);
+
+selectedIds.has(2); // O(1) average
+selectedIds.add(4); // O(1) average
+selectedIds.delete(1); // O(1) average
+```
+
+Use cases thực tế:
+
+- Selected row IDs trong table.
+- Visited IDs khi traverse tree/graph.
+- Unique tags/search results.
+- Permission/feature flag checks.
+- Dedupe primitive values.
+
+⚠️ `Set` so sánh object bằng reference, không deep compare:
+
+```ts
+const set = new Set([{ id: 1 }]);
+
+set.has({ id: 1 }); // false
+```
+
+Nếu cần unique theo `id`, dùng `Set<number>` hoặc `Map<number, Item>`.
+
+### 3.5. `Object`: plain data, JSON và fixed shape
+
+`Object` phù hợp cho API response, config, component props, DTO và dictionary có key string.
+
+```ts
+type User = { id: number; name: string };
+
+const byId: Record<string, User> = {
+  "42": { id: 42, name: "Ada" },
+};
+
+byId["42"]; // O(1) average
+```
+
+Điểm cần nhớ:
+
+- Object key là `string` hoặc `symbol`; number key bị stringify.
+- `Object.keys(obj).length` là O(n), không giống `map.size`.
+- Lookup có thể đi qua prototype chain nếu property không phải own property.
+- `delete obj.key` trong hot path có thể làm object shape thay đổi và khiến engine deopt.
+- Dictionary nhận key từ user input cần tránh prototype pollution.
+
+An toàn hơn khi key đến từ bên ngoài:
+
+```ts
+const safeDict: Record<string, User> = Object.create(null);
+```
+
+Hoặc dùng `Map` để tránh đụng các key như `__proto__`, `constructor`, `toString`.
+
+### 3.6. Map/Set: tại sao thường O(1)?
+
+Mental model:
+
+```txt
+key/value -> hash -> bucket index -> entry
+```
+
+**Map/Set - tại sao O(1)?**
+
+1. **Hash Function:** key được chuyển thành hash rồi map về bucket index, thường theo dạng `hash % buckets.length`.
+2. **Direct Access:** engine truy cập thẳng bucket theo index, nên bước tìm bucket là O(1).
+3. **Collision Handling:** nếu nhiều key rơi vào cùng bucket, engine lưu nhiều entry trong bucket đó, ví dụ collision chain hoặc cấu trúc tương đương.
+4. **Average Case:** hash phân bố đều, ít collision, mỗi bucket ngắn nên `get`, `set`, `has`, `delete` gần O(1).
+5. **Worst Case:** nếu quá nhiều key cùng rơi vào một bucket, lookup phải duyệt nhiều entry và có thể tiến tới O(n).
+
+**Internal Structure minh họa:**
+
+```txt
 Map internal:
 buckets: [
   0: null,
-  1: { key: 'a', value: 1, next: { key: 'x', value: 2 } }, // collision chain
-  2: { key: 'b', value: 3 },
+  1: { key: "a", value: 1, next: { key: "x", value: 2 } },
+  2: { key: "b", value: 3 },
   ...
 ]
 
-Hash('a') % buckets.length = 1 → bucket[1]
-Hash('x') % buckets.length = 1 → collision → chain với 'a'
+hash("a") % buckets.length = 1 -> bucket[1]
+hash("x") % buckets.length = 1 -> collision -> chain with "a"
 ```
 
-**✅ Ưu điểm:**
+💡 Đây là mô hình học để hiểu Big O, không phải mô tả chính xác 100% implementation của mọi JavaScript engine. V8, SpiderMonkey và JavaScriptCore có thể dùng layout và chiến lược collision khác nhau, nhưng ý chính vẫn là lookup nhanh nhờ hash table, còn collision làm chi phí tăng.
 
-**🗺️ Map/Set:**
+### 3.7. Ưu và nhược điểm
 
-- ⚡ **O(1) thao tác**: Get, set, delete cực nhanh nhờ hash table
-- 🔑 **Key linh hoạt**: Key có thể là bất kỳ type (object, function, number, string...)
-- 📋 **Maintain insertion order**: Duyệt theo thứ tự thêm vào (quan trọng cho UI rendering)
-- 📏 **Size property built-in**: `map.size` - không cần `Object.keys().length`
-- 🔄 **Iterate dễ dàng**: `.forEach()`, `for...of` hoặc spread `[...map]`
+**`Map` / `Set`**
 
-**📦 Object:**
+✅ Ưu điểm:
 
-- ✍️ **Syntax ngắn gọn**: Literal syntax `{ key: value }` - viết nhanh
-- 📡 **JSON serializable**: `JSON.stringify()` trực tiếp, dễ gửi qua API
-- 🔗 **Prototype chain**: Kế thừa methods từ prototype (toString, hasOwnProperty...)
-- 🏃 **V8 optimized**: Engine tối ưu cho object shapes cố định
+- O(1) average cho lookup/membership.
+- Key linh hoạt hơn object.
+- `.size` O(1).
+- Iteration giữ insertion order.
+- Hợp cho frequent add/delete và cache nội bộ.
 
-**📚 Array:**
+⚠️ Nhược điểm:
 
-- 🎯 **O(1) index access**: Truy cập `arr[i]` cực nhanh, nhanh nhất trong tất cả
-- 🛠️ **Nhiều built-in methods**: map, filter, reduce, sort, slice... rất tiện
-- 📋 **Maintain order**: Giữ thứ tự phần tử, quan trọng cho list data
-- 🔄 **Stack/Queue operations**: push/pop (O(1)) cho stack, shift/unshift cho queue
+- Không serialize JSON trực tiếp.
+- Tốn memory hơn array/object đơn giản.
+- Syntax dài hơn object literal.
+- Debug/inspect đôi khi kém trực quan hơn plain object.
 
-**❌ Nhược điểm:**
+**`Object`**
 
-**🗺️ Map/Set:**
+✅ Ưu điểm:
 
-- 📝 **Syntax dài hơn**: `.set()`, `.get()` thay vì `obj.key` - verbose hơn
-- 🚫 **Không serialize JSON**: Phải convert: `JSON.stringify([...map])` hoặc `Array.from(map)`
-- 💾 **Tốn memory hơn**: Hash table overhead ~2x so với Object (buckets + pointers)
-- 🔍 **Debugging khó hơn**: DevTools preview không rõ bằng Object literal
+- Literal syntax ngắn.
+- JSON serialization tự nhiên.
+- Hợp với fixed shape data, props, API payload.
+- Engine tối ưu tốt cho object shape ổn định.
 
-**📦 Object:**
+⚠️ Nhược điểm:
 
-- 🔤 **Chỉ string/symbol keys**: Không dùng được object/number làm key trực tiếp
-- 📏 **Không có size built-in**: Phải dùng `Object.keys(obj).length` - O(n)
-- ⚠️ **Prototype pollution risk**: Thêm `__proto__` có thể gây security issue
-- 🐌 **Delete chậm**: `delete obj.key` deoptimize V8 shape, gây chậm
-- 🔗 **Prototype chain overhead**: Lookup property phải traverse chain
+- Key giới hạn `string`/`symbol`.
+- Không có `.size` O(1).
+- Có prototype chain và prototype pollution risk.
+- Add/delete dynamic nhiều có thể làm mất tối ưu engine.
 
-**📚 Array:**
+**`Array`**
 
-- 🐢 **O(n) search**: `.indexOf()`, `.includes()` phải duyệt tuần tự - chậm với data lớn
-- 🐌 **O(n) insert/delete đầu/giữa**: `unshift()`, `shift()`, `splice()` phải dịch chuyển elements
-- 💾 **Memory fragmentation**: Sparse array `arr[1000] = 1` tạo holes, chuyển sang dictionary mode
-- 🔢 **Type changes**: Từ packed → holey → dictionary mode khi thay đổi cấu trúc
+✅ Ưu điểm:
 
-**💡 Chú Thích - Khi Nào Dùng Gì:**
+- Giữ order tự nhiên.
+- API mạnh cho transform/render list.
+- Index access O(1).
+- `push`/`pop` O(1) amortized.
 
-**🗺️ Dùng Map khi:**
+⚠️ Nhược điểm:
 
-- 🔑 Cần key không phải string (object, number, Date, function...)
-- ➕ Thao tác thêm/xóa thường xuyên (Map nhanh hơn Object khi shape changes)
-- 📏 Cần track size real-time: `map.size` thay vì `Object.keys().length`
-- 🔄 Cần iterate theo thứ tự insertion
-- 💼 **Use case**: Cache (key = object), lookup table với composite keys
+- Search O(n).
+- Insert/delete đầu/giữa O(n).
+- `includes` trong loop dễ thành O(n²).
+- Sparse/holey arrays có thể làm engine xử lý chậm hơn.
 
-**📦 Dùng Object khi:**
+### 3.8. WeakMap / WeakSet
 
-- 📝 Config/options đơn giản, ít thay đổi
-- 📡 Cần serialize JSON để gửi API: `JSON.stringify(obj)`
-- 🔤 Keys chỉ là string/symbol
-- 🏃 Performance critical với V8 optimization (fixed shape)
-- 💼 **Use case**: API response, component props, settings
+`WeakMap` và `WeakSet` dùng object làm key/value yếu, không giữ object khỏi garbage collection.
 
-**📚 Dùng Array khi:**
-
-- 📋 Cần maintain order và iterate nhiều: `map()`, `filter()`, `reduce()`
-- 🎯 Truy cập theo index thường xuyên: `arr[i]`
-- 📊 List data homogeneous (cùng type): users[], products[]
-- 🔄 Stack/queue operations: push/pop
-- 💼 **Use case**: Danh sách items, time series data, UI lists
-
-**🎯 Dùng Set khi:**
-
-- ✨ Loại duplicate O(1): `[...new Set(arr)]`
-- ✅ Check existence nhanh: `set.has(item)` thay vì `arr.includes(item)`
-- 🔢 Quản lý unique IDs, tags
-- 🚀 Union/intersection operations: `new Set([...setA, ...setB])`
-- 💼 **Use case**: Unique tags, visited IDs, deduplication
-
-**Code Example:**
+Dùng khi cần gắn metadata với object mà không muốn tạo memory leak:
 
 ```ts
-// ============================================
-// 📊 BẢNG SO SÁNH ĐỘ PHỨC TẠP BIG O
-// ============================================
+const meta = new WeakMap<object, { measuredAt: number }>();
 
-/**
- * 📋 BẢNG THAM KHẢO NHANH:
- *
- * Thao tác          | Array      | Object     | Map        | Set
- * ------------------|------------|------------|------------|------------
- * Truy cập          | O(1)       | O(1)       | O(1)       | N/A
- * Tìm kiếm giá trị  | O(n)       | O(n)       | O(n)       | O(1)
- * Thêm vào cuối     | O(1)*      | O(1)       | O(1)       | O(1)
- * Thêm vào đầu      | O(n)       | O(1)       | O(1)       | O(1)
- * Xóa               | O(n)       | O(1)       | O(1)       | O(1)
- * Duyệt qua         | O(n)       | O(n)       | O(n)       | O(n)
- *
- * 💡 GIẢI THÍCH CHI TIẾT:
- *
- * *Array push() có độ phức tạp trung bình O(1):
- *   - Thêm vào cuối mảng: O(1) - chỉ cần ghi vào vị trí cuối
- *   - Khi hết capacity: Tự động resize (double size) → O(n) nhưng hiếm xảy ra
- *   - Trung bình: O(1) vì resize chỉ xảy ra log(n) lần trong n lần push
- *
- * Array tìm kiếm O(n):
- *   - Phải duyệt từ đầu đến cuối để tìm giá trị
- *   - Worst case: Phần tử ở cuối hoặc không tồn tại → duyệt hết n phần tử
- *
- * Set tìm kiếm O(1):
- *   - Dùng hash table → hash value → tìm bucket → O(1) trung bình
- *   - Nhanh hơn Array.includes() rất nhiều với data lớn
- */
+const node = document.createElement("div");
+meta.set(node, { measuredAt: Date.now() });
+```
 
-// ============================================
-// 1️⃣ MAP - TRUY CẬP/THÊM/XÓA O(1)
-// ============================================
+Điểm cần nhớ:
 
-// ============================================
-// 🗺️ MAP - TRUY CẬP/THÊM/XÓA O(1)
-// ============================================
+- Key của `WeakMap` phải là object.
+- Không iterable.
+- Không có `.size`.
+- Hợp cho cache metadata, DOM node metadata, private data theo object lifecycle.
 
-// 🗺️ Tạo Map để lưu trữ user với ID là key
-// 💡 Map<number, string> = key là number, value là string
-const userMap = new Map<number, string>();
+## 4. 🧪 Practical TypeScript/JavaScript Examples
 
-// ➕ Thêm 1 triệu users - O(1) cho mỗi lần thêm
-// 💡 Cách hoạt động chi tiết:
-//   1. hash(key) → tính hash code của key (VD: hash(500000) = 12345)
-//   2. bucket_index = hash % buckets.length → tìm bucket (VD: 12345 % 16 = 1)
-//   3. Chèn entry vào bucket[1] → O(1) trung bình
-console.time('Map insert 1M');
-for (let i = 0; i < 1_000_000; i++) {
-  userMap.set(i, `User${i}`);
-  // ⚡ O(1) mỗi lần - siêu nhanh!
-  // 💡 Không cần duyệt qua các phần tử khác
-  // 💡 Hash function tự động tìm đúng bucket
+### 4.1. Lookup user theo id: array scan vs normalized map
+
+❌ O(n) mỗi lần tìm:
+
+```ts
+type User = { id: number; name: string; role: "admin" | "user" };
+
+function findUserName(users: User[], id: number): string | undefined {
+  return users.find((user) => user.id === id)?.name;
 }
-console.timeEnd('Map insert 1M');
-// ⏱️ ~100-200ms cho 1 triệu lần insert
-// 💡 So sánh: Array.push() ~50-100ms (nhanh hơn vì memory liên tục)
-// 💡 Nhưng Map.get() nhanh hơn Array.indexOf() rất nhiều!
+```
 
-// 🔍 Truy cập - O(1) nhờ hash table
-// 💡 Cách hoạt động chi tiết:
-//   1. hash(500000) → hash code
-//   2. bucket_index = hash % buckets.length → tìm bucket
-//   3. Truy cập trực tiếp bucket[index] → O(1)
-//   4. Nếu có collision → duyệt chain (thường rất ngắn) → vẫn O(1) trung bình
-console.time('Map get');
-const user = userMap.get(500_000);
-// ⚡ O(1) - tìm ngay lập tức
-// 💡 Không cần duyệt qua 500,000 phần tử như Array.indexOf()
-console.timeEnd('Map get');
-// ⏱️ ~0.001ms (cực nhanh!)
-// 💡 So sánh: Array.indexOf() ~5-10ms cho 1 triệu phần tử
+✅ Build index một lần O(n), lookup O(1) average:
 
-// 🗑️ Xóa - O(1) tương tự get
-// 💡 Cách hoạt động:
-//   1. hash(key) → tìm bucket
-//   2. Tìm entry trong bucket (hoặc chain)
-//   3. Xóa entry → O(1) trung bình
-console.time('Map delete');
-userMap.delete(500_000);
-// ⚡ O(1) - xóa ngay lập tức
-// 💡 Không cần shift các phần tử khác như Array.splice()
-console.timeEnd('Map delete');
-// ⏱️ ~0.001ms
-
-// ============================================
-// ✅ SET - THÊM/KIỂM TRA/XÓA O(1)
-// ============================================
-
-// 🎯 Tạo Set để lưu các ID duy nhất (không trùng lặp)
-// 💡 Set<number> = chỉ lưu các giá trị duy nhất (tự động loại trùng)
-const uniqueIds = new Set<number>();
-
-// ➕ Thêm vào Set - O(1) cho mỗi lần
-// 💡 Cách hoạt động chi tiết:
-//   1. hash(value) → tính hash code của giá trị
-//   2. bucket_index = hash % buckets.length → tìm bucket
-//   3. Kiểm tra bucket xem đã có value chưa
-//   4. Nếu chưa có → chèn vào → O(1)
-//   5. Nếu đã có → bỏ qua (tự động loại trùng)
-console.time('Set add 1M');
-for (let i = 0; i < 1_000_000; i++) {
-  uniqueIds.add(i);
-  // ⚡ O(1) - tự động loại bỏ trùng lặp
-  // 💡 Nếu add(5) 2 lần → chỉ lưu 1 lần
-  // 💡 Không cần check thủ công như Array.includes()
+```ts
+function indexUsers(users: User[]): Map<number, User> {
+  return new Map(users.map((user) => [user.id, user]));
 }
-console.timeEnd('Set add 1M');
-// ⏱️ ~100-200ms cho 1 triệu lần add
-// 💡 Tương tự Map về performance
 
-// ✅ Kiểm tra phần tử tồn tại - O(1)
-// 💡 Cách hoạt động:
-//   1. hash(value) → hash code
-//   2. bucket_index = hash % buckets.length
-//   3. Check bucket có chứa value không → O(1)
-console.time('Set has');
-const exists = uniqueIds.has(500_000);
-// ⚡ O(1) - check cực nhanh
-// 💡 So sánh: Array.includes(500000) → O(n) phải duyệt toàn bộ
-console.timeEnd('Set has');
-// ⏱️ ~0.001ms (cực nhanh!)
-// 💡 Array.includes() ~5-10ms cho 1 triệu phần tử
+const usersById = indexUsers(users);
+const name = usersById.get(42)?.name;
+```
 
-// 🗑️ Xóa phần tử - O(1)
-uniqueIds.delete(500_000);
-// ⚡ O(1) - xóa ngay lập tức
-// 💡 Tương tự Map.delete()
+Tradeoff: build index tốn thêm memory. Đáng làm khi lookup lặp lại nhiều lần, ví dụ table 10k rows, joining API responses, permission checks.
 
-// 💡 Use case thực tế: Loại bỏ phần tử trùng lặp - O(n)
-const arrWithDupes = [1, 2, 2, 3, 3, 3, 4];
-// 📦 Mảng có trùng lặp: số 2 xuất hiện 2 lần, số 3 xuất hiện 3 lần
+### 4.2. Tránh O(n²) khi filter theo selected IDs
 
-const unique = [...new Set(arrWithDupes)];
-// ✨ O(n) duyệt + O(1) add = O(n) tổng
-// 💡 Cách hoạt động:
-//   1. new Set(arrWithDupes) → duyệt mảng, add vào Set → O(n)
-//   2. Set tự động loại trùng → chỉ giữ lại giá trị duy nhất
-//   3. [...set] → convert Set về Array → O(n)
-//   4. Tổng: O(n) + O(n) = O(n) - NHANH!
+❌ `includes` bên trong `filter` có thể thành O(n * m):
 
-console.log(unique);
-// 📊 [1, 2, 3, 4] - chỉ giữ lại giá trị duy nhất
+```ts
+const selectedIds = [1, 5, 9, 42];
+const selectedUsers = users.filter((user) => selectedIds.includes(user.id));
+```
 
-// 💡 So sánh với cách thủ công (CHẬM):
-// ❌ Cách chậm: O(n²)
-// const unique: number[] = [];
-// for (const item of arrWithDupes) {
-//   if (!unique.includes(item)) { // O(n) mỗi lần check
-//     unique.push(item);
-//   }
-// } // Tổng: O(n²) - RẤT CHẬM với data lớn!
-// ============================================
-// 📦 OBJECT - TRUY CẬP PROPERTY O(1)
-// ============================================
+✅ Convert sang `Set`:
 
-// 📦 Tạo Object rỗng để lưu users (key phải là string)
-// 💡 Record<string, string> = object với key string, value string
-// ⚠️ Object chỉ chấp nhận string/symbol làm key (không như Map)
-const userObj: Record<string, string> = {};
+```ts
+const selectedIdSet = new Set(selectedIds);
+const selectedUsers = users.filter((user) => selectedIdSet.has(user.id));
+```
 
-// ➕ Thêm property - O(1) cho mỗi lần
-// 💡 Cách hoạt động:
-//   1. Hash key (string) → hash code
-//   2. Tìm bucket trong internal hash table của Object
-//   3. Chèn property vào bucket → O(1)
-// 💡 Tương tự Map nhưng chỉ dùng được string/symbol keys
-console.time('Object insert 1M');
-for (let i = 0; i < 1_000_000; i++) {
-  userObj[`user${i}`] = `User${i}`;
-  // ⚡ O(1) - tương tự Map.set()
-  // 💡 Syntax ngắn gọn hơn Map: obj.key thay vì map.set(key, value)
+### 4.3. Dedupe primitive và object
+
+✅ Dedupe primitive values:
+
+```ts
+const tags = ["react", "next", "react", "security"];
+const uniqueTags = [...new Set(tags)];
+```
+
+❌ `Set<object>` không dedupe theo nội dung:
+
+```ts
+const items = [{ id: 1 }, { id: 1 }];
+const unique = [...new Set(items)];
+
+console.log(unique.length); // 2
+```
+
+✅ Dedupe object theo `id`:
+
+```ts
+type Product = { id: string; name: string };
+
+function uniqueByLastId(products: Product[]): Product[] {
+  return [...new Map(products.map((product) => [product.id, product])).values()];
 }
-console.timeEnd('Object insert 1M');
-// ⏱️ ~150-250ms (chậm hơn Map một chút)
-// 💡 Lý do: V8 engine optimize Object cho fixed shape (cấu trúc cố định)
-// 💡 Khi thêm/xóa nhiều → shape changes → deoptimize → chậm hơn Map
+```
 
-// 🔍 Truy cập property - O(1)
-// 💡 Cách hoạt động:
-//   1. Hash key → hash code
-//   2. Tìm bucket → O(1)
-//   3. Nếu không tìm thấy trong own properties → traverse prototype chain
-console.time('Object access');
-const objUser = userObj['user500000'];
-// ⚡ O(1) - truy cập trực tiếp
-// 💡 Nhanh nhất khi property là own property (không phải từ prototype)
-console.timeEnd('Object access');
-// ⏱️ ~0.001ms (cực nhanh, tương tự Map)
+Giữ item đầu tiên:
 
-// 🗑️ Xóa property - O(1) nhưng có thể deoptimize V8
-delete userObj['user500000'];
-// ⚡ O(1) - xóa ngay lập tức
-// ⚠️ LƯU Ý: delete có thể làm chậm V8 engine!
-// 💡 Lý do: delete thay đổi object shape → V8 phải reoptimize
-// ✅ TỐT HƠN: userObj['user500000'] = undefined (giữ shape, chỉ set undefined)
+```ts
+function uniqueByFirstId(products: Product[]): Product[] {
+  const seen = new Set<string>();
+  const result: Product[] = [];
 
-// ⚠️ LƯU Ý: Prototype chain có thể làm chậm!
-// 💡 O(1) nếu là own property (property trực tiếp của object)
-// 💡 O(k) nếu phải tìm trong prototype chain (k = độ sâu chain)
-//
-// Ví dụ:
-// const obj = {};
-// obj.prop = 'value'; // ✅ Own property → O(1)
-//
-// const parent = { inherited: 'value' };
-// const child = Object.create(parent);
-// child.inherited; // ⚠️ Phải traverse prototype chain → O(k) với k = 1
-// ============================================
-// 📚 ARRAY - ĐỘ PHỨC TẠP HỖN HỢP
-// ============================================
-
-// 📚 Tạo mảng rỗng
-// 💡 Array lưu các phần tử trong memory liên tục (contiguous memory)
-// 💡 Mỗi phần tử chiếm cùng số bytes → tính địa chỉ nhanh
-const arr: number[] = [];
-
-// ➕ Push (thêm vào cuối) - O(1) trung bình
-// 💡 Cách hoạt động:
-//   1. Ghi giá trị vào vị trí cuối cùng → O(1)
-//   2. Tăng length lên 1 → O(1)
-//   3. Nếu hết capacity → resize (double size) → O(n) nhưng hiếm
-//   4. Trung bình: O(1) vì resize chỉ xảy ra log(n) lần
-console.time('Array push 1M');
-for (let i = 0; i < 1_000_000; i++) {
-  arr.push(i);
-  // ⚡ O(1) trung bình - cực nhanh
-  // 💡 Memory liên tục → cache-friendly → CPU đọc nhanh
-}
-console.timeEnd('Array push 1M');
-// ⏱️ ~50-100ms (NHANH NHẤT vì bộ nhớ liên tục)
-// 💡 Nhanh hơn Map/Set vì không cần hash function
-
-// 🔍 Truy cập theo index - O(1) siêu nhanh!
-// 💡 Cách hoạt động:
-//   1. Tính địa chỉ memory: address = base_address + (index × element_size)
-//   2. Truy cập trực tiếp memory tại địa chỉ đó → O(1)
-// 💡 Không cần hash, không cần duyệt → nhanh nhất!
-console.time('Array access');
-const val = arr[500_000];
-// ⚡ O(1) - truy cập memory trực tiếp
-// 💡 VD: base = 1000, index = 500000, size = 8 bytes
-// 💡 address = 1000 + (500000 × 8) = 4,001,000 → đọc ngay!
-console.timeEnd('Array access');
-// ⏱️ ~0.0001ms (NHANH NHẤT!)
-
-// 🔎 Tìm kiếm giá trị - O(n) CHẬM!
-// 💡 Cách hoạt động:
-//   1. Duyệt từ đầu mảng đến cuối
-//   2. So sánh từng phần tử với giá trị cần tìm
-//   3. Worst case: Phần tử ở cuối hoặc không tồn tại → duyệt hết n phần tử
-console.time('Array indexOf');
-const idx = arr.indexOf(500_000);
-// 🐌 O(n) worst case - phải duyệt toàn bộ
-// 💡 Phải check: arr[0] === 500000? → arr[1] === 500000? → ... → arr[500000] === 500000? ✓
-// 💡 Tổng: 500,001 lần so sánh!
-console.timeEnd('Array indexOf');
-// ⏱️ ~5-10ms (chậm hơn nhiều so với Map.get() ~0.001ms)
-
-// ✅ Kiểm tra tồn tại - O(n) CHẬM!
-// 💡 Tương tự indexOf(), phải duyệt tuần tự
-console.time('Array includes');
-const has = arr.includes(500_000);
-// 🐌 O(n) - phải duyệt tuần tự
-// 💡 So sánh: Set.has() → O(1) cực nhanh!
-console.timeEnd('Array includes');
-// ⏱️ ~5-10ms
-
-// ⬇️ Unshift (thêm vào đầu) - O(n) RẤT CHẬM!
-// 💡 Cách hoạt động:
-//   1. Dịch TẤT CẢ phần tử sang phải 1 vị trí
-//   2. Ghi giá trị mới vào vị trí đầu
-//   3. Tăng length lên 1
-// 💡 Phải di chuyển n phần tử → O(n)
-console.time('Array unshift');
-arr.unshift(-1);
-// 🐢 O(n) - phải di chuyển 1 TRIỆU phần tử!
-// 💡 arr[0] → arr[1], arr[1] → arr[2], ..., arr[999999] → arr[1000000]
-// 💡 Tổng: 1 triệu lần copy memory!
-console.timeEnd('Array unshift');
-// ⏱️ ~50-100ms (RẤT CHẬM!)
-
-// ⬆️ Shift (xóa phần tử đầu) - O(n) RẤT CHẬM!
-// 💡 Cách hoạt động:
-//   1. Xóa phần tử đầu
-//   2. Dịch TẤT CẢ phần tử còn lại sang trái 1 vị trí
-//   3. Giảm length xuống 1
-// 💡 Phải di chuyển n-1 phần tử → O(n)
-console.time('Array shift');
-arr.shift();
-// 🐢 O(n) - phải di chuyển toàn bộ
-// 💡 arr[1] → arr[0], arr[2] → arr[1], ..., arr[1000000] → arr[999999]
-console.timeEnd('Array shift');
-// ⏱️ ~50-100ms
-
-// 💡 TIP: Nếu cần thêm vào đầu nhiều lần → dùng push() + reverse()
-// ✅ CÁCH TỐT:
-// items.forEach(item => arr.push(item)); // O(n) - nhanh
-// arr.reverse(); // O(n) - 1 lần duyệt
-// Tổng: O(n) thay vì O(n²) với unshift()
-// ============================================
-// 💼 SO SÁNH THỰC TẾ - CHỌN CẤU TRÚC NÀO?
-// ============================================
-
-// 💼 Scenario 1: Tìm kiếm user theo ID (thường xuyên)
-// ❌ CÁCH TỆ: Dùng Array - O(n) mỗi lần tìm
-const usersArr = [
-  { id: 1, name: 'A' },
-  { id: 2, name: 'B' },
-  // ... 1 triệu users
-];
-const user1 = usersArr.find((u) => u.id === 500_000);
-// 🐌 O(n) - phải duyệt toàn bộ, CHẬM!
-// 💡 find() duyệt từ đầu: check id 1, 2, 3, ..., 500000
-// 💡 Worst case: User ở cuối → duyệt hết 1 triệu phần tử
-// ⏱️ Thời gian: ~5-10ms mỗi lần tìm
-
-// ✅ CÁCH TỐT: Dùng Map - O(1) mỗi lần tìm
-const usersMap = new Map([
-  [1, { id: 1, name: 'A' }],
-  [2, { id: 2, name: 'B' }],
-  // ... build Map từ usersArr
-]);
-const user2 = usersMap.get(500_000);
-// ⚡ O(1) - tìm ngay lập tức, NHANH!
-// 💡 Hash(500000) → bucket → tìm ngay
-// ⏱️ Thời gian: ~0.001ms mỗi lần tìm
-// 💡 Nhanh hơn Array.find() ~5000-10000 lần!
-
-// 💼 Scenario 2: Kiểm tra tag có tồn tại không
-// ❌ CÁCH TỆ: Dùng Array - O(n)
-const tags = ['js', 'ts', 'react', 'vue'];
-const hasReact = tags.includes('react');
-// 🐌 O(n) - phải duyệt từng phần tử
-// 💡 Check: 'js' === 'react'? → 'ts' === 'react'? → 'react' === 'react'? ✓
-// 💡 Phải check 3 phần tử mới tìm thấy
-
-// ✅ CÁCH TỐT: Dùng Set - O(1)
-const tagSet = new Set(['js', 'ts', 'react', 'vue']);
-const hasReact2 = tagSet.has('react');
-// ⚡ O(1) - check tức thì
-// 💡 Hash('react') → bucket → check ngay
-// 💡 Không cần duyệt qua các tag khác
-
-// 💼 Scenario 3: Loại bỏ phần tử trùng lặp
-// ❌ CÁCH TỆ: Dùng nested loop - O(n²) CỰC CHẬM!
-function removeDupes(arr: number[]): number[] {
-  const result: number[] = [];
-  for (const item of arr) {
-    // 🔁 Loop 1: O(n) - duyệt qua n phần tử
-    if (!result.includes(item)) {
-      // 🔁 Loop 2: O(n) - phải check toàn bộ result
-      // 💡 Mỗi lần includes() phải duyệt result từ đầu đến cuối
-      result.push(item);
-    }
+  for (const product of products) {
+    if (seen.has(product.id)) continue;
+    seen.add(product.id);
+    result.push(product);
   }
+
   return result;
-  // 🐢 O(n²) tổng cộng - RẤT CHẬM với data lớn!
-  // 💡 VD: 1000 phần tử → 1000 × 1000 = 1 TRIỆU operations!
-  // ⏱️ Thời gian: ~100-200ms cho 1000 phần tử
 }
-
-// ✅ CÁCH TỐT: Dùng Set - O(n) NHANH!
-function removeDupesSet(arr: number[]): number[] {
-  return [...new Set(arr)];
-  // ⚡ O(n) duyệt + O(1) add = O(n) tổng - NHANH!
-  // 💡 Cách hoạt động:
-  //   1. new Set(arr) → duyệt arr, add vào Set → O(n)
-  //   2. Set tự động loại trùng → O(1) mỗi lần add
-  //   3. [...set] → convert về Array → O(n)
-  //   4. Tổng: O(n) + O(n) = O(n)
-  // ⏱️ Thời gian: ~1-2ms cho 1000 phần tử
-  // 💡 Nhanh hơn cách tệ ~50-100 lần!
-}
-
-// ============================================
-// 🎓 TẠI SAO MAP/SET LẠI O(1)? - MINH HỌA
-// ============================================
-
-/**
- * 🏗️ CẤU TRÚC BÊN TRONG HASH TABLE:
- *
- * 🔑 Hash Function: key → hash code (số nguyên)
- * 📍 Bucket Index: hash % buckets.length (lấy phần dư để tìm vị trí)
- *
- * 📦 Ví dụ: Map với 8 buckets (8 ngăn chứa)
- *
- * buckets = [
- *   0: null,                                   // 📭 Ngăn trống
- *   1: Entry('apple', 5) → null,              // 🍎 Không collision
- *   2: Entry('banana', 10) → Entry('blueberry', 12) → null, // 💥 Collision! 2 key cùng bucket
- *   3: null,                                   // 📭 Ngăn trống
- *   4: Entry('cherry', 8) → null,             // 🍒 Không collision
- *   5: null,                                   // 📭 Ngăn trống
- *   6: null,                                   // 📭 Ngăn trống
- *   7: null                                    // 📭 Ngăn trống
- * ]
- *
- * 🔍 THAO TÁC GET (Lấy giá trị):
- * map.get('banana')
- * 1. 🔢 hash('banana') = 18
- * 2. 📍 bucket_index = 18 % 8 = 2 (tìm ngăn số 2)
- * 3. ➡️ Đi tới buckets[2]
- * 4. 🔗 Duyệt linked list: 'banana' === 'banana' ✓ (tìm thấy!)
- * 5. 📤 Trả về value: 10
- * → ⚡ O(1) trung bình (vì chain ngắn)
- *
- * ➕ THAO TÁC SET (Thêm/Cập nhật):
- * map.set('grape', 15)
- * 1. 🔢 hash('grape') = 10
- * 2. 📍 bucket_index = 10 % 8 = 2 (ngăn số 2)
- * 3. 💥 Collision với 'banana' chain (cùng ngăn!)
- * 4. 🔗 Thêm vào cuối chain
- * → ⚡ O(1) trung bình
- *
- * 🛠️ GIẢI QUYẾT COLLISION:
- * - 🔗 Chaining: Dùng linked list trong mỗi bucket
- * - 🔄 Open Addressing: Tìm bucket trống tiếp theo
- * - 🚀 JS engines dùng chaining + tự động resize khi load factor cao
- */
-
-// 🎓 Class minh họa Hash Map đơn giản
-class SimpleHashMap<K, V> {
-  // 🗄️ Mảng các buckets, mỗi bucket là 1 mảng các entry
-  private buckets: Array<Array<{ key: K; value: V }>> = [];
-  private size = 0;
-
-  constructor(capacity = 16) {
-    // 🏗️ Khởi tạo 16 buckets rỗng
-    this.buckets = Array(capacity)
-      .fill(null)
-      .map(() => []);
-  }
-
-  // 🔢 Hash function: chuyển key thành số nguyên
-  // 💡 Hash function là "trái tim" của hash table
-  // 💡 Mục tiêu: Phân bố đều keys vào các buckets → ít collision
-  private hash(key: K): number {
-    const str = String(key);
-    // 📝 Convert key thành string để hash
-    // 💡 VD: number 123 → "123", object → "[object Object]"
-
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      // 🔄 Duyệt từng ký tự trong string
-      hash = (hash << 5) - hash + str.charCodeAt(i);
-      // 🧮 Tính hash code:
-      //   - hash << 5 = hash × 32 (dịch bit sang trái 5 vị trí)
-      //   - hash << 5 - hash = hash × 31 (tối ưu hơn phép nhân)
-      //   - + str.charCodeAt(i) = cộng mã ASCII của ký tự
-      // 💡 Công thức này phân bố đều → ít collision
-
-      hash = hash & hash;
-      // 🔢 Convert thành 32-bit integer (loại bỏ phần dư)
-      // 💡 & hash = bitwise AND với chính nó (không đổi nhưng đảm bảo 32-bit)
-    }
-    return Math.abs(hash);
-    // ✅ Trả về số dương (hash code)
-    // 💡 VD: hash("apple") = 1234567890
-  }
-
-  // ➕ Thêm hoặc cập nhật entry
-  // 💡 Độ phức tạp: O(1) trung bình, O(k) worst case (k = độ dài chain)
-  set(key: K, value: V): void {
-    const index = this.hash(key) % this.buckets.length;
-    // 📍 Tìm bucket index:
-    //   1. hash(key) → hash code (VD: 1234567890)
-    //   2. % this.buckets.length → lấy phần dư (VD: 1234567890 % 16 = 2)
-    //   3. → bucket index = 2
-    // 💡 Modulo (%) đảm bảo index nằm trong phạm vi [0, buckets.length-1]
-
-    const bucket = this.buckets[index];
-    // 📦 Lấy bucket tại index đó
-    // 💡 Bucket là một mảng các entry (có thể có collision chain)
-
-    // 🔍 Kiểm tra key đã tồn tại chưa (để update)
-    for (const entry of bucket) {
-      // 💡 Duyệt qua chain trong bucket (nếu có collision)
-      if (entry.key === key) {
-        entry.value = value;
-        // 🔄 Update value cũ (key đã tồn tại)
-        // 💡 Không tăng size vì không thêm entry mới
-        return;
-      }
-    }
-
-    // ✨ Key mới → thêm vào cuối chain
-    bucket.push({ key, value });
-    // 💡 Thêm entry mới vào bucket
-    // 💡 Nếu bucket rỗng → chain có 1 phần tử
-    // 💡 Nếu bucket đã có entry → thêm vào chain (collision)
-    this.size++;
-    // 💡 Tăng số lượng entries
-  }
-
-  // 🔍 Lấy giá trị theo key
-  // 💡 Độ phức tạp: O(1) trung bình, O(k) worst case (k = độ dài chain)
-  get(key: K): V | undefined {
-    const index = this.hash(key) % this.buckets.length;
-    // 📍 Tìm bucket index (giống như set())
-    // 💡 hash(key) → hash code → % buckets.length → bucket index
-
-    const bucket = this.buckets[index];
-    // 📦 Lấy bucket tại index đó
-
-    // 🔗 Duyệt chain - O(k) với k = độ dài chain (thường rất ngắn)
-    // 💡 Nếu không có collision → chain có 1 phần tử → O(1)
-    // 💡 Nếu có collision → phải duyệt chain → O(k) với k thường < 5
-    for (const entry of bucket) {
-      if (entry.key === key) {
-        return entry.value;
-        // ✅ Tìm thấy!
-        // 💡 So sánh key để tìm đúng entry trong chain
-      }
-    }
-
-    return undefined;
-    // ❌ Không tìm thấy
-    // 💡 Đã duyệt hết chain nhưng không có key khớp
-  }
-
-  // 📊 Hiển thị cấu trúc buckets để debug
-  // 💡 Method này giúp visualize hash table structure
-  // 💡 Hữu ích để debug collision và hiểu cách hash table hoạt động
-  visualize(): void {
-    this.buckets.forEach((bucket, idx) => {
-      // 💡 Duyệt qua từng bucket trong mảng buckets
-      // 💡 idx = index của bucket (0, 1, 2, ..., buckets.length-1)
-      if (bucket.length > 0) {
-        // 💡 Chỉ hiển thị bucket có chứa entries (không hiển thị bucket rỗng)
-        console.log(
-          `📦 Bucket ${idx}:`,
-          bucket.map((e) => `${e.key}=${e.value}`).join(' → ')
-          // 💡 Convert mỗi entry thành string: "key=value"
-          // 💡 Nếu có collision → nhiều entries trong 1 bucket → join bằng " → "
-          // 💡 VD: "apple=1 → banana=2" (collision trong bucket 2)
-        );
-      }
-    });
-  }
-}
-
-// ============================================
-// 🎬 Demo collision (va chạm hash)
-// ============================================
-
-// 🎬 Demo collision (va chạm hash)
-// 💡 Collision = 2 key khác nhau nhưng có cùng hash code → cùng bucket
-// 💡 Collision là hiện tượng bình thường trong hash table
-// 💡 Hash function tốt sẽ giảm thiểu collision nhưng không thể tránh hoàn toàn
-const hashMap = new SimpleHashMap<string, number>(8);
-// 💡 Tạo hash map với 8 buckets (ít buckets → dễ collision hơn)
-// 💡 Với ít buckets, nhiều key sẽ rơi vào cùng bucket → dễ thấy collision
-
-hashMap.set('apple', 1);
-// 🍎 hash('apple') % 8 = ? → bucket index
-// 💡 VD: hash('apple') = 12345 → 12345 % 8 = 1 → bucket[1]
-hashMap.set('banana', 2);
-// 🍌 hash('banana') % 8 = ? → bucket index
-// 💡 VD: hash('banana') = 12353 → 12353 % 8 = 1 → bucket[1] (collision với apple!)
-hashMap.set('cherry', 3);
-// 🍒 hash('cherry') % 8 = ? → bucket index
-// 💡 VD: hash('cherry') = 23456 → 23456 % 8 = 0 → bucket[0] (không collision)
-
-hashMap.visualize();
-// 💡 Output sẽ show collision nếu hash('apple') % 8 === hash('banana') % 8
-// 💡 VD output:
-//    📦 Bucket 0: cherry=3
-//    📦 Bucket 1: apple=1 → banana=2  (collision! 2 keys cùng bucket)
-// 💡 Collision xảy ra khi 2 key khác nhau nhưng rơi vào cùng 1 bucket
-// 💡 Khi có collision, entries được lưu trong linked list (chain) trong bucket đó
-// 💡 JS engines tự động resize khi có quá nhiều collision → maintain O(1)
-// 💡 Resize = tăng số buckets → giảm collision → giữ performance tốt
 ```
 
-**🎯 Best Practices - Tối Ưu Performance:**
+### 4.4. Object dictionary: own property và prototype pollution
 
-**1️⃣ Chọn cấu trúc dữ liệu phù hợp:**
-
-- 🔍 **Lookup thường xuyên** → Map/Object (O(1) vs Array O(n))
-- ✅ **Check existence** → Set (O(1) vs Array O(n))
-- 📋 **Ordered collection + iterate** → Array (cache-friendly, methods nhiều)
-- ⚙️ **Simple config** → Object (syntax ngắn, JSON-friendly)
-- 🔑 **Non-string keys** → Map (object, number, Date...)
-- ✨ **Deduplication** → Set (tự động loại trùng)
-
-**2️⃣ Performance Tips - Tối Ưu Tốc Độ:**
-
-- 🚀 **Dùng Map thay Array.find()**: Lookup nhiều lần → O(n) thành O(1)
-
-  ```ts
-  // ❌ Chậm: O(n²) - CỰC CHẬM!
-  posts.forEach((p) => users.find((u) => u.id === p.userId));
-  // 💡 Giải thích:
-  //   - Loop bên ngoài: posts.forEach() → n lần (n = số posts)
-  //   - Loop bên trong: users.find() → O(m) mỗi lần (m = số users)
-  //   - Tổng: O(n × m) = O(n²) nếu n ≈ m
-  //   - VD: 1000 posts × 1000 users = 1 TRIỆU operations!
-
-  // ✅ Nhanh: O(n) - NHANH HƠN RẤT NHIỀU!
-  const userMap = new Map(users.map((u) => [u.id, u]));
-  // 💡 Build Map 1 lần: O(m) - duyệt users, tạo Map
-  // 💡 users.map() → O(m), new Map() → O(m) → Tổng O(m)
-
-  posts.forEach((p) => userMap.get(p.userId));
-  // 💡 Loop: n lần
-  // 💡 Mỗi lần: userMap.get() → O(1) (hash lookup)
-  // 💡 Tổng: O(m) + O(n) = O(n + m) ≈ O(n) nếu n > m
-  // 💡 VD: 1000 posts → chỉ 1000 operations (thay vì 1 TRIỆU!)
-  ```
-
-- ⚡ **Dùng Set.has() thay Array.includes()**: O(1) vs O(n)
-
-  ```ts
-  // ❌ Chậm: O(n) - phải duyệt tuần tự
-  const tags = ['js', 'ts', 'react'];
-  if (tags.includes('react')) {
-    /* ... */
-  }
-  // 💡 Giải thích:
-  //   - includes() phải duyệt từ đầu: 'js' === 'react'? → 'ts' === 'react'? → 'react' === 'react'? ✓
-  //   - Worst case: Phần tử ở cuối hoặc không tồn tại → duyệt hết n phần tử
-  //   - VD: 1000 tags → phải check 1000 lần
-
-  // ✅ Nhanh: O(1) - hash lookup tức thì
-  const tagSet = new Set(['js', 'ts', 'react']);
-  if (tagSet.has('react')) {
-    /* ... */
-  }
-  // 💡 Giải thích:
-  //   - Set.has() dùng hash table: hash('react') → bucket → check ngay
-  //   - Không cần duyệt qua các tag khác
-  //   - VD: 1000 tags → chỉ cần 1 operation (hash + check bucket)
-  // 💡 Nhanh hơn Array.includes() ~1000 lần với 1000 phần tử!
-  ```
-
-- 🔄 **Avoid unshift/shift trong loop**: Dùng push + reverse thay vì
-
-  ```ts
-  // ❌ Chậm: O(n²) - RẤT CHẬM!
-  items.forEach((item) => arr.unshift(item));
-  // 💡 Giải thích:
-  //   - Loop: n lần (n = số items)
-  //   - Mỗi lần unshift(): Phải shift TẤT CẢ phần tử hiện có → O(m) với m = số phần tử hiện tại
-  //   - Lần 1: unshift(item1) → shift 0 phần tử → O(1)
-  //   - Lần 2: unshift(item2) → shift 1 phần tử → O(1)
-  //   - Lần 3: unshift(item3) → shift 2 phần tử → O(2)
-  //   - ...
-  //   - Lần n: unshift(itemN) → shift n-1 phần tử → O(n-1)
-  //   - Tổng: O(1 + 1 + 2 + ... + n-1) = O(n²)
-  //   - VD: 1000 items → ~500,000 operations!
-
-  // ✅ Nhanh: O(n) - NHANH HƠN RẤT NHIỀU!
-  items.forEach((item) => arr.push(item));
-  // 💡 push() vào cuối: O(1) mỗi lần
-  // 💡 Tổng: O(n) cho n lần push
-
-  arr.reverse();
-  // 💡 reverse() 1 lần: O(n) - duyệt và đảo ngược
-  // 💡 Tổng: O(n) + O(n) = O(n)
-  // 💡 VD: 1000 items → chỉ ~2000 operations (thay vì 500,000!)
-  ```
-
-- 📦 **Pre-allocate Array size**: Tránh resize nhiều lần
-
-  ```ts
-  // ❌ Resize nhiều lần khi push - CHẬM HƠN
-  const arr = [];
-  for (let i = 0; i < 1000000; i++) arr.push(i);
-  // 💡 Giải thích:
-  //   - Array bắt đầu với capacity nhỏ (VD: 4)
-  //   - Khi hết capacity → resize (double size) → copy toàn bộ elements
-  //   - Resize xảy ra: 4 → 8 → 16 → 32 → ... → 1,048,576
-  //   - Mỗi lần resize: O(n) copy elements
-  //   - Tổng: O(n) cho push + O(n) cho resize = O(n) nhưng có overhead
-  //   - VD: 1M items → resize ~20 lần → copy ~2M elements tổng cộng
-
-  // ✅ Allocate 1 lần - NHANH HƠN
-  const arr = new Array(1000000);
-  // 💡 Pre-allocate 1 triệu slots ngay từ đầu
-  // 💡 Không cần resize → không cần copy elements
-
-  for (let i = 0; i < 1000000; i++) arr[i] = i;
-  // 💡 Ghi trực tiếp vào slot đã allocate → O(1) mỗi lần
-  // 💡 Tổng: O(n) không có overhead resize
-  // 💡 Nhanh hơn cách trên ~10-20% với data lớn
-  ```
-
-**3️⃣ Memory Consideration - Quản Lý Bộ Nhớ:**
-
-- 💾 **Map/Set overhead**: ~2x memory của Object/Array (buckets + pointers)
-
-  - 💡 Trade-off: Tốn memory nhưng được O(1) lookup
-  - ✅ Dùng khi performance quan trọng hơn memory
-
-- 🕳️ **Sparse array tốn memory**: `arr[1000] = 1` tạo 999 holes
-
-  ```ts
-  // ❌ Tốn memory
-  const arr = [];
-  arr[1000000] = 1; // Tạo 1M holes, chuyển sang dictionary mode
-  // ✅ Dùng Map
-  const map = new Map();
-  map.set(1000000, 1); // Chỉ lưu 1 entry
-  ```
-
-- 🔗 **Object prototype overhead**: Mỗi object có link tới prototype
-
-  - 💡 Use `Object.create(null)` cho dictionary thuần (no prototype)
-
-- ♻️ **WeakMap/WeakSet**: Không prevent garbage collection
-  ```ts
-  // ✅ Auto cleanup khi key bị GC
-  const cache = new WeakMap();
-  let obj = { data: 'heavy' };
-  cache.set(obj, processedData);
-  obj = null; // cache entry tự động bị xóa
-  ```
-
-**4️⃣ Hash Collision Mitigation - Tránh Va Chạm:**
-
-- 🔄 **JS engines tự resize**: Load factor > 0.75 → double buckets size
-
-  - 💡 Tự động maintain O(1) average case
-
-- 🎲 **Good hash function**: Phân bố đều keys → ít collision
-
-  - 🔐 V8 dùng SipHash cho security + performance
-
-- 🚀 **Modern engines optimization**:
-
-  - 🎯 Robin Hood hashing: Balance chain lengths
-  - ⚡ Swiss Tables (Google): SIMD-accelerated lookup
-  - 🔄 V8 transitions: Packed → Holey → Dictionary mode
-
-- # 📊 **Monitor performance**: Chrome DevTools → Performance tab - ⏱️ Xem time spent trong map operations - 🔬 Profile với large datasets (>100k items)
-  // ⚠️ CÁC LỖI THƯỜNG GẶP VÀ CÁCH SỬA
-  // ============================================
-
-// ============================================
-// ⚠️ CÁC LỖI THƯỜNG GẶP VÀ CÁCH SỬA
-// ============================================
-
-// ❌ LỖI 1: Dùng Array.find() trong loop → O(n²) CỰC CHẬM!
-const users = [
-/* 1 triệu users */
-];
-const posts = [
-/* 1 triệu posts */
-];
-posts.forEach((post) => {
-// 🔁 Loop bên ngoài: 1M lần (duyệt qua 1 triệu posts)
-const author = users.find((u) => u.id === post.authorId);
-// 🔁 Loop bên trong: 1M lần (find() phải duyệt users mỗi lần)
-// 💡 find() duyệt từ đầu: check user[0], user[1], ..., user[500000] mới tìm thấy
-// 💀 Tổng: O(n²) = 1 triệu × 1 triệu = 1,000 TỶ operations!
-// ⏱️ Có thể mất vài PHÚT để chạy xong!
-// 💡 VD: 1 triệu posts × 500,000 users trung bình = 500 TỶ operations!
-});
-
-// ✅ CÁCH SỬA: Build Map trước → O(n) NHANH!
-const userMap = new Map(users.map((u) => [u.id, u]));
-// 🏗️ Build Map 1 lần: O(n)
-// 💡 users.map() → O(n) duyệt users
-// 💡 new Map() → O(n) tạo Map từ entries
-// 💡 Tổng: O(n) cho việc build Map
-
-posts.forEach((post) => {
-// 🔁 Loop: 1M lần (duyệt qua 1 triệu posts)
-const author = userMap.get(post.authorId);
-// ⚡ Lookup: O(1) mỗi lần (hash lookup)
-// 💡 Hash(post.authorId) → bucket → tìm ngay
-// ✅ Tổng: O(n) = 1 triệu operations
-// ⏱️ Chạy xong trong vài GIÂY!
-// 💡 Nhanh hơn cách trên ~1000-10000 lần!
-});
-
-// ❌ LỖI 2: Check duplicate bằng includes → O(n²) CHẬM!
-const unique: number[] = [];
-arr.forEach((item) => {
-// 🔁 Loop bên ngoài: n lần (duyệt qua n phần tử trong arr)
-if (!unique.includes(item)) {
-// 🔁 includes phải duyệt unique: O(m) với m = số phần tử trong unique hiện tại
-// 💡 Lần 1: unique = [] → includes() check 0 phần tử → O(1)
-// 💡 Lần 2: unique = [item1] → includes() check 1 phần tử → O(1)
-// 💡 Lần 3: unique = [item1, item2] → includes() check 2 phần tử → O(2)
-// 💡 ...
-// 💡 Lần n: unique có n-1 phần tử → includes() check n-1 phần tử → O(n-1)
-// 💀 Tổng: O(1 + 1 + 2 + ... + n-1) = O(n²) - càng nhiều item càng CHẬM!
-unique.push(item);
-}
-});
-// 💀 Tổng: O(n²) - RẤT CHẬM với data lớn!
-// 💡 VD: 1000 phần tử → ~500,000 operations!
-
-// ✅ CÁCH SỬA: Dùng Set → O(n) NHANH!
-const unique2 = [...new Set(arr)];
-// ⚡ O(n) - 1 lần duyệt, xong ngay!
-// 💡 Giải thích:
-// 1. new Set(arr) → duyệt arr, add vào Set → O(n)
-// 2. Set.add() → O(1) mỗi lần (hash lookup)
-// 3. Set tự động loại trùng → không cần check thủ công
-// 4. [...set] → convert về Array → O(n)
-// 5. Tổng: O(n) + O(n) = O(n)
-// 💡 VD: 1000 phần tử → chỉ ~2000 operations (thay vì 500,000!)
-// 💡 Nhanh hơn cách trên ~250 lần!
-
-// ❌ LỖI 3: Xóa array items trong loop → O(n²) CHẬM!
-// 💡 Đây là lỗi rất phổ biến khi làm việc với Array
-// 💡 Vấn đề: splice() trong loop gây ra O(n²) complexity
-for (let i = 0; i < arr.length; i++) {
-// 💡 Loop từ đầu đến cuối mảng
-if (condition) {
-// 💡 Nếu phần tử thỏa điều kiện → xóa
-arr.splice(i, 1);
-// 🐢 O(n) - phải shift TẤT CẢ elements phía sau
-// 💡 splice(i, 1) xóa phần tử tại index i
-// 💡 Sau đó phải shift: arr[i+1] → arr[i], arr[i+2] → arr[i+1], ...
-// 💡 VD: Xóa arr[5] trong mảng 1000 phần tử → phải shift 995 phần tử!
-// 💡 Mỗi lần shift = copy memory → tốn thời gian!
-
-    i--;
-    // 🔄 Điều chỉnh index (dễ gây bug!)
-    // 💡 Cần i-- vì sau khi xóa, phần tử tiếp theo đã chuyển lên vị trí i
-    // 💡 Nếu không có i-- → sẽ bỏ sót phần tử tiếp theo
-    // ⚠️ Dễ gây bug nếu quên i--
-    // 💡 VD: arr = [1, 2, 3, 4, 5], xóa phần tử chẵn
-    // 💡 i=1, arr[1]=2 (chẵn) → xóa → arr = [1, 3, 4, 5]
-    // 💡 Nếu không i-- → i=2, arr[2]=4 (đã bỏ sót 3!)
-
-}
-}
-// 💀 Tổng: O(n²) - mỗi lần xóa phải shift, RẤT CHẬM!
-// 💡 VD: Xóa 100 phần tử trong mảng 1000 phần tử
-// 💡 Mỗi lần xóa shift ~500 phần tử trung bình
-// 💡 Tổng: 100 × 500 = 50,000 operations!
-// ⏱️ Thời gian: ~50-100ms cho 1000 phần tử
-
-// ✅ CÁCH SỬA: Dùng filter → O(n) NHANH VÀ AN TOÀN!
-// 💡 filter() là method built-in của Array, được optimize tốt
-// 💡 Tạo mảng mới thay vì modify mảng gốc → functional programming style
-const filtered = arr.filter((item) => !condition);
-// ⚡ O(n) - 1 lần duyệt, tạo mảng mới
-// 💡 filter() duyệt qua arr 1 lần, tạo mảng mới với các phần tử thỏa điều kiện
-// 💡 Không modify mảng gốc → tránh bug + dễ debug!
-// 💡 VD: arr = [1, 2, 3, 4, 5], condition = số chẵn
-// 💡 filtered = [1, 3, 5] (giữ lại số lẻ)
-// 💡 arr vẫn là [1, 2, 3, 4, 5] (không thay đổi)
-// 💡 VD: 1000 phần tử → chỉ 1000 operations (thay vì 50,000!)
-// 💡 Nhanh hơn cách trên ~50 lần!
-// ⏱️ Thời gian: ~1-2ms cho 1000 phần tử (thay vì 50-100ms!)
-
-````
-
-**🎓 Kết Luận - Tổng Kết Kiến Thức:**
-
-**🔑 Những Điểm Chính Cần Nhớ:**
-
-1. **📊 Map/Set - O(1) Performance:**
-   - ⚡ Nhờ **hash table**: key → hash code → bucket index → direct access
-   - 🎯 **Average case O(1)**: Hash function tốt phân bố đều → ít collision
-   - 🐌 **Worst case O(n)**: Tất cả keys cùng hash (cực hiếm trong thực tế)
-   - 💡 **Khi nào dùng**: Lookup/check existence thường xuyên, non-string keys
-
-2. **📚 Array - Mixed Complexity:**
-   - ⚡ **O(1) index access**: `arr[i]` nhanh nhất (direct memory calculation)
-   - 🐌 **O(n) search**: `.indexOf()`, `.includes()` phải duyệt tuần tự
-   - 🐢 **O(n) insert/delete đầu/giữa**: `unshift()`, `shift()`, `splice()` phải shift elements
-   - 💡 **Khi nào dùng**: Ordered collection, iterate với map/filter/reduce
-
-3. **📦 Object - O(1) Property Access:**
-   - ⚡ **Tương tự Map**: Hash-based lookup cho properties
-   - 🔤 **Giới hạn**: Chỉ string/symbol keys (Map dùng any type)
-   - 🔗 **Prototype chain**: Có thể O(k) nếu property ở prototype (k = chain depth)
-   - 💡 **Khi nào dùng**: Config, API response, JSON serialization
-
-**🚀 Impact của Việc Chọn Đúng Data Structure:**
-
-- 📈 **Performance boost**: O(n²) → O(n) khi convert Array.find() sang Map.get()
-  - Ví dụ: 1M items → từ 1 TRIỆU TỶ operations xuống 1 TRIỆU operations
-  - ⏱️ Thời gian: từ VÀI PHÚT xuống VÀI GIÂY!
-
-- 💾 **Memory trade-off**: Map/Set tốn ~2x memory nhưng được O(1) lookup
-  - 💡 Chọn dựa vào use case: Performance > Memory → Map/Set
-
-- 🐛 **Code maintainability**: Set tự loại trùng, Map maintain order
-  - ✅ Ít bug hơn, dễ debug hơn so với manual array manipulation
-
-**📝 Checklist Khi Coding:**
-
-- ✅ Có lookup/check nhiều lần? → Dùng **Map/Set** thay Array
-- ✅ Cần iterate theo order? → Giữ **Array**, dùng map/filter/reduce
-- ✅ Simple config ít thay đổi? → Dùng **Object** literal
-- ✅ Cần loại duplicate? → `[...new Set(arr)]` thay vì filter + includes
-- ✅ Insert/delete đầu mảng? → Dùng **push + reverse** thay unshift
-- ✅ Check trong loop? → Build **Set/Map trước**, check O(1) trong loop
-
-**🎯 Áp Dụng Vào Production:**
+❌ Dễ sai khi key đến từ user input:
 
 ```ts
-// ❌ BEFORE: Chậm, khó maintain - O(n × m × k × p)
-// 💡 Đây là ví dụ điển hình của nested loops với Array.find()
-// 💡 Rất phổ biến trong code thực tế nhưng CỰC CHẬM với data lớn!
-function processOrders(orders, users, products) {
-  return orders.map(order => ({
-    // 🔁 Loop 1: orders.map() → n lần (n = số orders)
-    // 💡 VD: n = 1000 orders → loop 1000 lần
-    ...order,
-    // 💡 Spread operator: Copy tất cả properties của order
-    user: users.find(u => u.id === order.userId),
-    // 🔁 Loop 2: users.find() → O(m) mỗi lần (m = số users)
-    // 💡 Mỗi order phải tìm user → n × m operations
-    // 💡 find() duyệt từ đầu: check user[0], user[1], ..., user[500] mới tìm thấy
-    // 💡 VD: 1000 orders × 1000 users = 1 TRIỆU operations chỉ để tìm users!
+const dict: Record<string, number> = {};
 
-    items: order.itemIds.map(id =>
-      // 🔁 Loop 3: order.itemIds.map() → k lần (k = số items mỗi order)
-      // 💡 VD: mỗi order có 10 items → k = 10
-      // 💡 Tổng: n × k = 1000 × 10 = 10,000 lần loop
-      products.find(p => p.id === id)
-      // 🔁 Loop 4: products.find() → O(p) mỗi lần (p = số products)
-      // 💡 Mỗi item phải tìm product → n × k × p operations
-      // 💡 find() duyệt từ đầu: check product[0], product[1], ..., product[250] mới tìm thấy
-      // 💡 VD: 10,000 items × 500 products = 5 TRIỆU operations để tìm products!
-    )
-  }));
+function increment(key: string) {
+  dict[key] = (dict[key] ?? 0) + 1;
 }
-// 💀 Complexity: O(n × m × k × p) - CỰC CHẬM!
-// 💡 VD: 1000 orders × 1000 users × 10 items × 500 products
-// 💡 = 1,000,000 (users) + 5,000,000 (products) = 6 TRIỆU operations!
-// ⏱️ Thời gian: Có thể mất vài PHÚT với data lớn!
-// 🐌 User experience: Page bị đơ, browser không phản hồi!
+```
 
-// ✅ AFTER: Nhanh, scalable - O(n + m + p)
-// 💡 Đây là cách tối ưu: Build lookup maps trước, dùng O(1) lookup trong loop
-// 💡 Pattern này rất quan trọng trong production code!
-function processOrders(orders, users, products) {
-  // 🏗️ Build lookup maps 1 lần: O(m + p)
-  // 💡 Bước này chỉ chạy 1 lần, không lặp lại trong loop
-  const userMap = new Map(users.map(u => [u.id, u]));
-  // 💡 Build userMap: O(m) - duyệt users 1 lần
-  // 💡 users.map() → O(m): Tạo array entries [id, user]
-  // 💡 new Map() → O(m): Build hash table từ entries
-  // 💡 VD: 1000 users → 1000 operations để build Map
-  // 💡 Sau khi build xong, mỗi lookup chỉ tốn O(1)!
+✅ Dùng `Map` hoặc object không prototype:
 
-  const productMap = new Map(products.map(p => [p.id, p]));
-  // 💡 Build productMap: O(p) - duyệt products 1 lần
-  // 💡 Tương tự userMap: Build 1 lần, dùng nhiều lần
-  // 💡 VD: 500 products → 500 operations để build Map
+```ts
+const counts = new Map<string, number>();
 
-  return orders.map(order => ({
-    // 🔁 Loop: n lần (n = số orders)
-    // 💡 VD: n = 1000 orders → loop 1000 lần
-    ...order,
-    // 💡 Spread operator: Copy properties của order
-    user: userMap.get(order.userId),
-    // ⚡ O(1) - hash lookup tức thì
-    // 💡 Hash(order.userId) → bucket → tìm ngay
-    // 💡 Không cần duyệt users nữa!
-    // 💡 VD: 1000 orders × O(1) = 1000 operations (thay vì 1 TRIỆU!)
-
-    items: order.itemIds.map(id => productMap.get(id))
-    // ⚡ O(1) mỗi lần - hash lookup
-    // 💡 Hash(id) → bucket → tìm ngay
-    // 💡 Không cần duyệt products nữa!
-    // 💡 VD: 10,000 items × O(1) = 10,000 operations (thay vì 5 TRIỆU!)
-  }));
+function increment(key: string) {
+  counts.set(key, (counts.get(key) ?? 0) + 1);
 }
-// ✅ Complexity: O(m + p + n × k) ≈ O(n + m + p) - NHANH, scale tốt!
-// 💡 Giải thích:
-//   - O(m): Build userMap (1 lần)
-//   - O(p): Build productMap (1 lần)
-//   - O(n): Loop qua orders
-//   - O(k): Loop qua items mỗi order (k thường nhỏ, VD: 10)
-//   - O(1): Mỗi lookup trong Map (không tính vào complexity chính)
-// 💡 VD: 1000 orders × 1000 users × 10 items × 500 products
-// 💡 = 1,000 (build userMap) + 500 (build productMap) + (1000 × 10) (lookups)
-// 💡 = 11,500 operations!
-// 💡 Nhanh hơn cách trên ~400,000 lần! ⚡
-// ⏱️ Thời gian: Chạy xong trong vài GIÂY thay vì vài PHÚT!
-// 🚀 User experience: Page load nhanh, mượt mà!
-````
+```
 
-**💪 Level Up Senior/Staff:**
+Hoặc:
 
-- 🧠 **Hiểu internal**: Hash table, collision resolution, V8 optimization
-- 📊 **Profile performance**: Chrome DevTools, measure actual impact
-- 🎯 **Trade-offs**: Memory vs Speed, Readability vs Performance
-- 🔬 **Advanced**: WeakMap/WeakSet cho memory management, TypedArray cho numeric data
-- 📚 **Algorithm knowledge**: Biết khi nào O(n log n) sort tốt hơn O(n) linear scan
+```ts
+const safeCounts: Record<string, number> = Object.create(null);
+```
 
----
+Khi đọc object thường, ưu tiên own property:
 
-**🎓 Final Advice:**
+```ts
+if (Object.hasOwn(dict, key)) {
+  // key là own property, không phải từ prototype chain
+}
+```
 
-> "Premature optimization is the root of all evil" - Donald Knuth
->
-> ⚠️ **NHƯNG**: Biết Big O để chọn đúng data structure từ đầu ≠ premature optimization
->
-> ✅ **Luôn**: Profile trước khi optimize, measure impact, document trade-offs!
+### 4.5. React state với `Set`
+
+❌ Mutate `Set` cũ: React có thể không render lại vì reference không đổi.
+
+```tsx
+setSelectedIds((prev) => {
+  prev.add(id);
+  return prev;
+});
+```
+
+✅ Tạo reference mới:
+
+```tsx
+setSelectedIds((prev) => {
+  const next = new Set(prev);
+  next.add(id);
+  return next;
+});
+```
+
+Toggle selection:
+
+```tsx
+function toggleId(id: number) {
+  setSelectedIds((prev) => {
+    const next = new Set(prev);
+
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+
+    return next;
+  });
+}
+```
+
+### 4.6. React memoization cho membership check
+
+```tsx
+type Row = { id: number; name: string };
+
+function UserTable({
+  rows,
+  selectedIds,
+}: {
+  rows: Row[];
+  selectedIds: number[];
+}) {
+  const selectedIdSet = React.useMemo(
+    () => new Set(selectedIds),
+    [selectedIds],
+  );
+
+  return (
+    <tbody>
+      {rows.map((row) => (
+        <tr key={row.id} data-selected={selectedIdSet.has(row.id)}>
+          <td>{row.name}</td>
+        </tr>
+      ))}
+    </tbody>
+  );
+}
+```
+
+💡 `useMemo` chỉ có ích nếu `selectedIds` reference ổn định và membership check xảy ra nhiều lần trong render. Nếu list nhỏ, code đơn giản có thể tốt hơn.
+
+### 4.7. `unshift` nhiều lần vs `push` rồi `reverse`
+
+❌ `unshift` trong loop dễ tạo O(n²):
+
+```ts
+const result: number[] = [];
+
+for (const item of items) {
+  result.unshift(item);
+}
+```
+
+✅ `push` O(1) amortized rồi `reverse` O(n):
+
+```ts
+const result: number[] = [];
+
+for (const item of items) {
+  result.push(item);
+}
+
+result.reverse();
+```
+
+## 5. 🏭 Production Notes / React Implications
+
+- **State normalization:** Với entities, cân nhắc `{ ids: string[]; byId: Record<string, Entity> }` hoặc `Map` nội bộ để lookup/update rõ hơn.
+- **React reference equality:** Không mutate `Array`, `Object`, `Map`, `Set` trong state. Tạo reference mới để React render và memoization hoạt động đúng.
+- **Memoization:** `useMemo(() => new Set(ids), [ids])` hợp lý khi membership check lặp lại trong render hoặc data lớn.
+- **API/SSR/localStorage boundary:** JSON ưu tiên `Array`/plain `Object`. `Map`/`Set` nên convert ở boundary.
+- **Performance:** Chỉ tối ưu khi có hot path thật: virtualized table, autocomplete lớn, drag/drop, filter/search liên tục, real-time updates.
+- **Security:** Với dictionary nhận key từ input, dùng validation, `Object.hasOwn`, `Object.create(null)` hoặc `Map` để giảm prototype pollution risk.
+- **Memory:** `Map`/`Set` có overhead. Với list nhỏ hoặc one-off iteration, `Array` thường đơn giản và đủ nhanh.
+- **Engine behavior:** Object fixed shape thường được optimize tốt; add/delete dynamic nhiều có thể làm engine deopt. Sparse arrays cũng có thể chậm hơn packed arrays.
+- **Testing:** Test duplicate IDs, missing keys, empty list, object keys, numeric-string key conversion, và update immutable trong React.
+
+## 6. ⚠️ Common Pitfalls
+
+- ❌ Nói `Map`/`Set` “luôn O(1)” thay vì “O(1) average”.
+- ❌ Dùng `array.includes()` bên trong loop lớn rồi vô tình tạo O(n²).
+- ❌ Dedupe object bằng `new Set(objects)` và tưởng rằng nó so sánh deep value.
+- ❌ Mutate `Map`/`Set` trong React state rồi return cùng reference.
+- ❌ Dùng `delete obj.key` liên tục trong hot path khiến object shape thay đổi.
+- ❌ Dùng object dictionary với untrusted keys mà không nghĩ tới prototype pollution.
+- ❌ Quên `Object.keys(obj).length` là O(n), không giống `map.size`.
+- ❌ Tạo sparse array bằng cách gán index quá xa rồi kỳ vọng performance như packed array.
+- ❌ Convert `Map<number, T>` sang object và quên rằng key number thành string.
+- ❌ Tối ưu sớm: đổi mọi array nhỏ sang map/set làm code khó đọc hơn mà không có bottleneck thật.
+
+## 7. ✅ Decision Guide or Checklist
+
+### Chọn cấu trúc nào?
+
+| Nhu cầu | Chọn | Lý do |
+|---|---|---|
+| Render list theo thứ tự | `Array` | Tự nhiên cho `.map()` và UI ordering |
+| Truy cập theo index | `Array` | O(1), API đơn giản |
+| Tìm item theo `id` nhiều lần | `Map` hoặc `Record` | Tránh scan O(n) lặp lại |
+| Key là object/function/Date | `Map` | Object không giữ object key đúng nghĩa |
+| Check membership nhiều lần | `Set` | `.has()` O(1) average |
+| Dedupe primitive values | `Set` | Ngắn và O(n) tổng |
+| Dedupe object theo id | `Map` hoặc `Set` theo id | Không phụ thuộc reference object |
+| Gửi qua API/JSON | `Object`/`Array` | Serialize trực tiếp |
+| Config/props/API payload | `Object` | Plain shape dễ đọc và dễ debug |
+| Dynamic add/delete nhiều | `Map` | API rõ, ít phụ thuộc object shape |
+| Dictionary với untrusted keys | `Map` hoặc `Object.create(null)` | Giảm prototype pollution risk |
+| Metadata gắn với object lifecycle | `WeakMap` | Không giữ object khỏi GC |
+
+### Checklist trước khi tối ưu
+
+```txt
+□ Dữ liệu có đủ lớn hoặc path có đủ nóng không?
+□ Lookup/search có lặp lại nhiều lần không?
+□ Có cần giữ thứ tự render không?
+□ Key là primitive hay object reference?
+□ Có đi qua JSON/API/SSR/localStorage boundary không?
+□ React state update có tạo reference mới không?
+□ Có rủi ro prototype pollution từ user input không?
+□ Có test cho duplicate, missing key, empty list, numeric key không?
+□ Đã đo bằng profiler/benchmark trong context thật chưa?
+```
+
+## 8. 🗣️ Short Interview Answer
+
+Theo em, Big O ở nhóm `Map`, `Set`, `Array`, `Object` chủ yếu giúp mình chọn data structure theo access pattern. `Array` rất tốt cho list có thứ tự và render UI, truy cập index O(1), nhưng search bằng `find/includes/indexOf` là O(n). Nếu lookup theo `id` nhiều lần, em thường normalize sang `Map` hoặc `Record` để tránh scan lặp lại.
+
+`Map` và `Set` thường có `get/has/set/delete` O(1) trung bình nhờ hash table: key được hash ra bucket index rồi truy cập trực tiếp. Nhưng em sẽ nói rõ đây là average case, vì collision hoặc engine implementation có thể làm worst case xấu hơn. `Object` cũng O(1) average cho property access và rất hợp cho JSON/config/API payload, nhưng key chỉ là string/symbol và phải cẩn thận prototype pollution.
+
+Trong React, điểm quan trọng là không mutate array/object/map/set tại chỗ trong state. React dựa vào reference equality, nên phải tạo reference mới. Em chỉ đổi sang `Map`/`Set` khi lookup hoặc membership check thật sự lặp lại trong hot path; còn với list nhỏ, readability thường quan trọng hơn.
+
+## 9. 🧾 Ghi nhớ nhanh
+
+- `Array.find/includes/indexOf` là O(n); dùng trong loop có thể thành O(n²).
+- `Array.push/pop` là O(1) amortized; `shift/unshift/splice` đầu/giữa là O(n).
+- `Map`/`Set` lookup là O(1) average nhờ hash table, không phải guarantee tuyệt đối.
+- Collision làm bucket dài hơn, worst case có thể tiến tới O(n).
+- `Object` tốt cho plain data và JSON; `Map` tốt cho dynamic dictionary/cache.
+- `Object.keys(obj).length` là O(n); `map.size` và `set.size` là O(1).
+- `Set<object>` so sánh bằng reference, không so sánh deep value.
+- React state với `Array/Object/Map/Set`: update immutable, tạo reference mới.
+- Dictionary từ user input: cân nhắc `Map`, `Object.create(null)`, `Object.hasOwn`.
+- Tối ưu theo access pattern và profiling, không theo cảm giác.
+
+## 10. 📖 Giải thích các thuật ngữ trong topic
+
+- `Big O`: Ký hiệu mô tả tốc độ tăng chi phí khi input lớn lên.
+- `O(1)`: Chi phí gần như không đổi theo kích thước dữ liệu.
+- `O(n)`: Chi phí tăng tuyến tính theo số phần tử.
+- `O(n²)`: Chi phí tăng theo bình phương, thường do loop lồng nhau hoặc search tuyến tính trong loop.
+- `O(n log n)`: Chi phí thường gặp ở thuật toán sort hiệu quả.
+- `Amortized O(1)`: Trung bình nhiều lần thao tác là O(1), dù một vài lần có thể đắt hơn, ví dụ array resize khi `push`.
+- `Hash table`: Cấu trúc dùng hash để tìm bucket, là mental model quan trọng cho `Map`/`Set`.
+- `Hash function`: Hàm chuyển key/value thành hash code để chọn bucket.
+- `Bucket`: Vị trí lưu entry trong hash table.
+- `Collision`: Nhiều key rơi vào cùng bucket, khiến lookup cần thêm bước xử lý.
+- `Insertion order`: Thứ tự phần tử được thêm vào, được `Map`/`Set` giữ khi iterate.
+- `Prototype chain`: Chuỗi prototype mà object có thể tra cứu property khi own property không tồn tại.
+- `Prototype pollution`: Lỗi bảo mật khi input thay đổi prototype của object, có thể ảnh hưởng toàn app.
+- `Object shape`: Cấu trúc property mà JavaScript engine dùng để tối ưu object.
+- `Deopt`: Khi engine bỏ tối ưu đã áp dụng vì object/code thay đổi theo hướng khó tối ưu.
+- `Sparse array`: Array có nhiều hole do index không liên tục, có thể làm engine dùng representation chậm hơn.
+- `Reference equality`: Hai object/array/map/set chỉ bằng nhau nếu cùng reference, không phải cùng nội dung.
+- `Structural sharing`: Tạo object mới nhưng tái sử dụng phần không đổi, giúp immutable update hiệu quả.
+- `Serialization boundary`: Ranh giới cần chuyển dữ liệu sang dạng serialize được, ví dụ JSON qua API, SSR payload, localStorage.
+- `Hot path`: Đoạn code chạy rất thường xuyên hoặc ảnh hưởng trực tiếp tới trải nghiệm, đáng profiling và tối ưu.
