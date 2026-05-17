@@ -593,3 +593,27 @@ Em nghĩ xử lý date/time tốt nhất là phải tách rõ storage, business 
 Theo em, lỗi hay gặp nhất là parse string không rõ timezone như `"15/01/2024"` hoặc `"2024-01-15 10:00"`, dùng `Date` mutable mà không clone, nhầm month zero-indexed, hoặc hardcode offset nên sai ở DST. Với scheduling hoặc recurring events, em sẽ lưu thêm IANA timezone như `America/New_York`, vì offset không đủ để biểu diễn rule theo mùa.
 
 Trong frontend production, em cũng để ý React/SSR: server và client có thể format khác timezone gây hydration mismatch. Với list lớn thì em cache `Intl.DateTimeFormat`. Với rule quan trọng như expiry/payment/flash sale, client chỉ display, server vẫn là nguồn sự thật.
+
+---
+
+## 🧠 Ghi nhớ nhanh
+
+- ✅ Lưu API/database bằng UTC ISO 8601 hoặc timestamp.
+- ✅ Hiển thị bằng locale/timezone của user.
+- ✅ Date-only và datetime là hai bài toán khác nhau.
+- ✅ IANA timezone như `Asia/Ho_Chi_Minh` tốt hơn hardcode offset.
+- ✅ DST làm offset thay đổi theo mùa.
+- ✅ `Date` mutable, cần clone khi thao tác.
+- ✅ SSR có thể hydration mismatch nếu server/client timezone khác nhau.
+- ✅ Server là nguồn sự thật cho expiry/payment/flash sale.
+
+## 📖 Giải thích các thuật ngữ trong topic
+
+- **UTC**: timezone chuẩn tham chiếu toàn cầu.
+- **ISO 8601**: format date/time chuẩn như `2026-05-17T10:00:00Z`.
+- **Timestamp**: số milliseconds/seconds từ Unix epoch.
+- **Timezone**: vùng giờ có rule lịch sử/DST, ví dụ `America/New_York`.
+- **Offset**: độ lệch so với UTC, ví dụ `+07:00`.
+- **DST**: daylight saving time, làm offset thay đổi theo mùa.
+- **Locale**: quy ước hiển thị theo ngôn ngữ/vùng.
+- **Temporal**: API JavaScript mới hơn để xử lý date/time rõ ràng hơn `Date`.
