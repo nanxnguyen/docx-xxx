@@ -1088,3 +1088,439 @@ WebSocket giữ kết nối 2 chiều liên tục. SSE là server gửi một ch
 - Không handle token refresh khi socket sống lâu.
 
 ---
+
+## Topic36 — Hashing, Encryption & Digital Signatures
+
+**Interviewer muốn nghe**
+
+- Bạn phân biệt hash, encryption, signature.
+- Bạn biết frontend không giữ secret an toàn.
+- Bạn không tự thiết kế crypto.
+
+**Giải thích dễ hiểu**
+
+Hash tạo dấu vân tay dữ liệu. Encryption giấu nội dung và có thể giải mã. Digital signature xác minh dữ liệu do đúng người/key ký.
+
+**Nói mẫu**
+
+> Em phân biệt rõ hashing, encryption và signature. Hash là one-way, dùng để kiểm tra toàn vẹn như checksum hoặc password hash ở backend. Encryption dùng để mã hóa/giải mã nội dung. Digital signature dùng private key để ký và public key để verify, ví dụ JWT signature. Trên frontend, em không đặt secret key vì user có thể inspect bundle, nên crypto nhạy cảm phải nằm ở backend hoặc secure environment.
+
+**Điểm senior**
+
+- Password nên hash với salt và slow algorithm ở backend.
+- JWT thường là signed, không nhất thiết encrypted.
+- HTTPS bảo vệ data in transit.
+
+**Lỗi cần tránh**
+
+- Gọi hash là encryption.
+- Tự viết thuật toán crypto.
+- Đặt secret trong frontend env public.
+
+---
+
+## Topic37 — Date & Time Handling
+
+**Interviewer muốn nghe**
+
+- Bạn biết date/time khó vì timezone, DST, locale.
+- Bạn lưu/trao đổi data theo chuẩn rõ ràng.
+- Bạn format ở UI theo locale.
+
+**Giải thích dễ hiểu**
+
+Cùng một thời điểm có thể hiển thị khác nhau theo timezone. Ngày tháng còn bị ảnh hưởng bởi DST và format địa phương.
+
+**Nói mẫu**
+
+> Với date/time, em cố tách storage và display. Khi trao đổi với API, em ưu tiên ISO UTC hoặc timestamp rõ timezone. Khi hiển thị, em format theo locale/timezone của user hoặc business rule. Em tránh parse date string mơ hồ như `01/02/2024` vì mỗi locale hiểu khác nhau. Với date range, booking, report, em đặc biệt cẩn thận DST và inclusive/exclusive boundary.
+
+**Điểm senior**
+
+- UTC cho instant, local date cho ngày lịch business.
+- DST làm cộng ngày bằng milliseconds dễ sai.
+- Timezone phải là requirement rõ.
+
+**Lỗi cần tránh**
+
+- Parse date string không timezone.
+- Lưu local time mơ hồ.
+- Cộng ngày bằng `24*60*60*1000` qua DST.
+
+---
+
+## Topic38 — Build Tools: Vite, Webpack, Rollup, SWC, Babel, Turbopack, esbuild
+
+**Interviewer muốn nghe**
+
+- Bạn biết mỗi tool phục vụ vai trò khác nhau.
+- Bạn chọn tool theo project constraint.
+- Bạn không đổi tool chỉ vì trend.
+
+**Giải thích dễ hiểu**
+
+Build tools giúp dev server, transform, bundle, minify và optimize code.
+
+**Nói mẫu**
+
+> Em chọn build tool theo use case. Vite rất tốt cho modern app và dev server nhanh nhờ native ESM. Webpack mạnh với legacy/complex plugin ecosystem. Rollup hợp build library vì output sạch và tree-shaking tốt. esbuild/SWC rất nhanh cho transform/minify. Turbopack gắn nhiều với Next ecosystem. Nhưng em không đổi tool chỉ vì “nhanh”; em kiểm plugin, production build, CI, source map, compatibility và migration cost.
+
+**Điểm senior**
+
+- Dev speed khác production build quality.
+- Plugin ecosystem là constraint lớn.
+- Library build khác app build.
+
+**Lỗi cần tránh**
+
+- Chỉ benchmark dev server.
+- Không test production build.
+- Bỏ qua plugin/loader edge cases.
+
+---
+
+## Topic39 — JavaScript Design Patterns for Frontend
+
+**Interviewer muốn nghe**
+
+- Bạn hiểu pattern là giải pháp cho vấn đề lặp lại.
+- Bạn dùng pattern để giảm complexity, không khoe kiến thức.
+- Bạn liên hệ được UI/API/state.
+
+**Giải thích dễ hiểu**
+
+Design pattern là cách đặt tên cho những cách tổ chức code hay dùng khi gặp vấn đề tương tự.
+
+**Nói mẫu**
+
+> Em dùng design pattern khi nó giải quyết complexity thật. Factory hợp khi cần tạo object/service với setup ẩn. Observer/PubSub hợp event system hoặc subscription. Strategy hợp khi có nhiều thuật toán cùng interface, ví dụ payment/export/sort. Adapter hợp khi API response khác shape UI cần. Em tránh áp dụng pattern chỉ để code trông advanced vì over-engineering làm team maintain khó hơn.
+
+**Điểm senior**
+
+- Pattern phải đi kèm problem.
+- React patterns cũng có tradeoff: compound, render props, HOC, custom hooks.
+- Simplicity vẫn là ưu tiên.
+
+**Lỗi cần tránh**
+
+- Over-engineering.
+- Dùng singleton/global state gây test khó.
+- Pattern làm code khó đọc hơn vấn đề.
+
+---
+
+## Topic40 — Microfrontend & Monorepo
+
+**Interviewer muốn nghe**
+
+- Bạn hiểu microfrontend giải quyết org scale.
+- Bạn biết tradeoff runtime integration.
+- Bạn phân biệt monorepo và microfrontend.
+
+**Giải thích dễ hiểu**
+
+Microfrontend chia app thành nhiều frontend độc lập. Monorepo là cách quản lý nhiều app/package trong một repo.
+
+**Nói mẫu**
+
+> Em chỉ chọn microfrontend khi bài toán chính là team ownership và independent deployment. Nó không tự làm app nhanh hơn. Tradeoff là shared dependency, duplicate React, version drift, routing/auth/shared state phức tạp và debug runtime khó hơn. Nếu chỉ một team hoặc app chưa quá lớn, monolith modular hoặc monorepo với package boundary rõ có thể đơn giản hơn.
+
+**Điểm senior**
+
+- Module Federation cần quản lý shared deps chặt.
+- Contract shell/remote phải rõ.
+- Observability cần trace qua remote.
+
+**Lỗi cần tránh**
+
+- Chia microfrontend theo page tùy tiện.
+- Share global state lung tung.
+- Không có rollback/versioning strategy.
+
+---
+
+## Topic41 — Git Workflow & Team Collaboration
+
+**Interviewer muốn nghe**
+
+- Bạn biết Git workflow phục vụ collaboration.
+- Bạn hiểu merge/rebase/squash tradeoff.
+- Bạn biết làm PR dễ review.
+
+**Giải thích dễ hiểu**
+
+Git giúp nhiều người cùng làm code mà vẫn kiểm soát lịch sử, review và release.
+
+**Nói mẫu**
+
+> Em xem Git workflow là cách giảm conflict và làm review dễ hơn. Với feature work, em giữ PR nhỏ, commit message rõ, rebase hoặc merge theo convention team. Rebase giúp history sạch nhưng không nên rebase shared branch bừa. Squash giúp main gọn hơn nhưng mất granular commits. Khi conflict, em không chọn bừa theo file mới/cũ mà hiểu logic hai phía rồi mới resolve.
+
+**Điểm senior**
+
+- PR nhỏ tăng chất lượng review.
+- Branch strategy phải fit release model.
+- CODEOWNERS/checks giúp scale team.
+
+**Lỗi cần tránh**
+
+- PR quá lớn.
+- Rebase shared branch.
+- Resolve conflict không hiểu business logic.
+
+---
+
+## Topic42 — Frontend System Design
+
+**Interviewer muốn nghe**
+
+- Bạn thiết kế frontend như một hệ thống.
+- Bạn không chỉ vẽ component tree.
+- Bạn nghĩ tới data flow, cache, auth, error, monitoring.
+
+**Giải thích dễ hiểu**
+
+Frontend system design là thiết kế cách UI, API, state, cache, auth, rendering và monitoring phối hợp.
+
+**Nói mẫu**
+
+> Khi design frontend system, em bắt đầu từ user flow và data flow: màn hình cần data gì, data fresh tới mức nào, loading/error/empty state ra sao, permission/auth thế nào, cache ở client/CDN/server layer nào. Sau đó em chọn rendering strategy, state ownership, API layer, retry/cancel, error boundary, monitoring và rollout. Em không chỉ vẽ component tree vì production thường hỏng ở stale data, network failure, permission hoặc thiếu observability.
+
+**Điểm senior**
+
+- Nêu tradeoff UX, correctness, performance, security, maintainability.
+- Có fallback và failure mode.
+- Có logging/RUM/error tracking.
+
+**Lỗi cần tránh**
+
+- Bỏ qua auth/permission.
+- Không nói cache invalidation.
+- Không có plan khi API fail/chậm.
+
+---
+
+## Topic43 — Component Libraries Comparison
+
+**Interviewer muốn nghe**
+
+- Bạn chọn library theo constraint, không theo demo đẹp.
+- Bạn biết headless vs styled.
+- Bạn quan tâm a11y, customization, bundle, design system.
+
+**Giải thích dễ hiểu**
+
+Component library cung cấp UI component có sẵn như button, modal, table, form control.
+
+**Nói mẫu**
+
+> Em chọn component library theo product và team. Nếu cần ship nhanh với UI đầy đủ, MUI/AntD có lợi. Nếu team có design system riêng và cần control markup/style, headless như Radix hoặc React Aria hợp hơn. Em đánh giá accessibility, theme/token support, customization, bundle size, docs, ecosystem và khả năng maintain lâu dài, không chỉ nhìn demo đẹp.
+
+**Điểm senior**
+
+- Headless cho control cao nhưng cần tự style nhiều.
+- Styled library nhanh nhưng dễ lock-in visual system.
+- Data grid/form component cần kiểm performance/a11y kỹ.
+
+**Lỗi cần tránh**
+
+- Chọn theo trend.
+- Override CSS quá nhiều làm maintain khó.
+- Không kiểm keyboard/screen reader behavior.
+
+---
+
+## Topic44 — Code Quality & Standards
+
+**Interviewer muốn nghe**
+
+- Bạn hiểu lint/format/review là guardrail.
+- Bạn tránh style war.
+- Bạn biết CI enforce quality.
+
+**Giải thích dễ hiểu**
+
+Code quality là bộ rule và quy trình giúp code nhất quán, ít bug và dễ review hơn.
+
+**Nói mẫu**
+
+> Em xem ESLint, Prettier và code review là guardrail cho team. Prettier xử lý format để tránh tranh luận style. ESLint nên tập trung vào bug/risk/maintainability, không bật quá nhiều rule gây noise. Code review nên ưu tiên correctness, edge cases, tests, performance/security risk thay vì sở thích cá nhân. Trong CI, em muốn có lint, typecheck, test và build để tránh regression.
+
+**Điểm senior**
+
+- Rule tốt là rule team tin và tuân thủ.
+- Auto-fix càng nhiều càng tốt.
+- Review checklist nên theo risk.
+
+**Lỗi cần tránh**
+
+- Rule quá nhiều làm team ignore.
+- Review nitpick style đã có Prettier.
+- Không chạy check trong CI.
+
+---
+
+## Topic45 — CSS Architecture & Modern Styling
+
+**Interviewer muốn nghe**
+
+- Bạn biết CSS scale khó vì cascade/specificity/global leak.
+- Bạn chọn approach theo team/design system.
+- Bạn hiểu design tokens/responsive strategy.
+
+**Giải thích dễ hiểu**
+
+CSS architecture giúp style không rối khi app lớn lên.
+
+**Nói mẫu**
+
+> CSS architecture quan trọng vì app lớn dễ gặp global leak, specificity war và design drift. Em chọn approach theo context: CSS Modules cho scoped styles đơn giản, utility CSS cho tốc độ và consistency, CSS-in-JS khi cần theme dynamic hoặc colocated styles, headless + tokens khi có design system nghiêm túc. Dù dùng gì, em muốn có design tokens cho color/spacing/typography và responsive rules rõ.
+
+**Điểm senior**
+
+- Cascade layers giúp quản lý priority.
+- Tokens giúp consistency cross-platform.
+- A11y/responsive là một phần của styling.
+
+**Lỗi cần tránh**
+
+- Hardcode màu/spacing khắp nơi.
+- Specificity war.
+- Global CSS leak giữa component.
+
+---
+
+## Topic46 — Keycloak
+
+**Interviewer muốn nghe**
+
+- Bạn hiểu Keycloak là IdP/auth server.
+- Bạn biết realm/client/role/token flow.
+- Bạn hiểu frontend không tự quyết định quyền cuối cùng.
+
+**Giải thích dễ hiểu**
+
+Keycloak quản lý login, SSO, token, role và permission cho ứng dụng.
+
+**Nói mẫu**
+
+> Em hiểu Keycloak là identity provider. Với SPA hiện đại, em ưu tiên Authorization Code Flow với PKCE thay vì implicit flow. Frontend dùng access token để gọi API, refresh token để lấy token mới nếu kiến trúc cho phép. UI có thể ẩn/hiện theo role, nhưng backend vẫn phải validate permission. Em cũng quan tâm token storage, silent renew, logout nhiều tab và token expiry handling.
+
+**Điểm senior**
+
+- PKCE bảo vệ SPA tốt hơn implicit.
+- Role trong token phục vụ UX, không thay backend authz.
+- Refresh/session strategy phải rõ.
+
+**Lỗi cần tránh**
+
+- Dùng implicit flow cũ.
+- Lưu token sai chỗ.
+- Frontend tin role mà backend không check.
+
+---
+
+## Topic47 — Form Handling & Validation
+
+**Interviewer muốn nghe**
+
+- Bạn biết form production phức tạp hơn input/submit.
+- Bạn hiểu validation client và server.
+- Bạn quan tâm UX/a11y/error mapping.
+
+**Giải thích dễ hiểu**
+
+Form cần quản lý value, touched/dirty, validation, error, loading, submit và server response.
+
+**Nói mẫu**
+
+> Với form production, em quan tâm cả client validation, server validation, error display, focus management, loading state và submit idempotency. React Hook Form tốt vì giảm re-render với uncontrolled input. Zod/Yup giúp schema validation rõ. Nhưng client validation chỉ để UX tốt hơn; server vẫn phải validate. Khi server trả field error, em map về đúng field và focus error đầu tiên để accessible.
+
+**Điểm senior**
+
+- Controlled input dễ hiểu nhưng có thể re-render nhiều.
+- Async validation cần debounce/cancel.
+- Form error phải accessible.
+
+**Lỗi cần tránh**
+
+- Chỉ validate client.
+- Mất data khi submit fail.
+- Error không gắn với field/screen reader.
+
+---
+
+## Topic48 — Internationalization & Localization
+
+**Interviewer muốn nghe**
+
+- Bạn biết i18n không chỉ dịch text.
+- Bạn xử lý date/number/currency/plural/RTL/fallback.
+- Bạn tránh hardcode string.
+
+**Giải thích dễ hiểu**
+
+i18n là chuẩn bị app để hỗ trợ nhiều ngôn ngữ/thị trường. Localization là bản cụ thể cho từng locale.
+
+**Nói mẫu**
+
+> i18n không chỉ là thay text tiếng Anh sang tiếng Việt. Em còn phải xử lý format ngày, số, tiền tệ, plural rules, fallback language, lazy load namespace và đôi khi RTL layout. Trong code, em tránh nối string thủ công vì thứ tự từ khác nhau theo ngôn ngữ. Với sort/search tên người hoặc nội dung theo locale, em dùng API như `Intl.Collator` thay vì so sánh string đơn giản.
+
+**Điểm senior**
+
+- ICU message giúp plural/gender/context.
+- Translation namespace giúp lazy load.
+- Locale ảnh hưởng date/currency/sort.
+
+**Lỗi cần tránh**
+
+- Hardcode text.
+- Concatenate translated string.
+- Quên timezone/currency.
+
+---
+
+## Topic49 — Mobile-First Development
+
+**Interviewer muốn nghe**
+
+- Bạn hiểu mobile-first là constraint thật, không chỉ media query.
+- Bạn quan tâm touch, viewport, safe area, input quirks.
+- Bạn test trên viewport/device thật.
+
+**Giải thích dễ hiểu**
+
+Mobile-first là thiết kế từ màn hình nhỏ, touch interaction và network/device constraint trước rồi mở rộng lên desktop.
+
+**Nói mẫu**
+
+> Mobile-first với em không chỉ là viết `@media`. Em thiết kế từ constraint thật: width nhỏ, touch target tối thiểu khoảng 44px, safe area, keyboard iOS, viewport unit quirks, scroll performance và network chậm hơn. Layout nên stack tự nhiên trên mobile, text không sát mép, form input đủ lớn để tránh zoom iOS. Sau đó mới scale lên tablet/desktop.
+
+**Điểm senior**
+
+- `100vh` có issue với mobile browser chrome, cân nhắc `svh/dvh`.
+- Touch event và hover behavior khác desktop.
+- Responsive image ảnh hưởng performance.
+
+**Lỗi cần tránh**
+
+- Desktop layout ép xuống mobile.
+- Button quá nhỏ.
+- Fixed bottom bar bị keyboard/safe area che.
+
+---
+
+## Câu Chốt Tổng Quan Cho Senior/Staff FE
+
+> Em nhìn frontend như một hệ thống chạy trên browser, không chỉ là React component. Một câu trả lời tốt phải nối được từ JavaScript runtime, API flow, rendering, cache, state, security, build cho tới monitoring. Khi chọn giải pháp, em luôn hỏi: data có đúng không, request có race không, UI có render quá nhiều không, token có an toàn không, cache có stale không, bundle có nặng không, và team có maintain/debug được không.
+
+---
+
+## Checklist Tự Đánh Giá Trước Interview
+
+- [ ] Tôi giải thích được topic bằng câu đơn giản trước khi nói thuật ngữ.
+- [ ] Tôi luôn có ví dụ production thật.
+- [ ] Tôi nói được tradeoff, không nói kiểu “luôn luôn dùng X”.
+- [ ] Tôi biết pitfall phổ biến của topic.
+- [ ] Tôi biết debug/đo/test bằng công cụ nào.
+- [ ] Tôi nối được topic với React/browser/API/security/performance.
+- [ ] Tôi có câu trả lời ngắn 30 giây và bản sâu 2 phút.
