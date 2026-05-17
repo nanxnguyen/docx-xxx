@@ -1,1650 +1,736 @@
-# 🎯 Q02: Data Types & Memory Management - Tổng Hợp Toàn Diện
+# 🎯 Topic02: Data Types & Memory Management
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## ⭐ Senior/Staff Summary
 
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
+> **Muốn viết JavaScript/Frontend chắc, phải hiểu 3 trục: value vs reference, equality/coercion, và object lifetime trong memory.**
 
-**"JavaScript có 8 kiểu dữ liệu: 7 nguyên thủy (không thay đổi được) + 1 phức tạp (object - thay đổi được).**
+- 📦 JavaScript có **8 kiểu dữ liệu**: 7 primitive + 1 object type.
+- 🔒 **Primitive** immutable, copy theo value: `number`, `string`, `boolean`, `undefined`, `null`, `symbol`, `bigint`.
+- 🔗 **Object/reference types** mutable, copy theo reference: object, array, function, Date, Map, Set...
+- ⚠️ `typeof null === "object"` là bug legacy; `typeof [] === "object"` nên dùng `Array.isArray`.
+- ✅ Ưu tiên `===`; chỉ dùng `value == null` khi muốn check cả `null` và `undefined`.
+- 🧠 Shallow copy chỉ copy tầng đầu; nested object vẫn share reference.
+- 🧬 Deep copy nên dùng `structuredClone` khi dữ liệu phù hợp; JSON clone có nhiều mất mát.
+- ♻️ Memory được GC tự động bằng reachability/mark-and-sweep, nhưng leak vẫn xảy ra nếu còn reference.
+- ⚛️ Trong React, reference equality quyết định render/memo; mutate state trực tiếp là nguồn bug lớn.
 
-**📦 Nguyên Thủy vs Tham Chiếu:**
-- **Nguyên thủy** (number, string, boolean, undefined, null, symbol, bigint):
-  - Lưu theo GIÁ TRỊ trong stack.
-  - Không thay đổi được → gán lại tạo giá trị mới.
-  - Copy theo giá trị → các bản sao độc lập.
-- **Tham chiếu** (object, array, function):
-  - Lưu theo THAM CHIẾU trong heap.
-  - Thay đổi được → sửa trực tiếp.
-  - Copy theo tham chiếu → trỏ đến cùng object.
+## 🧠 Key Mental Model
 
-**🔑 Khái Niệm Cốt Lõi:**
-1. **== vs ===**:
-   - `==`: So sánh lỏng → chuyển đổi kiểu tự động (vd: `"5" == 5` → true).
-   - `===`: So sánh nghiêm ngặt → không chuyển kiểu (vd: `"5" === 5` → false).
-   - Thực hành tốt: Luôn dùng `===` trừ khi kiểm tra null/undefined.
+### 1. Primitive là value, object là reference
 
-2. **null vs undefined**:
-   - `undefined`: Biến chưa được assign value (default).
-   - `null`: Intentionally empty value (developer set).
-   - `typeof null` → "object" (JavaScript bug legacy).
+| Nhóm | Lưu/copy | Mutability | Ví dụ |
+|---|---|---|---|
+| Primitive | Copy giá trị | Immutable | `42`, `"hi"`, `true`, `null`, `undefined`, `Symbol()`, `123n` |
+| Reference | Copy địa chỉ/reference | Mutable | `{}`, `[]`, `function`, `Date`, `Map`, `Set` |
 
-3. **Shallow Copy vs Deep Copy**:
-   - **Shallow**: Copy top-level properties only → nested objects vẫn reference.
-     ```js
-     const shallow = { ...obj }; // Spread
-     const shallow2 = Object.assign({}, obj);
-     ```
-   - **Deep**: Copy recursively tất cả levels → independent clone.
-     ```js
-     const deep = structuredClone(obj); // Native (modern)
-     const deep2 = JSON.parse(JSON.stringify(obj)); // Hack (lose functions, dates)
-     ```
-
-4. **Type Checking**:
-   - `typeof`: Check primitive types (`typeof "hello"` → "string").
-   - `instanceof`: Check object types (`[] instanceof Array` → true).
-   - `Array.isArray()`: Check arrays specifically.
-   - `Object.prototype.toString.call()`: Most accurate (e.g., `[object Date]`).
-
-**♻️ Memory Management & GC:**
-- **Stack**: Primitive values, function calls (LIFO, fast, limited size).
-- **Heap**: Objects, arrays (larger, slower, managed by GC).
-- **Garbage Collection**: Mark-and-sweep algorithm → auto free unreachable objects.
-- **Memory Leaks**:
-  - Global variables không cleanup.
-  - Event listeners không remove.
-  - Closures giữ reference đến large objects.
-  - Detached DOM nodes.
-
-**⚠️ Common Pitfalls:**
-- **Mutating objects**: `arr.push()` modify original → dùng immutable methods (`[...arr, item]`).
-- **Reference comparison**: `{} === {}` → false (khác reference). Dùng deep equality libraries (lodash.isEqual).
-- **Type coercion bugs**: `"5" + 3` → "53" (string concat), `"5" - 3` → 2 (number subtract).
-- **Falsy values**: `0`, `""`, `null`, `undefined`, `false`, `NaN` → tất cả falsy nhưng khác nhau!
-
-**💡 Senior Insights:**
-- **Immutability**: Prefer immutable operations (spread, map, filter) → easier debugging, avoid side effects.
-- **WeakMap/WeakSet**: Hold weak references → auto GC khi keys không còn reference → prevent memory leaks.
-- **structuredClone()**: Modern deep clone (support Dates, RegExp, Typed Arrays), but lose functions/symbols.
-- **Performance**: Primitive faster than objects (stack vs heap). Dùng primitives when possible.
-- **TypeScript**: Eliminate runtime type errors → catch type mistakes at compile time.
-
----
-
-> **Tổng hợp**: Primitive vs Reference, Falsy/Truthy, == vs ===, null vs undefined, Immutable vs Mutable, Deep/Shallow Copy, Type Checking, Memory Management & GC
-
----
-
-## 📖 **Table of Contents**
-
-- [I. Data Types Overview](#i-data-types-overview)
-- [II. Primitive vs Reference Values](#ii-primitive-vs-reference-values)
-- [III. Type Coercion & Comparison](#iii-type-coercion--comparison)
-- [IV. Immutability & Copying](#iv-immutability--copying)
-- [V. Type Checking Methods](#v-type-checking-methods)
-- [VI. Memory Management & GC](#vi-memory-management--gc)
-- [VII. Best Practices Summary](#vii-best-practices-summary)
-
----
-
-## **I. Data Types Overview**
-
-### **1.1. JavaScript Data Types (8 loại)**
-
-```typescript
-/**
- * ┌─────────────────────────────────────────────────────────────┐
- * │                   JAVASCRIPT DATA TYPES                      │
- * ├─────────────────────────────────────────────────────────────┤
- * │                                                              │
- * │  🔹 PRIMITIVE TYPES (7 loại - Immutable)                    │
- * │  ┌──────────────────────────────────────────────────────┐  │
- * │  │ 1. number      → 42, 3.14, NaN, Infinity             │  │
- * │  │ 2. string      → "hello", 'world', `template`        │  │
- * │  │ 3. boolean     → true, false                         │  │
- * │  │ 4. undefined   → undefined (chưa gán giá trị)        │  │
- * │  │ 5. null        → null (intentionally empty)          │  │
- * │  │ 6. symbol      → Symbol('id') (unique identifier)    │  │
- * │  │ 7. bigint      → 123456789n (số lớn hơn 2^53-1)     │  │
- * │  └──────────────────────────────────────────────────────┘  │
- * │                                                              │
- * │  🔸 COMPLEX TYPE (1 loại - Mutable)                         │
- * │  ┌──────────────────────────────────────────────────────┐  │
- * │  │ 8. object      → {}, [], Date, Map, Set, Function... │  │
- * │  └──────────────────────────────────────────────────────┘  │
- * └─────────────────────────────────────────────────────────────┘
- */
-
-// Examples của từng type
-const num: number = 42;                    // 1. number
-const str: string = 'Hello';               // 2. string
-const bool: boolean = true;                // 3. boolean
-const undef: undefined = undefined;        // 4. undefined
-const nul: null = null;                    // 5. null
-const sym: symbol = Symbol('id');          // 6. symbol
-const big: bigint = 123456789n;            // 7. bigint
-const obj: object = { name: 'John' };      // 8. object
-const arr: number[] = [1, 2, 3];           // object subtype
-const fn: Function = () => {};             // object subtype
-```
-
-### **1.2. Falsy vs Truthy Values**
-
-```typescript
-/**
- * ❌ 8 FALSY VALUES (Chỉ 8 giá trị này là falsy)
- */
-console.log(Boolean(false));      // false
-console.log(Boolean(0));          // false
-console.log(Boolean(-0));         // false
-console.log(Boolean(0n));         // false (BigInt zero)
-console.log(Boolean(''));         // false (empty string)
-console.log(Boolean(null));       // false
-console.log(Boolean(undefined));  // false
-console.log(Boolean(NaN));        // false
-
-/**
- * ✅ TRUTHY VALUES (Tất cả còn lại)
- */
-console.log(Boolean([]));         // true ⚠️ Empty array
-console.log(Boolean({}));         // true ⚠️ Empty object
-console.log(Boolean('0'));        // true ⚠️ String '0'
-console.log(Boolean('false'));    // true ⚠️ String 'false'
-console.log(Boolean(-1));         // true
-console.log(Boolean(Infinity));   // true
-
-/**
- * 🎯 PRACTICAL USAGE
- */
-// Filter falsy values
-const numbers = [0, 1, 2, 3, '', null, 4];
-const truthyNumbers = numbers.filter(Boolean); // [1, 2, 3, 4]
-
-// Default values
-function greet(name?: string) {
-  return name ? `Hello ${name}` : 'Hello Guest';
-}
-```
-
----
-
-## **II. Primitive vs Reference Values**
-
-### **2.1. Memory Storage (Stack vs Heap)**
-
-```typescript
-/**
- * ┌──────────────────────────────────────────────────────────┐
- * │           STACK (Primitives)      HEAP (Objects)         │
- * ├──────────────────────────────────────────────────────────┤
- * │  📦 Lưu giá trị trực tiếp      📍 Lưu địa chỉ (pointer)  │
- * │  ⚡ Nhanh                       🐌 Chậm hơn              │
- * │  🔒 Immutable                  🔓 Mutable               │
- * │  📏 Kích thước cố định         📐 Kích thước động       │
- * │  ✂️ Copy = Clone giá trị       🔗 Copy = Share reference │
- * └──────────────────────────────────────────────────────────┘
- */
-
-// PRIMITIVE (Stack) - Copy giá trị
-let a: number = 10;
-let b: number = a;     // b = 10 (copy giá trị)
-b = 20;                // a vẫn = 10 ✅
+```ts
+let a = 10;
+let b = a;
+b = 20;
 
 console.log(a); // 10
-console.log(b); // 20
 
-// REFERENCE (Heap) - Copy địa chỉ
-let obj1: { x: number } = { x: 10 };
-let obj2 = obj1;       // obj2 trỏ đến cùng địa chỉ
-obj2.x = 20;           // obj1.x cũng = 20 ⚠️
+const user1 = { name: "An" };
+const user2 = user1;
+user2.name = "Binh";
 
-console.log(obj1.x); // 20 (bị thay đổi!)
-console.log(obj2.x); // 20
-
-/**
- * 🔍 VISUALIZE MEMORY:
- * 
- * Stack:                    Heap:
- * ┌─────────┬─────┐        ┌──────────────┐
- * │ a       │ 10  │        │ { x: 10 }    │
- * │ b       │ 20  │        │    ↑         │
- * │ obj1    │ →   │────────┤    │         │
- * │ obj2    │ →   │────────┘ Cùng địa chỉ│
- * └─────────┴─────┘        └──────────────┘
- */
+console.log(user1.name); // "Binh" ⚠️ cùng reference
 ```
 
-### **2.2. Pass by Value vs Pass by Reference**
+### 2. Stack/Heap là mental model, không phải spec chi tiết
 
-```typescript
-// PRIMITIVE - Pass by Value
-function incrementNumber(num: number) {
-  num = num + 1;  // Chỉ thay đổi local copy
-  return num;
-}
+- **Stack**: function calls, local bindings, primitive-like values trong mental model; nhanh, theo LIFO.
+- **Heap**: objects/arrays/functions; GC quản lý lifetime.
+- JS engine có tối ưu riêng, nhưng mental model này đủ để hiểu reference, mutation và leak.
 
-let x = 10;
-const result = incrementNumber(x);
-console.log(x);      // 10 (không đổi) ✅
-console.log(result); // 11
+### 3. React quan tâm reference equality
 
-// REFERENCE - Pass by Reference
-function incrementAge(person: { age: number }) {
-  person.age = person.age + 1; // Thay đổi object gốc!
-  return person;
-}
+```tsx
+// ❌ Mutate cùng reference -> React/memo có thể không nhận ra thay đổi đúng cách
+user.settings.theme = "dark";
+setUser(user);
 
-let user = { age: 25 };
-const updatedUser = incrementAge(user);
-console.log(user.age);        // 26 (đã đổi!) ⚠️
-console.log(updatedUser.age); // 26
-
-/**
- * ✅ BEST PRACTICE: Return new object
- */
-function incrementAgeImmutable(person: { age: number }) {
-  return { ...person, age: person.age + 1 }; // Tạo object mới
-}
-
-let user2 = { age: 25 };
-const updatedUser2 = incrementAgeImmutable(user2);
-console.log(user2.age);        // 25 (không đổi) ✅
-console.log(updatedUser2.age); // 26
-```
-
----
-
-## **III. Type Coercion & Comparison**
-
-### **3.1. == vs === (Loose vs Strict Equality)**
-
-```typescript
-/**
- * === (Strict Equality)
- * - So sánh type VÀ value
- * - KHÔNG type coercion
- * - ✅ Khuyến nghị dùng mặc định
- */
-console.log(5 === 5);        // true
-console.log(5 === '5');      // false (khác type)
-console.log(0 === false);    // false (khác type)
-console.log(null === undefined); // false
-
-/**
- * == (Loose Equality)
- * - Tự động convert type (type coercion)
- * - ⚠️ Dễ gây bug, unpredictable
- */
-console.log(5 == '5');       // true (string '5' → number 5)
-console.log(0 == false);     // true (false → 0)
-console.log('' == 0);        // true ('' → 0)
-console.log([] == 0);        // true ([] → '' → 0)
-console.log([1] == 1);       // true ([1] → '1' → 1)
-
-/**
- * 🎯 EXCEPTION: null == undefined
- * Đây là cách NGẮN GỌN để check cả null VÀ undefined
- */
-let value: string | null | undefined;
-
-// ❌ Cách dài
-if (value === null || value === undefined) {}
-
-// ✅ Cách ngắn (chỉ dùng == trong case này)
-if (value == null) {} // Check cả null VÀ undefined
-
-/**
- * 📊 COERCION RULES:
- * 
- * String + Number:  '5' == 5  → '5' to number → true
- * Boolean:          0 == false → false to 0 → true
- * Object:           [] == 0 → [] to '' to 0 → true
- * null/undefined:   null == undefined → true (special)
- */
-```
-
-### **3.2. null vs undefined**
-
-```typescript
-/**
- * null:
- * - Intentionally empty (lập trình viên set)
- * - typeof null === 'object' (historical bug)
- * - Dùng khi: Biến có giá trị nhưng đang empty
- */
-let user: User | null = null; // Explicitly empty
-function findUser(id: number): User | null {
-  return database.find(id) || null; // Not found
-}
-
-/**
- * undefined:
- * - Unintentionally empty (chưa được gán)
- * - typeof undefined === 'undefined'
- * - Dùng khi: Biến chưa được khởi tạo, property không tồn tại
- */
-let age: number;              // undefined (chưa gán)
-console.log(age);             // undefined
-
-const obj = { name: 'John' };
-console.log(obj.email);       // undefined (property không tồn tại)
-
-function noReturn() {}
-console.log(noReturn());      // undefined (không return)
-
-/**
- * 🎯 BEST PRACTICES:
- */
-// ✅ Dùng null cho intentional absence
-let selectedUser: User | null = null;
-
-// ✅ Dùng undefined cho optional parameters
-function greet(name?: string) {
-  console.log(name ?? 'Guest');
-}
-
-// ✅ Nullish coalescing (??) - chỉ check null/undefined
-const age1 = 0 ?? 18;     // 0 (không fallback)
-const age2 = null ?? 18;  // 18 (fallback)
-
-// ✅ Optional chaining (?.)
-const city = user?.address?.city; // Safe navigation
-```
-
----
-
-## **IV. Immutability & Copying**
-
-### **4.1. Immutable vs Mutable**
-
-```typescript
-/**
- * 🔒 IMMUTABLE (Primitives)
- * - Không thể thay đổi sau khi tạo
- * - Mọi "thay đổi" đều tạo giá trị mới
- */
-let str: string = 'Hello';
-let newStr = str.toUpperCase(); // Tạo string mới
-console.log(str);    // 'Hello' (không đổi)
-console.log(newStr); // 'HELLO'
-
-let num: number = 10;
-let doubled = num * 2; // Tạo number mới
-console.log(num);      // 10 (không đổi)
-console.log(doubled);  // 20
-
-/**
- * 🔓 MUTABLE (Objects)
- * - Có thể thay đổi trực tiếp
- */
-let arr: number[] = [1, 2, 3];
-arr.push(4);           // Modify array gốc
-arr[0] = 10;           // Modify phần tử
-console.log(arr);      // [10, 2, 3, 4] (đã thay đổi)
-
-let obj: { name: string } = { name: 'John' };
-obj.name = 'Jane';     // Modify object gốc
-console.log(obj);      // { name: 'Jane' }
-
-/**
- * ✅ IMMUTABLE PATTERNS (Recommended)
- */
-// Array - Tạo array mới thay vì mutate
-const original = [1, 2, 3];
-const added = [...original, 4];          // [1, 2, 3, 4]
-const updated = original.map(x => x * 2); // [2, 4, 6]
-const filtered = original.filter(x => x > 1); // [2, 3]
-
-// Object - Tạo object mới
-const user = { name: 'John', age: 25 };
-const updatedUser = { ...user, age: 26 };
-const withEmail = { ...user, email: 'john@example.com' };
-
-// Object.freeze() - Làm object immutable
-const frozen = Object.freeze({ x: 10 });
-// frozen.x = 20; // ❌ Error in strict mode
-```
-
-### **4.2. Deep Copy vs Shallow Copy** 🎯
-
----
-
-#### **📝 SHALLOW COPY (Sao Chép Nông)**
-
-**💡 Định nghĩa:** Chỉ copy **cấp đầu tiên** (level 1), các nested objects/arrays vẫn **share reference** (dùng chung địa chỉ).
-
-```typescript
-/**
- * ════════════════════════════════════════════════════════════
- * 🔍 VÍ DỤ CỤ THỂ: Shallow Copy Object
- * ════════════════════════════════════════════════════════════
- */
-
-const original = {
-  name: 'John',           // ← Primitive (string) - cấp 1
-  age: 25,                // ← Primitive (number) - cấp 1
-  address: {              // ← Object (nested) - cấp 2 ⚠️
-    city: 'Ho Chi Minh',
-    country: 'Vietnam'
-  },
-  hobbies: ['coding', 'reading'] // ← Array (nested) - cấp 2 ⚠️
-};
-
-/**
- * ┌────────────────────────────────────────────────────────┐
- * │ CÁCH 1: SPREAD OPERATOR {...obj}                      │
- * └────────────────────────────────────────────────────────┘
- * ✅ Ưu điểm: Ngắn gọn, modern syntax
- * ❌ Nhược điểm: Chỉ copy 1 tầng
- */
-const shallow1 = { ...original };
-
-/**
- * ┌────────────────────────────────────────────────────────┐
- * │ CÁCH 2: Object.assign({}, obj)                        │
- * └────────────────────────────────────────────────────────┘
- * ✅ Ưu điểm: Compatible với ES5+
- * ❌ Nhược điểm: Dài hơn spread
- */
-const shallow2 = Object.assign({}, original);
-
-/**
- * ┌────────────────────────────────────────────────────────┐
- * │ CÁCH 3: Array.slice() (CHỈ CHO ARRAYS)                │
- * └────────────────────────────────────────────────────────┘
- */
-const arr = [1, 2, [3, 4]]; // Array với nested array
-const shallowArr = arr.slice(); // Copy shallow
-
-/**
- * ════════════════════════════════════════════════════════════
- * ⚠️ VẤN ĐỀ VỚI SHALLOW COPY: Nested Objects Bị Ảnh Hưởng!
- * ════════════════════════════════════════════════════════════
- */
-
-// ✅ CẤP 1 (Primitives): OK - Tạo giá trị mới
-shallow1.name = 'Jane';
-shallow1.age = 30;
-
-console.log(original.name); // 'John' ✅ KHÔNG đổi
-console.log(shallow1.name); // 'Jane' ✅ Chỉ shallow1 đổi
-
-// ❌ CẤP 2 (Nested Objects): NGUY HIỂM - Vẫn share reference!
-shallow1.address.city = 'Ha Noi';
-shallow1.hobbies.push('swimming');
-
-console.log(original.address.city); // 'Ha Noi' ❌ ORIGINAL BỊ THAY ĐỔI!
-console.log(original.hobbies);      // ['coding', 'reading', 'swimming'] ❌
-
-/**
- * 🔍 VISUALIZE MEMORY (Shallow Copy):
- * 
- * ┌─────────────────────────────────────────────────────────┐
- * │                    STACK MEMORY                         │
- * ├─────────────────────────────────────────────────────────┤
- * │ original    →  { name: 'John', address: → [Heap #1] }  │
- * │ shallow1    →  { name: 'Jane', address: → [Heap #1] }  │ ← Cùng trỏ đến Heap #1
- * └─────────────────────────────────────────────────────────┘
- * 
- * ┌─────────────────────────────────────────────────────────┐
- * │                    HEAP MEMORY                          │
- * ├─────────────────────────────────────────────────────────┤
- * │ [Heap #1]: { city: 'Ha Noi', country: 'Vietnam' }      │ ← Cả 2 dùng chung!
- * └─────────────────────────────────────────────────────────┘
- * 
- * 💡 KẾT LUẬN:
- * - name, age (primitives) → Copy riêng biệt ✅
- * - address (object) → Share reference ❌
- */
-```
-
----
-
-#### **🔍 DEEP COPY (Sao Chép Sâu)**
-
-**💡 Định nghĩa:** Copy **TOÀN BỘ** tất cả cấp (nested objects/arrays cũng được clone), tạo object **hoàn toàn độc lập**.
-
-```typescript
-/**
- * ════════════════════════════════════════════════════════════
- * ✅ CÁCH 1: structuredClone() (MODERN - KHUYẾN NGHỊ ⭐⭐⭐⭐⭐)
- * ════════════════════════════════════════════════════════════
- * 
- * 📅 Browser support: Chrome 98+, Firefox 94+, Safari 15.4+
- * ✅ Ưu điểm:
- *    - Native API (không cần library)
- *    - Copy được: Date, Map, Set, RegExp, ArrayBuffer, TypedArrays
- *    - Xử lý circular references (tham chiếu vòng)
- * ❌ Nhược điểm:
- *    - KHÔNG copy functions
- *    - KHÔNG copy symbols
- *    - KHÔNG copy prototype chain
- */
-
-const original = {
-  name: 'John',
-  address: { 
-    city: 'Ho Chi Minh',
-    coords: { lat: 10.8, lng: 106.6 } // Nested level 3
-  },
-  hobbies: ['coding', 'reading'],
-  birthDate: new Date('1990-01-01') // ✅ Date được copy đúng
-};
-
-const deep1 = structuredClone(original);
-
-// Test: Thay đổi nested object level 3
-deep1.address.coords.lat = 21.0; // Ha Noi latitude
-
-console.log(original.address.coords.lat); // 10.8 ✅ KHÔNG đổi!
-console.log(deep1.address.coords.lat);    // 21.0 ✅ Chỉ deep1 đổi
-
-/**
- * ════════════════════════════════════════════════════════════
- * ⚠️ CÁCH 2: JSON.parse(JSON.stringify()) (CÓ GIỚI HẠN)
- * ════════════════════════════════════════════════════════════
- * 
- * ✅ Ưu điểm:
- *    - Đơn giản, 1 dòng code
- *    - Compatible mọi browser
- * ❌ Nhược điểm (MẤT DỮ LIỆU):
- *    - KHÔNG copy functions → Biến thành undefined
- *    - KHÔNG copy undefined → Biến thành null
- *    - KHÔNG copy symbols → Bị bỏ qua
- *    - Date → Thành string (phải parse lại)
- *    - RegExp → Thành empty object {}
- *    - Infinity/NaN → Thành null
- *    - Circular references → Throw error
- */
-
-const objectWithFunctions = {
-  name: 'John',
-  greet: function() { return 'Hi'; }, // ❌ Function
-  age: undefined,                     // ❌ undefined
-  symbol: Symbol('id'),               // ❌ Symbol
-  date: new Date(),                   // ⚠️ → String
-  regex: /test/g,                     // ❌ → {}
-  special: NaN,                       // ❌ → null
-  address: { city: 'HCM' }            // ✅ OK
-};
-
-const deep2 = JSON.parse(JSON.stringify(objectWithFunctions));
-
-console.log(deep2);
-/**
- * 📤 OUTPUT:
- * {
- *   name: 'John',
- *   // greet: BIẾN MẤT! ❌
- *   // age: BIẾN MẤT! (undefined bị skip) ❌
- *   // symbol: BIẾN MẤT! ❌
- *   date: '2024-01-15T10:30:00.000Z', // ⚠️ String, không phải Date
- *   regex: {},                         // ❌ Empty object
- *   special: null,                     // ❌ NaN → null
- *   address: { city: 'HCM' }           // ✅ OK
- * }
- * 
- * 💡 KẾT LUẬN: Chỉ dùng JSON method cho PLAIN OBJECTS (không có functions/Date/RegExp)
- */
-
-/**
- * ════════════════════════════════════════════════════════════
- * 🛠️ CÁCH 3: CUSTOM RECURSIVE FUNCTION (LINH HOẠT NHẤT)
- * ════════════════════════════════════════════════════════════
- * 
- * ✅ Ưu điểm:
- *    - Copy được MỌI THỨ (functions, Date, RegExp...)
- *    - Tùy chỉnh logic theo nhu cầu
- *    - Xử lý circular references (nếu implement thêm)
- * ❌ Nhược điểm:
- *    - Phức tạp, dễ có bug
- *    - Performance chậm hơn native methods
- *    - Phải maintain code
- */
-
-function deepClone<T>(obj: T, hash = new WeakMap()): T {
-  // ────────────────────────────────────────────────────────
-  // BƯỚC 1: Base cases - Trả về ngay nếu không phải object
-  // ────────────────────────────────────────────────────────
-  
-  // 1.1. null hoặc primitive → Trả về ngay
-  if (obj === null || typeof obj !== 'object') {
-    return obj; // null, number, string, boolean, undefined
-  }
-  
-  // 1.2. Check circular reference (tránh infinite loop)
-  if (hash.has(obj)) {
-    return hash.get(obj); // Đã clone rồi, trả về bản clone cũ
-  }
-  
-  // ────────────────────────────────────────────────────────
-  // BƯỚC 2: Special cases - Xử lý built-in objects
-  // ────────────────────────────────────────────────────────
-  
-  // 2.1. Date → Tạo Date mới với cùng timestamp
-  if (obj instanceof Date) {
-    return new Date(obj.getTime()) as any;
-  }
-  
-  // 2.2. RegExp → Tạo RegExp mới với cùng pattern + flags
-  if (obj instanceof RegExp) {
-    return new RegExp(obj.source, obj.flags) as any;
-  }
-  
-  // 2.3. Array → Clone từng phần tử (recursive)
-  if (obj instanceof Array) {
-    const arrCopy: any[] = [];
-    hash.set(obj, arrCopy); // Lưu vào hash trước khi recursive
-    
-    obj.forEach((item, index) => {
-      arrCopy[index] = deepClone(item, hash); // Recursive cho mỗi item
-    });
-    
-    return arrCopy as any;
-  }
-  
-  // 2.4. Map → Clone Map
-  if (obj instanceof Map) {
-    const mapCopy = new Map();
-    hash.set(obj, mapCopy);
-    
-    obj.forEach((value, key) => {
-      mapCopy.set(key, deepClone(value, hash));
-    });
-    
-    return mapCopy as any;
-  }
-  
-  // 2.5. Set → Clone Set
-  if (obj instanceof Set) {
-    const setCopy = new Set();
-    hash.set(obj, setCopy);
-    
-    obj.forEach(value => {
-      setCopy.add(deepClone(value, hash));
-    });
-    
-    return setCopy as any;
-  }
-  
-  // ────────────────────────────────────────────────────────
-  // BƯỚC 3: Plain Object - Clone properties
-  // ────────────────────────────────────────────────────────
-  
-  if (typeof obj === 'object') {
-    const objCopy: any = {};
-    hash.set(obj, objCopy); // Lưu vào hash
-    
-    // Clone tất cả properties (kể cả non-enumerable nếu cần)
-    Object.keys(obj).forEach(key => {
-      objCopy[key] = deepClone((obj as any)[key], hash); // Recursive
-    });
-    
-    return objCopy;
-  }
-  
-  return obj;
-}
-
-// ────────────────────────────────────────────────────────
-// 🧪 TEST CUSTOM DEEP CLONE
-// ────────────────────────────────────────────────────────
-
-const complexObject = {
-  name: 'John',
-  greet: function() { return 'Hi'; }, // ✅ Function
-  date: new Date('2024-01-01'),       // ✅ Date
-  regex: /test/gi,                    // ✅ RegExp
-  nested: {
-    deep: {
-      value: 42
-    }
-  },
-  arr: [1, [2, 3]],                   // ✅ Nested array
-  map: new Map([['key', 'value']]),   // ✅ Map
-  set: new Set([1, 2, 3])             // ✅ Set
-};
-
-const cloned = deepClone(complexObject);
-
-// Test 1: Function
-console.log(cloned.greet());              // 'Hi' ✅
-
-// Test 2: Date
-console.log(cloned.date instanceof Date); // true ✅
-cloned.date.setFullYear(2025);
-console.log(complexObject.date.getFullYear()); // 2024 ✅ Không đổi
-
-// Test 3: Nested object
-cloned.nested.deep.value = 100;
-console.log(complexObject.nested.deep.value); // 42 ✅ Không đổi
-
-/**
- * ════════════════════════════════════════════════════════════
- * 📦 CÁCH 4: LODASH _.cloneDeep() (PRODUCTION-READY ⭐⭐⭐⭐⭐)
- * ════════════════════════════════════════════════════════════
- * 
- * ✅ Ưu điểm:
- *    - Đã được test kỹ (millions of downloads)
- *    - Xử lý mọi edge cases
- *    - Performance tốt (optimized)
- *    - Copy được: functions, Date, RegExp, Map, Set, Buffer...
- *    - Xử lý circular references
- * ❌ Nhược điểm:
- *    - Cần install library (~24KB minified)
- *    - Overkill cho simple cases
- * 
- * 📦 Install: npm install lodash
- */
-
-import _ from 'lodash';
-
-const deep3 = _.cloneDeep(complexObject);
-
-// Test circular reference
-const circular: any = { a: 1 };
-circular.self = circular; // Tham chiếu vòng
-
-const clonedCircular = _.cloneDeep(circular);
-console.log(clonedCircular.self === clonedCircular); // true ✅
-console.log(clonedCircular === circular);            // false ✅
-```
-
----
-
-#### **📊 SO SÁNH CHI TIẾT: SHALLOW vs DEEP COPY**
-
-```typescript
-/**
- * ════════════════════════════════════════════════════════════════════════════
- * COMPARISON TABLE - Chọn Method Nào?
- * ════════════════════════════════════════════════════════════════════════════
- * 
- * ┌─────────────────┬──────────┬──────────┬────────────┬──────────┬───────────┐
- * │ Method          │ Nested?  │ Functions│ Date/RegExp│ Circular │Performance│
- * ├─────────────────┼──────────┼──────────┼────────────┼──────────┼───────────┤
- * │ {...obj}        │ ❌       │ ✅       │ ⚠️ Ref     │ N/A      │ ⚡⚡⚡⚡   │
- * │ Object.assign   │ ❌       │ ✅       │ ⚠️ Ref     │ N/A      │ ⚡⚡⚡⚡   │
- * │ JSON            │ ✅       │ ❌ Lost  │ ❌ String  │ ❌ Error │ ⚡⚡⚡     │
- * │ structuredClone │ ✅       │ ❌ Lost  │ ✅ Clone   │ ✅       │ ⚡⚡⚡     │
- * │ Custom function │ ✅       │ ✅       │ ✅ Clone   │ ✅*      │ ⚡⚡       │
- * │ Lodash          │ ✅       │ ✅       │ ✅ Clone   │ ✅       │ ⚡⚡⚡     │
- * └─────────────────┴──────────┴──────────┴────────────┴──────────┴───────────┘
- * 
- * * Custom function cần implement thêm logic xử lý circular refs
- * 
- * ════════════════════════════════════════════════════════════════════════════
- * 🎯 DECISION TREE - Khi Nào Dùng Gì?
- * ════════════════════════════════════════════════════════════════════════════
- * 
- *                    Cần clone object?
- *                           │
- *          ┌────────────────┴────────────────┐
- *          │                                 │
- *     Có nested?                         Không nested?
- *          │                                 │
- *    ┌─────┴─────┐                          ✅ Spread {...obj}
- *    │           │                          ✅ Object.assign()
- * Có Date/      Chỉ plain                  → Nhanh nhất!
- * RegExp/       objects?
- * Function?         │
- *    │              │
- *    │              ✅ JSON.parse(JSON.stringify())
- *    │              → Đơn giản, plain objects
- *    │
- * ┌──┴──┐
- * │     │
- * Modern  Production?
- * browser?    │
- *    │        │
- *    ✅       ✅ Lodash _.cloneDeep()
- * structuredClone()  → Battle-tested, full features
- * → Native, fast
- * 
- * ════════════════════════════════════════════════════════════════════════════
- */
-```
-
----
-
-#### **🎓 REAL-WORLD EXAMPLES (Ví Dụ Thực Tế)**
-
-```typescript
-/**
- * ════════════════════════════════════════════════════════════
- * 📘 CASE 1: React State Update (Immutable Pattern)
- * ════════════════════════════════════════════════════════════
- */
-
-interface User {
-  id: number;
-  name: string;
-  settings: {
-    theme: string;
-    notifications: boolean;
-  };
-}
-
-// ❌ WRONG: Mutate state
-function updateThemeWrong(user: User, newTheme: string) {
-  user.settings.theme = newTheme; // ❌ Mutate!
-  return user;
-}
-
-// ✅ CORRECT: Shallow copy (đủ cho case này)
-function updateThemeShallow(user: User, newTheme: string): User {
-  return {
-    ...user,                    // Copy level 1
-    settings: {                 // ⚠️ Phải copy manual nested object
-      ...user.settings,
-      theme: newTheme
-    }
-  };
-}
-
-// ✅ BETTER: Deep copy (an toàn hơn)
-function updateThemeDeep(user: User, newTheme: string): User {
-  const cloned = structuredClone(user); // Deep clone
-  cloned.settings.theme = newTheme;
-  return cloned;
-}
-
-/**
- * ════════════════════════════════════════════════════════════
- * 📘 CASE 2: Redux/Zustand Store Update
- * ════════════════════════════════════════════════════════════
- */
-
-interface StoreState {
-  users: User[];
-  currentUser: User | null;
-}
-
-// ❌ WRONG: Mutate array
-function addUserWrong(state: StoreState, newUser: User) {
-  state.users.push(newUser); // ❌ Mutate!
-  return state;
-}
-
-// ✅ CORRECT: Immutable update
-function addUserCorrect(state: StoreState, newUser: User): StoreState {
-  return {
-    ...state,
-    users: [...state.users, newUser] // ✅ Tạo array mới
-  };
-}
-
-/**
- * ════════════════════════════════════════════════════════════
- * 📘 CASE 3: API Response Clone (Avoid Side Effects)
- * ════════════════════════════════════════════════════════════
- */
-
-interface ApiResponse {
-  data: {
-    items: Array<{ id: number; name: string }>;
-    metadata: {
-      total: number;
-      page: number;
-    };
-  };
-}
-
-async function fetchData(): Promise<ApiResponse> {
-  const response = await fetch('/api/data');
-  const original = await response.json();
-  
-  // ✅ Clone để tránh cache bị mutate
-  return structuredClone(original);
-}
-
-// Usage
-const data1 = await fetchData();
-const data2 = data1; // ❌ Share reference!
-
-data2.data.items[0].name = 'Modified'; // ❌ data1 cũng bị đổi!
-
-// ✅ CORRECT:
-const data3 = structuredClone(data1); // Deep clone
-data3.data.items[0].name = 'Modified'; // ✅ data1 không đổi
-
-/**
- * ════════════════════════════════════════════════════════════
- * 📘 CASE 4: Form Data Clone (với Date objects)
- * ════════════════════════════════════════════════════════════
- */
-
-interface FormData {
-  name: string;
-  birthDate: Date;
-  address: {
-    street: string;
-    city: string;
-  };
-}
-
-const originalForm: FormData = {
-  name: 'John',
-  birthDate: new Date('1990-01-01'),
-  address: {
-    street: '123 Main St',
-    city: 'HCM'
-  }
-};
-
-// ❌ WRONG: JSON method (Date → string)
-const wrongClone = JSON.parse(JSON.stringify(originalForm));
-console.log(wrongClone.birthDate instanceof Date); // false ❌
-
-// ✅ CORRECT: structuredClone (Date preserved)
-const correctClone = structuredClone(originalForm);
-console.log(correctClone.birthDate instanceof Date); // true ✅
-correctClone.birthDate.setFullYear(2000);
-console.log(originalForm.birthDate.getFullYear()); // 1990 ✅ Không đổi
-```
-
----
-
-#### **🚨 COMMON MISTAKES (Lỗi Thường Gặp)**
-
-```typescript
-/**
- * ════════════════════════════════════════════════════════════
- * ❌ MISTAKE 1: Nghĩ spread operator là deep copy
- * ════════════════════════════════════════════════════════════
- */
-
-const user = {
-  name: 'John',
-  friends: ['Alice', 'Bob']
-};
-
-const copy = { ...user }; // ⚠️ Shallow copy!
-copy.friends.push('Charlie');
-
-console.log(user.friends); // ['Alice', 'Bob', 'Charlie'] ❌ Bị đổi!
-
-// ✅ FIX: Deep copy nested array
-const correctCopy = {
+// ✅ Tạo reference mới ở path thay đổi
+setUser({
   ...user,
-  friends: [...user.friends] // Clone array riêng
-};
-
-/**
- * ════════════════════════════════════════════════════════════
- * ❌ MISTAKE 2: Dùng JSON cho objects có functions
- * ════════════════════════════════════════════════════════════
- */
-
-const obj = {
-  name: 'John',
-  greet() { return 'Hi'; }
-};
-
-const copy2 = JSON.parse(JSON.stringify(obj));
-console.log(copy2.greet); // undefined ❌ Function bị mất!
-
-// ✅ FIX: Dùng structuredClone hoặc Lodash
-const correctCopy2 = _.cloneDeep(obj);
-console.log(correctCopy2.greet()); // 'Hi' ✅
-
-/**
- * ════════════════════════════════════════════════════════════
- * ❌ MISTAKE 3: Quên clone khi pass vào function
- * ════════════════════════════════════════════════════════════
- */
-
-function processData(data: any[]) {
-  data.sort(); // ❌ Mutate array gốc!
-  return data;
-}
-
-const numbers = [3, 1, 2];
-const sorted = processData(numbers);
-console.log(numbers); // [1, 2, 3] ❌ Bị sort!
-
-// ✅ FIX: Clone trước khi modify
-function processDataCorrect(data: any[]) {
-  const copy = [...data]; // Shallow copy (đủ cho array 1 tầng)
-  copy.sort();
-  return copy;
-}
-
-const numbers2 = [3, 1, 2];
-const sorted2 = processDataCorrect(numbers2);
-console.log(numbers2); // [3, 1, 2] ✅ Không đổi
+  settings: {
+    ...user.settings,
+    theme: "dark",
+  },
+});
 ```
 
----
+💡 **Senior rule**: update immutable theo đúng depth cần thay đổi, đừng deep clone toàn bộ state lớn nếu chỉ đổi một field nhỏ.
 
-#### **💡 BEST PRACTICES SUMMARY**
+## 📚 Main Concepts
 
-```typescript
-/**
- * ✅ DO:
- * 
- * 1. Dùng structuredClone() cho deep copy objects hiện đại
- * 2. Dùng spread {...obj} cho shallow copy objects đơn giản
- * 3. Dùng Lodash _.cloneDeep() trong production (battle-tested)
- * 4. Luôn clone trước khi mutate trong React/Redux
- * 5. Clone nested arrays/objects riêng khi dùng spread
- * 
- * ❌ DON'T:
- * 
- * 1. KHÔNG dùng JSON cho objects có Date/RegExp/Functions
- * 2. KHÔNG nghĩ spread operator là deep copy
- * 3. KHÔNG mutate objects trực tiếp trong React state
- * 4. KHÔNG quên clone khi pass objects vào functions
- * 5. KHÔNG dùng custom deep clone nếu không hiểu rõ edge cases
- */
+### 📦 8 JavaScript data types
 
-/**
- * 🎯 CHEAT SHEET:
- * 
- * Plain object, 1 tầng?          → {...obj}
- * Nested object, không có Date?  → JSON.parse(JSON.stringify())
- * Nested object, có Date/Map?    → structuredClone()
- * Production code?               → Lodash _.cloneDeep()
- * Custom types?                  → Custom recursive function
- * React state update?            → Spread + manual nested spread
- */
+```ts
+const num = 42; // number
+const str = "hello"; // string
+const bool = true; // boolean
+const undef = undefined; // undefined
+const empty = null; // null
+const sym = Symbol("id"); // symbol
+const big = 123456789n; // bigint
+
+const obj = { name: "An" }; // object
+const arr = [1, 2, 3]; // object subtype
+const fn = () => {}; // function object
 ```
 
----
+**Primitive types:**
 
-## **V. Type Checking Methods**
+- `number`: double-precision floating point, gồm `NaN`, `Infinity`, `-0`.
+- `string`: immutable text.
+- `boolean`: `true/false`.
+- `undefined`: chưa gán hoặc property không tồn tại.
+- `null`: cố ý rỗng.
+- `symbol`: unique identifier.
+- `bigint`: số nguyên lớn hơn giới hạn safe integer của `number`.
 
-### **5.1. typeof (Primitives)**
+**Object type:**
 
-```typescript
-/**
- * ⚡ typeof - Nhanh nhưng có bugs
- */
-console.log(typeof 42);           // 'number' ✅
-console.log(typeof 'hi');         // 'string' ✅
-console.log(typeof true);         // 'boolean' ✅
-console.log(typeof undefined);    // 'undefined' ✅
-console.log(typeof Symbol('id')); // 'symbol' ✅
-console.log(typeof 123n);         // 'bigint' ✅
-console.log(typeof function(){}); // 'function' ✅
+- Plain object, array, function, Date, RegExp, Map, Set, WeakMap, WeakSet, Promise...
 
-/**
- * ⚠️ BUGS của typeof:
- */
-console.log(typeof null);  // 'object' ❌ (historical bug)
-console.log(typeof []);    // 'object' ❌ (không phân biệt array)
-console.log(typeof NaN);   // 'number' ❌ (NaN vẫn là number type)
+### ⚖️ Falsy vs Truthy
 
-/**
- * ✅ SAFE typeof helper:
- */
-function safeTypeOf(value: any): string {
-  if (value === null) return 'null';
-  if (Array.isArray(value)) return 'array';
+Chỉ có các giá trị này là falsy:
+
+- `false`
+- `0`
+- `-0`
+- `0n`
+- `""`
+- `null`
+- `undefined`
+- `NaN`
+
+```ts
+Boolean([]); // true ⚠️
+Boolean({}); // true ⚠️
+Boolean("0"); // true ⚠️
+Boolean("false"); // true ⚠️
+```
+
+⚠️ Tránh dùng truthy/falsy khi `0` hoặc `""` là giá trị hợp lệ.
+
+```ts
+function getDisplayName(name: string | null | undefined) {
+  return name ?? "Guest"; // chỉ fallback khi null/undefined
+}
+
+getDisplayName(""); // "" giữ nguyên
+```
+
+### 🔍 `==` vs `===`
+
+```ts
+5 === "5"; // false
+5 == "5"; // true
+0 == false; // true
+"" == 0; // true
+[] == 0; // true
+null == undefined; // true
+```
+
+✅ Rule production:
+
+- Dùng `===` mặc định.
+- Dùng `value == null` nếu cố ý check cả `null` và `undefined`.
+- Tránh `==` trong business logic vì coercion khó đọc.
+
+```ts
+function isEmpty(value: unknown) {
+  return value == null; // true cho null hoặc undefined
+}
+```
+
+### 🕳️ `null` vs `undefined`
+
+| Value | Ý nghĩa | Nên dùng khi |
+|---|---|---|
+| `undefined` | chưa có value, optional/missing | optional param/property |
+| `null` | cố ý không có value | API/domain muốn biểu diễn empty rõ |
+
+```ts
+type User = {
+  id: string;
+  email?: string; // có thể undefined
+  deletedAt: Date | null; // cố ý chưa bị xóa
+};
+```
+
+Pitfall:
+
+```ts
+typeof null; // "object" ⚠️
+```
+
+### 🧪 Type checking methods
+
+| Method | Dùng cho | Pitfall |
+|---|---|---|
+| `typeof` | primitive/function | `typeof null` và `typeof []` đều `"object"` |
+| `Array.isArray` | array | tốt nhất cho array |
+| `instanceof` | class/prototype | không work với primitive; có vấn đề cross-realm |
+| `Object.prototype.toString.call` | built-in object type | verbose nhưng chính xác hơn |
+| `Number.isNaN` | check `NaN` | tốt hơn global `isNaN` vì không coerce |
+
+```ts
+function getType(value: unknown) {
+  if (value === null) return "null";
+  if (Array.isArray(value)) return "array";
   return typeof value;
 }
 
-console.log(safeTypeOf(null));  // 'null' ✅
-console.log(safeTypeOf([]));    // 'array' ✅
+Number.isNaN(NaN); // true
+Number.isNaN("hello"); // false
+isNaN("hello"); // true ⚠️ coercion
 ```
 
-### **5.2. Advanced Type Checking**
+Advanced helper:
 
-```typescript
-/**
- * ✅ Array.isArray() - Best cho array
- */
-console.log(Array.isArray([]));        // true
-console.log(Array.isArray([1, 2, 3])); // true
-console.log(Array.isArray('not array')); // false
-
-/**
- * ✅ Number.isNaN() - Không coerce (tốt hơn isNaN)
- */
-console.log(Number.isNaN(NaN));      // true ✅
-console.log(Number.isNaN('hello'));  // false ✅
-
-// ⚠️ isNaN() global - Có coercion
-console.log(isNaN('hello'));         // true ❌ (coerce thành NaN)
-
-/**
- * ✅ Number.isFinite() - Check số hợp lệ
- */
-console.log(Number.isFinite(42));       // true
-console.log(Number.isFinite(Infinity)); // false
-console.log(Number.isFinite(NaN));      // false
-
-/**
- * ✅ Object.prototype.toString.call() - CHÍNH XÁC NHẤT
- */
-function getType(value: any): string {
+```ts
+function getObjectTag(value: unknown) {
   return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
 }
 
-console.log(getType(null));           // 'null' ✅
-console.log(getType([]));             // 'array' ✅
-console.log(getType(new Date()));     // 'date' ✅
-console.log(getType(/regex/));        // 'regexp' ✅
-console.log(getType(new Map()));      // 'map' ✅
-
-/**
- * ✅ instanceof - Check prototype chain
- */
-class Person {}
-const p = new Person();
-
-console.log(p instanceof Person);     // true
-console.log([] instanceof Array);     // true
-console.log({} instanceof Object);    // true
-
-// ⚠️ Không work với primitives:
-console.log('hi' instanceof String);  // false
-console.log(42 instanceof Number);    // false
-
-/**
- * 🎯 COMPLETE TYPE CHECKER
- */
-class TypeChecker {
-  static isPrimitive(value: any): boolean {
-    return value !== Object(value);
-  }
-
-  static isObject(value: any): boolean {
-    return value !== null && typeof value === 'object' && !Array.isArray(value);
-  }
-
-  static isEmptyObject(value: any): boolean {
-    return this.isObject(value) && Object.keys(value).length === 0;
-  }
-
-  static isEmptyArray(value: any): boolean {
-    return Array.isArray(value) && value.length === 0;
-  }
-
-  static isNullOrUndefined(value: any): boolean {
-    return value == null; // Check cả null VÀ undefined
-  }
-
-  static isValidNumber(value: any): boolean {
-    return typeof value === 'number' && !isNaN(value) && isFinite(value);
-  }
-}
-
-// Usage
-console.log(TypeChecker.isPrimitive(42));        // true
-console.log(TypeChecker.isObject({}));           // true
-console.log(TypeChecker.isEmptyObject({}));      // true
-console.log(TypeChecker.isValidNumber(NaN));     // false
-console.log(TypeChecker.isNullOrUndefined(null)); // true
+getObjectTag(new Date()); // "date"
+getObjectTag(new Map()); // "map"
+getObjectTag(/a/); // "regexp"
 ```
 
----
+### 🔒 Immutable vs Mutable
 
-## **VI. Memory Management & GC**
+Primitive immutable:
 
-### **6.1. Memory Lifecycle**
+```ts
+const text = "hello";
+const upper = text.toUpperCase();
 
-```typescript
-/**
- * ═══════════════════════════════════════════════════════
- * MEMORY LIFECYCLE (Vòng đời bộ nhớ)
- * ═══════════════════════════════════════════════════════
- */
-
-// BƯỚC 1: ALLOCATION (Cấp phát)
-let user = { name: 'John', age: 30 };
-// → JS tự động cấp phát memory cho object
-
-// BƯỚC 2: USAGE (Sử dụng)
-console.log(user.name); // Đọc/ghi memory
-
-// BƯỚC 3: RELEASE (Giải phóng)
-user = null; // Xóa reference
-// → GC sẽ tự động thu hồi memory
+console.log(text); // "hello"
+console.log(upper); // "HELLO"
 ```
 
-### **6.2. Garbage Collection Algorithm**
+Object/array mutable:
 
-```typescript
-/**
- * 🧠 MARK & SWEEP ALGORITHM
- * 
- * BƯỚC 1: MARK (Đánh dấu)
- * - Bắt đầu từ GC roots (global, stack)
- * - Traverse tất cả references
- * - Đánh dấu objects còn accessible
- * 
- * BƯỚC 2: SWEEP (Quét)
- * - Duyệt heap memory
- * - Xóa objects không được mark
- * - Thu hồi memory
- */
+```ts
+const items = [1, 2, 3];
+items.push(4); // mutate original
 
-// Example: GC roots
-let globalVar = { x: 1 };          // Global scope = GC root
-function example() {
-  let local = { y: 2 };            // Stack = GC root
-  return local;
-}
-
-// Khi function return và không còn reference → GC xóa local
+const user = { name: "An" };
+user.name = "Binh"; // mutate original
 ```
 
-### **6.3. Memory Leaks - 10 Trường Hợp**
+Immutable patterns:
 
-```typescript
-/**
- * ═══════════════════════════════════════════════════════
- * 1️⃣ EVENT LISTENERS không cleanup ⭐⭐⭐⭐⭐
- * ═══════════════════════════════════════════════════════
- */
+```ts
+const added = [...items, 5];
+const updated = items.map((item) => item * 2);
+const filtered = items.filter((item) => item > 1);
 
-// ❌ MEMORY LEAK
-class BadComponent {
-  private element: HTMLElement;
-  
-  constructor(el: HTMLElement) {
-    this.element = el;
-    // bind() tạo function mới → không remove được!
-    this.element.addEventListener('click', this.handleClick.bind(this));
-  }
-  
-  handleClick() {
-    console.log('Clicked');
-  }
-  
-  destroy() {
-    // ❌ Không remove được vì bind() tạo function mới!
-    this.element.removeEventListener('click', this.handleClick.bind(this));
-  }
+const updatedUser = {
+  ...user,
+  name: "Chi",
+};
+```
+
+### 🧬 Shallow copy vs Deep copy
+
+#### Shallow copy
+
+Copy tầng đầu, nested object vẫn share reference.
+
+```ts
+const original = {
+  name: "An",
+  address: {
+    city: "HCM",
+  },
+};
+
+const copy = { ...original };
+copy.name = "Binh";
+copy.address.city = "Ha Noi";
+
+console.log(original.name); // "An"
+console.log(original.address.city); // "Ha Noi" ⚠️ nested bị đổi
+```
+
+Shallow copy methods:
+
+- Object: `{ ...obj }`, `Object.assign({}, obj)`.
+- Array: `[...arr]`, `arr.slice()`.
+
+#### Deep copy
+
+Copy cả nested objects/arrays.
+
+```ts
+const deep = structuredClone(original);
+deep.address.city = "Da Nang";
+
+console.log(original.address.city); // "Ha Noi"
+```
+
+So sánh nhanh:
+
+| Method | Nested | Date/Map/Set | Function | Circular | Nên dùng |
+|---|---|---|---|---|---|
+| Spread/Object.assign | ❌ | share ref | share ref | N/A | object 1 tầng |
+| JSON stringify/parse | ✅ plain only | ❌ mất type | ❌ mất | ❌ lỗi | plain data đơn giản |
+| `structuredClone` | ✅ | ✅ | ❌ | ✅ | deep clone hiện đại |
+| `_.cloneDeep` | ✅ | ✅ | thường giữ ref/function | ✅ | production edge cases |
+| Custom clone | tùy | tùy | tùy | tùy | chỉ khi có nhu cầu đặc biệt |
+
+⚠️ JSON clone mất dữ liệu:
+
+```ts
+const data = {
+  date: new Date(),
+  value: NaN,
+  regex: /abc/g,
+  greet() {
+    return "hi";
+  },
+  empty: undefined,
+};
+
+JSON.parse(JSON.stringify(data));
+// date -> string
+// NaN -> null
+// RegExp -> {}
+// function/undefined -> bị bỏ
+```
+
+### 🧠 Pass by value / reference trong function
+
+Primitive:
+
+```ts
+function increment(value: number) {
+  value += 1;
+  return value;
 }
 
-// ✅ FIXED - Lưu bound function
-class GoodComponent {
-  private element: HTMLElement;
-  private boundHandler: () => void;
-  
-  constructor(el: HTMLElement) {
-    this.element = el;
-    this.boundHandler = this.handleClick.bind(this);
-    this.element.addEventListener('click', this.boundHandler);
-  }
-  
-  handleClick() {
-    console.log('Clicked');
-  }
-  
-  destroy() {
-    this.element.removeEventListener('click', this.boundHandler); // ✅
-  }
+const x = 1;
+increment(x);
+console.log(x); // 1
+```
+
+Object:
+
+```ts
+function updateAge(user: { age: number }) {
+  user.age += 1; // mutate object gốc
 }
 
-// ✅ MODERN - AbortController
-class ModernComponent {
-  private element: HTMLElement;
-  private abortController = new AbortController();
-  
-  constructor(el: HTMLElement) {
-    this.element = el;
-    this.element.addEventListener('click', this.handleClick, {
-      signal: this.abortController.signal
+const user = { age: 20 };
+updateAge(user);
+console.log(user.age); // 21
+```
+
+Safe version:
+
+```ts
+function updateAgeImmutable(user: { age: number }) {
+  return {
+    ...user,
+    age: user.age + 1,
+  };
+}
+```
+
+### ♻️ Memory lifecycle & Garbage Collection
+
+Memory lifecycle:
+
+```text
+Allocate -> Use -> Release/Unreachable -> Garbage Collection
+```
+
+JS engine dùng reachability:
+
+- Bắt đầu từ **GC roots**: global object, current call stack, closures còn reachable.
+- Mark các object còn reachable.
+- Sweep object không reachable.
+
+```ts
+let user: { name: string } | null = { name: "An" };
+
+user = null;
+// Nếu không còn reference khác, object có thể được GC
+```
+
+### 🧯 Common memory leaks
+
+#### 1. Event listener không cleanup
+
+```ts
+class Component {
+  private controller = new AbortController();
+
+  constructor(private element: HTMLElement) {
+    this.element.addEventListener("click", this.handleClick, {
+      signal: this.controller.signal,
     });
   }
-  
-  handleClick() {
-    console.log('Clicked');
-  }
-  
-  destroy() {
-    this.abortController.abort(); // ✅ Auto remove tất cả listeners
-  }
-}
 
-/**
- * ═══════════════════════════════════════════════════════
- * 2️⃣ TIMERS không clear ⭐⭐⭐⭐⭐
- * ═══════════════════════════════════════════════════════
- */
-
-// ❌ MEMORY LEAK
-class BadTimer {
-  private intervalId?: number;
-  
-  start() {
-    this.intervalId = window.setInterval(() => {
-      console.log('Tick');
-    }, 1000);
-    // ❌ Không clear khi component destroy
-  }
-}
-
-// ✅ FIXED
-class GoodTimer {
-  private intervalId?: number;
-  
-  start() {
-    this.intervalId = window.setInterval(() => {
-      console.log('Tick');
-    }, 1000);
-  }
-  
-  destroy() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId); // ✅
-    }
-  }
-}
-
-/**
- * ═══════════════════════════════════════════════════════
- * 3️⃣ CLOSURES giữ large data ⭐⭐⭐⭐
- * ═══════════════════════════════════════════════════════
- */
-
-// ❌ MEMORY LEAK
-function createLeak() {
-  const largeData = new Array(1000000).fill('data'); // 8MB
-  
-  return function() {
-    console.log('Hello');
-    // ❌ largeData nằm trong scope → không được GC!
+  handleClick = () => {
+    console.log("clicked");
   };
-}
 
-// ✅ FIXED - Nullify unused variables
-function createFixed() {
-  let largeData: any[] | null = new Array(1000000).fill('data');
-  
-  const result = largeData.length; // Lấy giá trị cần
-  largeData = null; // ✅ Clear reference
-  
-  return function() {
-    console.log(result); // Chỉ giữ result, không giữ largeData
-  };
-}
-
-/**
- * ═══════════════════════════════════════════════════════
- * 4️⃣ DOM REFERENCES ⭐⭐⭐⭐⭐
- * ═══════════════════════════════════════════════════════
- */
-
-// ❌ MEMORY LEAK
-const elements: HTMLElement[] = [];
-
-function addElement() {
-  const div = document.createElement('div');
-  document.body.appendChild(div);
-  elements.push(div); // ❌ Giữ reference
-}
-
-function removeElement() {
-  const div = elements[0];
-  document.body.removeChild(div);
-  // ❌ elements vẫn giữ reference → div không được GC!
-}
-
-// ✅ FIXED
-function removeElementFixed() {
-  const div = elements.shift(); // ✅ Remove từ array
-  if (div) {
-    document.body.removeChild(div);
+  destroy() {
+    this.controller.abort(); // ✅ auto remove listeners
   }
 }
+```
 
-/**
- * ═══════════════════════════════════════════════════════
- * 5️⃣ GLOBAL VARIABLES ⭐⭐⭐
- * ═══════════════════════════════════════════════════════
- */
+⚠️ Tránh:
 
-// ❌ MEMORY LEAK
-var globalCache: any[] = []; // ❌ Global, không bao giờ GC
+```ts
+el.addEventListener("click", handler.bind(this));
+el.removeEventListener("click", handler.bind(this)); // ❌ function khác
+```
 
-function addToCache(data: any) {
-  globalCache.push(data); // ❌ Phình to mãi
+#### 2. Timer không clear
+
+```ts
+const intervalId = window.setInterval(() => {
+  console.log("tick");
+}, 1000);
+
+window.clearInterval(intervalId);
+```
+
+#### 3. Closure giữ large object
+
+```ts
+function createHandler() {
+  let largeData: string[] | null = new Array(1_000_000).fill("data");
+
+  const count = largeData.length;
+  largeData = null; // ✅ không giữ array lớn
+
+  return () => count;
 }
+```
 
-// ✅ FIXED - LRU Cache
+#### 4. Detached DOM nodes
+
+```ts
+const nodes: HTMLElement[] = [];
+
+function removeNode() {
+  const node = nodes.pop();
+  node?.remove(); // ✅ remove DOM + remove reference khỏi array
+}
+```
+
+#### 5. Cache/global variables tăng mãi
+
+```ts
 class LRUCache<K, V> {
   private cache = new Map<K, V>();
-  private maxSize = 100;
-  
+
+  constructor(private maxSize = 100) {}
+
   set(key: K, value: V) {
     if (this.cache.size >= this.maxSize) {
       const firstKey = this.cache.keys().next().value;
-      this.cache.delete(firstKey); // ✅ Xóa cũ nhất
+      this.cache.delete(firstKey);
     }
+
     this.cache.set(key, value);
   }
 }
-
-/**
- * 📊 SUMMARY - Top 5 Leaks:
- * 
- * 1. Event Listeners (⭐⭐⭐⭐⭐) - Dùng AbortController
- * 2. Timers (⭐⭐⭐⭐⭐) - Luôn clearInterval/clearTimeout
- * 3. Closures (⭐⭐⭐⭐) - Nullify unused vars
- * 4. DOM References (⭐⭐⭐⭐⭐) - Remove từ arrays/maps
- * 5. Global Variables (⭐⭐⭐) - Dùng LRU cache
- */
 ```
 
-### **6.4. WeakMap & WeakSet**
+### 🧷 WeakMap & WeakSet
 
-```typescript
-/**
- * 🔗 WEAK REFERENCES - Không ngăn GC
- */
+`WeakMap`/`WeakSet` giữ weak reference, không ngăn key object bị GC.
 
-// ❌ Normal Map - Strong reference
-const normalMap = new Map();
-let obj1 = { data: 'important' };
+```ts
+const normalMap = new Map<object, string>();
+let obj: object | null = {};
 
-normalMap.set(obj1, 'metadata');
-obj1 = null; // ❌ Object không được GC (normalMap giữ ref)
+normalMap.set(obj, "metadata");
+obj = null;
+// object vẫn có thể bị giữ bởi normalMap
+```
 
-// ✅ WeakMap - Weak reference
-const weakMap = new WeakMap();
-let obj2 = { data: 'important' };
+```ts
+const weakMap = new WeakMap<object, string>();
+let key: object | null = {};
 
-weakMap.set(obj2, 'metadata');
-obj2 = null; // ✅ Object được GC ngay!
+weakMap.set(key, "metadata");
+key = null;
+// nếu không còn strong reference khác, object có thể GC
+```
 
-/**
- * 🎯 USE CASES:
- */
+Use cases:
 
-// 1. Cache with auto cleanup
-const cache = new WeakMap<object, any>();
+- Metadata cho object/DOM node.
+- Cache theo object key.
+- Private data cho instance.
+- Tránh leak khi object lifecycle nằm ngoài quyền kiểm soát của mình.
 
-function expensiveOperation(obj: object) {
-  if (cache.has(obj)) {
-    return cache.get(obj); // Cache hit
-  }
-  
-  const result = /* ... expensive computation ... */ {};
-  cache.set(obj, result);
-  return result;
+## 🧪 Practical TypeScript/JavaScript Examples
+
+### ✅ 1. React state update đúng reference
+
+```tsx
+type User = {
+  id: string;
+  name: string;
+  settings: {
+    theme: "light" | "dark";
+    notifications: boolean;
+  };
+};
+
+function updateTheme(user: User, theme: "light" | "dark"): User {
+  return {
+    ...user,
+    settings: {
+      ...user.settings,
+      theme,
+    },
+  };
 }
-// Khi obj được GC → cache entry tự động xóa ✅
+```
 
-// 2. Private data
-const privateData = new WeakMap();
+### ✅ 2. Array update immutable
 
-class User {
-  constructor(name: string) {
-    privateData.set(this, { ssn: '123-45-6789' });
-  }
-  
-  getSSN() {
-    return privateData.get(this).ssn;
-  }
+```ts
+type Todo = {
+  id: string;
+  title: string;
+  done: boolean;
+};
+
+function toggleTodo(todos: Todo[], id: string) {
+  return todos.map((todo) =>
+    todo.id === id ? { ...todo, done: !todo.done } : todo
+  );
 }
-// Private data tự động cleanup khi instance GC
+
+function addTodo(todos: Todo[], title: string) {
+  return [
+    ...todos,
+    {
+      id: crypto.randomUUID(),
+      title,
+      done: false,
+    },
+  ];
+}
 ```
 
----
+### ✅ 3. Clone API response trước khi mutate local draft
 
-## **VII. Best Practices Summary**
+```ts
+type ApiResponse = {
+  data: {
+    items: Array<{ id: string; name: string }>;
+    meta: { total: number };
+  };
+};
 
-### **7.1. Data Types**
+async function loadDraft(): Promise<ApiResponse> {
+  const response = await fetch("/api/items");
+  const data = (await response.json()) as ApiResponse;
 
-```typescript
-/**
- * ✅ DO:
- */
-// 1. Dùng === thay vì == (trừ value == null)
-if (value === 42) {} // ✅
-if (value == null) {} // ✅ Check cả null & undefined
-
-// 2. Dùng Array.isArray() để check array
-if (Array.isArray(arr)) {} // ✅
-
-// 3. Dùng Number.isNaN() thay vì isNaN()
-if (Number.isNaN(value)) {} // ✅
-
-// 4. Dùng typeof cho primitives
-if (typeof value === 'string') {} // ✅
-
-// 5. Nullish coalescing (??) cho default values
-const age = user?.age ?? 18; // ✅
-
-/**
- * ❌ DON'T:
- */
-// 1. Dùng == (loose equality)
-if (value == 42) {} // ❌
-
-// 2. typeof null hoặc typeof []
-if (typeof value === 'null') {} // ❌ typeof null === 'object'
-if (typeof arr === 'array') {}  // ❌ typeof [] === 'object'
-
-// 3. isNaN() global
-if (isNaN(value)) {} // ❌ Coercion
-
-// 4. instanceof cho primitives
-if ('hi' instanceof String) {} // ❌ false
+  return structuredClone(data);
+}
 ```
 
-### **7.2. Memory Management**
+### ✅ 4. Type guard cho API data
 
-```typescript
-/**
- * ✅ DO:
- */
-// 1. Cleanup event listeners
-element.removeEventListener('click', handler); // ✅
+```ts
+type Product = {
+  id: string;
+  price: number;
+};
 
-// 2. Clear timers
-clearInterval(intervalId); // ✅
-clearTimeout(timeoutId);   // ✅
+function isProduct(value: unknown): value is Product {
+  if (value === null || typeof value !== "object") return false;
 
-// 3. Nullify large data in closures
-let largeData: any[] | null = [...];
-largeData = null; // ✅
+  const item = value as Record<string, unknown>;
 
-// 4. Remove DOM references
-elements.splice(index, 1); // ✅
-
-// 5. Dùng WeakMap cho cache
-const cache = new WeakMap(); // ✅
-
-/**
- * ❌ DON'T:
- */
-// 1. Bind trong addEventListener
-el.addEventListener('click', fn.bind(this)); // ❌
-
-// 2. Quên clear timers
-setInterval(() => {}, 1000); // ❌
-
-// 3. Giữ detached DOM nodes
-const removed = document.getElementById('old');
-document.body.removeChild(removed);
-elements.push(removed); // ❌
-
-// 4. Global variables vô hạn
-var globalCache = []; // ❌
+  return (
+    typeof item.id === "string" &&
+    typeof item.price === "number" &&
+    Number.isFinite(item.price)
+  );
+}
 ```
 
-### **7.3. Immutability**
+### ✅ 5. WeakMap cache theo object key
 
-```typescript
-/**
- * ✅ DO:
- */
-// 1. Spread operator cho shallow copy
-const copy = { ...original }; // ✅
-const arrCopy = [...original]; // ✅
+```ts
+const fullNameCache = new WeakMap<object, string>();
 
-// 2. structuredClone() cho deep copy
-const deep = structuredClone(original); // ✅
+function getFullName(user: { firstName: string; lastName: string }) {
+  if (fullNameCache.has(user)) {
+    return fullNameCache.get(user);
+  }
 
-// 3. Immutable updates
-const updated = { ...user, age: 26 }; // ✅
-const added = [...arr, newItem]; // ✅
-
-// 4. Array methods không mutate
-const filtered = arr.filter(x => x > 5); // ✅
-const mapped = arr.map(x => x * 2); // ✅
-
-/**
- * ❌ DON'T:
- */
-// 1. Mutate objects trực tiếp
-user.age = 26; // ❌
-
-// 2. Mutate arrays
-arr.push(4); // ❌
-arr[0] = 10; // ❌
-
-// 3. JSON cho deep copy (mất functions)
-const copy = JSON.parse(JSON.stringify(obj)); // ❌ Mất functions
+  const fullName = `${user.firstName} ${user.lastName}`;
+  fullNameCache.set(user, fullName);
+  return fullName;
+}
 ```
 
----
+## ⚛️ Production Notes / React Implications
 
-## **📚 Quick Reference Card**
+### 🔁 Reference equality & rendering
 
-```typescript
-/**
- * ┌──────────────────────────────────────────────────────────┐
- * │           JAVASCRIPT DATA TYPES CHEAT SHEET              │
- * ├──────────────────────────────────────────────────────────┤
- * │                                                          │
- * │  📌 8 TYPES:                                            │
- * │  • 7 Primitives: number, string, boolean, undefined,   │
- * │                  null, symbol, bigint                   │
- * │  • 1 Complex: object (array, function, date...)        │
- * │                                                          │
- * │  📌 8 FALSY: false, 0, -0, 0n, '', null, undefined, NaN│
- * │                                                          │
- * │  📌 COMPARISON:                                         │
- * │  • === (strict) - No coercion ✅                        │
- * │  • == (loose) - Coercion ❌ (chỉ dùng value == null)   │
- * │                                                          │
- * │  📌 TYPE CHECKING:                                      │
- * │  • typeof - Primitives (có bugs: null, array)          │
- * │  • Array.isArray() - Arrays ✅                          │
- * │  • Number.isNaN() - NaN ✅                              │
- * │  • instanceof - Objects (không dùng cho primitives)    │
- * │  • Object.prototype.toString.call() - Chính xác nhất  │
- * │                                                          │
- * │  📌 COPY:                                               │
- * │  • Shallow: {...obj}, [...arr], Object.assign()       │
- * │  • Deep: structuredClone(), lodash cloneDeep()         │
- * │                                                          │
- * │  📌 MEMORY:                                             │
- * │  • Cleanup: removeEventListener, clearInterval         │
- * │  • WeakMap/WeakSet: Auto GC                            │
- * │  • Nullify: largeData = null                           │
- * │                                                          │
- * └──────────────────────────────────────────────────────────┘
- */
+React state, props, `memo`, `useMemo`, `useCallback`, Zustand selectors, Redux selectors đều phụ thuộc nhiều vào reference equality.
+
+```tsx
+const visibleItems = React.useMemo(
+  () => items.filter((item) => item.visible),
+  [items]
+);
 ```
 
----
+Nếu `items` bị mutate nhưng reference không đổi, memo/cache có thể stale.
 
-**Happy Learning! 🚀**
+### 🧱 Structural sharing
 
-> "Understanding data types and memory is fundamental to writing performant JavaScript code."
+Thay vì deep clone toàn bộ state:
+
+```ts
+const nextState = {
+  ...state,
+  users: state.users.map((user) =>
+    user.id === targetId
+      ? {
+          ...user,
+          settings: {
+            ...user.settings,
+            theme: "dark",
+          },
+        }
+      : user
+  ),
+};
+```
+
+Chỉ tạo object mới ở path thay đổi, giữ reference cũ cho phần không đổi. Đây là nền tảng của performance trong React/Redux.
+
+### 🚀 Performance
+
+- Primitive operations thường rẻ hơn object allocation, nhưng bottleneck thật thường là render, network, layout, algorithm.
+- Deep clone object lớn trong render là anti-pattern.
+- `structuredClone` tiện nhưng vẫn tốn CPU/memory với data lớn.
+- Dùng profiler trước khi optimize.
+- Normalize data lớn bằng `Map`/object để update nhanh hơn.
+
+### 🧪 Testing/debugging
+
+- Test immutable updates: object cũ không bị mutate.
+- Freeze fixture trong test để bắt mutation.
+- Dùng React DevTools/Profiler để xem re-render.
+- Dùng browser Memory tab để tìm detached DOM nodes/listeners.
+
+```ts
+const frozenUser = Object.freeze({
+  id: "u1",
+  settings: Object.freeze({
+    theme: "light",
+  }),
+});
+```
+
+## ⚠️ Common Pitfalls
+
+- ❌ Nghĩ spread là deep copy.
+- ❌ Mutate React state bằng `push`, `sort`, direct assignment.
+- ❌ Dùng JSON clone cho object có `Date`, `Map`, `Set`, `RegExp`, `NaN`, `undefined`, function.
+- ❌ So sánh object bằng `===` rồi kỳ vọng deep equality.
+- ❌ Dùng `typeof null` hoặc `typeof []` để check type.
+- ❌ Dùng global `isNaN` thay vì `Number.isNaN`.
+- ❌ Dùng `||` default khiến `0`/`""` bị fallback sai.
+- ❌ Quên cleanup event listener, timer, subscription.
+- ❌ Closure giữ data lớn không cần thiết.
+- ❌ Cache/global map tăng không giới hạn.
+
+## ✅ Decision Guide / Checklist
+
+**Type checking:**
+
+- Primitive? -> `typeof`.
+- Array? -> `Array.isArray`.
+- `NaN`? -> `Number.isNaN`.
+- Built-in object như Date/Map/RegExp? -> `Object.prototype.toString.call` hoặc `instanceof` nếu cùng realm.
+- Runtime API data? -> viết type guard hoặc dùng schema validation.
+
+**Copying:**
+
+- Object/array 1 tầng -> spread/slice.
+- Nested plain data đơn giản -> cân nhắc `structuredClone`.
+- Có Date/Map/Set/circular -> `structuredClone`.
+- Có function/prototype/custom class -> cần custom logic hoặc library.
+- React state -> structural sharing, copy đúng path thay đổi.
+
+**Memory:**
+
+- Có listener/subscription/timer? -> cleanup.
+- Có cache? -> giới hạn size hoặc dùng WeakMap nếu key là object.
+- Có DOM node lưu trong array/map? -> remove reference khi remove DOM.
+- Có closure giữ data lớn? -> chỉ giữ value cần thiết.
+- Component unmount? -> abort request/cleanup effect.
+
+## 🗣️ Short Interview Answer
+
+Em nghĩ phần quan trọng nhất của data types trong JavaScript là phân biệt primitive và reference. Primitive như `number`, `string`, `boolean`, `null`, `undefined`, `symbol`, `bigint` là immutable và copy theo value. Còn object, array, function là reference type, copy biến chỉ copy địa chỉ nên mutate qua một biến có thể ảnh hưởng biến khác.
+
+Theo em, trong frontend production, lỗi hay gặp nhất là mutation và equality. Em thường dùng `===`, chỉ dùng `value == null` khi muốn check cả `null` và `undefined`. Với object/array state trong React, em update immutable bằng spread/map/filter và structural sharing để React nhận ra reference mới, thay vì mutate trực tiếp.
+
+Về memory, JavaScript có garbage collector nhưng không có nghĩa là không leak. Nếu còn reference từ event listener, timer, closure, global cache hoặc detached DOM node thì object vẫn không được thu hồi. Em thường cleanup trong effect, dùng `AbortController`, clear timer, giới hạn cache và dùng `WeakMap` khi cần metadata/cache theo object key.
+
+## 🧠 Ghi nhớ nhanh
+
+- **8 types**: 7 primitive + object.
+- **Primitive**: immutable, copy value.
+- **Object/Array/Function**: mutable, copy reference.
+- **Falsy**: `false`, `0`, `-0`, `0n`, `""`, `null`, `undefined`, `NaN`.
+- **Dùng `===`**, ngoại lệ phổ biến: `value == null`.
+- **`typeof null` là `"object"`**, array cũng là object.
+- **Spread là shallow copy**, không phải deep copy.
+- **`structuredClone` deep clone tốt**, nhưng không clone function/symbol/prototype.
+- **React cần reference mới** để update/memo đúng.
+- **GC dựa trên reachability**, còn reference là còn sống.
+- **WeakMap/WeakSet** không ngăn object key bị GC.
+
+## 📖 Giải thích các thuật ngữ trong topic
+
+| Thuật ngữ | Giải thích ngắn |
+|---|---|
+| Primitive | Kiểu dữ liệu nguyên thủy, immutable, copy theo value |
+| Reference type | Object/array/function được truy cập qua reference |
+| Stack | Vùng nhớ cho call stack/local bindings trong mental model |
+| Heap | Vùng nhớ chứa objects/functions/arrays |
+| Mutability | Khả năng thay đổi dữ liệu sau khi tạo |
+| Immutability | Không thay đổi dữ liệu gốc, tạo value/object mới |
+| Shallow copy | Copy tầng đầu, nested object vẫn share reference |
+| Deep copy | Copy toàn bộ nested structure |
+| `structuredClone` | API native để deep clone nhiều loại dữ liệu hiện đại |
+| Type coercion | JS tự chuyển kiểu khi so sánh/tính toán |
+| Falsy | Giá trị bị xem là false trong boolean context |
+| Truthy | Giá trị bị xem là true trong boolean context |
+| `typeof` | Operator kiểm tra type cơ bản |
+| `instanceof` | Kiểm tra prototype chain |
+| `NaN` | Not-a-Number, vẫn thuộc type `number` |
+| `Object.is` | So sánh giống strict hơn cho case `NaN` và `-0` |
+| Garbage Collection | Cơ chế tự thu hồi memory không còn reachable |
+| GC root | Điểm bắt đầu để GC tìm object còn sống |
+| Mark-and-sweep | Thuật toán đánh dấu object reachable rồi quét object chết |
+| Memory leak | Object không còn cần nhưng vẫn còn reference nên không được GC |
+| WeakMap | Map có key là weak reference, không ngăn GC |
+| WeakSet | Set giữ weak reference đến object |
+| Structural sharing | Chỉ tạo object mới ở phần thay đổi, giữ reference cũ cho phần không đổi |
