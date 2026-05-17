@@ -32,6 +32,10 @@ Required output structure when rewriting a topic:
 
 Writing rules:
 - Use icons in headings and highlights when they improve scanning.
+- Explain content in a concise, easy-to-understand way before going deep.
+- Prefer short explanations with the core idea first, then the tradeoff or edge case.
+- Add an easy example when a concept is abstract, confusing, or commonly misunderstood.
+- If an example would not add value, keep the explanation short instead of forcing an example.
 - Use tables for comparisons, method selection, decision guides, or tradeoffs.
 - If a Markdown table becomes too wide, wraps poorly, or has long code/text in cells, replace it with grouped bullet lists for terminal readability.
 - Prefer grouped bullet lists over tables for dense key points with long items.
