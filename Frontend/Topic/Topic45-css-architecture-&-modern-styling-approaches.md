@@ -1,4 +1,4 @@
-# 🎨 Q59: CSS Architecture & Modern Styling Approaches
+# 🎨 CSS Architecture & Modern Styling Approaches
 
 ## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
 
@@ -9,24 +9,28 @@
 **🔑 4 Modern Approaches:**
 
 **1. BEM (Block Element Modifier):**
+
 - **Naming**: `.block__element--modifier`
 - Ưu: Clear, không conflicts, team-friendly
 - Nhược: Verbose (dài), manually maintain
 - Use case: Large teams, design systems
 
 **2. CSS Modules:**
+
 - **Scoped**: `import styles from './Button.module.css'`
 - Ưu: Auto-scoped, no naming conflicts, works with existing CSS
 - Nhược: Không dynamic (can't change based on props easily)
 - Use case: Component libraries, gradual migration
 
 **3. CSS-in-JS (Styled Components, Emotion):**
+
 - **Syntax**: `const Button = styled.button\`color: ${props => props.color}\``
 - Ưu: **Dynamic**, colocated, scoped, TypeScript support
 - Nhược: Runtime overhead (~10-20ms), bundle size
 - Use case: Highly dynamic UIs, design tokens
 
 **4. Tailwind CSS:**
+
 - **Utility-first**: `className="bg-blue-500 hover:bg-blue-700 px-4 py-2"`
 - Ưu: **Fast development**, small final bundle (PurgeCSS), consistent design
 - Nhược: HTML "bloat", learning curve (utility names)
@@ -40,12 +44,14 @@
 - **FCP improvement**: ~30-50% faster First Contentful Paint
 
 **⚠️ Lỗi Thường Gặp:**
+
 - CSS-in-JS trong SSR không extract styles → FOUC (Flash of Unstyled Content)
 - Tailwind không purge → 300KB+ CSS bundle
 - BEM không consistent naming → mất ưu điểm
 - Global CSS specificity wars → `!important` hell
 
 **💡 Kiến Thức Senior:**
+
 - **Zero-runtime CSS-in-JS**: Linaria, Vanilla Extract - extract CSS build time
 - **Atomic CSS**: Tailwind, StyleX (Meta) - share utility classes
 - **Design tokens**: CSS variables cho themes, dùng với Tailwind/CSS-in-JS
@@ -102,16 +108,22 @@ So sánh các phương pháp styling hiện đại: CSS-in-JS (Styled Components
    =================================================== */
 
 /* 📦 Block: Standalone component (thành phần độc lập) */
-.card { }
+.card {
+}
 
 /* 🧩 Element: Part of a block (phần của block, kết nối với __) */
-.card__header { }
-.card__body { }
-.card__footer { }
+.card__header {
+}
+.card__body {
+}
+.card__footer {
+}
 
 /* ⚙️ Modifier: Variant of block or element (biến thể, kết nối với --) */
-.card--highlighted { }
-.card__header--large { }
+.card--highlighted {
+}
+.card__header--large {
+}
 
 /* ===================================================
    ✅ GOOD: Proper BEM Structure
@@ -120,48 +132,48 @@ So sánh các phương pháp styling hiện đại: CSS-in-JS (Styled Components
 /* 📦 Component: ProductCard */
 .product-card {
   display: flex;
-  flex-direction: column;  /* 🔽 Layout dọc */
-  border: 1px solid #ddd;  /* 🔲 Viền xám nhạt */
-  border-radius: 8px;      /* ➿ Bo góc 8px */
+  flex-direction: column; /* 🔽 Layout dọc */
+  border: 1px solid #ddd; /* 🔲 Viền xám nhạt */
+  border-radius: 8px; /* ➿ Bo góc 8px */
 }
 
 .product-card__image {
-  width: 100%;           /* 🖼️ Chiều rộng 100% */
-  height: 200px;         /* 📏 Chiều cao cố định */
-  object-fit: cover;     /* ✏️ Crop image để fit khung */
+  width: 100%; /* 🖼️ Chiều rộng 100% */
+  height: 200px; /* 📏 Chiều cao cố định */
+  object-fit: cover; /* ✏️ Crop image để fit khung */
 }
 
 .product-card__title {
-  font-size: 1.25rem;    /* 🔤 Font size 20px */
-  font-weight: 600;      /* ⚖️ Font weight semi-bold */
-  margin: 16px 0 8px;    /* 📏 Khoảng cách trên/dưới */
+  font-size: 1.25rem; /* 🔤 Font size 20px */
+  font-weight: 600; /* ⚖️ Font weight semi-bold */
+  margin: 16px 0 8px; /* 📏 Khoảng cách trên/dưới */
 }
 
 .product-card__price {
-  color: #e74c3c;        /* 🔴 Màu đỏ (giá) */
-  font-size: 1.5rem;     /* 🔤 Font size 24px */
-  font-weight: 700;      /* ⚖️ Font weight bold */
+  color: #e74c3c; /* 🔴 Màu đỏ (giá) */
+  font-size: 1.5rem; /* 🔤 Font size 24px */
+  font-weight: 700; /* ⚖️ Font weight bold */
 }
 
 .product-card__button {
-  padding: 12px 24px;    /* 📍 Padding trong/ngoài */
-  background: #3498db;   /* 🔵 Background xanh */
-  color: white;          /* ⚪ Chữ trắng */
-  border: none;          /* 🚫 Không viền */
-  border-radius: 4px;    /* ➿ Bo góc 4px */
-  cursor: pointer;       /* 🖌️ Con trỏ pointer khi hover */
+  padding: 12px 24px; /* 📍 Padding trong/ngoài */
+  background: #3498db; /* 🔵 Background xanh */
+  color: white; /* ⚪ Chữ trắng */
+  border: none; /* 🚫 Không viền */
+  border-radius: 4px; /* ➿ Bo góc 4px */
+  cursor: pointer; /* 🖌️ Con trỏ pointer khi hover */
 }
 
 /* ⚙️ Modifiers for variants (Biến thể) */
 .product-card--featured {
-  border-color: #f39c12;  /* 🟡 Viền vàng (nổi bật) */
-  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);  /* ✨ Bóng vàng */
+  border-color: #f39c12; /* 🟡 Viền vàng (nổi bật) */
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3); /* ✨ Bóng vàng */
 }
 
 .product-card__button--disabled {
-  background: #95a5a6;   /* ⚪ Background xám (disabled) */
-  cursor: not-allowed;   /* 🚫 Con trỏ not-allowed */
-  opacity: 0.6;          /* 🔅 Mờ 60% */
+  background: #95a5a6; /* ⚪ Background xám (disabled) */
+  cursor: not-allowed; /* 🚫 Con trỏ not-allowed */
+  opacity: 0.6; /* 🔅 Mờ 60% */
 }
 
 /* ===================================================
@@ -169,16 +181,20 @@ So sánh các phương pháp styling hiện đại: CSS-in-JS (Styled Components
    =================================================== */
 
 /* ❌ Too deep nesting (avoid .block__elem1__elem2) */
-.product-card__header__image { } /* BAD! */
+.product-card__header__image {
+} /* BAD! */
 
 /* ✅ Flatten structure */
-.product-card__header-image { } /* GOOD */
+.product-card__header-image {
+} /* GOOD */
 
 /* ❌ Using tag selectors (breaks encapsulation) */
-.product-card h2 { } /* BAD! */
+.product-card h2 {
+} /* BAD! */
 
 /* ✅ Use explicit class names */
-.product-card__title { } /* GOOD */
+.product-card__title {
+} /* GOOD */
 
 /* ===================================================
    🎯 BEM HTML Example
@@ -307,14 +323,14 @@ export function Button({ children, variant, disabled, onClick }: ButtonProps) {
 
 /**
  * CSS Modules automatically generates unique class names:
- * 
+ *
  * <button class="Button_button__a1b2c Button_primary__d3e4f">
  *   Save
  * </button>
- * 
+ *
  * .Button_button__a1b2c { ... }  ← Original: .button
  * .Button_primary__d3e4f { ... } ← Original: .primary
- * 
+ *
  * ✅ No naming conflicts (unique hashes)
  * ✅ Scoped to component
  * ✅ Dead code elimination (unused styles removed)
@@ -738,20 +754,29 @@ const dangerButton = css`
      =================================================== -->
 
 <!-- Button Examples -->
-<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+<button
+  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+>
   Primary Button
 </button>
 
-<button class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+<button
+  class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+>
   Large Primary Button with Animation
 </button>
 
-<button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed" disabled>
+<button
+  class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed"
+  disabled
+>
   Disabled Button
 </button>
 
 <!-- Card Example -->
-<div class="max-w-sm rounded overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+<div
+  class="max-w-sm rounded overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
+>
   <img class="w-full h-48 object-cover" src="product.jpg" alt="Product" />
   <div class="px-6 py-4">
     <div class="font-bold text-xl mb-2 text-gray-900">Product Title</div>
@@ -760,10 +785,14 @@ const dangerButton = css`
     </p>
   </div>
   <div class="px-6 pt-4 pb-2">
-    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+    <span
+      class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+    >
       #tag1
     </span>
-    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+    <span
+      class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+    >
       #tag2
     </span>
   </div>
@@ -915,7 +944,7 @@ export function Button({ variant = 'primary', size = 'md', children }: ButtonPro
 
 /**
  * Critical CSS = Minimum CSS needed to render above-the-fold content
- * 
+ *
  * Problem:
  * ┌─────────────────────────────────────────────────┐
  * │  Browser loads HTML                             │
@@ -925,7 +954,7 @@ export function Button({ variant = 'primary', size = 'md', children }: ButtonPro
  * │  → Renders page                                 │
  * └─────────────────────────────────────────────────┘
  * Total time: 2-3 seconds (CSS blocks rendering!)
- * 
+ *
  * Solution: Inline critical CSS
  * ┌─────────────────────────────────────────────────┐
  * │  Browser loads HTML with <style> (inlined CSS)  │
@@ -977,7 +1006,7 @@ module.exports = {
  *   </head>
  *   <body>...</body>
  * </html>
- * 
+ *
  * After:
  * <html>
  *   <head>
@@ -1049,16 +1078,16 @@ export default MyDocument;
  *    npm install critical
  *    const critical = require('critical');
  *    critical.generate({ ... });
- * 
+ *
  * 2. Penthouse (used by Critical)
  *    npm install penthouse
- * 
+ *
  * 3. UnCSS (Remove unused CSS)
  *    npm install uncss
- * 
+ *
  * 4. PurgeCSS (Tailwind CSS)
  *    npm install @fullhuman/postcss-purgecss
- * 
+ *
  * 5. Critters (Webpack Plugin)
  *    npm install critters-webpack-plugin
  */
@@ -1068,16 +1097,16 @@ export default MyDocument;
 
 ## **🎯 COMPARISON TABLE**
 
-| Approach            | **BEM**     | **CSS Modules** | **Styled Comp** | **Tailwind** |
-| ------------------- | ----------- | --------------- | --------------- | ------------ |
-| **Scoping**         | ❌ Manual   | ✅ Automatic    | ✅ Automatic    | ❌ Global    |
-| **Dynamic Styles**  | ❌ No       | ❌ Limited      | ✅ Yes          | ⚠️ Limited   |
-| **Learning Curve**  | ⭐⭐        | ⭐⭐⭐⭐        | ⭐⭐⭐          | ⭐⭐⭐        |
-| **Bundle Size**     | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐        | ⭐⭐⭐          | ⭐⭐⭐⭐⭐    |
-| **Dev Speed**       | ⭐⭐⭐      | ⭐⭐⭐⭐        | ⭐⭐⭐⭐        | ⭐⭐⭐⭐⭐    |
+| Approach             | **BEM**    | **CSS Modules** | **Styled Comp** | **Tailwind** |
+| -------------------- | ---------- | --------------- | --------------- | ------------ |
+| **Scoping**          | ❌ Manual  | ✅ Automatic    | ✅ Automatic    | ❌ Global    |
+| **Dynamic Styles**   | ❌ No      | ❌ Limited      | ✅ Yes          | ⚠️ Limited   |
+| **Learning Curve**   | ⭐⭐       | ⭐⭐⭐⭐        | ⭐⭐⭐          | ⭐⭐⭐       |
+| **Bundle Size**      | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐        | ⭐⭐⭐          | ⭐⭐⭐⭐⭐   |
+| **Dev Speed**        | ⭐⭐⭐     | ⭐⭐⭐⭐        | ⭐⭐⭐⭐        | ⭐⭐⭐⭐⭐   |
 | **Runtime Overhead** | ✅ None    | ✅ None         | ❌ Yes          | ✅ None      |
-| **Theming**         | ❌ Manual   | ⚠️ CSS Vars     | ✅ Built-in     | ✅ Config    |
-| **TypeScript**      | ❌ No       | ✅ Yes          | ✅ Yes          | ⚠️ Plugins   |
+| **Theming**          | ❌ Manual  | ⚠️ CSS Vars     | ✅ Built-in     | ✅ Config    |
+| **TypeScript**       | ❌ No      | ✅ Yes          | ✅ Yes          | ⚠️ Plugins   |
 
 ---
 
@@ -1090,28 +1119,28 @@ export default MyDocument;
 
 const cssApproachDecision = {
   // New React/Vue app with dynamic theming
-  modernApp: 'CSS-in-JS (Styled Components or Emotion)',
+  modernApp: "CSS-in-JS (Styled Components or Emotion)",
 
   // Fast prototyping, landing pages
-  prototyping: 'Tailwind CSS',
+  prototyping: "Tailwind CSS",
 
   // Large team, existing CSS codebase
-  legacyApp: 'BEM or CSS Modules',
+  legacyApp: "BEM or CSS Modules",
 
   // Component library (npm package)
-  library: 'CSS Modules or Styled Components',
+  library: "CSS Modules or Styled Components",
 
   // Performance-critical (e-commerce, news)
-  performance: 'Tailwind CSS + Critical CSS extraction',
+  performance: "Tailwind CSS + Critical CSS extraction",
 
   // Server-rendered app (Next.js)
-  ssr: 'Tailwind CSS or CSS Modules (avoid runtime CSS-in-JS)',
+  ssr: "Tailwind CSS or CSS Modules (avoid runtime CSS-in-JS)",
 
   // Design system with strict guidelines
-  designSystem: 'Styled Components with ThemeProvider',
+  designSystem: "Styled Components with ThemeProvider",
 
   // Simple website (blog, portfolio)
-  simpleSite: 'Plain CSS or Tailwind CSS'
+  simpleSite: "Plain CSS or Tailwind CSS",
 };
 
 // ===================================================
@@ -1120,34 +1149,34 @@ const cssApproachDecision = {
 
 const cssBestPractices = [
   // 1. Avoid deep nesting (max 3 levels)
-  'div > ul > li > a { }  ← OK',
-  'div > div > div > div > span { }  ← BAD',
+  "div > ul > li > a { }  ← OK",
+  "div > div > div > div > span { }  ← BAD",
 
   // 2. Use CSS variables for theming
-  ':root { --primary-color: #3498db; }',
-  'button { background: var(--primary-color); }',
+  ":root { --primary-color: #3498db; }",
+  "button { background: var(--primary-color); }",
 
   // 3. Mobile-first responsive design
-  '/* Base styles (mobile) */',
-  '@media (min-width: 768px) { /* Tablet */ }',
-  '@media (min-width: 1024px) { /* Desktop */ }',
+  "/* Base styles (mobile) */",
+  "@media (min-width: 768px) { /* Tablet */ }",
+  "@media (min-width: 1024px) { /* Desktop */ }",
 
   // 4. Avoid !important (use specificity correctly)
-  '.button { background: blue !important; }  ← BAD',
-  '.card .button { background: blue; }  ← GOOD',
+  ".button { background: blue !important; }  ← BAD",
+  ".card .button { background: blue; }  ← GOOD",
 
   // 5. Use semantic class names
-  '.btn-primary  ← GOOD',
-  '.blue-button  ← BAD (describes style, not purpose)',
+  ".btn-primary  ← GOOD",
+  ".blue-button  ← BAD (describes style, not purpose)",
 
   // 6. Critical CSS for above-the-fold content
-  'Inline: <style>...</style>',
+  "Inline: <style>...</style>",
   'Lazy load: <link rel="preload">',
 
   // 7. Optimize for production
-  'Minify CSS (cssnano)',
-  'Remove unused CSS (PurgeCSS)',
-  'Compress with Gzip/Brotli'
+  "Minify CSS (cssnano)",
+  "Remove unused CSS (PurgeCSS)",
+  "Compress with Gzip/Brotli",
 ];
 ```
 

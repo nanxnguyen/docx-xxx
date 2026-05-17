@@ -1,1198 +1,715 @@
-# 👁️ Q34: Observer APIs - Intersection, Resize, Mutation Observer
+# Topic19: Browser Observer APIs - Intersection, Resize, Mutation Observer
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## ⭐ Mục tiêu phỏng vấn Senior/Staff
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+> **Observer APIs giúp theo dõi thay đổi của browser/DOM một cách bất đồng bộ, hiệu quả hơn polling hoặc event listener thủ công.**
 
-**"Observer APIs (IntersectionObserver, ResizeObserver, MutationObserver) theo dõi DOM changes hiệu quả hơn event listeners, chạy async, không block main thread."**
+Senior/staff frontend cần nắm:
 
-**🔑 3 Observer APIs:**
-
-**1. IntersectionObserver - Lazy Loading & Visibility:**
-- Theo dõi element **vào/ra viewport** (hoặc ancestor container)
-- Use case: **Lazy load images**, infinite scroll, analytics (viewability tracking)
-- Thay thế: `scroll` event + `getBoundingClientRect()` (performance tồi!)
-- Options: `threshold` (0-1), `rootMargin` (offset viewport)
-
-**2. ResizeObserver - Responsive Components:**
-- Theo dõi **thay đổi kích thước element** (width/height)
-- Use case: Responsive charts, grid layouts, container queries
-- Thay thế: `window.resize` event (chỉ detect window, không detect element resize)
-- Tránh layout thrashing - browser optimize batch updates
-
-**3. MutationObserver - DOM Changes:**
-- Theo dõi **DOM tree modifications** (add/remove nodes, attribute changes)
-- Use case: Auto-init third-party widgets, debug, accessibility tools
-- Thay thế: Mutation Events (deprecated - synchronous, performance tồi)
-- Options: `childList`, `attributes`, `characterData`, `subtree`
-
-**⚠️ Lỗi Thường Gặp:**
-- Quên `disconnect()` khi unmount → memory leak
-- MutationObserver trong callback modify DOM → **infinite loop** (observe chính mình)
-- Dùng `scroll` event thay IntersectionObserver → jank, battery drain
-- ResizeObserver không debounce → fire quá nhiều, tự debounce nếu cần
-
-**💡 Kiến Thức Senior:**
-- **Performance**: Observers chạy **async** trong requestIdleCallback-like phase → không block rendering
-- **Batching**: Browser batch nhiều observations, callback nhận array entries
-- **IntersectionObserver v2**: Thêm `isVisible` flag (check occlusion, opacity, filters)
-- **Container Queries** (CSS) dùng ResizeObserver internally
-- **Best practice**: 1 observer cho nhiều elements (reuse) thay vì 1 observer/element
-
-
-
-
-**❓ Câu Hỏi:****
-
-Observer APIs là gì? Khi nào và tại sao nên dùng chúng thay vì event listeners truyền thống?
-
-
-**✅ Đáp Án Chi Tiết:**
-
-**🎯 Tổng Quan Observer APIs:**
-
-Observer APIs là nhóm Web APIs hiện đại cho phép **theo dõi (observe) các thay đổi** trong DOM một cách **bất đồng bộ và hiệu quả** mà không cần polling hay event listeners liên tục.
-
-**3 Observer APIs Quan Trọng:**
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                    OBSERVER APIs                              │
-├──────────────────────────────────────────────────────────────┤
-│                                                               │
-│  1️⃣ INTERSECTION OBSERVER (Quan sát giao điểm)              │
-│  ┌─────────────────────────────────────────────────────────┐ │
-│  │ • Theo dõi element vào/ra khỏi viewport                 │ │
-│  │ • Use cases: Lazy loading, Infinite scroll, Analytics   │ │
-│  │ • Thay thế: scroll event + getBoundingClientRect()      │ │
-│  └─────────────────────────────────────────────────────────┘ │
-│                                                               │
-│  2️⃣ RESIZE OBSERVER (Quan sát thay đổi kích thước)          │
-│  ┌─────────────────────────────────────────────────────────┐ │
-│  │ • Theo dõi thay đổi kích thước của element              │ │
-│  │ • Use cases: Responsive components, Charts, Layouts     │ │
-│  │ • Thay thế: window.resize event + polling               │ │
-│  └─────────────────────────────────────────────────────────┘ │
-│                                                               │
-│  3️⃣ MUTATION OBSERVER (Quan sát thay đổi DOM)               │
-│  ┌─────────────────────────────────────────────────────────┐ │
-│  │ • Theo dõi thay đổi DOM tree (add/remove/modify)        │ │
-│  │ • Use cases: Auto-init, Debug, Third-party integration  │ │
-│  │ • Thay thế: Mutation Events (deprecated)                │ │
-│  └─────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────┘
-```
+- 👁️ `IntersectionObserver`: element có vào viewport/container không.
+- 📐 `ResizeObserver`: element có đổi kích thước không.
+- 🧬 `MutationObserver`: DOM có bị thêm/xóa/sửa node/attribute không.
+- ⚡ Vì sao observer tốt hơn `scroll`, `resize`, polling thủ công.
+- 🧹 Cleanup đúng để tránh memory leak.
+- 🧠 Performance pitfalls: layout thrashing, infinite loop, over-observing.
+- 🧩 Cách dùng trong React/component architecture.
 
 ---
 
-**🔍 1. INTERSECTION OBSERVER API (Quan Sát Giao Điểm)**
+## 1. 🧠 Observer APIs Là Gì?
 
-**Khái niệm:**
-- API theo dõi khi một element **xuất hiện, biến mất hoặc giao nhau** với viewport (hoặc một element cha)
-- Sử dụng cho: Lazy loading images, Infinite scroll, Visibility tracking, Analytics
+Observer APIs là nhóm Web APIs cho phép browser thông báo khi một điều kiện thay đổi:
 
-**Hoạt động:**
-1. Tạo observer với callback function
-2. Đăng ký các elements cần theo dõi
-3. Callback được gọi **bất đồng bộ** khi element vào/ra khỏi vùng quan sát
-4. Browser engine tự tối ưu, không cần poll/scroll listener liên tục
-
-**Ưu điểm:**
-- ✅ **Hiệu năng cao**: Không block main thread, browser tối ưu internally
-- ✅ **API đơn giản**: Dễ sử dụng hơn scroll event + getBoundingClientRect()
-- ✅ **Linh hoạt**: Hỗ trợ threshold (ngưỡng %), rootMargin (trigger sớm/muộn)
-- ✅ **Giảm layout thrashing**: Không gây reflow/repaint như getBoundingClientRect()
-
-**Nhược điểm:**
-- ⚠️ Callback bất đồng bộ → không đảm bảo timing chính xác đến pixel
-- ⚠️ Cần polyfill cho browsers rất cũ (IE11-)
-- ⚠️ Không phù hợp cho logic cần đồng bộ chính xác
-
-**Code Example (TypeScript + React):**
-
-```typescript
-import { useEffect, useRef, useState } from 'react';
-
-// ============================================
-// A. LAZY LOADING IMAGES (Tải Ảnh Lười)
-// ============================================
-
-// Giải thích: Chỉ tải ảnh khi user scroll đến gần → tiết kiệm bandwidth, tăng tốc độ load trang
-
-function LazyImage({ src, alt }: { src: string; alt: string }) {
-  const imgRef = useRef<HTMLImageElement>(null);
-  const [imageSrc, setImageSrc] = useState<string>(''); // Ảnh thật chưa load
-  const [isLoaded, setIsLoaded] = useState(false);
-  
-  useEffect(() => {
-    // Tạo Intersection Observer
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // entries: Danh sách các elements đang được observe
-        entries.forEach((entry) => {
-          // entry.isIntersecting: true = element xuất hiện trong viewport
-          if (entry.isIntersecting && !isLoaded) {
-            console.log('✅ Image vào viewport, bắt đầu load:', src);
-            
-            // Load ảnh thật
-            setImageSrc(src);
-            setIsLoaded(true);
-            
-            // Ngừng observe sau khi load (không cần theo dõi nữa)
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        root: null, // null = observe trong viewport (màn hình)
-        
-        // rootMargin: Mở rộng vùng observe
-        // '50px' = trigger khi element còn cách viewport 50px
-        // → Preload ảnh trước khi user nhìn thấy (UX mượt hơn)
-        rootMargin: '50px',
-        
-        // threshold: Ngưỡng % element hiển thị để trigger callback
-        // 0.1 = trigger khi 10% element visible
-        threshold: 0.1
-      }
-    );
-    
-    // Bắt đầu observe image element
-    if (imgRef.current) {
-      observer.observe(imgRef.current);
-    }
-    
-    // Cleanup: Disconnect observer khi component unmount
-    return () => {
-      observer.disconnect();
-    };
-  }, [src, isLoaded]);
-  
-  return (
-    <div className="lazy-image-container">
-      {!imageSrc ? (
-        // Placeholder khi chưa load (skeleton)
-        <div className="skeleton-loader" style={{ width: '100%', height: 300, background: '#e0e0e0' }}>
-          <span>Đang tải...</span>
-        </div>
-      ) : (
-        <img 
-          ref={imgRef}
-          src={imageSrc} 
-          alt={alt}
-          onLoad={() => console.log('✅ Image đã load xong')}
-        />
-      )}
-    </div>
-  );
-}
-
-// Sử dụng:
-function Gallery() {
-  const images = [
-    'https://example.com/image1.jpg',
-    'https://example.com/image2.jpg',
-    // ... 100+ images
-  ];
-  
-  return (
-    <div className="gallery">
-      {images.map((src, i) => (
-        <LazyImage key={i} src={src} alt={`Image ${i + 1}`} />
-      ))}
-    </div>
-  );
-}
-// Kết quả: Chỉ load 5-10 ảnh đầu tiên (trong viewport) thay vì 100+ ảnh cùng lúc
-// → Trang load nhanh hơn 10x!
-
-// ============================================
-// B. INFINITE SCROLL (Cuộn Vô Hạn)
-// ============================================
-
-// Giải thích: Tự động load thêm data khi user scroll đến cuối danh sách
-
-interface Order {
-  id: string;
-  symbol: string;
-  price: number;
-}
-
-function InfiniteOrderList() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // Ref cho sentinel element (phần tử "canh gác" ở cuối list)
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  
-  // Load more data
-  const loadMoreOrders = async () => {
-    if (isLoading || !hasMore) return;
-    
-    setIsLoading(true);
-    console.log(`📥 Đang load page ${page}...`);
-    
-    try {
-      const res = await fetch(`/api/orders?page=${page}&limit=20`);
-      const newOrders = await res.json();
-      
-      if (newOrders.length === 0) {
-        setHasMore(false); // Hết data
-        console.log('✅ Đã load hết orders');
-      } else {
-        setOrders(prev => [...prev, ...newOrders]);
-        setPage(prev => prev + 1);
-        console.log(`✅ Load thành công ${newOrders.length} orders`);
-      }
-    } catch (error) {
-      console.error('❌ Lỗi load orders:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  useEffect(() => {
-    // Tạo observer cho sentinel element
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const sentinel = entries[0];
-        
-        // Khi sentinel xuất hiện trong viewport → load more
-        if (sentinel.isIntersecting && hasMore && !isLoading) {
-          console.log('🔄 Sentinel vào viewport → Load more...');
-          loadMoreOrders();
-        }
-      },
-      {
-        root: null,
-        rootMargin: '100px', // Trigger sớm 100px (load trước khi user scroll đến cuối)
-        threshold: 0
-      }
-    );
-    
-    if (sentinelRef.current) {
-      observer.observe(sentinelRef.current);
-    }
-    
-    return () => observer.disconnect();
-  }, [hasMore, isLoading, page]);
-  
-  // Load initial data
-  useEffect(() => {
-    loadMoreOrders();
-  }, []);
-  
-  return (
-    <div className="order-list">
-      <h2>📋 Orders (Infinite Scroll)</h2>
-      
-      {orders.map((order) => (
-        <div key={order.id} className="order-item">
-          <span>{order.symbol}</span>
-          <span>${order.price}</span>
-        </div>
-      ))}
-      
-      {/* Sentinel element: Phần tử "canh gác" ở cuối list */}
-      <div ref={sentinelRef} style={{ height: 20 }}>
-        {isLoading && <span>⏳ Đang tải thêm...</span>}
-        {!hasMore && <span>✅ Đã hiển thị tất cả</span>}
-      </div>
-    </div>
-  );
-}
-// Cách hoạt động:
-// 1. User scroll xuống
-// 2. Sentinel element vào viewport
-// 3. Observer trigger → loadMoreOrders()
-// 4. Fetch data mới, append vào list
-// 5. Lặp lại cho đến khi hết data
-
-// ============================================
-// C. VISIBILITY TRACKING (Theo Dõi Hiển Thị)
-// ============================================
-
-// Giải thích: Track % element hiển thị → gửi analytics
-// VD: Biết được section nào user đọc nhiều nhất
-
-function VisibilityTracker({ children, id }: { children: React.ReactNode; id: string }) {
-  const elementRef = useRef<HTMLDivElement>(null);
-  const [visibilityPercentage, setVisibilityPercentage] = useState(0);
-  
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          // intersectionRatio: Tỷ lệ % element hiển thị (0.0 - 1.0)
-          const percentage = Math.round(entry.intersectionRatio * 100);
-          setVisibilityPercentage(percentage);
-          
-          console.log(`👁️ Section "${id}" hiển thị: ${percentage}%`);
-          
-          // Gửi analytics khi >50% visible
-          if (percentage > 50) {
-            // analytics.track('section_viewed', { id, percentage });
-          }
-        });
-      },
-      {
-        root: null,
-        threshold: [0, 0.25, 0.5, 0.75, 1.0] // Track ở nhiều mức: 0%, 25%, 50%, 75%, 100%
-      }
-    );
-    
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
-    }
-    
-    return () => observer.disconnect();
-  }, [id]);
-  
-  return (
-    <div ref={elementRef} className="tracked-section">
-      <div className="visibility-indicator">
-        Hiển thị: {visibilityPercentage}%
-      </div>
-      {children}
-    </div>
-  );
-}
-
-// Sử dụng:
-function Article() {
-  return (
-    <article>
-      <VisibilityTracker id="section-1">
-        <h2>Phần 1: Giới thiệu</h2>
-        <p>Nội dung...</p>
-      </VisibilityTracker>
-      
-      <VisibilityTracker id="section-2">
-        <h2>Phần 2: Phát triển</h2>
-        <p>Nội dung...</p>
-      </VisibilityTracker>
-    </article>
-  );
-}
+```txt
+DOM visibility changes    -> IntersectionObserver
+Element size changes      -> ResizeObserver
+DOM tree changes          -> MutationObserver
 ```
 
-**Best Practices (Thực Hành Tốt):**
-
-1. **✅ Dùng `rootMargin` để preload sớm**
-   ```typescript
-   rootMargin: '50px' // Load trước khi vào viewport 50px → UX mượt
-   ```
-
-2. **✅ Unobserve sau khi xử lý xong**
-   ```typescript
-   if (entry.isIntersecting) {
-     // Xử lý...
-     observer.unobserve(entry.target); // Ngừng observe → tiết kiệm tài nguyên
-   }
-   ```
-
-3. **✅ Dùng multiple thresholds cho tracking chi tiết**
-   ```typescript
-   threshold: [0, 0.25, 0.5, 0.75, 1] // Track ở 5 mức độ
-   ```
-
-4. **✅ Kết hợp với native lazy loading**
-   ```html
-   <img src="image.jpg" loading="lazy" /> <!-- Browser native lazy load -->
-   ```
-
-**Common Mistakes (Lỗi Thường Gặp):**
-
-```typescript
-// ❌ LỖI 1: Dùng scroll event + getBoundingClientRect() (chậm, gây layout thrashing)
-window.addEventListener('scroll', () => {
-  images.forEach((img) => {
-    const rect = img.getBoundingClientRect(); // ❌ Trigger reflow mỗi scroll
-    if (rect.top < window.innerHeight) {
-      // Load image...
-    }
-  });
-});
-
-// ✅ SỬA: Dùng IntersectionObserver (tối ưu, không block main thread)
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      // Load image...
-    }
-  });
-});
-images.forEach((img) => observer.observe(img));
-
-// ❌ LỖI 2: Quên disconnect observer → memory leak
-useEffect(() => {
-  const observer = new IntersectionObserver(callback);
-  observer.observe(element);
-  // ❌ Thiếu cleanup
-}, []);
-
-// ✅ SỬA: Luôn cleanup
-useEffect(() => {
-  const observer = new IntersectionObserver(callback);
-  observer.observe(element);
-  
-  return () => {
-    observer.disconnect(); // ✅ Cleanup khi unmount
-  };
-}, []);
-```
-
----
-
-**🔍 2. RESIZE OBSERVER API (Quan Sát Thay Đổi Kích Thước)**
-- Hoạt động: Đăng ký callback được gọi bất đồng bộ khi target element vào/ra khỏi vùng quan sát; engine tối ưu không cần poll/scroll listener liên tục.
-- Ưu điểm: Hiệu năng cao (không block main thread), API đơn giản, hỗ trợ threshold linh hoạt; giảm layout thrashing so với getBoundingClientRect() trong scroll.
-- Nhược điểm: Callback bất đồng bộ nên không đảm bảo timing chính xác pixel; cần polyfill cho trình duyệt rất cũ; không phù hợp cho logic cần sync chính xác.
-
-Chú thích: Dùng `rootMargin` để trigger sớm/muộn (ví dụ: lazy load trước khi vào viewport); `threshold` xác định % giao nhau để fire callback.
-
-**Code Example:**
+Thay vì tự làm:
 
 ```ts
-// Lazy load images khi vào viewport
-const images = document.querySelectorAll('img[data-src]');
+window.addEventListener("scroll", () => {
+  element.getBoundingClientRect();
+});
+```
 
-const imageObserver = new IntersectionObserver(
-  (entries, observer) => {
-    entries.forEach((entry) => {
+Ta dùng:
+
+```ts
+const observer = new IntersectionObserver((entries) => {
+  // browser báo khi element giao với viewport/container
+});
+```
+
+### 🔥 Highlight
+
+> **Observer API chuyển việc theo dõi thay đổi từ app code sang browser engine, giúp giảm polling, giảm layout thrashing và dễ batch callback hơn.**
+
+---
+
+## 2. 🧩 So Sánh Nhanh 3 Observer
+
+| API | Theo dõi gì? | Use case chính | Thay thế cho |
+|---|---|---|---|
+| 👁️ `IntersectionObserver` | Element vào/ra viewport hoặc container | Lazy image, infinite scroll, analytics viewability | `scroll` + `getBoundingClientRect()` |
+| 📐 `ResizeObserver` | Kích thước element thay đổi | Responsive chart, virtual layout, component resize | `window.resize`, polling size |
+| 🧬 `MutationObserver` | DOM node/attribute/text thay đổi | Third-party integration, auto-init, detect DOM injection | Mutation Events cũ, polling DOM |
+
+### Mental model
+
+```txt
+observe(target)
+  -> browser theo dõi target
+  -> batch changes
+  -> gọi callback(entries)
+  -> app xử lý
+  -> disconnect/unobserve khi không cần
+```
+
+---
+
+## 3. 👁️ IntersectionObserver
+
+`IntersectionObserver` theo dõi một element có giao với viewport hoặc container không.
+
+```ts
+const observer = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
       if (entry.isIntersecting) {
-        const img = entry.target as HTMLImageElement;
-        // Load ảnh thật
-        img.src = img.dataset.src!;
-        img.removeAttribute('data-src');
-        // Ngừng observe sau khi load
-        observer.unobserve(img);
+        console.log("Element visible");
       }
-    });
+    }
   },
   {
-    root: null, // viewport
-    rootMargin: '50px', // trigger 50px trước khi vào viewport
-    threshold: 0.1, // 10% visible là trigger
+    root: null,
+    rootMargin: "200px",
+    threshold: 0.1,
   }
 );
 
-images.forEach((img) => imageObserver.observe(img));
-
-// Infinite scroll example
-const sentinel = document.querySelector('#load-more-trigger');
-const loadMoreObserver = new IntersectionObserver((entries) => {
-  if (entries[0].isIntersecting) {
-    loadMoreContent(); // fetch thêm data
-  }
-});
-if (sentinel) loadMoreObserver.observe(sentinel);
-
-// Cleanup
-// loadMoreObserver.disconnect();
+observer.observe(element);
 ```
 
-**Best Practices:**
+### Options quan trọng
 
-- Dùng `rootMargin` để preload sớm cho UX mượt
-- Unobserve sau khi xử lý xong (tránh callback thừa)
-- Dùng `threshold: [0, 0.25, 0.5, 0.75, 1]` nếu cần theo dõi nhiều mức độ
-- Kết hợp với `loading="lazy"` native cho ảnh
+| Option | Ý nghĩa |
+|---|---|
+| `root` | Container dùng để tính visibility. `null` nghĩa là viewport |
+| `rootMargin` | Nới rộng/thu hẹp vùng observe, giống CSS margin |
+| `threshold` | Tỉ lệ visible để trigger callback, từ `0` đến `1` |
 
-**Mistakes:**
+Ví dụ:
 
 ```ts
-// ❌ Dùng scroll listener + getBoundingClientRect → chậm, layout thrashing
-window.addEventListener('scroll', () => {
-  images.forEach((img) => {
-    const rect = img.getBoundingClientRect();
-    if (rect.top < window.innerHeight) {
-      // load image
-    }
-  });
-});
+{
+  root: null,
+  rootMargin: "300px 0px",
+  threshold: 0
+}
+```
 
-// ✅ Dùng IntersectionObserver
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      // load image
-    }
-  });
-});
+Nghĩa là callback chạy khi element còn cách viewport 300px, phù hợp để preload sớm.
+
+### Entry quan trọng
+
+```ts
+entry.target;              // element đang observe
+entry.isIntersecting;      // có đang giao không
+entry.intersectionRatio;   // tỉ lệ giao nhau 0..1
+entry.boundingClientRect;  // rect của target
+entry.rootBounds;          // rect của root
 ```
 
 ---
 
-**🔍 2. RESIZE OBSERVER API (Quan Sát Thay Đổi Kích Thước)**
+## 4. 🖼️ Use Case: Lazy Load Image
 
-**Khái niệm:**
-- API theo dõi **thay đổi kích thước của element** (width, height)
-- Sử dụng cho: Responsive components, Charts auto-resize, Dynamic layouts
+```tsx
+import { useEffect, useRef, useState } from "react";
 
-**Hoạt động:**
-1. Callback được gọi khi **content box hoặc border box** của element thay đổi
-2. Chạy **trước paint** để tránh visual flash
-3. Hỗ trợ nhiều box model: `content-box`, `border-box`, `device-pixel-content-box`
+type LazyImageProps = {
+  src: string;
+  alt: string;
+};
 
-**Ưu điểm:**
-- ✅ **Hiệu năng tốt hơn** window.resize + polling
-- ✅ **Phát hiện resize từ bất kỳ nguồn**: CSS, JavaScript, user action
-- ✅ **Per-element tracking**: Theo dõi từng element riêng lẻ (không phải toàn viewport)
-- ✅ **Không cần media queries**: Component tự responsive
+export function LazyImage({ src, alt }: LazyImageProps) {
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
 
-**Nhược điểm:**
-- ⚠️ Callback có thể fire liên tục khi animate
-- ⚠️ Cần debounce cho logic nặng
-- ⚠️ Có thể gây **infinite loop** nếu callback thay đổi size của chính element đang observe
-
-**Code Example (TypeScript + React):**
-
-```typescript
-import { useEffect, useRef, useState } from 'react';
-
-// ============================================
-// A. RESPONSIVE COMPONENT (Component Tự Responsive)
-// ============================================
-
-// Giải thích: Component tự điều chỉnh layout khi kích thước thay đổi
-// Không cần media queries → component portable, reusable
-
-function ResponsiveCard() {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [layout, setLayout] = useState<'horizontal' | 'vertical'>('horizontal');
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  
   useEffect(() => {
-    // Tạo Resize Observer
-    const resizeObserver = new ResizeObserver((entries) => {
-      // entries: Danh sách các elements đang observe
-      for (const entry of entries) {
-        // contentRect: Kích thước content box của element
-        const { width, height } = entry.contentRect;
-        
-        console.log(`📏 Card resize: ${width}x${height}`);
-        setDimensions({ width, height });
-        
-        // Tự động chuyển layout dựa vào width
-        if (width < 500) {
-          setLayout('vertical');   // Mobile: stack vertically
-          console.log('→ Chuyển sang vertical layout');
-        } else {
-          setLayout('horizontal'); // Desktop: side by side
-          console.log('→ Chuyển sang horizontal layout');
+    const img = imgRef.current;
+    if (!img || shouldLoad) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.unobserve(entry.target);
         }
-      }
-    });
-    
-    // Observe card element
-    if (cardRef.current) {
-      resizeObserver.observe(cardRef.current);
-    }
-    
-    // Cleanup khi unmount
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, []);
-  
+      },
+      { rootMargin: "300px 0px" }
+    );
+
+    observer.observe(img);
+
+    return () => observer.disconnect();
+  }, [shouldLoad]);
+
   return (
-    <div 
-      ref={cardRef}
-      className={`card ${layout}`}
-      style={{
-        display: 'flex',
-        flexDirection: layout === 'vertical' ? 'column' : 'row',
-        gap: '1rem',
-        padding: '1rem',
-        border: '1px solid #ccc'
-      }}
-    >
-      <div className="card-image">
-        <img src="/image.jpg" alt="Card" style={{ width: '100%' }} />
-      </div>
-      <div className="card-content">
-        <h3>Tiêu đề</h3>
-        <p>Nội dung...</p>
-        <p className="dimensions">
-          📐 Kích thước: {dimensions.width.toFixed(0)}px × {dimensions.height.toFixed(0)}px
-        </p>
-      </div>
-    </div>
-  );
-}
-// Kết quả: Component tự adapt layout khi container resize
-// → Không cần CSS media queries → Portable, reusable
-
-// ============================================
-// B. CHART AUTO-RESIZE (Biểu Đồ Tự Scale)
-// ============================================
-
-// Giải thích: Chart tự động scale khi container resize
-// VD: User mở/đóng sidebar → chart tự fit container mới
-
-function TradingChart() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const chartInstance = useRef<any>(null); // Chart.js instance
-  
-  useEffect(() => {
-    // Khởi tạo chart
-    if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d');
-      // chartInstance.current = new Chart(ctx, { ... });
-    }
-    
-    // Observe container (KHÔNG observe canvas trực tiếp)
-    // Tại sao? Nếu observe canvas → canvas resize → observer fire → canvas resize lại → loop!
-    const resizeObserver = new ResizeObserver((entries) => {
-      const { width, height } = entries[0].contentRect;
-      
-      console.log(`📊 Chart container resize: ${width}x${height}`);
-      
-      // Resize chart để fit container
-      if (chartInstance.current && canvasRef.current) {
-        canvasRef.current.width = width;
-        canvasRef.current.height = height;
-        
-        // Update chart dimensions
-        chartInstance.current.resize(width, height);
-        console.log('✅ Chart đã resize');
-      }
-    });
-    
-    // Observe parent container (KHÔNG phải canvas)
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-    
-    return () => {
-      resizeObserver.disconnect();
-      // chartInstance.current?.destroy();
-    };
-  }, []);
-  
-  return (
-    <div 
-      ref={containerRef}
-      className="chart-container"
-      style={{ width: '100%', height: '400px', position: 'relative' }}
-    >
-      <canvas ref={canvasRef} />
-    </div>
-  );
-}
-
-// ============================================
-// C. TEXTAREA AUTO-HEIGHT (Textarea Tự Điều Chỉnh Chiều Cao)
-// ============================================
-
-// Giải thích: Textarea tự tăng/giảm height khi user type
-// Không cần fixed height → UX tốt hơn
-
-function AutoExpandTextarea() {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [height, setHeight] = useState(60); // Min height
-  
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      const { height } = entries[0].contentRect;
-      
-      // Chỉ log khi height thay đổi đáng kể (tránh spam)
-      if (Math.abs(height - entries[0].target.clientHeight) > 5) {
-        console.log(`✏️ Textarea height: ${height}px`);
-        setHeight(height);
-      }
-    });
-    
-    if (textareaRef.current) {
-      // Observe textarea itself
-      resizeObserver.observe(textareaRef.current);
-    }
-    
-    return () => resizeObserver.disconnect();
-  }, []);
-  
-  return (
-    <div>
-      <textarea 
-        ref={textareaRef}
-        placeholder="Type something..."
-        style={{
-          width: '100%',
-          minHeight: '60px',
-          resize: 'vertical', // Cho phép user resize manually
-          padding: '0.5rem'
-        }}
-      />
-      <p className="info">Current height: {height}px</p>
-    </div>
+    <img
+      ref={imgRef}
+      src={shouldLoad ? src : undefined}
+      alt={alt}
+      loading="lazy"
+      width={800}
+      height={450}
+    />
   );
 }
 ```
 
-**Best Practices (Thực Hành Tốt):**
+### Senior notes
 
-1. **✅ Debounce logic nặng với requestAnimationFrame**
-   ```typescript
-   const resizeObserver = new ResizeObserver((entries) => {
-     requestAnimationFrame(() => {
-       // Logic nặng (recalculate layout, re-render chart, etc.)
-     });
-   });
-   ```
+- Native `loading="lazy"` đủ tốt cho nhiều case đơn giản.
+- IntersectionObserver hữu ích khi cần custom preload, animation trigger, analytics hoặc infinite scroll.
+- Luôn set `width/height` hoặc aspect ratio để tránh CLS.
 
-2. **✅ Observe parent container, KHÔNG phải element sẽ resize**
-   ```typescript
-   // ❌ SAI: Observe canvas trực tiếp
-   resizeObserver.observe(canvas);
-   
-   // ✅ ĐÚNG: Observe parent container
-   resizeObserver.observe(canvas.parentElement);
-   ```
+---
 
-3. **✅ Disconnect khi component unmount**
-   ```typescript
-   useEffect(() => {
-     const observer = new ResizeObserver(callback);
-     observer.observe(element);
-     
-     return () => observer.disconnect(); // ✅ Cleanup
-   }, []);
-   ```
+## 5. ♾️ Use Case: Infinite Scroll
 
-4. **✅ Dùng cho responsive components (thay thế media queries)**
-   - Media queries: Dựa vào viewport size
-   - ResizeObserver: Dựa vào component size → Reusable hơn
+Pattern phổ biến là đặt một `sentinel` ở cuối list.
 
-**Common Mistakes (Lỗi Thường Gặp):**
+```tsx
+function InfiniteList({ loadMore, hasMore, isLoading }) {
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-```typescript
-// ❌ LỖI 1: Infinite Loop - Resize chính element đang observe
-const box = document.querySelector('.box') as HTMLElement;
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || !hasMore) return;
 
-const badObserver = new ResizeObserver(() => {
-  // ❌ Thay đổi size của chính element đang observe
-  box.style.width = (box.offsetWidth + 10) + 'px';
-  // → Observer fire → tăng width → observer fire lại → loop vô hạn!
-});
-badObserver.observe(box);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isLoading) {
+          loadMore();
+        }
+      },
+      { rootMargin: "400px 0px" }
+    );
 
-// ✅ SỬA: Dùng flag để ngăn loop hoặc observe parent
-let isResizing = false;
+    observer.observe(sentinel);
 
-const goodObserver = new ResizeObserver(() => {
-  if (!isResizing) {
-    isResizing = true;
-    
-    // Logic resize
-    requestAnimationFrame(() => {
-      box.style.width = (box.offsetWidth + 10) + 'px';
-      isResizing = false; // Reset flag
-    });
+    return () => observer.disconnect();
+  }, [loadMore, hasMore, isLoading]);
+
+  return <div ref={sentinelRef} />;
+}
+```
+
+### ⚠️ Pitfalls
+
+- Cần guard `isLoading` để tránh gọi API nhiều lần.
+- Cần `hasMore` để ngừng observe khi hết data.
+- Nên xử lý error/retry.
+- Với list rất lớn, kết hợp virtualization.
+
+### 🔥 Highlight
+
+> **Infinite scroll production không chỉ là observer. Cần loading guard, pagination state, error handling, hasMore và virtualization nếu list lớn.**
+
+---
+
+## 6. 📊 Use Case: Viewability Analytics
+
+Ví dụ: chỉ track impression khi item hiển thị ít nhất 50%.
+
+```ts
+const observer = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+        trackImpression(entry.target.id);
+        observer.unobserve(entry.target);
+      }
+    }
+  },
+  { threshold: [0.5] }
+);
+```
+
+Analytics tốt cần:
+
+- Không track trùng.
+- Có threshold rõ.
+- Có thể yêu cầu visible trong một khoảng thời gian, ví dụ 1 giây.
+- Không gửi event quá nhiều, nên batch.
+
+---
+
+## 7. 📐 ResizeObserver
+
+`ResizeObserver` theo dõi kích thước của element.
+
+```ts
+const observer = new ResizeObserver((entries) => {
+  for (const entry of entries) {
+    const { width, height } = entry.contentRect;
+    console.log(width, height);
   }
 });
-goodObserver.observe(box);
 
-// ❌ LỖI 2: Không debounce logic nặng → Chậm
-const heavyObserver = new ResizeObserver((entries) => {
-  // ❌ Logic nặng chạy mỗi lần resize (có thể fire rất nhiều lần)
-  entries.forEach((entry) => {
-    recalculateComplexLayout(); // Expensive operation
-    rerenderChart(); // Expensive operation
-  });
-});
+observer.observe(element);
+```
 
-// ✅ SỬA: Debounce với requestAnimationFrame
-const optimizedObserver = new ResizeObserver((entries) => {
-  requestAnimationFrame(() => {
-    // Logic nặng chỉ chạy 1 lần per frame
-    entries.forEach((entry) => {
-      recalculateComplexLayout();
-      rerenderChart();
+Nó tốt hơn `window.resize` vì:
+
+- `window.resize` chỉ biết viewport đổi.
+- Element có thể đổi size do parent, content, sidebar, CSS grid, font, data.
+- Component responsive nên quan sát chính container của nó.
+
+### Entry quan trọng
+
+```ts
+entry.target;
+entry.contentRect;
+entry.contentBoxSize;
+entry.borderBoxSize;
+entry.devicePixelContentBoxSize;
+```
+
+| Field | Ý nghĩa |
+|---|---|
+| `contentRect` | Kích thước content box, dễ dùng nhất |
+| `contentBoxSize` | Content box size hiện đại hơn |
+| `borderBoxSize` | Tính cả border |
+| `devicePixelContentBoxSize` | Pixel vật lý, hữu ích cho canvas high-DPI |
+
+---
+
+## 8. 📈 Use Case: Responsive Chart
+
+```tsx
+function ResponsiveChart() {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+
+      setSize({
+        width: Math.round(width),
+        height: Math.round(height),
+      });
     });
+
+    observer.observe(container);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef} style={{ width: "100%", height: 320 }}>
+      {size.width > 0 && <Chart width={size.width} height={size.height} />}
+    </div>
+  );
+}
+```
+
+### ⚠️ ResizeObserver loop
+
+Sai pattern:
+
+```ts
+new ResizeObserver(([entry]) => {
+  entry.target.style.width = `${entry.contentRect.width + 1}px`;
+});
+```
+
+Callback resize lại đổi size chính element đang observe, có thể tạo loop.
+
+Tốt hơn:
+
+- Không mutate size của chính target trong callback.
+- Nếu cần update layout, dùng state có guard.
+- Có thể schedule bằng `requestAnimationFrame`.
+
+```ts
+let frame = 0;
+
+const observer = new ResizeObserver(([entry]) => {
+  cancelAnimationFrame(frame);
+
+  frame = requestAnimationFrame(() => {
+    updateLayout(entry.contentRect);
   });
 });
+```
 
-// ❌ LỖI 3: Quên disconnect → Memory leak
-function MyComponent() {
-  useEffect(() => {
-    const observer = new ResizeObserver(callback);
-    observer.observe(element);
-    // ❌ Thiếu cleanup → observer vẫn chạy sau unmount
-  }, []);
-}
+### 🔥 Highlight
 
-// ✅ SỬA: Luôn cleanup
-function MyComponent() {
-  useEffect(() => {
-    const observer = new ResizeObserver(callback);
-    observer.observe(element);
-    
-    return () => observer.disconnect(); // ✅ Cleanup
-  }, []);
-}
+> **ResizeObserver phù hợp cho component-level responsiveness. Nhưng callback không nên gây resize loop trên chính element đang observe.**
+
+---
+
+## 9. 🧬 MutationObserver
+
+`MutationObserver` theo dõi thay đổi trong DOM tree.
+
+```ts
+const observer = new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    console.log(mutation.type);
+  }
+});
+
+observer.observe(element, {
+  childList: true,
+  attributes: true,
+  subtree: true,
+});
+```
+
+### Options quan trọng
+
+| Option | Ý nghĩa |
+|---|---|
+| `childList` | Theo dõi node con được thêm/xóa |
+| `attributes` | Theo dõi attribute thay đổi |
+| `characterData` | Theo dõi text node thay đổi |
+| `subtree` | Theo dõi cả cây con |
+| `attributeFilter` | Chỉ observe một số attribute |
+| `attributeOldValue` | Lưu giá trị attribute cũ |
+
+### Mutation record
+
+```ts
+mutation.type;           // "childList" | "attributes" | "characterData"
+mutation.target;
+mutation.addedNodes;
+mutation.removedNodes;
+mutation.attributeName;
+mutation.oldValue;
 ```
 
 ---
 
-**🔍 3. MUTATION OBSERVER API (Quan Sát Thay Đổi DOM)**
+## 10. 🧩 Use Case: Third-Party Integration
 
-**Khái niệm:**
-- API theo dõi **thay đổi DOM tree**: thêm/xóa nodes, thay đổi attributes, thay đổi text content
-- Thay thế cho **Mutation Events** (deprecated - đã lỗi thời)
-- Sử dụng cho: Auto-init new elements, Debug DOM changes, Polyfill custom elements, Third-party integration
+Khi tích hợp CMS, widget, extension hoặc script ngoài, DOM có thể bị thêm sau khi app render.
 
-**Hoạt động:**
-1. Callback được gọi **bất đồng bộ (microtask)** khi có mutation khớp config
-2. Browser **gom nhóm mutations** để giảm số lần gọi callback (batch processing)
-3. Hỗ trợ filter theo loại mutation: `childList`, `attributes`, `characterData`
+```ts
+const observer = new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (!(node instanceof HTMLElement)) continue;
 
-**Ưu điểm:**
-- ✅ **Hiệu năng tốt hơn** Mutation Events (deprecated)
-- ✅ **Linh hoạt**: Filter chính xác loại mutation cần quan tâm
-- ✅ **Observe subtree**: Theo dõi toàn bộ cây con (descendants)
-- ✅ **Track old values**: Lưu giá trị cũ của attributes/text
+      const widget = node.matches("[data-widget]")
+        ? node
+        : node.querySelector("[data-widget]");
 
-**Nhược điểm:**
-- ⚠️ Callback bất đồng bộ → không real-time
-- ⚠️ Performance issue nếu observe toàn `document.body` với `subtree: true`
-- ⚠️ Logic phức tạp khi xử lý nhiều mutations cùng lúc
-
-**Code Example (TypeScript + React):**
-
-```typescript
-import { useEffect, useRef } from 'react';
-
-// ============================================
-// A. THEME SWITCHER TRACKING (Theo Dõi Đổi Theme)
-// ============================================
-
-// Giải thích: Theo dõi attribute data-theme thay đổi
-// → Update components khi user switch theme
-
-function ThemeAwareComponent() {
-  useEffect(() => {
-    const root = document.documentElement; // <html> element
-    
-    // Tạo Mutation Observer
-    const themeObserver = new MutationObserver((mutations) => {
-      // mutations: Danh sách các thay đổi DOM
-      mutations.forEach((mutation) => {
-        // Chỉ quan tâm khi attribute thay đổi
-        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
-          const newTheme = root.getAttribute('data-theme');
-          const oldTheme = mutation.oldValue;
-          
-          console.log(`🎨 Theme changed: ${oldTheme} → ${newTheme}`);
-          
-          // Update chart colors, reload styles, etc.
-          updateComponentTheme(newTheme);
-        }
-      });
-    });
-    
-    // Observe <html> element
-    themeObserver.observe(root, {
-      attributes: true,              // Theo dõi attributes thay đổi
-      attributeFilter: ['data-theme'], // Chỉ quan tâm data-theme (ignore các attributes khác)
-      attributeOldValue: true        // Lưu giá trị cũ (để so sánh)
-    });
-    
-    return () => themeObserver.disconnect();
-  }, []);
-  
-  return <div>Theme-aware content...</div>;
-}
-
-function updateComponentTheme(theme: string | null) {
-  // Update chart colors
-  // Reload CSS variables
-  // Re-render components with new theme
-}
-
-// ============================================
-// B. AUTO-INIT NEW ELEMENTS (Tự Động Khởi Tạo Elements Mới)
-// ============================================
-
-// Giải thích: Tự động init tooltips, modals cho elements mới được thêm vào DOM
-// Use case: SPA with dynamic content, third-party libraries add elements
-
-function AutoInitializer() {
-  useEffect(() => {
-    const container = document.querySelector('#dynamic-content') as HTMLElement;
-    
-    const nodeObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        // Chỉ quan tâm nodes được thêm vào
-        mutation.addedNodes.forEach((node) => {
-          // Kiểm tra node type (chỉ xử lý element nodes)
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            const element = node as HTMLElement;
-            
-            // Auto-init tooltips
-            if (element.matches('[data-tooltip]')) {
-              console.log('✨ Init tooltip cho:', element);
-              initTooltip(element);
-            }
-            
-            // Auto-init modals
-            if (element.matches('[data-modal]')) {
-              console.log('✨ Init modal cho:', element);
-              initModal(element);
-            }
-            
-            // Auto-init date pickers
-            if (element.matches('.date-picker')) {
-              console.log('✨ Init date picker cho:', element);
-              initDatePicker(element);
-            }
-          }
-        });
-      });
-    });
-    
-    nodeObserver.observe(container, {
-      childList: true, // Theo dõi thêm/xóa node con
-      subtree: true    // Theo dõi cả các node con sâu hơn (descendants)
-    });
-    
-    return () => nodeObserver.disconnect();
-  }, []);
-  
-  return <div id="dynamic-content">Content will be added here...</div>;
-}
-
-function initTooltip(element: HTMLElement) {
-  // Init tooltip library...
-}
-
-function initModal(element: HTMLElement) {
-  // Init modal library...
-}
-
-function initDatePicker(element: HTMLElement) {
-  // Init date picker library...
-}
-
-// ============================================
-// C. DEBUG DOM CHANGES (Debug Thay Đổi DOM)
-// ============================================
-
-// Giải thích: Track tất cả thay đổi DOM để debug
-// Use case: Phát hiện third-party library nào đang modify DOM
-
-function DOMDebugger() {
-  useEffect(() => {
-    const debugObserver = new MutationObserver((mutations) => {
-      console.group(`🔍 ${mutations.length} DOM mutations detected`);
-      
-      mutations.forEach((mutation, index) => {
-        console.log(`\n[${index + 1}] Type: ${mutation.type}`);
-        
-        if (mutation.type === 'childList') {
-          // Nodes được thêm
-          if (mutation.addedNodes.length > 0) {
-            console.log('  ➕ Added nodes:', Array.from(mutation.addedNodes));
-          }
-          
-          // Nodes bị xóa
-          if (mutation.removedNodes.length > 0) {
-            console.log('  ➖ Removed nodes:', Array.from(mutation.removedNodes));
-          }
-        }
-        
-        if (mutation.type === 'attributes') {
-          console.log('  🏷️ Attribute changed:', mutation.attributeName);
-          console.log('     Old value:', mutation.oldValue);
-          console.log('     New value:', (mutation.target as Element).getAttribute(mutation.attributeName!));
-        }
-        
-        if (mutation.type === 'characterData') {
-          console.log('  📝 Text changed');
-          console.log('     Old:', mutation.oldValue);
-          console.log('     New:', mutation.target.textContent);
-        }
-      });
-      
-      console.groupEnd();
-    });
-    
-    // Observe toàn bộ document (CHỈ cho debug, KHÔNG dùng production)
-    debugObserver.observe(document.body, {
-      childList: true,         // Track add/remove nodes
-      attributes: true,        // Track attribute changes
-      characterData: true,     // Track text changes
-      subtree: true,           // Track all descendants
-      attributeOldValue: true, // Lưu giá trị cũ
-      characterDataOldValue: true
-    });
-    
-    return () => debugObserver.disconnect();
-  }, []);
-  
-  return <div>DOM Debugger active...</div>;
-}
-```
-
-**Best Practices (Thực Hành Tốt):**
-
-1. **✅ Filter chính xác loại mutation**
-   ```typescript
-   observer.observe(element, {
-     attributes: true,
-     attributeFilter: ['data-state', 'aria-expanded'], // Chỉ 2 attributes này
-     // KHÔNG: attributes: true (quan sát TẤT CẢ attributes)
-   });
-   ```
-
-2. **✅ Dùng `attributeFilter` để giảm noise**
-   ```typescript
-   // ❌ Quan sát tất cả attributes → callback fire rất nhiều
-   { attributes: true }
-   
-   // ✅ Chỉ quan sát 1 attribute cụ thể
-   { attributes: true, attributeFilter: ['data-theme'] }
-   ```
-
-3. **✅ Disconnect khi không cần**
-   ```typescript
-   useEffect(() => {
-     const observer = new MutationObserver(callback);
-     observer.observe(element, config);
-     
-     return () => observer.disconnect(); // ✅ Cleanup
-   }, []);
-   ```
-
-4. **✅ Debounce/batch xử lý mutations**
-   ```typescript
-   let mutationQueue: MutationRecord[] = [];
-   let timeoutId: number;
-   
-   const observer = new MutationObserver((mutations) => {
-     mutationQueue.push(...mutations);
-     
-     clearTimeout(timeoutId);
-     timeoutId = setTimeout(() => {
-       // Xử lý tất cả mutations cùng lúc
-       processMutations(mutationQueue);
-       mutationQueue = [];
-     }, 100);
-   });
-   ```
-
-**Common Mistakes (Lỗi Thường Gặp):**
-
-```typescript
-// ❌ LỖI 1: Observe toàn document với subtree → Rất chậm
-const badObserver = new MutationObserver((mutations) => {
-  // ❌ Logic nặng chạy mỗi khi DOM thay đổi (rất nhiều lần)
-  mutations.forEach((mutation) => {
-    expensiveOperation();
-  });
-});
-
-badObserver.observe(document.body, {
-  childList: true,
-  subtree: true,  // ❌ Quan sát TẤT CẢ descendants
-  attributes: true // ❌ Quan sát TẤT CẢ attributes
-});
-// → Callback fire hàng trăm lần/giây → App chậm
-
-// ✅ SỬA: Scope nhỏ + Filter chính xác
-const goodObserver = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    targetedOperation();
-  });
-});
-
-const specificContainer = document.querySelector('#app-content');
-goodObserver.observe(specificContainer, {
-  childList: true,
-  subtree: false, // ✅ Chỉ direct children
-  attributeFilter: ['data-state'] // ✅ Chỉ 1 attribute
-});
-
-// ❌ LỖI 2: Quên disconnect → Memory leak
-function Component() {
-  useEffect(() => {
-    const observer = new MutationObserver(callback);
-    observer.observe(document.body, config);
-    // ❌ Thiếu cleanup
-  }, []);
-}
-
-// ✅ SỬA: Luôn disconnect
-function Component() {
-  useEffect(() => {
-    const observer = new MutationObserver(callback);
-    observer.observe(document.body, config);
-    
-    return () => observer.disconnect(); // ✅ Cleanup
-  }, []);
-}
-
-// ❌ LỖI 3: Logic đồng bộ nặng trong callback
-const syncObserver = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    // ❌ Sync operations block main thread
-    for (let i = 0; i < 10000; i++) {
-      doHeavyCalculation();
+      if (widget) {
+        initializeWidget(widget);
+      }
     }
-  });
+  }
 });
 
-// ✅ SỬA: Batch + async processing
-const asyncObserver = new MutationObserver((mutations) => {
-  // Gom mutations
-  const addedElements = mutations
-    .flatMap(m => Array.from(m.addedNodes))
-    .filter(n => n.nodeType === Node.ELEMENT_NODE);
-  
-  // Xử lý async
-  queueMicrotask(() => {
-    processElementsBatch(addedElements);
-  });
+observer.observe(document.body, {
+  childList: true,
+  subtree: true,
+});
+```
+
+### ⚠️ Pitfalls
+
+- Observe `document.body` + `subtree: true` có thể rất tốn nếu DOM thay đổi nhiều.
+- Cần filter sớm để callback nhẹ.
+- Nếu callback tự sửa DOM, có thể trigger observer lại.
+- Phải `disconnect()` khi không còn cần.
+
+### 🔥 Highlight
+
+> **MutationObserver là công cụ mạnh nhưng dễ bị lạm dụng. Chỉ observe phạm vi nhỏ nhất và filter mutation càng sớm càng tốt.**
+
+---
+
+## 11. 🧹 Cleanup: `unobserve` Vs `disconnect`
+
+```ts
+observer.observe(elementA);
+observer.observe(elementB);
+
+observer.unobserve(elementA); // ngừng observe một element
+observer.disconnect();        // ngừng toàn bộ observer
+```
+
+| Method | Khi dùng |
+|---|---|
+| `unobserve(target)` | Bỏ theo dõi một element cụ thể |
+| `disconnect()` | Cleanup toàn bộ observer |
+| `takeRecords()` | Lấy records đang pending trước khi callback chạy |
+
+Trong React, cleanup thường đặt trong `useEffect`:
+
+```ts
+useEffect(() => {
+  const observer = new IntersectionObserver(callback);
+
+  if (ref.current) {
+    observer.observe(ref.current);
+  }
+
+  return () => observer.disconnect();
+}, []);
+```
+
+### 🔥 Highlight
+
+> **Quên cleanup observer là lỗi production phổ biến, đặc biệt trong SPA khi component mount/unmount nhiều lần.**
+
+---
+
+## 12. ⚡ Performance Model
+
+Observer APIs thường tốt hơn event listeners thủ công vì browser có thể:
+
+- Batch nhiều thay đổi thành một callback.
+- Tối ưu thời điểm callback.
+- Tránh app phải đọc layout liên tục.
+- Giảm polling.
+- Giảm số lần chạy code khi scroll/resize.
+
+Nhưng không có nghĩa callback được phép nặng.
+
+Callback nên:
+
+- Làm ít việc.
+- Không đọc/ghi layout lặp lại.
+- Debounce/throttle nếu cần.
+- Batch analytics/network calls.
+- Cleanup đúng.
+- Observe ít target nhất có thể.
+
+### Layout thrashing
+
+Pattern xấu:
+
+```ts
+for (const item of items) {
+  const rect = item.getBoundingClientRect(); // read layout
+  item.style.height = `${rect.width}px`;     // write layout
+}
+```
+
+Nên tách read và write:
+
+```ts
+const sizes = items.map((item) => item.getBoundingClientRect());
+
+items.forEach((item, index) => {
+  item.style.height = `${sizes[index].width}px`;
 });
 ```
 
 ---
 
-**📊 So Sánh 3 Observer APIs:**
+## 13. 🧠 One Observer Cho Nhiều Elements
 
+Thường nên dùng một observer để observe nhiều targets cùng options.
+
+```ts
+const observer = new IntersectionObserver((entries) => {
+  for (const entry of entries) {
+    if (entry.isIntersecting) {
+      reveal(entry.target);
+      observer.unobserve(entry.target);
+    }
+  }
+});
+
+document.querySelectorAll("[data-reveal]").forEach((element) => {
+  observer.observe(element);
+});
 ```
-┌─────────────────────┬──────────────────────┬─────────────────────┬─────────────────────┐
-│ Tiêu Chí            │ Intersection         │ Resize              │ Mutation            │
-├─────────────────────┼──────────────────────┼─────────────────────┼─────────────────────┤
-│ Theo dõi            │ Giao điểm viewport   │ Kích thước element  │ Thay đổi DOM        │
-│ Use Cases           │ Lazy load, Infinite  │ Responsive, Charts  │ Auto-init, Debug    │
-│                     │ scroll, Analytics    │ Layouts             │ Polyfills           │
-│ Performance         │ ⭐⭐⭐⭐⭐            │ ⭐⭐⭐⭐⭐           │ ⭐⭐⭐⭐ (cẩn thận)  │
-│ Complexity          │ Dễ                   │ Trung bình          │ Khó (nhiều edge     │
-│                     │                      │                     │ cases)              │
-│ Risk                │ Thấp                 │ Loop nếu sai cách   │ Performance nếu     │
-│                     │                      │                     │ observe rộng        │
-│ Browser Support     │ Modern (IE11+)       │ Modern (IE11+)      │ Modern (IE11+)      │
-└─────────────────────┴──────────────────────┴─────────────────────┴─────────────────────┘
+
+Không nên tạo quá nhiều observer giống nhau:
+
+```ts
+// Không tối ưu nếu có 500 items
+items.forEach((item) => {
+  const observer = new IntersectionObserver(callback);
+  observer.observe(item);
+});
 ```
 
-**🎯 Khi Nào Dùng Observer Nào?**
+### Senior note
 
-- **Intersection Observer**: Lazy loading, Infinite scroll, Visibility tracking
-- **Resize Observer**: Responsive components, Charts, Dynamic layouts
-- **Mutation Observer**: Auto-init elements, Debug DOM, Third-party integration
-
-**✅ Tổng Kết:**
-
-Observer APIs là công cụ mạnh mẽ để theo dõi thay đổi DOM một cách hiệu quả. Key takeaways:
-
-1. **Hiệu năng tốt hơn** event listeners truyền thống
-2. **Bất đồng bộ** → không block main thread
-3. **Cần cleanup** đúng cách → tránh memory leak
-4. **Filter chính xác** → tránh callback fire thừa
-5. **Debounce logic nặng** → tránh performance issue
+> **Tối ưu tốt là reuse observer theo cùng option set, không tạo observer mới cho từng element nếu không cần.**
 
 ---
+
+## 14. ⚛️ React Hook Patterns
+
+### `useIntersectionObserver`
+
+```tsx
+function useIntersectionObserver(
+  ref: React.RefObject<Element>,
+  options?: IntersectionObserverInit
+) {
+  const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
+
+  useEffect(() => {
+    const target = ref.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(([nextEntry]) => {
+      setEntry(nextEntry);
+    }, options);
+
+    observer.observe(target);
+
+    return () => observer.disconnect();
+  }, [ref, options?.root, options?.rootMargin, options?.threshold]);
+
+  return entry;
+}
+```
+
+### ⚠️ Lưu ý với options object
+
+Nếu truyền object inline:
+
+```tsx
+useIntersectionObserver(ref, { threshold: 0.5 });
+```
+
+Object mới được tạo mỗi render, effect có thể chạy lại. Nên memoize nếu cần:
+
+```tsx
+const options = useMemo(() => ({ threshold: 0.5 }), []);
+const entry = useIntersectionObserver(ref, options);
+```
+
+### Callback stale closure
+
+Nếu observer callback dùng state/function thay đổi liên tục, cần cẩn thận stale closure hoặc effect recreate quá nhiều.
+
+Pattern tốt:
+
+- Dùng `useCallback` cho callback ổn định.
+- Dùng ref để giữ latest callback nếu cần.
+- Cleanup observer khi dependency đổi.
+
+---
+
+## 15. 🔄 Observer Vs Event Listener
+
+| Nhu cầu | Nên dùng |
+|---|---|
+| Biết element có visible không | `IntersectionObserver` |
+| Biết element đổi size không | `ResizeObserver` |
+| Biết DOM node/attribute đổi không | `MutationObserver` |
+| Cần bắt click/input/keyboard | Event listener |
+| Cần scroll position chính xác từng frame | Scroll listener + throttle/rAF |
+| Cần animation theo scroll liên tục | CSS Scroll-driven animation hoặc rAF |
+
+### 🔥 Highlight
+
+> **Observer không thay thế mọi event listener. Nó thay thế tốt các case theo dõi visibility, size và DOM mutation.**
+
+---
+
+## 16. 🛡️ Production Checklist
+
+- ✅ Cleanup bằng `disconnect()` khi component unmount.
+- ✅ Dùng `unobserve()` khi target đã xử lý xong.
+- ✅ Reuse một observer cho nhiều elements nếu options giống nhau.
+- ✅ Callback nhẹ, tránh logic nặng.
+- ✅ Tránh đọc/ghi layout xen kẽ gây layout thrashing.
+- ✅ Với `ResizeObserver`, tránh mutate size của chính target liên tục.
+- ✅ Với `MutationObserver`, observe phạm vi nhỏ nhất.
+- ✅ Filter mutation sớm bằng `attributeFilter`, selector hoặc node type.
+- ✅ Guard infinite scroll bằng `isLoading` và `hasMore`.
+- ✅ Track analytics không trùng, có threshold/time rule.
+- ✅ Test trên Safari/mobile nếu dùng API mới hoặc edge case layout.
+
+---
+
+## 17. ⚠️ Lỗi Thường Gặp Khi Phỏng Vấn
+
+### 1. Nói observer luôn chạy off-main-thread
+
+Không chính xác. Browser tối ưu việc theo dõi và batch callback, nhưng callback JavaScript vẫn chạy trên main thread.
+
+### 2. Quên cleanup
+
+SPA unmount/mount nhiều lần có thể giữ reference cũ, gây memory leak hoặc callback chạy sai.
+
+### 3. Dùng MutationObserver cho state trong React
+
+Nếu DOM do React quản lý, thường nên đọc từ state/props thay vì observe DOM ngược lại.
+
+### 4. Dùng ResizeObserver thay CSS container queries cho mọi thứ
+
+Nếu chỉ cần đổi style theo container size, CSS container queries thường đơn giản hơn.
+
+### 5. Dùng IntersectionObserver cho animation từng pixel
+
+IntersectionObserver không dành cho animation theo scroll từng frame. Dùng CSS/rAF phù hợp hơn.
+
+### 6. Observe phạm vi quá rộng
+
+`document.body` + `subtree: true` trong MutationObserver có thể rất đắt.
+
+---
+
+## 18. 🧾 Câu Trả Lời Phỏng Vấn 2 Phút
+
+> **Observer APIs là nhóm Web APIs giúp theo dõi thay đổi của DOM/browser hiệu quả hơn polling hoặc event listeners thủ công. Ba API chính là IntersectionObserver để biết element vào/ra viewport hoặc container, ResizeObserver để biết element đổi kích thước, và MutationObserver để biết DOM tree, attribute hoặc text node thay đổi.**
+>
+> **IntersectionObserver thường dùng cho lazy loading, infinite scroll và viewability analytics, thay cho scroll listener cộng `getBoundingClientRect`. ResizeObserver dùng cho responsive component như chart/grid vì element có thể đổi size mà window không resize. MutationObserver dùng khi cần tích hợp third-party DOM hoặc theo dõi DOM mutation, nhưng phải giới hạn scope vì có thể rất tốn.**
+>
+> **Ở production, điểm quan trọng là cleanup bằng `disconnect`, reuse observer khi options giống nhau, callback phải nhẹ, tránh layout thrashing và tránh mutation/resize loop. Observer giúp browser batch và tối ưu việc theo dõi, nhưng callback JS vẫn chạy trên main thread nên không được xử lý nặng trong đó.**
+
+---
+
+## 19. 🎯 Câu Trả Lời Staff-Level
+
+> **Ở staff level, tôi xem Observer APIs như primitive để xây dựng UI reactive với browser state mà không tạo polling hoặc event storm. Tôi chọn IntersectionObserver cho visibility, ResizeObserver cho component-level layout, MutationObserver cho DOM integration ngoài vòng kiểm soát của framework.**
+>
+> **Tôi không dùng observer như default solution cho mọi thứ. Nếu React state đã là source of truth thì không observe DOM để suy luận ngược. Nếu chỉ cần style theo container size thì ưu tiên CSS container queries. Nếu cần scroll animation liên tục thì dùng CSS/rAF thay vì IntersectionObserver.**
+>
+> **Khi thiết kế shared hook/component, tôi quan tâm đến lifecycle và scale: một observer có thể observe nhiều targets, cleanup rõ ràng, callback không gây layout thrashing, analytics được dedupe/batch, infinite scroll có loading guard và virtualization. Đó là khác biệt giữa demo chạy được và implementation production-ready.**
+
+---
+
+## 20. 🧠 Ghi Nhớ Nhanh
+
+| Icon | Ý chính |
+|---|---|
+| 👁️ | IntersectionObserver theo dõi visibility |
+| 📐 | ResizeObserver theo dõi element size |
+| 🧬 | MutationObserver theo dõi DOM changes |
+| 🧹 | Luôn cleanup bằng `disconnect()` |
+| ♾️ | Infinite scroll cần `isLoading` + `hasMore` |
+| ⚡ | Callback vẫn chạy trên main thread, phải nhẹ |
+| 🧩 | Reuse observer cho nhiều elements nếu options giống |
+| ⚠️ | Mutation/resize callback có thể tạo loop |
+| 🎯 | Observer tốt cho visibility/size/mutation, không thay mọi event |
+
+---
+
+## 21. ✅ Kết Luận
+
+> **Observer APIs giúp frontend theo dõi visibility, size và DOM mutation hiệu quả hơn cách thủ công, nhưng senior/staff cần hiểu lifecycle, cleanup, batching, performance và giới hạn của từng API.**
+
+Câu nhớ nhanh:
+
+> **Intersection = thấy chưa, Resize = to nhỏ chưa, Mutation = DOM đổi chưa. Dùng đúng API, scope nhỏ, callback nhẹ, cleanup kỹ.**

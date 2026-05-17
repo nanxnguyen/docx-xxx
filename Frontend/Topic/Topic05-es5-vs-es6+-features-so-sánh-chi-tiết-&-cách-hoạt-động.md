@@ -1,985 +1,476 @@
-# Q03: ES5 vs ES6+ Features - So sánh chi tiết & cách hoạt động
+# 🚀 Topic 05 — ES5 vs ES6+ Features (so sánh chi tiết & cách hoạt động)
 
-## Tóm tắt phỏng vấn
+> Scope: `let/const` + TDZ, arrow, class & prototype, destructuring, spread/rest, template literal, modules, Promise & async/await, optional chaining, nullish, Symbol/iterator/generator, Proxy/Reflect, Set/Map/WeakMap, transpilation vs polyfill, ES2020–ES2024 highlights.
 
-**ES5** là JavaScript kiểu cũ, chủ yếu dùng `var`, function constructor, prototype, callback và không có module native.
+## ⭐ 1. Senior/Staff Summary
 
-**ES6+** là JavaScript hiện đại từ ES2015 trở đi, thêm `let/const`, arrow function, class, module, destructuring, spread/rest, Promise, async/await và nhiều API mới.
+> ES5 → ES6+ không chỉ là cú pháp đẹp hơn — nó **đổi cơ chế chạy**: block scope + TDZ thay vì hoist `undefined`, lexical `this` thay vì dynamic, ES Modules + live binding thay vì IIFE/CommonJS, Promise + microtask thay vì callback hell. Senior cần trả lời theo 5 lớp: **syntax → runtime behavior → architecture → compatibility → trade-off**.
 
-**Câu trả lời ngắn gọn:**
+Quan trọng nhất cần phân biệt: **transpile (Babel/TS) xử lý cú pháp** — **polyfill (core-js, runtime) xử lý API**. Một browser thiếu `Promise` không phải syntax issue — Babel không "fix" nó, phải polyfill. Browserslist + `@babel/preset-env` quyết định cái gì được transform và cái gì để nguyên.
 
-> ES6+ giúp code ngắn hơn, rõ scope hơn, xử lý async dễ đọc hơn và hỗ trợ module hoá tốt hơn. Tuy nhiên bản chất JavaScript vẫn là prototype-based, async vẫn dựa trên Promise/microtask, và khi hỗ trợ browser cũ cần phân biệt transpilation với polyfill.
+---
 
-## Bảng so sánh nhanh
+## 🧠 2. Key Mental Model
+
+- `var` hoist với value = `undefined` ngay từ creation phase. `let/const/class` cũng hoist binding nhưng nằm trong **TDZ** — đọc trước dòng khai báo → `ReferenceError` (kể cả `typeof`).
+- **Arrow** không có `this`/`arguments`/`super`/`new.target` của riêng nó → lexical từ scope ngoài.
+- **`class`** = syntactic sugar trên prototype chain. Method nằm trên `Constructor.prototype` (share giữa instance), không phải copy.
+- **ES Modules** = strict mode by default + **live binding** (import là tham chiếu sống tới export, không phải copy) + static analysis → tree-shaking.
+- **`async/await`** chỉ là syntactic sugar trên Promise. Phần sau `await` chạy ở **microtask queue** → trước macrotask (`setTimeout`).
+- **`??` vs `||`**: `??` chỉ fallback khi `null/undefined`. `||` fallback cho mọi falsy (`0`, `''`, `false`, `NaN`).
+- **Spread chỉ shallow copy**. Nested reference vẫn share.
+
+---
+
+## 📚 3. Main Concepts
+
+### 3.1. Bảng so sánh nhanh ES5 ↔ ES6+
 
 | Chủ đề | ES5 | ES6+ |
-| --- | --- | --- |
-| Biến | `var`, function scope | `let/const`, block scope |
-| Hoisting | `var` được init `undefined` | `let/const` có TDZ |
-| Function | `function () {}` | Arrow `() => {}` |
-| `this` | Dynamic, phụ thuộc cách gọi | Arrow dùng lexical `this` |
-| OOP | Constructor function + prototype | `class`, `extends`, `super` |
-| String | Nối chuỗi bằng `+` | Template literal `` `${}` `` |
-| Object/Array | Gán thủ công, `Object.assign` | Destructuring, spread/rest |
-| Async | Callback, callback hell | Promise, async/await |
-| Module | IIFE, CommonJS, AMD | `import/export` |
-| Collections | Object/Array là chính | `Map`, `Set`, `WeakMap`, `WeakSet` |
-| Meta-programming | Hạn chế | `Symbol`, iterator, generator, `Proxy`, `Reflect` |
-| Browser cũ | Hỗ trợ rộng | Có thể cần Babel/polyfill |
+|---|---|---|
+| Biến | `var` (function scope, hoist `undefined`) | `let/const` (block scope, TDZ) |
+| Function | `function () {}` | Arrow `() => {}`, default params, rest |
+| `this` | Dynamic | Arrow → lexical |
+| OOP | Constructor + prototype | `class`, `extends`, `super`, `#private` |
+| String | Nối bằng `+` | Template literal `` `${}` ``, tagged template |
+| Destructure | Gán thủ công | Object/array destructuring |
+| Copy/merge | `Object.assign` | Spread `{...}` / `[...]` |
+| Async | Callback, callback hell | Promise, async/await, AsyncIterator |
+| Module | IIFE / CJS / AMD | `import/export`, dynamic import, top-level await |
+| Collections | Object/Array | `Map`, `Set`, `WeakMap`, `WeakSet`, `WeakRef` |
+| Null-safe | `obj && obj.x && obj.x.y` | `?.`, `??`, `??=` |
+| Meta | Hạn chế | `Symbol`, `Proxy`, `Reflect`, iterator, generator |
 
-## Các thuật ngữ cần nắm
+### 3.2. Hoisting & Temporal Dead Zone
 
-| Thuật ngữ | Hiểu nhanh |
-| --- | --- |
-| Scope | Phạm vi truy cập của biến |
-| Function scope | Biến sống trong toàn bộ function, điển hình là `var` |
-| Block scope | Biến chỉ sống trong cặp `{}`, điển hình là `let/const` |
-| Hoisting | Engine xử lý khai báo trước khi chạy code |
-| TDZ | Vùng không được đọc `let/const` trước dòng khai báo |
-| Lexical this | `this` lấy từ scope nơi function được định nghĩa |
-| Dynamic this | `this` phụ thuộc cách function được gọi |
-| Prototype chain | Cơ chế tìm property/method từ object lên prototype cha |
-| Transpile | Chuyển cú pháp mới về cú pháp cũ, ví dụ Babel |
-| Polyfill | Thêm API runtime còn thiếu, ví dụ `Promise`, `Array.includes` |
-| Shallow copy | Copy lớp ngoài, object lồng nhau vẫn chung reference |
-| Iterable | Object có thể được duyệt bằng `for...of` nếu có `Symbol.iterator` |
-| Microtask | Queue ưu tiên cao hơn macrotask, Promise/`await` resume chạy ở đây |
+| Khai báo | Hoisted | Initialized | Dùng trước dòng khai báo |
+|---|---|---|---|
+| `var` | ✅ | ✅ (`undefined`) | OK → `undefined` |
+| `let` / `const` | ✅ | ❌ (TDZ) | `ReferenceError` |
+| `function decl` | ✅ | ✅ (cả thân) | Gọi được |
+| `function expr` (var) | Biến hoisted | `undefined` | `TypeError` khi gọi |
+| `class` | ✅ | ❌ (TDZ) | `ReferenceError` |
 
-## ES2015-ES2023 đáng nhớ
-
-- **ES2015/ES6**: `let/const`, arrow function, class, module, Promise, destructuring, spread/rest, `Map`, `Set`.
-- **ES2016**: `Array.includes()`, toán tử `**`.
-- **ES2017**: `async/await`, `Object.values()`, `Object.entries()`.
-- **ES2018**: Object rest/spread, async iteration.
-- **ES2019**: `Array.flat()`, `Array.flatMap()`, `Object.fromEntries()`.
-- **ES2020**: Optional chaining `?.`, nullish coalescing `??`, `BigInt`, dynamic import.
-- **ES2021**: `String.replaceAll()`, numeric separators `1_000_000`.
-- **ES2022**: Private fields `#field`, top-level await, `Array.at()`.
-- **ES2023**: `findLast()`, `toSorted()`, `toReversed()`, `toSpliced()`.
-
-## 1. Variables: `var` vs `let/const`
-
-Điểm quan trọng nhất: `var` là function scope và được hoist với giá trị `undefined`; `let/const` là block scope và có TDZ.
-
-```typescript
-function varExample() {
-  console.log(x); // undefined
-  var x = 10;
-
-  if (true) {
-    var x = 20; // cùng biến x ở function scope
-  }
-
-  console.log(x); // 20
-}
-
-function letConstExample() {
-  // console.log(y); // ReferenceError: đang trong TDZ
-  let y = 10;
-  const z = 100;
-
-  if (true) {
-    let y = 20; // biến mới trong block
-    const z = 200;
-    console.log(y, z); // 20, 200
-  }
-
-  console.log(y, z); // 10, 100
-}
-```
-
-**Nên nhớ:**
-
-- Mặc định dùng `const`.
-- Dùng `let` khi cần gán lại.
-- Tránh `var` trong code hiện đại vì dễ gây bug do hoisting và redeclare.
-
-### Hoisting & Temporal Dead Zone đầy đủ
-
-Hoisting không có nghĩa là JavaScript thật sự "di chuyển code". Đúng hơn là trong **creation phase**, engine scan declarations và tạo binding trước; đến **execution phase** mới chạy từng dòng.
-
-| Loại khai báo | Có hoisted? | Có initialized trước không? | Dùng trước dòng khai báo |
-| --- | --- | --- | --- |
-| `var` | Có | Có, bằng `undefined` | Được, trả `undefined` |
-| `let` | Có | Không, nằm trong TDZ | `ReferenceError` |
-| `const` | Có | Không, nằm trong TDZ | `ReferenceError` |
-| Function declaration | Có | Có, toàn bộ function | Gọi được |
-| Function expression với `var` | Biến được hoisted | `undefined` | Thường `TypeError` khi gọi |
-| Function expression với `let/const` | Binding được hoisted | Không, nằm trong TDZ | `ReferenceError` |
-| `class` | Có | Không, nằm trong TDZ | `ReferenceError` |
-
-```typescript
-// Function declaration: hoisted toàn bộ
-sayHello(); // OK
-
-function sayHello() {
-  console.log('Hello');
-}
-
-// Function expression với var: chỉ biến được hoisted
-// sayGoodbye(); // TypeError: sayGoodbye is not a function
-var sayGoodbye = function () {
-  console.log('Goodbye');
-};
-
-// Function expression với const: nằm trong TDZ
-// sayHi(); // ReferenceError
-const sayHi = () => console.log('Hi');
-
-// Class cũng có TDZ
-// const user = new User(); // ReferenceError
-class User {}
-```
-
-TDZ bắt đầu từ đầu block scope đến dòng khai báo. Trong TDZ, kể cả `typeof` cũng không còn "safe".
-
-```typescript
-console.log(typeof undeclaredValue); // 'undefined'
-
+```ts
+console.log(typeof a); // 'undefined' — undeclared OK
 {
-  // console.log(typeof value); // ReferenceError
-  let value = 1;
+  // console.log(typeof b); // ❌ ReferenceError — TDZ kể cả typeof
+  let b = 1;
 }
 ```
 
-Các edge cases hay hỏi phỏng vấn:
+> 💡 TDZ tồn tại để bắt lỗi dùng biến trước khi khai báo. Đó là feature, không phải bug.
 
-```typescript
-// 1. var trong loop dùng chung một binding
-for (var i = 0; i < 3; i++) {
-  setTimeout(() => console.log(i), 0); // 3, 3, 3
-}
+### 3.3. Arrow function — gọn nhưng đổi hành vi
 
-// let trong loop tạo binding riêng cho mỗi iteration
-for (let j = 0; j < 3; j++) {
-  setTimeout(() => console.log(j), 0); // 0, 1, 2
-}
-
-// 2. Nested scope TDZ: inner binding che outer binding
-let status = 'outer';
-{
-  // console.log(status); // ReferenceError, không đọc outer được
-  let status = 'inner';
-}
-
-// 3. Default parameter cũng có thứ tự initialize
-// function wrong(a = b, b = 1) {} // ReferenceError
-function correct(a = 1, b = a) {
-  return [a, b];
-}
-```
-
-**Cách trả lời senior:** `var` được hoist và init `undefined`; `let/const/class` cũng được hoist nhưng chưa initialized nên nằm trong TDZ; function declaration được hoist cả thân function; function expression phụ thuộc biến chứa nó. TDZ tồn tại để bắt lỗi dùng biến trước khi khai báo.
-
-## 2. Arrow function
-
-Arrow function ngắn gọn và không có `this` riêng. Nó lấy `this` từ scope bên ngoài.
-
-```typescript
+```ts
 const counter = {
   value: 0,
-
-  incrementLater() {
-    setTimeout(() => {
-      this.value += 1; // this là counter
-    }, 100);
+  inc() {
+    setTimeout(() => { this.value++; }, 100);  // ✅ this = counter (lexical)
+    setTimeout(function () { this.value++; }, 100); // ❌ this = undefined / globalThis
   },
 };
 ```
 
-Không nên dùng arrow function làm object method nếu method cần `this` trỏ về object.
+- ✅ Dùng cho: callback, `map/filter`, handler ngắn, không cần `this`.
+- ❌ Tránh: object method cần `this`, constructor (không `new` được), method cần `arguments`/`super`.
+- Chi tiết: xem [Topic07](./Topic07-arrow-vs-regular-functions-&-this-binding-(call,-apply,-bind).md).
 
-```typescript
-const wrong = {
-  value: 42,
-  getValue: () => this.value, // sai: this không phải wrong
-};
+### 3.4. Class — syntactic sugar trên prototype
 
-const correct = {
-  value: 42,
-  getValue() {
-    return this.value;
-  },
-};
-```
+```ts
+// ES5: prototype manual
+function Animal(name) { this.name = name; }
+Animal.prototype.speak = function () { return this.name + ' sound'; };
 
-**Nên dùng arrow cho:** callback, `.map()`, `.filter()`, handler ngắn, function không cần `this` riêng.
-
-**Tránh dùng arrow cho:** constructor, object method cần `this`, method cần `arguments`, method cần `super`.
-
-## 3. Class và prototype
-
-`class` không biến JavaScript thành class-based language như Java/C#. Nó là cú pháp dễ đọc hơn trên prototype chain.
-
-```typescript
-// ES5
-function Animal(name) {
-  this.name = name;
-}
-
-Animal.prototype.speak = function () {
-  return this.name + ' makes a sound';
-};
-
-function Dog(name, breed) {
-  Animal.call(this, name);
-  this.breed = breed;
-}
-
+function Dog(name, breed) { Animal.call(this, name); this.breed = breed; }
 Dog.prototype = Object.create(Animal.prototype);
 Dog.prototype.constructor = Dog;
 
-Dog.prototype.speak = function () {
-  return this.name + ' barks';
-};
-
 // ES6+
-class ModernAnimal {
-  constructor(public name: string) {}
-
-  speak() {
-    return `${this.name} makes a sound`;
-  }
-}
-
-class ModernDog extends ModernAnimal {
-  constructor(name: string, public breed: string) {
-    super(name);
-  }
-
-  speak() {
-    return `${this.name} barks`;
-  }
+class AnimalC { constructor(public name: string) {} speak() { return `${this.name} sound`; } }
+class DogC extends AnimalC {
+  #age = 0;                                              // private field (ES2022)
+  static species = 'Canis';                              // static
+  constructor(name: string, public breed: string) { super(name); }
+  speak() { return `${this.name} barks`; }
 }
 ```
 
-**Bản chất:**
+**Cần nhớ:**
 
-- Method trong class nằm trên `Constructor.prototype`, không copy vào từng instance.
-- `extends` thiết lập prototype chain.
-- `super()` gọi constructor của parent class.
-- Private field `#field` là private thật ở runtime, khác convention `_field`.
+- Method share qua `Constructor.prototype`, không copy mỗi instance.
+- `extends` set prototype chain. `super()` gọi parent constructor.
+- `#field` là true private ở engine level — khác convention `_field`.
 
-## 4. Template literal
+### 3.5. Destructuring + Spread/Rest
 
-Template literal giúp nối chuỗi, viết multiline string và nhúng biểu thức dễ đọc hơn.
+```ts
+// Destructure object, alias, default, nested
+const { name, age: years = 0, address: { city } } = user;
 
-```typescript
-const name = 'John';
-const age = 25;
+// Default chỉ áp dụng cho undefined, KHÔNG cho null
+const { a = 'A', b = 'B' } = { a: null, b: undefined };
+// a = null, b = 'B'
 
-// ES5
-const oldMessage = 'Hello ' + name + ', age ' + age;
+// Spread (trải) vs Rest (gom)
+const merged = [...arr1, ...arr2];                       // spread
+const updated = { ...user, age: 31 };                    // spread
+function sum(...nums: number[]) { return nums.reduce((a,b)=>a+b, 0); } // rest
+const [head, ...tail] = [1, 2, 3, 4];                    // rest
 
-// ES6+
-const message = `Hello ${name}, age ${age}`;
-
-const html = `
-  <div class="user">
-    <h2>${name}</h2>
-    <p>Age: ${age}</p>
-  </div>
-`;
+// ⚠️ Spread chỉ shallow
+const copy = { ...original }; copy.nested.x = 99;        // mutate luôn original.nested.x
+// Deep: structuredClone(original) — không hỗ trợ function/DOM/class instance
 ```
 
-## 5. Destructuring
+### 3.6. Template literal + tagged template
 
-Destructuring là cú pháp rút giá trị từ object/array ra biến.
+```ts
+const html = `<p>Hello ${name}</p>`;                     // basic
+const css = String.raw`C:\path\${x}`;                    // raw — không escape
 
-```typescript
-const user = {
-  name: 'John',
-  age: 30,
-  address: { city: 'Ha Noi' },
-};
-
-const { name, age } = user;
-const {
-  address: { city },
-} = user;
-
-const numbers = [1, 2, 3];
-const [first, second] = numbers;
-
-const { email = 'no-email@example.com' } = user;
-```
-
-**Lưu ý quan trọng:** default value chỉ dùng khi giá trị là `undefined`, không dùng khi là `null`.
-
-```typescript
-const data = { a: null, b: undefined };
-const { a = 'A', b = 'B' } = data;
-
-console.log(a); // null
-console.log(b); // 'B'
-```
-
-## 6. Spread và rest
-
-Cùng là cú pháp `...`, nhưng ý nghĩa phụ thuộc vị trí dùng.
-
-```typescript
-// Spread: trải ra
-const arr1 = [1, 2];
-const arr2 = [3, 4];
-const merged = [...arr1, ...arr2]; // [1, 2, 3, 4]
-
-const user = { name: 'John', age: 30 };
-const updated = { ...user, age: 31 };
-
-// Rest: gom lại
-function sum(...numbers: number[]) {
-  return numbers.reduce((total, n) => total + n, 0);
+// Tagged template — i18n, SQL builder, CSS-in-JS
+function sql(strings: TemplateStringsArray, ...vals: unknown[]) {
+  // Trả về { text, params } — KHÔNG concat string với value
+  return {
+    text: strings.reduce((acc, s, i) => acc + s + (i < vals.length ? `$${i + 1}` : ''), ''),
+    params: vals,
+  };
 }
-
-const [head, ...tail] = [1, 2, 3, 4];
-const { name, ...profile } = user;
+const q = sql`SELECT * FROM users WHERE id = ${userId} AND role = ${role}`;
+// { text: 'SELECT * FROM users WHERE id = $1 AND role = $2', params: [userId, role] }
 ```
 
-**Cẩn thận:** spread chỉ shallow copy.
+### 3.7. Modules — `import/export` + live binding
 
-```typescript
-const original = { nested: { count: 1 } };
-const copied = { ...original };
-
-copied.nested.count = 99;
-console.log(original.nested.count); // 99
-```
-
-Nếu cần deep copy, cân nhắc `structuredClone()`, `cloneDeep()` hoặc cách clone phù hợp với data.
-
-## 7. Default parameters
-
-ES5 thường dùng `||`, nhưng cách này sai với các giá trị falsy hợp lệ như `0`, `''`, `false`.
-
-```typescript
-function greetES5(name) {
-  name = name || 'Guest'; // '' cũng bị đổi thành Guest
-  return 'Hello ' + name;
-}
-
-function greetES6(name = 'Guest') {
-  return `Hello ${name}`;
-}
-
-greetES6(undefined); // Hello Guest
-greetES6(''); // Hello
-```
-
-Default parameter chỉ chạy khi argument là `undefined`.
-
-## 8. Promise và async/await
-
-Promise đại diện cho kết quả async trong tương lai. `async/await` là cú pháp dễ đọc hơn trên Promise.
-
-```typescript
-function fetchUser(id: string): Promise<{ id: string; name: string }> {
-  return fetch(`/api/users/${id}`).then((res) => res.json());
-}
-
-async function loadUser() {
-  try {
-    const user = await fetchUser('123');
-    return user;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-```
-
-### Sequential vs parallel
-
-Khi các request không phụ thuộc nhau, dùng `Promise.all`.
-
-```typescript
-// Chậm: chạy tuần tự
-const user = await fetchUser('1');
-const posts = await fetchPosts('1');
-const comments = await fetchComments('1');
-
-// Nhanh hơn: chạy song song
-const [user, posts, comments] = await Promise.all([
-  fetchUser('1'),
-  fetchPosts('1'),
-  fetchComments('1'),
-]);
-```
-
-### Promise combinators
-
-| API | Ý nghĩa | Khi dùng |
-| --- | --- | --- |
-| `Promise.all()` | Tất cả fulfilled, một reject là reject ngay | Các tác vụ đều bắt buộc thành công |
-| `Promise.allSettled()` | Chờ tất cả xong dù success/fail | Báo cáo kết quả từng task |
-| `Promise.race()` | Lấy promise settle đầu tiên | Timeout hoặc lấy kết quả nhanh nhất |
-| `Promise.any()` | Lấy fulfilled đầu tiên, bỏ qua reject | Fallback nhiều nguồn |
-
-## 9. Modules
-
-ES Modules dùng `import/export`, có module scope riêng và giúp bundler tree-shake tốt hơn.
-
-```typescript
+```ts
 // math.ts
 export const PI = 3.14159;
-
-export function area(radius: number) {
-  return PI * radius * radius;
-}
-
-export default class Circle {
-  constructor(public radius: number) {}
-}
+export function area(r: number) { return PI * r * r; }
+export default class Circle { constructor(public r: number) {} }
 
 // app.ts
 import Circle, { area, PI } from './math';
 import * as MathUtils from './math';
-
-const module = await import('./heavy-module'); // dynamic import
+const heavy = await import('./heavy');                   // dynamic — code splitting
 ```
 
-**Nên nhớ:**
+**Cần nhớ:**
 
-- Static import phải ở top-level, bundler phân tích được trước khi chạy.
-- Dynamic import chạy runtime và trả về Promise, phù hợp cho code-splitting.
-- Module được cache, import nhiều lần vẫn dùng cùng một instance.
-- ES Modules dùng live binding: import là tham chiếu sống tới export.
+- ES Modules **strict mode by default**, **module scope** riêng, **singleton** (cache theo URL).
+- **Live binding**: `import` là tham chiếu sống tới export — export thay đổi, import thấy giá trị mới. Khác CJS (copy lúc require).
+- **Static analysis** → tree-shaking. Đó là lý do `import * as X` có thể block tree-shake nếu bundler không phân tích được.
+- **Top-level `await`** (ES2022) chạy được trong module — block đến khi resolve.
 
-## 10. Optional chaining và nullish coalescing
+### 3.8. Promise & async/await
 
-Hai cú pháp này rất hay gặp trong code frontend vì API response thường có field thiếu hoặc nullable.
+```ts
+async function loadDashboard() {
+  // ❌ Sequential khi không cần
+  const user = await fetchUser();
+  const posts = await fetchPosts();
 
-```typescript
-const user = {
-  profile: {
-    name: 'John',
-    settings: null,
-  },
-};
-
-// Optional chaining: tránh lỗi Cannot read properties of undefined/null
-const theme = user.profile.settings?.theme;
-
-// Nullish coalescing: chỉ fallback khi value là null hoặc undefined
-const displayName = user.profile.name ?? 'Anonymous';
-```
-
-Khác biệt lớn giữa `??` và `||`:
-
-```typescript
-const count = 0;
-const label1 = count || 10; // 10, vì 0 là falsy
-const label2 = count ?? 10; // 0, vì 0 không phải null/undefined
-
-const text = '';
-const value1 = text || 'default'; // default
-const value2 = text ?? 'default'; // ''
-```
-
-**Khi phỏng vấn:** nói rõ `?.` không thay thế validation. Nó chỉ giúp đọc property an toàn hơn. Nếu business logic yêu cầu field bắt buộc, vẫn phải validate và báo lỗi đúng.
-
-## 11. Symbol, iterator và generator
-
-### Symbol
-
-`Symbol` tạo key unique, thường dùng cho protocol nội bộ của JavaScript như `Symbol.iterator`.
-
-```typescript
-const id = Symbol('id');
-
-const user = {
-  name: 'John',
-  [id]: 123,
-};
-
-Object.keys(user); // ['name']
-user[id]; // 123
-```
-
-`Symbol` hữu ích khi cần tránh đụng tên property, nhưng trong app frontend thông thường ít khi phải tự tạo nhiều.
-
-### Iterator và `for...of`
-
-Một object được xem là iterable nếu nó có method `[Symbol.iterator]()` trả về iterator.
-
-```typescript
-const range = {
-  from: 1,
-  to: 3,
-  [Symbol.iterator]() {
-    let current = this.from;
-    const end = this.to;
-
-    return {
-      next() {
-        if (current <= end) {
-          return { value: current++, done: false };
-        }
-        return { value: undefined, done: true };
-      },
-    };
-  },
-};
-
-for (const n of range) {
-  console.log(n); // 1, 2, 3
+  // ✅ Parallel khi độc lập
+  const [user2, posts2, perms] = await Promise.all([
+    fetchUser(), fetchPosts(), fetchPerms(),
+  ]);
 }
 ```
 
-### Generator
+| API | Behavior | Use case |
+|---|---|---|
+| `Promise.all` | All fulfilled, 1 reject → reject ngay | Mọi task bắt buộc OK |
+| `Promise.allSettled` | Chờ hết, không reject | Báo cáo từng task |
+| `Promise.race` | Settle đầu tiên thắng | Timeout, fastest source |
+| `Promise.any` | Fulfilled đầu tiên, bỏ qua reject | Fallback nguồn |
+| `Promise.withResolvers` (ES2024) | Trả `{ promise, resolve, reject }` | Defer pattern |
 
-Generator là function có thể pause/resume bằng `yield`. Nó tạo iterator tự động.
+**Microtask order:**
 
-```typescript
-function* range(from: number, to: number) {
-  for (let i = from; i <= to; i++) {
-    yield i;
-  }
-}
-
-for (const n of range(1, 3)) {
-  console.log(n); // 1, 2, 3
-}
-```
-
-Trong frontend hiện đại, generator ít dùng hơn `async/await`, nhưng vẫn đáng biết vì liên quan iterator, lazy sequence, Redux Saga và một số thư viện async cũ.
-
-## 12. Proxy và Reflect
-
-`Proxy` cho phép intercept thao tác trên object như get/set/delete. `Reflect` cung cấp API chuẩn để thực hiện lại thao tác gốc.
-
-```typescript
-const state = { count: 0 };
-
-const proxy = new Proxy(state, {
-  get(target, key, receiver) {
-    console.log('read', key);
-    return Reflect.get(target, key, receiver);
-  },
-  set(target, key, value, receiver) {
-    console.log('write', key, value);
-    return Reflect.set(target, key, value, receiver);
-  },
-});
-
-proxy.count; // log read
-proxy.count = 1; // log write
-```
-
-**Senior note:** Proxy rất mạnh nhưng có overhead và khó debug nếu lạm dụng. Vue 3 dùng Proxy cho reactivity; Immer cũng dựa vào proxy/draft để tạo immutable update tiện hơn.
-
-## 13. Transpilation, polyfill và browser support
-
-Đây là phần hay bị hỏi ở Senior Frontend vì liên quan production build.
-
-| Khái niệm | Giải thích | Ví dụ |
-| --- | --- | --- |
-| Transpile | Đổi cú pháp mới thành cú pháp cũ | `class`, arrow, optional chaining qua Babel/TS |
-| Polyfill | Thêm API runtime còn thiếu | `Promise`, `Array.includes`, `Object.fromEntries` |
-| Ponyfill | Function thay thế không patch global | Import helper riêng thay vì sửa prototype |
-| Browserslist | Khai báo browser target cho build tool | `last 2 versions`, `>0.5%`, `not dead` |
-
-Ví dụ: Babel có thể đổi cú pháp optional chaining, nhưng nếu browser không có `Promise` hoặc `WeakMap` thì cần polyfill/runtime tương ứng.
-
-```typescript
-// Syntax cần transpile nếu target cũ
-const city = user?.address?.city ?? 'Unknown';
-
-// API cần polyfill nếu runtime cũ không hỗ trợ
-Object.fromEntries(entries);
-Array.prototype.includes.call(items, 'a');
-```
-
-**Cách trả lời phỏng vấn:**
-
-- Babel/TypeScript chủ yếu xử lý syntax transform.
-- Polyfill xử lý API runtime.
-- Không nên import toàn bộ polyfill nếu chỉ cần một phần; cấu hình theo target để tránh tăng bundle size.
-- Với evergreen browsers, thường dùng ES6+ trực tiếp và để build tool tối ưu theo Browserslist.
-
-## Lỗi thường gặp
-
-### 1. Dùng `var` trong modern code
-
-```typescript
-var name = 'John'; // tránh
-const name = 'John'; // ưu tiên
-let age = 25; // dùng khi cần reassign
-```
-
-### 2. Dùng arrow function sai chỗ
-
-```typescript
-const obj = {
-  value: 42,
-  getValue: () => this.value, // sai nếu cần this là obj
-};
-```
-
-### 3. Quên `await`
-
-```typescript
-async function wrong() {
-  const user = fetchUser('1');
-  console.log(user.name); // user là Promise
-}
-
-async function correct() {
-  const user = await fetchUser('1');
-  console.log(user.name);
-}
-```
-
-### 4. Await tuần tự không cần thiết
-
-```typescript
-// Nếu độc lập nhau, dùng Promise.all
-const [a, b, c] = await Promise.all([fetchA(), fetchB(), fetchC()]);
-```
-
-### 5. Nhầm shallow copy với deep copy
-
-```typescript
-const copied = { ...original }; // chỉ copy level 1
-```
-
-### 6. Nhầm default export và named export
-
-```typescript
-import User from './user'; // default export
-import { User } from './user'; // named export
-```
-
-### 7. Dùng `||` khi cần giữ `0`, `''`, `false`
-
-```typescript
-const pageSize = input.pageSize || 20; // sai nếu pageSize = 0 là giá trị hợp lệ
-const safePageSize = input.pageSize ?? 20;
-```
-
-### 8. Tin rằng optional chaining thay validation
-
-```typescript
-const price = product?.price;
-
-if (price == null) {
-  throw new Error('Product price is required');
-}
-```
-
-## Cơ chế bên dưới
-
-### Hoisting và TDZ
-
-- Khi tạo execution context, engine scan declarations trước.
-- `var` được tạo và gán sẵn `undefined`.
-- `let/const` cũng được biết trước, nhưng chưa được initialize.
-- Khoảng từ đầu block đến dòng khai báo `let/const` là TDZ.
-- Đọc biến trong TDZ gây `ReferenceError`, kể cả với `typeof`.
-
-```typescript
-console.log(typeof undeclaredVar); // 'undefined'
-
-{
-  // console.log(typeof x); // ReferenceError
-  let x = 1;
-}
-```
-
-### Arrow function và `this`
-
-- Regular function có `this` riêng.
-- `this` của regular function được quyết định lúc gọi.
-- Arrow function không có `this` riêng.
-- `call`, `apply`, `bind` không đổi được `this` của arrow function.
-
-### Destructuring
-
-- Destructuring gần như là cú pháp ngắn cho property/index access.
-- Nested destructuring càng sâu thì càng nhiều lần access property.
-- Performance khác biệt rất nhỏ, ưu tiên readability.
-- Rest trong array tạo array mới bằng cơ chế tương tự `slice()`.
-
-### Class
-
-- `class` là syntactic sugar trên prototype.
-- Instance method được share qua prototype.
-- Static method nằm trên class/constructor.
-- `extends` tạo prototype chain giữa child và parent.
-
-### Modules
-
-- Browser/bundler build module graph trước khi execute.
-- Import/export tĩnh giúp tree-shaking.
-- Dynamic import dùng khi cần lazy load.
-- Circular dependency có thể hoạt động nhờ live binding, nhưng vẫn nên tránh thiết kế vòng phụ thuộc phức tạp.
-
-### Async/await
-
-- `async function` luôn trả về Promise.
-- Mỗi `await` tạm dừng phần còn lại của function.
-- Khi Promise settle, phần sau `await` được đưa vào microtask queue.
-- `try/catch` trong async function tương đương xử lý Promise rejection.
-
-Ví dụ thứ tự chạy:
-
-```typescript
+```ts
 console.log('A');
-
 setTimeout(() => console.log('B'), 0);
-
 Promise.resolve().then(() => console.log('C'));
-
-(async () => {
-  await null;
-  console.log('D');
-})();
-
+(async () => { await null; console.log('D'); })();
 console.log('E');
-
-// Output: A, E, C, D, B
+// Output: A E C D B
 ```
 
-Promise callback và phần sau `await` là microtask nên chạy trước `setTimeout` macrotask.
+→ Promise callback + phần sau `await` là microtask, chạy trước macrotask `setTimeout`.
 
-## Performance thực tế
+### 3.9. Optional chaining `?.` & nullish coalescing `??`
 
-Đừng tối ưu kiểu ES5 vs ES6+ một cách máy móc. Với frontend app thông thường, khác biệt giữa `var`/`let`, function/arrow, class/prototype thường không phải nguyên nhân chậm chính.
+```ts
+const theme = user.profile?.settings?.theme;       // không throw nếu null/undefined
+const size = input.pageSize ?? 20;                 // chỉ fallback null/undefined
+const text = '' ?? 'default';                      // '' (giữ chuỗi rỗng)
+const text2 = '' || 'default';                     // 'default' (bug nếu '' hợp lệ)
 
-| Trường hợp | Khuyến nghị |
-| --- | --- |
-| Code thông thường | Ưu tiên readability và maintainability |
-| Array/object rất lớn | Cẩn thận với spread vì tạo copy mới |
-| Nhiều request độc lập | Dùng `Promise.all` thay vì await tuần tự |
-| Hot path cực nặng | Benchmark thực tế trước khi tối ưu |
-| Browser cũ | Dùng Babel cho syntax, polyfill cho API runtime |
-
-## Best practices
-
-1. Dùng `const` mặc định, `let` khi cần reassign.
-2. Dùng arrow function cho callback, không dùng làm object method cần `this`.
-3. Dùng destructuring khi giúp code dễ đọc, tránh destructuring quá sâu.
-4. Dùng spread/rest cho immutable update, nhưng nhớ đó là shallow copy.
-5. Dùng `async/await` cho flow tuần tự, `Promise.all` cho task độc lập.
-6. Dùng ES Modules trong modern project.
-7. Phân biệt transpilation và polyfill khi hỗ trợ browser cũ.
-8. Đừng rewrite class về prototype chỉ vì performance nếu chưa benchmark.
-
-## Checklist trả lời Senior Frontend
-
-Khi được hỏi "ES5 khác ES6+ thế nào?", nên trả lời theo 5 lớp:
-
-1. **Syntax/readability:** `let/const`, arrow, template literal, destructuring, spread/rest, class.
-2. **Runtime behavior:** block scope, TDZ, lexical `this`, prototype chain, Promise/microtask.
-3. **Architecture:** ES Modules, static import, tree-shaking, dynamic import/code splitting.
-4. **Compatibility:** Babel/TypeScript cho syntax, polyfill cho API, Browserslist để kiểm soát target.
-5. **Trade-off:** readability quan trọng hơn micro-optimization; cẩn thận shallow copy, await tuần tự, bundle size và API browser cũ.
-
-Một câu trả lời tốt không chỉ liệt kê feature, mà giải thích được "feature đó thay đổi cách code chạy như thế nào" và "khi nào dùng sai sẽ gây bug gì".
-
----
-
-# Q05: Set/Map, WeakSet/WeakMap, WeakRef & FinalizationRegistry
-
-## Tóm tắt phỏng vấn
-
-**Set/Map** là collections hiện đại của JavaScript. **WeakSet/WeakMap/WeakRef** dùng weak reference, nghĩa là không ngăn object bị garbage collected.
-
-> Set dùng cho unique values. Map dùng cho key-value với key bất kỳ. WeakMap/WeakSet dùng khi muốn gắn metadata vào object mà không giữ object sống mãi. WeakRef và FinalizationRegistry là API nâng cao, không dùng cho core logic vì garbage collection không deterministic.
-
-## Bảng so sánh
-
-| API | Lưu gì | Key/value type | Iterable | Use case chính |
-| --- | --- | --- | --- | --- |
-| `Set` | Unique values | Bất kỳ value | Có | Dedupe, membership check |
-| `Map` | Key-value pairs | Key bất kỳ type | Có | Cache, dictionary, ordered data |
-| `WeakSet` | Object references | Chỉ object | Không | Track object tạm thời |
-| `WeakMap` | Object key -> value | Key chỉ object | Không | Private data, metadata, cache theo object |
-| `WeakRef` | Weak reference tới một object | Object | Không | Soft cache, observer nâng cao |
-| `FinalizationRegistry` | Cleanup callback khi object bị GC | Object target | Không | Cleanup optional resource |
-
-## Set
-
-`Set` lưu unique values và check membership nhanh hơn `Array.includes()` khi dữ liệu lớn.
-
-```typescript
-const numbers = [1, 2, 2, 3, 3, 4];
-const uniqueNumbers = [...new Set(numbers)]; // [1, 2, 3, 4]
-
-const validIds = new Set([1, 5, 10]);
-validIds.has(5); // true
-
-const a = new Set([1, 2, 3]);
-const b = new Set([3, 4, 5]);
-
-const union = new Set([...a, ...b]); // 1,2,3,4,5
-const intersection = new Set([...a].filter((x) => b.has(x))); // 3
-const difference = new Set([...a].filter((x) => !b.has(x))); // 1,2
+// Logical assignment (ES2021)
+config.timeout ??= 5000;                           // chỉ set nếu null/undefined
+flags.debug ||= false;
+user.role &&= user.role.toUpperCase();
 ```
 
-## Map
+> ⚠️ `?.` **không thay validation**. Field bắt buộc thiếu vẫn phải báo lỗi rõ ràng — đừng để `?.` nuốt bug.
 
-`Map` giống object dictionary nhưng key có thể là bất kỳ type nào, kể cả object/function.
+### 3.10. Set / Map / WeakMap / WeakSet
 
-```typescript
-const userMap = new Map<string, { name: string; age: number }>();
-userMap.set('user1', { name: 'John', age: 25 });
+| API | Lưu | Key/Value | Iterable | Use case |
+|---|---|---|---|---|
+| `Set` | Unique values | Bất kỳ | ✅ | Dedupe, membership check |
+| `Map` | Key→Value | Key bất kỳ type | ✅ | Cache, dictionary, ordered |
+| `WeakMap` | Object key → value | Key chỉ object | ❌ | Metadata theo DOM/instance, private data |
+| `WeakSet` | Object refs | Object only | ❌ | Track tạm không giữ sống |
+| `WeakRef` (ES2021) | Weak ref → object | Object | ❌ | Soft cache |
+| `FinalizationRegistry` | Callback khi GC | Object | ❌ | Cleanup phụ trợ, KHÔNG cho business logic |
 
-userMap.get('user1'); // { name: 'John', age: 25 }
-userMap.has('user1'); // true
-userMap.size; // 1
+```ts
+// Dedupe
+const unique = [...new Set([1, 2, 2, 3])];               // [1, 2, 3]
 
-const objectKey = { id: 1 };
+// Map với object key
 const cache = new Map<object, string>();
-cache.set(objectKey, 'cached value');
-cache.get(objectKey); // cached value
+cache.set(domNode, 'rendered');
+
+// WeakMap — gắn metadata DOM, auto GC khi node bị remove
+const meta = new WeakMap<HTMLElement, { clicks: number }>();
 ```
 
 **Map vs Object:**
 
-- Object key thường bị convert sang string/symbol.
-- Map giữ insertion order rõ ràng.
-- Map có `.size`, `.set()`, `.get()`, `.has()`, `.delete()`.
-- Map phù hợp khi thêm/xoá nhiều hoặc key không phải string.
+- Object key bị coerce sang string/symbol. Map giữ nguyên type (object, function, NaN).
+- Map giữ insertion order rõ ràng, có `.size`, hot path add/delete nhanh hơn object.
+- Equality: `Set`/`Map` dùng SameValueZero → `NaN === NaN` (khác `===`).
 
-## WeakSet và WeakMap
+**Vì sao WeakMap/WeakSet không iterable, không `.size`?** Vì entry có thể biến mất sau GC bất kỳ lúc nào — iterate sẽ không deterministic.
 
-Weak collections chỉ nhận object làm key/value chính và không ngăn garbage collection.
+### 3.11. Symbol, iterator, generator, Proxy/Reflect
 
-```typescript
-const processed = new WeakSet<object>();
+```ts
+// Symbol — unique key, không xuất hiện trong Object.keys/JSON
+const id = Symbol('id');
+const u = { name: 'A', [id]: 1 };
 
-let node: HTMLElement | null = document.createElement('div');
-processed.add(node);
-processed.has(node); // true
+// Iterable protocol
+const range = {
+  [Symbol.iterator]() {
+    let i = 0;
+    return { next: () => i < 3 ? { value: i++, done: false } : { value: undefined, done: true } };
+  },
+};
+for (const n of range) console.log(n);                   // 0 1 2
 
-node = null; // object có thể bị GC nếu không còn reference khác
+// Generator — iterator tự động + pause/resume
+function* gen() { yield 1; yield 2; }
+
+// Proxy + Reflect — intercept thao tác
+const proxy = new Proxy({ count: 0 }, {
+  get: (t, k, r) => (console.log('read', k), Reflect.get(t, k, r)),
+  set: (t, k, v, r) => Reflect.set(t, k, v, r),
+});
 ```
 
-`WeakMap` rất hợp để lưu metadata/private data theo object.
+Vue 3 reactivity và Immer draft đều dùng Proxy. ⚠️ Proxy có overhead — không lạm dụng cho hot path.
 
-```typescript
-const privateData = new WeakMap<object, { password: string }>();
+### 3.12. ES2016 → ES2024 highlights
 
-class User {
-  constructor(public username: string, password: string) {
-    privateData.set(this, { password });
-  }
+- **ES2016**: `Array.includes`, `**` (exponent).
+- **ES2017**: `async/await`, `Object.values/entries`, `String.padStart`.
+- **ES2018**: Object rest/spread, async iteration `for await...of`, RegExp lookbehind.
+- **ES2019**: `Array.flat/flatMap`, `Object.fromEntries`, `String.trimStart/End`, optional catch binding.
+- **ES2020**: `?.`, `??`, `BigInt`, dynamic `import()`, `globalThis`, `Promise.allSettled`, `String.matchAll`.
+- **ES2021**: `String.replaceAll`, `Promise.any`, logical assignment `??=`/`||=`/`&&=`, numeric separator `1_000`, `WeakRef`/`FinalizationRegistry`.
+- **ES2022**: Class fields + `#private` methods/static, top-level `await`, `Array.at`, `Object.hasOwn`, error `cause`.
+- **ES2023**: `Array.findLast/findLastIndex`, immutable array methods `toSorted/toReversed/toSpliced/with`.
+- **ES2024**: `Promise.withResolvers`, `Object.groupBy`, `Array.fromAsync`, `Atomics.waitAsync`.
 
-  checkPassword(input: string) {
-    return privateData.get(this)?.password === input;
-  }
+### 3.13. Transpile vs Polyfill — câu hỏi senior kinh điển
+
+| Khái niệm | Xử lý | Ví dụ |
+|---|---|---|
+| **Transpile** | Đổi cú pháp → cú pháp cũ | Arrow → function, `?.` → `&&` chain, class → prototype |
+| **Polyfill** | Thêm API runtime còn thiếu | `Promise`, `Array.includes`, `Object.fromEntries` |
+| **Ponyfill** | Function thay thế, KHÔNG patch global | Import helper rời thay vì sửa prototype |
+| **Browserslist** | Khai báo target | `last 2 versions, > 0.5%, not dead` |
+
+```ts
+// Cần transpile nếu target cũ:
+const city = user?.address?.city ?? 'Unknown';
+
+// Cần polyfill nếu runtime cũ thiếu:
+Object.fromEntries(entries);
+[1, 2, 3].includes(2);
+```
+
+**Babel vs TypeScript:**
+
+- TS focus type-check + downlevel emit theo `target`.
+- Babel focus syntax transform + plugin ecosystem.
+- Cả 2 đều **không** thêm polyfill — phải config `core-js` (Babel) hoặc import polyfill thủ công.
+
+---
+
+## 🛠 4. Practical TypeScript Examples
+
+### 4.1. Sequential vs Parallel — production-grade
+
+```ts
+async function loadProfilePage(userId: string) {
+  // Step 1 phải xong trước (user quyết định query khác)
+  const user = await fetchUser(userId);
+
+  // Step 2 song song — không phụ thuộc nhau
+  const [posts, follows, perms] = await Promise.all([
+    fetchPosts(user.id),
+    fetchFollows(user.id),
+    fetchPerms(user.role),
+  ]);
+
+  return { user, posts, follows, perms };
 }
 ```
 
-**Vì sao WeakMap không iterable và không có `.size`?**
+### 4.2. `Object.fromEntries` + spread cho immutable update
 
-Vì entry có thể biến mất bất kỳ lúc nào sau garbage collection. Nếu cho iterate hoặc đọc size, kết quả sẽ không ổn định.
-
-## WeakRef
-
-`WeakRef` giữ weak reference tới một object. Khi cần dùng object, gọi `.deref()`. Kết quả có thể là object hoặc `undefined`.
-
-```typescript
-let image: HTMLImageElement | null = new Image();
-const ref = new WeakRef(image);
-
-image = null;
-
-const currentImage = ref.deref();
-if (currentImage) {
-  console.log('still alive');
-} else {
-  console.log('already garbage collected');
-}
+```ts
+// Update value theo điều kiện, giữ immutable
+const next = Object.fromEntries(
+  Object.entries(users).map(([id, u]) =>
+    [id, u.active ? { ...u, lastSeen: Date.now() } : u]
+  )
+);
 ```
 
-**Quy tắc:** luôn check kết quả của `.deref()`. Không dùng WeakRef cho logic bắt buộc phải chạy đúng.
+### 4.3. ES2023 immutable array methods cho React state
 
-## FinalizationRegistry
+```ts
+// ❌ sort() mutate array — vỡ React.memo + Immer guard
+setItems(items.sort(byDate));
 
-`FinalizationRegistry` cho phép đăng ký callback khi object bị garbage collected, nhưng callback không có thời điểm chạy đảm bảo.
+// ✅ toSorted() trả array mới
+setItems(items.toSorted(byDate));
+setItems(items.toSpliced(idx, 1));                 // immutable splice
+setItems(items.with(idx, newItem));                // immutable replace
+```
 
-```typescript
-const registry = new FinalizationRegistry<string>((id) => {
-  console.log(`Object ${id} was collected`);
+### 4.4. Tagged template cho SQL parameter binding
+
+```ts
+type SqlQuery = { text: string; params: unknown[] };
+
+const sql = (strings: TemplateStringsArray, ...vals: unknown[]): SqlQuery => ({
+  text: strings.reduce((acc, s, i) => acc + s + (i < vals.length ? `$${i + 1}` : ''), ''),
+  params: vals,
 });
 
-let obj: object | null = { id: 1 };
-registry.register(obj, 'object-1');
-
-obj = null;
+const q = sql`SELECT * FROM users WHERE id = ${userId} AND role = ${role}`;
+// { text: 'SELECT * FROM users WHERE id = $1 AND role = $2', params: [userId, role] }
+// → giá trị KHÔNG bao giờ ghép thẳng vào câu lệnh → tránh SQL injection
 ```
 
-**Chỉ dùng cho cleanup phụ trợ**, ví dụ resource native, WASM memory, file handle hoặc cache bookkeeping. Không dùng cho business logic.
+### 4.5. `WeakMap` cho DOM metadata
 
-## Khi nào dùng gì?
-
-| Nhu cầu | Nên dùng |
-| --- | --- |
-| Loại duplicate khỏi array | `Set` |
-| Check một value có tồn tại không | `Set` |
-| Dictionary với key là object/function | `Map` |
-| Counting occurrences | `Map` |
-| Metadata cho DOM node | `WeakMap` |
-| Private data trước khi có `#private` | `WeakMap` |
-| Track object đã xử lý mà không giữ sống object | `WeakSet` |
-| Cache mềm có thể mất data khi GC | `WeakRef` |
-| Cleanup optional sau GC | `FinalizationRegistry` |
-
-## Lỗi thường gặp với collections
-
-### 1. Dùng object thay Map khi key không phải string
-
-```typescript
-const obj: Record<string, string> = {};
-obj[String({ id: 1 })] = 'value'; // key thành '[object Object]'
-
-const map = new Map<object, string>();
-const key = { id: 1 };
-map.set(key, 'value');
-```
-
-### 2. Dùng primitive trong WeakMap/WeakSet
-
-```typescript
-const weakMap = new WeakMap();
-// weakMap.set('id', 123); // TypeError
-
-weakMap.set({ id: 1 }, 123); // OK
-```
-
-### 3. Iterate WeakMap/WeakSet
-
-```typescript
-const weakMap = new WeakMap<object, string>();
-// for (const item of weakMap) {} // sai: WeakMap không iterable
-```
-
-### 4. Tin rằng WeakRef luôn còn object
-
-```typescript
-const value = ref.deref();
-if (!value) {
-  // fallback: fetch/rebuild lại data
+```ts
+const meta = new WeakMap<HTMLElement, { clicks: number }>();
+function track(el: HTMLElement) {
+  if (!meta.has(el)) meta.set(el, { clicks: 0 });
+  el.addEventListener('click', () => meta.get(el)!.clicks++);
 }
+// Khi el bị remove khỏi DOM, entry trong WeakMap tự GC.
 ```
 
-### 5. Dựa vào FinalizationRegistry để chạy logic quan trọng
+---
 
-Garbage collection không deterministic. Callback có thể chạy muộn hoặc không chạy trước khi process kết thúc.
+## ⚛️ 5. Production Notes / React Implications
 
-## Ghi nhớ senior
+- **Block scope + `let`** giải quyết được loop-closure bug → giảm hẳn bug trong handler/setTimeout.
+- **Spread shallow** trong setState: nested object phải spread từng level hoặc dùng Immer.
+- **`async/await` trong `useEffect`**: không để function effect async trực tiếp (return value sẽ là Promise, không phải cleanup). Wrap inner async function.
+- **Dynamic `import()`** = code splitting / lazy load route (`React.lazy`).
+- **ES Modules live binding** + tree-shaking → tránh `export default` cho utility (named export tree-shake tốt hơn).
+- **`Promise.allSettled`** thường hợp dashboard hơn `Promise.all` — 1 widget fail không nên đánh sập cả page.
+- **`structuredClone()`** browser API — replace `JSON.parse(JSON.stringify())` cho deep clone, nhưng KHÔNG clone function/DOM/class instance.
+- **`globalThis`** chuẩn cross-environment (browser `window`, Node `global`, worker `self`). Code SSR-safe nên dùng `globalThis`.
+- **Top-level `await`** trong module: cẩn thận — sẽ block toàn bộ module graph phụ thuộc → tăng TTFB nếu dùng cho data fetching ở entry.
+- **`#private` vs closure**: với class có nhiều method dùng chung state, `#field` modern hơn. Closure dùng cho factory.
 
-- `Set` và `Map` dùng thuật toán SameValueZero: gần giống `===`, nhưng `NaN` bằng `NaN`.
-- `WeakMap` giúp tránh memory leak khi gắn metadata vào object/DOM node.
-- Weak collections không enumerable vì GC có thể xoá entry bất kỳ lúc nào.
-- `WeakRef` và `FinalizationRegistry` là API nâng cao, nên rất hiếm khi cần trong frontend app thông thường.
-- Performance của `Set/Map` thường tốt cho lookup/add/delete nhiều, nhưng vẫn nên benchmark nếu dữ liệu rất lớn.
+---
 
-## References
+## ⚠️ 6. Common Pitfalls
 
-- [ECMAScript 2015 Spec](https://www.ecma-international.org/ecma-262/6.0/)
-- [TC39 Proposals](https://github.com/tc39/proposals)
-- [MDN JavaScript Guide](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide)
-- [MDN JavaScript Reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference)
+- ❌ **Dùng `var` trong code mới** — block scope mặc định cho an toàn.
+- ❌ **Arrow làm object method cần `this`** — `this` thành scope ngoài.
+- ❌ **Quên `await`** → `user` là Promise, `.name` là `undefined`.
+- ❌ **Await tuần tự khi độc lập** → chậm gấp nhiều lần. Dùng `Promise.all`.
+- ❌ **Nhầm shallow với deep copy**: `{ ...obj }` không clone nested. Dùng `structuredClone` hoặc Immer.
+- ❌ **`||` cho default khi `0`/`''`/`false` hợp lệ** → dùng `??`.
+- ❌ **`?.` thay validation**: business-required field thiếu vẫn phải fail rõ.
+- ❌ **`JSON.stringify(JSON.parse())` cho deep clone**: mất function, Date thành string, throw với circular, không xử lý Map/Set.
+- ❌ **Import toàn bộ `core-js`** vào bundle. Dùng `@babel/preset-env` + `useBuiltIns: 'usage'` để chỉ polyfill cái dùng.
+- ❌ **Top-level `await` trong entry point dữ liệu nặng** → block bundle execution → TTFB tăng.
+- ❌ **Class field arrow vs prototype method**: arrow class field tạo function riêng mỗi instance — list rất lớn cân nhắc prototype method.
+- ❌ **`WeakRef` cho logic bắt buộc**: GC không deterministic, `.deref()` có thể `undefined` bất kỳ lúc nào.
+- ❌ **`FinalizationRegistry` cho business logic**: callback có thể chạy muộn hoặc không chạy. Chỉ cho cleanup phụ trợ (WASM memory, file handle).
+- ⚠️ **Object key bị coerce sang string** — dùng `Map` khi key là object/function/number giữ nguyên type.
+- ⚠️ **TDZ với `typeof`**: không "safe" như `typeof` của undeclared variable.
+
+---
+
+## ✅ 7. Decision Guide / Checklist
+
+**Khi nào dùng gì:**
+
+- `const` mặc định → `let` khi reassign → tránh `var`.
+- Arrow cho callback và class field handler giữ `this`; regular function cho object method / constructor / cần `arguments`/`super`.
+- `??` cho default-when-nullish; `||` chỉ khi falsy thực sự là invalid.
+- `Promise.all` cho task song song bắt buộc OK; `allSettled` cho dashboard chấp nhận partial fail.
+- `Map`/`Set` thay object khi: key không phải string, cần `.size`, hot path add/delete, giữ insertion order.
+- `WeakMap` cho metadata theo DOM/instance; `#field` cho private trong class; closure cho factory function.
+- `structuredClone` thay `JSON.parse(JSON.stringify())` cho deep clone (data-only); Immer cho deep update có cấu trúc.
+- Immutable array methods (`toSorted`/`toReversed`/`with`/`toSpliced`) cho React state — không mutate.
+
+**Checklist build/compat:**
+
+- [ ] Browserslist khai báo target rõ ràng.
+- [ ] `@babel/preset-env` + `useBuiltIns: 'usage'` (hoặc `swc/tsc target` phù hợp).
+- [ ] Polyfill cho API runtime cần thiết — không import all.
+- [ ] Test trên target cũ nhất bạn cam kết support.
+- [ ] Phân biệt rõ syntax vs API trong PR description khi đụng compat.
+
+**Cấu trúc trả lời "ES5 vs ES6+ khác gì?" theo 5 lớp:**
+
+1. **Syntax**: `let/const`, arrow, template, destructuring, spread/rest, class.
+2. **Runtime**: block scope + TDZ, lexical `this`, prototype chain, microtask.
+3. **Architecture**: ES Modules + live binding + tree-shaking + dynamic import.
+4. **Compatibility**: transpile (syntax) vs polyfill (API) vs Browserslist target.
+5. **Trade-off**: readability > micro-opt; cẩn thận shallow copy, await tuần tự, bundle size, top-level `await`.
+
+---
+
+## 💬 8. Short Interview Answer
+
+> Em thường trả lời câu này theo 5 lớp để tránh sa đà liệt kê feature.
+>
+> Lớp đầu là **syntax**: `let/const`, arrow, template literal, destructuring, spread/rest, class — đẹp hơn và an toàn hơn. Lớp 2 là **runtime behavior**, đây mới là phần em nhấn — `var` hoist với `undefined`, còn `let/const/class` cũng được hoist nhưng nằm trong TDZ, đọc trước dòng khai báo là `ReferenceError` luôn kể cả `typeof`. Arrow thì lexical `this`, `class` là syntactic sugar trên prototype chain chứ không phải class thật như Java. Async/await là sugar trên Promise và phần sau `await` chạy ở microtask queue, trước macrotask.
+>
+> Lớp 3 là **architecture**: ES Modules đem lại **live binding** và **static analysis** cho tree-shaking. Em ưu tiên named export hơn default export vì tree-shake tốt hơn. Dynamic `import()` thì cho code splitting với `React.lazy`. Em cũng để ý top-level `await` (ES2022) có thể block module graph nên không lạm dụng ở entry point.
+>
+> Lớp 4 là **compatibility**, đây là chỗ hay bị nhầm: **Babel/TS chỉ xử lý syntax, polyfill mới xử lý API runtime**. Một browser thiếu `Promise` thì Babel không "fix" — phải polyfill `core-js`. Em hay config `@babel/preset-env` với `useBuiltIns: 'usage'` để chỉ polyfill cái thực sự dùng, theo Browserslist target.
+>
+> Lớp 5 là **trade-off** thực tế: `?.` không thay validation, `??` chứ đừng `||` khi `0` hợp lệ, spread chỉ shallow, await tuần tự là cái em hay catch trong code review. Còn ES2023+ thì em hay dùng `toSorted`/`with` cho React state immutable, và `structuredClone` thay `JSON.parse(JSON.stringify())` cho deep clone — nhưng nhớ nó không clone function với DOM.
+
+---
+
+**📌 Ghi nhớ nhanh:**
+
+- 🔥 **Runtime đổi**: block scope + TDZ, lexical `this`, microtask, prototype.
+- 📦 **Modules**: strict + live binding + tree-shake; dynamic import = code splitting.
+- ⚡ **`async/await`**: sugar trên Promise; phần sau `await` = microtask.
+- 🧪 **`??` vs `||`**: nullish vs mọi falsy.
+- 🛡️ **Spread shallow**; deep dùng `structuredClone`/Immer.
+- 🗺️ **`Map`/`WeakMap`**: key bất kỳ type / metadata theo object auto-GC.
+- 🏗️ **Babel/TS = syntax**, **polyfill = API**. Hai chuyện khác nhau.
+- 🆕 **ES2023+**: `toSorted/toReversed/with/toSpliced` cho immutable; `Promise.withResolvers`, `Object.groupBy` (ES2024).

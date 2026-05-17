@@ -1,847 +1,280 @@
-# ➡️ Q09: Arrow vs Regular Functions & this Binding (call, apply, bind)
+# ➡️ Topic 07 — Arrow vs Regular Functions & `this` Binding (`call`, `apply`, `bind`)
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## ⭐ 1. Senior/Staff Summary
 
-### **🎯 Câu Trả Lời Ngắn Gọn (2-3 phút):**
+> Arrow function dùng **lexical `this`** (lấy từ scope nơi nó được định nghĩa). Regular function dùng **dynamic `this`** (quyết định lúc runtime, theo cách nó được gọi). `call`/`apply`/`bind` là 3 cách để **set `this` thủ công** — `call`/`apply` gọi ngay, `bind` trả về function mới đã "khoá" context.
 
-**"Arrow function khác regular function ở cách gắn `this`: từ vựng (scope bên ngoài) vs động (ngữ cảnh runtime).**
-
-**📊 Arrow vs Regular Functions (Key Differences):**
-1. **`this` Binding**:
-   - **Arrow**: Lexical `this` → inherit từ outer scope (không có `this` riêng).
-   - **Regular**: Dynamic `this` → phụ thuộc cái gì gọi function (runtime).
-
-2. **`arguments` Object**:
-   - **Arrow**: Không có `arguments` → dùng rest params `(...args)`.
-   - **Regular**: Có `arguments` (array-like object).
-
-3. **Constructor**:
-   - **Arrow**: Không dùng được `new` → throw error.
-   - **Regular**: Có thể dùng `new` → tạo instance.
-
-4. **Hoisting**:
-   - **Arrow**: Không hoisted (nếu dùng `const/let`).
-   - **Regular**: Hoisted (function declaration).
-
-**🔧 `this` Binding Methods (call, apply, bind):**
-- **`call(thisArg, arg1, arg2)`**: Invoke ngay với arguments riêng lẻ.
-  ```js
-  fn.call({ name: 'John' }, 1, 2); // this = { name: 'John' }, args: 1, 2
-  ```
-- **`apply(thisArg, [args])`**: Invoke ngay với arguments array.
-  ```js
-  fn.apply({ name: 'John' }, [1, 2]); // this = { name: 'John' }, args: [1, 2]
-  ```
-- **`bind(thisArg)`**: Return function mới với `this` cố định (không invoke).
-  ```js
-  const boundFn = fn.bind({ name: 'John' }); // Return new function
-  boundFn(1, 2); // this = { name: 'John' }
-  ```
-
-**🎯 `this` Binding Rules (4 Rules - Priority Order):**
-1. **`new` Binding**: `new Fn()` → `this` = new object.
-2. **Explicit Binding**: `call/apply/bind` → `this` = thisArg.
-3. **Implicit Binding**: `obj.method()` → `this` = obj.
-4. **Default Binding**: Standalone function → `this` = global object (window/global) hoặc undefined (strict mode).
-
-**⚠️ Common Mistakes:**
-- **Arrow trong object methods**: `this` không point to object!
-  ```js
-  const obj = {
-    name: 'John',
-    greet: () => console.log(this.name) // ❌ undefined! (this = outer scope)
-  };
-  // ✅ Dùng regular function hoặc method shorthand
-  ```
-- **Event handlers**: Regular function → `this` = event target. Arrow → `this` = outer scope.
-- **Class methods as callbacks**: Mất context → dùng arrow hoặc bind.
-  ```js
-  class Component {
-    handleClick() { console.log(this); }
-    render() {
-      // ❌ this = undefined (mất context)
-      button.addEventListener('click', this.handleClick);
-      // ✅ Fix: Arrow hoặc bind
-      button.addEventListener('click', () => this.handleClick());
-      button.addEventListener('click', this.handleClick.bind(this));
-    }
-  }
-  ```
-
-**💡 Senior Insights:**
-- **React Class Components**: Arrow class fields = auto-bind `this` (babel transform).
-- **Performance**: Arrow functions trong render → tạo new reference mỗi lần → child re-render. Dùng `useCallback`.
-- **call vs apply**: `apply` hữu ích khi arguments đã là array (e.g., `Math.max.apply(null, [1,2,3])`).
-- **Polyfill bind**: Implement bind manually để hiểu cơ chế:
-  ```js
-  Function.prototype.myBind = function(context, ...args) {
-    const fn = this;
-    return function(...newArgs) {
-      return fn.apply(context, [...args, ...newArgs]);
-    };
-  };
-  ```
+Trong code thật, 90% bug `this` đến từ 3 tình huống: (1) callback bị tách khỏi receiver (`setTimeout`, event listener, `Promise.then`), (2) dùng arrow nhầm chỗ object method / prototype method, (3) re-create inline arrow trong render loop làm vỡ memoization. Senior cần phân biệt được khi nào lexical là *bạn*, khi nào lexical là *kẻ thù*.
 
 ---
 
-**⚡ Quick Summary:**
-> Arrow function = lexical `this` (từ outer scope), không có arguments, không dùng new. `this` trong JS = context object, dùng call/apply/bind để set `this` manually.
+## 🧠 2. Key Mental Model
 
-**💡 Ghi Nhớ:**
-- 🎯 **Arrow**: `() => {}` - this từ outer scope, không có arguments/constructor
-- 📌 **Regular**: `function(){}` - this runtime, có arguments, hoisted
-- 📞 **call**: `fn.call(thisArg, arg1, arg2)` - invoke ngay với args riêng lẻ
-- 📋 **apply**: `fn.apply(thisArg, [args])` - invoke ngay với array
-- 🔗 **bind**: `fn.bind(thisArg)` - return function mới với this cố định
+- **Regular function = "tôi nhận `this` khi được gọi"**. Có `this` riêng, có `arguments`, có `prototype`, dùng được `new`.
+- **Arrow function = "tôi không có `this` của riêng tôi"**. `this`, `arguments`, `super`, `new.target` đều xuyên qua arrow lên scope ngoài — y hệt một biến closure.
+- 4 quy tắc gán `this` cho regular function (priority cao → thấp):
+  1. 🔥 `new Fn()` → `this` = instance vừa tạo.
+  2. 📌 `fn.call/apply/bind(ctx)` → `this` = `ctx` (explicit).
+  3. 🎯 `obj.fn()` → `this` = `obj` (implicit).
+  4. 💨 `fn()` standalone → `this` = `undefined` ở strict mode, `globalThis` ở sloppy.
+- Arrow **không** tham gia 4 quy tắc trên — `call/apply/bind` set được argument nhưng **không đổi được `this`**.
+- `bind` tạo **function mới**. Bind lần 2 không có tác dụng — `this` đã bị khoá lần đầu.
 
+---
 
-### **1. Arrow vs Regular Functions - Sự Khác Biệt Quan Trọng**
+## 📚 3. Main Concepts
 
-#### **1.1. Syntax & Declaration**
+### 3.1. Arrow vs Regular — 8 điểm khác biệt
 
-```typescript
-// ═══════════════════════════════════════════════════════════
-// SYNTAX - Cú pháp
-// ═══════════════════════════════════════════════════════════
+| Khía cạnh | Regular function | Arrow function |
+|---|---|---|
+| **`this`** | Dynamic — theo cách gọi | Lexical — từ scope ngoài, không thay được |
+| **`arguments`** | ✅ Có (array-like) | ❌ Không — dùng rest `(...args)` |
+| **`new` / constructor** | ✅ Dùng được | ❌ `TypeError: not a constructor` |
+| **`prototype` property** | ✅ Có | ❌ `undefined` |
+| **Hoisting** | ✅ Function declaration được hoist toàn bộ | ❌ Như `const/let` — TDZ |
+| **`super`** | Có (trong method) | Lexical — kế thừa `super` từ method bao quanh |
+| **`new.target`** | Có | Lexical — từ scope ngoài |
+| **Generator (`function*`)** | ✅ Được | ❌ Không |
 
-// Regular Function
-function regularFunction(name: string): string {
-  return `Hello ${name}`;
-}
+> 💡 Arrow không phải "regular function viết tắt". Nó là một loại function khác về mặt ngữ nghĩa — chỉ tình cờ ngắn hơn.
 
-// Arrow Function - ngắn gọn hơn
-const arrowFunction = (name: string): string => `Hello ${name}`;
+### 3.2. Bốn quy tắc binding `this` (cho regular function)
 
-// Arrow với 1 parameter - bỏ được ()
-const single = name => `Hello ${name}`;
+```ts
+// 1️⃣ Default — strict mode: undefined, sloppy: globalThis
+function show() { return this; }
+show();                    // undefined (strict) | window (sloppy)
 
-// Arrow return object - phải bọc trong ()
-const getUser = (id: number) => ({ id, name: 'John' });
-// Không có () sẽ bị nhầm với block { }
+// 2️⃣ Implicit — receiver bên trái dấu chấm
+const obj = { name: 'A', fn() { return this.name; } };
+obj.fn();                  // 'A'   — receiver = obj
+const detached = obj.fn;
+detached();                // undefined — receiver đã mất
 
-// Arrow multiline - cần return
-const calculate = (a: number, b: number) => {
-  const sum = a + b;
-  const product = a * b;
-  return { sum, product };
-};
+// 3️⃣ Explicit — call/apply/bind
+function greet() { return this.name; }
+greet.call({ name: 'B' });  // 'B'
+
+// 4️⃣ new — this = instance mới, override 2 và 3
+function User(name) { this.name = name; }
+new User('C');             // { name: 'C' }
 ```
 
-#### **1.2. this Binding - Khác Biệt QUAN TRỌNG Nhất**
+⚠️ Priority: `new` > `bind` > `call/apply` > `obj.fn()` > standalone.
 
-```typescript
-// ═══════════════════════════════════════════════════════════
-// THIS BINDING - Điểm khác biệt QUAN TRỌNG nhất
-// ═══════════════════════════════════════════════════════════
+### 3.3. `call` vs `apply` vs `bind`
 
-class Person {
-  name: string = 'John';
+- 📞 **`fn.call(thisArg, a, b, c)`** — gọi ngay, args **riêng lẻ**.
+- 📋 **`fn.apply(thisArg, [a, b, c])`** — gọi ngay, args **trong array**. Ngày nay thường thay bằng spread: `fn.call(ctx, ...args)`.
+- 🔗 **`fn.bind(thisArg, a, b)`** — **không gọi**, trả về function mới với `this` đã khoá + (optional) partial args. Bind chồng không có tác dụng.
 
-  // ❌ Regular function - this là ĐỘNG (dynamic binding)
-  // this phụ thuộc vào CÁI GÌ gọi function (runtime)
-  regularMethod(): void {
-    setTimeout(function () {
-      console.log(this.name); 
-      // ❌ undefined!
-      // Vì function được gọi bởi setTimeout → this = window/global
-    }, 100);
-  }
+```ts
+function introduce(age, city) {
+  return `${this.name}, ${age}, ${city}`;
+}
+const u = { name: 'John' };
 
-  // ✅ Arrow function - this là TĨNH (lexical binding)
-  // this được "kế thừa" từ outer scope (Person instance)
-  arrowMethod(): void {
-    setTimeout(() => {
-      console.log(this.name); 
-      // ✅ "John"!
-      // Arrow function KHÔNG có this riêng → lấy this từ Person
-    }, 100);
-  }
+introduce.call(u, 25, 'HCM');         // 'John, 25, HCM'
+introduce.apply(u, [25, 'HCM']);      // 'John, 25, HCM'
+const bound = introduce.bind(u, 25);  // partial application
+bound('HCM');                          // 'John, 25, HCM'
 
-  // 🔧 Cách fix cho regular function
-  regularMethodFixed(): void {
-    const self = this; // Lưu this vào biến
-    setTimeout(function () {
-      console.log(self.name); // ✅ "John" - dùng biến self
-    }, 100);
-  }
+bound.call({ name: 'Alice' }, 'HN');  // 'John, 25, HN' — ⚠️ vẫn là John
+```
 
-  regularMethodBind(): void {
-    setTimeout(function () {
-      console.log(this.name); // ✅ "John" - bind this
-    }.bind(this), 100);
+---
+
+## 🛠 4. Practical TypeScript Examples
+
+### 4.1. Callback giữ `this` — arrow thay vì `bind`
+
+```ts
+class PriceFeed {
+  private symbol = 'VN30F1M';
+
+  subscribe() {
+    // ❌ Regular function trong setTimeout — this = undefined
+    setTimeout(function () { console.log(this.symbol); }, 0);
+
+    // ✅ Arrow — this kế thừa từ subscribe() → PriceFeed instance
+    setTimeout(() => console.log(this.symbol), 0);
   }
 }
+```
 
-// ═══════════════════════════════════════════════════════════
-// THIS trong Object Methods
-// ═══════════════════════════════════════════════════════════
+### 4.2. Object method — đừng dùng arrow
 
+```ts
 const user = {
   name: 'Alice',
-  
-  // ❌ SAI: Arrow function trong object method
-  greetArrow: () => {
-    console.log(this.name); 
-    // ❌ undefined!
-    // Arrow function lấy this từ OUTER SCOPE (window/global)
-    // Không phải object `user`!
-  },
-  
-  // ✅ ĐÚNG: Regular function
-  greetRegular() {
-    console.log(this.name); 
-    // ✅ "Alice"
-    // Regular function: this = object gọi method (user)
-  },
-  
-  // ✅ Use case ĐÚNG cho arrow function
-  registerEvents() {
-    document.addEventListener('click', () => {
-      console.log(this.name); 
-      // ✅ "Alice"
-      // Arrow lấy this từ registerEvents → this = user
-    });
-    
-    // ❌ Regular function sẽ sai
-    document.addEventListener('click', function() {
-      console.log(this.name); 
-      // ❌ undefined
-      // this = document (object gọi callback)
-    });
-  }
+  greetArrow: () => this.name,   // ❌ this lấy từ module scope, không phải user
+  greet() { return this.name; }, // ✅ shorthand method, this = user
 };
 ```
 
-**💡 Quy tắc this:**
-```typescript
-// Regular function: this phụ thuộc vào CÁI GÌ gọi function
-obj.method()      // this = obj
-fn()              // this = window/global
-new Fn()          // this = instance mới
-fn.call(obj)      // this = obj
+### 4.3. Function borrowing với `call`
 
-// Arrow function: this = this của OUTER SCOPE (nơi function được định nghĩa)
-// Không quan tâm CÁI GÌ gọi function!
+```ts
+// Convert array-like (NodeList, arguments) thành array thật
+function toArray(arrLike: ArrayLike<unknown>) {
+  return Array.prototype.slice.call(arrLike);
+  // Modern: Array.from(arrLike) hoặc [...arrLike]
+}
 ```
 
-#### **1.3. arguments Object**
+### 4.4. Partial application với `bind`
 
-```typescript
-// ═══════════════════════════════════════════════════════════
-// ARGUMENTS OBJECT
-// ═══════════════════════════════════════════════════════════
-
-// Regular function - CÓ arguments object
-function regularWithArgs(a: number, b: number): void {
-  console.log(arguments); 
-  // ✅ Arguments { '0': 10, '1': 20, '2': 30 }
-  console.log(arguments.length); // 3
-  console.log(arguments[2]); // 30 - extra argument
+```ts
+function track(event: string, payload: Record<string, unknown>, userId: string) {
+  return { event, payload, userId };
 }
 
-regularWithArgs(10, 20, 30);
-
-// Arrow function - KHÔNG có arguments
-const arrowWithArgs = (a: number, b: number): void => {
-  // console.log(arguments);  
-  // ❌ ReferenceError: arguments is not defined
-};
-
-// ✅ Giải pháp: Dùng rest parameters
-const arrowWithRest = (...args: number[]): void => {
-  console.log(args); // ✅ [10, 20, 30]
-  console.log(args.length); // 3
-};
-
-arrowWithRest(10, 20, 30);
+// Khoá userId cho session hiện tại
+const trackForUser = track.bind(null, undefined as any, undefined as any, 'u-123');
+// Thực tế: prefer closure rõ ràng hơn bind cho readability
+const trackForUserClean =
+  (event: string, payload: Record<string, unknown>) =>
+    track(event, payload, 'u-123');
 ```
 
-#### **1.4. Constructor & new**
+> 💡 `bind` cho partial application giờ ít dùng so với arrow + closure vì kém type-safe với TypeScript.
 
-```typescript
-// ═══════════════════════════════════════════════════════════
-// CONSTRUCTOR - Chỉ regular function có thể làm constructor
-// ═══════════════════════════════════════════════════════════
+### 4.5. `apply` để spread vào API "variadic"
 
-// ✅ Regular function - có thể dùng new
-function RegularConstructor(name: string) {
-  this.name = name;
-}
-
-const instance1 = new RegularConstructor('John');
-console.log(instance1.name); // "John" ✅
-
-// ❌ Arrow function - KHÔNG thể dùng new
-const ArrowConstructor = (name: string) => {
-  this.name = name;
-};
-
-// const instance2 = new ArrowConstructor('John');
-// ❌ TypeError: ArrowConstructor is not a constructor
-```
-
-#### **1.5. Hoisting**
-
-```typescript
-// ═══════════════════════════════════════════════════════════
-// HOISTING
-// ═══════════════════════════════════════════════════════════
-
-// ✅ Regular function - HOISTED (có thể gọi trước khi khai báo)
-console.log(regularHoisted()); // ✅ "Hello" - works!
-
-function regularHoisted(): string {
-  return 'Hello';
-}
-
-// ❌ Arrow function - KHÔNG hoisted
-// console.log(arrowHoisted()); 
-// ❌ ReferenceError: Cannot access 'arrowHoisted' before initialization
-
-const arrowHoisted = (): string => 'Hello';
-```
-
-#### **1.6. Methods & Prototype**
-
-```typescript
-// ═══════════════════════════════════════════════════════════
-// PROTOTYPE - Regular có prototype, Arrow không
-// ═══════════════════════════════════════════════════════════
-
-function RegularFn() {}
-console.log(RegularFn.prototype); // ✅ { constructor: f }
-
-const ArrowFn = () => {};
-console.log(ArrowFn.prototype); // ❌ undefined
-
-// Use case: Thêm methods vào prototype
-function Person(name: string) {
-  this.name = name;
-}
-
-Person.prototype.greet = function() {
-  return `Hello, I'm ${this.name}`;
-  // ✅ Phải dùng regular function để có this
-};
-
-const person = new Person('John');
-console.log(person.greet()); // "Hello, I'm John"
+```ts
+const prices = [101.2, 99.8, 105.0];
+Math.max.apply(null, prices); // 105
+Math.max(...prices);          // 105 — ✅ modern, type-safe
 ```
 
 ---
 
-### **2. this Binding - call, apply, bind**
+## ⚛️ 5. Production Notes / React Implications
 
-#### **2.1. Understanding `this` Context**
+### 5.1. Class field arrow vs prototype method
 
-```typescript
-// ═══════════════════════════════════════════════════════════
-// THIS CONTEXT - 4 quy tắc
-// ═══════════════════════════════════════════════════════════
+```tsx
+class Toolbar extends React.Component {
+  // ❌ Mỗi instance một copy hàm → tốn memory với danh sách lớn
+  onClick = () => this.props.onSelect(this.props.id);
 
-// 1️⃣ Default binding (strict mode: undefined, non-strict: window)
-function showThis() {
-  console.log(this);
+  // ✅ Một copy trên prototype, nhưng phải bind hoặc dùng inline arrow
+  onClick() { this.props.onSelect(this.props.id); }
 }
-showThis(); // window (non-strict) hoặc undefined (strict)
+```
 
-// 2️⃣ Implicit binding (object gọi method)
-const obj = {
-  name: 'John',
+- **Class field arrow**: tự bind `this`, đơn giản, nhưng tạo function **riêng cho từng instance** → với list 10k row có thể đáng kể.
+- **Prototype method + `bind` trong constructor**: chia sẻ qua prototype, ít tốn memory hơn, nhưng verbose.
+- Trong codebase hiện đại (functional components + hooks), tranh luận này gần như biến mất.
+
+### 5.2. Inline arrow trong render — vấn đề reference equality
+
+```tsx
+// ❌ Mỗi render tạo arrow mới → child memoized vẫn re-render
+<Row onClick={() => onSelect(row.id)} />
+
+// ✅ useCallback ổn định reference
+const handleSelect = useCallback((id: string) => onSelect(id), [onSelect]);
+<Row onClick={handleSelect} rowId={row.id} />
+```
+
+- Chỉ tối ưu khi child có `React.memo` / `PureComponent` / là item trong list lớn.
+- Đừng `useCallback` mọi thứ — có cost (deps array compare + closure capture).
+
+### 5.3. Event listener — phải giữ reference để `removeEventListener`
+
+```ts
+// ❌ Anonymous bind → reference khác → remove không tháo được
+el.addEventListener('click', this.onClick.bind(this));
+el.removeEventListener('click', this.onClick.bind(this)); // KHÔNG remove được
+
+// ✅ Bind 1 lần, lưu reference
+this.boundOnClick = this.onClick.bind(this);
+el.addEventListener('click', this.boundOnClick);
+el.removeEventListener('click', this.boundOnClick);
+```
+
+### 5.4. `super` trong arrow — lexical, không dùng bừa
+
+```ts
+class Base { greet() { return 'base'; } }
+class Child extends Base {
   greet() {
-    console.log(this.name); // "John" - this = obj
-  }
-};
-obj.greet();
-
-// 3️⃣ Explicit binding (call, apply, bind)
-function greet() {
-  console.log(this.name);
-}
-const user = { name: 'Alice' };
-greet.call(user); // "Alice" - this = user
-
-// 4️⃣ new binding (constructor)
-function Person(name: string) {
-  this.name = name;
-}
-const p = new Person('Bob'); // this = instance mới
-```
-
-#### **2.2. call() - Gọi ngay với arguments riêng lẻ**
-
-```typescript
-// ═══════════════════════════════════════════════════════════
-// CALL - fn.call(thisArg, arg1, arg2, arg3, ...)
-// ═══════════════════════════════════════════════════════════
-
-function introduce(age: number, city: string): string {
-  return `I'm ${this.name}, ${age} years old, from ${city}`;
-}
-
-const person1 = { name: 'John' };
-const person2 = { name: 'Alice' };
-
-// Gọi introduce với this = person1
-console.log(introduce.call(person1, 25, 'HCM')); 
-// "I'm John, 25 years old, from HCM"
-
-// Gọi introduce với this = person2
-console.log(introduce.call(person2, 30, 'HN')); 
-// "I'm Alice, 30 years old, from HN"
-
-// ═══════════════════════════════════════════════════════════
-// Use case: Function borrowing
-// ═══════════════════════════════════════════════════════════
-
-const car = {
-  brand: 'Toyota',
-  model: 'Camry',
-  getInfo() {
-    return `${this.brand} ${this.model}`;
-  }
-};
-
-const bike = { brand: 'Honda', model: 'CBR' };
-
-// "Mượn" method getInfo của car cho bike
-console.log(car.getInfo.call(bike)); 
-// "Honda CBR" ✅ - this = bike
-
-// ═══════════════════════════════════════════════════════════
-// Use case: Array-like to Array
-// ═══════════════════════════════════════════════════════════
-
-function argsToArray() {
-  // arguments là array-like, không phải array
-  // Mượn method slice của Array
-  const arr = Array.prototype.slice.call(arguments);
-  console.log(arr); // [1, 2, 3] - thành array thật ✅
-}
-
-argsToArray(1, 2, 3);
-```
-
-#### **2.3. apply() - Gọi ngay với array of arguments**
-
-```typescript
-// ═══════════════════════════════════════════════════════════
-// APPLY - fn.apply(thisArg, [arg1, arg2, arg3, ...])
-// ═══════════════════════════════════════════════════════════
-
-function introduce(age: number, city: string): string {
-  return `I'm ${this.name}, ${age} years old, from ${city}`;
-}
-
-const person = { name: 'John' };
-
-// apply - arguments là ARRAY
-const args = [25, 'HCM'];
-console.log(introduce.apply(person, args)); 
-// "I'm John, 25 years old, from HCM"
-
-// So sánh với call
-console.log(introduce.call(person, 25, 'HCM')); // Giống kết quả
-
-// ═══════════════════════════════════════════════════════════
-// Use case: Math.max với array
-// ═══════════════════════════════════════════════════════════
-
-const numbers = [5, 6, 2, 3, 7, 1];
-
-// ❌ Math.max nhận arguments riêng lẻ, không nhận array
-// console.log(Math.max(numbers)); // NaN
-
-// ✅ Dùng apply để "spread" array thành arguments
-console.log(Math.max.apply(null, numbers)); // 7
-
-// Modern: Dùng spread operator (ES6+)
-console.log(Math.max(...numbers)); // 7 - dễ đọc hơn ✅
-
-// ═══════════════════════════════════════════════════════════
-// call vs apply - Khi nào dùng cái nào?
-// ═══════════════════════════════════════════════════════════
-
-// call: Khi biết CHÍNH XÁC số lượng arguments
-fn.call(obj, arg1, arg2, arg3);
-
-// apply: Khi arguments là ARRAY hoặc ĐỘNG
-fn.apply(obj, argsArray);
-fn.apply(obj, [...dynamicArgs]);
-```
-
-#### **2.4. bind() - Tạo function mới với this cố định**
-
-```typescript
-// ═══════════════════════════════════════════════════════════
-// BIND - fn.bind(thisArg, arg1, arg2, ...)
-// Trả về FUNCTION MỚI, KHÔNG gọi ngay!
-// ═══════════════════════════════════════════════════════════
-
-function introduce(age: number, city: string): string {
-  return `I'm ${this.name}, ${age} years old, from ${city}`;
-}
-
-const person = { name: 'John' };
-
-// bind tạo function MỚI với this = person
-const boundIntroduce = introduce.bind(person);
-
-// Gọi function mới
-console.log(boundIntroduce(25, 'HCM')); 
-// "I'm John, 25 years old, from HCM"
-
-// this luôn luôn là person, không thay đổi được!
-const anotherPerson = { name: 'Alice' };
-console.log(boundIntroduce.call(anotherPerson, 30, 'HN')); 
-// "I'm John, 30, from HN" 
-// ⚠️ Vẫn là "John", không phải "Alice"!
-// this đã bị "khóa cứng" = person
-
-// ═══════════════════════════════════════════════════════════
-// Use case 1: Event handlers
-// ═══════════════════════════════════════════════════════════
-
-class Button {
-  constructor(public label: string) {}
-
-  // ❌ SAI: this sẽ mất khi làm event handler
-  handleClickWrong() {
-    console.log(this.label); // undefined khi click
-  }
-
-  // ✅ ĐÚNG: Bind this trong constructor
-  constructor(public label: string) {
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
-    console.log(this.label); // ✅ Works!
-  }
-}
-
-const btn = new Button('Submit');
-document.addEventListener('click', btn.handleClick); 
-// ✅ this = btn instance
-
-// ═══════════════════════════════════════════════════════════
-// Use case 2: Partial application (Currying)
-// ═══════════════════════════════════════════════════════════
-
-function multiply(a: number, b: number, c: number): number {
-  return a * b * c;
-}
-
-// "Khóa" argument đầu tiên = 2
-const double = multiply.bind(null, 2); 
-// double = (b, c) => 2 * b * c
-
-console.log(double(3, 4)); // 2 * 3 * 4 = 24
-console.log(double(5, 6)); // 2 * 5 * 6 = 60
-
-// "Khóa" 2 arguments đầu
-const multiplyBy2And3 = multiply.bind(null, 2, 3);
-// multiplyBy2And3 = (c) => 2 * 3 * c
-
-console.log(multiplyBy2And3(4)); // 2 * 3 * 4 = 24
-
-// ═══════════════════════════════════════════════════════════
-// Use case 3: setTimeout/setInterval
-// ═══════════════════════════════════════════════════════════
-
-class Timer {
-  constructor(public count: number = 0) {}
-
-  // ❌ SAI: this mất trong setTimeout
-  startWrong() {
-    setTimeout(function() {
-      this.count++; // ❌ this = window/undefined
-      console.log(this.count);
-    }, 1000);
-  }
-
-  // ✅ ĐÚNG: Bind this
-  startBind() {
-    setTimeout(function() {
-      this.count++; // ✅ this = Timer instance
-      console.log(this.count);
-    }.bind(this), 1000);
-  }
-
-  // ✅ ĐÚNG: Arrow function (khuyến nghị)
-  startArrow() {
-    setTimeout(() => {
-      this.count++; // ✅ Arrow lấy this từ outer scope
-      console.log(this.count);
-    }, 1000);
+    const inner = () => super.greet(); // ✅ arrow kế thừa super từ greet()
+    return inner();
   }
 }
 ```
+
+Arrow trong class method giữ được `super` của method bao quanh — tiện cho callback trong override.
+
+### 5.5. SSR / Node: cẩn thận `globalThis`
+
+Ở sloppy mode trên Node, `this` trong top-level function = `globalThis` chứ không phải `window`. Code dựa vào `this === window` sẽ fail khi SSR.
 
 ---
 
-### **3. So Sánh Tổng Quan**
+## ⚠️ 6. Common Pitfalls
 
-#### **3.1. Arrow vs Regular Functions**
-
-| Feature | Arrow Function | Regular Function |
-|---------|---------------|------------------|
-| **Syntax** | `() => {}` | `function() {}` |
-| **this binding** | Lexical (từ outer scope) | Dynamic (runtime) |
-| **arguments** | ❌ Không có | ✅ Có |
-| **Constructor** | ❌ Không dùng `new` | ✅ Dùng được `new` |
-| **Hoisting** | ❌ Không hoisted | ✅ Hoisted |
-| **prototype** | ❌ undefined | ✅ Có prototype |
-| **Method** | ❌ Không nên dùng | ✅ Nên dùng |
-| **Callback** | ✅ Nên dùng | ❌ Mất this |
-
-#### **3.2. call vs apply vs bind**
-
-| Method | Syntax | Invoke ngay? | Use case |
-|--------|--------|--------------|----------|
-| **call** | `fn.call(thisArg, arg1, arg2)` | ✅ Có | Biết chính xác số arguments |
-| **apply** | `fn.apply(thisArg, [args])` | ✅ Có | Arguments là array |
-| **bind** | `fn.bind(thisArg, arg1)` | ❌ Không | Event handlers, partial application |
+- ❌ **Arrow trong object literal làm method**: `{ greet: () => this.x }` → `this` là scope ngoài, không phải object.
+- ❌ **Arrow làm prototype method**: `Foo.prototype.bar = () => this.x` — không bao giờ thấy instance.
+- ❌ **`call/apply/bind` lên arrow để đổi `this`**: silent no-op. Chỉ pass args được.
+- ❌ **Bind chồng**: `fn.bind(a).bind(b)` → `this` mãi là `a`.
+- ❌ **`bind` trong `addEventListener` rồi muốn `remove`**: tạo reference mới, gỡ không được. Phải lưu reference.
+- ❌ **`arguments` trong arrow**: throw `ReferenceError`. Dùng `...args`.
+- ❌ **Dùng arrow cho constructor**: `new (() => {})()` → `TypeError`.
+- ❌ **Tin rằng class field arrow miễn phí**: mỗi instance tạo function riêng → có cost trong list lớn.
+- ⚠️ **Mất `this` qua destructuring**: `const { fn } = obj; fn()` → `this = undefined`. Phải `obj.fn()` hoặc `fn.bind(obj)`.
+- ⚠️ **`new.target` trong arrow**: lấy từ scope ngoài, không phản ánh việc arrow có được `new` hay không (vì arrow không `new` được).
 
 ---
 
-### **4. Best Practices & Common Mistakes**
+## ✅ 7. Decision Guide
 
-#### **4.1. Best Practices**
+**Khi nào dùng arrow?**
 
-```typescript
-// ═══════════════════════════════════════════════════════════
-// ✅ BEST PRACTICES
-// ═══════════════════════════════════════════════════════════
+- ✅ Callback ngắn (`map`, `filter`, `then`, `setTimeout`) — muốn giữ `this` outer.
+- ✅ Hàm thuần tuý không cần `this`.
+- ✅ Class field handler khi rõ ràng cần auto-bind và list không quá lớn.
 
-// 1️⃣ Arrow functions cho CALLBACKS
-const numbers = [1, 2, 3, 4, 5];
-const doubled = numbers.map(n => n * 2); // ✅ Clean
+**Khi nào dùng regular function?**
 
-// 2️⃣ Regular functions cho OBJECT METHODS
-const user = {
-  name: 'John',
-  greet() { // ✅ Shorthand method syntax
-    console.log(`Hello, ${this.name}`);
-  }
-};
+- ✅ Object method (shorthand `obj.fn() {}`).
+- ✅ Prototype method, class instance method.
+- ✅ Constructor (hoặc `class`).
+- ✅ Cần `arguments`, `new.target`, generator, hoặc `this` động cho function borrowing.
 
-// 3️⃣ Arrow functions cho NESTED FUNCTIONS (tránh mất this)
-class Component {
-  data = [];
-  
-  fetchData() {
-    fetch('/api/data')
-      .then(response => response.json())
-      .then(data => {
-        this.data = data; // ✅ Arrow giữ this = Component
-      });
-  }
-}
+**Khi nào dùng `call` / `apply` / `bind`?**
 
-// 4️⃣ bind() trong CONSTRUCTOR cho event handlers
-class Button {
-  constructor() {
-    this.handleClick = this.handleClick.bind(this); // ✅
-  }
-  
-  handleClick() {
-    console.log(this); // ✅ this = Button instance
-  }
-}
+- `call` → function borrowing, gọi với `this` cụ thể, args đã biết.
+- `apply` → legacy variadic. Modern dùng spread `fn(...args)`.
+- `bind` → tạo handler để pass đi (event listener, `setTimeout`), partial application.
 
-// 5️⃣ Hoặc dùng CLASS FIELDS với arrow (modern)
-class ButtonModern {
-  handleClick = () => {
-    console.log(this); // ✅ Arrow giữ this
-  }
-}
-```
+**Checklist trước khi merge:**
 
-#### **4.2. Common Mistakes**
-
-```typescript
-// ═══════════════════════════════════════════════════════════
-// ❌ COMMON MISTAKES
-// ═══════════════════════════════════════════════════════════
-
-// ❌ 1. Arrow function cho object methods
-const obj = {
-  name: 'John',
-  greet: () => {
-    console.log(this.name); // ❌ undefined (this = window)
-  }
-};
-
-// ✅ Fix: Dùng regular function hoặc method shorthand
-const obj = {
-  name: 'John',
-  greet() {
-    console.log(this.name); // ✅ "John"
-  }
-};
-
-// ❌ 2. Quên bind this cho event handlers
-class Component {
-  name = 'MyComponent';
-  
-  handleClick() {
-    console.log(this.name); // ❌ undefined
-  }
-  
-  componentDidMount() {
-    button.addEventListener('click', this.handleClick);
-    // ❌ this mất khi click!
-  }
-}
-
-// ✅ Fix: Bind hoặc arrow function
-class Component {
-  name = 'MyComponent';
-  
-  // Option 1: Bind trong constructor
-  constructor() {
-    this.handleClick = this.handleClick.bind(this);
-  }
-  
-  handleClick() {
-    console.log(this.name); // ✅ "MyComponent"
-  }
-  
-  // Option 2: Arrow function (khuyến nghị)
-  handleClickArrow = () => {
-    console.log(this.name); // ✅ "MyComponent"
-  }
-}
-
-// ❌ 3. Dùng arguments trong arrow function
-const sum = (...numbers) => {
-  // console.log(arguments); // ❌ ReferenceError
-  console.log(numbers); // ✅ Dùng rest parameters
-  return numbers.reduce((a, b) => a + b, 0);
-};
-
-// ❌ 4. Bind nhiều lần (không cần thiết)
-const fn = function() { console.log(this.name); };
-const obj = { name: 'John' };
-
-const bound1 = fn.bind(obj);
-const bound2 = bound1.bind({ name: 'Alice' });
-bound2(); // "John" - ❌ Bind chỉ có hiệu lực lần đầu!
-
-// ❌ 5. Nhầm lẫn call/apply/bind
-fn.call(obj);   // ✅ Gọi NGAY
-fn.apply(obj);  // ✅ Gọi NGAY
-fn.bind(obj);   // ❌ KHÔNG gọi, trả về function mới!
-fn.bind(obj)(); // ✅ Phải gọi thêm ()
-```
+- [ ] Object method dùng regular function (không arrow).
+- [ ] Callback giữ context đã dùng arrow hoặc bind đúng chỗ.
+- [ ] Inline arrow trong render đã cân nhắc `useCallback` nếu child memo.
+- [ ] `addEventListener` có `remove` tương ứng → bind reference đã được lưu.
+- [ ] Không gọi `new` lên arrow / không gọi `call(ctx)` lên arrow kỳ vọng đổi `this`.
+- [ ] Strict mode bật → không dựa vào `this === window`.
 
 ---
 
-### **5. Real-World Examples**
+## 💬 8. Short Interview Answer
 
-```typescript
-// ═══════════════════════════════════════════════════════════
-// REACT COMPONENT
-// ═══════════════════════════════════════════════════════════
-
-class TodoList extends React.Component {
-  state = {
-    todos: [],
-    newTodo: ''
-  };
-
-  // ✅ Arrow function - auto bind this
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newTodo: e.target.value });
-  }
-
-  // ✅ Arrow function - auto bind this
-  addTodo = () => {
-    this.setState(prev => ({
-      todos: [...prev.todos, prev.newTodo],
-      newTodo: ''
-    }));
-  }
-
-  // ✅ Regular function OK cho lifecycle methods
-  componentDidMount() {
-    // Fetch data...
-    fetch('/api/todos')
-      .then(res => res.json())
-      .then(todos => {
-        this.setState({ todos }); // ✅ Arrow trong callback
-      });
-  }
-
-  render() {
-    return (
-      <div>
-        <input 
-          value={this.state.newTodo}
-          onChange={this.handleInputChange} // ✅ No need .bind(this)
-        />
-        <button onClick={this.addTodo}>Add</button>
-      </div>
-    );
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// DEBOUNCE FUNCTION với bind
-// ═══════════════════════════════════════════════════════════
-
-function debounce<T extends (...args: any[]) => any>(
-  fn: T,
-  delay: number
-): (...args: Parameters<T>) => void {
-  let timeoutId: NodeJS.Timeout;
-
-  return function(this: any, ...args: Parameters<T>) {
-    clearTimeout(timeoutId);
-    
-    timeoutId = setTimeout(() => {
-      fn.apply(this, args); // ✅ Giữ this context
-    }, delay);
-  };
-}
-
-class SearchBox {
-  searchTerm = '';
-
-  search(query: string) {
-    console.log(`Searching for: ${query}`);
-    console.log(`Current term: ${this.searchTerm}`);
-  }
-
-  // Debounce với bind
-  debouncedSearch = debounce(this.search, 300).bind(this);
-}
-```
+> Em nghĩ điểm quan trọng nhất giữa arrow và regular function là cách gắn `this`. Arrow lấy `this` lexical từ scope ngoài — nó không có `this` của riêng nó, kéo theo cũng không có `arguments`, không dùng `new`, không có `prototype`. Còn regular function thì `this` được quyết định lúc runtime theo 4 quy tắc: `new` > `call/apply/bind` > `obj.fn()` > standalone (mà standalone ở strict mode là `undefined`).
+>
+> Trong React em thường dùng arrow cho callback và class field handler để tự bind `this`, nhưng em vẫn để ý 2 thứ: một là inline arrow trong render sẽ tạo reference mới mỗi lần, làm hỏng `React.memo` của child — chỗ đó em sẽ `useCallback`. Hai là class field arrow tạo function riêng cho từng instance, nên nếu render list cực lớn em sẽ cân nhắc prototype method với `bind` trong constructor.
+>
+> `call` và `apply` thì em coi như một — `call` truyền args rời, `apply` truyền args dạng array, mà giờ thường thay bằng spread `fn(...args)` cho rõ. `bind` thì khác — nó không gọi, mà trả về function mới đã khoá `this`, hay dùng cho event handler và partial application. Có một trap em hay nhắc team là `bind` chồng nhau không có tác dụng, và `bind` lên arrow cũng không đổi được `this`, chỉ truyền được args.
 
 ---
 
-### **💡 Key Takeaways**
+**📌 Ghi nhớ nhanh:**
 
-**Arrow Functions:**
-- ✅ Dùng cho callbacks, array methods (map, filter, forEach...)
-- ✅ Dùng khi muốn giữ this từ outer scope
-- ❌ Không dùng cho object methods
-- ❌ Không dùng làm constructors
-
-**Regular Functions:**
-- ✅ Dùng cho object methods
-- ✅ Dùng khi cần arguments object
-- ✅ Dùng làm constructors
-- ❌ Dễ mất this trong callbacks (phải bind)
-
-**call/apply/bind:**
-- 📞 **call**: Gọi ngay với args riêng lẻ → function borrowing
-- 📋 **apply**: Gọi ngay với array args → Math.max(array)
-- 🔗 **bind**: Tạo function mới → event handlers, partial application
-
-**Remember:**
-> "Arrow function = lexical this (từ outer scope). 
-> Regular function = dynamic this (runtime). 
-> Dùng call/apply khi cần gọi ngay, bind khi cần function mới với this cố định!" 🎯
-
+- 🎯 Arrow = lexical `this`, không `arguments`, không `new`, không `prototype`.
+- 📌 Regular = dynamic `this` theo 4 quy tắc — priority: `new` > `bind` > `call/apply` > implicit > default.
+- 📞 `call` / 📋 `apply` = gọi ngay; 🔗 `bind` = function mới, khoá `this` (lần đầu duy nhất).
+- ⚛️ React: cẩn thận inline arrow trong render + reference của event handler khi `removeEventListener`.

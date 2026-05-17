@@ -1,1660 +1,1295 @@
-# 🧱 Q44: Microfrontend & Monorepo - Module Federation, Multi-Framework, Communication Patterns
+# 🧱 Topic40: Microfrontend, Monorepo & Module Federation
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## ⭐ Senior/Staff Summary
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+> **Microfrontend không phải là "chia nhỏ frontend cho vui". Nó là tradeoff kiến trúc để nhiều team deploy độc lập, nhưng đổi lại là complexity ở runtime, versioning, communication, observability và governance.**
 
-**"Microfrontend = chia app lớn thành nhiều apps nhỏ độc lập (split large app into many small independent apps). Module Federation = runtime integration (tích hợp thời gian chạy - share code, no rebuild - chia sẻ code, không rebuild).**
+- 🧱 **Microfrontend (MFE)**: chia frontend lớn thành nhiều app nhỏ theo domain/team ownership.
+- 🏠 **Shell/Host**: app container chịu trách nhiệm layout, routing cấp cao, auth context, loading remote apps.
+- 📦 **Remote app**: MFE được build/deploy riêng, expose page/component/module cho shell dùng.
+- 🔌 **Module Federation**: runtime code sharing, shell load remote module qua `remoteEntry.js` thay vì build chung.
+- 🔄 **Shared dependencies**: share React/UI libs để tránh duplicate bundle và lỗi nhiều instance React.
+- 🧩 **Multi-framework**: React/Vue/Angular/Svelte có thể cùng tồn tại, nhưng cần wrapper hoặc Web Components.
+- 📡 **Communication**: ưu tiên contract rõ; chọn props/callback, custom events, event bus, shared state tùy coupling.
+- 🧭 **Routing**: shell-based routing dễ kiểm soát; distributed routing tăng autonomy nhưng khó debug/version.
+- 🎨 **Styling isolation**: CSS Modules, namespace, CSS-in-JS, Shadow DOM/Web Components.
+- 📚 **Monorepo**: 1 repo nhiều apps/libs, dùng Nx/Turborepo/pnpm workspaces để share code, cache build, enforce boundaries.
+- ⚠️ **Không nên dùng MFE** nếu team nhỏ, app đơn giản, domain coupling cao, hoặc chưa có CI/CD/observability đủ tốt.
 
-**🏗️ Microfrontend Architecture (Kiến Trúc Microfrontend):**
+## 🧠 Key Mental Model
 
-- **Concept (Khái niệm)**: Mỗi team sở hữu 1 microfrontend (MFE) (Each team owns 1 microfrontend - MFE) → deploy độc lập (independent deployment) → tech stack riêng (own tech stack).
-- **Runtime Integration (Tích hợp thời gian chạy)**: MFEs load at runtime (MFE tải lúc chạy) (không phải build time - not build time) → independent releases (phát hành độc lập).
-- **Shell App (Host) (Ứng dụng Shell - Máy chủ)**: Container app load remote MFEs (Ứng dụng container tải các MFE từ xa).
+### 1. Tách theo domain, không tách theo component nhỏ
 
-**🔧 Module Federation (Webpack 5 / Vite):**
+Microfrontend hợp khi boundary đủ rõ:
 
-- **📤 Expose (Xuất ra)**: MFE expose components/modules để các app khác dùng.
-  ```js
-  // 📁 microfrontend-a/webpack.config.js
-  // 🎯 Cấu hình để app này "xuất" components ra ngoài
-  new ModuleFederationPlugin({
-    name: 'mfeA', // 👤 Tên của app này (để app khác gọi)
-    filename: 'remoteEntry.js', // 📄 File entry point (file này sẽ được load từ xa)
-    exposes: {
-      './Button': './src/Button', // 📦 Xuất component Button để app khác dùng
-    },
-  });
-  ```
-- **📥 Consume (Tiêu thụ)**: Host app import remote modules từ app khác.
+- ✅ `catalog`, `cart`, `checkout`, `profile`, `admin`.
+- ❌ `Button`, `Modal`, `Table`, `Header` thành remote app riêng.
 
-  ```js
-  // 📁 shell/webpack.config.js
-  // 🎯 Cấu hình để app này "nhận" components từ app khác
-  new ModuleFederationPlugin({
-    remotes: {
-      // 🔗 Kết nối với app mfeA ở địa chỉ localhost:3001
-      mfeA: 'mfeA@http://localhost:3001/remoteEntry.js',
-    },
-  });
+💡 **Rule thực tế**: nếu 2 phần release cùng nhau, dùng chung state sâu, và luôn phải test cùng nhau, chúng chưa thật sự là microfrontend boundary tốt.
 
-  // 💻 Cách sử dụng trong code
-  // ⚡ Lazy load: chỉ load khi cần (không load ngay từ đầu)
-  const Button = lazy(() => import('mfeA/Button'));
-  ```
+### 2. Monorepo và Microfrontend là 2 khái niệm khác nhau
 
-- **🔄 Shared Dependencies (Chia sẻ thư viện)**: Share React, libraries → load once (không duplicate).
-  ```js
-  // 🎯 Cấu hình để các app dùng CHUNG React (không load nhiều lần)
+| Khái niệm | Giải thích | Có thể dùng độc lập không? |
+|---|---|---|
+| `Microfrontend` | Kiến trúc runtime/deployment chia app thành nhiều frontend độc lập | Có |
+| `Monorepo` | Cách tổ chức source code nhiều apps/libs trong 1 repo | Có |
+| `Module Federation` | Cơ chế load/share module runtime giữa host và remotes | Có |
+
+Bạn có thể có:
+
+- MFE + multi-repo.
+- MFE + monorepo.
+- Monorepo nhưng vẫn là monolith frontend.
+
+### 3. Senior question trước khi chọn MFE
+
+- Team có cần deploy độc lập thật không?
+- Domain ownership có rõ không?
+- Có contract API/event/version rõ chưa?
+- Có monitoring theo từng remote không?
+- Có fallback khi remote fail không?
+- Có policy shared dependency không?
+- Có design system đủ ổn để UX không bị chắp vá không?
+
+## 📚 Main Concepts
+
+### 🧱 Microfrontend là gì?
+
+Microfrontend chia app lớn thành nhiều frontend nhỏ, mỗi phần có thể:
+
+- Do một team sở hữu.
+- Build/test/deploy riêng.
+- Có release cadence riêng.
+- Có thể dùng tech stack riêng, nếu governance cho phép.
+
+Ví dụ e-commerce:
+
+```text
+Shell App
+├── Catalog MFE      -> Team Catalog, React
+├── Cart MFE         -> Team Cart, Vue
+├── Checkout MFE     -> Team Payments, React
+├── Profile MFE      -> Team Identity, Angular
+└── Admin MFE        -> Team Ops, React
+```
+
+### ✅ Khi nào nên dùng Microfrontend?
+
+- Tổ chức có nhiều team frontend làm song song.
+- Domain business độc lập tương đối rõ.
+- Independent deployment là yêu cầu thật.
+- Legacy migration từng phần: Angular -> React, old app -> new stack.
+- Cần A/B testing/canary theo từng vertical.
+- App quá lớn khiến build/test/deploy monolith thành bottleneck.
+
+### ❌ Khi nào không nên dùng?
+
+- Team nhỏ dưới 5-8 dev.
+- App chưa đủ lớn hoặc domain chưa rõ.
+- Feature coupling cao, thay đổi một chỗ kéo theo toàn bộ app.
+- Chưa có CI/CD, automated test, monitoring, error boundary tốt.
+- Chỉ muốn "dùng công nghệ mới" mà không có pain point tổ chức.
+
+### 🔌 Module Federation
+
+Module Federation cho phép app A expose module, app B consume module ở runtime.
+
+**Remote expose module:**
+
+```js
+// dashboard/webpack.config.js
+new ModuleFederationPlugin({
+  name: "dashboard",
+  filename: "remoteEntry.js",
+  exposes: {
+    "./DashboardPage": "./src/pages/DashboardPage",
+    "./widgets/RevenueCard": "./src/widgets/RevenueCard",
+  },
   shared: {
-    react: { singleton: true },  // ✅ Chỉ có 1 instance React trong toàn bộ app
-    'react-dom': { singleton: true }  // ✅ Chỉ có 1 instance ReactDOM
-  }
-  // 💡 Lợi ích: Giảm bundle size, tránh conflict version
-  ```
-
-**♻️ Communication Patterns (Mẫu Giao Tiếp):**
-
-1. **📤 Props/Callbacks (Truyền Props)**: Parent pass props to child MFE → đơn giản, nhưng tightly coupled (phụ thuộc chặt chẽ).
-
-   - 💡 Dùng khi: Component cha con gần nhau, cần truyền data trực tiếp
-
-2. **📡 Custom Events (Sự Kiện Tùy Chỉnh)**: `window.dispatchEvent()` → loose coupling (phụ thuộc lỏng lẻo).
-
-   - 💡 Dùng khi: Các app ở xa nhau, cần giao tiếp không đồng bộ
-
-3. **🗃️ State Management (Quản Lý State)**: Shared Zustand/Redux store → sync state across MFEs (đồng bộ state giữa các app).
-
-   - 💡 Dùng khi: Cần share state global (user info, cart, theme...)
-
-4. **📢 PubSub (Publish/Subscribe)**: Event bus (RxJS) → publish/subscribe pattern (mẫu đăng ký/phát hành).
-   - 💡 Dùng khi: Cần nhiều listeners cho 1 event, real-time updates
-
-**🎯 Multi-Framework Support (Hỗ Trợ Đa Framework):**
-
-- **⚛️ React + 🟢 Vue + 🔴 Angular**: Mỗi MFE dùng framework khác nhau → tự do lựa chọn công nghệ.
-
-  - 💡 Lợi ích: Team có thể dùng framework họ quen thuộc, không bị ràng buộc
-
-- **🧩 Web Components**: Wrap MFEs trong custom elements → framework-agnostic (không phụ thuộc framework).
-
-  ```js
-  // 📦 Bọc Vue component thành Web Component
-  // 🎯 Tạo custom element <vue-widget> từ Vue app
-  customElements.define('vue-widget', VueWidgetElement);
-
-  // 💻 Sử dụng trong React app (framework khác!)
-  // ✅ Có thể dùng Vue component trong React mà không cần import Vue
-  <vue-widget data={data} />;
-  ```
-
-**🔑 Monorepo (Nx / Turborepo):**
-
-- **📦 Concept (Khái Niệm)**: 1 repo chứa multiple projects → shared tooling, dependencies (chia sẻ công cụ và thư viện).
-
-  - 💡 Thay vì mỗi project 1 repo riêng → tất cả projects trong 1 repo
-
-- **✅ Benefits (Lợi Ích)**:
-
-  - 🔄 **Atomic commits**: Commit thay đổi nhiều projects cùng lúc (1 commit = 1 feature hoàn chỉnh)
-  - 📚 **Shared libraries**: Dùng chung thư viện, utilities giữa các projects
-  - 🛠️ **Consistent tooling**: Cùng ESLint, Prettier, TypeScript configs (đồng nhất)
-  - 🎯 **Dependency graph**: Build chỉ affected projects (chỉ build những gì thay đổi) → nhanh hơn
-
-- **🛠️ Tools (Công Cụ)**:
-  - **Nx**: Angular ecosystem, mạnh mẽ, có caching
-  - **Turborepo**: Vercel, nhanh, dễ setup
-  - **Lerna**: Legacy (cũ), ít dùng hơn
-
-**⚠️ Trade-offs (Đánh Đổi):**
-
-| Aspect (Khía cạnh)                                    | Monolith (Đơn khối)                           | Microfrontend (Vi frontend)                                      |
-| ----------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------- |
-| **Complexity (Độ phức tạp)**                          | Low (Thấp)                                    | High (Cao - orchestration, communication - điều phối, giao tiếp) |
-| **Build Time (Thời gian build)**                      | Slow (Chậm - 1 large app - 1 app lớn)         | Fast (Nhanh - parallel builds - build song song)                 |
-| **Deploy (Triển khai)**                               | All-or-nothing (Tất cả hoặc không)            | Independent per MFE (Độc lập theo MFE)                           |
-| **Team Autonomy (Tự chủ team)**                       | Low (Thấp - shared codebase - codebase chung) | High (Cao - own tech stack - tech stack riêng)                   |
-| **Bundle Size (Kích thước bundle)**                   | Optimized (Tối ưu)                            | Risk of duplication (Rủi ro trùng lặp)                           |
-| **Developer Experience (Trải nghiệm nhà phát triển)** | Simple (Đơn giản)                             | Complex (Phức tạp - tooling, debugging - công cụ, gỡ lỗi)        |
-
-**💡 Senior Insights (Kiến Thức Senior):**
-
-- **When to use MFE (Khi nào dùng MFE)**: Large teams (10+ devs - Team lớn 10+ dev), independent releases critical (phát hành độc lập quan trọng), different domains (các domain khác nhau) (e-commerce: catalog, checkout, profile - thương mại điện tử: danh mục, thanh toán, hồ sơ).
-- **When NOT to use (Khi nào không dùng)**: Small teams (Team nhỏ), simple apps (app đơn giản), tight coupling between features (liên kết chặt chẽ giữa các tính năng).
-- **Module Federation vs Iframe (Module Federation vs Iframe)**: MF = shared dependencies (MF = phụ thuộc chia sẻ), better performance (hiệu năng tốt hơn). Iframe = total isolation (Iframe = cô lập hoàn toàn) but clunky UX (nhưng UX cứng nhắc).
-- **Styling Isolation (Cô lập Styling)**: CSS Modules, Shadow DOM, CSS-in-JS (styled-components) → prevent style conflicts (ngăn xung đột style).
-- **Routing (Định tuyến)**: Each MFE handle own routes (Mỗi MFE xử lý routes riêng) + Shell sync URL state (Shell đồng bộ trạng thái URL).
-
-**🚀 Real-World Example (Ví Dụ Thực Tế - E-commerce):**
-
-```
-Shell (Host App - Ứng dụng máy chủ)
-├── Product Catalog MFE (Team A - React - Danh mục sản phẩm MFE)
-├── Shopping Cart MFE (Team B - Vue - Giỏ hàng MFE)
-├── Checkout MFE (Team C - Angular - Thanh toán MFE)
-└── User Profile MFE (Team D - React - Hồ sơ người dùng MFE)
-```
-
-- Team A deploy catalog update (Team A triển khai cập nhật danh mục) → không ảnh hưởng Teams B, C, D (doesn't affect Teams B, C, D).
-- Shared (Chia sẻ): React, UI library (button, input) via Module Federation (thư viện UI qua Module Federation).
-
----
-
-**❓ Câu Hỏi:**
-
-Giải thích chi tiết kiến trúc Microfrontend và Monorepo, bao gồm Module Federation (Webpack/Vite), Multi-framework development, Communication patterns, Routing strategies, và Styling isolation. Phân tích ưu nhược điểm và ứng dụng thực tế.
-
-**📚 Phần 1: Khái Niệm Cơ Bản (Core Concepts)**
-
-#### **💡 Microfrontend Là Gì? (What is Microfrontend?)**
-
-**Microfrontend** là kiến trúc chia ứng dụng frontend lớn thành **nhiều ứng dụng nhỏ độc lập**, mỗi ứng dụng:
-
-- ✅ Được phát triển bởi **team riêng** (độc lập)
-- ✅ Deploy **riêng biệt** (independent deployment)
-- ✅ Có **technology stack riêng** (React, Vue, Angular, etc.)
-- ✅ **Runtime integration** (ghép nối lúc runtime, không phải build time)
-
----
-
-#### **🔥 Tại Sao Cần Microfrontend? (Why Microfrontend?)**
-
-**💔 Vấn Đề Của Monolithic Frontend (The Problem):**
-
-```typescript
-// ===================================================
-// ❌ MONOLITHIC FRONTEND - VÍ DỤ THỰC TẾ
-// ===================================================
-
-// Tình huống: Công ty e-commerce lớn với 1 app React khổng lồ
-
-📦 ecommerce-app/
-├── src/
-│   ├── pages/
-│   │   ├── ProductCatalog/      ← Team A maintain (10 devs)
-│   │   ├── ShoppingCart/        ← Team B maintain (8 devs)
-│   │   ├── Checkout/            ← Team C maintain (12 devs)
-│   │   ├── UserProfile/         ← Team D maintain (6 devs)
-│   │   ├── OrderHistory/        ← Team E maintain (5 devs)
-│   │   └── AdminDashboard/      ← Team F maintain (8 devs)
-│   │
-│   └── package.json             ← 1 file duy nhất cho tất cả!
-│       dependencies: {
-│         "react": "17.0.0",     ← Team A muốn upgrade React 18
-│         "redux": "4.0.0",      ← Team C muốn dùng Zustand
-│         ...500 dependencies    ← Cài đặt CHẬM (5-10 phút!)
-│       }
-```
-
-**❌ Vấn Đề 1: DEPLOYMENT HELL (Địa Ngục Deploy)**
-
-```
-┌──────────────────────────────────────────────────────────┐
-│         MONOLITHIC DEPLOYMENT NIGHTMARE                   │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  Team A fix bug nhỏ trong ProductCatalog (1 dòng code)  │
-│              ↓                                            │
-│  ❌ Phải build TOÀN BỘ app (15-20 phút)                 │
-│  ❌ Test TOÀN BỘ app (2-3 giờ)                          │
-│  ❌ Deploy TOÀN BỘ app → risk cho tất cả teams!         │
-│  ❌ Nếu có bug → TOÀN BỘ app down!                      │
-│                                                           │
-│  Timeline:                                                │
-│  ├─ 10:00 AM: Team A commit fix                         │
-│  ├─ 10:20 AM: Build xong (20 phút)                      │
-│  ├─ 01:00 PM: QA test xong (2h 40 phút)                 │
-│  ├─ 02:00 PM: Deploy production                         │
-│  └─ 02:30 PM: Rollback vì bug từ Team C! ❌             │
-│                                                           │
-│  ⏱️ Tổng: 4.5 giờ cho 1 thay đổi nhỏ!                   │
-└──────────────────────────────────────────────────────────┘
-```
-
-**❌ Vấn Đề 2: TEAM CONFLICTS (Xung Đột Giữa Teams)**
-
-```typescript
-// ❌ Team A: Muốn dùng React 18 + TypeScript strict
-// ❌ Team B: Vẫn đang dùng React 17 (legacy code)
-// ❌ Team C: Muốn thử Svelte cho performance
-// ❌ Team D: Muốn migrate từ Redux → Zustand
-
-// Kết quả: KHÔNG AI ĐƯỢC LÀM GÌ CẢ!
-// → Phải họp 6 teams để đồng ý 1 quyết định
-// → Mất 2-3 tuần chỉ để quyết định upgrade React
-// → Team C không được dùng Svelte → frustrated → nghỉ việc 😢
-```
-
-**❌ Vấn Đề 3: SLOW BUILD TIME (Build Chậm)**
-
-```
-┌──────────────────────────────────────────────────────────┐
-│              BUILD TIME COMPARISON                        │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  MONOLITHIC (1 app lớn):                                 │
-│  ├─ npm install: 8-10 phút (500 dependencies)           │
-│  ├─ Build: 15-20 phút                                    │
-│  ├─ Hot reload: 5-10 giây (chậm!)                       │
-│  └─ Dev server start: 2-3 phút                          │
-│                                                           │
-│  ⏱️ Developer experience: RẤT TỆ!                        │
-│  😢 Devs phải đợi 10s mỗi lần save code                  │
-└──────────────────────────────────────────────────────────┘
-```
-
-**❌ Vấn Đề 4: MERGE CONFLICTS (Xung Đột Merge)**
-
-```bash
-# Team A, B, C, D, E, F cùng làm việc trên 1 repo
-
-# Monday morning:
-git pull origin main
-# ❌ Conflict in package.json (6 teams cùng add dependencies)
-# ❌ Conflict in webpack.config.js (3 teams cùng config)
-# ❌ Conflict in tsconfig.json (2 teams cùng thay đổi)
-
-# Developer phải mất 30-60 phút giải quyết conflicts TRƯỚC KHI code! 😢
-```
-
-**❌ Vấn Đề 5: SINGLE POINT OF FAILURE (Điểm Lỗi Duy Nhất)**
-
-```typescript
-// Team C viết code có bug trong Checkout module
-
-function calculateTax(amount: number): number {
-  return amount * undefined; // ❌ BUG! Undefined reference
-}
-
-// Kết quả:
-// ❌ TOÀN BỘ app crash (white screen)!
-// ❌ ProductCatalog của Team A: DOWN ❌
-// ❌ ShoppingCart của Team B: DOWN ❌
-// ❌ UserProfile của Team D: DOWN ❌
-// ❌ AdminDashboard của Team F: DOWN ❌
-
-// 💸 Loss: $100,000/hour vì website down!
-```
-
-**❌ Vấn Đề 6: HARD TO SCALE TEAMS (Khó Mở Rộng Team)**
-
-```
-┌──────────────────────────────────────────────────────────┐
-│         MONOLITHIC TEAM SCALING PROBLEM                   │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  Khi team tăng từ 10 → 50 developers:                   │
-│                                                           │
-│  ❌ Code review CHẬM (phải review toàn bộ codebase)     │
-│  ❌ Merge conflicts tăng theo cấp số nhân                │
-│  ❌ Communication overhead (50 devs phải sync)           │
-│  ❌ Onboarding mới MẤT 2-3 THÁNG (codebase quá lớn)     │
-│  ❌ "Ai viết code này?" → Không ai biết 😅              │
-│                                                           │
-└──────────────────────────────────────────────────────────┘
-```
-
----
-
-**✅ Microfrontend Giải Quyết Như Thế Nào? (The Solution)**
-
-```typescript
-// ===================================================
-// ✅ MICROFRONTEND - CÙNG VÍ DỤ NHƯNG ĐƯỢC TỔ CHỨC LẠI
-// ===================================================
-
-📦 ecommerce-monorepo/
-├── apps/
-│   ├── shell/                   ← Team Platform (2 devs)
-│   │   └── Deploy: Riêng biệt   ← Build 2 phút, Deploy độc lập
-│   │
-│   ├── product-catalog/         ← Team A (10 devs)
-│   │   ├── package.json         ← React 18 ✅
-│   │   └── Deploy: Riêng biệt   ← Build 3 phút, Deploy độc lập
-│   │
-│   ├── shopping-cart/           ← Team B (8 devs)
-│   │   ├── package.json         ← React 17 (legacy) ✅
-│   │   └── Deploy: Riêng biệt   ← Build 2 phút, Deploy độc lập
-│   │
-│   ├── checkout/                ← Team C (12 devs)
-│   │   ├── package.json         ← Zustand ✅
-│   │   └── Deploy: Riêng biệt   ← Build 4 phút, Deploy độc lập
-│   │
-│   ├── user-profile/            ← Team D (6 devs)
-│   │   ├── package.json         ← Vue 3 ✅ (khác framework!)
-│   │   └── Deploy: Riêng biệt   ← Build 2 phút, Deploy độc lập
-│   │
-│   ├── order-history/           ← Team E (5 devs)
-│   │   ├── package.json         ← Angular ✅ (khác framework!)
-│   │   └── Deploy: Riêng biệt   ← Build 3 phút, Deploy độc lập
-│   │
-│   └── admin-dashboard/         ← Team F (8 devs)
-│       ├── package.json         ← Svelte ✅ (khác framework!)
-│       └── Deploy: Riêng biệt   ← Build 1 phút, Deploy độc lập
-```
-
-**✅ Lợi Ích 1: INDEPENDENT DEPLOYMENT (Deploy Độc Lập)**
-
-```
-┌──────────────────────────────────────────────────────────┐
-│         MICROFRONTEND DEPLOYMENT - HEAVEN!                │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  Team A fix bug trong ProductCatalog (1 dòng code)       │
-│              ↓                                            │
-│  ✅ Build CHỈ product-catalog app (3 phút)              │
-│  ✅ Test CHỈ product-catalog (30 phút)                  │
-│  ✅ Deploy CHỈ product-catalog → KHÔNG ảnh hưởng teams khác! │
-│  ✅ Nếu có bug → CHỈ product-catalog affected           │
-│                                                           │
-│  Timeline:                                                │
-│  ├─ 10:00 AM: Team A commit fix                         │
-│  ├─ 10:03 AM: Build xong (3 phút) ⚡                     │
-│  ├─ 10:30 AM: QA test xong (27 phút)                    │
-│  └─ 10:35 AM: Deploy production ✅                       │
-│                                                           │
-│  ⏱️ Tổng: 35 phút cho 1 thay đổi! (vs 4.5 giờ trước)   │
-│                                                           │
-│  🚀 Team B, C, D, E, F vẫn deploy bình thường!          │
-└──────────────────────────────────────────────────────────┘
-```
-
-**✅ Lợi Ích 2: TEAM AUTONOMY (Tự Chủ Team)**
-
-```typescript
-// ✅ Team A: Dùng React 18 + TypeScript strict ✅
-// ✅ Team B: Vẫn dùng React 17 (ko ai care) ✅
-// ✅ Team C: Dùng Zustand thay Redux ✅
-// ✅ Team D: Dùng Vue 3 ✅
-// ✅ Team E: Dùng Angular ✅
-// ✅ Team F: Dùng Svelte cho performance ✅
-
-// Kết quả: TẤT CẢ ĐỀU HÀI LÒNG! 🎉
-// → Mỗi team tự quyết định tech stack
-// → Không cần họp 6 teams
-// → Team C được dùng Svelte → happy → stay with company 😊
-```
-
-**✅ Lợi Ích 3: FAST BUILD TIME (Build Nhanh)**
-
-```
-┌──────────────────────────────────────────────────────────┐
-│              BUILD TIME - MICROFRONTEND                   │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  MICROFRONTEND (nhiều apps nhỏ):                         │
-│  ├─ npm install: 1-2 phút (50 dependencies mỗi app)     │
-│  ├─ Build: 2-4 phút (chỉ build app đang làm)           │
-│  ├─ Hot reload: <1 giây ⚡                              │
-│  └─ Dev server start: 10-20 giây                        │
-│                                                           │
-│  ⏱️ Developer experience: TUYỆT VỜI!                     │
-│  😊 Devs thấy changes NGAY LẬP TỨC                       │
-└──────────────────────────────────────────────────────────┘
-```
-
-**✅ Lợi Ích 4: NO MERGE CONFLICTS (Không Xung Đột)**
-
-```bash
-# Team A làm việc trên apps/product-catalog/
-# Team B làm việc trên apps/shopping-cart/
-# Team C làm việc trên apps/checkout/
-
-# Monday morning:
-git pull origin main
-# ✅ NO CONFLICTS! (Mỗi team làm folder riêng)
-# ✅ package.json riêng biệt
-# ✅ webpack.config.js riêng biệt
-
-# Developer có thể code NGAY! 🚀
-```
-
-**✅ Lợi Ích 5: ISOLATED FAILURES (Lỗi Cô Lập)**
-
-```typescript
-// Team C viết code có bug trong Checkout module
-
-function calculateTax(amount: number): number {
-  return amount * undefined; // ❌ BUG! Undefined reference
-}
-
-// Kết quả với Microfrontend:
-// ✅ CHỈ Checkout app crash (có Error Boundary)
-// ✅ ProductCatalog của Team A: VẪN HOẠT ĐỘNG ✅
-// ✅ ShoppingCart của Team B: VẪN HOẠT ĐỘNG ✅
-// ✅ UserProfile của Team D: VẪN HOẠT ĐỘNG ✅
-// ✅ AdminDashboard của Team F: VẪN HOẠT ĐỘNG ✅
-
-// 💸 Loss: $10,000/hour (chỉ checkout down, còn lại OK)
-// 📉 90% giảm loss so với Monolithic!
-```
-
-**✅ Lợi Ích 6: EASY TO SCALE TEAMS (Dễ Mở Rộng)**
-
-```
-┌──────────────────────────────────────────────────────────┐
-│         MICROFRONTEND TEAM SCALING - SMOOTH               │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  Khi team tăng từ 10 → 50 developers:                   │
-│                                                           │
-│  ✅ Mỗi team có codebase riêng (dễ review)              │
-│  ✅ NO merge conflicts                                   │
-│  ✅ Teams làm việc parallel (không chờ đợi)             │
-│  ✅ Onboarding MỚI CHỈ 1-2 TUẦN (codebase nhỏ)          │
-│  ✅ Team ownership rõ ràng (Team A owns Catalog)        │
-│                                                           │
-│  🚀 Có thể scale đến 100-200 developers!                │
-└──────────────────────────────────────────────────────────┘
-```
-
-**✅ Lợi Ích 7: INCREMENTAL MIGRATION (Di Chuyển Từng Bước)**
-
-```typescript
-// ===================================================
-// 📦 VÍ DỤ: Migrate từ Angular (legacy) → React
-// ===================================================
-
-// ❌ MONOLITHIC: Phải rewrite TOÀN BỘ app cùng lúc
-// → Mất 1-2 năm, risk CAỰ CAO! 😱
-
-// ✅ MICROFRONTEND: Migrate từng module
-// → Mất 3-6 tháng, risk THẤP! 😊
-
-// PLAN:
-// ┌─────────────────────────────────────────────┐
-// │  Month 1-2: Migrate ProductCatalog → React │
-// │  Month 3-4: Migrate ShoppingCart → React   │
-// │  Month 5-6: Migrate Checkout → React       │
-// │  Month 7-8: Migrate UserProfile → React    │
-// └─────────────────────────────────────────────┘
-
-// Trong khi migrate:
-// ✅ Angular modules VẪN HOẠT ĐỘNG
-// ✅ React modules ĐANG ĐƯỢC PHÁT TRIỂN
-// ✅ Users KHÔNG BỊ GIÁN ĐOẠN
-```
-
-**✅ Lợi Ích 8: A/B TESTING & FEATURE FLAGS**
-
-```typescript
-// ===================================================
-// 🧪 A/B TESTING với Microfrontend
-// ===================================================
-
-// Shell app quyết định load version nào
-
-function App() {
-  const userGroup = useABTest('checkout-v2'); // 50% users
-
-  return (
-    <div>
-      {
-        userGroup === 'A' ? (
-          <CheckoutV1 /> // ✅ Version cũ (ổn định)
-        ) : (
-          <CheckoutV2 />
-        ) // ✅ Version mới (thử nghiệm)
-      }
-    </div>
-  );
-}
-
-// ✅ Nếu V2 tốt hơn → Deploy 100% users
-// ✅ Nếu V2 có bug → Rollback CHỈ Checkout (không ảnh hưởng apps khác)
-```
-
----
-
-**📊 So Sánh Tổng Quan (Overall Comparison)**
-
-| Tiêu Chí             | Monolithic             | Microfrontend              |
-| -------------------- | ---------------------- | -------------------------- |
-| **Deployment Time**  | 4-6 giờ ❌             | 30-60 phút ✅              |
-| **Build Time**       | 15-20 phút ❌          | 2-4 phút ✅                |
-| **Hot Reload**       | 5-10 giây ❌           | <1 giây ✅                 |
-| **Team Conflicts**   | Cao (merge hell) ❌    | Thấp (isolated) ✅         |
-| **Tech Stack**       | 1 stack cho tất cả ❌  | Mỗi team tự chọn ✅        |
-| **Risk khi Deploy**  | Cao (toàn bộ app) ❌   | Thấp (1 module) ✅         |
-| **Failure Impact**   | Toàn bộ app down ❌    | 1 module down ✅           |
-| **Team Scalability** | Khó (>20 devs) ❌      | Dễ (100+ devs) ✅          |
-| **Onboarding Time**  | 2-3 tháng ❌           | 1-2 tuần ✅                |
-| **Migration**        | Big bang (risk cao) ❌ | Incremental (risk thấp) ✅ |
-| **A/B Testing**      | Khó ❌                 | Dễ ✅                      |
-| **Bundle Size**      | Lớn (load tất cả) ❌   | Nhỏ (lazy load) ✅         |
-
----
-
-**🎯 Khi Nào NÊN Dùng Microfrontend?**
-
-✅ **NÊN dùng khi:**
-
-- ✅ Team > 20 developers
-- ✅ App có nhiều domains khác nhau (catalog, cart, checkout, profile, admin)
-- ✅ Muốn deploy độc lập từng phần
-- ✅ Muốn dùng nhiều tech stack (React + Vue + Angular)
-- ✅ Legacy migration (Angular → React từng bước)
-- ✅ Cần A/B testing nhiều
-
-❌ **KHÔNG NÊN dùng khi:**
-
-- ❌ Team < 10 developers (overhead lớn)
-- ❌ App đơn giản (1-2 pages)
-- ❌ Không cần deploy độc lập
-- ❌ Chỉ dùng 1 framework
-- ❌ Startup giai đoạn đầu (chưa cần scale)
-
----
-
-**💡 Real-World Examples (Ví Dụ Thực Tế)**
-
-```
-🏢 **Spotify**:
-   - Home, Search, Playlist, Player là các micro apps riêng
-   - Deploy riêng biệt 50+ lần/ngày
-   - Teams độc lập (Squad model)
-
-🏢 **Zalando**:
-   - Product listing, Cart, Checkout, Account là micro apps
-   - 200+ developers làm việc parallel
-   - Tech stack: React, Vue, Angular cùng tồn tại
-
-🏢 **IKEA**:
-   - Migrate từ .NET → React incrementally
-   - 10+ micro apps độc lập
-   - Giảm deployment time từ 6 giờ → 30 phút
-
-🏢 **Amazon**:
-   - Mỗi product category là 1 micro app
-   - 1000+ developers
-   - Deploy hàng trăm lần/ngày
-```
-
----
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                  MONOLITHIC FRONTEND                     │
-│                  (Kiến trúc cũ - 1 khối)                │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│   ┌──────────────────────────────────────────────┐      │
-│   │         Entire App (React)                   │      │
-│   │  ┌──────────┬──────────┬──────────────┐     │      │
-│   │  │  Header  │Dashboard │   Profile    │     │      │
-│   │  └──────────┴──────────┴──────────────┘     │      │
-│   │                                              │      │
-│   │  - 1 codebase                               │      │
-│   │  - 1 deployment                             │      │
-│   │  - 1 team phải maintain tất cả              │      │
-│   │  - Deploy tất cả mỗi lần thay đổi nhỏ      │      │
-│   └──────────────────────────────────────────────┘      │
-└─────────────────────────────────────────────────────────┘
-
-                          ↓ CHUYỂN ĐỔI
-
-┌─────────────────────────────────────────────────────────┐
-│              MICROFRONTEND ARCHITECTURE                  │
-│              (Kiến trúc mới - Nhiều khối nhỏ)           │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  ┌────────────────┐  ┌────────────────┐                │
-│  │  Shell App     │  │  Remote Apps   │                │
-│  │  (Host/Container)│ │  (Micro Apps) │                │
-│  └────────────────┘  └────────────────┘                │
-│                                                          │
-│  ┌─────────────────────────────────────────────┐        │
-│  │           Shell (React) - Team Platform     │        │
-│  │  ┌──────────────────────────────────────┐   │        │
-│  │  │         Shared Header/Footer          │   │        │
-│  │  └──────────────────────────────────────┘   │        │
-│  │                                              │        │
-│  │  ┌─────────┐  ┌──────────┐  ┌──────────┐  │        │
-│  │  │Dashboard│  │ Profile  │  │  Orders  │  │        │
-│  │  │ (React) │  │  (Vue)   │  │(Angular) │  │        │
-│  │  │ Team A  │  │  Team B  │  │  Team C  │  │        │
-│  │  └─────────┘  └──────────┘  └──────────┘  │        │
-│  │                                              │        │
-│  │  - 3 teams độc lập                          │        │
-│  │  - Deploy riêng biệt                        │        │
-│  │  - Tech stack khác nhau                     │        │
-│  │  - Module Federation ghép nối runtime       │        │
-│  └─────────────────────────────────────────────┘        │
-└─────────────────────────────────────────────────────────┘
-```
-
-#### **💡 Monorepo Là Gì? (What is Monorepo?)**
-
-**Monorepo** là cách quản lý code: **nhiều projects/packages** trong **1 repository duy nhất**.
-
-```
-📦 monorepo-root/
-├── 📁 apps/                    ← Các ứng dụng (applications)
-│   ├── 📁 shell/               ← Shell/Host app (React)
-│   │   ├── src/
-│   │   ├── package.json
-│   │   └── webpack.config.js
-│   │
-│   ├── 📁 dashboard/           ← Dashboard app (React)
-│   │   ├── src/
-│   │   └── package.json
-│   │
-│   └── 📁 profile/             ← Profile app (Vue)
-│       ├── src/
-│       └── package.json
-│
-├── 📁 libs/                    ← Shared libraries (thư viện dùng chung)
-│   ├── 📁 shared-ui/           ← UI components (Button, Input, etc.)
-│   ├── 📁 shared-auth/         ← Auth logic (login, logout, etc.)
-│   └── 📁 shared-utils/        ← Utils (date, string, etc.)
-│
-├── package.json                ← Root package.json
-├── nx.json                     ← Nx workspace config
-└── tsconfig.base.json          ← Shared TypeScript config
-```
-
-**🔥 Ưu Điểm Monorepo (Monorepo Advantages):**
-
-- ✅ **Code sharing dễ dàng (Easy code sharing)**: Import libs giữa các apps (Import libraries between apps)
-- ✅ **Atomic commits (Commit nguyên tử)**: 1 commit thay đổi nhiều apps (1 commit changes multiple apps)
-- ✅ **Consistent tooling (Công cụ nhất quán)**: Cùng ESLint, Prettier, TypeScript config (Same ESLint, Prettier, TypeScript config)
-- ✅ **Dependency management (Quản lý phụ thuộc)**: 1 `package.json` root cho tất cả (1 root package.json for all)
-
----
-
-**📚 Phần 2: Module Federation - Runtime Code Sharing**
-
-#### **💡 Module Federation Là Gì?**
-
-**Module Federation** (Webpack 5 / Vite Federation) là kỹ thuật cho phép **chia sẻ code giữa các apps ở runtime** (Module Federation is a technique that allows **sharing code between apps at runtime**) (không phải build time - not build time).
-
-**🔥 Cơ Chế Hoạt Động (How It Works):**
-
-```typescript
-// ===================================================
-// 🏠 SHELL APP (Host - React) - webpack.config.js
-// (Ứng dụng Shell - Máy chủ - React)
-// ===================================================
-// Đây là app chính, load các remote apps vào
-// (This is the main app, loads remote apps into it)
-
-const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
-
-module.exports = {
-  plugins: [
-    new ModuleFederationPlugin({
-      name: 'shell', // ⚠️ Tên app này (Name of this app)
-
-      // 📥 REMOTES: Các app remote mà shell sẽ load
-      // (REMOTES: Remote apps that shell will load)
-      remotes: {
-        // Key: tên import, Value: URL + scope name
-        // (Key: import name, Value: URL + scope name)
-        dashboard: 'dashboard@http://localhost:3001/remoteEntry.js', // Dashboard app (React)
-        profile: 'profile@http://localhost:3002/remoteEntry.js', // Profile app (Vue)
-      },
-
-      // 📤 EXPOSES: Những gì shell chia sẻ cho remote apps
-      // (EXPOSES: What shell shares to remote apps)
-      exposes: {
-        './Header': './src/components/Header', // Share Header component (Chia sẻ component Header)
-        './AuthService': './src/services/AuthService', // Share Auth service (Chia sẻ dịch vụ Auth)
-      },
-
-      // 🔄 SHARED: Dependencies dùng chung (tránh duplicate)
-      // (SHARED: Shared dependencies - avoid duplicate)
-      shared: {
-        react: {
-          singleton: true, // ⚠️ Chỉ có 1 instance React trong toàn bộ app (Only 1 React instance in entire app)
-          requiredVersion: '^18.0.0', // Version yêu cầu (Required version)
-          eager: true, // Load ngay lập tức (không lazy) (Load immediately - not lazy)
-        },
-        'react-dom': { singleton: true, eager: true },
-      },
-    }),
-  ],
-};
-
-// ===================================================
-// 📊 DASHBOARD APP (Remote - React) - webpack.config.js
-// (Ứng dụng Dashboard - Từ xa - React)
-// ===================================================
-// App độc lập, expose components cho shell
-// (Independent app, exposes components to shell)
-
-module.exports = {
-  plugins: [
-    new ModuleFederationPlugin({
-      name: 'dashboard', // ⚠️ Tên app này (phải trùng với remotes ở shell)
-      // (Name of this app - must match remotes in shell)
-      filename: 'remoteEntry.js', // ⚠️ File entry point (File điểm vào)
-
-      // 📤 EXPOSES: Components/modules mà dashboard chia sẻ
-      // (EXPOSES: Components/modules that dashboard shares)
-      exposes: {
-        './DashboardPage': './src/pages/DashboardPage', // Main page (Trang chính)
-        './StatsWidget': './src/components/StatsWidget', // Widget component (Component widget)
-      },
-
-      // 🔄 SHARED: Dependencies dùng chung với shell
-      // (SHARED: Dependencies shared with shell)
-      shared: {
-        react: { singleton: true, requiredVersion: '^18.0.0' },
-        'react-dom': { singleton: true },
-      },
-    }),
-  ],
-};
-
-// ===================================================
-// 👤 PROFILE APP (Remote - Vue 3) - vite.config.ts
-// (Ứng dụng Profile - Từ xa - Vue 3)
-// ===================================================
-// App Vue, expose components cho shell (Multi-framework!)
-// (Vue app, exposes components to shell - Multi-framework!)
-
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import federation from '@originjs/vite-plugin-federation';
-
-export default defineConfig({
-  plugins: [
-    vue(),
-    federation({
-      name: 'profile', // ⚠️ Tên app (Name of app)
-      filename: 'remoteEntry.js',
-
-      // 📤 EXPOSES: Vue components
-      // (EXPOSES: Vue components)
-      exposes: {
-        './ProfilePage': './src/pages/ProfilePage.vue', // Vue component (Component Vue)
-        './UserAvatar': './src/components/UserAvatar.vue', // Vue component (Component Vue)
-      },
-
-      // 🔄 SHARED: Vue dependencies
-      // (SHARED: Vue dependencies)
-      shared: {
-        vue: { singleton: true },
-      },
-    }),
-  ],
+    react: { singleton: true, requiredVersion: "^18.0.0" },
+    "react-dom": { singleton: true, requiredVersion: "^18.0.0" },
+  },
 });
 ```
 
-#### **🎯 Sử Dụng Remote Components trong Shell**
+**Shell consume remote:**
 
-```typescript
-// ===================================================
-// 🏠 SHELL APP - src/App.tsx (React)
-// (Ứng dụng Shell - React)
-// ===================================================
-
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-// 📥 LAZY LOAD remote components từ dashboard (React)
-// (LAZY LOAD remote components from dashboard - React)
-const DashboardPage = lazy(() => import('dashboard/DashboardPage'));
-//                                       ↑         ↑
-//                              remote name    exposed module
-//                              (tên remote)   (module được expose)
-
-// 📥 LAZY LOAD remote components từ profile (Vue)
-// (LAZY LOAD remote components from profile - Vue)
-const ProfilePage = lazy(() => import('profile/ProfilePage'));
-
-function App() {
-  return (
-    <BrowserRouter>
-      <div className="app">
-        <Header /> {/* Shell's own component (Component riêng của Shell) */}
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            {/* Dashboard app (React) - Team A */}
-            {/* (Ứng dụng Dashboard - React - Team A) */}
-            <Route path="/dashboard" element={<DashboardPage />} />
-
-            {/* Profile app (Vue) - Team B */}
-            {/* (Ứng dụng Profile - Vue - Team B) */}
-            <Route path="/profile" element={<ProfilePage />} />
-          </Routes>
-        </Suspense>
-      </div>
-    </BrowserRouter>
-  );
-}
-
-export default App;
-
-// ⚠️ TypeScript types cho remote modules
-// (TypeScript types for remote modules)
-// src/types/remotes.d.ts
-declare module 'dashboard/DashboardPage' {
-  const DashboardPage: React.ComponentType;
-  export default DashboardPage;
-}
-
-declare module 'profile/ProfilePage' {
-  const ProfilePage: React.ComponentType;
-  export default ProfilePage;
-}
-```
-
-**🔥 Timeline Hoạt Động (Operation Timeline):**
-
-```
-User truy cập http://localhost:3000/dashboard
-(User accesses http://localhost:3000/dashboard)
-
-1️⃣ Shell app load (React) (Ứng dụng Shell tải - React)
-   └─ Load shell bundle (~500KB) (Tải bundle shell - ~500KB)
-   └─ Render Header, Sidebar (Render Header, Sidebar)
-
-2️⃣ User click "Dashboard" → Route change (Người dùng click "Dashboard" → Thay đổi route)
-   └─ React Router match /dashboard (React Router khớp /dashboard)
-   └─ Trigger lazy(() => import('dashboard/DashboardPage')) (Kích hoạt lazy load)
-
-3️⃣ Module Federation fetch remote (Module Federation tải từ xa)
-   └─ Fetch http://localhost:3001/remoteEntry.js (Tải remoteEntry.js)
-   └─ Parse manifest (biết dashboard expose gì) (Phân tích manifest - biết dashboard expose gì)
-   └─ Fetch dashboard chunk (~300KB) (Tải chunk dashboard - ~300KB)
-
-4️⃣ Dashboard component render (Component Dashboard render)
-   └─ Dùng shared React instance từ shell (không duplicate) (Dùng instance React chia sẻ từ shell - không trùng lặp)
-   └─ Render DashboardPage component (Render component DashboardPage)
-
-Total: Shell (500KB) + Dashboard (300KB) = 800KB
-✅ Nếu KHÔNG dùng Module Federation (If NOT using Module Federation): 500KB + 500KB = 1MB (duplicate React - React trùng lặp)
-```
-
----
-
-**📚 Phần 3: Multi-Framework Development (Phát Triển Đa Framework)**
-
-#### **💡 Tại Sao Cần Multi-Framework? (Why Multi-Framework?)**
-
-- ✅ **Legacy migration (Di chuyển legacy)**: Migrate từ Angular → React từng phần (Migrate from Angular → React incrementally)
-- ✅ **Team autonomy (Tự chủ team)**: Team A dùng React, Team B dùng Vue (Team A uses React, Team B uses Vue)
-- ✅ **Best tool for the job (Công cụ phù hợp)**: Dashboard dùng React, Charts dùng Svelte (Dashboard uses React, Charts uses Svelte)
-
-#### **🔥 Cách Hoạt Động (How It Works):**
-
-```typescript
-// ===================================================
-// 🏠 SHELL (React) load PROFILE (Vue)
-// (Shell - React tải Profile - Vue)
-// ===================================================
-
-// Shell App (React) - src/App.tsx
-import React, { Suspense, lazy, useEffect, useRef } from 'react';
-
-// ❌ KHÔNG THỂ: Import Vue component trực tiếp vào React
-// (CANNOT: Import Vue component directly into React)
-// import ProfilePage from './ProfilePage.vue'; // ❌ Lỗi! (Error!)
-
-// ✅ GIẢI PHÁP 1: Module Federation + Wrapper
-// (SOLUTION 1: Module Federation + Wrapper)
-const ProfilePage = lazy(() => import('profile/ProfilePage'));
-
-function App() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ProfilePage /> {/* Vue component trong React! (Vue component in React!) */}
-    </Suspense>
-  );
-}
-
-// ===================================================
-// 👤 PROFILE APP (Vue) - src/pages/ProfilePage.vue
-// (Ứng dụng Profile - Vue)
-// ===================================================
-
-<template>
-  <div class="profile-page">
-    <h1>{{ user.name }}</h1>
-    <p>{{ user.email }}</p>
-  </div>
-</template>
-
-<script setup lang="ts">
-import { ref, onMounted } from 'vue';
-
-const user = ref({ name: '', email: '' });
-
-onMounted(async () => {
-  // Fetch user data (Tải dữ liệu người dùng)
-  const response = await fetch('/api/user');
-  user.value = await response.json();
+```js
+// shell/webpack.config.js
+new ModuleFederationPlugin({
+  name: "shell",
+  remotes: {
+    dashboard: "dashboard@https://cdn.example.com/dashboard/remoteEntry.js",
+  },
+  shared: {
+    react: { singleton: true, requiredVersion: "^18.0.0" },
+    "react-dom": { singleton: true, requiredVersion: "^18.0.0" },
+  },
 });
-</script>
+```
 
-// ===================================================
-// 🔧 PROFILE APP - Wrapper để React hiểu Vue component
-// (PROFILE APP - Wrapper để React hiểu Vue component)
-// ===================================================
+**React lazy load remote:**
 
-// profile/src/bootstrap.tsx
-import { createApp } from 'vue';
-import ProfilePage from './pages/ProfilePage.vue';
+```tsx
+import * as React from "react";
 
-// Export function để mount Vue app vào DOM element
-// (Export function to mount Vue app to DOM element)
-export function mountProfilePage(el: HTMLElement) {
-  const app = createApp(ProfilePage);
-  app.mount(el);
+const DashboardPage = React.lazy(() => import("dashboard/DashboardPage"));
 
-  // Return cleanup function (Trả về hàm dọn dẹp)
-  return () => app.unmount();
-}
-
-// profile/src/VueWrapper.tsx (React wrapper for Vue)
-// (React wrapper cho Vue)
-import React, { useEffect, useRef } from 'react';
-import { mountProfilePage } from './bootstrap';
-
-export default function VueWrapper() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (ref.current) {
-      const cleanup = mountProfilePage(ref.current); // Mount Vue app
-
-      return () => cleanup(); // Unmount khi component unmount
-    }
-  }, []);
-
-  return <div ref={ref}></div>; // Vue app sẽ render vào div này
+export function AppRoutes() {
+  return (
+    <React.Suspense fallback={<div>Loading dashboard...</div>}>
+      <DashboardPage />
+    </React.Suspense>
+  );
 }
 ```
 
-**🎯 Framework Compatibility Matrix (Ma Trận Tương Thích Framework):**
+💡 Webpack 5 có Module Federation native. Vite thường dùng plugin federation/Rspack ecosystem tùy stack.
 
-| Shell ↓ / Remote → (Shell / Remote) | React            | Vue              | Angular          | Svelte           |
-| ----------------------------------- | ---------------- | ---------------- | ---------------- | ---------------- |
-| **React**                           | ✅ Native (Gốc)  | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) |
-| **Vue**                             | ✅ Wrapper (Bọc) | ✅ Native (Gốc)  | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) |
-| **Angular**                         | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) | ✅ Native (Gốc)  | ✅ Wrapper (Bọc) |
-| **Svelte**                          | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) | ✅ Wrapper (Bọc) | ✅ Native (Gốc)  |
+### 🔄 Shared dependencies
 
----
+Shared dependency giúp tránh:
 
-**📚 Phần 4: Communication Patterns (Mẫu Giao Tiếp)**
+- Duplicate React/ReactDOM.
+- Bundle phình lớn.
+- Context/hooks lỗi do có nhiều React instance.
+- UI library bị load nhiều version.
 
-Các Micro apps cần giao tiếp với nhau (Micro apps need to communicate with each other) (share data, trigger actions - chia sẻ dữ liệu, kích hoạt hành động). Có 3 patterns chính (There are 3 main patterns):
+```js
+shared: {
+  react: {
+    singleton: true,
+    requiredVersion: "^18.0.0",
+  },
+  "react-dom": {
+    singleton: true,
+    requiredVersion: "^18.0.0",
+  },
+}
+```
 
-#### **🔥 Pattern 1: Event Bus (Custom Events) (Mẫu 1: Event Bus - Sự Kiện Tùy Chỉnh)**
+⚠️ `singleton` không có nghĩa là mọi thứ tự động an toàn. Team vẫn cần:
+
+- Align version.
+- Contract compatibility.
+- Test shell + remote.
+- Fallback khi remote chưa tương thích.
+
+### 🧩 Multi-framework
+
+Multi-framework có thể hữu ích khi:
+
+- Legacy app đang ở Angular/Vue, shell mới ở React.
+- Team migrate từng phần.
+- Một domain có framework đặc thù.
+
+Nhưng chi phí tăng:
+
+- Bundle size lớn hơn.
+- Design consistency khó hơn.
+- Routing/state/test phức tạp hơn.
+- Hiring/onboarding khó hơn.
+
+**Cách integrate phổ biến:**
+
+- Module Federation + wrapper.
+- Web Components/custom elements.
+- Iframe nếu cần isolation rất mạnh.
+
+```tsx
+// React shell mount một Vue widget thông qua wrapper contract.
+type MountVueWidget = (el: HTMLElement, props: { userId: string }) => () => void;
+
+export function VueProfileWrapper({
+  mount,
+  userId,
+}: {
+  mount: MountVueWidget;
+  userId: string;
+}) {
+  const ref = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    if (!ref.current) return;
+    return mount(ref.current, { userId });
+  }, [mount, userId]);
+
+  return <div ref={ref} />;
+}
+```
+
+### 📡 Communication Patterns
+
+#### 1. Props/Callbacks
+
+Dùng khi shell render remote như child component.
+
+```tsx
+<CheckoutPage
+  user={user}
+  locale="vi-VN"
+  onCheckoutSuccess={(orderId) => navigate(`/orders/${orderId}`)}
+/>
+```
+
+✅ Dễ hiểu, type-safe.
+
+⚠️ Coupling cao, remote phụ thuộc shell contract.
+
+#### 2. Custom Events / Event Bus
+
+Dùng khi apps không muốn import trực tiếp nhau.
 
 ```typescript
-// ===================================================
-// 📡 EVENT BUS - libs/shared-communication/EventBus.ts
-// ===================================================
+type AppEvent =
+  | { type: "cart:item-added"; payload: { sku: string; quantity: number } }
+  | { type: "auth:logout"; payload: { reason: "manual" | "expired" } };
 
-// 🎯 Simple EventEmitter pattern (Mẫu EventEmitter đơn giản)
-// 💡 Giống như radio: có người phát sóng (emit), có người nghe (on)
-class EventBus {
-  // 📦 Lưu trữ các event và danh sách callbacks (hàm xử lý)
-  // 🔑 Key: tên event (VD: 'user-login')
-  // 📋 Value: mảng các hàm callback sẽ được gọi khi event xảy ra
-  private events: Map<string, Array<(...args: any[]) => void>> = new Map();
-
-  // 👂 Đăng ký lắng nghe event (Subscribe)
-  // 📝 Khi có event 'user-login' → gọi hàm callback
-  on(event: string, callback: (...args: any[]) => void): void {
-    // Nếu chưa có event này → tạo mảng mới
-    if (!this.events.has(event)) {
-      this.events.set(event, []);
-    }
-    // Thêm callback vào danh sách listeners
-    this.events.get(event)!.push(callback);
-  }
-
-  // 🚫 Hủy lắng nghe event (Unsubscribe)
-  // 💡 Quan trọng: Phải unsubscribe để tránh memory leak!
-  off(event: string, callback: (...args: any[]) => void): void {
-    const callbacks = this.events.get(event);
-    if (callbacks) {
-      // Tìm và xóa callback khỏi danh sách
-      const index = callbacks.indexOf(callback);
-      if (index > -1) callbacks.splice(index, 1);
-    }
-  }
-
-  // 📢 Phát event (Emit/Publish)
-  // 🎯 Gọi TẤT CẢ callbacks đã đăng ký cho event này
-  emit(event: string, ...args: any[]): void {
-    const callbacks = this.events.get(event);
-    if (callbacks) {
-      // Duyệt qua tất cả callbacks và gọi chúng
-      callbacks.forEach((callback) => callback(...args));
-    }
-  }
+export function publish(event: AppEvent) {
+  window.dispatchEvent(new CustomEvent(event.type, { detail: event.payload }));
 }
 
-// Singleton instance - dùng chung toàn bộ apps
-export const eventBus = new EventBus();
-
-// ===================================================
-// 🏠 SHELL APP - Listen to events
-// ===================================================
-
-import { eventBus } from '@myorg/shared-communication';
-import { useEffect } from 'react';
-
-function Shell() {
-  useEffect(() => {
-    // 👂 Lắng nghe event "user-login" từ bất kỳ app nào
-    // 💡 Khi có app nào emit 'user-login' → hàm này sẽ được gọi
-    const handleLogin = (user: { name: string; email: string }) => {
-      console.log('User logged in:', user);
-      // 🔄 Update shell state, show notification, etc.
-      // 💡 Có thể cập nhật UI, hiển thị thông báo, redirect...
-    };
-
-    // 📝 Đăng ký listener (đăng ký lắng nghe)
-    eventBus.on('user-login', handleLogin);
-
-    // 🧹 Cleanup khi component unmount (quan trọng!)
-    // ⚠️ Nếu không cleanup → memory leak (rò rỉ bộ nhớ)
-    return () => eventBus.off('user-login', handleLogin);
-  }, []);
-
-  return <div>Shell App</div>;
-}
-
-// ===================================================
-// 📊 DASHBOARD APP - Emit events
-// ===================================================
-
-import { eventBus } from '@myorg/shared-communication';
-
-function LoginButton() {
-  const handleLogin = async () => {
-    // 🔐 Gọi API đăng nhập
-    const user = await loginAPI();
-
-    // 📢 Phát event "user-login" cho tất cả apps đang lắng nghe
-    // 🎯 Tất cả components đã đăng ký 'user-login' sẽ nhận được user data
-    // 💡 Giống như phát sóng radio: ai đang nghe đài sẽ nhận được tin
-    eventBus.emit('user-login', user);
+export function subscribe<T>(
+  type: AppEvent["type"],
+  handler: (payload: T) => void
+) {
+  const listener = (event: Event) => {
+    handler((event as CustomEvent<T>).detail);
   };
 
-  return <button onClick={handleLogin}>Login</button>;
+  window.addEventListener(type, listener);
+  return () => window.removeEventListener(type, listener);
 }
 ```
 
-**✅ Ưu điểm Event Bus (Event Bus Advantages):**
+✅ Loose coupling, hợp với notification/auth/cart events.
 
-- ✅ Decoupled (Tách rời - apps không cần biết nhau - apps don't need to know each other)
-- ✅ Dễ implement (Easy to implement)
-- ✅ Multi-framework compatible (Tương thích đa framework)
+⚠️ Dễ thành "event spaghetti" nếu không có schema/version/logging.
 
-**❌ Nhược điểm (Disadvantages):**
+#### 3. Shared State
 
-- ❌ Khó debug (Hard to debug - không biết ai emit, ai listen - don't know who emits, who listens)
-- ❌ No type safety (Không an toàn kiểu - TypeScript không check được - TypeScript can't check)
-- ❌ Memory leaks nếu quên `off()` (Memory leaks if forget `off()`)
-
-#### **🔥 Pattern 2: Shared State (Redux/Zustand)**
+Dùng cho state global thật sự như auth session, theme, cart summary.
 
 ```typescript
-// ===================================================
-// 🗃️ SHARED STATE - libs/shared-state/store.ts
-// ===================================================
+import { create } from "zustand";
 
-import { create } from 'zustand';
+type SessionState = {
+  userId: string | null;
+  setUserId: (userId: string | null) => void;
+};
 
-// 🗃️ Zustand store - đơn giản hơn Redux
-// 💡 Store = kho lưu trữ state toàn cục (global state)
-interface AppState {
-  // 📦 State (Dữ liệu)
-  user: { name: string; email: string } | null; // 👤 Thông tin user
-  theme: 'light' | 'dark'; // 🎨 Theme (sáng/tối)
-
-  // ⚡ Actions (Hành động để thay đổi state)
-  setUser: (user: AppState['user']) => void; // 🔄 Cập nhật user
-  setTheme: (theme: AppState['theme']) => void; // 🔄 Đổi theme
-}
-
-// 🏪 Tạo store với Zustand
-// 💡 set() là hàm để cập nhật state
-export const useAppStore = create<AppState>((set) => ({
-  // 📊 Initial state (State ban đầu)
-  user: null, // Chưa có user
-  theme: 'light', // Theme mặc định là sáng
-
-  // 🔧 Actions (Các hàm để thay đổi state)
-  setUser: (user) => set({ user }), // Cập nhật user → tất cả components subscribe sẽ re-render
-  setTheme: (theme) => set({ theme }), // Đổi theme → tất cả components subscribe sẽ re-render
+export const useSessionStore = create<SessionState>((set) => ({
+  userId: null,
+  setUserId: (userId) => set({ userId }),
 }));
-
-// ===================================================
-// 🏠 SHELL APP - Read/Write shared state
-// ===================================================
-
-import { useAppStore } from '@myorg/shared-state';
-
-function Header() {
-  // 👂 Subscribe (Đăng ký lắng nghe) state.user
-  // 💡 Chỉ re-render khi user thay đổi (auto-optimization)
-  const user = useAppStore((state) => state.user);
-
-  // 🔧 Lấy hàm setUser để cập nhật state
-  const setUser = useAppStore((state) => state.setUser);
-
-  const handleLogin = async () => {
-    // 🔐 Gọi API đăng nhập
-    const user = await loginAPI();
-
-    // 🔄 Cập nhật state → TẤT CẢ components subscribe user sẽ tự động re-render!
-    // ⚡ Zustand tự động optimize: chỉ re-render components cần thiết
-    setUser(user);
-  };
-
-  return (
-    <header>
-      {user ? `Hello ${user.name}` : 'Not logged in'}
-      <button onClick={handleLogin}>Login</button>
-    </header>
-  );
-}
-
-// ===================================================
-// 📊 DASHBOARD APP - Read shared state
-// ===================================================
-
-import { useAppStore } from '@myorg/shared-state';
-
-function DashboardPage() {
-  // 👂 Subscribe state.user từ shared store
-  // ⚡ Tự động update khi user thay đổi (từ Header hoặc app khác)
-  // 💡 Không cần prop drilling, không cần event bus!
-  const user = useAppStore((state) => state.user);
-
-  // 🚫 Nếu chưa login → hiển thị thông báo
-  if (!user) return <div>Please login</div>;
-
-  // ✅ Đã login → hiển thị thông tin
-  return <div>Welcome {user.name}!</div>;
-}
 ```
 
-**✅ Ưu điểm Shared State (Shared State Advantages):**
+✅ Dễ sync UI cross-MFE.
 
-- ✅ Type safe (An toàn kiểu - TypeScript)
-- ✅ Predictable (Dự đoán được - 1 source of truth - 1 nguồn sự thật)
-- ✅ Dễ debug (Easy to debug - DevTools)
+⚠️ Coupling cao, versioning khó, nhiều remote cùng mutate dễ bug.
 
-**❌ Nhược điểm (Disadvantages):**
+#### 4. Backend/API as source of truth
 
-- ❌ Tightly coupled (Liên kết chặt chẽ - apps phụ thuộc vào shared state - apps depend on shared state)
-- ❌ Phức tạp hơn Event Bus (More complex than Event Bus)
+Với data business lớn, đừng cố sync hết qua frontend event bus. Để backend/API là source of truth, frontend chỉ invalidate/refetch.
 
-#### **🔥 Pattern 3: Props/Callbacks (Parent → Child) (Mẫu 3: Props/Callbacks - Cha → Con)**
+### 🧭 Routing Strategies
 
-```typescript
-// ===================================================
-// 🏠 SHELL APP - Pass props to remote apps
-// (Ứng dụng Shell - Truyền props cho remote apps)
-// ===================================================
+#### Shell-based routing
 
-function App() {
-  const [user, setUser] = useState(null);
+Shell biết route top-level và load remote theo route.
 
-  return (
-    <div>
-      {/* Pass props xuống Dashboard remote */}
-      {/* (Pass props down to Dashboard remote) */}
-      <DashboardPage
-        user={user} // ⚠️ Data flow: Shell → Dashboard (Luồng dữ liệu: Shell → Dashboard)
-        onLogout={() => setUser(null)} // ⚠️ Callback: Dashboard → Shell (Callback: Dashboard → Shell)
-      />
-    </div>
-  );
-}
+```tsx
+<Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/catalog/*" element={<CatalogRemote />} />
+  <Route path="/checkout/*" element={<CheckoutRemote />} />
+</Routes>
 ```
 
-**🎯 Khi Nào Dùng Pattern Nào? (When to Use Which Pattern?)**
+✅ Centralized, dễ analytics/auth guard/layout.
 
-| Pattern (Mẫu)       | Use Case (Trường hợp sử dụng)                                          | Coupling (Liên kết)    |
-| ------------------- | ---------------------------------------------------------------------- | ---------------------- |
-| **Event Bus**       | Loosely coupled events (Sự kiện liên kết lỏng - login, logout, notify) | Loose ✅ (Lỏng)        |
-| **Shared State**    | Global state (State toàn cục - user, theme, cart)                      | Medium ⚠️ (Trung bình) |
-| **Props/Callbacks** | Parent-child communication (Giao tiếp cha-con)                         | Tight ❌ (Chặt)        |
+⚠️ Shell phải biết route contract của remote.
 
----
+#### Distributed routing
 
-**📚 Phần 5: Routing Strategies (Chiến Lược Định Tuyến)**
+Shell chỉ route prefix, remote tự quản lý route con.
 
-#### **💡 Problem: Ai Quản Lý Routes? (Vấn đề: Ai quản lý routes?)**
-
-Với Microfrontend, routing có 2 chiến lược (With Microfrontend, routing has 2 strategies):
-
-#### **🔥 Strategy 1: Shell-based Routing (Shell quản lý tất cả routes) (Chiến lược 1: Định tuyến dựa trên Shell - Shell quản lý tất cả routes)**
-
-```typescript
-// ===================================================
-// 🏠 SHELL APP - Quản lý tất cả routes
-// ===================================================
-
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
-
-// ⚡ Lazy load remote apps (Tải chậm các app từ xa)
-// 💡 Chỉ load khi cần → giảm bundle size ban đầu
-const DashboardPage = lazy(() => import('dashboard/DashboardPage'));
-const ProfilePage = lazy(() => import('profile/ProfilePage'));
-const OrdersPage = lazy(() => import('orders/OrdersPage'));
-
-function App() {
-  return (
-    <BrowserRouter>
-      <Header />
-      {/* ⏳ Suspense: Hiển thị loading khi đang tải remote app */}
-      <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
-          {/* 🏠 Shell routes (Routes của app chính) */}
-          <Route path="/" element={<HomePage />} />
-          {/* 📊 Dashboard routes - SHELL quản lý tất cả */}
-          {/* 💡 Shell quyết định URL, Dashboard chỉ render content */}
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/dashboard/stats" element={<DashboardPage />} />
-          {/* 👤 Profile routes - SHELL quản lý */}
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/profile/settings" element={<ProfilePage />} />
-          {/* 📦 Orders routes - SHELL quản lý */}
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/orders/:id" element={<OrdersPage />} /> {/* :id = dynamic route */}
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
-  );
-}
+```tsx
+<Route path="/dashboard/*" element={<DashboardRemote />} />
 ```
 
-**✅ Ưu điểm (Advantages):**
+✅ Remote tự chủ hơn.
 
-- ✅ Centralized routing (Định tuyến tập trung - 1 nơi quản lý tất cả - 1 place manages all)
-- ✅ Dễ setup, dễ hiểu (Easy setup, easy to understand)
-- ✅ Shell control navigation flow (Shell kiểm soát luồng điều hướng)
+⚠️ Deep link, navigation, 404, breadcrumb, permission khó đồng bộ hơn.
 
-**❌ Nhược điểm (Disadvantages):**
+### 🎨 Styling Isolation
 
-- ❌ Remote apps không autonomous (Remote apps không tự chủ - phụ thuộc shell - depend on shell)
-- ❌ Shell phải biết tất cả routes của remotes (Shell must know all routes of remotes)
+| Pattern | Nên dùng khi | Tradeoff |
+|---|---|---|
+| CSS Modules | Default cho scoped CSS | Ít runtime, dễ dùng |
+| CSS-in-JS | Dynamic styling/theme phức tạp | Runtime/cache/SSR cần quản lý |
+| Prefix/namespace | Legacy CSS hoặc đơn giản | Discipline cao, dễ leak nếu quên |
+| Shadow DOM | Web Components, isolation mạnh | Theming, portal, global style khó hơn |
 
-#### **🔥 Strategy 2: Distributed Routing (Mỗi app tự quản lý routes) (Chiến lược 2: Định tuyến phân tán - Mỗi app tự quản lý routes)**
+💡 Dù dùng pattern nào, design system/shared tokens vẫn rất quan trọng để UX không bị mỗi MFE một kiểu.
 
-```typescript
-// ===================================================
-// 🏠 SHELL APP - Chỉ route top-level
-// (Ứng dụng Shell - Chỉ route cấp trên)
-// ===================================================
+### 📚 Monorepo
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+Monorepo là 1 repo chứa nhiều apps/packages:
 
-function App() {
+```text
+repo/
+├── apps/
+│   ├── shell/
+│   ├── catalog/
+│   ├── checkout/
+│   └── profile/
+├── libs/
+│   ├── shared-ui/
+│   ├── shared-auth/
+│   ├── shared-types/
+│   └── shared-communication/
+├── package.json
+├── pnpm-workspace.yaml
+├── nx.json hoặc turbo.json
+└── tsconfig.base.json
+```
+
+### 🛠️ Nx vs Turborepo vs Lerna vs pnpm Workspaces
+
+| Tool | Điểm mạnh | Nên dùng khi |
+|---|---|---|
+| Nx | Dependency graph, generators, affected builds, cache, MF support tốt | Enterprise, Angular/React lớn, cần governance |
+| Turborepo | Task runner nhanh, cache đơn giản, framework-agnostic | React/Vue/Next monorepo cần build nhanh |
+| pnpm Workspaces | Package linking, disk efficient | Nền tảng package manager cho monorepo |
+| Lerna | Publishing packages legacy | Dự án cũ; thường thay bằng pnpm/Turbo/Changesets |
+
+💡 Stack phổ biến:
+
+- Enterprise Angular/React lớn: `Nx`.
+- React/Next/Vite nhiều app: `pnpm + Turborepo`.
+- Package publishing: `pnpm + Changesets`.
+
+## 🧱 Detailed Architecture Patterns
+
+### 🔥 Monolith pain points mà Microfrontend giải quyết
+
+**Deployment bottleneck:**
+
+- Một team sửa bug nhỏ nhưng phải build/test/deploy cả app.
+- QA phải regression nhiều domain không liên quan.
+- Rollback một feature có thể rollback luôn toàn bộ release.
+- Release train chậm làm team phụ thuộc nhau.
+
+**Team conflict:**
+
+- Nhiều team sửa chung `package.json`, `webpack.config`, `tsconfig`.
+- Team A muốn React 18, Team B còn legacy React 17.
+- Team C muốn migrate Redux sang Zustand, Team D vẫn cần Redux middleware.
+- Code ownership mờ: không rõ ai chịu trách nhiệm domain nào.
+
+**Scale codebase:**
+
+- App lớn build chậm, test chậm, local dev nặng.
+- Shared folder thành nơi chứa mọi thứ.
+- Component/domain coupling tăng dần, khó refactor.
+
+**Microfrontend giúp bằng cách:**
+
+- Tách ownership theo domain.
+- Cho phép deploy remote độc lập.
+- Giảm conflict vì mỗi team có app/package riêng.
+- Cho phép migrate legacy từng phần.
+- Cho phép canary/A-B testing theo domain.
+
+⚠️ Nhưng MFE không tự động làm code tốt hơn. Nếu boundary sai, nó chỉ biến monolith thành distributed monolith khó debug hơn.
+
+### 🏠 Shell App responsibilities
+
+Shell không nên chứa business logic của mọi domain. Shell nên chịu trách nhiệm các concern ngang:
+
+- App layout: header, sidebar, top-level layout.
+- Top-level routing.
+- Auth/session bootstrap.
+- Locale/timezone/theme.
+- Remote loading/fallback.
+- Error boundary cho từng remote.
+- Observability metadata.
+- Feature flag/canary quyết định remote version.
+- Shared design system provider nếu cần.
+
+```tsx
+export function ShellApp() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Shell chỉ route /dashboard/*, còn lại để Dashboard tự handle */}
-        {/* (Shell only routes /dashboard/*, rest let Dashboard handle) */}
-        <Route path="/dashboard/*" element={<DashboardApp />} />
-
-        {/* Profile tự handle /profile/* */}
-        {/* (Profile handles /profile/* itself) */}
-        <Route path="/profile/*" element={<ProfileApp />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-// ===================================================
-// 📊 DASHBOARD APP - Tự quản lý routes con
-// (Ứng dụng Dashboard - Tự quản lý routes con)
-// ===================================================
-
-import { Routes, Route } from 'react-router-dom';
-
-function DashboardApp() {
-  return (
-    <Routes>
-      {/* /dashboard → /dashboard (trang chính) */}
-      {/* (/dashboard → /dashboard - main page) */}
-      <Route path="/" element={<DashboardHome />} />
-
-      {/* /dashboard/stats */}
-      <Route path="/stats" element={<StatsPage />} />
-
-      {/* /dashboard/reports */}
-      <Route path="/reports" element={<ReportsPage />} />
-    </Routes>
+    <SessionProvider>
+      <ThemeProvider>
+        <AppLayout>
+          <RemoteErrorBoundary fallback={<RemoteUnavailable name="catalog" />}>
+            <React.Suspense fallback={<RouteSkeleton />}>
+              <AppRoutes />
+            </React.Suspense>
+          </RemoteErrorBoundary>
+        </AppLayout>
+      </ThemeProvider>
+    </SessionProvider>
   );
 }
 ```
 
-**✅ Ưu điểm (Advantages):**
+### 📦 Remote App responsibilities
 
-- ✅ Autonomous apps (Ứng dụng tự chủ - mỗi app tự quản lý routes - each app manages own routes)
-- ✅ Shell không cần biết routes của remotes (Shell doesn't need to know routes of remotes)
+Remote nên sở hữu domain của nó:
 
-**❌ Nhược điểm (Disadvantages):**
+- Route/page/component trong domain.
+- Data fetching liên quan domain.
+- UI state local.
+- Domain-specific validation.
+- Error state và empty state.
+- Tests riêng.
+- Release notes/version riêng.
 
-- ❌ Phức tạp hơn (More complex)
-- ❌ Có thể conflict routes giữa apps (Can conflict routes between apps)
+Remote không nên:
 
----
+- Tự thay đổi shell layout global nếu không có contract.
+- Đọc/ghi global state tùy tiện.
+- Import code từ remote khác trực tiếp.
+- Phụ thuộc implementation detail của shell.
 
-**📚 Phần 6: Styling Isolation (Cô Lập CSS)**
+### 🔌 Module Federation deep dive
 
-#### **💡 Problem: CSS Conflicts Giữa Các Apps (Vấn đề: Xung đột CSS giữa các ứng dụng)**
+#### `exposes`
 
-```css
-/* Dashboard App - styles.css */
-.header {
-  background: red;
-} /* ❌ Class name chung (Common class name) */
+Remote expose public API của nó. Hãy expose ít nhưng ổn định.
 
-/* Profile App - styles.css */
-.header {
-  background: blue;
-} /* ❌ Conflict! (Xung đột!) */
-
-/* Kết quả: Header màu gì? Tùy thuộc CSS nào load sau! */
-/* (Result: What color is Header? Depends on which CSS loads last!) */
+```js
+exposes: {
+  "./CatalogPage": "./src/pages/CatalogPage",
+  "./ProductCard": "./src/components/ProductCard",
+  "./routes": "./src/routes",
+}
 ```
 
-#### **🔥 Solution 1: CSS Modules**
+✅ Nên expose:
 
-```typescript
-// ===================================================
-// 📊 DASHBOARD APP - DashboardHeader.module.css
-// ===================================================
+- Page-level entry.
+- Stable widgets.
+- Route config nếu shell cần.
+- Public mount function cho multi-framework.
 
-/* File: DashboardHeader.module.css */
-.header {
-  background: red;
-  padding: 20px;
+❌ Tránh expose:
+
+- Internal hooks chưa ổn định.
+- Deep component private.
+- Utility nhỏ nên đưa vào shared package.
+
+#### `remotes`
+
+Shell map remote name với URL.
+
+```js
+remotes: {
+  catalog: "catalog@https://cdn.example.com/catalog/remoteEntry.js",
+  checkout: "checkout@https://cdn.example.com/checkout/remoteEntry.js",
 }
-
-.title {
-  font-size: 24px;
-}
-
-// ===================================================
-// 📊 DASHBOARD APP - DashboardHeader.tsx
-// ===================================================
-
-// 📦 Import CSS Module (CSS được scope tự động)
-// 💡 Build tool sẽ tự động thêm hash vào class name để tránh conflict
-import styles from './DashboardHeader.module.css';
-
-function DashboardHeader() {
-  return (
-    // ✅ className được tự động chuyển thành unique name
-    // 🎯 "header" → "DashboardHeader_header__abc123" (có hash)
-    // 💡 Không thể conflict với app khác vì tên class khác nhau
-    <header className={styles.header}>
-      <h1 className={styles.title}>Dashboard</h1>
-    </header>
-  );
-}
-
-// 📄 Output HTML (Kết quả sau khi build):
-// <header class="DashboardHeader_header__abc123">  ← Unique class name
-//   <h1 class="DashboardHeader_title__def456">Dashboard</h1>  ← Unique class name
-// </header>
-// 💡 Mỗi app có class name khác nhau → KHÔNG conflict!
 ```
 
-**✅ Ưu điểm CSS Modules (CSS Modules Advantages):**
-
-- ✅ Scoped styles (Styles có phạm vi - không conflict - no conflict)
-- ✅ Build-time transformation (Chuyển đổi lúc build)
-
-**❌ Nhược điểm (Disadvantages):**
-
-- ❌ Không dùng được global styles dễ dàng (Can't use global styles easily)
-
-#### **🔥 Solution 2: CSS-in-JS (Styled Components, Emotion)**
-
-```typescript
-// ===================================================
-// 📊 DASHBOARD APP - Styled Components
-// ===================================================
-
-import styled from 'styled-components';
-
-// 🎨 CSS-in-JS: Viết CSS trong JavaScript
-// ✅ Styles được scope tự động, tự động tạo unique class names
-// 💡 styled-components tự động thêm hash vào class name
-const Header = styled.header`
-  background: red;
-  padding: 20px;
-
-  /* 🎯 Nested selectors (Chọn phần tử con) */
-  h1 {
-    font-size: 24px;
-  }
-`;
-
-function DashboardHeader() {
-  return (
-    // 💻 Sử dụng như component bình thường
-    <Header>
-      <h1>Dashboard</h1>
-    </Header>
-  );
-}
-
-// 📄 Output HTML (Kết quả sau khi render):
-// <header class="sc-bdnxRM jZQkXY">  ← Unique class name (tự động generate)
-//   <h1>Dashboard</h1>
-// </header>
-// 💡 styled-components tự động inject CSS vào <style> tag
-// ✅ Không conflict với app khác vì class name unique
-```
-
-**✅ Ưu điểm CSS-in-JS (CSS-in-JS Advantages):**
-
-- ✅ Scoped styles (Styles có phạm vi)
-- ✅ Dynamic styles (Styles động - props-based - dựa trên props)
-- ✅ No CSS files (Không cần file CSS)
-
-**❌ Nhược điểm (Disadvantages):**
-
-- ❌ Runtime overhead (Chi phí thời gian chạy)
-- ❌ Larger bundle size (Kích thước bundle lớn hơn)
-
-#### **🔥 Solution 3: Shadow DOM**
-
-```typescript
-// ===================================================
-// 📊 DASHBOARD APP - Shadow DOM (Web Components)
-// ===================================================
-
-// 🧩 Web Component với Shadow DOM
-// 💡 Shadow DOM = DOM riêng biệt, hoàn toàn cô lập với DOM chính
-class DashboardHeader extends HTMLElement {
-  connectedCallback() {
-    // 🎯 Tạo Shadow DOM - HOÀN TOÀN CÔ LẬP!
-    // 💡 mode: 'open' = có thể truy cập từ bên ngoài (để debug)
-    // 💡 mode: 'closed' = không thể truy cập (bảo mật hơn)
-    const shadow = this.attachShadow({ mode: 'open' });
-
-    // 📝 Tạo HTML và CSS bên trong Shadow DOM
-    shadow.innerHTML = `
-      <style>
-        /* ✅ CSS này CHỈ apply trong Shadow DOM, KHÔNG leak ra ngoài */
-        /* 🎯 Có thể dùng class name bất kỳ, không sợ conflict */
-        .header {
-          background: red;
-          padding: 20px;
-        }
-      </style>
-
-      <header class="header">
-        <h1>Dashboard</h1>
-      </header>
-    `;
-  }
-}
-
-// 📝 Đăng ký custom element (Web Component)
-customElements.define('dashboard-header', DashboardHeader);
-
-// 💻 Usage (Cách sử dụng):
-// <dashboard-header></dashboard-header>
-// ✅ Có thể dùng trong React, Vue, Angular, hoặc HTML thuần
-// ✅ CSS hoàn toàn cô lập, không ảnh hưởng app khác
-```
-
-**✅ Ưu điểm Shadow DOM (Shadow DOM Advantages):**
-
-- ✅ TRUE isolation (Cô lập thực sự - 100% không conflict - 100% no conflict)
-- ✅ Native browser API (API trình duyệt gốc)
-
-**❌ Nhược điểm (Disadvantages):**
-
-- ❌ Khó style từ bên ngoài (Hard to style from outside)
-- ❌ Không dùng được với React/Vue components (Can't use with React/Vue components)
-
-#### **🔥 Solution 4: Prefix/Namespace**
-
-```css
-/* ===================================================
-   📊 DASHBOARD APP - Prefix tất cả classes
-   =================================================== */
-
-/* dashboard-styles.css */
-.dashboard-header {
-  background: red;
-} /* ✅ Prefix "dashboard-" */
-.dashboard-title {
-  font-size: 24px;
-}
-
-/* ===================================================
-   👤 PROFILE APP - Prefix khác
-   =================================================== */
-
-/* profile-styles.css */
-.profile-header {
-  background: blue;
-} /* ✅ Prefix "profile-" */
-.profile-title {
-  font-size: 20px;
-}
-
-/* ✅ Không conflict vì tên classes khác nhau */
-```
-
-**🎯 Styling Strategy Comparison (So Sánh Chiến Lược Styling):**
-
-| Strategy (Chiến lược) | Isolation (Cô lập) | Performance (Hiệu năng) | DX (Developer Experience - Trải nghiệm nhà phát triển) | Use Case (Trường hợp sử dụng)      |
-| --------------------- | ------------------ | ----------------------- | ------------------------------------------------------ | ---------------------------------- |
-| **CSS Modules**       | ⭐⭐⭐⭐           | ⭐⭐⭐⭐⭐              | ⭐⭐⭐⭐                                               | Default choice (Lựa chọn mặc định) |
-| **CSS-in-JS**         | ⭐⭐⭐⭐⭐         | ⭐⭐⭐                  | ⭐⭐⭐⭐⭐                                             | Dynamic styles (Styles động)       |
-| **Shadow DOM**        | ⭐⭐⭐⭐⭐         | ⭐⭐⭐⭐⭐              | ⭐⭐⭐                                                 | Web Components (Thành phần web)    |
-| **Prefix/Namespace**  | ⭐⭐⭐             | ⭐⭐⭐⭐⭐              | ⭐⭐                                                   | Simple projects (Dự án đơn giản)   |
-
----
-
-**📚 Phần 7: Nx Monorepo Setup (Thực Hành)**
-
-```bash
-# ===================================================
-# 🚀 Tạo Nx Monorepo với Microfrontend
-# ===================================================
-
-# 1️⃣ Tạo workspace
-npx create-nx-workspace@latest myorg --preset=react-monorepo
-
-# 2️⃣ Tạo Shell app (Host)
-nx g @nx/react:app shell
-
-# 3️⃣ Tạo Remote apps
-nx g @nx/react:app dashboard
-nx g @nx/react:app profile
-
-# 4️⃣ Tạo Shared library
-nx g @nx/react:lib shared-ui
-nx g @nx/js:lib shared-communication
-
-# 5️⃣ Configure Module Federation
-nx g @nx/react:setup-mf shell --mfType=host
-nx g @nx/react:setup-mf dashboard --mfType=remote --host=shell
-nx g @nx/react:setup-mf profile --mfType=remote --host=shell
-
-# 6️⃣ Serve tất cả apps
-nx serve shell  # http://localhost:4200 (auto serve remotes)
-
-# 📊 Kết quả cấu trúc:
-# myorg/
-# ├── apps/
-# │   ├── shell/              ← Host app (React)
-# │   ├── dashboard/          ← Remote app (React)
-# │   └── profile/            ← Remote app (React)
-# ├── libs/
-# │   ├── shared-ui/          ← Shared components
-# │   └── shared-communication/ ← Event Bus, Shared State
-# └── nx.json
-```
-
----
-
-**✅ Best Practices (Thực Hành Tốt Nhất)**
-
-#### **🔥 1. Dependency Management (Quản Lý Phụ Thuộc)**
+Production thường không hardcode trực tiếp trong code. Dùng manifest để đổi version/canary/rollback:
 
 ```json
-// ❌ SAI: Mỗi app có version React khác nhau
-// (WRONG: Each app has different React version)
 {
-  "shell": { "react": "18.0.0" },
-  "dashboard": { "react": "17.0.0" },  // ❌ Conflict! (Xung đột!)
-  "profile": { "react": "18.2.0" }      // ❌ Duplicate bundles! (Bundle trùng lặp!)
-}
-
-// ✅ ĐÚNG: Shared dependencies ở root
-// (CORRECT: Shared dependencies at root)
-// package.json (root)
-{
-  "dependencies": {
-    "react": "18.2.0",        // ✅ Tất cả apps dùng chung version (All apps use same version)
-    "react-dom": "18.2.0"
+  "catalog": {
+    "version": "1.12.3",
+    "remoteEntry": "https://cdn.example.com/catalog/1.12.3/remoteEntry.js"
+  },
+  "checkout": {
+    "version": "2.4.0",
+    "remoteEntry": "https://cdn.example.com/checkout/2.4.0/remoteEntry.js"
   }
 }
 ```
 
-#### **🔥 2. Versioning Strategy (Chiến Lược Phiên Bản)**
+#### `shared`
 
-```bash
-# Semantic Versioning cho remote apps
-# (Semantic Versioning for remote apps)
-dashboard@1.2.3
-          │ │ └─ PATCH: Bug fixes (backward compatible - tương thích ngược)
-          │ └─── MINOR: New features (backward compatible - tương thích ngược)
-          └───── MAJOR: Breaking changes (NOT backward compatible - không tương thích ngược)
+Shared dependency là nơi hay gây bug nhất.
 
-# Shell compatibility matrix
-# (Ma trận tương thích Shell)
-shell@2.0.0 → dashboard@^1.0.0 (✅ Compatible với 1.x.x - Tương thích với 1.x.x)
-            → profile@^2.0.0
+```js
+shared: {
+  react: {
+    singleton: true,
+    requiredVersion: "^18.2.0",
+  },
+  "react-dom": {
+    singleton: true,
+    requiredVersion: "^18.2.0",
+  },
+  "@company/design-system": {
+    singleton: true,
+    requiredVersion: "^3.0.0",
+  },
+}
 ```
 
-#### **🔥 3. Error Boundaries**
+**`singleton: true`:**
+
+- Đảm bảo runtime dùng một instance cho lib quan trọng.
+- Cần cho React, ReactDOM, design system provider, shared store nếu thật sự dùng.
+
+**`requiredVersion`:**
+
+- Giúp kiểm soát compatibility.
+- Nếu range quá rộng, dễ nhận version không test.
+- Nếu quá hẹp, deploy remote có thể fail khi shell chưa upgrade.
+
+**`eager`:**
+
+- Load dependency ngay thay vì lazy.
+- Dùng cẩn thận vì có thể tăng initial bundle.
+- Không nên bật theo thói quen.
+
+### 🔄 Remote loading lifecycle
+
+```text
+1. User vào /catalog
+2. Shell match route /catalog/*
+3. Shell đọc manifest để biết remoteEntry URL
+4. Browser tải remoteEntry.js
+5. Module Federation resolve shared dependencies
+6. Shell lazy import CatalogPage
+7. React Suspense render fallback trong lúc tải
+8. Remote render page
+9. Error Boundary bắt lỗi nếu remote crash
+10. Observability log mfeName + mfeVersion
+```
+
+Senior cần biết flow này để debug:
+
+- Remote không tải được: kiểm tra CDN, CORS, manifest, cache.
+- React hook error: có thể duplicate React.
+- UI trắng: thiếu Error Boundary/fallback.
+- Remote cũ chạy với shell mới: version contract mismatch.
+
+### 🧩 Module Federation vs iframe vs package composition
+
+| Pattern | Ưu điểm | Nhược điểm | Nên dùng |
+|---|---|---|---|
+| Module Federation | Runtime composition, share deps, UX liền mạch | Coupling runtime, config phức tạp | Same trust boundary, cần independent deploy |
+| iframe | Isolation mạnh, CSS/JS tách biệt | UX kém hơn, communication khó, routing phức tạp | Third-party, payment, legacy rất tách biệt |
+| Package composition | Đơn giản, type-safe, build-time | Không deploy độc lập | Team chưa cần runtime MFE |
+| Web Components | Framework-agnostic, Shadow DOM | Tooling/theming/SSR khó hơn | Widget đa framework, embedded component |
+
+## 🧩 Multi-Framework Integration Details
+
+### ⚛️ React shell + Vue remote
+
+Không nên giả định React import trực tiếp Vue component như React component thường. Nên có mount contract rõ:
 
 ```typescript
-// ===================================================
-// 🏠 SHELL APP - Error Boundary cho remote apps
-// (Ứng dụng Shell - Error Boundary cho remote apps)
-// ===================================================
+// profile/public-api.ts
+export type ProfileMountProps = {
+  userId: string;
+  locale: string;
+};
 
-import { Component, ErrorInfo, ReactNode } from 'react';
+export function mountProfile(
+  element: HTMLElement,
+  props: ProfileMountProps
+): () => void {
+  const app = createVueProfileApp(props);
+  app.mount(element);
 
-class RemoteErrorBoundary extends Component<
-  { children: ReactNode },
-  { hasError: boolean }
+  return () => app.unmount();
+}
+```
+
+```tsx
+// shell/ProfileRemote.tsx
+export function ProfileRemote({
+  mountProfile,
+  userId,
+}: {
+  mountProfile: (
+    element: HTMLElement,
+    props: { userId: string; locale: string }
+  ) => () => void;
+  userId: string;
+}) {
+  const ref = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    if (!ref.current) return;
+
+    return mountProfile(ref.current, {
+      userId,
+      locale: "vi-VN",
+    });
+  }, [mountProfile, userId]);
+
+  return <div ref={ref} />;
+}
+```
+
+### 🧱 Web Components approach
+
+Web Components giúp framework-agnostic hơn:
+
+```typescript
+class ProfileWidget extends HTMLElement {
+  connectedCallback() {
+    const userId = this.getAttribute("user-id");
+    this.innerHTML = `<profile-root data-user-id="${userId}"></profile-root>`;
+  }
+}
+
+customElements.define("profile-widget", ProfileWidget);
+```
+
+React dùng:
+
+```tsx
+export function ProfileSlot({ userId }: { userId: string }) {
+  return <profile-widget user-id={userId} />;
+}
+```
+
+⚠️ Tradeoff:
+
+- TypeScript JSX cần khai báo custom element.
+- Styling/theming qua Shadow DOM cần design token strategy.
+- Event emit phải chuẩn hóa.
+
+### 🧱 Multi-framework governance
+
+Nếu cho phép nhiều framework, cần policy:
+
+- Framework nào được support chính thức?
+- Ai maintain tooling/build/test?
+- Design system có wrapper cho từng framework không?
+- Bundle budget cho mỗi remote là bao nhiêu?
+- Migration plan khi một framework bị bỏ support?
+
+Không có governance, multi-framework dễ biến thành "mỗi team một kiểu", UX và maintenance rất tệ.
+
+## 📡 Communication Pattern Deep Dive
+
+### 1. Props/Callbacks
+
+Phù hợp khi:
+
+- Shell là parent rõ ràng.
+- Remote cần data nhỏ từ shell.
+- Callback ít, contract ổn định.
+
+```tsx
+<CartRemote
+  userId={session.userId}
+  currency="VND"
+  onCartChanged={(summary) => {
+    setCartSummary(summary);
+  }}
+/>
+```
+
+Không phù hợp khi:
+
+- Nhiều remote cần listen cùng event.
+- Remote không có quan hệ parent-child.
+- Contract thay đổi thường xuyên.
+
+### 2. Custom Events
+
+Phù hợp cho event cross-domain:
+
+- `auth:expired`
+- `cart:updated`
+- `notification:show`
+- `checkout:completed`
+
+```typescript
+type CheckoutCompletedEvent = {
+  orderId: string;
+  total: number;
+};
+
+window.dispatchEvent(
+  new CustomEvent<CheckoutCompletedEvent>("checkout:completed", {
+    detail: { orderId: "ord_123", total: 450000 },
+  })
+);
+```
+
+Listener phải cleanup:
+
+```typescript
+React.useEffect(() => {
+  const listener = (event: Event) => {
+    const payload = (event as CustomEvent<CheckoutCompletedEvent>).detail;
+    console.log(payload.orderId);
+  };
+
+  window.addEventListener("checkout:completed", listener);
+  return () => window.removeEventListener("checkout:completed", listener);
+}, []);
+```
+
+### 3. Event Bus / PubSub
+
+Khi event nhiều hơn, dùng event bus có type và logging:
+
+```typescript
+type EventMap = {
+  "auth:logout": { reason: "manual" | "expired" };
+  "cart:item-added": { sku: string; quantity: number };
+  "notification:show": { message: string; level: "success" | "error" };
+};
+
+class TypedEventBus {
+  emit<K extends keyof EventMap>(type: K, payload: EventMap[K]) {
+    window.dispatchEvent(new CustomEvent(type, { detail: payload }));
+  }
+
+  on<K extends keyof EventMap>(
+    type: K,
+    handler: (payload: EventMap[K]) => void
+  ) {
+    const listener = (event: Event) => {
+      handler((event as CustomEvent<EventMap[K]>).detail);
+    };
+
+    window.addEventListener(type, listener);
+    return () => window.removeEventListener(type, listener);
+  }
+}
+```
+
+Senior rule:
+
+- Event phải có owner.
+- Payload phải có schema/version.
+- Event quan trọng phải log được.
+- Không dùng event bus thay cho API/domain model.
+
+### 4. Shared Store
+
+Shared store chỉ nên nhỏ:
+
+- Session/user summary.
+- Theme/locale.
+- Cart count/summary.
+- Notification queue.
+
+Không nên dùng shared store cho toàn bộ business state của mọi remote.
+
+```typescript
+type GlobalShellState = {
+  user: { id: string; name: string } | null;
+  theme: "light" | "dark";
+  cartCount: number;
+};
+```
+
+Nếu store chứa quá nhiều thứ, remote coupling tăng và mất lợi ích independent deployment.
+
+### 5. Backend as source of truth
+
+Với order, payment, inventory, permission, pricing:
+
+- Backend/API là source of truth.
+- Remote dùng React Query/SWR/cache riêng.
+- Cross-MFE event chỉ invalidate/refetch.
+
+```typescript
+eventBus.on("cart:item-added", () => {
+  queryClient.invalidateQueries({ queryKey: ["cart-summary"] });
+});
+```
+
+## 🧭 Routing Strategy Deep Dive
+
+### Shell-based routing
+
+Shell quản lý route map top-level:
+
+```tsx
+<Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/catalog/*" element={<CatalogRemote />} />
+  <Route path="/cart/*" element={<CartRemote />} />
+  <Route path="/checkout/*" element={<CheckoutRemote />} />
+</Routes>
+```
+
+Ưu điểm:
+
+- Dễ auth guard.
+- Dễ analytics page view.
+- Dễ layout consistency.
+- Dễ kiểm soát navigation flow.
+
+Nhược điểm:
+
+- Shell phải biết nhiều route contract.
+- Mỗi khi remote thêm route lớn, có thể phải update shell.
+
+### Distributed routing
+
+Remote tự quản lý route con:
+
+```tsx
+// Shell
+<Route path="/catalog/*" element={<CatalogRemote />} />;
+
+// Catalog remote
+<Routes>
+  <Route path="/" element={<ProductList />} />
+  <Route path="/:productId" element={<ProductDetail />} />
+  <Route path="/:productId/reviews" element={<ProductReviews />} />
+</Routes>;
+```
+
+Ưu điểm:
+
+- Remote autonomy cao.
+- Shell ít biết implementation detail.
+- Team domain tự thêm route con.
+
+Nhược điểm:
+
+- Breadcrumb/title/analytics/permission khó đồng bộ.
+- Deep link cần config deployment tốt.
+- 404 nested route phải rõ owner.
+
+### Routing contract nên có
+
+```typescript
+type RemoteRouteContract = {
+  basePath: string;
+  owner: string;
+  requiresAuth: boolean;
+  permissions?: string[];
+  title?: string;
+};
+```
+
+## 🎨 Styling Isolation Deep Dive
+
+### CSS Modules
+
+```css
+.button {
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+}
+```
+
+```tsx
+import styles from "./Button.module.css";
+
+export function Button() {
+  return <button className={styles.button}>Save</button>;
+}
+```
+
+Tốt cho:
+
+- Scoped class.
+- Ít runtime.
+- Dễ debug.
+
+### CSS-in-JS
+
+Tốt cho:
+
+- Theme runtime.
+- Dynamic styling.
+- Component library.
+
+Lưu ý:
+
+- SSR extraction.
+- Runtime overhead.
+- Style order giữa shell/remote.
+
+### Shadow DOM
+
+Tốt cho:
+
+- Web Components.
+- Isolation mạnh.
+- Embedded widget.
+
+Tradeoff:
+
+- Global theme khó truyền vào.
+- Modal/tooltip/portal có thể phức tạp.
+- Accessibility vẫn phải test kỹ.
+
+### Prefix/Namespace
+
+Legacy friendly:
+
+```css
+.catalog-mfe .product-card {
+  ...
+}
+```
+
+Lưu ý:
+
+- Dễ quên prefix.
+- Không cô lập thật sự.
+- Chỉ phù hợp khi team discipline tốt.
+
+## 📚 Monorepo Setup & Governance
+
+### Cấu trúc repo nên có
+
+```text
+repo/
+├── apps/
+│   ├── shell/
+│   ├── catalog/
+│   ├── cart/
+│   ├── checkout/
+│   └── profile/
+├── libs/
+│   ├── design-system/
+│   ├── shared-auth/
+│   ├── shared-api-client/
+│   ├── shared-communication/
+│   ├── domain-product/
+│   ├── domain-order/
+│   └── shared-test-utils/
+├── tools/
+├── package.json
+├── pnpm-workspace.yaml
+├── nx.json hoặc turbo.json
+└── tsconfig.base.json
+```
+
+### Dependency boundaries
+
+```text
+apps/*                 -> can import libs/*
+libs/design-system     -> cannot import apps/*
+libs/domain-product    -> cannot import apps/catalog
+libs/shared-auth       -> should not import domain-specific libs
+libs/shared-utils      -> should stay framework-light
+```
+
+Nếu dùng Nx:
+
+```json
+{
+  "depConstraints": [
+    {
+      "sourceTag": "type:app",
+      "onlyDependOnLibsWithTags": ["type:ui", "type:domain", "type:shared"]
+    },
+    {
+      "sourceTag": "type:shared",
+      "onlyDependOnLibsWithTags": ["type:shared"]
+    }
+  ]
+}
+```
+
+### Affected builds
+
+Monorepo hiệu quả khi chỉ build/test phần bị ảnh hưởng:
+
+```text
+Change libs/design-system/Button
+-> affected: shell, catalog, checkout, profile
+
+Change apps/catalog/ProductList
+-> affected: catalog only
+
+Change libs/domain-order
+-> affected: checkout, order-history
+```
+
+CI nên chạy:
+
+- Lint affected projects.
+- Test affected projects.
+- Build affected apps/libs.
+- E2E critical flows nếu shared lib quan trọng đổi.
+
+## 🛠️ Monorepo Tooling Deep Dive
+
+### Nx
+
+Nx mạnh ở governance và dependency graph:
+
+- Project graph.
+- Affected commands.
+- Local/remote cache.
+- Generators.
+- Module boundaries.
+- Integrated plugins.
+- Module Federation support tốt, đặc biệt Angular/React enterprise.
+
+```bash
+nx graph
+nx affected -t lint test build
+nx g @nx/react:app shell
+nx g @nx/react:lib design-system
+```
+
+Nên dùng Nx khi:
+
+- Repo lớn, nhiều team.
+- Cần enforce architecture.
+- Muốn code generation chuẩn hóa.
+- Cần affected build/test nghiêm túc.
+
+Tradeoff:
+
+- Config nhiều hơn.
+- Tooling opinionated hơn.
+- Onboarding cần thời gian.
+
+### Turborepo
+
+Turborepo tập trung vào task orchestration và cache:
+
+```json
+{
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {}
+  }
+}
+```
+
+Nên dùng Turbo khi:
+
+- React/Next/Vite monorepo.
+- Muốn setup nhẹ.
+- Cần cache build nhanh.
+- Architecture boundaries có thể enforce bằng ESLint/TS riêng.
+
+Tradeoff:
+
+- Ít governance hơn Nx.
+- Không giàu generator bằng Nx.
+- Dependency graph/affected semantics đơn giản hơn.
+
+### pnpm Workspaces
+
+pnpm giúp link packages nội bộ và tiết kiệm disk:
+
+```yaml
+packages:
+  - "apps/*"
+  - "libs/*"
+```
+
+```json
+{
+  "dependencies": {
+    "@company/design-system": "workspace:*",
+    "@company/shared-auth": "workspace:*"
+  }
+}
+```
+
+Nên dùng pnpm gần như mặc định cho monorepo JS/TS hiện đại.
+
+### Lerna
+
+Lerna từng phổ biến cho multi-package publishing. Hiện nay thường thay bằng:
+
+- pnpm workspaces.
+- Turborepo/Nx.
+- Changesets cho versioning/publishing.
+
+Chỉ nên giữ Lerna nếu repo legacy đã dùng ổn.
+
+### Caching strategies
+
+**Local cache:**
+
+- Dev A build một task.
+- Chạy lại cùng input -> lấy cache.
+- Giảm thời gian local feedback.
+
+**Remote cache:**
+
+- CI build một task.
+- Dev/CI khác reuse output.
+- Rất mạnh với team lớn.
+
+Input cache nên gồm:
+
+- Source files.
+- Lockfile.
+- Config files.
+- Environment relevant.
+- Build command.
+
+Không nên cache mù nếu build phụ thuộc env ẩn.
+
+### Task orchestration
+
+Nếu `shell` phụ thuộc `shared-ui`, build order phải là:
+
+```text
+shared-ui -> catalog -> shell
+shared-auth -> shell
+```
+
+Tool tốt sẽ tự hiểu graph, thay vì dev viết script thủ công.
+
+## 🚀 Real-World Scenarios
+
+### Scenario 1: E-commerce nhiều team
+
+**Context:** Catalog, cart, checkout, profile do các team khác nhau sở hữu.
+
+**Architecture:**
+
+```text
+Shell
+├── catalog remote
+├── cart remote
+├── checkout remote
+└── profile remote
+```
+
+**Key decisions:**
+
+- Shell quản lý auth/session/layout.
+- Catalog tự deploy filter/search/product detail.
+- Checkout có Error Boundary và rollback riêng vì business critical.
+- Cart summary dùng shared store nhỏ hoặc event `cart:updated`.
+- Product/order data vẫn qua backend API.
+
+**Tradeoff senior:**
+
+- Catalog có thể deploy nhanh hơn.
+- Checkout cần test contract kỹ hơn.
+- Design system phải enforce để UX thống nhất.
+
+### Scenario 2: Legacy Angular -> React migration
+
+**Context:** App cũ Angular lớn, team muốn migrate sang React nhưng không thể rewrite một lần.
+
+**Approach:**
+
+- Shell mới hoặc shell hiện tại load remote theo route.
+- Angular legacy giữ domain chưa migrate.
+- React remote viết domain mới.
+- Shared auth và design tokens thống nhất.
+- Migrate từng domain: profile -> dashboard -> checkout.
+
+**Tradeoff:**
+
+- Tốc độ migrate an toàn hơn.
+- Tạm thời bundle có cả Angular và React.
+- Routing và shared auth phải thiết kế kỹ.
+
+### Scenario 3: Internal platform với Nx monorepo
+
+**Context:** Công ty có 20 apps admin/internal, nhiều shared libs.
+
+**Approach:**
+
+- Nx monorepo.
+- Apps trong `apps/*`.
+- Shared UI/auth/api/types trong `libs/*`.
+- Module boundaries bằng tags.
+- Remote cache trong CI.
+- Affected build/test.
+
+**Outcome:**
+
+- Build nhanh hơn.
+- Consistency tooling tốt hơn.
+- Ownership rõ hơn qua CODEOWNERS.
+
+### Scenario 4: Third-party payment iframe
+
+**Context:** Checkout cần nhúng payment provider.
+
+**Decision:**
+
+- Không dùng Module Federation cho third-party untrusted code.
+- Dùng iframe để isolation.
+- Giao tiếp qua `postMessage` với origin check.
+
+```typescript
+window.addEventListener("message", (event) => {
+  if (event.origin !== "https://payment.example.com") return;
+
+  if (event.data.type === "payment:completed") {
+    confirmPayment(event.data.paymentId);
+  }
+});
+```
+
+**Tradeoff:**
+
+- Isolation/security tốt hơn.
+- UX và integration khó hơn.
+
+## 🧪 Practical TypeScript/JavaScript Examples
+
+### ✅ 1. Remote manifest thay vì hardcode URL
+
+Hardcode remote URL làm deploy/rollback khó.
+
+```typescript
+type RemoteManifest = {
+  dashboard: {
+    url: string;
+    version: string;
+  };
+  checkout: {
+    url: string;
+    version: string;
+  };
+};
+
+async function loadRemoteManifest(): Promise<RemoteManifest> {
+  const response = await fetch("/mfe-manifest.json", {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("Cannot load MFE manifest");
+  }
+
+  return response.json();
+}
+```
+
+✅ Manifest giúp:
+
+- Rollback remote bằng config.
+- Canary theo user/region.
+- Kiểm soát version compatibility.
+
+### ✅ 2. Error Boundary cho remote app
+
+Remote crash không nên làm shell trắng màn hình.
+
+```tsx
+import * as React from "react";
+
+type RemoteErrorBoundaryState = {
+  hasError: boolean;
+};
+
+export class RemoteErrorBoundary extends React.Component<
+  React.PropsWithChildren<{ fallback?: React.ReactNode }>,
+  RemoteErrorBoundaryState
 > {
   state = { hasError: false };
 
@@ -1662,4407 +1297,594 @@ class RemoteErrorBoundary extends Component<
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Remote app crashed:', error, errorInfo);
-    // Log to Sentry, Datadog, etc. (Ghi log đến Sentry, Datadog, v.v.)
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error("Remote crashed", { error, info });
   }
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div>
-          <h2>Oops! Dashboard app crashed 😢</h2>
-          {/* (Ồ! Ứng dụng Dashboard bị sập 😢) */}
-          <button onClick={() => this.setState({ hasError: false })}>
-            Retry (Thử lại)
-          </button>
-        </div>
-      );
+      return this.props.fallback ?? <div>Không tải được module.</div>;
     }
 
     return this.props.children;
   }
 }
-
-// Usage (Cách sử dụng)
-function App() {
-  return (
-    <RemoteErrorBoundary>
-      <DashboardPage /> {/* Nếu crash, không ảnh hưởng Shell */}
-      {/* (If crashes, doesn't affect Shell) */}
-    </RemoteErrorBoundary>
-  );
-}
 ```
 
-#### **🔥 4. Performance Optimization (Tối Ưu Hiệu Năng)**
+### ✅ 3. Typed event contract
 
 ```typescript
-// ===================================================
-// 🚀 Preload remote apps khi user hover
-// (Tải trước remote apps khi người dùng hover)
-// ===================================================
+type MfeEvents = {
+  "cart:updated": { itemCount: number };
+  "auth:expired": { redirectTo: string };
+  "notification:show": { message: string; level: "info" | "error" };
+};
 
-import { useState } from 'react';
+export function emit<K extends keyof MfeEvents>(
+  type: K,
+  payload: MfeEvents[K]
+) {
+  window.dispatchEvent(new CustomEvent(type, { detail: payload }));
+}
 
-function Navigation() {
-  const [prefetched, setPrefetched] = useState<Set<string>>(new Set());
-
-  const prefetchRemote = (remoteName: string) => {
-    if (prefetched.has(remoteName)) return;
-
-    // Preload remote module (Tải trước module từ xa)
-    import(`${remoteName}/App`).then(() => {
-      setPrefetched((prev) => new Set(prev).add(remoteName));
-      console.log(`✅ Prefetched ${remoteName}`);
-    });
+export function on<K extends keyof MfeEvents>(
+  type: K,
+  handler: (payload: MfeEvents[K]) => void
+) {
+  const listener = (event: Event) => {
+    handler((event as CustomEvent<MfeEvents[K]>).detail);
   };
 
-  return (
-    <nav>
-      <a
-        href="/dashboard"
-        onMouseEnter={() => prefetchRemote('dashboard')} // ⚡ Hover = preload (Hover = tải trước)
-      >
-        Dashboard
-      </a>
-      <a href="/profile" onMouseEnter={() => prefetchRemote('profile')}>
-        Profile
-      </a>
-    </nav>
-  );
+  window.addEventListener(type, listener);
+  return () => window.removeEventListener(type, listener);
 }
 ```
 
----
+### ✅ 4. Monorepo boundaries
 
-**📚 Phần 8: Monorepo Tools Comparison (So Sánh Công Cụ Monorepo)**
-
-#### **💡 Tại Sao Cần Monorepo Tools?**
-
-```typescript
-/**
- * 🔥 VẤN ĐỀ: Quản Lý Nhiều Projects Thủ Công
- *
- * ❌ KHÔNG DÙNG TOOL:
- * - Mỗi project có package.json riêng
- * - Phải npm install ở từng project
- * - Build từng project một (chậm!)
- * - Không có dependency graph
- * - Không có caching
- * - Không có task orchestration
- *
- * ✅ DÙNG MONOREPO TOOL:
- * - 1 lệnh build tất cả projects
- * - Smart caching (chỉ build projects thay đổi)
- * - Dependency graph tự động
- * - Task orchestration (build theo thứ tự đúng)
- * - Code sharing dễ dàng
- */
+```text
+apps/checkout     -> can import libs/shared-ui, libs/shared-auth, libs/domain-order
+apps/catalog      -> can import libs/shared-ui, libs/domain-product
+libs/shared-ui    -> cannot import apps/*
+libs/domain-order -> cannot import apps/checkout
 ```
 
-#### **🎯 4 Công Cụ Chính: Nx vs Turborepo vs Lerna vs pnpm Workspaces**
+✅ Enforce bằng Nx module boundaries, ESLint rules, TS path aliases, CODEOWNERS.
+
+## ⚛️ Production Notes / React Implications
+
+### 🚀 Performance
+
+- Lazy load remote theo route.
+- Preload remote khi hover/nav intent.
+- Share React/ReactDOM/UI libs có kiểm soát.
+- Tránh remote nhỏ quá nhiều làm tăng network waterfall.
+- Theo dõi bundle duplication bằng analyzer.
+- Có fallback skeleton để remote load chậm không làm layout jump.
+
+### 🧯 Resilience
+
+- Remote app phải có Error Boundary riêng.
+- Shell cần fallback nếu `remoteEntry.js` fail.
+- Manifest/CDN cache cần strategy rõ: `remoteEntry` thường không cache quá lâu; assets hashed có thể cache lâu.
+- Deploy remote phải có rollback độc lập.
+- Contract breaking change phải có versioning.
+
+### 🔐 Security
+
+- Remote code là code chạy trong cùng origin/runtime của shell; coi như trusted code.
+- Không load remote từ domain không kiểm soát.
+- Dùng CSP/SRI khi phù hợp với deployment model.
+- Auth token/session ownership cần rõ: shell quản lý session, remote gọi API qua shared API client hoặc backend gateway.
+- Không để remote tự ý đọc/ghi global state nhạy cảm nếu không có contract.
+
+### 📊 Observability
+
+Log/error phải có metadata:
+
+- `mfeName`
+- `mfeVersion`
+- `route`
+- `remoteEntryUrl`
+- `shellVersion`
+
+Không có metadata này, debug production gần như mù vì không biết lỗi đến từ remote nào.
+
+### 🧪 Testing Strategy
+
+- Unit test từng remote.
+- Contract test cho event payload, exposed modules, shared API.
+- Integration test shell + selected remote versions.
+- E2E critical flow: login, catalog, cart, checkout.
+- Visual regression cho design system.
+- Smoke test sau deploy remote.
+
+### 🧭 SSR / Next.js
+
+MFE + SSR khó hơn SPA:
+
+- Remote loading phải tương thích server/client.
+- Hydration mismatch dễ xảy ra nếu remote render khác shell.
+- Module Federation trong SSR cần setup riêng theo framework/runtime.
+- Với Next.js, cân nhắc route-level ownership hoặc package-based composition trước khi runtime MFE.
+
+## 🧩 Appendix: Design System, Scalable FE Structure & State Management
+
+Phần gốc của file có thêm nhiều key về design system, structure, patterns và state management. Các ý này liên quan trực tiếp đến MFE vì nếu thiếu governance, nhiều MFE sẽ tạo UX/codebase rời rạc.
+
+### 🎨 Design System
+
+Design system nên chứa:
+
+- Design tokens: color, spacing, typography, radius, shadow.
+- Shared UI components: Button, Input, Modal, Table.
+- Accessibility rules.
+- Versioning/changelog.
+- Visual regression tests.
+
+Trong MFE, design system nên là package/shared lib có version rõ, không copy component giữa apps.
+
+#### Design tokens
+
+Tokens là ngôn ngữ chung giữa design và code:
 
 ```typescript
-/**
- * 📊 OVERVIEW COMPARISON
- *
- * | Tool            | Type              | Focus                    | Complexity | Ecosystem |
- * | --------------- | ----------------- | ------------------------ | ---------- | --------- |
- * | **Nx**          | Full-featured     | Angular/React ecosystem  | High       | Large     |
- * | **Turborepo**   | Task runner       | Fast builds, caching    | Medium     | Medium    |
- * | **Lerna**        | Legacy            | Publishing packages      | Low        | Small     |
- * | **pnpm workspaces** | Built-in      | Package management       | Low        | Small     |
- */
-```
-
----
-
-#### **🔥 1. Nx (Nrwl Nx) - Full-Featured Monorepo Tool**
-
-```typescript
-/**
- * 🎯 NX LÀ GÌ?
- *
- * Nx là một MONOREPO TOOL MẠNH MẼ, cung cấp:
- * - Build system (Webpack, Vite, esbuild)
- * - Testing framework (Jest, Vitest)
- * - Code generation (generators)
- * - Dependency graph visualization
- * - Smart caching (local + remote)
- * - Task orchestration
- * - Module Federation support
- *
- * 🔥 ĐẶC ĐIỂM:
- * - Angular ecosystem (nhưng support React, Vue, Node.js)
- * - Plugin-based architecture
- * - Rich DevTools (Nx Console)
- * - Large community
- */
-
-// ===================================================
-// ✅ NX SETUP & USAGE
-// ===================================================
-
-// 1️⃣ Tạo Nx workspace
-// npx create-nx-workspace@latest myorg --preset=react-monorepo
-
-// 2️⃣ Cấu trúc workspace
-/*
-myorg/
-├── apps/
-│   ├── shell/              ← Application
-│   ├── dashboard/          ← Application
-│   └── profile/            ← Application
-├── libs/
-│   ├── shared-ui/          ← Library
-│   ├── shared-utils/       ← Library
-│   └── shared-types/       ← Library
-├── nx.json                 ← Nx configuration
-├── package.json            ← Root dependencies
-└── tsconfig.base.json      ← Shared TypeScript config
-*/
-
-// 3️⃣ nx.json - Configuration
-{
-  "version": 2,
-  "projects": {
-    "shell": "apps/shell",
-    "dashboard": "apps/dashboard",
-    "profile": "apps/profile",
-    "shared-ui": "libs/shared-ui"
+export const tokens = {
+  color: {
+    primary: "#2563eb",
+    danger: "#dc2626",
+    text: "#111827",
   },
-  "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"],  // ✅ Build dependencies trước
-      "inputs": ["production", "^production"],
-      "cache": true              // ✅ Enable caching
-    },
-    "test": {
-      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
-      "cache": true
-    }
+  spacing: {
+    xs: "4px",
+    sm: "8px",
+    md: "16px",
+    lg: "24px",
   },
-  "affected": {
-    "defaultBase": "main"       // ✅ Base branch cho affected commands
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "test", "lint"]
-      }
-    }
-  }
-}
-
-// 4️⃣ project.json - Project configuration
-// apps/shell/project.json
-{
-  "name": "shell",
-  "sourceRoot": "apps/shell/src",
-  "projectType": "application",
-  "targets": {
-    "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/apps/shell"
-      }
-    },
-    "serve": {
-      "executor": "@nx/vite:dev-server",
-      "options": {
-        "port": 4200
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/shell"]
-    }
-  },
-  "tags": ["type:app", "scope:shell"]  // ✅ Tags cho filtering
-}
-
-// 5️⃣ Commands
-// Build tất cả projects
-nx run-many --target=build --all
-
-// Build chỉ projects affected (thay đổi)
-nx affected --target=build
-
-// Build với caching
-nx build shell  # ✅ Lần 1: Build (30s)
-nx build shell  # ✅ Lần 2: From cache (<1s)
-
-// Test với parallel execution
-nx run-many --target=test --all --parallel=3
-
-// Visualize dependency graph
-nx graph  # ✅ Mở browser với interactive graph
-
-// Generate code
-nx g @nx/react:component Button --project=shared-ui
-nx g @nx/react:app new-app
-
-/**
- * ✅ ƯU ĐIỂM NX:
- *
- * 1️⃣ FULL-FEATURED:
- *    → Build, test, lint, generate code
- *    → Không cần setup thêm tools
- *
- * 2️⃣ SMART CACHING:
- *    → Local cache (file system)
- *    → Remote cache (Nx Cloud, self-hosted)
- *    → Cache hit rate: 80-95%
- *
- * 3️⃣ DEPENDENCY GRAPH:
- *    → Visualize dependencies
- *    → Build theo thứ tự đúng
- *    → Affected detection chính xác
- *
- * 4️⃣ PLUGIN ECOSYSTEM:
- *    → @nx/react, @nx/angular, @nx/node
- *    → @nx/next, @nx/nestjs
- *    → Module Federation plugin
- *
- * 5️⃣ DEVTOOLS:
- *    → Nx Console (VS Code extension)
- *    → Interactive graph
- *    → Task execution visualization
- *
- * ❌ NHƯỢC ĐIỂM NX:
- *
- * 1️⃣ LEARNING CURVE CAO:
- *    → Nhiều concepts (projects, targets, executors)
- *    → Configuration phức tạp
- *
- * 2️⃣ BUNDLE SIZE:
- *    → Nx CLI: ~50 MB
- *    → Nx daemon: Memory overhead
- *
- * 3️⃣ ANGULAR BIAS:
- *    → Angular support tốt nhất
- *    → React/Vue support tốt nhưng không bằng Angular
- *
- * 4️⃣ VENDOR LOCK-IN:
- *    → Nx-specific configuration
- *    → Khó migrate sang tool khác
- */
-```
-
----
-
-#### **⚡ 2. Turborepo - Fast Task Runner**
-
-```typescript
-/**
- * 🎯 TURBOREPO LÀ GÌ?
- *
- * Turborepo là TASK RUNNER NHANH, tập trung vào:
- * - Fast builds (parallel execution)
- * - Smart caching (local + remote)
- * - Task orchestration
- * - Incremental builds
- *
- * 🔥 ĐẶC ĐIỂM:
- * - Framework-agnostic (không quan tâm React/Angular)
- * - Minimal configuration
- * - Remote caching (Vercel, self-hosted)
- * - Simple API
- */
-
-// ===================================================
-// ✅ TURBOREPO SETUP & USAGE
-// ===================================================
-
-// 1️⃣ Install
-// npm install -D turbo
-
-// 2️⃣ turbo.json - Configuration
-{
-  "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
-    "build": {
-      "dependsOn": ["^build"],        // ✅ Build dependencies trước
-      "outputs": ["dist/**"],         // ✅ Cache outputs
-      "cache": true
-    },
-    "test": {
-      "dependsOn": ["build"],
-      "outputs": ["coverage/**"],
-      "cache": true
-    },
-    "lint": {
-      "cache": true,
-      "outputs": []
-    },
-    "dev": {
-      "cache": false,                 // ❌ Không cache dev server
-      "persistent": true              // ✅ Long-running task
-    }
-  },
-  "remoteCache": {
-    "enabled": true                   // ✅ Enable remote cache
-  }
-}
-
-// 3️⃣ package.json - Workspace setup
-{
-  "name": "myorg",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "turbo run build",
-    "test": "turbo run test",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint"
-  }
-}
-
-// 4️⃣ Commands
-// Build tất cả packages
-turbo run build
-
-// Build với filtering
-turbo run build --filter=shell
-turbo run build --filter=...dashboard  // ✅ Build dashboard và dependencies
-
-// Build affected (cần setup git)
-turbo run build --filter="[HEAD^1]"
-
-// Remote caching (Vercel)
-turbo run build --token=$TURBO_TOKEN
-
-// Visualize pipeline
-turbo run build --graph=graph.html
-
-/**
- * ✅ ƯU ĐIỂM TURBOREPO:
- *
- * 1️⃣ FAST:
- *    → Parallel execution
- *    → Incremental builds
- *    → Smart caching
- *
- * 2️⃣ SIMPLE:
- *    → Minimal configuration
- *    → Framework-agnostic
- *    → Dễ học
- *
- * 3️⃣ REMOTE CACHING:
- *    → Vercel (free tier)
- *    → Self-hosted option
- *    → Team sharing cache
- *
- * 4️⃣ SMALL BUNDLE:
- *    → ~5 MB (nhỏ hơn Nx 10x)
- *    → No daemon
- *
- * 5️⃣ FLEXIBLE:
- *    → Dùng với bất kỳ build tool (Webpack, Vite, esbuild)
- *    → Không force structure
- *
- * ❌ NHƯỢC ĐIỂM TURBOREPO:
- *
- * 1️⃣ NO CODE GENERATION:
- *    → Không có generators
- *    → Phải tự setup projects
- *
- * 2️⃣ NO DEPENDENCY GRAPH UI:
- *    → Chỉ có text-based graph
- *    → Không có interactive visualization
- *
- * 3️⃣ NO TESTING FRAMEWORK:
- *    → Chỉ orchestrate tests
- *    → Không có built-in test runner
- *
- * 4️⃣ LESS ECOSYSTEM:
- *    → Ít plugins hơn Nx
- *    → Community nhỏ hơn
- */
-```
-
----
-
-#### **📦 3. Lerna - Legacy Publishing Tool**
-
-```typescript
-/**
- * 🎯 LERNA LÀ GÌ?
- *
- * Lerna là tool CŨ, tập trung vào:
- * - Publishing packages (npm publish)
- * - Version management
- * - Changelog generation
- *
- * 🔥 ĐẶC ĐIỂM:
- * - Legacy tool (ít maintain)
- * - Chủ yếu cho publishing
- * - Không có caching
- * - Không có task orchestration tốt
- */
-
-// ===================================================
-// ✅ LERNA SETUP & USAGE
-// ===================================================
-
-// 1️⃣ Install
-// npm install -D lerna
-
-// 2️⃣ lerna.json - Configuration
-{
-  "version": "independent",           // ✅ Mỗi package version riêng
-  "npmClient": "pnpm",                // ✅ Dùng pnpm
-  "command": {
-    "publish": {
-      "conventionalCommits": true,    // ✅ Generate changelog
-      "message": "chore(release): publish"
-    }
-  }
-}
-
-// 3️⃣ Commands
-// Publish packages
-lerna publish
-
-// Version packages
-lerna version
-
-// Run command in all packages
-lerna run build
-
-// Bootstrap dependencies
-lerna bootstrap  // ✅ Link packages
-
-/**
- * ✅ ƯU ĐIỂM LERNA:
- *
- * 1️⃣ PUBLISHING:
- *    → Version management tốt
- *    → Changelog generation
- *    → Conventional commits support
- *
- * 2️⃣ SIMPLE:
- *    → Dễ setup
- *    → Ít configuration
- *
- * ❌ NHƯỢC ĐIỂM LERNA:
- *
- * 1️⃣ LEGACY:
- *    → Ít maintain
- *    → Không có caching
- *    → Không có task orchestration tốt
- *
- * 2️⃣ SLOW:
- *    → Sequential execution
- *    → Không có parallel builds
- *
- * 3️⃣ LIMITED FEATURES:
- *    → Chỉ focus publishing
- *    → Không có code generation
- *    → Không có dependency graph
- *
- * 💡 RECOMMENDATION:
- *    → KHÔNG NÊN DÙNG LERNA MỚI
- *    → Dùng Turborepo + Changesets (cho publishing)
- */
-```
-
----
-
-#### **🔗 4. pnpm Workspaces - Built-in Package Management**
-
-```typescript
-/**
- * 🎯 PNPM WORKSPACES LÀ GÌ?
- *
- * pnpm Workspaces là FEATURE BUILT-IN của pnpm:
- * - Package management
- * - Dependency hoisting
- * - Workspace linking
- *
- * 🔥 ĐẶC ĐIỂM:
- * - Built-in (không cần cài thêm)
- * - Fast installs
- * - Disk space efficient
- * - Strict dependency resolution
- */
-
-// ===================================================
-// ✅ PNPM WORKSPACES SETUP & USAGE
-// ===================================================
-
-// 1️⃣ pnpm-workspace.yaml - Configuration
-packages:
-  - 'apps/*'
-  - 'packages/*'
-
-// 2️⃣ package.json - Root
-{
-  "name": "myorg",
-  "private": true,
-  "scripts": {
-    "build": "pnpm -r --filter='./apps/*' run build",
-    "test": "pnpm -r run test"
-  }
-}
-
-// 3️⃣ package.json - App (apps/shell/package.json)
-{
-  "name": "@myorg/shell",
-  "dependencies": {
-    "@myorg/shared-ui": "workspace:*"  // ✅ Link workspace package
-  }
-}
-
-// 4️⃣ Commands
-// Install dependencies
-pnpm install
-
-// Build all apps
-pnpm -r --filter='./apps/*' run build
-
-// Build specific app
-pnpm --filter=@myorg/shell run build
-
-// Add dependency to workspace
-pnpm add react --filter=@myorg/shell
-
-// Add workspace dependency
-pnpm add @myorg/shared-ui --filter=@myorg/shell --workspace
-
-/**
- * ✅ ƯU ĐIỂM PNPM WORKSPACES:
- *
- * 1️⃣ BUILT-IN:
- *    → Không cần cài thêm tool
- *    → Zero configuration
- *
- * 2️⃣ FAST INSTALLS:
- *    → Content-addressable storage
- *    → Hard links (tiết kiệm disk)
- *
- * 3️⃣ STRICT:
- *    → Không có phantom dependencies
- *    → Dependency resolution chính xác
- *
- * 4️⃣ DISK EFFICIENT:
- *    → 1 version React → tất cả packages dùng chung
- *    → Tiết kiệm 70% disk space so với npm
- *
- * ❌ NHƯỢC ĐIỂM PNPM WORKSPACES:
- *
- * 1️⃣ NO TASK ORCHESTRATION:
- *    → Không có dependency-aware builds
- *    → Phải tự manage build order
- *
- * 2️⃣ NO CACHING:
- *    → Không có build cache
- *    → Phải build lại mỗi lần
- *
- * 3️⃣ NO CODE GENERATION:
- *    → Không có generators
- *
- * 💡 RECOMMENDATION:
- *    → Dùng pnpm workspaces + Turborepo
- *    → pnpm: Package management
- *    → Turborepo: Task orchestration + caching
- */
-```
-
----
-
-#### **📊 Detailed Comparison Table**
-
-| Feature                | Nx                   | Turborepo           | Lerna               | pnpm Workspaces    |
-| ---------------------- | -------------------- | ------------------- | ------------------- | ------------------ |
-| **Type**               | Full-featured        | Task runner         | Publishing tool     | Package manager    |
-| **Caching**            | ✅ Local + Remote    | ✅ Local + Remote   | ❌ No               | ❌ No              |
-| **Task Orchestration** | ✅ Yes (advanced)    | ✅ Yes (simple)     | ⚠️ Basic            | ❌ No              |
-| **Dependency Graph**   | ✅ Visual UI         | ⚠️ Text-based       | ❌ No               | ❌ No              |
-| **Code Generation**    | ✅ Yes (generators)  | ❌ No               | ❌ No               | ❌ No              |
-| **Build System**       | ✅ Built-in          | ❌ No (orchestrate) | ❌ No               | ❌ No              |
-| **Testing**            | ✅ Built-in          | ❌ No (orchestrate) | ❌ No               | ❌ No              |
-| **Remote Cache**       | ✅ Nx Cloud          | ✅ Vercel           | ❌ No               | ❌ No              |
-| **Learning Curve**     | ⚠️ High              | ✅ Low              | ✅ Low              | ✅ Low             |
-| **Bundle Size**        | ⚠️ ~50 MB            | ✅ ~5 MB            | ✅ ~10 MB           | ✅ Built-in        |
-| **Framework Support**  | ✅ Angular/React/Vue | ✅ Any              | ✅ Any              | ✅ Any             |
-| **Ecosystem**          | ✅ Large             | ⚠️ Medium           | ⚠️ Small            | ✅ Large (pnpm)    |
-| **Best For**           | Enterprise apps      | Fast builds         | Publishing packages | Package management |
-
----
-
-#### **🔥 Caching Strategies Comparison**
-
-```typescript
-/**
- * 🎯 CACHING STRATEGIES (Chiến Lược Cache)
- *
- * Caching giúp TRÁNH BUILD LẠI những gì đã build trước đó.
- * → Build time giảm từ 10 phút → 30 giây (nếu cache hit)
- */
-
-// ===================================================
-// 1️⃣ NX CACHING STRATEGY
-// ===================================================
-
-// nx.json
-{
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "test", "lint"],
-        "cacheDirectory": ".nx/cache"  // ✅ Local cache
-      }
-    }
-  }
-}
-
-// Remote cache (Nx Cloud)
-{
-  "nxCloudAccessToken": "your-token",
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx-cloud",
-      "options": {
-        "cacheableOperations": ["build", "test"]
-      }
-    }
-  }
-}
-
-/**
- * ✅ NX CACHE MECHANISM:
- *
- * 1️⃣ INPUT HASHING:
- *    → Hash inputs (source files, dependencies, config)
- *    → Nếu hash giống → cache hit
- *
- * 2️⃣ OUTPUT STORAGE:
- *    → Lưu outputs (dist files) vào cache
- *    → Restore từ cache khi hit
- *
- * 3️⃣ REMOTE CACHE:
- *    → Share cache giữa team members
- *    → CI/CD cache → developers
- *
- * 📊 CACHE HIT RATE: 80-95%
- */
-
-// ===================================================
-// 2️⃣ TURBOREPO CACHING STRATEGY
-// ===================================================
-
-// turbo.json
-{
-  "pipeline": {
-    "build": {
-      "outputs": ["dist/**"],  // ✅ Cache outputs
-      "cache": true
-    }
-  },
-  "remoteCache": {
-    "enabled": true,
-    "signature": true  // ✅ Verify cache integrity
-  }
-}
-
-// Remote cache (Vercel)
-turbo run build --token=$TURBO_TOKEN
-
-/**
- * ✅ TURBOREPO CACHE MECHANISM:
- *
- * 1️⃣ TASK FINGERPRINTING:
- *    → Hash task inputs (files, env vars)
- *    → Compare với cache key
- *
- * 2️⃣ INCREMENTAL CACHING:
- *    → Cache từng task riêng
- *    → Reuse cache của dependencies
- *
- * 3️⃣ REMOTE CACHE:
- *    → Vercel (free tier)
- *    → Self-hosted option
- *
- * 📊 CACHE HIT RATE: 70-90%
- */
-
-// ===================================================
-// 3️⃣ CACHE COMPARISON
-// ===================================================
-
-/**
- * 📊 CACHE PERFORMANCE:
- *
- * Scenario: Build 10 apps, mỗi app 30s
- *
- * ❌ NO CACHE:
- * - First build: 300s (10 apps × 30s)
- * - Second build: 300s (rebuild all)
- *
- * ✅ NX CACHE (Local):
- * - First build: 300s
- * - Second build: 5s (cache hit)
- * - Cache hit rate: 95%
- *
- * ✅ TURBOREPO CACHE (Local):
- * - First build: 300s
- * - Second build: 10s (cache hit)
- * - Cache hit rate: 90%
- *
- * ✅ REMOTE CACHE (Team sharing):
- * - Developer A builds: 300s
- * - Developer B builds: 15s (download from remote cache)
- * - CI/CD builds: 20s (download from remote cache)
- */
-```
-
----
-
-#### **⚙️ Task Orchestration Comparison**
-
-```typescript
-/**
- * 🎯 TASK ORCHESTRATION (Điều Phối Tác Vụ)
- *
- * Task orchestration = Build tasks theo THỨ TỰ ĐÚNG,
- * dựa trên dependency graph.
- */
-
-// ===================================================
-// 1️⃣ NX TASK ORCHESTRATION
-// ===================================================
-
-// nx.json
-{
-  "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"],  // ✅ Build dependencies trước
-      "inputs": ["production", "^production"]
-    },
-    "test": {
-      "dependsOn": ["build"]   // ✅ Test sau khi build
-    }
-  }
-}
-
-// Dependency graph:
-// shared-ui → dashboard → shell
-//
-// Build order:
-// 1. shared-ui (no dependencies)
-// 2. dashboard (depends on shared-ui)
-// 3. shell (depends on dashboard)
-
-nx run-many --target=build --all
-// ✅ Tự động build theo thứ tự đúng
-// ✅ Parallel build khi có thể
-
-/**
- * ✅ NX ORCHESTRATION FEATURES:
- *
- * 1️⃣ DEPENDENCY-AWARE:
- *    → Build dependencies trước
- *    → Parallel build khi có thể
- *
- * 2️⃣ AFFECTED DETECTION:
- *    → Chỉ build projects thay đổi
- *    → Build dependencies của affected projects
- *
- * 3️⃣ TASK PIPELINES:
- *    → Define task dependencies
- *    → Build → Test → Lint
- */
-```
-
-```typescript
-// ===================================================
-// 2️⃣ TURBOREPO TASK ORCHESTRATION
-// ===================================================
-
-// turbo.json
-{
-  "pipeline": {
-    "build": {
-      "dependsOn": ["^build"],  // ✅ Build dependencies trước
-      "outputs": ["dist/**"]
-    },
-    "test": {
-      "dependsOn": ["build"],   // ✅ Test sau khi build
-      "outputs": ["coverage/**"]
-    }
-  }
-}
-
-// Dependency graph:
-// shared-ui → dashboard → shell
-//
-// Build order:
-// 1. shared-ui (no dependencies)
-// 2. dashboard (depends on shared-ui)
-// 3. shell (depends on dashboard)
-
-turbo run build
-// ✅ Tự động build theo thứ tự đúng
-// ✅ Parallel build khi có thể
-
-/**
- * ✅ TURBOREPO ORCHESTRATION FEATURES:
- *
- * 1️⃣ PIPELINE CONFIG:
- *    → Define task dependencies
- *    → Simple, declarative
- *
- * 2️⃣ FILTERING:
- *    → Build specific packages
- *    → Build affected packages
- *
- * 3️⃣ PARALLEL EXECUTION:
- *    → Build independent tasks parallel
- */
-```
-
-```typescript
-// ===================================================
-// 3️⃣ PNPM WORKSPACES (NO ORCHESTRATION)
-// ===================================================
-
-// package.json
-{
-  "scripts": {
-    "build": "pnpm -r --filter='./apps/*' run build"
-  }
-}
-
-// ❌ PROBLEM: Build theo thứ tự trong array
-// → Có thể build shell trước dashboard (sai!)
-// → Phải tự manage build order
-
-/**
- * ❌ PNPM WORKSPACES LIMITATIONS:
- *
- * 1️⃣ NO DEPENDENCY-AWARE:
- *    → Build theo thứ tự trong command
- *    → Phải tự sắp xếp
- *
- * 2️⃣ NO PARALLEL EXECUTION:
- *    → Sequential execution
- *    → Chậm hơn
- */
-```
-
----
-
-#### **💡 Decision Guide: Chọn Tool Nào?**
-
-```typescript
-/**
- * 🎯 DECISION TREE (Cây Quyết Định)
- *
- * ┌─────────────────────────────────────────┐
- * │  Bạn cần gì?                            │
- * └─────────────────────────────────────────┘
- *                    │
- *        ┌───────────┴───────────┐
- *        │                       │
- *   Enterprise App          Simple App
- *        │                       │
- *        │                       │
- *   ┌────┴────┐            ┌──────┴──────┐
- *   │        │            │             │
- * Angular  React        Fast Build   Package Mgmt
- *   │        │            │             │
- *   │        │            │             │
- *   Nx      Nx        Turborepo    pnpm workspaces
- */
-
-// ===================================================
-// ✅ DÙNG NX KHI:
-// ===================================================
-
-/**
- * 1️⃣ ENTERPRISE APP:
- *    → Team lớn (20+ developers)
- *    → Nhiều projects (50+)
- *    → Cần code generation
- *    → Cần DevTools mạnh
- *
- * 2️⃣ ANGULAR ECOSYSTEM:
- *    → Angular projects
- *    → Nx support Angular tốt nhất
- *
- * 3️⃣ NEED FULL-FEATURED TOOL:
- *    → Build, test, lint, generate
- *    → Không muốn setup nhiều tools
- *
- * VD:
- * - Enterprise Angular app
- * - Large React monorepo với nhiều features
- * - Cần Module Federation + Nx
- */
-
-// ===================================================
-// ✅ DÙNG TURBOREPO KHI:
-// ===================================================
-
-/**
- * 1️⃣ FAST BUILDS:
- *    → Cần build nhanh
- *    → Cần caching tốt
- *    → Remote cache sharing
- *
- * 2️⃣ SIMPLE SETUP:
- *    → Không cần code generation
- *    → Không cần DevTools phức tạp
- *    → Framework-agnostic
- *
- * 3️⃣ SMALL/MEDIUM APP:
- *    → Team nhỏ/vừa (<20 developers)
- *    → Projects vừa phải (<30)
- *
- * VD:
- * - React/Vue monorepo
- * - Next.js monorepo
- * - Fast iteration cần thiết
- */
-
-// ===================================================
-// ✅ DÙNG PNPM WORKSPACES KHI:
-// ===================================================
-
-/**
- * 1️⃣ PACKAGE MANAGEMENT ONLY:
- *    → Chỉ cần quản lý dependencies
- *    → Không cần task orchestration
- *    → Không cần caching
- *
- * 2️⃣ SIMPLE MONOREPO:
- *    → Ít projects (<10)
- *    → Build scripts đơn giản
- *
- * 3️⃣ COMBINE VỚI TURBOREPO:
- *    → pnpm: Package management
- *    → Turborepo: Task orchestration + caching
- *
- * VD:
- * - Small monorepo
- * - Package publishing
- * - pnpm + Turborepo combo
- */
-
-// ===================================================
-// ❌ KHÔNG DÙNG LERNA KHI:
-// ===================================================
-
-/**
- * → Legacy tool, ít maintain
- * → Không có caching
- * → Không có task orchestration tốt
- * → Dùng Turborepo + Changesets thay thế
- */
-```
-
----
-
-#### **🚀 Real-World Examples**
-
-```typescript
-/**
- * 🏢 EXAMPLE 1: ENTERPRISE ANGULAR APP
- *
- * Setup: Nx + Angular + Module Federation
- *
- * Structure:
- * - 50+ Angular apps
- * - 100+ libraries
- * - 30+ developers
- *
- * Commands:
- * nx affected --target=build
- * nx graph
- * nx g @nx/angular:app new-app
- *
- * Results:
- * - Build time: 10 phút → 2 phút (với cache)
- * - Dev experience: Excellent (Nx Console)
- * - Code generation: Fast (generators)
- */
-
-/**
- * 🏢 EXAMPLE 2: FAST REACT MONOREPO
- *
- * Setup: Turborepo + pnpm + Vite
- *
- * Structure:
- * - 20 React apps
- * - 30 packages
- * - 10 developers
- *
- * Commands:
- * turbo run build
- * turbo run build --filter=...dashboard
- *
- * Results:
- * - Build time: 5 phút → 30 giây (với cache)
- * - Remote cache: Team sharing (Vercel)
- * - Simple setup: Minimal config
- */
-
-/**
- * 🏢 EXAMPLE 3: SIMPLE MONOREPO
- *
- * Setup: pnpm workspaces only
- *
- * Structure:
- * - 5 packages
- * - 3 developers
- *
- * Commands:
- * pnpm -r run build
- *
- * Results:
- * - Simple: No extra tools
- * - Fast installs: pnpm efficiency
- * - Manual orchestration: Build order tự manage
- */
-```
-
----
-
-#### **💡 Key Takeaways**
-
-```typescript
-/**
- * ✅ NX:
- * - Full-featured, enterprise-grade
- * - Best for: Large teams, Angular, code generation
- * - Learning curve: High
- * - Bundle: Large (~50 MB)
- *
- * ✅ TURBOREPO:
- * - Fast, simple, framework-agnostic
- * - Best for: Fast builds, caching, simple setup
- * - Learning curve: Low
- * - Bundle: Small (~5 MB)
- *
- * ✅ PNPM WORKSPACES:
- * - Built-in package management
- * - Best for: Simple monorepos, package management
- * - Combine with: Turborepo (recommended)
- *
- * ❌ LERNA:
- * - Legacy tool
- * - Not recommended for new projects
- * - Use Turborepo + Changesets instead
- *
- * 🎯 RECOMMENDATION:
- * - Enterprise Angular: Nx
- * - Fast React/Vue: Turborepo + pnpm
- * - Simple: pnpm workspaces + Turborepo
- */
-```
-
----
-
-**❌ Common Mistakes (Lỗi Thường Gặp)**
-
-```typescript
-// ❌ 1. Duplicate dependencies (React loaded 2 lần)
-// Shell: 500KB React + Dashboard: 500KB React = 1MB! ❌
-// ✅ Fix: Dùng Module Federation shared config
-
-// ❌ 2. Tight coupling via shared state
-const user = useGlobalState('user'); // ❌ Dashboard phụ thuộc shell
-// ✅ Fix: Dùng Event Bus cho loose coupling
-
-// ❌ 3. No error boundaries
-<DashboardPage /> // ❌ Nếu crash → toàn bộ app crash
-// ✅ Fix: Wrap trong ErrorBoundary
-
-// ❌ 4. CSS conflicts
-.header { ... } // ❌ Dashboard và Profile cùng class name
-// ✅ Fix: CSS Modules, CSS-in-JS, hoặc prefix
-
-// ❌ 5. Version mismatch
-shell: react@18 ↔ dashboard: react@17 // ❌ Conflict!
-// ✅ Fix: Enforce singleton trong Module Federation
-```
-
----
-
-**📝 Summary (Tóm Tắt)**
-
-| Concept                 | Giải Thích                                 | Use Case                   |
-| ----------------------- | ------------------------------------------ | -------------------------- |
-| **Microfrontend**       | Chia app lớn thành nhiều apps nhỏ độc lập  | Large teams, multi-product |
-| **Monorepo**            | Nhiều projects trong 1 repo                | Code sharing, consistency  |
-| **Module Federation**   | Share code runtime (không phải build time) | Microfrontend architecture |
-| **Multi-Framework**     | React + Vue + Angular trong 1 app          | Legacy migration           |
-| **Event Bus**           | Apps giao tiếp qua events                  | Loosely coupled            |
-| **Shared State**        | Global state (Redux, Zustand)              | User, theme, cart          |
-| **Shell Routing**       | Shell quản lý tất cả routes                | Centralized control        |
-| **Distributed Routing** | Mỗi app tự quản lý routes                  | Autonomous apps            |
-| **CSS Modules**         | Scoped CSS với unique class names          | Default choice             |
-| **CSS-in-JS**           | Styles trong JS, scoped                    | Dynamic styles             |
-| **Shadow DOM**          | 100% CSS isolation                         | Web Components             |
-
-**🔥 Key Takeaways:**
-
-- ✅ **Microfrontend** = Independent deployment + Team autonomy
-- ✅ **Module Federation** = Runtime code sharing (no duplicate React)
-- ✅ **Multi-framework** = React + Vue + Angular cùng app (với wrapper)
-- ✅ **Communication**: Event Bus (loose) vs Shared State (tight)
-- ✅ **Routing**: Shell-based (centralized) vs Distributed (autonomous)
-- ✅ **Styling**: CSS Modules (default), CSS-in-JS (dynamic), Shadow DOM (isolation)
-- ✅ **Monorepo** với Nx = Best DX + Code sharing + Consistent tooling
-
----
-
-**❓ Câu Hỏi:**
-
-> "Design system, Steps to build a FE structure? How you define structure for app can be scale? Apply any design pattern yet?"
-
-**📋 Phân Tích:**
-
-- **Design System** là gì? Tại sao cần?
-- **Các bước xây dựng cấu trúc Frontend** có thể scale
-- **Cách định nghĩa cấu trúc** cho app lớn (kiến trúc phân tầng)
-- **Design Patterns** nào được áp dụng trong FE?
-
----
-
-### **🎯 PHẦN 1: DESIGN SYSTEM LÀ GÌ? (What is Design System?)**
-
-````typescript
-/**
- * 🎨 DESIGN SYSTEM (Hệ Thống Thiết Kế)
- *
- * Là TẬP HỢP các thành phần UI, quy tắc thiết kế, và hướng dẫn sử dụng
- * để đảm bảo TÍNH NHẤT QUÁN (consistency) trong toàn bộ sản phẩm.
- *
- * 🔥 DESIGN SYSTEM ≠ COMPONENT LIBRARY
- *
- * Design System bao gồm:
- * ├── 1️⃣ Design Tokens (Màu sắc, Font, Spacing, Shadow...)
- * ├── 2️⃣ Component Library (Button, Input, Modal, Table...)
- * ├── 3️⃣ Patterns & Guidelines (Cách sử dụng, Best practices)
- * ├── 4️⃣ Documentation (Storybook, Docs site)
- * └── 5️⃣ Tools & Processes (Figma, Design workflow)
- *
- * Component Library chỉ là 1 PHẦN của Design System!
- */
-
-// ===================================================
-// 🏢 VÍ DỤ THỰC TẾ: KHÔNG CÓ DESIGN SYSTEM
-// ===================================================
-
-// ❌ SCENARIO: 10 developers, không có design system
-// → Mỗi người code Button theo ý mình
-
-// Developer 1 (Team Dashboard):
-const Button1 = styled.button`
-  background: #007bff;      // Màu xanh dương
-  padding: 10px 20px;       // Padding
-  border-radius: 4px;       // Bo góc 4px
-  font-size: 14px;          // Font size 14px
-`;
-
-// Developer 2 (Team Profile):
-const Button2 = styled.button`
-  background: #0066cc;      // Màu xanh khác! ❌
-  padding: 12px 24px;       // Padding khác! ❌
-  border-radius: 8px;       // Bo góc khác! ❌
-  font-size: 16px;          // Font khác! ❌
-`;
-
-// Developer 3 (Team Settings):
-const Button3 = styled.button`
-  background: linear-gradient(to right, #007bff, #0066cc); // Gradient! ❌
-  padding: 8px 16px;        // Padding khác nữa! ❌
-  border-radius: 6px;       // Bo góc khác nữa! ❌
-  font-size: 15px;          // Font khác nữa! ❌
-`;
-
-/**
- * ❌ KẾT QUẢ:
- * - App có 3 LOẠI BUTTON KHÁC NHAU (không nhất quán)
- * - User bối rối: "Button nào để click?"
- * - Designer phát điên: "Đây không phải design tôi đưa!"
- * - Developers tranh cãi: "Button của tôi đẹp hơn!"
- * - Maintenance nightmare: Muốn đổi màu → phải sửa 3 chỗ
- */
-
-// ===================================================
-// ✅ GIẢI PHÁP: CÓ DESIGN SYSTEM
-// ===================================================
-
-// 1️⃣ DESIGN TOKENS (Token Thiết Kế)
-// tokens/colors.ts
-export const colors = {
-  // Primary colors (Màu chính)
-  primary: {
-    50: '#e3f2fd',    // Lightest (nhạt nhất)
-    100: '#bbdefb',
-    200: '#90caf9',
-    300: '#64b5f6',
-    400: '#42a5f5',
-    500: '#2196f3',   // Default (mặc định)
-    600: '#1e88e5',
-    700: '#1976d2',
-    800: '#1565c0',
-    900: '#0d47a1',   // Darkest (đậm nhất)
-  },
-  // Semantic colors (Màu theo ngữ nghĩa)
-  success: '#4caf50',
-  warning: '#ff9800',
-  error: '#f44336',
-  info: '#2196f3',
-};
-
-// tokens/spacing.ts
-export const spacing = {
-  xs: '4px',      // Extra small
-  sm: '8px',      // Small
-  md: '16px',     // Medium (default)
-  lg: '24px',     // Large
-  xl: '32px',     // Extra large
-  xxl: '48px',    // 2x Extra large
-};
-
-// tokens/typography.ts
-export const typography = {
-  fontFamily: {
-    body: "'Inter', sans-serif",
-    heading: "'Poppins', sans-serif",
-    mono: "'Fira Code', monospace",
-  },
-  fontSize: {
-    xs: '12px',
-    sm: '14px',
-    md: '16px',   // Base font size (cỡ chữ cơ bản)
-    lg: '18px',
-    xl: '20px',
-    '2xl': '24px',
-    '3xl': '30px',
-  },
-  fontWeight: {
-    normal: 400,
-    medium: 500,
-    semibold: 600,
-    bold: 700,
+  radius: {
+    sm: "4px",
+    md: "8px",
   },
 };
+```
 
-// 2️⃣ COMPONENT LIBRARY (Thư Viện Components)
-// components/Button/Button.tsx
-import { colors, spacing, typography } from '@tokens';
+Trong MFE, tokens giúp:
 
-interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
-  children: React.ReactNode;
-}
+- Catalog và checkout không tự chọn spacing/color khác nhau.
+- Multi-framework vẫn giữ visual consistency.
+- Upgrade theme có đường đi rõ.
 
-const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
-  children
-}) => {
-  // ✅ Dùng design tokens (không hardcode)
-  const styles = {
-    primary: {
-      background: colors.primary[500],    // Dùng token
-      color: '#fff',
-      padding: spacing[size],             // Dùng token
-      fontSize: typography.fontSize[size], // Dùng token
-      borderRadius: '4px',
-      border: 'none',
-    },
-    secondary: {
-      background: colors.primary[100],
-      color: colors.primary[900],
-      padding: spacing[size],
-      fontSize: typography.fontSize[size],
-      borderRadius: '4px',
-      border: 'none',
-    },
-    outline: {
-      background: 'transparent',
-      color: colors.primary[500],
-      padding: spacing[size],
-      fontSize: typography.fontSize[size],
-      borderRadius: '4px',
-      border: `2px solid ${colors.primary[500]}`,
-    },
-  };
+#### Shared UI package
 
-  return (
-    <button style={styles[variant]}>
-      {children}
-    </button>
-  );
-};
+```text
+libs/design-system/
+├── src/
+│   ├── Button/
+│   ├── Input/
+│   ├── Modal/
+│   ├── Table/
+│   ├── tokens/
+│   └── index.ts
+└── package.json
+```
 
-/**
- * ✅ LỢI ÍCH:
- * - Tất cả Buttons GIỐNG NHAU (consistent)
- * - Muốn đổi màu → chỉ sửa 1 chỗ (colors.primary[500])
- * - Developers KHÔNG TRANH CÃI (follow design system)
- * - Designer VUI VẺ (đúng design)
- * - User KHÔNG BỐI RỐI (UI nhất quán)
- */
+Rule senior:
 
-// ===================================================
-// 📊 SO SÁNH: KHÔNG VS CÓ DESIGN SYSTEM
-// ===================================================
+- Component public API phải ổn định.
+- Breaking change cần changelog/migration guide.
+- Có Storybook hoặc docs.
+- Có visual regression test.
+- Không nhét business logic vào design system.
 
-/**
- * ❌ KHÔNG CÓ DESIGN SYSTEM:
- * ├── 10 developers → 10 cách code Button khác nhau
- * ├── Buttons: 10 loại màu, 8 loại padding, 6 loại border-radius
- * ├── Colors: 50+ màu xanh khác nhau (hardcoded)
- * ├── Spacing: 30+ giá trị padding/margin khác nhau
- * ├── Typography: 15+ font sizes khác nhau
- * ├── Maintenance: Đổi màu → sửa 100+ chỗ (3 ngày)
- * └── User experience: Rối, không nhất quán
- *
- * ✅ CÓ DESIGN SYSTEM:
- * ├── 10 developers → 1 cách code Button (follow tokens)
- * ├── Buttons: 1 component, 3 variants (primary, secondary, outline)
- * ├── Colors: 1 file colors.ts với 10 màu primary (50-900)
- * ├── Spacing: 6 values (xs, sm, md, lg, xl, xxl)
- * ├── Typography: 7 font sizes (xs, sm, md, lg, xl, 2xl, 3xl)
- * ├── Maintenance: Đổi màu → sửa 1 chỗ (5 phút)
- * └── User experience: Mượt mà, nhất quán
- */
+#### Design system trong multi-framework
 
-// ===================================================
-// 🎯 TẠI SAO CẦN DESIGN SYSTEM? (Why Design System?)
-// ===================================================
+Nếu remote có React/Vue/Angular:
 
-/**
- * 1️⃣ CONSISTENCY (Tính Nhất Quán)
- *    → Tất cả UI elements giống nhau trong toàn app
- *    → User không bối rối
- *
- * 2️⃣ SCALABILITY (Khả Năng Mở Rộng)
- *    → Thêm 100 developers → vẫn giữ consistency
- *    → Thêm 50 pages mới → vẫn dùng components cũ
- *
- * 3️⃣ SPEED (Tốc Độ Phát Triển)
- *    → Developers không cần design từ đầu
- *    → Copy component từ Storybook → paste vào code
- *    → Build page mới: 1 ngày thay vì 1 tuần
- *
- * 4️⃣ MAINTAINABILITY (Dễ Bảo Trì)
- *    → Đổi màu toàn app: 1 file thay vì 100 files
- *    → Fix bug Button: 1 component thay vì 50 chỗ
- *
- * 5️⃣ COLLABORATION (Hợp Tác)
- *    → Designer và Developer nói chung 1 ngôn ngữ
- *    → "Dùng Button variant='primary' size='lg'" (rõ ràng)
- *    → Không còn: "Button màu xanh, padding 12px..." (mơ hồ)
- *
- * 6️⃣ ACCESSIBILITY (Khả Năng Tiếp Cận)
- *    → Components built-in accessibility (ARIA labels, keyboard nav)
- *    → Developers KHÔNG QUÊN implement a11y
- */
+- Option 1: design tokens shared, component implementation riêng từng framework.
+- Option 2: Web Components cho component cơ bản.
+- Option 3: React-only design system và hạn chế multi-framework.
 
----
+Tradeoff:
 
-### **🏗️ PHẦN 2: STEPS TO BUILD SCALABLE FE STRUCTURE (Các Bước Xây Dựng Cấu Trúc FE Có Thể Scale)**
+- Wrapper nhiều framework tăng maintenance.
+- Web Components isolate tốt nhưng theming/SSR/tooling có thể khó.
+- Một framework chính giúp DX tốt hơn.
 
-```typescript
-/**
- * 🎯 MỤC TIÊU:
- * Xây dựng cấu trúc Frontend cho app LỚN (100+ developers, 500+ components)
- * có thể SCALE dễ dàng mà KHÔNG TRỞ THÀNH SPAGHETTI CODE.
- *
- * 📋 7 BƯỚC XÂY DỰNG:
- * 1️⃣ Define Architecture Pattern (Chọn kiến trúc phân tầng)
- * 2️⃣ Folder Structure (Cấu trúc thư mục rõ ràng)
- * 3️⃣ Design System Setup (Thiết lập Design System)
- * 4️⃣ State Management Strategy (Chiến lược quản lý state)
- * 5️⃣ Code Organization (Tổ chức code module hóa)
- * 6️⃣ Tooling & DX (Công cụ và Developer Experience)
- * 7️⃣ Testing & Documentation (Kiểm thử và tài liệu)
- */
+### 🏗️ Scalable FE Structure
 
-// ===================================================
-// 1️⃣ DEFINE ARCHITECTURE PATTERN (Kiến Trúc Phân Tầng)
-// ===================================================
-
-/**
- * 🏛️ LAYERED ARCHITECTURE (Kiến Trúc Phân Tầng)
- *
- * Chia app thành các TẦNG (layers) với trách nhiệm rõ ràng:
- *
- * ┌─────────────────────────────────────────┐
- * │  PRESENTATION LAYER (Tầng Hiển Thị)    │ ← React Components, UI
- * ├─────────────────────────────────────────┤
- * │  BUSINESS LOGIC LAYER (Tầng Logic)     │ ← Hooks, Utils, Validators
- * ├─────────────────────────────────────────┤
- * │  DATA ACCESS LAYER (Tầng Dữ Liệu)      │ ← API calls, Repositories
- * ├─────────────────────────────────────────┤
- * │  INFRASTRUCTURE LAYER (Tầng Hạ Tầng)   │ ← Axios, Storage, Config
- * └─────────────────────────────────────────┘
- *
- * 🔥 NGUYÊN TẮC:
- * - Tầng trên CHỈ PHỤ THUỘC vào tầng dưới (one-way dependency)
- * - Tầng dưới KHÔNG BIẾT tầng trên (no reverse dependency)
- * - Mỗi tầng có thể THAY THẾ độc lập (interchangeable)
- */
-
-// ===================================================
-// 2️⃣ FOLDER STRUCTURE (Cấu Trúc Thư Mục)
-// ===================================================
-
-/**
- * 📁 FEATURE-BASED STRUCTURE (Cấu Trúc Theo Feature)
- *
- * Nhóm code theo FEATURE thay vì theo TYPE (components, hooks...)
- * → Dễ tìm, dễ maintain, dễ scale
- */
-
-// ✅ RECOMMENDED: Feature-based (Theo Feature)
-/*
+```text
 src/
-├── features/                    # Tất cả features của app
-│   ├── auth/                    # Feature: Authentication
-│   │   ├── components/          # Components của Auth
-│   │   │   ├── LoginForm.tsx
-│   │   │   ├── RegisterForm.tsx
-│   │   │   └── ForgotPassword.tsx
-│   │   ├── hooks/               # Hooks của Auth
-│   │   │   ├── useAuth.ts
-│   │   │   └── useLogin.ts
-│   │   ├── services/            # API calls của Auth
-│   │   │   └── authService.ts
-│   │   ├── store/               # State của Auth (nếu dùng Redux)
-│   │   │   ├── authSlice.ts
-│   │   │   └── authSelectors.ts
-│   │   ├── types/               # TypeScript types của Auth
-│   │   │   └── auth.types.ts
-│   │   ├── utils/               # Utils của Auth
-│   │   │   └── tokenUtils.ts
-│   │   └── index.ts             # Public API của Auth feature
-│   │
-│   ├── dashboard/               # Feature: Dashboard
-│   │   ├── components/
-│   │   │   ├── DashboardLayout.tsx
-│   │   │   ├── StatsCard.tsx
-│   │   │   └── RecentOrders.tsx
-│   │   ├── hooks/
-│   │   │   └── useDashboardData.ts
-│   │   ├── services/
-│   │   │   └── dashboardService.ts
-│   │   └── index.ts
-│   │
-│   ├── orders/                  # Feature: Orders
-│   │   ├── components/
-│   │   │   ├── OrderList.tsx
-│   │   │   ├── OrderDetail.tsx
-│   │   │   └── OrderForm.tsx
-│   │   ├── hooks/
-│   │   │   ├── useOrders.ts
-│   │   │   └── useOrderMutations.ts
-│   │   ├── services/
-│   │   │   └── orderService.ts
-│   │   └── index.ts
-│   │
-│   └── products/                # Feature: Products
-│       ├── components/
-│       ├── hooks/
-│       ├── services/
-│       └── index.ts
-│
-├── shared/                      # Code DÙNG CHUNG (shared across features)
-│   ├── components/              # Shared components (Button, Input, Modal...)
-│   │   ├── Button/
-│   │   │   ├── Button.tsx
-│   │   │   ├── Button.test.tsx
-│   │   │   ├── Button.stories.tsx  # Storybook story
-│   │   │   └── index.ts
-│   │   ├── Input/
-│   │   ├── Modal/
-│   │   └── Table/
-│   │
-│   ├── hooks/                   # Shared hooks (useDebounce, useLocalStorage...)
-│   │   ├── useDebounce.ts
-│   │   ├── useLocalStorage.ts
-│   │   └── useMediaQuery.ts
-│   │
-│   ├── utils/                   # Shared utilities
-│   │   ├── formatters.ts        # Format date, currency, số điện thoại...
-│   │   ├── validators.ts        # Validate email, phone, credit card...
-│   │   └── helpers.ts           # Helper functions
-│   │
-│   ├── constants/               # Shared constants
-│   │   ├── routes.ts            # App routes
-│   │   ├── api.ts               # API endpoints
-│   │   └── config.ts            # App config
-│   │
-│   └── types/                   # Shared TypeScript types
-│       ├── api.types.ts
-│       └── common.types.ts
-│
-├── core/                        # CORE INFRASTRUCTURE (hạ tầng cốt lõi)
-│   ├── api/                     # API client setup
-│   │   ├── apiClient.ts         # Axios instance với interceptors
-│   │   └── endpoints.ts         # API endpoints
-│   │
-│   ├── store/                   # Global state setup (Redux/Zustand)
-│   │   ├── store.ts             # Store configuration
-│   │   └── rootReducer.ts       # Combine reducers
-│   │
-│   ├── router/                  # Routing setup
-│   │   ├── routes.tsx           # App routes
-│   │   └── ProtectedRoute.tsx   # Auth guard
-│   │
-│   └── theme/                   # Design System
-│       ├── tokens/              # Design tokens
-│       │   ├── colors.ts
-│       │   ├── spacing.ts
-│       │   └── typography.ts
-│       └── GlobalStyles.ts      # Global CSS
-│
-├── pages/                       # PAGE COMPONENTS (route pages)
-│   ├── LoginPage.tsx            # /login
-│   ├── DashboardPage.tsx        # /dashboard
-│   ├── OrdersPage.tsx           # /orders
-│   └── ProductsPage.tsx         # /products
-│
-├── App.tsx                      # Root component
-├── main.tsx                     # Entry point
-└── vite-env.d.ts                # Vite types
-*/
+├── app/                 # app bootstrap, providers, router
+├── features/            # business features: auth, orders, products
+├── entities/            # domain models/types
+├── shared/              # UI, utils, hooks, api client
+└── pages/               # route-level composition
+```
 
-/**
- * ✅ LỢI ÍCH CỦA FEATURE-BASED STRUCTURE:
- *
- * 1️⃣ CO-LOCATION (Đặt Cùng Chỗ):
- *    → Tất cả code của 1 feature ở 1 folder
- *    → Dễ tìm: Cần sửa Login? → vào features/auth/
- *
- * 2️⃣ ENCAPSULATION (Đóng Gói):
- *    → Mỗi feature là 1 MODULE độc lập
- *    → Export qua index.ts (public API)
- *    → Các files khác PRIVATE (không export)
- *
- * 3️⃣ SCALABILITY (Mở Rộng):
- *    → Thêm feature mới? → Tạo folder mới
- *    → 100 features? → Vẫn rõ ràng!
- *
- * 4️⃣ TEAM AUTONOMY (Độc Lập Team):
- *    → Team A làm feature Auth
- *    → Team B làm feature Orders
- *    → KHÔNG CONFLICT (ít merge conflicts)
- *
- * 5️⃣ CODE SPLITTING:
- *    → Lazy load từng feature
- *    → User vào /login → chỉ load Auth feature
- *    → Không load Orders, Products (tiết kiệm bandwidth)
- */
+Key senior:
 
-// ❌ ANTI-PATTERN: Type-based structure (Theo Type - KHÔNG KHUYẾN KHÍCH)
-/*
-src/
-├── components/          # TẤT CẢ components (100+ files) ❌
-│   ├── LoginForm.tsx
-│   ├── RegisterForm.tsx
-│   ├── DashboardLayout.tsx
-│   ├── OrderList.tsx
-│   ├── ProductCard.tsx
-│   └── ... 95 files nữa
-├── hooks/               # TẤT CẢ hooks (50+ files) ❌
-│   ├── useAuth.ts
-│   ├── useOrders.ts
-│   ├── useProducts.ts
-│   └── ... 47 files nữa
-└── services/            # TẤT CẢ services (30+ files) ❌
-    ├── authService.ts
-    ├── orderService.ts
-    └── ... 28 files nữa
+- Tách domain logic khỏi UI.
+- Không để `shared/` thành thùng rác.
+- API boundary rõ.
+- Feature ownership rõ.
+- Có lint/import rules để tránh dependency ngược.
 
-❌ VẤN ĐỀ:
-- components/ có 100 files → TÌM KHÔNG RA!
-- Muốn sửa Auth → phải mở 3 folders (components, hooks, services)
-- Team A sửa LoginForm.tsx, Team B sửa RegisterForm.tsx → CONFLICT!
-- Không thể code split theo feature
-*/
+#### Feature-based structure
 
-// ===================================================
-// 3️⃣ DESIGN SYSTEM SETUP (Thiết Lập Design System)
-// ===================================================
+```text
+features/auth/
+├── api/
+│   └── authApi.ts
+├── components/
+│   └── LoginForm.tsx
+├── hooks/
+│   └── useLogin.ts
+├── model/
+│   ├── auth.types.ts
+│   └── authStore.ts
+└── index.ts
+```
 
-// Step 1: Define Design Tokens
-// core/theme/tokens/colors.ts
-export const colors = {
-  primary: {
-    50: '#e3f2fd',
-    500: '#2196f3',  // Main primary color
-    900: '#0d47a1',
-  },
-  semantic: {
-    success: '#4caf50',
-    error: '#f44336',
-    warning: '#ff9800',
-    info: '#2196f3',
-  },
-  neutral: {
-    0: '#ffffff',
-    50: '#fafafa',
-    100: '#f5f5f5',
-    500: '#9e9e9e',
-    900: '#212121',
-  },
-};
+Ưu điểm:
 
-// core/theme/tokens/spacing.ts
-export const spacing = {
-  xs: 4,   // 4px
-  sm: 8,   // 8px
-  md: 16,  // 16px (base)
-  lg: 24,  // 24px
-  xl: 32,  // 32px
-  xxl: 48, // 48px
-};
+- Dễ tìm code theo domain.
+- Dễ giao ownership cho team.
+- Dễ tách thành remote/lib nếu domain lớn.
 
-// core/theme/tokens/typography.ts
-export const typography = {
-  fontFamily: {
-    body: "'Inter', -apple-system, sans-serif",
-    heading: "'Poppins', sans-serif",
-  },
-  fontSize: {
-    xs: 12,
-    sm: 14,
-    md: 16,  // Base font size
-    lg: 18,
-    xl: 20,
-    '2xl': 24,
-  },
-  fontWeight: {
-    normal: 400,
-    medium: 500,
-    semibold: 600,
-    bold: 700,
-  },
-  lineHeight: {
-    tight: 1.2,
-    normal: 1.5,
-    relaxed: 1.75,
-  },
-};
+#### Layered boundaries
 
-// Step 2: Create Theme Provider
-// core/theme/ThemeProvider.tsx
-import { createContext, useContext } from 'react';
-import { colors, spacing, typography } from './tokens';
+```text
+app -> pages -> features -> entities -> shared
+```
 
-const theme = {
-  colors,
-  spacing,
-  typography,
-};
+Rule:
 
-const ThemeContext = createContext(theme);
+- `shared` không import `features`.
+- `entities` không biết UI page.
+- `features` có thể dùng `entities/shared`.
+- `pages` compose features.
+- `app` bootstrap providers/router.
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <ThemeContext.Provider value={theme}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
-
-export const useTheme = () => useContext(ThemeContext);
-
-// Step 3: Create Base Components (Button example)
-// shared/components/Button/Button.tsx
-import { useTheme } from '@core/theme';
-
-interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
-  children: React.ReactNode;
-  onClick?: () => void;
-}
-
-export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
-  children,
-  onClick,
-}) => {
-  const theme = useTheme();
-
-  // ✅ Dùng theme tokens (không hardcode)
-  const styles = {
-    primary: {
-      backgroundColor: theme.colors.primary[500],
-      color: theme.colors.neutral[0],
-      padding: `${theme.spacing.sm}px ${theme.spacing.md}px`,
-      fontSize: theme.typography.fontSize[size],
-      fontWeight: theme.typography.fontWeight.semibold,
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-    },
-    // ... secondary, outline variants
-  };
-
-  return (
-    <button style={styles[variant]} onClick={onClick}>
-      {children}
-    </button>
-  );
-};
-
-/**
- * ✅ LỢI ÍCH:
- * - Thay đổi màu primary: 1 file (colors.ts)
- * - Thay đổi spacing: 1 file (spacing.ts)
- * - Consistent UI: Tất cả Buttons giống nhau
- */
-
-// ===================================================
-// 4️⃣ STATE MANAGEMENT STRATEGY (Chiến Lược Quản Lý State)
-// ===================================================
-
-/**
- * 🎯 PHÂN LOẠI STATE:
- *
- * 1️⃣ LOCAL STATE (State Cục Bộ):
- *    → Chỉ dùng trong 1 component
- *    → Dùng useState, useReducer
- *    → VD: Form input value, modal open/close
- *
- * 2️⃣ SHARED STATE (State Chia Sẻ):
- *    → Dùng trong nhiều components (cùng feature)
- *    → Dùng Context API, Zustand
- *    → VD: User info trong Auth feature
- *
- * 3️⃣ GLOBAL STATE (State Toàn Cục):
- *    → Dùng trong TOÀN APP
- *    → Dùng Redux, Zustand (global store)
- *    → VD: Theme, Language, Current User
- *
- * 4️⃣ SERVER STATE (State Từ Server):
- *    → Data từ API
- *    → Dùng React Query, SWR
- *    → VD: User list, Product list, Order details
- *
- * 🔥 NGUYÊN TẮC:
- * - Ưu tiên LOCAL STATE (đơn giản nhất)
- * - Chỉ dùng GLOBAL STATE khi THỰC SỰ CẦN
- * - Dùng React Query cho SERVER STATE (caching, revalidation)
- */
-
-// Example: State Strategy trong 1 Trading App
-
-// 1️⃣ LOCAL STATE: Form input
-const OrderForm = () => {
-  const [quantity, setQuantity] = useState(0);  // ✅ Local state
-  const [price, setPrice] = useState(0);        // ✅ Local state
-
-  return (
-    <form>
-      <input value={quantity} onChange={e => setQuantity(+e.target.value)} />
-      <input value={price} onChange={e => setPrice(+e.target.value)} />
-    </form>
-  );
-};
-
-// 2️⃣ SHARED STATE: Auth state (dùng trong Auth feature)
-// features/auth/store/authStore.ts
-import create from 'zustand';
-
-interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  login: (user: User) => void;
-  logout: () => void;
-}
-
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  login: (user) => set({ user, isAuthenticated: true }),
-  logout: () => set({ user: null, isAuthenticated: false }),
-}));
-
-// 3️⃣ GLOBAL STATE: Theme
-// core/store/themeStore.ts
-export const useThemeStore = create<ThemeState>((set) => ({
-  theme: 'light',
-  toggleTheme: () => set((state) => ({
-    theme: state.theme === 'light' ? 'dark' : 'light'
-  })),
-}));
-
-// 4️⃣ SERVER STATE: Orders list
-// features/orders/hooks/useOrders.ts
-import { useQuery } from '@tanstack/react-query';
-import { orderService } from '../services/orderService';
-
-export const useOrders = () => {
-  return useQuery({
-    queryKey: ['orders'],
-    queryFn: orderService.getOrders,
-    staleTime: 5 * 60 * 1000,  // Cache 5 phút
-    cacheTime: 10 * 60 * 1000, // Giữ cache 10 phút
-  });
-};
-
-/**
- * ✅ LỢI ÍCH:
- * - Local state: Đơn giản, không cần setup
- * - Shared state (Zustand): Nhẹ, dễ dùng hơn Redux
- * - Global state: Centralized, predictable
- * - Server state (React Query): Auto caching, revalidation, loading states
- */
-
----
-
-### **🎨 PHẦN 3: DESIGN PATTERNS TRONG FRONTEND (Các Mẫu Thiết Kế)**
+#### API boundary
 
 ```typescript
-/**
- * 🏗️ DESIGN PATTERNS (Mẫu Thiết Kế)
- *
- * Là các GIẢI PHÁP ĐÃ ĐƯỢC CHỨNG MINH (proven solutions)
- * cho các VẤN ĐỀ THƯỜNG GẶP trong lập trình.
- *
- * 📋 CÁC PATTERN THƯỜNG DÙNG TRONG REACT:
- * 1️⃣ Container/Presentational Pattern
- * 2️⃣ Compound Component Pattern
- * 3️⃣ Render Props Pattern
- * 4️⃣ Higher-Order Component (HOC) Pattern
- * 5️⃣ Custom Hooks Pattern
- * 6️⃣ Provider Pattern
- * 7️⃣ Observer Pattern (Pub/Sub)
- * 8️⃣ Factory Pattern
- * 9️⃣ Singleton Pattern
- * 🔟 Module Pattern
- */
+// features/orders/api/orderApi.ts
+export async function fetchOrders(userId: string) {
+  const response = await fetch(`/api/users/${userId}/orders`);
 
-// ===================================================
-// 1️⃣ CONTAINER/PRESENTATIONAL PATTERN
-// ===================================================
+  if (!response.ok) {
+    throw new Error("Cannot fetch orders");
+  }
 
-/**
- * 🎯 MỤC ĐÍCH:
- * Tách LOGIC (business logic) ra khỏi UI (presentation)
- *
- * 📦 CONTAINER (Smart Component):
- * - Xử lý logic, fetch data, state management
- * - KHÔNG quan tâm UI
- *
- * 🎨 PRESENTATIONAL (Dumb Component):
- * - Chỉ nhận props và render UI
- * - KHÔNG có logic, KHÔNG fetch data
- */
+  return response.json() as Promise<Order[]>;
+}
+```
 
-// ❌ BAD: Logic và UI lẫn lộn
-const UserList = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
+Senior point:
 
-  useEffect(() => {
-    // Logic: Fetch data ❌ Lẫn với UI
-    setLoading(true);
-    fetch('/api/users')
-      .then(res => res.json())
-      .then(data => {
-        setUsers(data);
-        setLoading(false);
-      });
-  }, []);
+- UI không gọi fetch rải rác.
+- API client centralize auth/error handling.
+- DTO -> ViewModel mapping rõ.
+- Test dễ hơn.
 
-  // UI: Render ❌ Lẫn với Logic
-  if (loading) return <div>Loading...</div>;
+### 🧠 Frontend design patterns
 
-  return (
-    <ul>
-      {users.map(user => (
-        <li key={user.id}>
-          {user.name} - {user.email}
-        </li>
-      ))}
-    </ul>
-  );
-};
+- Container/Presentational: tách data fetching khỏi UI.
+- Compound Components: component API linh hoạt.
+- Controlled/Uncontrolled: form/input predictable.
+- Custom Hooks: reuse behavior, test logic riêng.
+- Singleton: dùng cẩn thận cho API client/event bus/auth manager.
+- Error Boundary: cô lập lỗi render.
 
-// ✅ GOOD: Tách Container (Logic) và Presentational (UI)
+#### Container / Presentational
 
-// 📦 CONTAINER (Logic)
-const UserListContainer = () => {
-  const { data: users, isLoading } = useQuery({
-    queryKey: ['users'],
-    queryFn: fetchUsers,
-  });
+```tsx
+function OrdersContainer() {
+  const { data, isLoading } = useOrders();
+  return <OrdersTable orders={data ?? []} loading={isLoading} />;
+}
 
-  // ✅ Container KHÔNG RENDER UI, chỉ pass props
-  return <UserListView users={users} loading={isLoading} />;
-};
-
-// 🎨 PRESENTATIONAL (UI)
-interface UserListViewProps {
-  users: User[];
+function OrdersTable({
+  orders,
+  loading,
+}: {
+  orders: Order[];
   loading: boolean;
-}
-
-const UserListView: React.FC<UserListViewProps> = ({ users, loading }) => {
-  // ✅ Presentational chỉ render UI, KHÔNG có logic
+}) {
   if (loading) return <div>Loading...</div>;
+  return <table>{/* render rows */}</table>;
+}
+```
 
-  return (
-    <ul>
-      {users.map(user => (
-        <li key={user.id}>
-          {user.name} - {user.email}
-        </li>
-      ))}
-    </ul>
-  );
-};
+Dùng khi muốn UI dễ test và data fetching không lẫn vào markup.
 
-/**
- * ✅ LỢI ÍCH:
- * - Dễ test: Test logic riêng, test UI riêng
- * - Dễ reuse: UserListView có thể dùng với data khác
- * - Dễ đọc: Logic ở Container, UI ở Presentational (rõ ràng)
- */
+#### Compound Components
 
-// ===================================================
-// 2️⃣ COMPOUND COMPONENT PATTERN
-// ===================================================
+```tsx
+<Tabs defaultValue="overview">
+  <Tabs.List>
+    <Tabs.Tab value="overview">Overview</Tabs.Tab>
+    <Tabs.Tab value="settings">Settings</Tabs.Tab>
+  </Tabs.List>
+  <Tabs.Panel value="overview">...</Tabs.Panel>
+  <Tabs.Panel value="settings">...</Tabs.Panel>
+</Tabs>
+```
 
-/**
- * 🎯 MỤC ĐÍCH:
- * Tạo components LINH HOẠT bằng cách chia thành các SUB-COMPONENTS
- * có thể tùy chỉnh thứ tự, layout.
- *
- * VD: <Select>, <Tabs>, <Menu> - user tự quyết định thứ tự các phần
- */
+Hợp cho design system component có nhiều sub-parts.
 
-// ❌ BAD: Component cứng nhắc
-interface TabsProps {
-  tabs: Array<{ label: string; content: React.ReactNode }>;
+#### Controlled vs Uncontrolled
+
+```tsx
+function ControlledInput() {
+  const [value, setValue] = React.useState("");
+  return <input value={value} onChange={(e) => setValue(e.target.value)} />;
 }
 
-const Tabs: React.FC<TabsProps> = ({ tabs }) => {
-  const [activeTab, setActiveTab] = useState(0);
+function UncontrolledInput() {
+  const ref = React.useRef<HTMLInputElement | null>(null);
+  return <input ref={ref} defaultValue="" />;
+}
+```
 
-  return (
-    <div>
-      {/* ❌ Tab headers CỐ ĐỊNH ở trên */}
-      <div className="tab-headers">
-        {tabs.map((tab, index) => (
-          <button key={index} onClick={() => setActiveTab(index)}>
-            {tab.label}
-          </button>
-        ))}
-      </div>
+Rule:
 
-      {/* ❌ Tab content CỐ ĐỊNH ở dưới */}
-      <div className="tab-content">
-        {tabs[activeTab].content}
-      </div>
-    </div>
-  );
-};
+- Form cần validation/live state -> controlled.
+- Input đơn giản hoặc performance-sensitive -> uncontrolled có thể hợp.
 
-// Usage: ❌ Không thể thay đổi layout
-<Tabs tabs={[
-  { label: 'Tab 1', content: <div>Content 1</div> },
-  { label: 'Tab 2', content: <div>Content 2</div> },
-]} />
+#### Custom Hooks
 
-// ✅ GOOD: Compound Components (Linh hoạt)
+```typescript
+function useOrderSummary(orderId: string) {
+  return useQuery({
+    queryKey: ["order-summary", orderId],
+    queryFn: () => fetchOrderSummary(orderId),
+  });
+}
+```
 
-// Context để share state giữa sub-components
-const TabsContext = createContext<{
-  activeTab: number;
-  setActiveTab: (index: number) => void;
+Custom hook giúp reuse behavior, không reuse UI quá sớm.
+
+#### Singleton
+
+Singleton hợp cho:
+
+- API client.
+- Event bus.
+- Logger.
+- Feature flag client.
+
+Nhưng trong MFE phải cẩn thận vì nhiều bundle có thể tạo nhiều singleton nếu shared config sai.
+
+### 🗃️ State Management: Context vs Zustand vs Redux
+
+| Tool | Nên dùng khi | Lưu ý |
+|---|---|---|
+| Context API | Theme, locale, auth status ít đổi | Dễ gây re-render nếu value thay đổi thường xuyên |
+| Zustand | App vừa/lớn, store đơn giản, performance tốt | Ít boilerplate, hợp cart/user/ui state |
+| Redux Toolkit | App enterprise, workflow phức tạp, middleware/debug mạnh | Boilerplate hơn, hợp trading/CRM/admin lớn |
+
+Trong Microfrontend:
+
+- Tránh share quá nhiều mutable state.
+- Prefer event/API contract cho cross-domain communication.
+- Shared state chỉ nên dùng cho state thật sự global: session, theme, cart summary.
+
+#### Context API
+
+Context là built-in React, hợp cho state ít thay đổi:
+
+```tsx
+const ThemeContext = React.createContext<{
+  theme: "light" | "dark";
+  toggleTheme: () => void;
 } | null>(null);
 
-// Main component
-const Tabs: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [activeTab, setActiveTab] = useState(0);
-
-  return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
-      <div className="tabs">{children}</div>
-    </TabsContext.Provider>
-  );
-};
-
-// Sub-component: TabList
-Tabs.List = ({ children }: { children: React.ReactNode }) => {
-  return <div className="tab-list">{children}</div>;
-};
-
-// Sub-component: Tab
-Tabs.Tab = ({ index, children }: { index: number; children: React.ReactNode }) => {
-  const context = useContext(TabsContext);
-  if (!context) throw new Error('Tab must be used within Tabs');
-
-  const isActive = context.activeTab === index;
-
-  return (
-    <button
-      className={`tab ${isActive ? 'active' : ''}`}
-      onClick={() => context.setActiveTab(index)}
-    >
-      {children}
-    </button>
-  );
-};
-
-// Sub-component: TabPanel
-Tabs.Panel = ({ index, children }: { index: number; children: React.ReactNode }) => {
-  const context = useContext(TabsContext);
-  if (!context) throw new Error('TabPanel must be used within Tabs');
-
-  if (context.activeTab !== index) return null;
-
-  return <div className="tab-panel">{children}</div>;
-};
-
-// ✅ Usage: LINH HOẠT - user tự quyết định layout
-<Tabs>
-  {/* User tự quyết định: Tabs ở trên hay dưới */}
-  <Tabs.List>
-    <Tabs.Tab index={0}>Profile</Tabs.Tab>
-    <Tabs.Tab index={1}>Settings</Tabs.Tab>
-    <Tabs.Tab index={2}>Billing</Tabs.Tab>
-  </Tabs.List>
-
-  <Tabs.Panel index={0}>
-    <ProfileContent />
-  </Tabs.Panel>
-  <Tabs.Panel index={1}>
-    <SettingsContent />
-  </Tabs.Panel>
-  <Tabs.Panel index={2}>
-    <BillingContent />
-  </Tabs.Panel>
-</Tabs>
-
-// Hoặc: Tabs ở dưới
-<Tabs>
-  <Tabs.Panel index={0}><ProfileContent /></Tabs.Panel>
-  <Tabs.Panel index={1}><SettingsContent /></Tabs.Panel>
-
-  <Tabs.List>
-    <Tabs.Tab index={0}>Profile</Tabs.Tab>
-    <Tabs.Tab index={1}>Settings</Tabs.Tab>
-  </Tabs.List>
-</Tabs>
-
-/**
- * ✅ LỢI ÍCH:
- * - Flexibility (Linh hoạt): User tự quyết định layout
- * - Maintainability: Mỗi sub-component độc lập
- * - API rõ ràng: <Tabs.List>, <Tabs.Tab>, <Tabs.Panel>
- *
- * 📚 REAL EXAMPLES:
- * - Radix UI: <Tabs>, <Dialog>, <DropdownMenu>
- * - Headless UI: Tất cả components
- * - Chakra UI: <Menu>, <Accordion>
- */
-
-// ===================================================
-// 3️⃣ CUSTOM HOOKS PATTERN
-// ===================================================
-
-/**
- * 🎯 MỤC ĐÍCH:
- * Tái sử dụng STATEFUL LOGIC (logic có state) giữa các components
- *
- * 🔥 KHÔNG PHẢI tái sử dụng UI, mà tái sử dụng LOGIC!
- */
-
-// ❌ BAD: Copy-paste logic vào mỗi component
-const LoginForm = () => {
-  const [value, setValue] = useState('');
-  const [error, setError] = useState('');
-
-  const validate = (val: string) => {
-    if (!val) setError('Required');
-    else if (!/\S+@\S+\.\S+/.test(val)) setError('Invalid email');
-    else setError('');
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setValue(val);
-    validate(val);
-  };
-
-  return <input value={value} onChange={handleChange} />;
-};
-
-const RegisterForm = () => {
-  // ❌ Copy-paste SAME LOGIC!
-  const [value, setValue] = useState('');
-  const [error, setError] = useState('');
-
-  const validate = (val: string) => {
-    if (!val) setError('Required');
-    else if (!/\S+@\S+\.\S+/.test(val)) setError('Invalid email');
-    else setError('');
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setValue(val);
-    validate(val);
-  };
-
-  return <input value={value} onChange={handleChange} />;
-};
-
-// ✅ GOOD: Extract logic vào Custom Hook
-const useFormField = (initialValue = '', validator?: (val: string) => string) => {
-  const [value, setValue] = useState(initialValue);
-  const [error, setError] = useState('');
-  const [touched, setTouched] = useState(false);
-
-  const validate = (val: string) => {
-    if (validator) {
-      const errorMsg = validator(val);
-      setError(errorMsg);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setValue(val);
-    if (touched) validate(val);
-  };
-
-  const handleBlur = () => {
-    setTouched(true);
-    validate(value);
-  };
-
-  const reset = () => {
-    setValue(initialValue);
-    setError('');
-    setTouched(false);
-  };
-
-  return {
-    value,
-    error,
-    touched,
-    handleChange,
-    handleBlur,
-    reset,
-  };
-};
-
-// ✅ Usage: Tái sử dụng logic
-const LoginForm = () => {
-  const email = useFormField('', (val) => {
-    if (!val) return 'Required';
-    if (!/\S+@\S+\.\S+/.test(val)) return 'Invalid email';
-    return '';
-  });
-
-  const password = useFormField('', (val) => {
-    if (!val) return 'Required';
-    if (val.length < 8) return 'Min 8 characters';
-    return '';
-  });
-
-  return (
-    <form>
-      <input {...email} />
-      {email.touched && <span>{email.error}</span>}
-
-      <input type="password" {...password} />
-      {password.touched && <span>{password.error}</span>}
-    </form>
-  );
-};
-
-/**
- * ✅ LỢI ÍCH:
- * - Reusability: Dùng lại logic ở nhiều components
- * - Testability: Test hook riêng (với @testing-library/react-hooks)
- * - Separation of Concerns: Logic tách khỏi UI
- *
- * 📚 POPULAR CUSTOM HOOKS:
- * - useDebounce: Delay input
- * - useLocalStorage: Sync state với localStorage
- * - useMediaQuery: Responsive breakpoints
- * - useFetch: Fetch data với loading/error states
- * - useIntersectionObserver: Lazy load images
- */
-
-// ===================================================
-// 4️⃣ OBSERVER PATTERN (Pub/Sub)
-// ===================================================
-
-/**
- * 🎯 MỤC ĐÍCH:
- * Nhiều components LẮNG NGHE (subscribe) và PHẢN ỨNG (react)
- * khi có SỰ KIỆN (event) xảy ra.
- *
- * 🔥 Dùng cho: Event Bus, Global notifications, Real-time updates
- */
-
-// Implementation: Event Emitter
-class EventEmitter {
-  private events: Map<string, Array<(data: any) => void>> = new Map();
-
-  // Subscribe to event (Đăng ký lắng nghe)
-  on(event: string, callback: (data: any) => void) {
-    if (!this.events.has(event)) {
-      this.events.set(event, []);
-    }
-    this.events.get(event)!.push(callback);
-
-    // Return unsubscribe function
-    return () => {
-      const callbacks = this.events.get(event);
-      if (callbacks) {
-        const index = callbacks.indexOf(callback);
-        if (index > -1) callbacks.splice(index, 1);
-      }
-    };
-  }
-
-  // Emit event (Phát sự kiện)
-  emit(event: string, data?: any) {
-    const callbacks = this.events.get(event);
-    if (callbacks) {
-      callbacks.forEach(callback => callback(data));
-    }
-  }
-
-  // Remove all listeners
-  off(event: string) {
-    this.events.delete(event);
-  }
-}
-
-// Global event bus
-export const eventBus = new EventEmitter();
-
-// ✅ Usage Example: Real-time notifications
-
-// Component 1: Emit event khi order completed
-const OrderForm = () => {
-  const handleSubmit = async () => {
-    const order = await createOrder();
-
-    // 📢 Emit event: "order:completed"
-    eventBus.emit('order:completed', {
-      orderId: order.id,
-      total: order.total,
-    });
-  };
-
-  return <form onSubmit={handleSubmit}>...</form>;
-};
-
-// Component 2: Listen to event và show notification
-const NotificationBar = () => {
-  const [notifications, setNotifications] = useState<string[]>([]);
-
-  useEffect(() => {
-    // 👂 Subscribe to "order:completed"
-    const unsubscribe = eventBus.on('order:completed', (data) => {
-      setNotifications(prev => [
-        ...prev,
-        `Order #${data.orderId} completed! Total: $${data.total}`
-      ]);
-    });
-
-    // Cleanup: Unsubscribe khi unmount
-    return unsubscribe;
-  }, []);
-
-  return (
-    <div className="notifications">
-      {notifications.map((msg, i) => (
-        <div key={i}>{msg}</div>
-      ))}
-    </div>
-  );
-};
-
-// Component 3: Listen và update stats
-const DashboardStats = () => {
-  const [totalOrders, setTotalOrders] = useState(0);
-
-  useEffect(() => {
-    // 👂 Same event, different action
-    const unsubscribe = eventBus.on('order:completed', () => {
-      setTotalOrders(prev => prev + 1);
-    });
-
-    return unsubscribe;
-  }, []);
-
-  return <div>Total Orders: {totalOrders}</div>;
-};
-
-/**
- * ✅ LỢI ÍCH:
- * - Loose Coupling: Components KHÔNG BIẾT nhau
- * - Scalability: Thêm listener mới dễ dàng
- * - Flexibility: 1 event → nhiều reactions
- *
- * ⚠️ NHƯỢC ĐIỂM:
- * - Hard to debug: Không biết ai emit, ai listen
- * - Memory leaks: Quên unsubscribe
- *
- * 💡 KHI NÀO DÙNG:
- * - Real-time notifications
- * - Cross-feature communication
- * - Event tracking (analytics)
- */
-
-// ===================================================
-// 5️⃣ SINGLETON PATTERN
-// ===================================================
-
-/**
- * 🎯 MỤC ĐÍCH:
- * Đảm bảo 1 class CHỈ CÓ 1 INSTANCE duy nhất trong toàn app.
- *
- * 🔥 Dùng cho: API client, Logger, Config manager
- */
-
-// ✅ Implementation: API Client Singleton
-class ApiClient {
-  private static instance: ApiClient;
-  private baseURL: string;
-  private token: string | null = null;
-
-  // Private constructor (Không thể new ApiClient())
-  private constructor() {
-    this.baseURL = import.meta.env.VITE_API_URL;
-  }
-
-  // Get singleton instance
-  public static getInstance(): ApiClient {
-    if (!ApiClient.instance) {
-      ApiClient.instance = new ApiClient();
-    }
-    return ApiClient.instance;
-  }
-
-  // Set auth token
-  public setToken(token: string) {
-    this.token = token;
-  }
-
-  // API methods
-  public async get<T>(endpoint: string): Promise<T> {
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
-      headers: {
-        'Authorization': `Bearer ${this.token}`,
-      },
-    });
-    return response.json();
-  }
-
-  public async post<T>(endpoint: string, data: any): Promise<T> {
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.token}`,
-      },
-      body: JSON.stringify(data),
-    });
-    return response.json();
-  }
-}
-
-// ✅ Usage: Luôn cùng 1 instance
-const api = ApiClient.getInstance();
-
-// Component 1: Set token
-const LoginForm = () => {
-  const handleLogin = async (credentials) => {
-    const { token } = await api.post('/auth/login', credentials);
-
-    // Set token vào singleton instance
-    api.setToken(token);
-  };
-};
-
-// Component 2: Token đã có sẵn (cùng instance)
-const Dashboard = () => {
-  const { data } = useQuery({
-    queryKey: ['dashboard'],
-    queryFn: () => api.get('/dashboard'),  // ✅ Token already set
-  });
-};
-
-/**
- * ✅ LỢI ÍCH:
- * - Shared state: Token được share giữa tất cả API calls
- * - Memory efficient: Chỉ 1 instance
- * - Consistent config: Tất cả calls dùng cùng baseURL
- *
- * ⚠️ NHƯỢC ĐIỂM:
- * - Hard to test: Singleton state persist giữa tests
- * - Global state: Có thể gây side effects
- *
- * 💡 ALTERNATIVE: Dependency Injection
- *    → Inject API client vào components (testable hơn)
- */
-
----
-
-### **🚀 PHẦN 4: CODE ORGANIZATION & BEST PRACTICES (Tổ Chức Code & Thực Hành Tốt)**
-
-```typescript
-/**
- * 📋 BEST PRACTICES ĐỂ CODE SCALE TỐT:
- *
- * 1️⃣ SINGLE RESPONSIBILITY (Trách Nhiệm Đơn Nhất)
- * 2️⃣ DRY (Don't Repeat Yourself)
- * 3️⃣ KISS (Keep It Simple, Stupid)
- * 4️⃣ YAGNI (You Aren't Gonna Need It)
- * 5️⃣ Dependency Injection
- * 6️⃣ Error Boundaries
- * 7️⃣ Code Splitting & Lazy Loading
- * 8️⃣ Performance Optimization
- */
-
-// ===================================================
-// 1️⃣ SINGLE RESPONSIBILITY PRINCIPLE
-// ===================================================
-
-// ❌ BAD: 1 component làm QUÁ NHIỀU việc
-const UserDashboard = () => {
-  const [user, setUser] = useState(null);
-  const [orders, setOrders] = useState([]);
-  const [products, setProducts] = useState([]);
-
-  // Fetch user ❌
-  useEffect(() => {
-    fetch('/api/user').then(res => res.json()).then(setUser);
-  }, []);
-
-  // Fetch orders ❌
-  useEffect(() => {
-    fetch('/api/orders').then(res => res.json()).then(setOrders);
-  }, []);
-
-  // Fetch products ❌
-  useEffect(() => {
-    fetch('/api/products').then(res => res.json()).then(setProducts);
-  }, []);
-
-  // Render user info ❌
-  // Render orders table ❌
-  // Render products grid ❌
-  // → Component làm QUÁ NHIỀU việc!
-};
-
-// ✅ GOOD: Chia nhỏ thành nhiều components, mỗi component 1 trách nhiệm
-
-// Component 1: Chỉ hiển thị user info
-const UserInfo: React.FC<{ user: User }> = ({ user }) => {
-  return (
-    <div>
-      <h2>{user.name}</h2>
-      <p>{user.email}</p>
-    </div>
-  );
-};
-
-// Component 2: Chỉ hiển thị orders
-const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => {
-  return (
-    <table>
-      {orders.map(order => (
-        <tr key={order.id}>
-          <td>{order.id}</td>
-          <td>${order.total}</td>
-        </tr>
-      ))}
-    </table>
-  );
-};
-
-// Component 3: Chỉ hiển thị products
-const ProductGrid: React.FC<{ products: Product[] }> = ({ products }) => {
-  return (
-    <div className="grid">
-      {products.map(product => (
-        <ProductCard key={product.id} product={product} />
-      ))}
-    </div>
-  );
-};
-
-// Container: Chỉ fetch data và orchestrate (điều phối)
-const UserDashboard = () => {
-  const { data: user } = useQuery({ queryKey: ['user'], queryFn: fetchUser });
-  const { data: orders } = useQuery({ queryKey: ['orders'], queryFn: fetchOrders });
-  const { data: products } = useQuery({ queryKey: ['products'], queryFn: fetchProducts });
-
-  return (
-    <div>
-      <UserInfo user={user} />
-      <OrderList orders={orders} />
-      <ProductGrid products={products} />
-    </div>
-  );
-};
-
-// ===================================================
-// 2️⃣ ERROR BOUNDARIES
-// ===================================================
-
-/**
- * ⚠️ VẤN ĐỀ:
- * 1 component crash → TOÀN BỘ APP crash (blank screen)
- *
- * ✅ GIẢI PHÁP:
- * Wrap components trong Error Boundary
- * → Component crash → hiện fallback UI (không crash app)
- */
-
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallback: React.ReactNode },
-  { hasError: boolean }
-> {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log error to service (Sentry, LogRocket...)
-    console.error('Error caught by boundary:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-
-    return this.props.children;
-  }
-}
-
-// ✅ Usage: Wrap risky components
-const App = () => {
-  return (
-    <div>
-      {/* Dashboard crash → chỉ hiện fallback, app vẫn hoạt động */}
-      <ErrorBoundary fallback={<div>Dashboard failed to load</div>}>
-        <Dashboard />
-      </ErrorBoundary>
-
-      {/* Orders crash → chỉ Orders fail, Dashboard vẫn OK */}
-      <ErrorBoundary fallback={<div>Orders failed to load</div>}>
-        <Orders />
-      </ErrorBoundary>
-    </div>
-  );
-};
-
-// ===================================================
-// 3️⃣ CODE SPLITTING & LAZY LOADING
-// ===================================================
-
-/**
- * 🎯 MỤC ĐÍCH:
- * Chỉ load code KHI CẦN (on-demand)
- * → Initial bundle nhỏ hơn → Trang load nhanh hơn
- */
-
-// ❌ BAD: Load tất cả routes ngay từ đầu
-import Dashboard from './pages/Dashboard';  // 500 KB
-import Orders from './pages/Orders';        // 300 KB
-import Products from './pages/Products';    // 400 KB
-import Settings from './pages/Settings';    // 200 KB
-
-// Total bundle: 1.4 MB
-// User vào /dashboard → phải tải 1.4 MB (dù chỉ cần 500 KB) ❌
-
-// ✅ GOOD: Lazy load routes
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Orders = lazy(() => import('./pages/Orders'));
-const Products = lazy(() => import('./pages/Products'));
-const Settings = lazy(() => import('./pages/Settings'));
-
-const App = () => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
-    </Suspense>
-  );
-};
-
-// ✅ Kết quả:
-// User vào /dashboard:
-//   - Initial load: vendor.js (300 KB) + main.js (50 KB) = 350 KB
-//   - Dashboard chunk: 500 KB
-//   - Total: 850 KB thay vì 1.4 MB (39% nhỏ hơn!)
-
-// ===================================================
-// 4️⃣ PERFORMANCE OPTIMIZATION
-// ===================================================
-
-/**
- * 🚀 KỸ THUẬT TỐI ƯU PERFORMANCE:
- *
- * 1. React.memo: Tránh re-render không cần thiết
- * 2. useMemo: Cache expensive calculations
- * 3. useCallback: Cache functions (tránh re-create)
- * 4. Virtual Scrolling: Render chỉ items visible
- * 5. Debounce/Throttle: Giảm số lần gọi hàm
- */
-
-// Example 1: React.memo
-// ❌ BAD: Child re-render mỗi khi Parent re-render (dù props không đổi)
-const ExpensiveChild = ({ data }) => {
-  console.log('ExpensiveChild rendered');  // Log mỗi lần render
-
-  // Expensive calculation (tính toán nặng)
-  const result = data.map(item => /* complex calculation */ item);
-
-  return <div>{result}</div>;
-};
-
-const Parent = () => {
-  const [count, setCount] = useState(0);  // State không liên quan
-  const data = [1, 2, 3];  // Data không đổi
-
-  return (
-    <div>
-      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
-      <ExpensiveChild data={data} />
-      {/* ❌ Click button → count thay đổi → Parent re-render
-          → ExpensiveChild re-render (dù data không đổi!) */}
-    </div>
-  );
-};
-
-// ✅ GOOD: Dùng React.memo
-const ExpensiveChild = React.memo(({ data }) => {
-  console.log('ExpensiveChild rendered');
-  const result = data.map(item => /* complex calculation */ item);
-  return <div>{result}</div>;
-});
-// ✅ Child CHỈ re-render khi props thay đổi
-
-// Example 2: useMemo cho expensive calculations
-const ProductList = ({ products, searchTerm }) => {
-  // ❌ BAD: Filter mỗi lần render (dù searchTerm không đổi)
-  const filtered = products.filter(p =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // ✅ GOOD: Cache filtered result
-  const filtered = useMemo(() => {
-    return products.filter(p =>
-      p.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [products, searchTerm]);  // Chỉ re-calculate khi dependencies đổi
-
-  return <div>{filtered.map(p => <ProductCard product={p} />)}</div>;
-};
-
-// Example 3: Virtual Scrolling với react-window
-import { FixedSizeList } from 'react-window';
-
-const VirtualizedList = ({ items }) => {
-  // ✅ Chỉ render items VISIBLE (VD: 10 items)
-  // Không render 10,000 items cùng lúc ❌
-
-  const Row = ({ index, style }) => (
-    <div style={style}>
-      {items[index].name}
-    </div>
-  );
-
-  return (
-    <FixedSizeList
-      height={600}        // Viewport height
-      itemCount={items.length}  // 10,000 items
-      itemSize={50}       // Mỗi item cao 50px
-      width="100%"
-    >
-      {Row}
-    </FixedSizeList>
-  );
-};
-
-/**
- * 📊 PERFORMANCE COMPARISON:
- *
- * ❌ WITHOUT Optimization (10,000 items):
- * - Initial render: 5 seconds
- * - Re-render on scroll: 500ms (lag!)
- * - Memory: 200 MB
- *
- * ✅ WITH Virtual Scrolling:
- * - Initial render: 100ms (50x faster)
- * - Re-render on scroll: 16ms (smooth 60fps)
- * - Memory: 20 MB (10x less)
- */
-
----
-
-### **📊 PHẦN 5: SUMMARY & COMPARISON (Tóm Tắt & So Sánh)**
-
-```typescript
-/**
- * 🎯 DESIGN SYSTEM - TẠI SAO CẦN?
- *
- * ✅ CONSISTENCY (Nhất Quán):
- *    → Tất cả UI elements giống nhau
- *    → User không bối rối
- *
- * ✅ SCALABILITY (Mở Rộng):
- *    → 100 developers vẫn consistent
- *    → Thêm 50 pages mới dễ dàng
- *
- * ✅ SPEED (Tốc Độ):
- *    → Build page: 1 ngày thay vì 1 tuần
- *    → Copy từ Storybook → paste
- *
- * ✅ MAINTAINABILITY (Bảo Trì):
- *    → Đổi màu: 1 file thay vì 100 files
- *    → Fix bug: 1 component thay vì 50 chỗ
- */
-
-/**
- * 🏗️ SCALABLE FE ARCHITECTURE - 7 BƯỚC:
- *
- * 1️⃣ Layered Architecture: Presentation, Business Logic, Data Access, Infrastructure
- * 2️⃣ Feature-based Folder Structure: Nhóm theo feature, không theo type
- * 3️⃣ Design System: Tokens + Components + Guidelines + Docs
- * 4️⃣ State Strategy: Local, Shared, Global, Server state (phân loại rõ ràng)
- * 5️⃣ Code Organization: Single Responsibility, DRY, KISS
- * 6️⃣ Tooling: Storybook, TypeScript, ESLint, Prettier
- * 7️⃣ Testing: Unit, Integration, E2E + Documentation
- */
-
-/**
- * 🎨 DESIGN PATTERNS - KHI NÀO DÙNG?
- *
- * 1️⃣ Container/Presentational:
- *    → Tách logic ra khỏi UI
- *    → Dùng: Hầu hết components
- *
- * 2️⃣ Compound Components:
- *    → Components linh hoạt, customizable layout
- *    → Dùng: Tabs, Menu, Accordion, Dialog
- *
- * 3️⃣ Custom Hooks:
- *    → Tái sử dụng stateful logic
- *    → Dùng: Form validation, Debounce, LocalStorage sync
- *
- * 4️⃣ Observer Pattern (Pub/Sub):
- *    → Cross-component communication
- *    → Dùng: Notifications, Real-time updates, Analytics
- *
- * 5️⃣ Singleton:
- *    → 1 instance duy nhất
- *    → Dùng: API client, Logger, Config manager
- */
-````
-
----
-
-**📊 COMPARISON TABLE (Bảng So Sánh)**
-
-| Aspect              | ❌ WITHOUT Design System   | ✅ WITH Design System                |
-| ------------------- | -------------------------- | ------------------------------------ |
-| **Consistency**     | 10 loại Button khác nhau   | 1 Button, 3 variants                 |
-| **Colors**          | 50+ màu hardcoded          | 10 màu trong tokens                  |
-| **Maintenance**     | Đổi màu: 100 files, 3 ngày | Đổi màu: 1 file, 5 phút              |
-| **Developer Speed** | Build page: 1 tuần         | Build page: 1 ngày                   |
-| **Onboarding**      | 2-3 tuần học codebase      | 3-5 ngày (có Storybook)              |
-| **Design-Dev Sync** | "Button màu gì?" (mơ hồ)   | "Button variant='primary'" (rõ ràng) |
-| **Accessibility**   | Developers quên implement  | Built-in (ARIA, keyboard nav)        |
-
-| Architecture         | ❌ Type-based Structure       | ✅ Feature-based Structure       |
-| -------------------- | ----------------------------- | -------------------------------- |
-| **Folder Structure** | components/ (100 files)       | features/auth/, features/orders/ |
-| **Find Code**        | Tìm trong 3 folders           | Tìm trong 1 folder               |
-| **Team Autonomy**    | Conflict nhiều                | Ít conflict (isolated)           |
-| **Code Splitting**   | Khó                           | Dễ (lazy load theo feature)      |
-| **Scalability**      | Khó scale (100+ files/folder) | Dễ scale (mỗi feature độc lập)   |
-
-| Pattern                      | Use Case                | ✅ Benefits              | ⚠️ Drawbacks       |
-| ---------------------------- | ----------------------- | ------------------------ | ------------------ |
-| **Container/Presentational** | Hầu hết components      | Dễ test, reusable UI     | Thêm boilerplate   |
-| **Compound Components**      | Tabs, Menu, Accordion   | Flexibility, API rõ ràng | Phức tạp hơn       |
-| **Custom Hooks**             | Form, Debounce, Storage | Reusability, Testability | Cần hiểu hooks tốt |
-| **Observer (Pub/Sub)**       | Notifications, Events   | Loose coupling           | Hard to debug      |
-| **Singleton**                | API client, Logger      | Shared state, 1 instance | Hard to test       |
-
----
-
-**💡 KEY TAKEAWAYS (Điểm Chính Cần Nhớ)**
-
-```typescript
-/**
- * ✅ DESIGN SYSTEM:
- * - Tokens (colors, spacing, typography) → 1 source of truth
- * - Components → Reusable, accessible
- * - Documentation (Storybook) → Onboarding nhanh
- *
- * ✅ SCALABLE ARCHITECTURE:
- * - Feature-based structure → Dễ tìm, dễ scale
- * - Layered architecture → Separation of concerns
- * - State strategy → Local, Shared, Global, Server (phân loại rõ)
- *
- * ✅ DESIGN PATTERNS:
- * - Container/Presentational → Tách logic/UI
- * - Compound Components → Flexibility
- * - Custom Hooks → Reuse stateful logic
- * - Observer → Cross-component events
- * - Singleton → Shared resources
- *
- * ✅ PERFORMANCE:
- * - Code splitting → Load on-demand
- * - React.memo → Tránh re-render
- * - useMemo/useCallback → Cache
- * - Virtual scrolling → Large lists
- * - Error boundaries → Graceful failures
- *
- * 🎯 MỤC TIÊU CUỐI CÙNG:
- * - 100 developers vẫn consistent
- * - 500+ components vẫn maintainable
- * - Thêm features mới không phá code cũ
- * - Performance tốt (< 3s load time)
- * - Developer Experience tuyệt vời (< 1 tuần onboarding)
- */
-```
-
----
-
-**🔥 REAL-WORLD EXAMPLE: TRADING PLATFORM**
-
-```typescript
-// Áp dụng TẤT CẢ principles vào 1 Trading App thực tế
-
-/**
- * 📁 FOLDER STRUCTURE (Feature-based)
- */
-/*
-src/
-├── features/
-│   ├── trading/              # Feature: Trading
-│   │   ├── components/
-│   │   │   ├── OrderForm/    # Compound Component
-│   │   │   ├── OrderBook/
-│   │   │   └── TradeHistory/
-│   │   ├── hooks/
-│   │   │   ├── useOrderForm.ts      # Custom Hook
-│   │   │   └── useRealTimePrice.ts  # Observer Pattern
-│   │   ├── services/
-│   │   │   └── tradingService.ts    # Singleton
-│   │   └── store/
-│   │       └── tradingStore.ts      # State Management
-│   │
-│   ├── portfolio/
-│   │   ├── components/
-│   │   │   ├── PortfolioSummary/    # Presentational
-│   │   │   └── AssetList/
-│   │   ├── hooks/
-│   │   │   └── usePortfolio.ts      # Custom Hook + React Query
-│   │   └── services/
-│   │       └── portfolioService.ts
-│   │
-│   └── market/
-│       ├── components/
-│       │   ├── PriceChart/          # React.memo + useMemo
-│       │   └── MarketOverview/
-│       └── hooks/
-│           └── useMarketData.ts
-│
-├── shared/
-│   ├── components/              # Design System
-│   │   ├── Button/              # Tokens-based
-│   │   ├── Input/
-│   │   └── Table/               # Virtual Scrolling
-│   └── hooks/
-│       ├── useDebounce.ts
-│       └── useWebSocket.ts      # Observer Pattern
-│
-└── core/
-    ├── theme/
-    │   ├── tokens/              # Design Tokens
-    │   │   ├── colors.ts
-    │   │   ├── spacing.ts
-    │   │   └── typography.ts
-    │   └── GlobalStyles.ts
-    │
-    └── api/
-        └── apiClient.ts         # Singleton Pattern
-*/
-
-/**
- * 📊 RESULTS (Kết Quả):
- *
- * ✅ BEFORE Refactoring:
- * - 50 developers, tranh cãi về UI
- * - Build page mới: 1-2 tuần
- * - Bundle size: 3.5 MB
- * - Load time: 8 seconds
- * - Onboarding: 1 tháng
- *
- * ✅ AFTER Refactoring (với Design System + Patterns):
- * - 50 developers, consistent UI
- * - Build page mới: 2-3 ngày (7x nhanh hơn)
- * - Bundle size: 1.2 MB (66% nhỏ hơn)
- * - Load time: 2.5 seconds (3.2x nhanh hơn)
- * - Onboarding: 1 tuần (4x nhanh hơn)
- */
-```
-
----
-
-## 64. State Management - Redux vs Zustand vs Context API: Phân Biệt, Ưu Nhược Điểm, Cách Hoạt Động
-
-**❓ Câu Hỏi:**
-
-> "Store management: Redux, zustand, context. Phân biệt chúng, ưu và nhược điểm, hoạt động như thế nào, tại sao lại dùng chúng?"
-
-**📋 Phân Tích:**
-
-- **Redux, Zustand, Context API** khác nhau thế nào?
-- **Ưu điểm & Nhược điểm** của từng thư viện
-- **Cách hoạt động** bên trong (internal mechanism)
-- **Khi nào dùng** từng loại?
-- **Performance comparison** (so sánh hiệu suất)
-
----
-
-### **🎯 PHẦN 1: TẠI SAO CẦN STATE MANAGEMENT? (Why State Management?)**
-
-```typescript
-/**
- * 🔥 VẤN ĐỀ: PROP DRILLING (Truyền Props Qua Nhiều Tầng)
- *
- * Khi app lớn, truyền state từ component cha → con → cháu → chắt...
- * → Code rối, khó maintain, component trung gian không cần props nhưng phải nhận
- */
-
-// ❌ PROBLEM: Prop Drilling Hell
-const App = () => {
-  const [user, setUser] = useState({ name: 'John', role: 'admin' });
-
-  return <Dashboard user={user} setUser={setUser} />;
-};
-
-const Dashboard = ({ user, setUser }) => {
-  // ❌ Dashboard không dùng user, nhưng phải nhận để pass xuống
-  return <Sidebar user={user} setUser={setUser} />;
-};
-
-const Sidebar = ({ user, setUser }) => {
-  // ❌ Sidebar cũng không dùng, nhưng phải nhận để pass xuống
-  return <UserMenu user={user} setUser={setUser} />;
-};
-
-const UserMenu = ({ user, setUser }) => {
-  // ✅ CHỈ UserMenu mới dùng user!
-  return (
-    <div>
-      {user.name} ({user.role})
-      <button onClick={() => setUser({ ...user, role: 'user' })}>
-        Change Role
-      </button>
-    </div>
-  );
-};
-
-/**
- * ❌ VẤN ĐỀ:
- * - App → Dashboard → Sidebar → UserMenu (4 tầng!)
- * - Dashboard, Sidebar không cần user nhưng phải nhận props
- * - Thêm 1 props mới → phải sửa 4 components
- * - Rất khó maintain!
- */
-
-// ✅ GIẢI PHÁP: STATE MANAGEMENT
-// UserMenu truy cập TRỰC TIẾP vào global state
-// → Không cần prop drilling!
-
-const UserMenu = () => {
-  const { user, setUser } = useGlobalState(); // ✅ Lấy trực tiếp từ store
-
-  return (
-    <div>
-      {user.name} ({user.role})
-      <button onClick={() => setUser({ ...user, role: 'user' })}>
-        Change Role
-      </button>
-    </div>
-  );
-};
-
-/**
- * ✅ LỢI ÍCH:
- * - Không cần truyền props qua Dashboard, Sidebar
- * - Thêm props mới → chỉ sửa 1 component (UserMenu)
- * - Code sạch, dễ maintain
- */
-
-// ===================================================
-// 🎯 3 GIẢI PHÁP STATE MANAGEMENT
-// ===================================================
-
-/**
- * 1️⃣ CONTEXT API (Built-in React)
- *    → Đơn giản, không cần library
- *    → Dùng cho app nhỏ/vừa
- *
- * 2️⃣ ZUSTAND (Modern, lightweight)
- *    → Đơn giản như Context, nhưng performance tốt hơn
- *    → Dùng cho app vừa/lớn
- *
- * 3️⃣ REDUX (Traditional, powerful)
- *    → Phức tạp, nhiều boilerplate
- *    → Dùng cho app cực lớn, cần DevTools, middleware
- */
-```
-
----
-
-### **📦 PHẦN 2: CONTEXT API (React Built-in)**
-
-```typescript
-/**
- * 🎯 CONTEXT API LÀ GÌ?
- *
- * Built-in API của React để CHIA SẺ STATE giữa nhiều components
- * mà KHÔNG CẦN truyền props qua từng tầng.
- *
- * 🔥 CÁCH HOẠT ĐỘNG:
- * 1. Tạo Context với createContext()
- * 2. Wrap app trong <Provider value={state}>
- * 3. Components dùng useContext() để lấy state
- */
-
-// ===================================================
-// ✅ IMPLEMENTATION: Context API
-// ===================================================
-
-// Step 1: Tạo Context
-import { createContext, useContext, useState } from 'react';
-
-interface User {
-  name: string;
-  email: string;
-  role: 'admin' | 'user';
-}
-
-interface UserContextType {
-  user: User | null;
-  login: (user: User) => void;
-  logout: () => void;
-  updateRole: (role: 'admin' | 'user') => void;
-}
-
-const UserContext = createContext<UserContextType | undefined>(undefined);
-
-// Step 2: Tạo Provider
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [user, setUser] = useState<User | null>(null);
-
-  const login = (userData: User) => {
-    setUser(userData);
-  };
-
-  const logout = () => {
-    setUser(null);
-  };
-
-  const updateRole = (role: 'admin' | 'user') => {
-    if (user) {
-      setUser({ ...user, role });
-    }
-  };
-
-  return (
-    <UserContext.Provider value={{ user, login, logout, updateRole }}>
-      {children}
-    </UserContext.Provider>
-  );
-};
-
-// Step 3: Tạo custom hook
-export const useUser = () => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error('useUser must be used within UserProvider');
-  }
-  return context;
-};
-
-// Step 4: Wrap App trong Provider
-const App = () => {
-  return (
-    <UserProvider>
-      <Dashboard />
-    </UserProvider>
-  );
-};
-
-// Step 5: Dùng trong components
-const UserMenu = () => {
-  const { user, logout, updateRole } = useUser(); // ✅ Lấy trực tiếp
-
-  if (!user) return <div>Please login</div>;
-
-  return (
-    <div>
-      <h3>{user.name}</h3>
-      <p>
-        {user.email} - {user.role}
-      </p>
-      <button onClick={() => updateRole('admin')}>Make Admin</button>
-      <button onClick={logout}>Logout</button>
-    </div>
-  );
-};
-
-const AnotherComponent = () => {
-  const { user } = useUser(); // ✅ Component khác cũng dùng được
-
-  return <div>Welcome, {user?.name}</div>;
-};
-
-/**
- * ✅ ƯU ĐIỂM CONTEXT API:
- *
- * 1️⃣ BUILT-IN (Có sẵn):
- *    → Không cần cài thêm library
- *    → Bundle size nhỏ
- *
- * 2️⃣ SIMPLE (Đơn giản):
- *    → Dễ học, dễ dùng
- *    → Ít boilerplate
- *
- * 3️⃣ TYPE-SAFE (An toàn kiểu):
- *    → TypeScript support tốt
- *    → Auto-complete trong IDE
- *
- * ❌ NHƯỢC ĐIỂM CONTEXT API:
- *
- * 1️⃣ PERFORMANCE ISSUES (Vấn đề hiệu suất):
- *    → Khi state thay đổi → TẤT CẢ components dùng Context RE-RENDER
- *    → Dù chỉ cần 1 field trong state!
- *
- * 2️⃣ NO BUILT-IN DEVTOOLS:
- *    → Không có DevTools để debug
- *    → Khó track state changes
- *
- * 3️⃣ NO MIDDLEWARE:
- *    → Không có logger, persist, thunk...
- *    → Phải tự implement
- *
- * 4️⃣ MULTIPLE CONTEXTS = PROVIDER HELL:
- *    → 10 contexts → 10 Providers lồng nhau
- */
-
-// ===================================================
-// ⚠️ CONTEXT API PERFORMANCE PROBLEM
-// ===================================================
-
-const UserContext = createContext<UserContextType | undefined>(undefined);
-
-const UserProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [user, setUser] = useState({
-    name: 'John',
-    email: 'john@example.com',
-    role: 'admin',
-    preferences: { theme: 'dark', language: 'en' },
-  });
-
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
-};
-
-// Component 1: Chỉ dùng user.name
-const UserName = () => {
-  const { user } = useUser();
-  console.log('UserName rendered'); // 👈 Log để track re-renders
-
-  return <div>{user.name}</div>;
-};
-
-// Component 2: Chỉ dùng user.email
-const UserEmail = () => {
-  const { user } = useUser();
-  console.log('UserEmail rendered'); // 👈 Log để track re-renders
-
-  return <div>{user.email}</div>;
-};
-
-// Component 3: Chỉ dùng user.preferences.theme
-const ThemeToggle = () => {
-  const { user, setUser } = useUser();
-  console.log('ThemeToggle rendered'); // 👈 Log để track re-renders
-
-  const toggleTheme = () => {
-    setUser({
-      ...user,
-      preferences: {
-        ...user.preferences,
-        theme: user.preferences.theme === 'dark' ? 'light' : 'dark',
-      },
-    });
-  };
-
-  return <button onClick={toggleTheme}>Toggle Theme</button>;
-};
-
-/**
- * ❌ VẤN ĐỀ PERFORMANCE:
- *
- * Click "Toggle Theme" → Chỉ đổi user.preferences.theme
- *
- * NHƯNG:
- * - UserName rendered  ❌ (không cần re-render, name không đổi)
- * - UserEmail rendered ❌ (không cần re-render, email không đổi)
- * - ThemeToggle rendered ✅ (cần re-render, theme đổi)
- *
- * → Context re-render TẤT CẢ components dùng useUser()
- * → Ngay cả khi chỉ 1 field thay đổi!
- *
- * 📊 IMPACT:
- * - 100 components dùng useUser() → 100 re-renders
- * - App lag, slow, poor UX
- */
-
-// ✅ WORKAROUND: Split contexts
-const UserNameContext = createContext(null);
-const UserEmailContext = createContext(null);
-const UserPreferencesContext = createContext(null);
-
-// → Phức tạp, nhiều Providers lồng nhau (Provider Hell)
-```
-
----
-
-### **⚡ PHẦN 3: ZUSTAND (Modern & Lightweight)**
-
-```typescript
-/**
- * 🎯 ZUSTAND LÀ GÌ?
- *
- * State management library ĐƠN GIẢN, NHANH, ÍT BOILERPLATE.
- *
- * 🔥 ĐẶC ĐIỂM:
- * - Không cần Provider (không có Provider Hell)
- * - Hooks-based (dùng như useState)
- * - Auto-optimization (chỉ re-render components cần thiết)
- * - TypeScript support tốt
- * - Bundle size nhỏ (1.2 KB gzipped)
- */
-
-// ===================================================
-// ✅ IMPLEMENTATION: Zustand
-// ===================================================
-
-// Step 1: Install
-// npm install zustand
-
-// Step 2: Tạo store
-import create from 'zustand';
-
-interface User {
-  name: string;
-  email: string;
-  role: 'admin' | 'user';
-  preferences: {
-    theme: 'light' | 'dark';
-    language: string;
-  };
-}
-
-interface UserStore {
-  user: User | null;
-  login: (user: User) => void;
-  logout: () => void;
-  updateRole: (role: 'admin' | 'user') => void;
-  toggleTheme: () => void;
-}
-
-export const useUserStore = create<UserStore>((set) => ({
-  user: null,
-
-  login: (user) => set({ user }),
-
-  logout: () => set({ user: null }),
-
-  updateRole: (role) =>
-    set((state) => ({
-      user: state.user ? { ...state.user, role } : null,
-    })),
-
-  toggleTheme: () =>
-    set((state) => ({
-      user: state.user
-        ? {
-            ...state.user,
-            preferences: {
-              ...state.user.preferences,
-              theme: state.user.preferences.theme === 'dark' ? 'light' : 'dark',
-            },
-          }
-        : null,
-    })),
-}));
-
-// Step 3: Dùng trong components (KHÔNG CẦN PROVIDER!)
-const UserName = () => {
-  // ✅ CHỈ subscribe vào user.name
-  const name = useUserStore((state) => state.user?.name);
-  console.log('UserName rendered');
-
-  return <div>{name}</div>;
-};
-
-const UserEmail = () => {
-  // ✅ CHỈ subscribe vào user.email
-  const email = useUserStore((state) => state.user?.email);
-  console.log('UserEmail rendered');
-
-  return <div>{email}</div>;
-};
-
-const ThemeToggle = () => {
-  // ✅ CHỈ subscribe vào user.preferences.theme và toggleTheme
-  const theme = useUserStore((state) => state.user?.preferences.theme);
-  const toggleTheme = useUserStore((state) => state.toggleTheme);
-  console.log('ThemeToggle rendered');
-
-  return <button onClick={toggleTheme}>Theme: {theme}</button>;
-};
-
-/**
- * ✅ ZUSTAND AUTO-OPTIMIZATION:
- *
- * Click "Toggle Theme" → Chỉ đổi user.preferences.theme
- *
- * RESULT:
- * - UserName rendered  ❌ (KHÔNG re-render, name không đổi) ✅
- * - UserEmail rendered ❌ (KHÔNG re-render, email không đổi) ✅
- * - ThemeToggle rendered ✅ (re-render, theme đổi) ✅
- *
- * → Zustand CHỈ re-render components subscribe vào field thay đổi!
- * → Performance TỐT HƠN Context API nhiều!
- */
-
-// ===================================================
-// ✅ ZUSTAND ADVANCED FEATURES
-// ===================================================
-
-// 1️⃣ PERSIST (Lưu state vào localStorage)
-import { persist } from 'zustand/middleware';
-
-export const useUserStore = create(
-  persist<UserStore>(
-    (set) => ({
-      user: null,
-      login: (user) => set({ user }),
-      logout: () => set({ user: null }),
-      // ... other actions
+export function ThemeProvider({ children }: React.PropsWithChildren) {
+  const [theme, setTheme] = React.useState<"light" | "dark">("light");
+
+  const value = React.useMemo(
+    () => ({
+      theme,
+      toggleTheme: () =>
+        setTheme((current) => (current === "light" ? "dark" : "light")),
     }),
-    {
-      name: 'user-storage', // localStorage key
-    }
-  )
-);
+    [theme]
+  );
 
-// ✅ State tự động lưu vào localStorage
-// ✅ Reload page → state vẫn còn
-
-// 2️⃣ DEVTOOLS (Redux DevTools support)
-import { devtools } from 'zustand/middleware';
-
-export const useUserStore = create(
-  devtools<UserStore>(
-    (set) => ({
-      user: null,
-      login: (user) => set({ user }, false, 'user/login'), // Action name
-      logout: () => set({ user: null }, false, 'user/logout'),
-      // ... other actions
-    }),
-    { name: 'UserStore' }
-  )
-);
-
-// ✅ Mở Redux DevTools → thấy được state changes
-// ✅ Time-travel debugging
-
-// 3️⃣ IMMER (Immutable updates dễ dàng)
-import { immer } from 'zustand/middleware/immer';
-
-export const useUserStore = create(
-  immer<UserStore>((set) => ({
-    user: null,
-
-    updateRole: (role) =>
-      set((state) => {
-        // ✅ Mutate trực tiếp (Immer tự chuyển thành immutable update)
-        if (state.user) {
-          state.user.role = role; // Dễ đọc hơn spread operator!
-        }
-      }),
-  }))
-);
-
-/**
- * ✅ ƯU ĐIỂM ZUSTAND:
- *
- * 1️⃣ SIMPLE API:
- *    → Dễ học, dễ dùng
- *    → Ít boilerplate (không có actions, reducers riêng)
- *
- * 2️⃣ PERFORMANCE:
- *    → Auto-optimization (chỉ re-render components cần thiết)
- *    → Nhanh hơn Context API
- *
- * 3️⃣ NO PROVIDER:
- *    → Không cần wrap app trong Provider
- *    → Không có Provider Hell
- *
- * 4️⃣ SMALL BUNDLE:
- *    → 1.2 KB gzipped (nhỏ hơn Redux 10x)
- *
- * 5️⃣ DEVTOOLS:
- *    → Redux DevTools support
- *    → Time-travel debugging
- *
- * 6️⃣ MIDDLEWARE:
- *    → Persist, Immer, Devtools...
- *    → Dễ extend
- *
- * ❌ NHƯỢC ĐIỂM ZUSTAND:
- *
- * 1️⃣ KHÔNG PHẢI BUILT-IN:
- *    → Phải cài thêm library (1.2 KB)
- *
- * 2️⃣ ÍT ECOSYSTEM HƠN REDUX:
- *    → Ít plugins, tutorials
- *    → Community nhỏ hơn Redux
- *
- * 3️⃣ KHÔNG CÓ STRICT STRUCTURE:
- *    → Dễ viết code không nhất quán
- *    → Cần conventions rõ ràng
- */
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  );
+}
 ```
 
----
+Pitfall:
 
-### **🏛️ PHẦN 4: REDUX (Traditional & Powerful)**
+- Context value đổi làm consumers re-render.
+- Không hợp cho high-frequency state như typing, realtime price, cart item quantity update liên tục.
 
-````typescript
-/**
- * 🎯 REDUX LÀ GÌ?
- *
- * State management library MẠNH MẼ, theo kiến trúc FLUX.
- *
- * 🔥 CORE CONCEPTS:
- * - Store: Lưu toàn bộ state
- * - Actions: Mô tả "điều gì xảy ra"
- * - Reducers: Hàm xử lý state dựa trên action
- * - Dispatch: Gửi action đến store
- *
- * 📊 DATA FLOW (Luồng dữ liệu):
- * Component → dispatch(action) → Reducer → Update Store → Component re-render
- */
+#### Zustand
 
-// ===================================================
-// ✅ IMPLEMENTATION: Redux (với Redux Toolkit - modern way)
-// ===================================================
-
-// Step 1: Install
-// npm install @reduxjs/toolkit react-redux
-
-// Step 2: Tạo Slice (Reducer + Actions)
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface User {
-  name: string;
-  email: string;
-  role: 'admin' | 'user';
-  preferences: {
-    theme: 'light' | 'dark';
-    language: string;
-  };
-}
-
-interface UserState {
-  user: User | null;
-  loading: boolean;
-  error: string | null;
-}
-
-const initialState: UserState = {
-  user: null,
-  loading: false,
-  error: null,
-};
-
-const userSlice = createSlice({
-  name: 'user',
-  initialState,
-  reducers: {
-    // Action: login
-    loginStart: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    loginSuccess: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
-      state.loading = false;
-    },
-    loginFailure: (state, action: PayloadAction<string>) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
-
-    // Action: logout
-    logout: (state) => {
-      state.user = null;
-      state.error = null;
-    },
-
-    // Action: updateRole
-    updateRole: (state, action: PayloadAction<'admin' | 'user'>) => {
-      if (state.user) {
-        state.user.role = action.payload;
-      }
-    },
-
-    // Action: toggleTheme
-    toggleTheme: (state) => {
-      if (state.user) {
-        state.user.preferences.theme =
-          state.user.preferences.theme === 'dark' ? 'light' : 'dark';
-      }
-    },
-  },
-});
-
-export const {
-  loginStart,
-  loginSuccess,
-  loginFailure,
-  logout,
-  updateRole,
-  toggleTheme,
-} = userSlice.actions;
-
-export default userSlice.reducer;
-
-// Step 3: Tạo Store
-import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './userSlice';
-
-export const store = configureStore({
-  reducer: {
-    user: userReducer,
-    // cart: cartReducer,
-    // products: productsReducer,
-    // ... other reducers
-  },
-});
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-
-// Step 4: Wrap App trong Provider
-import { Provider } from 'react-redux';
-
-const App = () => {
-  return (
-    <Provider store={store}>
-      <Dashboard />
-    </Provider>
-  );
-};
-
-// Step 5: Dùng trong components
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from './store';
-
-const UserName = () => {
-  // ✅ CHỈ subscribe vào user.name
-  const name = useSelector((state: RootState) => state.user.user?.name);
-  console.log('UserName rendered');
-
-  return <div>{name}</div>;
-};
-
-const UserEmail = () => {
-  // ✅ CHỈ subscribe vào user.email
-  const email = useSelector((state: RootState) => state.user.user?.email);
-  console.log('UserEmail rendered');
-
-  return <div>{email}</div>;
-};
-
-const ThemeToggle = () => {
-  const theme = useSelector((state: RootState) =>
-    state.user.user?.preferences.theme
-  );
-  const dispatch = useDispatch<AppDispatch>();
-  console.log('ThemeToggle rendered');
-
-  return (
-    <button onClick={() => dispatch(toggleTheme())}>
-      Theme: {theme}
-    </button>
-  );
-};
-
-/**
- * ✅ REDUX AUTO-OPTIMIZATION (giống Zustand):
- *
- * Click "Toggle Theme" → Chỉ đổi user.preferences.theme
- *
- * RESULT:
- * - UserName rendered  ❌ (KHÔNG re-render, name không đổi) ✅
- * - UserEmail rendered ❌ (KHÔNG re-render, email không đổi) ✅
- * - ThemeToggle rendered ✅ (re-render, theme đổi) ✅
- *
- * → Redux cũng CHỈ re-render components subscribe vào field thay đổi!
- */
-
-// ===================================================
-// 🚀 REDUX ASYNC ACTIONS (với createAsyncThunk)
-// ===================================================
-
-import { createAsyncThunk } from '@reduxjs/toolkit';
-
-// Async action: Login với API call
-export const loginAsync = createAsyncThunk(
-  'user/login',  // Action type prefix
-  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials),
-      });
-
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-
-      const user = await response.json();
-      return user;  // ✅ Return user data
-    } catch (error) {
-      return rejectWithValue(error.message);  // ❌ Return error
-    }
-  }
-);
-
-// Update slice để handle async action
-const userSlice = createSlice({
-  name: 'user',
-  initialState,
-  reducers: {
-    // ... sync actions
-  },
-  extraReducers: (builder) => {
-    builder
-      // loginAsync.pending
-      .addCase(loginAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      // loginAsync.fulfilled
-      .addCase(loginAsync.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.loading = false;
-      })
-      // loginAsync.rejected
-      .addCase(loginAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      });
-  },
-});
-
-// Dùng trong component
-const LoginForm = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.user);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // ✅ Dispatch async action
-    const result = await dispatch(loginAsync({
-      email: 'user@example.com',
-      password: 'password123',
-    }));
-
-    if (loginAsync.fulfilled.match(result)) {
-      // ✅ Login thành công
-      console.log('Logged in:', result.payload);
-    } else {
-      // ❌ Login thất bại
-      console.error('Error:', result.payload);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input type="email" placeholder="Email" />
-      <input type="password" placeholder="Password" />
-      <button type="submit" disabled={loading}>
-        {loading ? 'Logging in...' : 'Login'}
-      </button>
-      {error && <div className="error">{error}</div>}
-    </form>
-  );
-};
-
-// ===================================================
-// 🔧 REDUX MIDDLEWARE (Logger, Persist...)
-// ===================================================
-
-// Custom logger middleware
-const loggerMiddleware = (store) => (next) => (action) => {
-  console.log('Dispatching:', action);
-  console.log('Previous State:', store.getState());
-
-  const result = next(action);  // Pass action to reducer
-
-  console.log('Next State:', store.getState());
-  return result;
-};
-
-// Persist middleware (redux-persist)
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';  // localStorage
-
-const persistConfig = {
-  key: 'root',
-  storage,
-  whitelist: ['user'],  // Chỉ persist user state
-};
-
-const persistedReducer = persistReducer(persistConfig, userReducer);
-
-export const store = configureStore({
-  reducer: {
-    user: persistedReducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,  // Tắt warning cho redux-persist
-    }).concat(loggerMiddleware),
-});
-
-export const persistor = persistStore(store);
-
-// Wrap App
-import { PersistGate } from 'redux-persist/integration/react';
-
-const App = () => {
-  return (
-    <Provider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
-        <Dashboard />
-      </PersistGate>
-    </Provider>
-  );
-};
-
-/**
- * ✅ ƯU ĐIỂM REDUX:
- *
- * 1️⃣ PREDICTABLE STATE:
- *    → Luồng dữ liệu rõ ràng (Action → Reducer → Store)
- *    → Dễ debug, dễ test
- *
- * 2️⃣ DEVTOOLS MẠNH MẼ:
- *    → Redux DevTools (time-travel, state diff)
- *    → Track mọi action, state change
- *
- * 3️⃣ MIDDLEWARE ECOSYSTEM:
- *    → Redux Thunk, Redux Saga (async)
- *    → Redux Persist (localStorage)
- *    → Logger, Router, Form...
- *
- * 4️⃣ HUGE ECOSYSTEM:
- *    → Nhiều libraries, plugins
- *    → Nhiều tutorials, community lớn
- *
- * 5️⃣ PERFORMANCE:
- *    → Auto-optimization như Zustand
- *    → Chỉ re-render components cần thiết
- *
- * 6️⃣ SCALABILITY:
- *    → Dùng cho app CỰC LỚN (1000+ components)
- *    → Team lớn (50+ developers)
- *
- * ❌ NHƯỢC ĐIỂM REDUX:
- *
- * 1️⃣ BOILERPLATE NHIỀU:
- *    → Actions, Reducers, Types, Selectors...
- *    → Thêm 1 feature → phải tạo nhiều files
- *
- * 2️⃣ LEARNING CURVE CAO:
- *    → Khái niệm phức tạp (Flux, Reducers, Middleware...)
- *    → Khó học cho beginners
- *
- * 3️⃣ BUNDLE SIZE LỚN:
- *    → Redux + React-Redux: ~12 KB gzipped
- *    → Lớn hơn Zustand 10x
- *
- * 4️⃣ CẦN PROVIDER:
- *    → Phải wrap app trong <Provider>
- *    → Nhiều stores → nhiều Providers
- */
-
----
-
-### **📊 PHẦN 5: SO SÁNH CHI TIẾT (Detailed Comparison)**
+Zustand gọn, hiệu quả cho app vừa/lớn:
 
 ```typescript
-/**
- * 🎯 COMPARISON TABLE: Context API vs Zustand vs Redux
- */
-````
+import { create } from "zustand";
 
-| Feature               | Context API            | Zustand                 | Redux (RTK)                   |
-| --------------------- | ---------------------- | ----------------------- | ----------------------------- |
-| **Bundle Size**       | 0 KB (built-in)        | 1.2 KB                  | ~12 KB                        |
-| **Setup Complexity**  | Simple                 | Simple                  | Medium                        |
-| **Boilerplate**       | Low                    | Very Low                | Medium                        |
-| **Learning Curve**    | Easy                   | Easy                    | Hard                          |
-| **Performance**       | Poor (re-render all)   | Excellent (auto-opt)    | Excellent (auto-opt)          |
-| **DevTools**          | ❌ No                  | ✅ Redux DevTools       | ✅ Redux DevTools             |
-| **Middleware**        | ❌ No                  | ✅ Yes (Persist, Immer) | ✅ Yes (Thunk, Saga, Persist) |
-| **TypeScript**        | ✅ Good                | ✅ Excellent            | ✅ Excellent                  |
-| **Provider Needed**   | ✅ Yes (Provider Hell) | ❌ No                   | ✅ Yes                        |
-| **Async Actions**     | Manual                 | Manual                  | Built-in (createAsyncThunk)   |
-| **Computed Values**   | Manual (useMemo)       | Manual                  | Built-in (createSelector)     |
-| **Time-travel Debug** | ❌ No                  | ✅ Yes (with devtools)  | ✅ Yes                        |
-| **Ecosystem**         | Small                  | Medium                  | Huge                          |
-| **Community**         | Medium                 | Growing                 | Very Large                    |
-| **Use Case**          | Small/Medium apps      | Medium/Large apps       | Large/Enterprise apps         |
-
----
-
-**🔥 PERFORMANCE COMPARISON (Benchmark)**
-
-```typescript
-/**
- * 📊 TEST SCENARIO:
- * - 1000 components subscribe to store
- * - Update 1 field in state
- * - Measure re-renders
- */
-
-// Context API
-// ❌ Result: 1000 components re-rendered (100% re-render rate)
-// ⏱️ Time: 150ms
-
-// Zustand
-// ✅ Result: 1 component re-rendered (0.1% re-render rate)
-// ⏱️ Time: 2ms (75x faster than Context)
-
-// Redux (RTK)
-// ✅ Result: 1 component re-rendered (0.1% re-render rate)
-// ⏱️ Time: 3ms (50x faster than Context)
-```
-
----
-
-**💡 KHI NÀO DÙNG? (When to Use?)**
-
-```typescript
-/**
- * ✅ DÙNG CONTEXT API KHI:
- *
- * 1️⃣ App nhỏ (< 10 components dùng state)
- * 2️⃣ State ít thay đổi (theme, language)
- * 3️⃣ Không cần DevTools
- * 4️⃣ Không muốn cài thêm library
- *
- * VD:
- * - Theme provider (dark/light mode)
- * - Language provider (i18n)
- * - Auth context (user login status)
- */
-
-// Example: Theme Context (ít thay đổi)
-const ThemeContext = createContext({ theme: 'light', toggleTheme: () => {} });
-
-const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
-
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+type CartState = {
+  items: Array<{ sku: string; quantity: number }>;
+  addItem: (sku: string) => void;
+  removeItem: (sku: string) => void;
 };
 
-/**
- * ✅ DÙNG ZUSTAND KHI:
- *
- * 1️⃣ App vừa/lớn (10-100 components dùng state)
- * 2️⃣ State thay đổi thường xuyên
- * 3️⃣ Cần performance tốt
- * 4️⃣ Muốn code đơn giản, ít boilerplate
- * 5️⃣ Cần DevTools để debug
- *
- * VD:
- * - Shopping cart (add/remove items)
- * - User profile (update thông tin)
- * - Notifications (show/hide toast)
- * - Form state (multi-step forms)
- */
-
-// Example: Shopping Cart với Zustand
-import create from 'zustand';
-
-interface CartStore {
-  items: CartItem[];
-  addItem: (item: CartItem) => void;
-  removeItem: (id: string) => void;
-  clearCart: () => void;
-  total: number;
-}
-
-export const useCartStore = create<CartStore>((set, get) => ({
+export const useCartStore = create<CartState>((set) => ({
   items: [],
-
-  addItem: (item) =>
+  addItem: (sku) =>
     set((state) => ({
-      items: [...state.items, item],
+      items: [...state.items, { sku, quantity: 1 }],
     })),
-
-  removeItem: (id) =>
+  removeItem: (sku) =>
     set((state) => ({
-      items: state.items.filter((item) => item.id !== id),
+      items: state.items.filter((item) => item.sku !== sku),
     })),
-
-  clearCart: () => set({ items: [] }),
-
-  // Computed value (total price)
-  get total() {
-    return get().items.reduce((sum, item) => sum + item.price, 0);
-  },
 }));
+```
 
-/**
- * ✅ DÙNG REDUX KHI:
- *
- * 1️⃣ App CỰC LỚN (100+ components dùng state)
- * 2️⃣ Team lớn (10+ developers)
- * 3️⃣ Cần structure rõ ràng (Actions, Reducers, Selectors)
- * 4️⃣ Cần middleware phức tạp (Saga, custom middleware)
- * 5️⃣ Cần time-travel debugging
- * 6️⃣ Đã có sẵn Redux trong project (legacy code)
- *
- * VD:
- * - E-commerce platform (cart, products, orders, users...)
- * - Trading platform (real-time data, complex state)
- * - CRM system (customers, deals, tasks...)
- * - Admin dashboard (users, analytics, settings...)
- */
+Ưu điểm:
 
-// Example: Trading Platform với Redux
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+- Ít boilerplate.
+- Selector tốt, re-render ít hơn Context nếu dùng đúng.
+- Dễ dùng cho cart, UI state, user preferences.
 
-// Async action: Fetch real-time price
-export const fetchPrice = createAsyncThunk(
-  'trading/fetchPrice',
-  async (symbol: string) => {
-    const response = await fetch(`/api/price/${symbol}`);
-    return response.json();
-  }
-);
+Lưu ý trong MFE:
 
-const tradingSlice = createSlice({
-  name: 'trading',
+- Nếu shared store là package singleton, phải đảm bảo không bị bundle thành nhiều bản.
+- Không dùng shared Zustand store để mọi remote mutate toàn bộ state business.
+
+#### Redux Toolkit
+
+Redux hợp khi state phức tạp, team lớn, workflow cần trace:
+
+```typescript
+import { createSlice, configureStore } from "@reduxjs/toolkit";
+
+const ordersSlice = createSlice({
+  name: "orders",
   initialState: {
-    prices: {},
-    orders: [],
-    positions: [],
+    items: [] as Order[],
     loading: false,
   },
   reducers: {
-    placeOrder: (state, action) => {
-      state.orders.push(action.payload);
+    orderAdded(state, action) {
+      state.items.push(action.payload);
     },
-    closePosition: (state, action) => {
-      state.positions = state.positions.filter((p) => p.id !== action.payload);
-    },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchPrice.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchPrice.fulfilled, (state, action) => {
-        state.prices[action.meta.arg] = action.payload;
-        state.loading = false;
-      });
   },
 });
-```
-
----
-
-### **🎯 PHẦN 6: MIGRATION GUIDE (Hướng Dẫn Chuyển Đổi)**
-
-`````typescript
-/**
- * 🔄 MIGRATION: Context API → Zustand
- */
-
-// BEFORE: Context API
-const UserContext = createContext(null);
-
-const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-
-  const login = (userData) => setUser(userData);
-  const logout = () => setUser(null);
-
-  return (
-    <UserContext.Provider value={{ user, login, logout }}>
-      {children}
-    </UserContext.Provider>
-  );
-};
-
-// Usage
-const Profile = () => {
-  const { user } = useContext(UserContext);
-  return <div>{user?.name}</div>;
-};
-
-// AFTER: Zustand
-import create from 'zustand';
-
-const useUserStore = create((set) => ({
-  user: null,
-  login: (userData) => set({ user: userData }),
-  logout: () => set({ user: null }),
-}));
-
-// Usage (KHÔNG CẦN Provider!)
-const Profile = () => {
-  const user = useUserStore((state) => state.user);
-  return <div>{user?.name}</div>;
-};
-
-/**
- * ✅ BENEFITS:
- * - Bỏ Provider → code sạch hơn
- * - Performance tốt hơn
- * - Dễ test hơn (không cần wrap trong Provider)
- */
-
-/**
- * 🔄 MIGRATION: Zustand → Redux
- */
-
-// BEFORE: Zustand
-const useUserStore = create((set) => ({
-  user: null,
-  loading: false,
-  error: null,
-
-  login: async (credentials) => {
-    set({ loading: true });
-    try {
-      const user = await api.login(credentials);
-      set({ user, loading: false });
-    } catch (error) {
-      set({ error: error.message, loading: false });
-    }
-  },
-}));
-
-// AFTER: Redux (RTK)
-const userSlice = createSlice({
-  name: 'user',
-  initialState: { user: null, loading: false, error: null },
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(loginAsync.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(loginAsync.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.loading = false;
-      })
-      .addCase(loginAsync.rejected, (state, action) => {
-        state.error = action.payload;
-        state.loading = false;
-      });
-  },
-});
-
-export const loginAsync = createAsyncThunk(
-  'user/login',
-  async (credentials) => {
-    return await api.login(credentials);
-  }
-);
-
-/**
- * ✅ BENEFITS:
- * - Structure rõ ràng hơn (Actions, Reducers tách riêng)
- * - DevTools mạnh hơn
- * - Middleware ecosystem lớn hơn
- * - Dễ maintain trong team lớn
- */
-
----
-
-### **📊 PHẦN 7: REAL-WORLD EXAMPLES (Ví Dụ Thực Tế)**
-
-````typescript
-/**
- * 🏢 SCENARIO 1: E-COMMERCE APP
- *
- * State cần quản lý:
- * - User (auth, profile)
- * - Cart (items, total)
- * - Products (list, filters)
- * - Orders (history, status)
- * - UI (modal, notifications)
- *
- * 🎯 RECOMMEND: ZUSTAND
- *
- * WHY?
- * - App vừa phải (không quá phức tạp)
- * - Cần performance tốt (cart update nhiều)
- * - Code đơn giản, dễ maintain
- * - DevTools để debug cart issues
- */
-
-// Store structure với Zustand
-import create from 'zustand';
-import { persist, devtools } from 'zustand/middleware';
-
-// 1. User Store
-export const useUserStore = create(
-  persist(
-    (set) => ({
-      user: null,
-      login: (user) => set({ user }),
-      logout: () => set({ user: null }),
-    }),
-    { name: 'user-storage' }
-  )
-);
-
-// 2. Cart Store
-export const useCartStore = create(
-  devtools((set, get) => ({
-    items: [],
-
-    addItem: (product) => set((state) => ({
-      items: [...state.items, { ...product, quantity: 1 }]
-    })),
-
-    removeItem: (id) => set((state) => ({
-      items: state.items.filter(item => item.id !== id)
-    })),
-
-    updateQuantity: (id, quantity) => set((state) => ({
-      items: state.items.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    })),
-
-    clearCart: () => set({ items: [] }),
-
-    get total() {
-      return get().items.reduce((sum, item) =>
-        sum + item.price * item.quantity, 0
-      );
-    },
-  }))
-);
-
-// 3. UI Store (modal, notifications)
-export const useUIStore = create((set) => ({
-  modal: null,
-  notifications: [],
-
-  openModal: (modalType) => set({ modal: modalType }),
-  closeModal: () => set({ modal: null }),
-
-  addNotification: (message) => set((state) => ({
-    notifications: [...state.notifications, { id: Date.now(), message }]
-  })),
-
-  removeNotification: (id) => set((state) => ({
-    notifications: state.notifications.filter(n => n.id !== id)
-  })),
-}));
-
-/**
- * 🏢 SCENARIO 2: TRADING PLATFORM
- *
- * State cần quản lý:
- * - User (auth, account balance)
- * - Market Data (real-time prices, charts)
- * - Orders (pending, filled, cancelled)
- * - Positions (open, closed, P&L)
- * - Watchlist (favorite symbols)
- * - Notifications (trade alerts, margin calls)
- *
- * 🎯 RECOMMEND: REDUX (RTK)
- *
- * WHY?
- * - App CỰC PHỨC TẠP (nhiều state phụ thuộc nhau)
- * - Real-time data (cần middleware như Redux Saga)
- * - Team lớn (10+ developers)
- * - Cần DevTools mạnh để debug trades
- * - Cần time-travel để reproduce bugs
- */
-
-// Store structure với Redux
-import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './slices/userSlice';
-import marketReducer from './slices/marketSlice';
-import ordersReducer from './slices/ordersSlice';
-import positionsReducer from './slices/positionsSlice';
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
-    market: marketReducer,
-    orders: ordersReducer,
-    positions: positionsReducer,
+    orders: ordersSlice.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
-      // Custom middleware: WebSocket cho real-time data
-      websocketMiddleware,
-      // Logger middleware
-      loggerMiddleware
-    ),
 });
-
-/**
- * 🏢 SCENARIO 3: BLOG/PORTFOLIO WEBSITE
- *
- * State cần quản lý:
- * - Theme (dark/light)
- * - Language (en/vi)
- *
- * 🎯 RECOMMEND: CONTEXT API
- *
- * WHY?
- * - App ĐƠN GIẢN (chỉ 2-3 states)
- * - State ÍT THAY ĐỔI (theme, language)
- * - Không cần DevTools
- * - Không muốn cài thêm library
- */
-
-// Theme Context
-const ThemeContext = createContext({ theme: 'light', toggleTheme: () => {} });
-
-export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
-
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
-
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
-`````
-
----
-
-**💡 KEY TAKEAWAYS (Điểm Chính Cần Nhớ)**
-
-```typescript
-/**
- * ✅ CONTEXT API:
- * - Built-in React, 0 KB
- * - Đơn giản, dễ học
- * - Performance KÉMFORM state ít thay đổi
- * - Dùng cho: Theme, Language, Auth status
- *
- * ✅ ZUSTAND:
- * - 1.2 KB, simple API
- * - Performance XUẤT SẮC (auto-optimization)
- * - Không cần Provider
- * - Dùng cho: Cart, User profile, Notifications, Form state
- * - RECOMMEND cho MOST APPS!
- *
- * ✅ REDUX (RTK):
- * - 12 KB, nhiều boilerplate
- * - Performance tốt, DevTools mạnh
- * - Ecosystem lớn, middleware nhiều
- * - Dùng cho: E-commerce, Trading, CRM, Admin dashboard
- * - RECOMMEND cho LARGE/ENTERPRISE APPS
- *
- * 🎯 DECISION TREE:
- *
- * App nhỏ, state ít thay đổi (theme, language)
- *   → Context API
- *
- * App vừa/lớn, cần performance, code đơn giản
- *   → Zustand (✅ RECOMMEND!)
- *
- * App cực lớn, team lớn, cần structure rõ ràng
- *   → Redux (RTK)
- */
 ```
+
+Ưu điểm:
+
+- DevTools mạnh.
+- Middleware ecosystem.
+- Predictable state transitions.
+- Hợp trading/CRM/admin rất lớn.
+
+Tradeoff:
+
+- Nhiều structure hơn Zustand.
+- Không nên dùng chỉ vì "enterprise" nếu app không cần.
+
+#### Decision nhanh cho state
+
+- Theme/locale/auth status ít đổi -> Context.
+- Cart/user profile/notification/UI state -> Zustand.
+- Trading/realtime complex workflows/audit/debug lớn -> Redux Toolkit.
+- Server state/API cache -> React Query/SWR, không nhét hết vào global client store.
+
+## ⚠️ Common Pitfalls
+
+- ❌ Dùng MFE cho team nhỏ/app nhỏ, tạo complexity không cần thiết.
+- ❌ Tách theo UI component thay vì business domain.
+- ❌ Không có version compatibility giữa shell và remote.
+- ❌ Load remote fail làm toàn app trắng màn hình.
+- ❌ Duplicate React hoặc nhiều version shared libs.
+- ❌ Shared state quá lớn làm các MFE coupled như monolith.
+- ❌ Event bus không schema, không logging, không cleanup listener.
+- ❌ CSS leak giữa apps.
+- ❌ Multi-framework không có design system, UX rời rạc.
+- ❌ Monorepo không enforce boundaries, cuối cùng thành distributed monolith.
+- ❌ Không có observability theo `mfeName/version`.
+- ❌ CI build/test tất cả mọi thứ, không dùng affected build/cache.
+
+## ✅ Decision Guide / Checklist
+
+**Có nên dùng Microfrontend không?**
+
+- Có nhiều team độc lập không?
+- Có cần deploy độc lập thật không?
+- Domain boundary có rõ không?
+- Có automated test đủ tin cậy không?
+- Có monitoring/error tracking theo remote không?
+- Có design system/shared contracts không?
+
+**Chọn integration pattern:**
+
+- Cùng framework, cần runtime composition -> Module Federation.
+- Khác framework nhẹ -> wrapper/Web Components.
+- Cần isolation rất mạnh -> iframe, chấp nhận UX/integration kém hơn.
+- Chỉ cần share code nội bộ -> monorepo packages, chưa cần MFE.
+
+**Communication:**
+
+- Parent-child gần nhau -> props/callback.
+- Cross-domain event -> typed event bus/custom events.
+- Global UI/session state -> shared store nhỏ.
+- Business data -> backend/API source of truth.
+
+**Monorepo tooling:**
+
+- Enterprise/generator/boundary mạnh -> Nx.
+- Build nhanh, setup nhẹ -> Turborepo + pnpm.
+- Package manager/linking -> pnpm workspaces.
+- Publishing packages -> Changesets.
+
+## 🗣️ Short Interview Answer
+
+Em nghĩ Microfrontend phù hợp khi vấn đề chính là scale team và independent deployment, không phải chỉ là scale code. Kiến trúc thường có shell app làm host, các remote app theo domain như catalog, cart, checkout, profile. Module Federation giúp shell load remote module ở runtime qua `remoteEntry`, đồng thời share dependency như React để tránh duplicate và lỗi nhiều React instance.
+
+Theo em, phần khó nhất không phải cấu hình Webpack/Vite, mà là boundary và governance: route ownership, communication contract, shared state, version compatibility, fallback khi remote fail, styling isolation, observability và CI/CD. Nếu team nhỏ hoặc domain coupling cao, em thường chọn modular monolith hoặc monorepo trước, vì Microfrontend có overhead lớn.
+
+Với Monorepo, em dùng Nx hoặc Turborepo/pnpm để share libs, enforce boundaries, cache build và chỉ build affected projects. Còn communication giữa MFEs thì em ưu tiên props/callback cho quan hệ cha con, event bus typed cho event cross-domain, shared store rất nhỏ cho session/theme/cart summary, và để backend/API làm source of truth cho business data.
+
+## 🧠 Ghi nhớ nhanh
+
+- **Microfrontend** = scale team + independent deployment, không phải default architecture.
+- **Boundary theo domain**, không theo component nhỏ.
+- **Shell** quản lý layout, auth/session, top-level routing, remote loading, fallback.
+- **Remote** sở hữu domain/page/widget riêng và deploy độc lập.
+- **Module Federation** = runtime composition qua `remoteEntry.js`.
+- **Shared dependencies** phải kiểm soát React/ReactDOM/design system để tránh duplicate.
+- **Communication** nên có contract: props/callback, typed event bus, shared store nhỏ, backend source of truth.
+- **Routing** chọn shell-based nếu cần control, distributed nếu remote cần autonomy.
+- **Styling isolation** cần CSS Modules/CSS-in-JS/Shadow DOM/prefix + design system.
+- **Monorepo** giúp share libs, enforce boundaries, affected build/test, remote cache.
+- **Nx** mạnh về governance, **Turborepo** nhẹ và nhanh, **pnpm workspaces** là nền tảng package linking.
+- **Không có observability/version/fallback** thì MFE rất khó vận hành production.
+
+## 📖 Giải thích các thuật ngữ trong topic
+
+| Thuật ngữ | Giải thích ngắn |
+|---|---|
+| Microfrontend | Kiến trúc chia frontend lớn thành nhiều app/domain nhỏ, có thể deploy độc lập |
+| Monorepo | Một repository chứa nhiều apps/libs/packages |
+| Shell / Host | App container load và compose các remote apps |
+| Remote App | App con expose module/page/component cho shell dùng |
+| Module Federation | Cơ chế runtime load/share module giữa nhiều build độc lập |
+| `remoteEntry.js` | Entry file chứa metadata/runtime để host biết cách tải remote module |
+| Exposes | Config remote public module cho app khác import |
+| Remotes | Config host biết remote nào cần load từ URL nào |
+| Shared Dependencies | Các dependencies được share giữa shell/remotes để tránh duplicate |
+| Singleton | Config đảm bảo chỉ dùng một instance của dependency quan trọng |
+| Multi-framework | Nhiều framework cùng tồn tại, ví dụ React shell load Vue/Angular remote |
+| Web Components | Chuẩn browser tạo custom elements có thể dùng cross-framework |
+| Shadow DOM | DOM/CSS isolation cho Web Components |
+| Event Bus | Cơ chế publish/subscribe event giữa apps |
+| Custom Event | Browser event tự định nghĩa qua `CustomEvent` |
+| Shared State | Store dùng chung giữa nhiều phần app, ví dụ Zustand/Redux |
+| Shell-based Routing | Shell quản lý route map chính và load remote theo route |
+| Distributed Routing | Remote tự quản lý route con bên trong base path |
+| Design System | Bộ tokens, components, guidelines giúp UI nhất quán |
+| Affected Build | Chỉ build/test project bị ảnh hưởng bởi thay đổi |
+| Remote Cache | Cache build/test output dùng chung giữa CI/devs |
+| Task Orchestration | Chạy task theo dependency graph đúng thứ tự |
+| CODEOWNERS | File định nghĩa team/person chịu trách nhiệm review vùng code |
+| Error Boundary | React boundary bắt lỗi render để không crash toàn app |
+| Contract Test | Test đảm bảo contract giữa shell/remote/event/API không bị phá |
+| Canary Release | Release một version cho một nhóm user nhỏ trước khi rollout rộng |
+| Rollback | Quay về version trước khi release lỗi |
+| Distributed Monolith | Hệ thống bị tách deployment nhưng coupling vẫn cao như monolith |

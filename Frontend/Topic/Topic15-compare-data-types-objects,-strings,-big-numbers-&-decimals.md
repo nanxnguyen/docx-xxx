@@ -1,735 +1,550 @@
-# 🔀 Q16: Compare Data Types - Objects, Strings, Big Numbers & Decimals
+# Q16: Compare Data Types - Objects, Strings, Big Numbers & Decimals
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## ⭐ Senior/Staff Summary
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+> So sánh dữ liệu trong JavaScript không chỉ là chọn `===` hay deep compare. Cần hiểu **data semantics**: object so sánh theo reference, string có Unicode/locale, number có floating point precision, còn tiền/số lớn cần boundary rõ ràng.
 
-**"So sánh data types phức tạp cần hiểu: Objects so sánh reference vs value, Strings xử lý Unicode/locale, Big Numbers/Decimals dùng libraries vì floating point precision issues."**
+### 🔑 Key Mental Model
 
-**🔑 4 Khái Niệm Chính:**
+- 📦 **Object / Array / Function**
+  - `===` và `Object.is` so sánh **reference**, không so sánh nội dung.
+  - Shallow compare hiệu quả khi code dùng **immutability + structural sharing**.
+  - Deep compare chỉ nên dùng ở boundary rõ ràng: test, form dirty check, config nhỏ, cache key nhỏ.
 
-**1. Object Comparison - Shallow vs Deep:**
-- **Shallow**: So sánh reference + primitive values ở level 1
-  - `{a:1} === {a:1}` → `false` (different references)
-  - Use case: React.memo, shouldComponentUpdate
-- **Deep**: Recursive compare tất cả nested properties
-  - Dùng lodash `_.isEqual()` (handle circular refs, Date, RegExp)
-  - ⚠️ O(n) complexity, có thể infinite loop
+- 📝 **String**
+  - `===` phù hợp cho id, enum, token, slug đã chuẩn hóa.
+  - Unicode có nhiều representation cho cùng ký tự, nên cần `normalize()`.
+  - Sort/search tiếng Việt nên dùng `Intl.Collator` hoặc search index đã normalize, không dùng `<`/`>`.
 
-**2. String Comparison - Unicode & Locale:**
-- **`===` operator**: So sánh **binary representation** (không hiểu Ă ≠ A)
-- **`localeCompare()`**: So sánh theo **ngôn ngữ** (tiếng Việt: à < á < ả < ã < ạ)
-  - Ví dụ: `'à'.localeCompare('á', 'vi')` → `-1` (à đứng trước)
-- **`Intl.Collator`**: Performance cao hơn cho nhiều comparisons
-- ⚠️ Unicode variants: é (e + ́) vs é (single char) → dùng `.normalize('NFC')`
+- 🔢 **Number / BigInt / Decimal**
+  - `number` là IEEE 754 double, nhanh nhưng có lỗi decimal precision.
+  - `BigInt` dành cho integer lớn, không dành cho decimal.
+  - Tiền nên lưu bằng **smallest unit** như cents, dong, satoshi, hoặc dùng decimal library khi cần precision/rounding phức tạp.
 
-**3. Big Numbers - Precision Issues:**
-- JavaScript Number: **53-bit precision** → max safe integer = 2^53 - 1
-- **Floating point error**: `0.1 + 0.2 !== 0.3` (binary representation)
-- **Solutions**:
-  - `BigInt` (native): integers only, không có decimals
-  - Libraries: `decimal.js`, `big.js`, `bignumber.js` (arbitrary precision)
-- ⚠️ KHÔNG dùng `===` cho decimals → dùng epsilon: `Math.abs(a - b) < Number.EPSILON`
+### ⚠️ Bẫy Nhanh
 
-**4. Financial Calculations:**
-- Dùng **integers** (cents, đồng) thay vì floats: `1.99` → `199` cents
-- Libraries: `dinero.js` (money), `currency.js` (currency math)
-- Format: `Intl.NumberFormat` cho localized currency display
+```ts
+{} === {}; // false: khác reference
+Object.is(NaN, NaN); // true
++0 === -0; // true
+Object.is(+0, -0); // false
 
-**⚠️ Lỗi Thường Gặp:**
-- Deep compare objects trong render → re-render loop (dùng `useMemo`)
-- So sánh strings không normalize Unicode → "café" ≠ "café"
-- Tính toán tiền bằng floats → rounding errors: `(0.1 + 0.2) * 100 = 30.000000000000004`
-- Stringify objects để compare → không handle functions, Date, circular refs
+0.1 + 0.2 === 0.3; // false
+9007199254740992 + 1 === 9007199254740992 + 2; // true
 
-**💡 Kiến Thức Senior:**
-- **Structural sharing** (Immer, Redux): shallow copy chỉ modified branches → fast comparison
-- **Object.is()** vs `===`: `Object.is(NaN, NaN) = true`, `Object.is(+0, -0) = false`
-- JSON.stringify **không stable** (key order) → dùng `fast-json-stable-stringify`
-- Banking systems: **double-entry bookkeeping**, store as integers, round at display layer only
-
-
-
-
-**⚡ Quick Summary:**
-> So sánh dữ liệu phức tạp: Objects (deep/shallow), Strings (localeCompare, Unicode), Big Numbers/Decimals (precision handling)
-
-**💡 Ghi Nhớ:**
-- 🎯 **Objects**: Shallow (reference) vs Deep (recursive) - dùng lodash isEqual cho circular refs
-- 🌍 **Strings**: `localeCompare()` cho tiếng Việt, `Intl.Collator` cho performance
-- 💰 **Big Numbers**: Dùng libraries (decimal.js, big.js) - KHÔNG dùng `===` cho floating point
-- ⚠️ **Traps**: `{a:1} === {a:1}` = false, `0.1 + 0.2 !== 0.3`, Unicode variants
-
----
-
-## 📦 PART 1: COMPARE OBJECTS
-
-**Trả lời:**
-
-- **Shallow Comparison**: So sánh references và primitive values ở level đầu tiên
-- **Deep Comparison**: So sánh đệ quy tất cả nested properties, arrays, objects
-- **Hoạt động**: Objects được so sánh bằng **reference** (địa chỉ bộ nhớ), không phải **value**
-- **Ưu điểm**: Deep comparison chính xác với nested data; Shallow comparison nhanh, phù hợp React memo
-- **Nhược điểm**: Deep comparison chậm O(n), có thể infinite loop với circular refs; Shallow comparison không phát hiện nested changes
-
-**Code Example:**
-
-```typescript
-// Shallow comparison
-const obj1 = { name: 'John', age: 25 };
-const obj2 = { name: 'John', age: 25 };
-const obj3 = obj1;
-
-console.log(obj1 === obj2); // false (different references)
-console.log(obj1 === obj3); // true (same reference)
-
-// Deep comparison function
-function deepEqual(obj1: any, obj2: any): boolean {
-  if (obj1 === obj2) return true;
-
-  if (obj1 == null || obj2 == null) return false;
-
-  if (typeof obj1 !== typeof obj2) return false;
-
-  if (typeof obj1 !== 'object') return obj1 === obj2;
-
-  if (Array.isArray(obj1) !== Array.isArray(obj2)) return false;
-
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  if (keys1.length !== keys2.length) return false;
-
-  for (let key of keys1) {
-    if (!keys2.includes(key)) return false;
-    if (!deepEqual(obj1[key], obj2[key])) return false;
-  }
-
-  return true;
-}
-
-// Usage
-const obj1 = { name: 'John', age: 25, address: { city: 'HCM' } };
-const obj2 = { name: 'John', age: 25, address: { city: 'HCM' } };
-
-console.log(deepEqual(obj1, obj2)); // true
+'file10' < 'file2'; // true: lexicographic, không phải numeric sort
 ```
 
-**Best Practices - Objects:**
+---
 
-- ✅ Sử dụng **shallow comparison** cho React.memo, useMemo dependencies (performance)
-- ✅ Sử dụng **deep comparison** khi cần so sánh nested objects chính xác
-- ✅ Dùng **Lodash `_.isEqual()`** hoặc **fast-deep-equal** cho production (handle edge cases)
-- ✅ Dùng **JSON.stringify()** chỉ khi objects đơn giản, không có functions/Date/RegExp
-- ⚠️ **TRÁNH**: Deep comparison trong tight loops hoặc high-frequency updates
-- ✅ Dùng **WeakMap** để cache comparison results nếu so sánh nhiều lần
-- ✅ Sử dụng TypeScript cho type safety và autocomplete
+## 1. 📦 Main Concepts: Compare Objects
+
+### Reference Equality
+
+Object, array và function được so sánh theo **identity/reference**.
+
+```ts
+const a = { id: 1 };
+const b = { id: 1 };
+const c = a;
+
+a === b; // false
+a === c; // true
+```
+
+✅ Dùng reference equality khi:
+
+- Kiểm tra cùng một instance object.
+- Tận dụng React/Redux/Zustand selector optimization.
+- Cache theo object identity bằng `WeakMap` hoặc `Map`.
+
+⚠️ Không dùng để kết luận 2 object có cùng nội dung.
+
+### `===` vs `Object.is`
+
+`Object.is` gần giống `===`, nhưng xử lý khác ở `NaN` và signed zero.
+
+```ts
+NaN === NaN; // false
+Object.is(NaN, NaN); // true
+
++0 === -0; // true
+Object.is(+0, -0); // false
+```
+
+💡 **React note:** React dùng semantics gần với `Object.is` cho state bailout và dependency comparison. Vì vậy mutate object rồi set lại cùng reference thường không trigger render đúng kỳ vọng.
+
+```tsx
+// ❌ Mutate cùng reference
+user.name = 'Anna';
+setUser(user);
+
+// ✅ Immutable update tạo reference mới cho branch thay đổi
+setUser((prev) => ({ ...prev, name: 'Anna' }));
+```
+
+### Shallow Compare
+
+Shallow compare chỉ so sánh level đầu tiên. Đây là nền tảng của `React.memo`, `useMemo`, `useCallback`, Redux selector và nhiều store libraries.
+
+```ts
+function shallowEqual(
+  a: Record<string, unknown>,
+  b: Record<string, unknown>,
+) {
+  if (Object.is(a, b)) return true;
+
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return false;
+
+  return aKeys.every((key) => Object.is(a[key], b[key]));
+}
+
+shallowEqual({ id: 1 }, { id: 1 }); // true
+shallowEqual({ user: { id: 1 } }, { user: { id: 1 } }); // false
+```
+
+✅ Shallow compare tốt khi:
+
+- State được update immutable.
+- Nested branches không đổi giữ nguyên reference.
+- Data normalized theo `id`, ví dụ `entities.users[id]`.
+
+```ts
+const nextState = {
+  ...state,
+  user: {
+    ...state.user,
+    name: 'Anna',
+  },
+};
+
+state.settings === nextState.settings; // true: branch không đổi
+state.user === nextState.user; // false: branch thay đổi
+```
+
+### Deep Compare
+
+Deep compare so sánh recursive toàn bộ nested structure.
+
+```ts
+import isEqual from 'lodash/isEqual';
+
+const oldFilters = { status: ['OPEN'], range: { from: 1, to: 10 } };
+const newFilters = { status: ['OPEN'], range: { from: 1, to: 10 } };
+
+isEqual(oldFilters, newFilters); // true
+```
+
+✅ Dùng deep compare khi:
+
+- Check form dirty state với object nhỏ.
+- Test API response hoặc expected UI state.
+- So sánh config nhỏ, ít thay đổi, không nằm trong hot path.
+
+⚠️ Tránh deep compare khi:
+
+- Chạy trong render path, animation frame, list lớn, table lớn.
+- Object có circular reference.
+- Object có function, class instance, getter, prototype phức tạp.
+- Data có `Date`, `Map`, `Set`, `RegExp`, `Error`, `ArrayBuffer`, typed array nhưng library không support đúng semantics.
+
+### Stable Object Equality Caveats
+
+"Stable equality" chỉ đáng tin khi bạn kiểm soát shape và canonicalization của data.
+
+- `Date`: so sánh bằng `getTime()` nếu muốn cùng timestamp.
+- `Map`: cần quyết định order có quan trọng không. Hai `Map` cùng entries nhưng insert order khác có thể serialize khác.
+- `Set`: cần so sánh membership, không phải index.
+- `RegExp`: so sánh `source` và `flags`.
+- Function: thường chỉ so sánh reference, không so sánh source code.
+- Symbol keys/non-enumerable properties: `Object.keys()` không thấy.
+- Prototype/class instance: `{ x: 1 }` không giống instance có method/prototype dù JSON giống.
+
+```ts
+const sameDate = (a: Date, b: Date) => a.getTime() === b.getTime();
+
+const sameSet = <T>(a: Set<T>, b: Set<T>) =>
+  a.size === b.size && [...a].every((item) => b.has(item));
+```
+
+### `JSON.stringify` Pitfalls
+
+`JSON.stringify(a) === JSON.stringify(b)` chỉ dùng được cho object cực đơn giản và đã canonical.
+
+```ts
+JSON.stringify({ a: 1, b: 2 }) === JSON.stringify({ b: 2, a: 1 }); // false
+JSON.stringify({ a: undefined }); // "{}"
+JSON.stringify({ date: new Date('2026-01-01') }); // Date thành string ISO
+```
+
+⚠️ Pitfalls:
+
+- Phụ thuộc key insertion order.
+- Mất `undefined`, function, symbol.
+- Không xử lý `BigInt`.
+- Throw với circular reference.
+- Không giữ prototype/class semantics.
 
 ---
 
-## 📝 PART 2: COMPARE STRINGS
+## 2. 📝 Main Concepts: Compare Strings
 
-**Khái niệm:**
+### Exact Equality
 
-So sánh chuỗi cần xử lý đúng **Unicode, dấu thanh tiếng Việt, case sensitivity, và locale** để có kết quả chính xác.
+Dùng `===` khi dữ liệu cần exact match.
 
-**Các Vấn Đề Khi So Sánh Chuỗi:**
+```ts
+const role = 'ADMIN';
 
-1. **Case Sensitivity** (Phân biệt hoa/thường): "Apple" ≠ "apple"
-2. **Unicode Normalization** (Chuẩn hóa Unicode): "é" có thể là 1 char (`\u00e9`) hoặc 2 chars (`e` + `\u0301`)
-3. **Diacritics/Accents** (Dấu thanh): Tiếng Việt "à", "á", "ả", "ã", "ạ" cần xử lý đúng
-4. **Locale-specific** (Theo ngôn ngữ): Tiếng Việt "đ" khác "d", nhưng một số ngôn ngữ coi là giống nhau
-5. **Whitespace** (Khoảng trắng): "  Hello  " vs "Hello"
+role === 'ADMIN'; // true
+```
 
-**Kỹ thuật:**
+✅ Phù hợp cho:
 
-- **Cơ bản**: `===`, `==`, `<`, `>` (so sánh theo Unicode code points - không phù hợp tiếng Việt)
-- **Nâng cao**: `localeCompare()`, `Intl.Collator` (so sánh đúng theo ngôn ngữ, hỗ trợ dấu thanh)
-- **Ưu điểm**: `Intl.Collator` tốt nhất cho sort, search tiếng Việt; performance cao khi so sánh nhiều lần
-- **Nhược điểm**: `===` không xử lý được dấu thanh, accents; cần normalize() cho Unicode variants
+- Token, password hash, signature.
+- ID, enum, feature flag key.
+- Slug hoặc code đã canonical từ backend.
 
-**Code Example - Strings (TypeScript):**
+⚠️ Với security/auth data, không tự normalize nếu backend yêu cầu exact bytes.
 
-```typescript
-// ============================================
-// 1. SO SÁNH CƠ BẢN (Basic Comparison)
-// ============================================
+### Unicode Normalization
 
-// A. Equality (So sánh bằng)
-const str1 = 'Hello';
-const str2 = 'Hello';
-const str3 = 'hello';
+Cùng một ký tự nhìn giống nhau có thể có nhiều Unicode representation khác nhau.
 
-console.log(str1 === str2); // true - Giống nhau hoàn toàn
-console.log(str1 === str3); // false - Khác case
+```ts
+const composed = '\u00E9'; // é: single code point
+const decomposed = 'e\u0301'; // e + combining accent
 
-// B. Case-insensitive comparison (Không phân biệt hoa/thường)
-console.log(str1.toLowerCase() === str3.toLowerCase()); // true
-console.log(str1.toUpperCase() === str3.toUpperCase()); // true
+composed === decomposed; // false
+composed.normalize('NFC') === decomposed.normalize('NFC'); // true
+```
 
-// C. Lexicographic comparison (So sánh từ điển - theo Unicode)
-console.log('apple' < 'banana'); // true - 'a' (97) < 'b' (98)
-console.log('Apple' < 'banana'); // true - 'A' (65) < 'b' (98)
-console.log('10' < '2'); // true - ⚠️ So sánh string, không phải number!
+✅ Rule thực tế:
 
-// ============================================
-// 2. VẤN ĐỀ VỚI TIẾNG VIỆT (Vietnamese Issues)
-// ============================================
+- Dùng `NFC` cho lưu trữ/display phổ thông.
+- Dùng `NFD` khi cần tách dấu để search không dấu.
+- Normalize ở ingestion/search boundary, không normalize rải rác trong UI.
 
-// ❌ SAI: So sánh trực tiếp không xử lý dấu thanh
-const vn1 = 'Hà Nội';
-const vn2 = 'Hải Phòng';
-const vn3 = 'Huế';
+### Locale-Aware Sort With `Intl.Collator`
 
-console.log(vn1 < vn2); // false - ⚠️ 'à' (U+00E0) > 'ả' (U+1EA3) theo Unicode
-console.log(vn2 < vn3); // false - ⚠️ Không đúng thứ tự alphabet tiếng Việt
+Không sort tên người, địa danh, sản phẩm tiếng Việt bằng `<`, `>` hoặc default `sort()`.
 
-// ❌ SAI: Unicode variants (Cùng ký tự nhưng khác Unicode)
-const e1 = 'café'; // é = \u00e9 (1 character - precomposed)
-const e2 = 'café'; // é = e + \u0301 (2 characters - decomposed)
-console.log(e1 === e2); // false - ⚠️ Khác Unicode representation
-console.log(e1.length); // 4
-console.log(e2.length); // 5
-
-// ✅ ĐÚNG: Normalize trước khi so sánh
-console.log(e1.normalize('NFC') === e2.normalize('NFC')); // true
-console.log(e1.normalize('NFD') === e2.normalize('NFD')); // true
-
-// ============================================
-// 3. localeCompare() - SO SÁNH THEO LOCALE
-// ============================================
-
-// Syntax: str1.localeCompare(str2, locale, options)
-// Return: -1 (str1 < str2), 0 (equal), 1 (str1 > str2)
-
-const city1 = 'Hà Nội';
-const city2 = 'Hải Phòng';
-const city3 = 'Huế';
-
-// A. So sánh theo tiếng Việt (đúng thứ tự alphabet)
-console.log(city1.localeCompare(city2, 'vi')); // -1 (Hà Nội < Hải Phòng)
-console.log(city2.localeCompare(city3, 'vi')); // -1 (Hải Phòng < Huế)
-console.log(city1.localeCompare(city1, 'vi')); // 0 (equal)
-
-// B. Case-insensitive comparison với localeCompare
-const name1 = 'Nguyễn Văn A';
-const name2 = 'NGUYỄN VĂN A';
-
-console.log(name1.localeCompare(name2, 'vi', { sensitivity: 'base' })); // 0 (equal - không phân biệt hoa/thường)
-console.log(name1.localeCompare(name2, 'vi', { sensitivity: 'case' })); // -1 (khác case)
-
-// C. Ignore accents (Bỏ qua dấu thanh)
-const word1 = 'nha';
-const word2 = 'nhà';
-
-console.log(word1.localeCompare(word2, 'vi', { sensitivity: 'base' })); // 0 (coi là giống nhau)
-console.log(word1.localeCompare(word2, 'vi', { sensitivity: 'accent' })); // -1 (khác dấu)
-
-// D. Numeric comparison (So sánh số trong string)
-const file1 = 'file2.txt';
-const file2 = 'file10.txt';
-
-console.log(file1 < file2); // false - ⚠️ String comparison: '2' > '1'
-console.log(file1.localeCompare(file2, 'en', { numeric: true })); // -1 - ✅ 2 < 10
-
-// ============================================
-// 4. Intl.Collator - SO SÁNH HIỆU QUẢ (Reusable)
-// ============================================
-
-// Khi cần so sánh nhiều lần → tạo Collator instance (hiệu quả hơn)
-
-// A. Tạo Collator cho tiếng Việt
-const vietnameseCollator = new Intl.Collator('vi', {
-  sensitivity: 'base', // Không phân biệt hoa/thường, dấu thanh
-  numeric: true, // So sánh số đúng
-  ignorePunctuation: true, // Bỏ qua dấu câu
+```ts
+const viCollator = new Intl.Collator('vi', {
+  sensitivity: 'base',
+  numeric: true,
+  ignorePunctuation: true,
 });
 
-const cities = ['Hà Nội', 'Đà Nẵng', 'Hồ Chí Minh', 'Cần Thơ', 'Huế'];
+const cities = ['Hà Nội', 'Đà Nẵng', 'Cần Thơ', 'Huế', 'Hồ Chí Minh'];
 
-// Sort theo thứ tự tiếng Việt
-const sortedCities = cities.sort((a, b) => vietnameseCollator.compare(a, b));
-console.log(sortedCities);
-// ✅ ['Cần Thơ', 'Đà Nẵng', 'Hà Nội', 'Hồ Chí Minh', 'Huế']
+const sortedCities = [...cities].sort(viCollator.compare);
+```
 
-// B. Search/Filter với Collator
-const names = ['Nguyễn Văn A', 'Nguyễn Văn B', 'Trần Thị C', 'NGUYỄN VĂN A'];
-const searchTerm = 'nguyễn văn a';
+💡 Notes:
 
-const vietnameseSearchCollator = new Intl.Collator('vi', {
-  sensitivity: 'base', // Không phân biệt hoa/thường, dấu thanh
-});
+- `numeric: true`: `file2` đứng trước `file10`.
+- `sensitivity: 'base'`: bỏ qua case và dấu, thường hợp với search.
+- `sensitivity: 'accent'`: phân biệt dấu, bỏ qua case.
+- `sensitivity: 'case'`: phân biệt case.
+- Tạo `Intl.Collator` một lần rồi reuse khi sort/filter nhiều lần.
 
-const results = names.filter(
-  (name) => vietnameseSearchCollator.compare(name, searchTerm) === 0
+⚠️ `Array.prototype.sort()` mutate array gốc. Trong React state hoặc selector, hãy clone trước:
+
+```ts
+const sortedUsers = [...users].sort((a, b) =>
+  viCollator.compare(a.fullName, b.fullName),
 );
-console.log(results); // ['Nguyễn Văn A', 'NGUYỄN VĂN A']
+```
 
-// ============================================
-// 5. HELPER FUNCTIONS (Hàm Tiện Ích)
-// ============================================
+### Vietnamese Search
 
-// A. Remove accents (Bỏ dấu tiếng Việt)
-function removeAccents(str: string): string {
-  return str
-    .normalize('NFD') // Tách dấu ra
-    .replace(/[\u0300-\u036f]/g, '') // Xóa dấu
+Với search không dấu, nên normalize trước và có thể precompute search key cho list lớn.
+
+```ts
+function removeVietnameseAccents(value: string) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/đ/g, 'd')
     .replace(/Đ/g, 'D');
 }
 
-console.log(removeAccents('Hà Nội')); // 'Ha Noi'
-console.log(removeAccents('Nguyễn Văn A')); // 'Nguyen Van A'
-
-// B. Fuzzy search (Tìm gần đúng)
-function fuzzyMatch(str: string, query: string): boolean {
-  const normalizedStr = removeAccents(str.toLowerCase());
-  const normalizedQuery = removeAccents(query.toLowerCase());
-  
-  return normalizedStr.includes(normalizedQuery);
+function normalizeSearch(value: string) {
+  return removeVietnameseAccents(value).toLocaleLowerCase('vi').trim();
 }
 
-console.log(fuzzyMatch('Cà phê Đà Lạt', 'ca phe')); // true
-console.log(fuzzyMatch('Trà Sữa', 'tra sua')); // true
+function includesText(text: string, query: string) {
+  return normalizeSearch(text).includes(normalizeSearch(query));
+}
+
+includesText('Cà phê Đà Lạt', 'ca phe da lat'); // true
 ```
 
-**Best Practices - Strings:**
+Production version cho table/list lớn:
 
-- ✅ **Sử dụng `Intl.Collator` khi sort/compare nhiều lần** (performance tốt hơn `localeCompare`)
-- ✅ **Luôn `normalize()` trước khi so sánh** nếu có Unicode variants
-- ✅ **Chọn `sensitivity` phù hợp**: `base` (search), `accent` (phân biệt dấu), `case` (phân biệt hoa/thường), `variant` (strict)
-- ✅ **Dùng `numeric: true`** khi sort file names, versions
-- ✅ **Remove accents cho fuzzy search** (tìm kiếm gần đúng)
+```ts
+type User = {
+  id: string;
+  fullName: string;
+};
 
-**📊 So Sánh Các Phương Pháp Strings:**
+type SearchableUser = User & {
+  searchKey: string;
+};
 
+function buildSearchIndex(users: User[]): SearchableUser[] {
+  return users.map((user) => ({
+    ...user,
+    searchKey: normalizeSearch(user.fullName),
+  }));
+}
+
+function searchUsers(users: SearchableUser[], query: string) {
+  const normalizedQuery = normalizeSearch(query);
+  return users.filter((user) => user.searchKey.includes(normalizedQuery));
+}
 ```
-┌──────────────────────┬────────────────┬──────────────┬─────────────────┬──────────────┐
-│ Phương Pháp          │ Performance    │ Tiếng Việt   │ Case/Accent     │ Use Case     │
-├──────────────────────┼────────────────┼──────────────┼─────────────────┼──────────────┤
-│ === / < / >          │ ⚡⚡⚡⚡⚡       │ ❌           │ Phân biệt       │ ASCII only   │
-│ toLowerCase() + ===  │ ⚡⚡⚡⚡         │ ❌           │ Không phân biệt │ Simple       │
-│ localeCompare()      │ ⚡⚡⚡          │ ✅           │ Tùy chỉnh       │ 1-2 lần      │
-│ Intl.Collator        │ ⚡⚡⚡⚡⚡       │ ✅           │ Tùy chỉnh       │ Sort, nhiều  │
-│ normalize() + ===    │ ⚡⚡⚡⚡         │ Partial      │ Tùy chỉnh       │ Unicode fix  │
-└──────────────────────┴────────────────┴──────────────┴─────────────────┴──────────────┘
-```
+
+💡 Precompute giúp tránh normalize hàng nghìn string ở mỗi keystroke.
 
 ---
 
-## 💰 PART 3: COMPARE BIG NUMBERS & DECIMALS
+## 3. 🔢 Main Concepts: Numbers, BigInt & Decimals
 
-**Vấn Đề Floating Point Precision:**
+### JavaScript `number`
 
-```typescript
-// ❌ VẤN ĐỀ: JavaScript numbers là IEEE 754 floating-point
-console.log(0.1 + 0.2); // 0.30000000000000004 ❌
-console.log(0.1 + 0.2 === 0.3); // false ❌
+JavaScript `number` là IEEE 754 double. Nó phù hợp cho đa số UI calculation, nhưng không an toàn tuyệt đối cho decimal và integer quá lớn.
 
-// Vấn đề với số lớn (> Number.MAX_SAFE_INTEGER)
-const bigNum = 9007199254740992; // 2^53
-console.log(bigNum + 1 === bigNum + 2); // true ❌ (mất precision!)
-
-// Vấn đề với tiền tệ/financial calculations
-const price = 0.07;
-const quantity = 100;
-console.log(price * quantity); // 7.000000000000001 ❌
+```ts
+0.1 + 0.2; // 0.30000000000000004
+Number.MAX_SAFE_INTEGER; // 9007199254740991
+Number.isSafeInteger(9007199254740993); // false
 ```
 
-**Giải Pháp:**
+### Compare Floating Point With Relative Epsilon
 
-### 3.1. So Sánh Decimals với Epsilon (Ngưỡng Sai Số)
+Absolute epsilon đơn giản, nhưng relative epsilon tốt hơn khi số có scale khác nhau.
 
-```typescript
-// ✅ CÁCH 1: Epsilon comparison (cho số nhỏ)
-function areEqual(a: number, b: number, epsilon = Number.EPSILON): boolean {
-  return Math.abs(a - b) < epsilon;
+```ts
+function nearlyEqual(a: number, b: number, epsilon = Number.EPSILON) {
+  const diff = Math.abs(a - b);
+  const scale = Math.max(1, Math.abs(a), Math.abs(b));
+  return diff <= epsilon * scale;
 }
 
-console.log(areEqual(0.1 + 0.2, 0.3)); // true ✅
-console.log(areEqual(0.07 * 100, 7)); // true ✅
-
-// Epsilon lớn hơn cho financial calculations
-const FINANCIAL_EPSILON = 0.0001; // 4 decimal places
-
-function areFinanciallyEqual(a: number, b: number): boolean {
-  return Math.abs(a - b) < FINANCIAL_EPSILON;
-}
-
-console.log(areFinanciallyEqual(99.9999, 100.0001)); // true
-console.log(areFinanciallyEqual(99.99, 100.01)); // false
-
-// ✅ CÁCH 2: So sánh bằng toFixed() (convert to string)
-function compareDecimals(a: number, b: number, decimals = 2): boolean {
-  return a.toFixed(decimals) === b.toFixed(decimals);
-}
-
-console.log(compareDecimals(0.1 + 0.2, 0.3, 10)); // true
-console.log(compareDecimals(99.999, 100.001, 2)); // true (cả 2 → "100.00")
-
-// ✅ CÁCH 3: Chuyển sang cents/smallest unit (cho tiền tệ)
-function compareMoney(a: number, b: number): boolean {
-  // Convert to cents (multiply by 100)
-  return Math.round(a * 100) === Math.round(b * 100);
-}
-
-console.log(compareMoney(0.07 * 100, 7)); // true
-console.log(compareMoney(19.99, 20.00)); // false
+nearlyEqual(0.1 + 0.2, 0.3, 1e-10); // true
+nearlyEqual(1_000_000.1 + 0.2, 1_000_000.3, 1e-10); // true
 ```
 
-### 3.2. So Sánh Big Numbers với Libraries
+✅ Dùng cho:
 
-```typescript
-// ============================================
-// LIBRARY 1: decimal.js (Khuyến nghị cho financial)
-// ============================================
-import Decimal from 'decimal.js';
+- Chart, animation, layout measurement.
+- UI calculation không phải financial ledger.
+- So sánh số từ sensor, canvas, geometry, percentage.
 
-// A. Basic comparison
-const a = new Decimal('0.1');
-const b = new Decimal('0.2');
-const c = new Decimal('0.3');
+❌ Không dùng epsilon để quyết định tiền, balance, invoice, tax, trading order.
 
-console.log(a.plus(b).equals(c)); // true ✅
+### BigInt
 
-// B. Big numbers (> Number.MAX_SAFE_INTEGER)
-const big1 = new Decimal('9007199254740993');
-const big2 = new Decimal('9007199254740994');
+`BigInt` phù hợp cho integer lớn: ID numeric lớn, blockchain smallest unit, counter rất lớn.
 
-console.log(big1.lessThan(big2)); // true ✅
-console.log(big1.greaterThan(big2)); // false
-console.log(big1.equals(big2)); // false
+```ts
+const a = 9007199254740993n;
+const b = 9007199254740994n;
 
-// C. Financial calculations
-const price = new Decimal('19.99');
-const quantity = new Decimal('100');
-const total = price.times(quantity);
-
-console.log(total.toString()); // "1999.00"
-console.log(total.equals(new Decimal('1999'))); // true ✅
-
-// D. Comparison operators
-const x = new Decimal('123.456');
-const y = new Decimal('123.457');
-
-console.log(x.comparedTo(y)); // -1 (x < y)
-console.log(y.comparedTo(x)); // 1 (y > x)
-console.log(x.comparedTo(x)); // 0 (x === x)
-
-// E. Precision control
-Decimal.set({ precision: 10 }); // 10 significant digits
-
-const result = new Decimal('1').dividedBy('3');
-console.log(result.toString()); // "0.3333333333"
-
-// ============================================
-// LIBRARY 2: big.js (Nhẹ hơn, đơn giản hơn)
-// ============================================
-import Big from 'big.js';
-
-const num1 = new Big('0.1');
-const num2 = new Big('0.2');
-const num3 = new Big('0.3');
-
-console.log(num1.plus(num2).eq(num3)); // true ✅
-
-// Comparison methods
-console.log(num1.lt(num2)); // true (less than)
-console.log(num1.lte(num2)); // true (less than or equal)
-console.log(num1.gt(num2)); // false (greater than)
-console.log(num1.gte(num2)); // false (greater than or equal)
-console.log(num1.eq(num2)); // false (equal)
-
-// ============================================
-// LIBRARY 3: bignumber.js (Nhiều features nhất)
-// ============================================
-import BigNumber from 'bignumber.js';
-
-const bn1 = new BigNumber('12345678901234567890');
-const bn2 = new BigNumber('12345678901234567891');
-
-console.log(bn1.isEqualTo(bn2)); // false
-console.log(bn1.isLessThan(bn2)); // true
-console.log(bn1.isGreaterThan(bn2)); // false
-
-// Comparison với tolerance
-console.log(bn1.comparedTo(bn2)); // -1
-
-// Crypto/Blockchain calculations
-const wei = new BigNumber('1000000000000000000'); // 1 ETH in wei
-const gwei = wei.dividedBy('1000000000');
-console.log(gwei.toString()); // "1000000000"
+a < b; // true
+a + 1n; // 9007199254740994n
 ```
 
-### 3.3. Helper Functions cho Big Number Comparison
+⚠️ Không mix trực tiếp `number` và `bigint`.
 
-```typescript
-// ============================================
-// HELPER FUNCTIONS
-// ============================================
+```ts
+1n + 1; // TypeError
+1n + BigInt(1); // 2n
+```
 
-// 1. Compare với epsilon (built-in Number)
-function compareNumbers(
-  a: number,
-  b: number,
-  options: {
-    epsilon?: number;
-    decimals?: number;
-  } = {}
-): -1 | 0 | 1 {
-  const { epsilon = Number.EPSILON, decimals } = options;
+### API JSON Large Numbers
 
-  // Option 1: Use epsilon
-  if (!decimals) {
-    const diff = a - b;
-    if (Math.abs(diff) < epsilon) return 0;
-    return diff < 0 ? -1 : 1;
-  }
+JSON parse trong JavaScript sẽ biến number thành `number`, nên integer lớn có thể mất precision trước khi app xử lý.
 
-  // Option 2: Use toFixed
-  const aFixed = a.toFixed(decimals);
-  const bFixed = b.toFixed(decimals);
-  
-  if (aFixed === bFixed) return 0;
-  return aFixed < bFixed ? -1 : 1;
-}
+```ts
+JSON.parse('{"id":9007199254740993}').id; // 9007199254740992
+```
 
-console.log(compareNumbers(0.1 + 0.2, 0.3)); // 0 (equal)
-console.log(compareNumbers(99.999, 100.001, { decimals: 2 })); // 0 (equal)
-console.log(compareNumbers(1.5, 2.5)); // -1 (less than)
+✅ API contract nên gửi số lớn dưới dạng string:
 
-// 2. Safe comparison cho financial
-interface Money {
-  amount: number;
-  currency: string;
-}
+```ts
+type OrderDto = {
+  id: string; // large numeric id
+  amountMinor: string; // parse to bigint/decimal ở boundary
+  currency: 'USD' | 'VND';
+};
+
+const amountMinor = BigInt(order.amountMinor);
+```
+
+### Money: Smallest Unit
+
+Với tiền, cách đơn giản và robust nhất là lưu bằng đơn vị nhỏ nhất: cents, đồng, satoshi.
+
+```ts
+type Currency = 'USD' | 'VND';
+
+type Money = {
+  amountMinor: bigint;
+  currency: Currency;
+};
 
 function compareMoney(a: Money, b: Money): -1 | 0 | 1 {
   if (a.currency !== b.currency) {
     throw new Error('Cannot compare different currencies');
   }
 
-  // Convert to smallest unit (cents)
-  const aCents = Math.round(a.amount * 100);
-  const bCents = Math.round(b.amount * 100);
-
-  if (aCents === bCents) return 0;
-  return aCents < bCents ? -1 : 1;
+  if (a.amountMinor === b.amountMinor) return 0;
+  return a.amountMinor < b.amountMinor ? -1 : 1;
 }
 
-const price1: Money = { amount: 19.99, currency: 'USD' };
-const price2: Money = { amount: 20.00, currency: 'USD' };
-
-console.log(compareMoney(price1, price2)); // -1 (cheaper)
-
-// 3. Compare arrays of numbers
-function compareNumberArrays(
-  a: number[],
-  b: number[],
-  epsilon = Number.EPSILON
-): boolean {
-  if (a.length !== b.length) return false;
-  
-  return a.every((val, index) => Math.abs(val - b[index]) < epsilon);
-}
-
-console.log(compareNumberArrays([0.1, 0.2], [0.1, 0.2])); // true
-console.log(compareNumberArrays([0.1 + 0.2], [0.3])); // true ✅
-
-// 4. Range comparison (a trong khoảng [min, max])
-function isInRange(
-  value: number,
-  min: number,
-  max: number,
-  inclusive = true
-): boolean {
-  if (inclusive) {
-    return value >= min && value <= max;
-  }
-  return value > min && value < max;
-}
-
-console.log(isInRange(5, 1, 10)); // true
-console.log(isInRange(10, 1, 10, false)); // false (exclusive)
+compareMoney(
+  { amountMinor: 1999n, currency: 'USD' },
+  { amountMinor: 2000n, currency: 'USD' },
+); // -1
 ```
 
-### 3.4. Real-World Examples
+### Safe BigInt Money Formatting
 
-```typescript
-// ============================================
-// EXAMPLE 1: E-commerce Price Comparison
-// ============================================
+Không convert `bigint` lớn sang `number` để format vì có thể mất precision. Format bằng string ở display layer.
+
+```ts
+function formatMinorUnits(amountMinor: bigint, fractionDigits: number) {
+  const sign = amountMinor < 0n ? '-' : '';
+  const value = amountMinor < 0n ? -amountMinor : amountMinor;
+  const base = 10n ** BigInt(fractionDigits);
+  const major = value / base;
+  const minor = (value % base).toString().padStart(fractionDigits, '0');
+
+  return fractionDigits === 0
+    ? `${sign}${major.toString()}`
+    : `${sign}${major.toString()}.${minor}`;
+}
+
+formatMinorUnits(1999n, 2); // "19.99"
+formatMinorUnits(123456789012345678901n, 2); // "1234567890123456789.01"
+```
+
+💡 Có thể đưa string này vào UI formatter/currency label riêng. Chỉ dùng `Intl.NumberFormat` với `Number(...)` khi chắc chắn giá trị nằm trong safe range.
+
+### Decimal Libraries
+
+Khi cần decimal precision thật sự, dùng library như `big.js`, `decimal.js`, hoặc `bignumber.js`.
+
+- `big.js`
+  - Nhẹ, API nhỏ.
+  - Phù hợp e-commerce và phép tính decimal phổ biến.
+
+- `decimal.js`
+  - Nhiều config precision/rounding.
+  - Phù hợp financial/scientific calculation phức tạp hơn.
+
+- `bignumber.js`
+  - Hay gặp trong crypto/blockchain ecosystem.
+  - Hỗ trợ nhiều API cho integer/decimal lớn.
+
+```ts
 import Decimal from 'decimal.js';
 
-interface Product {
-  id: string;
-  name: string;
-  price: Decimal;
-}
+const total = new Decimal('0.1').plus('0.2');
 
-function findCheapest(products: Product[]): Product {
-  return products.reduce((cheapest, current) =>
-    current.price.lessThan(cheapest.price) ? current : cheapest
-  );
-}
-
-const products: Product[] = [
-  { id: '1', name: 'A', price: new Decimal('19.99') },
-  { id: '2', name: 'B', price: new Decimal('19.989') }, // Cheaper by 0.001
-  { id: '3', name: 'C', price: new Decimal('20.00') },
-];
-
-console.log(findCheapest(products)); // Product B
-
-// ============================================
-// EXAMPLE 2: Crypto Trading (High Precision)
-// ============================================
-import BigNumber from 'bignumber.js';
-
-interface Trade {
-  price: BigNumber;
-  amount: BigNumber;
-}
-
-function calculateTotal(trades: Trade[]): BigNumber {
-  return trades.reduce(
-    (total, trade) => total.plus(trade.price.times(trade.amount)),
-    new BigNumber(0)
-  );
-}
-
-const trades: Trade[] = [
-  { 
-    price: new BigNumber('50000.123456789'), // BTC price
-    amount: new BigNumber('0.00123456') 
-  },
-  {
-    price: new BigNumber('50000.987654321'),
-    amount: new BigNumber('0.00234567')
-  },
-];
-
-const total = calculateTotal(trades);
-console.log(total.toFixed(8)); // "178.93831959" (8 decimals)
-
-// ============================================
-// EXAMPLE 3: Percentage Comparison (Tax, Discount)
-// ============================================
-import Decimal from 'decimal.js';
-
-function applyDiscount(
-  price: Decimal,
-  discountPercent: Decimal
-): Decimal {
-  const discount = price.times(discountPercent).dividedBy(100);
-  return price.minus(discount);
-}
-
-const originalPrice = new Decimal('100.00');
-const discount = new Decimal('10.5'); // 10.5%
-
-const finalPrice = applyDiscount(originalPrice, discount);
-console.log(finalPrice.toString()); // "89.50"
-
-// Verify discount calculation
-const expectedPrice = new Decimal('89.50');
-console.log(finalPrice.equals(expectedPrice)); // true ✅
-
-// ============================================
-// EXAMPLE 4: Scientific Calculations
-// ============================================
-import Decimal from 'decimal.js';
-
-// Configure for scientific precision
-Decimal.set({ precision: 50 });
-
-const pi = new Decimal('3.1415926535897932384626433832795028841971693993751');
-const radius = new Decimal('10');
-
-const area = pi.times(radius.pow(2));
-console.log(area.toString()); // Very high precision
-
-// Compare with tolerance
-function compareScientific(
-  a: Decimal,
-  b: Decimal,
-  significantDigits: number
-): boolean {
-  return a.toSignificantDigits(significantDigits)
-    .equals(b.toSignificantDigits(significantDigits));
-}
-
-const result1 = new Decimal('3.14159265358979');
-const result2 = new Decimal('3.14159265358980');
-
-console.log(compareScientific(result1, result2, 10)); // true (first 10 digits match)
+total.equals(new Decimal('0.3')); // true
+total.toFixed(2); // "0.30"
 ```
 
-**Best Practices - Big Numbers & Decimals:**
+⚠️ Không tạo decimal từ float đã sai:
 
-- ✅ **KHÔNG BAO GIỜ dùng `===` cho floating point** - dùng epsilon hoặc libraries
-- ✅ **Financial calculations**: Dùng `decimal.js` hoặc chuyển sang cents (smallest unit)
-- ✅ **Crypto/Blockchain**: Dùng `bignumber.js` với precision cao (>18 decimals)
-- ✅ **E-commerce**: Dùng `big.js` (nhẹ, đủ features) hoặc store prices as cents (integer)
-- ✅ **Scientific**: Dùng `decimal.js` với custom precision
-- ⚠️ **TRÁNH**: `toFixed()` cho calculations (chỉ dùng cho display)
-- ✅ **Always validate currency** trước khi so sánh Money objects
-- ✅ **Document precision requirements** trong code comments
-
-**📊 So Sánh Libraries:**
-
-```
-┌──────────────────┬─────────────┬─────────────┬──────────────┬─────────────────┐
-│ Library          │ Size        │ Precision   │ Performance  │ Use Case        │
-├──────────────────┼─────────────┼─────────────┼──────────────┼─────────────────┤
-│ decimal.js       │ ~32KB       │ Unlimited   │ ⚡⚡⚡        │ Financial       │
-│ big.js           │ ~6KB        │ Unlimited   │ ⚡⚡⚡⚡      │ E-commerce      │
-│ bignumber.js     │ ~23KB       │ Unlimited   │ ⚡⚡⚡        │ Crypto/Science  │
-│ Native (epsilon) │ 0KB         │ Limited     │ ⚡⚡⚡⚡⚡    │ Simple cases    │
-└──────────────────┴─────────────┴─────────────┴──────────────┴─────────────────┘
-```
-
-**Common Mistakes - Big Numbers:**
-
-```typescript
-// ❌ LỖI 1: So sánh trực tiếp floating point
-const bad1 = (0.1 + 0.2 === 0.3); // false ❌
-
-// ✅ ĐÚNG: Dùng epsilon
-const good1 = Math.abs((0.1 + 0.2) - 0.3) < Number.EPSILON; // true ✅
-
-// ❌ LỖI 2: Dùng toFixed() cho calculations
-const bad2 = parseFloat((0.1 + 0.2).toFixed(1)); // 0.3 nhưng không chính xác
-
-// ✅ ĐÚNG: Dùng Decimal cho calculations, toFixed() chỉ cho display
-const good2 = new Decimal('0.1').plus('0.2').toFixed(1); // "0.3"
-
-// ❌ LỖI 3: Quên validate currency
-const bad3 = compareMoney(
-  { amount: 100, currency: 'USD' },
-  { amount: 100, currency: 'EUR' }
-); // ❌ Comparing different currencies!
-
-// ✅ ĐÚNG: Validate trước
-function safeCom pareMoney(a: Money, b: Money) {
-  if (a.currency !== b.currency) throw new Error('Currency mismatch');
-  return compareMoney(a, b);
-}
+```ts
+new Decimal(0.1 + 0.2).equals(new Decimal('0.3')); // false
+new Decimal('0.1').plus('0.2').equals(new Decimal('0.3')); // true
 ```
 
 ---
 
-## ✅ TỔNG KẾT
+## 4. ⚛️ Production Notes & React Implications
 
-**Khi nào dùng gì?**
+- ✅ **React state:** immutable update giúp reference thay đổi đúng chỗ, shallow compare mới hiệu quả.
+- ✅ **Dependencies:** object/function tạo mới mỗi render sẽ làm `useEffect`, `useMemo`, `useCallback` chạy lại.
+- ✅ **Memoization:** dùng `React.memo`/selector khi có profiling hoặc component thật sự expensive, không bọc đại trà.
+- ✅ **Sort:** `sort()` mutate array, nên clone trước khi sort state/props.
+- ✅ **Search:** normalize/precompute search key cho list lớn, kết hợp debounce nếu input search gọi API hoặc filter nặng.
+- ✅ **API boundary:** large number, money, decimal nên đi qua JSON dưới dạng string, parse ở boundary có validation.
+- ✅ **SSR/locale:** server và browser có thể khác ICU/locale data. Với sort quan trọng, cố định locale/options và test snapshot cẩn thận.
+- ✅ **Testing:** test edge cases: `NaN`, `+0/-0`, Unicode composed/decomposed, tiếng Việt có `đ`, large integer, rounding, currency mismatch.
+- ✅ **Performance:** deep compare, normalize string và decimal calculation đều có cost. Đặt ở event handler, selector memoized, worker, hoặc ingestion step nếu data lớn.
 
-| Loại So Sánh | Phương Pháp | Use Case |
-|---------------|-------------|----------|
-| **Objects - Shallow** | `Object.is()`, `===` | React.memo, primitive checks |
-| **Objects - Deep** | Lodash `_.isEqual()`, custom recursive | Form validation, API response comparison |
-| **Strings - ASCII** | `===`, `toLowerCase()` | Simple text, English only |
-| **Strings - Unicode/Tiếng Việt** | `Intl.Collator`, `localeCompare()` | Sort names, search, i18n |
-| **Decimals - Simple** | Epsilon comparison | Basic math, UI calculations |
-| **Decimals - Financial** | `decimal.js`, cents conversion | E-commerce, billing, accounting |
-| **Big Numbers** | `bignumber.js` | Crypto, scientific, blockchain |
+---
 
+## 5. 🔥 Common Pitfalls
+
+- ❌ Dùng `JSON.stringify` làm generic deep equality.
+- ❌ Mutate nested state rồi kỳ vọng React re-render/memo hoạt động đúng.
+- ❌ Deep compare trong render path để "fix" object dependency thay vì ổn định data flow.
+- ❌ Sort props/state trực tiếp bằng `array.sort()`.
+- ❌ Search tiếng Việt bằng `toLowerCase().includes()` mà không normalize dấu.
+- ❌ Tạo `Intl.Collator` trong từng comparator call.
+- ❌ Dùng `Number` cho API ID lớn hoặc money minor unit lớn.
+- ❌ Convert `bigint` lớn sang `number` để format.
+- ❌ Dùng `toFixed()` làm business logic rounding.
+- ❌ So sánh tiền khác currency.
+- ❌ Truyền `new Decimal(0.1 + 0.2)` thay vì string input.
+
+---
+
+## 6. 🧭 Decision Guide / Checklist
+
+### Object
+
+- Same instance?
+  - Dùng `a === b`.
+- React dependency/state bailout?
+  - Nghĩ theo `Object.is` semantics.
+- Props/state level 1, immutable update?
+  - Dùng shallow compare.
+- Nested config nhỏ hoặc test assertion?
+  - Dùng deep compare library có support type cần thiết.
+- Cần equality ổn định cross-process/cache key?
+  - Canonicalize data, sort keys có chủ đích, define schema rõ ràng.
+
+### String
+
+- ID/token/enum?
+  - Dùng `===`.
+- Dữ liệu từ nhiều nguồn có thể khác Unicode representation?
+  - Normalize `NFC`.
+- Sort/search theo tiếng Việt hoặc tên người?
+  - Dùng `Intl.Collator('vi', options)`.
+- Search không dấu?
+  - Normalize `NFD`, remove combining marks, xử lý `đ/Đ`, precompute search key nếu list lớn.
+- Sort trong React state?
+  - Clone trước: `[...items].sort(...)`.
+
+### Number / Money / Decimal
+
+- Integer nằm trong safe range?
+  - `Number.isSafeInteger(value)` rồi mới dùng `number`.
+- Float UI calculation?
+  - Dùng relative epsilon.
+- Money?
+  - Lưu smallest unit + currency, không dùng float.
+- Large integer từ API?
+  - Nhận string, parse `BigInt` hoặc decimal ở boundary.
+- Decimal precision/rounding phức tạp?
+  - Dùng decimal library, input bằng string, define rounding rule.
+- Display money từ `bigint`?
+  - Format bằng string, chỉ convert sang `number` khi chắc chắn safe.
+
+---
+
+## 7. 🎯 Short Interview Answer
+
+> Em nghĩ điểm quan trọng là phải so sánh theo đúng semantics của dữ liệu. Với object, JavaScript so sánh reference, nên trong React em thường dùng immutability và structural sharing để shallow compare đủ nhanh và đúng; deep compare chỉ dùng ở boundary nhỏ như form dirty check hoặc test. Với string, `===` chỉ hợp cho exact match như id/token, còn sort/search tiếng Việt thì em dùng `Intl.Collator` và normalize Unicode, đặc biệt với search không dấu. Với number, em không dùng float cho tiền vì có precision issue như `0.1 + 0.2`; tiền nên lưu smallest unit hoặc dùng decimal library, còn số nguyên rất lớn thì API nên gửi string và frontend parse sang `BigInt` hoặc decimal ở boundary. Em thấy các lỗi production hay nằm ở chỗ mutate state, `sort()` làm đổi array gốc, `JSON.stringify` deep compare bừa bãi, và convert big number sang `number` quá sớm.

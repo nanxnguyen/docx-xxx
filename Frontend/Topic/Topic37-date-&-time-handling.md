@@ -1,801 +1,595 @@
-# Topic 37: Date & Time Handling - Xử Lý Múi Giờ Đúng Cách
+# ⏰ Topic37: Date & Time Handling
 
-## Câu trả lời ngắn gọn
+## ⭐ Senior/Staff Summary
 
-Trong frontend, nguyên tắc quan trọng nhất là: **lưu và truyền thời gian dưới dạng UTC hoặc timestamp, chỉ convert sang timezone/local format khi hiển thị cho user**.
+> **Date/time bug thường không nằm ở format đẹp hay xấu, mà nằm ở việc team không phân biệt rõ `instant`, `local date`, `timezone`, `offset` và `display`.**
 
-Khi xử lý date/time cần phân biệt:
+- ✅ **Storage/API**: lưu và truyền `UTC` bằng ISO 8601 có timezone (`2024-01-15T14:30:00.000Z`) hoặc Unix timestamp.
+- ✅ **Display**: convert UTC sang timezone/locale của user bằng `Intl.DateTimeFormat` hoặc library.
+- ✅ **Compare/sort**: dùng timestamp (`getTime()`) hoặc instant UTC, không so sánh string display.
+- ⚠️ **User input**: date/time user nhập là local theo một timezone cụ thể; phải parse rõ format + timezone rồi convert sang UTC.
+- ⚠️ **Recurring events**: tính theo timezone của lịch, không cộng timestamp đơn giản.
+- ⚠️ **DST**: không hardcode offset như `GMT-5`; dùng IANA timezone như `America/New_York`.
+- 💡 **Native `Date` vẫn dùng được**, nhưng phải biết các trap: mutable, parse string rủi ro, month zero-indexed, local vs UTC methods.
+- 🔮 **Temporal**: API mới hơn, immutable và timezone-aware; ưu tiên khi runtime/polyfill cho phép.
 
-1. **Instant:** một thời điểm tuyệt đối trên timeline, ví dụ `2026-05-16T09:00:00.000Z`.
-2. **Local date/time:** ngày giờ theo người dùng nhập, ví dụ `16/05/2026 09:00`, chưa đủ timezone.
-3. **Timezone:** vùng quy tắc thời gian như `Asia/Ho_Chi_Minh`, `America/New_York`.
-4. **Offset:** độ lệch tại một thời điểm như `+07:00`, `-05:00`. Offset không thay thế được timezone vì không biết DST/history.
+## 🧠 Key Mental Model
 
-Best practice:
+### 1. Phân biệt 4 khái niệm
 
-- API nên truyền ISO 8601 có timezone, ví dụ `2026-05-16T09:00:00.000Z`.
-- Database nên lưu UTC/timestamp cho event một lần.
-- UI nên format bằng `Intl.DateTimeFormat` hoặc thư viện như `date-fns`, `Day.js`, `Luxon`.
-- Không hardcode offset như `+7 * 60 * 60 * 1000`.
-- Với recurring event, phải lưu timezone và rule lặp lại, không chỉ lưu UTC.
+| Khái niệm | Ý nghĩa | Ví dụ |
+|---|---|---|
+| `Instant` | Một thời điểm tuyệt đối trên timeline | `2024-01-15T14:30:00Z` |
+| `Local date/time` | Ngày giờ user nhìn thấy tại một nơi | `15/01/2024 21:30` ở Việt Nam |
+| `Timezone` | Bộ rule của vùng, có thể có DST/lịch sử | `Asia/Ho_Chi_Minh`, `America/New_York` |
+| `Offset` | Độ lệch tại một thời điểm cụ thể | `+07:00`, `-05:00` |
 
----
+💡 **Timezone không phải offset.** `America/New_York` có thể là `-05:00` hoặc `-04:00` tùy mùa vì DST.
 
-## 1. Mental model cần nhớ
+### 2. Golden Rule
 
-### Instant
-
-Instant là một thời điểm tuyệt đối, không phụ thuộc user ở đâu.
-
-Ví dụ:
-
-```txt
-2026-05-16T09:00:00.000Z
+```text
+Storage/API  -> UTC ISO hoặc timestamp
+Business rule -> timezone rõ ràng
+Display      -> locale + timezone của user
+Compare      -> timestamp/UTC
+User input   -> parse theo format + timezone rồi convert UTC
 ```
 
-Cùng một instant nhưng hiển thị khác nhau:
+### 3. Câu hỏi senior cần hỏi trước khi code
 
-```txt
-UTC:      2026-05-16 09:00
-Vietnam: 2026-05-16 16:00
-New York:2026-05-16 05:00
+- Đây là **absolute time** hay **calendar date**?
+- User đang nhập giờ theo timezone nào?
+- Server/API có contract date rõ chưa?
+- Có recurring event, DST, hoặc multi-timezone không?
+- UI cần show timezone label không?
+- Test có chạy ổn khi máy dev/CI ở timezone khác không?
+
+## 📚 Main Concepts
+
+### 🌍 UTC, ISO 8601 và timestamp
+
+**Timestamp** là số milliseconds từ Unix epoch `1970-01-01T00:00:00Z`.
+
+```typescript
+const timestamp = 1705329000000;
+
+const vn = new Date(timestamp);
+const ny = new Date(timestamp);
+
+console.log(vn.getTime() === ny.getTime()); // true
+console.log(new Date(timestamp).toISOString());
+// "2024-01-15T14:30:00.000Z"
 ```
 
-Timestamp cũng là instant:
+Cùng một timestamp có thể hiển thị khác nhau:
 
-```ts
-const timestamp = 1778922000000;
+- Việt Nam: `21:30`, UTC+7.
+- New York mùa đông: `09:30`, UTC-5.
+- London: `14:30`, UTC+0.
+
+Nhưng **value thật vẫn là cùng một instant**.
+
+### 📦 API contract nên rõ ràng
+
+```typescript
+type OrderDTO = {
+  id: string;
+  createdAt: string; // ISO 8601 UTC, e.g. "2024-01-15T14:30:00.000Z"
+  expiresAt?: string;
+};
+
+type OrderViewModel = {
+  id: string;
+  createdAtMs: number;
+  createdAtLabel: string;
+};
 ```
 
-Timestamp là số milliseconds từ Unix epoch `1970-01-01T00:00:00Z`, nên so sánh rất an toàn:
+✅ Nên:
 
-```ts
-dateA.getTime() > dateB.getTime();
+- API trả ISO 8601 UTC có `Z` hoặc offset.
+- Field name rõ nghĩa: `createdAt`, `scheduledAt`, `expiresAt`.
+- Nếu thời gian phụ thuộc lịch địa phương, lưu thêm `timezone`.
+
+❌ Tránh:
+
+- `"15/01/2024"` trong API.
+- `"2024-01-15 14:30"` không có timezone.
+- Backend trả format phụ thuộc locale.
+
+### 🧩 Date-only vs Date-time
+
+Đây là lỗi rất hay gặp trong frontend.
+
+- **Date-time**: `meeting starts at 2024-01-15T14:30:00Z`.
+- **Date-only**: birthday, due date, ngày nghỉ lễ: `2024-01-15`.
+- **Time-only**: business hour: `09:00`.
+
+```typescript
+type Birthday = {
+  // Không convert birthday thành UTC midnight nếu chỉ cần ngày sinh.
+  date: string; // "1998-05-20"
+};
+
+type Meeting = {
+  startsAt: string; // UTC ISO
+  timezone: string; // "Asia/Ho_Chi_Minh"
+};
 ```
 
-### Local date/time
+⚠️ `new Date("2024-01-15")` dễ tạo bug khi app chỉ cần **calendar date**. Với date-only, hãy giữ string `YYYY-MM-DD` hoặc dùng `Temporal.PlainDate`/library.
 
-Local date/time là giá trị user nhìn hoặc nhập.
+### 🕒 Display bằng `Intl.DateTimeFormat`
 
-Ví dụ:
+`Intl.DateTimeFormat` là API built-in, đủ tốt cho nhiều case format.
 
-```txt
-16/05/2026 09:00
+```typescript
+const startedAt = new Date("2024-01-15T14:30:00.000Z");
+
+const formatter = new Intl.DateTimeFormat("vi-VN", {
+  timeZone: "Asia/Ho_Chi_Minh",
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
+console.log(formatter.format(startedAt));
+// "15 thg 1, 2024, 21:30"
 ```
 
-Giá trị này chưa đủ để biết instant thật sự nếu không biết timezone. `09:00` ở Việt Nam khác `09:00` ở New York.
-
-### Timezone vs offset
-
-Offset là độ lệch tại một thời điểm:
-
-```txt
-+07:00
--05:00
-```
-
-Timezone là vùng quy tắc:
-
-```txt
-Asia/Ho_Chi_Minh
-America/New_York
-Europe/London
-```
-
-Senior point: **nên lưu IANA timezone thay vì offset** nếu logic liên quan đến địa phương, lịch họp, thị trường, deadline hoặc recurring event.
-
-### Source of truth cho timezone
-
-Không phải lúc nào cũng dùng timezone của browser. Senior cần hỏi rõ timezone lấy từ đâu:
-
-```txt
-User profile timezone -> business/account timezone -> browser timezone -> default timezone
-```
-
-Lấy timezone browser:
-
-```ts
-const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-```
-
-Nhưng browser timezone chỉ là fallback. Với app tài chính, booking, vận hành hoặc admin dashboard, timezone thường phải đến từ user profile, tenant, market, branch hoặc setting nghiệp vụ.
-
----
-
-## 2. Quy tắc lưu, truyền và hiển thị
-
-### Lưu trong database
-
-Với event xảy ra một lần:
-
-```json
-{
-  "createdAt": "2026-05-16T09:00:00.000Z"
-}
-```
-
-Hoặc:
-
-```json
-{
-  "createdAt": 1778922000000
-}
-```
-
-Không nên lưu:
-
-```json
-{
-  "createdAt": "16/05/2026 09:00"
-}
-```
-
-Vì string này không có timezone, không rõ là giờ Việt Nam, UTC hay timezone nào.
-
-### Truyền qua API
-
-API nên dùng ISO 8601 rõ timezone:
-
-```json
-{
-  "startAt": "2026-05-16T09:00:00.000Z"
-}
-```
-
-Hoặc có offset:
-
-```json
-{
-  "startAt": "2026-05-16T16:00:00+07:00"
-}
-```
-
-Cả hai đều rõ nghĩa. Tuy nhiên, dùng UTC `Z` thường dễ normalize và so sánh hơn.
-
-### Hiển thị trên UI
-
-Convert UTC sang timezone của user khi display:
-
-```ts
-const date = new Date('2026-05-16T09:00:00.000Z');
-
-const result = new Intl.DateTimeFormat('vi-VN', {
-  dateStyle: 'short',
-  timeStyle: 'short',
-  timeZone: 'Asia/Ho_Chi_Minh',
-}).format(date);
-```
-
-Kết quả:
-
-```txt
-16/05/2026, 16:00
-```
-
-Với app global, nên hiển thị timezone rõ khi dữ liệu nhạy cảm:
-
-```txt
-16/05/2026 16:00 ICT
-```
-
----
-
-## 3. Native Date pitfalls
-
-### Date object lưu instant, nhưng method có local và UTC
-
-```ts
-const date = new Date('2026-05-16T09:00:00.000Z');
-
-date.getHours(); // giờ theo timezone máy chạy code
-date.getUTCHours(); // giờ UTC
-```
-
-Nếu xử lý server timestamp, cẩn thận khi dùng `getHours`, `getDate`, `getMonth` vì chúng phụ thuộc timezone local.
-
-### Parse string không rõ format
-
-Không nên:
-
-```ts
-new Date('16/05/2026');
-new Date('05/16/2026');
-new Date('2026-05-16 09:00:00');
-```
-
-Các format này có thể khác nhau giữa browser/runtime.
-
-Nên dùng:
-
-```ts
-new Date('2026-05-16T09:00:00.000Z');
-new Date('2026-05-16T16:00:00+07:00');
-```
-
-Lưu ý quan trọng:
-
-```ts
-new Date('2026-05-16'); // date-only ISO, được hiểu là UTC midnight
-new Date('2026-05-16T09:00:00'); // date-time không timezone, hiểu là local time
-```
-
-### Month zero-indexed
-
-```ts
-new Date(2026, 0, 16); // January 16
-new Date(2026, 1, 16); // February 16
-```
-
-Month bắt đầu từ `0`, day bắt đầu từ `1`.
-
-### Date mutable
-
-Không tốt:
-
-```ts
-const date = new Date('2026-05-16T09:00:00.000Z');
-const next = date;
-next.setDate(20);
-
-console.log(date.getDate()); // bị đổi theo
-```
-
-Tốt hơn:
-
-```ts
-const date = new Date('2026-05-16T09:00:00.000Z');
-const next = new Date(date.getTime());
-next.setDate(20);
-```
-
-### So sánh Date bằng `===`
-
-Không tốt:
-
-```ts
-new Date('2026-05-16T09:00:00.000Z') ===
-  new Date('2026-05-16T09:00:00.000Z'); // false
-```
-
-Tốt:
-
-```ts
-dateA.getTime() === dateB.getTime();
-dateA.getTime() > dateB.getTime();
-```
-
----
-
-## 4. User input: local -> UTC
-
-Khi user chọn ngày giờ trong form, giá trị thường là local date/time. Trước khi gửi server, cần biết timezone của user rồi convert sang UTC.
-
-Ví dụ user Việt Nam chọn:
-
-```txt
-16/05/2026 16:00 Asia/Ho_Chi_Minh
-```
-
-Server nên nhận:
-
-```txt
-2026-05-16T09:00:00.000Z
-```
-
-Với `Day.js`:
-
-```ts
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(customParseFormat);
-
-function parseUserInputToUtc(input: string, userTimezone: string) {
-  return dayjs
-    .tz(input, 'DD/MM/YYYY HH:mm', userTimezone)
-    .utc()
-    .toISOString();
-}
-
-parseUserInputToUtc('16/05/2026 16:00', 'Asia/Ho_Chi_Minh');
-// "2026-05-16T09:00:00.000Z"
-```
-
----
-
-## 5. Scheduling và recurring event
-
-### Event xảy ra một lần
-
-Ví dụ: user đặt lịch gọi vào đúng một thời điểm.
-
-Lưu:
-
-```json
-{
-  "startAt": "2026-05-16T09:00:00.000Z",
-  "timezone": "Asia/Ho_Chi_Minh"
-}
-```
-
-`startAt` dùng để so sánh, sort, notify. `timezone` dùng để display hoặc audit theo context ban đầu.
-
-### Deadline theo ngày nghiệp vụ
-
-Một deadline kiểu “hết hạn vào cuối ngày 16/05 theo giờ Việt Nam” không nên hiểu đơn giản là `2026-05-16T00:00:00Z`.
-
-Nên biểu diễn rõ:
-
-```json
-{
-  "dueDate": "2026-05-16",
-  "timezone": "Asia/Ho_Chi_Minh",
-  "deadlinePolicy": "end_of_day"
-}
-```
-
-Sau đó backend hoặc shared date utility convert thành instant cuối ngày theo timezone đó.
-
-### Recurring event
-
-Ví dụ: “họp mỗi thứ Hai lúc 09:00 ở New York”.
-
-Không nên chỉ lưu UTC đầu tiên, vì DST có thể làm các lần sau bị lệch giờ local.
-
-Nên lưu:
-
-```json
-{
-  "localTime": "09:00",
-  "timezone": "America/New_York",
-  "recurrenceRule": "FREQ=WEEKLY;BYDAY=MO"
-}
-```
-
-Khi generate từng occurrence, tính theo timezone `America/New_York`. Như vậy sau DST, meeting vẫn là 09:00 local time.
-
-Senior point: **event một lần dùng instant/UTC; event lặp lại dùng local rule + timezone**.
-
----
-
-## 6. DST và vì sao không hardcode offset
-
-Không tốt:
-
-```ts
-const vietnamTime = utcTime + 7 * 60 * 60 * 1000;
-```
-
-Với Việt Nam ít khi lộ bug vì không có DST hiện tại, nhưng với US/EU sẽ sai khi chuyển giờ mùa hè.
-
-Ví dụ New York:
-
-```txt
-Winter: UTC-05:00
-Summer: UTC-04:00
-```
-
-Vì vậy:
-
-```txt
-America/New_York != -05:00
-```
-
-Timezone là rule, offset chỉ là kết quả tại một thời điểm.
-
-### Ambiguous và nonexistent local time
-
-Ở timezone có DST, có hai case khó:
-
-- **Nonexistent time:** giờ không tồn tại khi đồng hồ nhảy tới, ví dụ 02:30 bị skip.
-- **Ambiguous time:** một giờ xảy ra hai lần khi đồng hồ lùi lại, ví dụ 01:30 xuất hiện 2 lần.
-
-Với scheduling nghiêm túc, UI/API nên có policy rõ:
-
-```txt
-Nếu local time không tồn tại -> đẩy sang giờ hợp lệ tiếp theo hoặc báo lỗi
-Nếu local time bị trùng -> chọn earlier/later offset theo business rule
-```
-
-Đây là điểm staff-level vì bug thường không xuất hiện ở Việt Nam nhưng sẽ xuất hiện ở US/EU.
-
----
-
-## 7. Intl API
-
-Nên dùng `Intl` cho format hiển thị vì native, nhẹ, hỗ trợ locale tốt.
-
-### Format date/time
-
-```ts
-function formatDateTime(
-  value: string | number | Date,
-  locale: string,
-  timeZone: string
-) {
-  return new Intl.DateTimeFormat(locale, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone,
-  }).format(new Date(value));
-}
-```
-
-```ts
-formatDateTime(
-  '2026-05-16T09:00:00.000Z',
-  'vi-VN',
-  'Asia/Ho_Chi_Minh'
+💡 Với list lớn, cache formatter:
+
+```typescript
+const dateTimeFormatter = new Intl.DateTimeFormat("vi-VN", {
+  timeZone: "Asia/Ho_Chi_Minh",
+  dateStyle: "short",
+  timeStyle: "short",
+});
+
+const labels = orders.map((order) =>
+  dateTimeFormatter.format(new Date(order.createdAt))
 );
 ```
 
-### Format relative time
+### 🧨 Native `Date` pitfalls
 
-```ts
-const rtf = new Intl.RelativeTimeFormat('vi-VN', {
-  numeric: 'auto',
-});
+#### 1. Parse string không rõ timezone
 
-rtf.format(-2, 'day'); // "2 ngày trước"
-rtf.format(1, 'hour'); // "sau 1 giờ"
+```typescript
+new Date("2024-01-15"); // ⚠️ dễ gây hiểu nhầm date-only vs UTC midnight
+new Date("01/15/2024"); // ❌ locale/browser dependent
+new Date("15/01/2024"); // ❌ có thể Invalid Date
+
+new Date("2024-01-15T14:30:00.000Z"); // ✅ explicit UTC
+new Date("2024-01-15T21:30:00+07:00"); // ✅ explicit offset
 ```
 
----
+#### 2. Month zero-indexed
 
-## 8. Day.js setup gọn
+```typescript
+new Date(2024, 1, 15); // February 15, không phải January
+new Date(2024, 0, 15); // January 15
+```
 
-Nếu cần parse custom format hoặc timezone conversion, dùng Day.js với plugin:
+#### 3. `Date` là mutable
 
-```ts
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+```typescript
+function addDaysBad(date: Date, days: number) {
+  date.setDate(date.getDate() + days);
+  return date;
+}
 
+function addDaysSafe(date: Date, days: number) {
+  const next = new Date(date.getTime());
+  next.setDate(next.getDate() + days);
+  return next;
+}
+```
+
+#### 4. Local methods vs UTC methods
+
+```typescript
+const date = new Date("2024-01-15T14:30:00.000Z");
+
+date.getHours(); // local hour, phụ thuộc máy chạy code
+date.getUTCHours(); // 14, ổn định theo UTC
+date.toISOString(); // luôn UTC
+```
+
+✅ Rule:
+
+- Logic server/API/query range: ưu tiên UTC/timestamp.
+- Display cho user: dùng locale/timezone rõ ràng.
+
+### 🌞 DST và IANA timezone
+
+DST tạo 2 edge cases nguy hiểm:
+
+- **Spring forward**: một khoảng giờ không tồn tại.
+- **Fall back**: một khoảng giờ xảy ra 2 lần.
+
+```typescript
+const beforeDst = new Date("2024-03-10T06:59:00.000Z");
+const afterDst = new Date("2024-03-10T07:01:00.000Z");
+
+const formatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  timeStyle: "long",
+  dateStyle: "medium",
+});
+
+console.log(formatter.format(beforeDst));
+console.log(formatter.format(afterDst));
+```
+
+✅ Dùng `America/New_York`, `Europe/London`, `Asia/Ho_Chi_Minh`.
+
+❌ Không hardcode:
+
+```typescript
+const NEW_YORK_OFFSET = -5; // ❌ sai vào mùa hè
+```
+
+### 🔁 Recurring events
+
+Meeting "mỗi thứ Hai 9:00 AM New York" không nên tính bằng cách cộng `7 * 24h`.
+
+```typescript
+type RecurringMeeting = {
+  localTime: string; // "09:00"
+  weekday: "monday";
+  timezone: string; // "America/New_York"
+  durationMinutes: number;
+};
+```
+
+Vì sao?
+
+- DST có thể đổi offset.
+- User kỳ vọng luôn là `9:00 AM` theo local calendar.
+- Nếu cộng timestamp, sau DST có thể lệch 1 giờ trên display.
+
+💡 Với recurring/scheduling nghiêm túc, nên dùng library timezone-aware hoặc `Temporal.ZonedDateTime`.
+
+### 📚 Library choice
+
+| Library/API | Nên dùng khi | Lưu ý |
+|---|---|---|
+| `Intl.DateTimeFormat` | Format display/i18n cơ bản | Built-in, cache formatter khi render nhiều |
+| `date-fns` | Functional utilities, tree-shaking tốt | Cần thêm `date-fns-tz` cho timezone |
+| `Day.js` | Nhẹ, API quen kiểu Moment | Timezone cần plugin |
+| `Luxon` | Timezone/DST rõ, immutable | Bundle lớn hơn |
+| `Temporal` | Date/time chính xác, immutable, timezone-aware | Check runtime support hoặc dùng polyfill |
+
+### 🔮 Temporal API
+
+Temporal giải quyết nhiều vấn đề của `Date`: immutable, rõ type, timezone-aware, tách `Instant`, `PlainDate`, `ZonedDateTime`.
+
+```typescript
+// Ví dụ khi có Temporal runtime/polyfill.
+const instant = Temporal.Instant.from("2024-01-15T14:30:00Z");
+
+const vnTime = instant.toZonedDateTimeISO("Asia/Ho_Chi_Minh");
+console.log(vnTime.toString());
+// "2024-01-15T21:30:00+07:00[Asia/Ho_Chi_Minh]"
+
+const birthday = Temporal.PlainDate.from("1998-05-20");
+```
+
+💡 Ghi chú cập nhật: Temporal đã được TC39 đưa lên Stage 4 draft trong năm 2026; khi dùng production vẫn cần kiểm tra support của browser/runtime mục tiêu hoặc dùng polyfill.
+
+## 🧪 Practical TypeScript Examples
+
+### ✅ 1. Format API date cho user
+
+```typescript
+type FormatDateOptions = {
+  locale?: string;
+  timeZone?: string;
+};
+
+export function formatApiDate(
+  isoUtc: string,
+  {
+    locale = "vi-VN",
+    timeZone = "Asia/Ho_Chi_Minh",
+  }: FormatDateOptions = {}
+) {
+  const date = new Date(isoUtc);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Invalid date";
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    timeZone,
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
+
+formatApiDate("2024-01-15T14:30:00.000Z");
+// "15 thg 1, 2024, 21:30"
+```
+
+### ✅ 2. Convert user input sang UTC
+
+Native `Date` không parse tốt format `DD/MM/YYYY HH:mm`, nên production thường dùng library.
+
+```typescript
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
-dayjs.extend(customParseFormat);
-```
 
-Không nên set global timezone cứng cho app global:
+export function userInputToUtcIso(
+  input: string,
+  userTimeZone: string,
+  format = "DD/MM/YYYY HH:mm"
+) {
+  const parsed = dayjs.tz(input, format, userTimeZone);
 
-```ts
-dayjs.tz.setDefault('Asia/Ho_Chi_Minh');
-```
+  if (!parsed.isValid()) {
+    throw new Error("Invalid date input");
+  }
 
-Chỉ nên làm vậy nếu app thực sự chỉ phục vụ một timezone. Với app global hoặc SSR, hãy truyền timezone rõ vào từng hàm.
-
-Ví dụ display:
-
-```ts
-function formatApiDate(value: string, timezone: string) {
-  return dayjs(value).tz(timezone).format('DD/MM/YYYY HH:mm');
+  return parsed.utc().toISOString();
 }
 
-formatApiDate('2026-05-16T09:00:00.000Z', 'Asia/Ho_Chi_Minh');
-// "16/05/2026 16:00"
+userInputToUtcIso("15/01/2024 21:30", "Asia/Ho_Chi_Minh");
+// "2024-01-15T14:30:00.000Z"
 ```
 
-Ví dụ compare:
+### ✅ 3. Query records trong ngày theo timezone user
 
-```ts
-const a = dayjs('2026-05-16T16:00:00+07:00');
-const b = dayjs('2026-05-16T09:00:00Z');
+User chọn `15/01/2024` ở Việt Nam. API cần query UTC range tương ứng.
 
-a.valueOf() === b.valueOf(); // true
-```
+```typescript
+import dayjs from "dayjs";
 
----
+export function getUtcRangeForLocalDate(
+  localDate: string,
+  timeZone: string
+) {
+  const start = dayjs.tz(localDate, "YYYY-MM-DD", timeZone).startOf("day");
+  const end = start.endOf("day");
 
-## 9. Database/API notes cho senior
-
-Tùy database mà kiểu date/time có behavior khác nhau.
-
-Ví dụ:
-
-- PostgreSQL: `timestamptz` phù hợp để lưu instant.
-- MySQL: `TIMESTAMP` có conversion timezone, `DATETIME` không chứa timezone.
-- Nếu dùng `DATETIME`, team phải thống nhất convention là UTC.
-- API contract nên document rõ field nào là UTC instant, field nào là local date.
-
-Ví dụ API rõ ràng:
-
-```json
-{
-  "createdAt": "2026-05-16T09:00:00.000Z",
-  "businessDate": "2026-05-16",
-  "timezone": "Asia/Ho_Chi_Minh"
+  return {
+    startUtc: start.utc().toISOString(),
+    endUtc: end.utc().toISOString(),
+  };
 }
+
+getUtcRangeForLocalDate("2024-01-15", "Asia/Ho_Chi_Minh");
+// {
+//   startUtc: "2024-01-14T17:00:00.000Z",
+//   endUtc: "2024-01-15T16:59:59.999Z"
+// }
 ```
 
-Trong đó:
+⚠️ Đây là lý do không nên query `createdAt >= 2024-01-15T00:00:00Z` nếu user đang chọn ngày local.
 
-- `createdAt`: instant.
-- `businessDate`: ngày nghiệp vụ, không nhất thiết là instant.
-- `timezone`: timezone dùng cho display/business rule.
+### ✅ 4. Compare/sort bằng timestamp
 
-### Query date range đúng cách
+```typescript
+type Event = {
+  id: string;
+  startsAt: string; // UTC ISO
+};
 
-Không nên query bằng string ngày nếu data lưu instant:
+export function sortEvents(events: Event[]) {
+  return [...events].sort(
+    (a, b) =>
+      new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime()
+  );
+}
 
-```txt
-createdAt date = "2026-05-16"
-```
-
-Nên convert range local date sang UTC boundary:
-
-```ts
-// User muốn lọc ngày 16/05/2026 theo Asia/Ho_Chi_Minh
-const startUtc = dayjs
-  .tz('2026-05-16 00:00', 'YYYY-MM-DD HH:mm', 'Asia/Ho_Chi_Minh')
-  .utc()
-  .toISOString();
-
-const endUtc = dayjs
-  .tz('2026-05-17 00:00', 'YYYY-MM-DD HH:mm', 'Asia/Ho_Chi_Minh')
-  .utc()
-  .toISOString();
-```
-
-API query nên dùng half-open interval:
-
-```txt
-createdAt >= startUtc AND createdAt < endUtc
-```
-
-Tránh dùng `<= 23:59:59` vì dễ sai milliseconds/microseconds/nanoseconds.
-
----
-
-## 10. Timers, countdown và clock skew
-
-Frontend thường có countdown, OTP expiry, flash sale, trading session hoặc token expiry. Không nên chỉ tin vào clock của client vì user có thể chỉnh giờ máy.
-
-### Dùng server time làm mốc
-
-API có thể trả:
-
-```json
-{
-  "serverTime": "2026-05-16T09:00:00.000Z",
-  "expiresAt": "2026-05-16T09:05:00.000Z"
+export function isExpired(expiresAt: string, now = Date.now()) {
+  return new Date(expiresAt).getTime() <= now;
 }
 ```
 
-Client tính offset:
+### ✅ 5. Zod validation cho API/input
 
-```ts
-const serverNow = new Date(response.serverTime).getTime();
-const clientNow = Date.now();
-const clockOffset = serverNow - clientNow;
+```typescript
+import { z } from "zod";
 
-function getTrustedNow() {
-  return Date.now() + clockOffset;
-}
-
-function getTimeLeft(expiresAt: string) {
-  return new Date(expiresAt).getTime() - getTrustedNow();
-}
-```
-
-### Dùng monotonic clock cho elapsed time
-
-Nếu cần đo duration trong UI, dùng `performance.now()` thay vì `Date.now()` vì `Date.now()` có thể nhảy khi hệ thống chỉnh giờ.
-
-```ts
-const startedAt = performance.now();
-
-const elapsed = performance.now() - startedAt;
-```
-
-Rule:
-
-```txt
-Absolute time/deadline -> Date.now/server time/UTC instant
-Elapsed duration/performance -> performance.now()
-```
-
----
-
-## 11. Testing date/time
-
-Date/time rất dễ flaky test. Nên mock current time.
-
-### Mock current time với Vitest
-
-```ts
-import { describe, it, expect, vi, afterEach } from 'vitest';
-
-function isExpired(expiredAt: string) {
-  return Date.now() > new Date(expiredAt).getTime();
-}
-
-describe('isExpired', () => {
-  afterEach(() => {
-    vi.useRealTimers();
+const utcIsoDateTimeSchema = z
+  .string()
+  .datetime({ offset: true })
+  .refine((value) => !Number.isNaN(new Date(value).getTime()), {
+    message: "Invalid date-time",
   });
 
-  it('returns true when current time is after expiredAt', () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-05-16T10:00:00.000Z'));
+const eventSchema = z.object({
+  title: z.string().min(1),
+  startsAt: utcIsoDateTimeSchema,
+  endsAt: utcIsoDateTimeSchema,
+  timezone: z.string().min(1),
+});
 
-    expect(isExpired('2026-05-16T09:00:00.000Z')).toBe(true);
+const parsed = eventSchema.parse({
+  title: "Frontend interview",
+  startsAt: "2024-01-15T14:30:00.000Z",
+  endsAt: "2024-01-15T15:30:00.000Z",
+  timezone: "Asia/Ho_Chi_Minh",
+});
+```
+
+### ✅ 6. React component display ổn định
+
+```tsx
+import * as React from "react";
+
+type DateDisplayProps = {
+  value: string;
+  locale?: string;
+  timeZone?: string;
+};
+
+export function DateDisplay({
+  value,
+  locale = "vi-VN",
+  timeZone = "Asia/Ho_Chi_Minh",
+}: DateDisplayProps) {
+  const formatter = React.useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale, {
+        timeZone,
+        dateStyle: "medium",
+        timeStyle: "short",
+      }),
+    [locale, timeZone]
+  );
+
+  const label = React.useMemo(() => {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? "Invalid date" : formatter.format(date);
+  }, [formatter, value]);
+
+  return (
+    <time dateTime={value} title={value}>
+      {label}
+    </time>
+  );
+}
+```
+
+💡 Dùng `<time dateTime="...">` giúp semantic HTML/accessibility tốt hơn.
+
+## ⚛️ Production Notes / React Implications
+
+### 🧭 SSR / Next.js hydration
+
+Bug thường gặp:
+
+- Server format theo timezone của server.
+- Client format theo timezone của user.
+- Kết quả text khác nhau -> hydration mismatch.
+
+✅ Cách xử lý:
+
+- Format bằng timezone đã biết từ user profile/cookie.
+- Hoặc render ISO/time placeholder trên server, format sau khi client mount.
+- Hoặc dùng `suppressHydrationWarning` rất hạn chế, chỉ khi đã hiểu tradeoff.
+
+```tsx
+function ClientDate({ value }: { value: string }) {
+  const [label, setLabel] = React.useState(value);
+
+  React.useEffect(() => {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setLabel(formatApiDate(value, { timeZone }));
+  }, [value]);
+
+  return <time dateTime={value}>{label}</time>;
+}
+```
+
+### 📈 Performance
+
+- Cache `Intl.DateTimeFormat` khi format nhiều rows.
+- Tránh tạo formatter trong từng item của list/table.
+- Với relative time như "2 phút trước", không cần update mỗi giây cho mọi item.
+- Large table nên format ở selector/memoized layer, không format lại toàn bộ mỗi render.
+
+### ♿ Accessibility
+
+- Dùng `<time dateTime={iso}>`.
+- Nếu date quan trọng cho quyết định tài chính/y tế/legal, show timezone rõ.
+- Với countdown, không spam screen reader mỗi giây; cập nhật `aria-live` hợp lý.
+
+### 🔐 Security / Privacy
+
+- Timezone có thể góp phần fingerprint user; chỉ gửi timezone khi cần.
+- Không tin client time cho business-critical checks như flash sale, token expiry, payment deadline.
+- Server vẫn phải validate thời gian.
+
+### 🧪 Testing strategy
+
+Test date/time phải kiểm soát "now" và timezone.
+
+```typescript
+import { describe, expect, it, vi } from "vitest";
+
+describe("date utils", () => {
+  it("checks expiry with fixed time", () => {
+    vi.setSystemTime(new Date("2024-01-15T14:30:00.000Z"));
+
+    expect(isExpired("2024-01-15T14:29:59.000Z")).toBe(true);
+    expect(isExpired("2024-01-15T14:31:00.000Z")).toBe(false);
+
+    vi.useRealTimers();
   });
 });
 ```
 
-### Test timezone bằng Intl
+Nên có test cho:
 
-Không assert `getHours()` nếu muốn test timezone cụ thể, vì `getHours()` phụ thuộc timezone của máy chạy test.
+- UTC -> Vietnam/New York display.
+- Local date -> UTC range.
+- DST transition dates.
+- Invalid input.
+- SSR/client timezone khác nhau.
 
-Tốt hơn:
+## ⚠️ Common Pitfalls
 
-```ts
-function formatInTimezone(value: string, timeZone: string) {
-  return new Intl.DateTimeFormat('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    timeZone,
-  }).format(new Date(value));
-}
+- ❌ Lưu `"DD/MM/YYYY"` vào database/API.
+- ❌ Parse `new Date("15/01/2024")`.
+- ❌ Quên `new Date(2024, 1, 15)` là tháng 2.
+- ❌ Mutate `Date` bằng `setDate`, `setMonth` rồi làm thay đổi object gốc.
+- ❌ So sánh `date1 === date2` thay vì `date1.getTime() === date2.getTime()`.
+- ❌ Query "ngày của user" bằng UTC start/end mà không convert theo timezone user.
+- ❌ Hardcode offset thay vì IANA timezone.
+- ❌ Recurring event bằng cách cộng milliseconds.
+- ❌ Format date trên server bằng timezone server rồi hydrate trên client timezone khác.
+- ❌ Tin vào clock của client cho rule quan trọng.
+- ❌ Tạo `Intl.DateTimeFormat` mới trong mỗi row render.
 
-formatInTimezone('2026-05-16T09:00:00.000Z', 'Asia/Ho_Chi_Minh');
-// "16:00"
-```
+## ✅ Decision Guide / Checklist
 
-Các case cần test:
+**Khi lưu/truyền dữ liệu:**
 
-```txt
-□ UTC -> local display
-□ local input -> UTC payload
-□ DST transition
-□ end of day / start of day
-□ month boundary
-□ leap year: Feb 29
-□ invalid date
-□ recurring event across DST
-□ client clock skew
-□ date range query boundary
-```
+- Có dùng UTC ISO/timestamp không?
+- ISO string có `Z` hoặc offset không?
+- API contract có ghi rõ timezone semantics không?
+- Date-only có đang bị convert nhầm sang UTC midnight không?
 
----
+**Khi nhận user input:**
 
-## 12. Common mistakes
+- Input format có explicit không?
+- User timezone lấy từ đâu: profile, browser, setting?
+- Có validate invalid date như `31/02/2024` không?
+- Có convert local -> UTC trước khi gửi server không?
 
-### Lưu string không timezone
+**Khi display:**
 
-```txt
-16/05/2026 09:00
-```
+- Có dùng locale đúng không?
+- Có timezone đúng không?
+- Có cần hiển thị timezone label không?
+- SSR có nguy cơ hydration mismatch không?
 
-Không rõ timezone, khó parse, dễ sai giữa các quốc gia.
+**Khi schedule/recurring:**
 
-### Hardcode offset
+- Có DST không?
+- Có lưu `timezone` kèm rule không?
+- Có dùng library/Temporal thay vì cộng milliseconds không?
 
-```ts
-utc + 7 * 60 * 60 * 1000;
-```
+**Khi test:**
 
-Sai với timezone có DST và làm logic khó maintain.
+- Có mock `Date.now()`/system time không?
+- Có test nhiều timezone không?
+- Có test DST transition không?
+- Có test invalid parsing không?
 
-### Nhầm business date với instant
+## 🗣️ Short Interview Answer
 
-`2026-05-16` có thể là ngày nghiệp vụ, không phải một thời điểm cụ thể. Đừng ép mọi date thành timestamp nếu domain chỉ cần ngày.
+Em nghĩ xử lý date/time tốt nhất là phải tách rõ storage, business logic và display. Với API/database, em ưu tiên lưu UTC bằng ISO 8601 có `Z` hoặc timestamp. Khi hiển thị thì convert sang locale và timezone của user bằng `Intl.DateTimeFormat` hoặc library như `date-fns`, `Day.js`, `Luxon`.
 
-Ví dụ ngày sinh:
+Theo em, lỗi hay gặp nhất là parse string không rõ timezone như `"15/01/2024"` hoặc `"2024-01-15 10:00"`, dùng `Date` mutable mà không clone, nhầm month zero-indexed, hoặc hardcode offset nên sai ở DST. Với scheduling hoặc recurring events, em sẽ lưu thêm IANA timezone như `America/New_York`, vì offset không đủ để biểu diễn rule theo mùa.
 
-```txt
-1995-10-20
-```
-
-Ngày sinh không nên bị convert timezone làm lệch sang ngày trước/sau.
-
-### Dùng local time trong server/client khác timezone
-
-Code chạy trên máy dev, CI, server, browser user có timezone khác nhau. Nếu logic phụ thuộc timezone local, test và production có thể lệch.
-
-### Không document API date contract
-
-Team backend/frontend cần thống nhất:
-
-```txt
-createdAt: ISO 8601 UTC instant
-settlementDate: YYYY-MM-DD business date
-timezone: IANA timezone
-```
-
----
-
-## 13. Chọn library nào?
-
-Không có library đúng cho mọi case.
-
-```txt
-Intl API:
-- Tốt cho format display, nhẹ, native.
-- Không đủ tiện nếu cần parse custom format/timezone math phức tạp.
-
-date-fns:
-- Functional, tree-shakable.
-- Tốt cho date utilities.
-- Cần thêm date-fns-tz nếu xử lý timezone.
-
-Day.js:
-- Nhẹ, API quen thuộc giống Moment.
-- Cần plugin utc/timezone/customParseFormat.
-- Cẩn thận global config trong SSR/app global.
-
-Luxon:
-- Timezone-aware tốt, immutable.
-- API rõ mental model hơn Day.js.
-- Bundle có thể lớn hơn tùy setup.
-
-Temporal:
-- Mental model tốt nhất về lâu dài.
-- Cần kiểm tra runtime support/polyfill.
-```
-
-Senior answer: nếu chỉ format UI, dùng `Intl`. Nếu app có nhiều parse/convert timezone, chọn `Luxon` hoặc `Day.js` có plugin. Nếu domain cực nhạy về lịch/scheduling, cân nhắc `Temporal`/polyfill hoặc xử lý phần rule phức tạp ở backend.
-
----
-
-## 14. Temporal API
-
-`Date` có nhiều vấn đề lịch sử: mutable, parsing khó nhớ, timezone yếu, month zero-indexed.
-
-`Temporal` là API mới để xử lý date/time tốt hơn:
-
-```ts
-Temporal.Instant;
-Temporal.PlainDate;
-Temporal.PlainDateTime;
-Temporal.ZonedDateTime;
-```
-
-Mental model:
-
-- `Temporal.Instant`: một instant tuyệt đối.
-- `Temporal.PlainDate`: ngày không timezone, ví dụ birthday/business date.
-- `Temporal.PlainDateTime`: ngày giờ local chưa gắn timezone.
-- `Temporal.ZonedDateTime`: ngày giờ có timezone đầy đủ.
-
-Trong dự án hiện tại, cần kiểm tra browser/runtime support hoặc dùng polyfill trước khi áp dụng rộng.
-
----
-
-## 15. Câu trả lời senior nên nói
-
-**"Em phân biệt rõ instant, local date/time, timezone và offset. Với event xảy ra một lần, em lưu và truyền UTC ISO string hoặc timestamp, sau đó chỉ convert sang timezone của user khi hiển thị bằng Intl hoặc library như Day.js/Luxon. Em tránh parse string mơ hồ, tránh hardcode offset, tránh so sánh Date object bằng reference và luôn document API date contract. Với scheduling hoặc recurring event, em không chỉ lưu UTC mà lưu local time, IANA timezone và recurrence rule để xử lý DST đúng. Với filter theo ngày, em convert local date range sang UTC half-open interval. Với countdown/expiry, em dùng server time để tránh clock skew. Khi test, em mock current time và test timezone bằng Intl/library thay vì phụ thuộc timezone máy chạy test."**
-
----
-
-## 16. Checklist phỏng vấn
-
-```txt
-□ Biết nguyên tắc lưu/truyền UTC, display local
-□ Phân biệt instant, local date/time, timezone, offset
-□ Biết chọn source of truth cho timezone
-□ Biết timestamp là absolute time point
-□ Biết ISO 8601 `Z` và offset `+07:00`
-□ Biết Date có local methods và UTC methods
-□ Biết tránh parse string không rõ format
-□ Biết month zero-indexed và Date mutable
-□ Biết so sánh bằng getTime/valueOf
-□ Biết dùng IANA timezone thay vì hardcode offset
-□ Biết DST là gì và vì sao recurring event khó
-□ Biết event một lần khác recurring event
-□ Biết ambiguous/nonexistent time khi DST chuyển giờ
-□ Biết dùng Intl.DateTimeFormat
-□ Biết Day.js/Luxon/date-fns dùng khi nào
-□ Biết query date range bằng UTC half-open interval
-□ Biết countdown/expiry nên dùng server time để tránh clock skew
-□ Biết performance.now dùng cho elapsed duration
-□ Biết test bằng fake timers
-□ Biết document API date contract
-□ Biết birthday/business date không phải lúc nào cũng là timestamp
-```
+Trong frontend production, em cũng để ý React/SSR: server và client có thể format khác timezone gây hydration mismatch. Với list lớn thì em cache `Intl.DateTimeFormat`. Với rule quan trọng như expiry/payment/flash sale, client chỉ display, server vẫn là nguồn sự thật.

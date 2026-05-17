@@ -1,735 +1,528 @@
-# 🔁 Q19: Loop Performance & Async Loops
+# 🔁 Topic14: Loop Performance & Async Loops
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
+## ⭐ Senior/Staff Summary
 
-### **🎯 Câu Trả Lời Ngắn Gọn (3-4 phút):**
+> **Loop performance không chỉ là chọn syntax nhanh nhất. Senior cần nhìn theo 3 lớp: Big O, runtime behavior, và production constraints.**
 
-**"Loop performance: `for` nhanh nhất, `for...of` readable, `forEach/map` functional. Async loops: `Promise.all()` parallel, `for await...of` sequential."**
+- ⚡ **Ranking thường gặp**: `for` ≈ `while` > `for...of` > `forEach` / `map` / `filter` / `reduce` > `for...in`.
+- 🧠 **Big O quan trọng hơn microbenchmark**: đổi `O(n²)` sang `Map` / `Set` thường đáng hơn tối ưu `for` vs `forEach`.
+- ✅ `for` / `for...of`: hỗ trợ `break`, `continue`, `return`, phù hợp khi cần early exit hoặc control flow rõ.
+- ⚠️ `forEach(async () => {})` là trap: callback async chạy nhưng outer function **không await**.
+- 🚦 Async loop có 3 chiến lược chính: **sequential**, **parallel**, **batched/concurrency-limited**.
+- 🧯 Production cần nghĩ thêm: error handling, rate limit, backpressure, cancellation, UI jank, React rendering, testing.
 
-**🔑 Performance Ranking:**
+## 🧠 Key Mental Model
 
-**1. Classic `for` loop (nhanh nhất):**
-- **O(n) với minimal overhead** - trực tiếp access index
-- Support `break`, `continue`
-- Use case: performance-critical, large arrays (>10k items)
+### 1. Đừng benchmark như chân lý tuyệt đối
 
-**2. `for...of` (modern, readable):**
-- Chậm hơn `for` ~10-30% (iterator protocol overhead)
-- **Cleanest syntax**, support break/continue
-- Use case: code readability > performance, iterate Set/Map/String
+Kết quả benchmark thay đổi theo:
 
-**3. `forEach` (functional):**
-- Chậm hơn ~50% (function call overhead mỗi iteration)
-- **KHÔNG support break/continue**, không thể return early
-- Use case: side effects, functional programming style
+- JavaScript engine: V8, SpiderMonkey, JavaScriptCore.
+- Browser/device: desktop mạnh khác mobile yếu.
+- Data shape: array đặc/sparse, object shape ổn định hay thay đổi.
+- Workload thật: callback có I/O, allocation, DOM update, React render hay chỉ cộng số.
+- JIT warm-up, GC, dev mode vs production mode.
 
-**4. `map/filter/reduce` (transformation):**
-- **Tạo array mới** + function overhead
-- Phải loop hết array (không early exit)
-- Use case: data transformation, immutable operations
+💡 **Rule thực tế**: profile code thật trước. Nếu bottleneck là `O(n²)`, DOM reflow, network, hoặc React re-render thì đổi loop syntax thường không giải quyết đúng vấn đề.
 
-**5. `for...in` (chậm nhất):**
-- **KHÔNG dùng cho arrays** - iterate prototype chain
-- Use case: chỉ dùng cho object keys
+### 2. Chọn loop theo control flow trước, performance sau
 
-**🔑 Async Loops - 3 Patterns:**
+| Pattern | Nên dùng khi | Lưu ý |
+|---|---|---|
+| `for` | Hot path, cần index, large array, tối ưu allocation | Verbose hơn nhưng control tốt |
+| `for...of` | Cần readable, iterate Array/Set/Map/String | Có iterator overhead nhỏ |
+| `forEach` | Side effect đơn giản, không cần `break` | Không await outer flow, không early exit |
+| `map/filter/reduce` | Transform immutable data | Tạo array/value mới, không dùng chỉ để side effect |
+| `for...in` | Iterate object keys | Không dùng cho array |
 
-**1. Sequential (chờ từng cái):**
-```js
-for (const item of items) {
-  await processItem(item); // Chờ xong mới chạy tiếp
-}
-```
-- Chậm nhưng **controlled**, preserve order
+### 3. Async loop là bài toán scheduling
 
-**2. Parallel (chạy cùng lúc):**
-```js
-await Promise.all(items.map(item => processItem(item)));
-```
-- **Nhanh nhất** nhưng không control order, có thể overload server
+- **Sequential**: chạy từng item, dễ kiểm soát order/rate/error.
+- **Parallel**: chạy cùng lúc, nhanh nhưng dễ overload API/memory.
+- **Batched / concurrency-limited**: cân bằng tốc độ và giới hạn tài nguyên.
 
-**3. Batched (nhóm nhỏ):**
-```js
-for (let i = 0; i < items.length; i += 10) {
-  await Promise.all(items.slice(i, i+10).map(processItem));
-}
-```
-- **Best practice** - balance speed vs resource usage
+## 📚 Main Concepts
 
-**⚠️ Lỗi Thường Gặp:**
-- Dùng `forEach` với `async/await` → **KHÔNG chờ** (promises ignored!)
-- `Promise.all()` với large arrays → overload server/memory
-- Dùng `for...in` cho arrays → iterate cả prototype properties
-- `map()` cho side effects (should use `forEach`)
+### ⚡ Loop Performance & Ranking
 
-**💡 Kiến Thức Senior:**
-- **Early exit**: `for`/`for...of` dùng `break`, functional methods dùng `.some()` / `.every()`
-- **Promise.allSettled()** thay Promise.all() để **không fail hết** khi 1 promise reject
-- **p-limit** library để control concurrency (max 5 parallel requests)
-- Performance: `while` nhanh như `for`, `do...while` cho at-least-once loops
+**Ranking tham khảo, không tuyệt đối:**
 
-
-
-
-**⚡ Quick Summary:**
-> for loop = fastest. forEach = readable. map/filter = functional. Async loops = Promise.all hoặc for await
-
-**💡 Ghi Nhớ:**
-- ⚡ **Performance**: for > for...of > forEach > map
-- 🔄 **Async**: Dùng `for await...of` hoặc `Promise.all()`
-- ⚠️ **Trap**: forEach không work với async/await!
-
-**Trả lời:**
-
-Có nhiều cách để loop qua array/object trong JavaScript, mỗi cách có performance và behavior khác nhau:
-
-**🔄 Các loại Loops & Performance:**
-
-1. **`for` loop** - Nhanh nhất ⚡
-
-   - Performance: ⭐⭐⭐⭐⭐ (fastest)
-   - Control: Full control (break, continue)
-   - Use case: Performance-critical code, large arrays
-
-2. **`for...of`** - Modern, readable 📖
-
-   - Performance: ⭐⭐⭐⭐ (slower than for, faster than forEach)
-   - Control: Support break, continue
-   - Use case: Readable code, iterables (Array, Set, Map, String)
-
-3. **`forEach`** - Functional style 🎨
-
-   - Performance: ⭐⭐⭐ (slowest - function call overhead)
-   - Control: KHÔNG support break, continue
-   - Use case: Functional programming, side effects
-
-4. **`for...in`** - Cho objects 🔑
-
-   - Performance: ⭐⭐ (slow - prototype chain lookup)
-   - Control: Support break, continue
-   - Use case: Iterate object keys (KHÔNG nên dùng cho arrays)
-
-5. **`map/filter/reduce`** - Functional transformations 🔄
-   - Performance: ⭐⭐⭐ (similar to forEach)
-   - Control: KHÔNG support break (phải loop hết array)
-   - Use case: Transform data, create new arrays
-
-**⚠️ QUAN TRỌNG: Async/Await trong Loops**
-
-**Sequential vs Parallel execution:**
-
-- **Sequential**: Chờ từng promise xong mới chạy tiếp (slow but controlled)
-- **Parallel**: Chạy tất cả promises cùng lúc (fast but less control)
-
-**Hoạt động:**
-
-```
-┌────────────────────────────────────────────────────────┐
-│           LOOP PERFORMANCE COMPARISON                  │
-├────────────────────────────────────────────────────────┤
-│                                                        │
-│  Synchronous Performance (1M items):                  │
-│  ┌──────────────────────────────────────┐             │
-│  │  for loop:        ~2ms   ⚡⚡⚡⚡⚡    │             │
-│  │  for...of:        ~5ms   ⚡⚡⚡⚡      │             │
-│  │  forEach:         ~8ms   ⚡⚡⚡        │             │
-│  │  map:            ~10ms   ⚡⚡⚡        │             │
-│  │  for...in:       ~50ms   ⚡          │             │
-│  └──────────────────────────────────────┘             │
-│                                                        │
-│  Async Execution (3 items, 1s delay each):           │
-│  ┌──────────────────────────────────────┐             │
-│  │  Sequential (for/for...of): ~3s      │             │
-│  │  ├─ Item 1: 1s ━━━━━━━━━━┐          │             │
-│  │  ├─ Item 2: 1s           ━━━━━━━━━━┐│             │
-│  │  └─ Item 3: 1s                     ━━│             │
-│  │                                                    │             │
-│  │  Parallel (Promise.all):   ~1s       │             │
-│  │  ├─ Item 1: 1s ━━━━━━━━━━┐          │             │
-│  │  ├─ Item 2: 1s ━━━━━━━━━━┤          │             │
-│  │  └─ Item 3: 1s ━━━━━━━━━━┘          │             │
-│  └──────────────────────────────────────┘             │
-└────────────────────────────────────────────────────────┘
-```
-
-**Ưu điểm:**
-
-- ✅ **for loop**: Nhanh nhất, full control (break/continue), cache length
-- ✅ **for...of**: Modern, readable, support break/continue, work với iterables
-- ✅ **forEach**: Functional style, chain methods, readable
-- ✅ **Async for...of**: Sequential execution, dễ control
-- ✅ **Promise.all**: Parallel execution, nhanh nhất cho async
-
-**Nhược điểm:**
-
-- ❌ **for loop**: Verbose, dễ lỗi (index out of bounds)
-- ❌ **for...of**: Chậm hơn for loop ~2-3x
-- ❌ **forEach**: Chậm nhất, KHÔNG support break/continue, KHÔNG support async/await
-- ❌ **for...in**: RẤT chậm, iterate prototype chain, KHÔNG nên dùng cho arrays
-- ❌ **Async sequential**: Chậm (chờ từng promise), không tận dụng concurrency
-
-**Chú thích:**
-
-**🔄 Loop Control Keywords:**
-
-- **`break`**: Thoát loop ngay lập tức
-- **`continue`**: Skip iteration hiện tại, tiếp tục iteration tiếp theo
-- **`return`**: Thoát function (KHÔNG chỉ loop)
-
-**⚡ Performance Tips:**
-
-- Cache array length: `const len = arr.length` → tránh re-calculate mỗi iteration
-- Avoid nested loops: O(n²) → rất chậm với large arrays
-- Use `for` loop cho performance-critical code (>10K items)
-- Use `for...of` cho readable code (trade-off: ~2-3x slower)
-
-**🔁 Async/Await Behavior:**
-
-- `for`/`for...of`: Support `await` → **sequential** execution
-- `forEach`: KHÔNG support `await` đúng cách → callbacks chạy **parallel** nhưng không đợi
-- `map` + `Promise.all`: Best practice cho **parallel** async operations
-- `for await...of`: Dành cho **async iterables** (streams, generators)
-
-**Code Example (TypeScript):**
+1. `for`: thường nhanh nhất vì truy cập index trực tiếp, ít abstraction.
+2. `for...of`: readable, hỗ trợ iterable, có iterator protocol overhead.
+3. `forEach`: callback overhead mỗi item, không early exit.
+4. `map/filter/reduce`: callback overhead + có thể tạo intermediate array.
+5. `for...in`: duyệt enumerable keys, có thể đi qua prototype chain, chậm và sai mục đích với array.
 
 ```typescript
-// ============================================
-// 1. SYNCHRONOUS LOOPS - Performance Comparison
-// ============================================
+const prices = [101, 102, 103, 104];
 
-const numbers = [1, 2, 3, 4, 5];
-
-// 🚀 A. for loop - FASTEST (traditional)
-console.time('for loop');
-for (let i = 0; i < numbers.length; i++) {
-  console.log(numbers[i]);
-}
-console.timeEnd('for loop'); // ~0.1ms
-
-// 🚀 B. for loop - OPTIMIZED (cache length)
-console.time('for loop optimized');
-const len = numbers.length; // ✅ Cache length
-for (let i = 0; i < len; i++) {
-  console.log(numbers[i]);
-}
-console.timeEnd('for loop optimized'); // ~0.08ms (faster)
-
-// 📖 C. for...of - MODERN & READABLE
-console.time('for...of');
-for (const number of numbers) {
-  console.log(number);
-  // ✅ Support break, continue
-  if (number === 3) break;
-}
-console.timeEnd('for...of'); // ~0.2ms (2x slower than for)
-
-// 🎨 D. forEach - FUNCTIONAL STYLE
-console.time('forEach');
-numbers.forEach((number, index) => {
-  console.log(number);
-  // ❌ CANNOT use break or continue!
-  // if (number === 3) break; // ❌ SyntaxError
-});
-console.timeEnd('forEach'); // ~0.3ms (slowest)
-
-// 🔑 E. for...in - FOR OBJECTS (KHÔNG nên dùng cho arrays!)
-const obj = { a: 1, b: 2, c: 3 };
-console.time('for...in');
-for (const key in obj) {
-  if (obj.hasOwnProperty(key)) {
-    // ✅ Check own properties
-    console.log(key, obj[key]);
-  }
-}
-console.timeEnd('for...in'); // ~0.5ms (rất chậm với arrays)
-
-// ❌ BAD: for...in với array
-const arr = [1, 2, 3];
-for (const index in arr) {
-  console.log(index); // '0', '1', '2' (STRING, không phải number!)
+// Hot path: cần index, có thể cache length nếu array không đổi trong loop.
+for (let i = 0, len = prices.length; i < len; i++) {
+  prices[i] = prices[i] * 1.01;
 }
 
-// 🔄 F. map/filter/reduce - FUNCTIONAL TRANSFORMATIONS
-console.time('map');
-const doubled = numbers.map((n) => n * 2); // [2, 4, 6, 8, 10]
-console.timeEnd('map'); // ~0.3ms
-
-const evens = numbers.filter((n) => n % 2 === 0); // [2, 4]
-const sum = numbers.reduce((acc, n) => acc + n, 0); // 15
-
-// ============================================
-// 2. PERFORMANCE TEST - Large Arrays
-// ============================================
-
-function performanceTest(): void {
-  const largeArray = Array.from({ length: 1_000_000 }, (_, i) => i);
-  let result = 0;
-
-  // 🚀 for loop - FASTEST
-  console.time('for loop (1M items)');
-  const len = largeArray.length;
-  for (let i = 0; i < len; i++) {
-    result += largeArray[i];
-  }
-  console.timeEnd('for loop (1M items)'); // ~2ms
-
-  // 📖 for...of
-  result = 0;
-  console.time('for...of (1M items)');
-  for (const item of largeArray) {
-    result += item;
-  }
-  console.timeEnd('for...of (1M items)'); // ~5ms (2.5x slower)
-
-  // 🎨 forEach
-  result = 0;
-  console.time('forEach (1M items)');
-  largeArray.forEach((item) => {
-    result += item;
-  });
-  console.timeEnd('forEach (1M items)'); // ~8ms (4x slower)
-
-  // 🔄 reduce
-  console.time('reduce (1M items)');
-  result = largeArray.reduce((acc, item) => acc + item, 0);
-  console.timeEnd('reduce (1M items)'); // ~10ms (5x slower)
-
-  console.log('Result:', result);
+// Readable: tốt cho phần lớn business logic.
+for (const price of prices) {
+  console.log(price);
 }
 
-performanceTest();
-
-// ============================================
-// 3. ASYNC/AWAIT trong LOOPS - QUAN TRỌNG! ⚠️
-// ============================================
-
-// Mock API call (1 giây delay)
-async function fetchUserData(userId: number): Promise<string> {
-  console.log(`🚀 Bắt đầu fetch user ${userId}...`);
-  await new Promise((resolve) => setTimeout(resolve, 1000)); // 1s delay
-  console.log(`✅ Hoàn thành fetch user ${userId}`);
-  return `User ${userId} data`;
-}
-
-const userIds = [1, 2, 3];
-
-// ❌ BAD: forEach với async/await - KHÔNG HOẠT ĐỘNG ĐÚNG!
-async function badForEach() {
-  console.log('❌ BAD: forEach với async/await');
-  console.time('forEach async');
-
-  userIds.forEach(async (id) => {
-    const data = await fetchUserData(id); // ❌ await bị IGNORE!
-    console.log(data);
-  });
-
-  console.timeEnd('forEach async'); // ~0ms (KHÔNG đợi promises!)
-  console.log('forEach done (nhưng chưa fetch xong!)');
-
-  // 🚨 Vấn đề:
-  // - forEach KHÔNG đợi async callbacks
-  // - Tất cả promises chạy parallel nhưng không control được
-  // - console.log 'done' chạy TRƯỚC khi fetch xong
-}
-
-// ✅ GOOD: for...of với async/await - SEQUENTIAL (Tuần tự)
-async function goodSequential() {
-  console.log('✅ GOOD: for...of - Sequential execution');
-  console.time('for...of sequential');
-
-  for (const id of userIds) {
-    const data = await fetchUserData(id); // ✅ Đợi từng promise xong
-    console.log(data);
-  }
-
-  console.timeEnd('for...of sequential'); // ~3s (1s × 3)
-  console.log('Sequential done!');
-
-  // ✅ Hoạt động:
-  // 1s: Fetch user 1 → đợi xong
-  // 1s: Fetch user 2 → đợi xong
-  // 1s: Fetch user 3 → đợi xong
-  // Total: 3s
-}
-
-// ✅ BETTER: Promise.all - PARALLEL (Song song)
-async function goodParallel() {
-  console.log('✅ BETTER: Promise.all - Parallel execution');
-  console.time('Promise.all parallel');
-
-  const promises = userIds.map((id) => fetchUserData(id));
-  const results = await Promise.all(promises); // ✅ Chạy song song
-
-  results.forEach((data) => console.log(data));
-
-  console.timeEnd('Promise.all parallel'); // ~1s (3 requests cùng lúc!)
-  console.log('Parallel done!');
-
-  // ✅ Hoạt động:
-  // 0s: Khởi tạo 3 promises cùng lúc
-  // 1s: Cả 3 promises resolve cùng lúc
-  // Total: 1s (NHANH GẤP 3 LẦN!)
-}
-
-// ✅ ADVANCED: for...of với batch processing
-async function goodBatch() {
-  console.log('✅ ADVANCED: Batch processing');
-  console.time('Batch processing');
-
-  const batchSize = 2; // Chạy 2 requests cùng lúc
-
-  for (let i = 0; i < userIds.length; i += batchSize) {
-    const batch = userIds.slice(i, i + batchSize);
-    const promises = batch.map((id) => fetchUserData(id));
-    const results = await Promise.all(promises); // Đợi batch xong
-
-    results.forEach((data) => console.log(data));
-  }
-
-  console.timeEnd('Batch processing'); // ~2s
-  console.log('Batch done!');
-
-  // ✅ Hoạt động:
-  // Batch 1 (users 1, 2): 1s parallel
-  // Batch 2 (user 3):      1s
-  // Total: 2s (balance giữa speed & control)
-}
-
-// ============================================
-// 4. ASYNC LOOPS - Real-world Trading Example
-// ============================================
-
-interface Order {
-  id: number;
-  symbol: string;
-  quantity: number;
-}
-
-// Mock API: Submit order to exchange
-async function submitOrder(order: Order): Promise<string> {
-  console.log(`📤 Submitting order ${order.id}: ${order.symbol}...`);
-  await new Promise((resolve) => setTimeout(resolve, 500)); // 500ms delay
-  return `Order ${order.id} confirmed`;
-}
-
-const orders: Order[] = [
-  { id: 1, symbol: 'AAPL', quantity: 100 },
-  { id: 2, symbol: 'GOOGL', quantity: 50 },
-  { id: 3, symbol: 'MSFT', quantity: 75 },
-];
-
-// ❌ SCENARIO 1: Sequential (chậm nhưng an toàn)
-async function submitOrdersSequential() {
-  console.log('📊 Submitting orders SEQUENTIALLY...');
-  console.time('Sequential orders');
-
-  for (const order of orders) {
-    const result = await submitOrder(order); // Đợi từng order
-    console.log(`✅ ${result}`);
-
-    // ✅ Có thể handle errors từng order:
-    // if (error) continue; // Skip order lỗi, chạy tiếp
-  }
-
-  console.timeEnd('Sequential orders'); // ~1.5s (500ms × 3)
-
-  // 💡 Use case:
-  // - Orders phụ thuộc nhau (order 2 cần order 1 xong)
-  // - Rate limiting (không gửi quá nhiều requests)
-  // - Error handling riêng từng order
-}
-
-// ✅ SCENARIO 2: Parallel (nhanh nhưng rủi ro)
-async function submitOrdersParallel() {
-  console.log('🚀 Submitting orders PARALLEL...');
-  console.time('Parallel orders');
-
-  const promises = orders.map((order) => submitOrder(order));
-  const results = await Promise.all(promises); // Tất cả cùng lúc
-
-  results.forEach((result) => console.log(`✅ ${result}`));
-
-  console.timeEnd('Parallel orders'); // ~500ms (tất cả cùng lúc!)
-
-  // 💡 Use case:
-  // - Orders độc lập (không phụ thuộc nhau)
-  // - Muốn nhanh nhất
-  // - Exchange support concurrent requests
-
-  // ⚠️ Rủi ro:
-  // - 1 order lỗi → Promise.all reject (tất cả fail)
-  // - Có thể vượt rate limit
-}
-
-// ✅ SCENARIO 3: Parallel with error handling
-async function submitOrdersParallelSafe() {
-  console.log('🛡️ Submitting orders PARALLEL (safe)...');
-  console.time('Parallel safe orders');
-
-  const promises = orders.map(async (order) => {
-    try {
-      const result = await submitOrder(order);
-      return { status: 'fulfilled', value: result };
-    } catch (error) {
-      return { status: 'rejected', reason: error };
-    }
-  });
-
-  const results = await Promise.all(promises);
-
-  results.forEach((result, index) => {
-    if (result.status === 'fulfilled') {
-      console.log(`✅ ${result.value}`);
-    } else {
-      console.log(`❌ Order ${orders[index].id} failed:`, result.reason);
-    }
-  });
-
-  console.timeEnd('Parallel safe orders');
-
-  // ✅ Lợi ích:
-  // - Nhanh (parallel)
-  // - 1 order lỗi KHÔNG ảnh hưởng orders khác
-  // - Handle errors riêng từng order
-}
-
-// Alternative: Promise.allSettled
-async function submitOrdersAllSettled() {
-  console.log('✨ Using Promise.allSettled...');
-  console.time('allSettled orders');
-
-  const promises = orders.map((order) => submitOrder(order));
-  const results = await Promise.allSettled(promises); // ✅ KHÔNG reject khi có lỗi
-
-  results.forEach((result, index) => {
-    if (result.status === 'fulfilled') {
-      console.log(`✅ ${result.value}`);
-    } else {
-      console.log(`❌ Order ${orders[index].id} failed:`, result.reason);
-    }
-  });
-
-  console.timeEnd('allSettled orders');
-}
-
-// ============================================
-// 5. LOOP CONTROL - break, continue, return
-// ============================================
-
-function loopControl() {
-  const numbers = [1, 2, 3, 4, 5];
-
-  // ✅ break: Thoát loop ngay lập tức
-  console.log('--- break example ---');
-  for (const num of numbers) {
-    if (num === 3) break; // Dừng khi gặp 3
-    console.log(num); // 1, 2
-  }
-
-  // ✅ continue: Skip iteration hiện tại
-  console.log('--- continue example ---');
-  for (const num of numbers) {
-    if (num === 3) continue; // Skip 3
-    console.log(num); // 1, 2, 4, 5
-  }
-
-  // ✅ return: Thoát function (KHÔNG chỉ loop!)
-  console.log('--- return example ---');
-  function findNumber(target: number): string {
-    for (const num of numbers) {
-      if (num === target) {
-        return `Found ${target}`; // Thoát function
-      }
-    }
-    return 'Not found';
-  }
-  console.log(findNumber(3)); // 'Found 3'
-
-  // ❌ forEach: CANNOT use break/continue/return
-  console.log('--- forEach (no control) ---');
-  numbers.forEach((num) => {
-    // if (num === 3) break;    // ❌ SyntaxError
-    // if (num === 3) continue; // ❌ SyntaxError
-    if (num === 3) return; // ✅ OK nhưng chỉ skip iteration này (như continue)
-    console.log(num); // 1, 2, 4, 5
-  });
-}
-
-loopControl();
+// Transform immutable data.
+const adjustedPrices = prices.map((price) => price * 1.01);
 ```
 
----
+⚠️ **Cache length** chỉ đáng quan tâm trong hot path lớn và array không bị mutate length trong loop. Trong code bình thường, readability và correctness quan trọng hơn.
 
-**Best Practices:**
+### 🔀 `break`, `continue`, `return`
 
-1. **Chọn Loop Type đúng Use Case**
+```typescript
+function findFirstLargeOrder(orderIds: string[], limit: number): string | null {
+  for (const id of orderIds) {
+    if (id.startsWith("test_")) continue; // skip iteration hiện tại
+    if (Number(id) > limit) return id; // thoát function
+  }
 
-   ```typescript
-   // ⚡ Performance-critical (>100K items)
-   for (let i = 0; i < arr.length; i++) {}
+  return null;
+}
 
-   // 📖 Readable code (<100K items)
-   for (const item of arr) {
-   }
+for (const id of ["1", "2", "3"]) {
+  if (id === "2") break; // thoát loop
+}
+```
 
-   // 🎨 Functional transformations
-   const doubled = arr.map((x) => x * 2);
+Với `forEach`, `return` chỉ thoát callback hiện tại, **không thoát outer function**:
 
-   // 🔑 Objects only
-   for (const key in obj) {
-   }
-   ```
+```typescript
+function hasBlockedSymbol(symbols: string[]): boolean {
+  symbols.forEach((symbol) => {
+    if (symbol === "GME") {
+      return true; // ❌ chỉ return khỏi callback, function vẫn chạy tiếp
+    }
+  });
 
-2. **Cache Array Length**
+  return false;
+}
 
-   ```typescript
-   // ❌ BAD: Re-calculate length mỗi iteration
-   for (let i = 0; i < arr.length; i++) {}
+function hasBlockedSymbolBetter(symbols: string[]): boolean {
+  return symbols.some((symbol) => symbol === "GME"); // ✅ early exit semantic
+}
+```
 
-   // ✅ GOOD: Cache length
-   const len = arr.length;
-   for (let i = 0; i < len; i++) {}
-   ```
+### 🔑 `for...in` cho object, không cho array
 
-3. **Async/Await đúng cách**
+```typescript
+const config = { theme: "dark", locale: "vi" };
 
-   ```typescript
-   // ❌ NEVER use forEach với async/await
-   arr.forEach(async (item) => {
-     await doSomething(item); // KHÔNG đợi!
-   });
+for (const key in config) {
+  if (Object.prototype.hasOwnProperty.call(config, key)) {
+    console.log(key, config[key as keyof typeof config]);
+  }
+}
 
-   // ✅ Sequential: for...of + await
-   for (const item of arr) {
-     await doSomething(item); // Đợi từng cái
-   }
+const ids = ["a", "b"];
 
-   // ✅ Parallel: Promise.all
-   await Promise.all(arr.map((item) => doSomething(item)));
-   ```
+for (const index in ids) {
+  console.log(index); // "0", "1" là string key, không phải value
+}
+```
 
-4. **Avoid Nested Loops (O(n²))**
+✅ Với object hiện đại, thường rõ hơn khi dùng `Object.keys`, `Object.entries`, hoặc type-safe helper.
 
-   ```typescript
-   // ❌ BAD: O(n²) - RẤT CHẬM
-   for (const item1 of arr1) {
-     for (const item2 of arr2) {
-       // ...
-     }
-   }
+### 🧮 `map`, `filter`, `reduce`
 
-   // ✅ GOOD: Use Map/Set O(n)
-   const map = new Map(arr2.map((item) => [item.id, item]));
-   for (const item1 of arr1) {
-     const item2 = map.get(item1.id); // O(1) lookup
-   }
-   ```
+Use đúng semantic:
 
-5. **Error Handling trong Async Loops**
+- `map`: mỗi input tạo một output.
+- `filter`: giữ/bỏ item.
+- `reduce`: gom thành một value/object/map.
+- `forEach`: side effect, không tạo value mới.
 
-   ```typescript
-   // ✅ Sequential: try/catch từng operation
-   for (const item of items) {
-     try {
-       await process(item);
-     } catch (error) {
-       console.error(`Failed to process ${item}:`, error);
-       continue; // Skip lỗi, chạy tiếp
-     }
-   }
+```typescript
+type Order = {
+  id: string;
+  symbol: string;
+  quantity: number;
+  status: "open" | "filled" | "cancelled";
+};
 
-   // ✅ Parallel: Promise.allSettled
-   const results = await Promise.allSettled(items.map((item) => process(item)));
-   ```
+const openSymbols = orders
+  .filter((order) => order.status === "open")
+  .map((order) => order.symbol);
 
----
+const totalQuantity = orders.reduce(
+  (total, order) => total + order.quantity,
+  0
+);
+```
 
-**Common Mistakes:**
+⚠️ Tránh chain quá nhiều bước trên dataset lớn nếu tạo nhiều intermediate arrays. Có thể gom bằng `for...of` hoặc `reduce` khi đã profile thấy cần.
 
-1. **❌ forEach với async/await**
+### 🔥 O(n²) -> `Map` / `Set`
 
-   ```typescript
-   // ❌ BAD: await bị IGNORE!
-   items.forEach(async (item) => {
-     await fetchData(item); // KHÔNG đợi!
-   });
-   console.log('Done'); // Chạy TRƯỚC khi fetch xong!
+Đây là tối ưu senior quan trọng hơn tranh luận `for` vs `forEach`.
 
-   // ✅ GOOD: Dùng for...of
-   for (const item of items) {
-     await fetchData(item); // Đợi đúng
-   }
-   ```
+```typescript
+type User = { id: string; name: string };
+type Position = { userId: string; symbol: string; quantity: number };
 
-2. **❌ for...in với Arrays**
+// ❌ O(users * positions)
+function attachPositionsSlow(users: User[], positions: Position[]) {
+  return users.map((user) => ({
+    ...user,
+    positions: positions.filter((position) => position.userId === user.id),
+  }));
+}
 
-   ```typescript
-   // ❌ BAD: index là STRING, iterate prototype
-   const arr = [1, 2, 3];
-   for (const index in arr) {
-     console.log(typeof index); // 'string'!
-   }
+// ✅ O(users + positions)
+function attachPositionsFast(users: User[], positions: Position[]) {
+  const positionsByUser = new Map<string, Position[]>();
 
-   // ✅ GOOD: Dùng for...of
-   for (const value of arr) {
-     console.log(value); // 1, 2, 3
-   }
-   ```
+  for (const position of positions) {
+    const group = positionsByUser.get(position.userId) ?? [];
+    group.push(position);
+    positionsByUser.set(position.userId, group);
+  }
 
-3. **❌ Không Cache Length**
+  return users.map((user) => ({
+    ...user,
+    positions: positionsByUser.get(user.id) ?? [],
+  }));
+}
+```
 
-   ```typescript
-   // ❌ BAD: arr.length tính lại mỗi iteration
-   for (let i = 0; i < arr.length; i++) {}
+Với membership check:
 
-   // ✅ GOOD: Cache length
-   const len = arr.length;
-   for (let i = 0; i < len; i++) {}
-   ```
+```typescript
+const blockedSymbols = new Set(["GME", "AMC"]);
+const safeOrders = orders.filter((order) => !blockedSymbols.has(order.symbol));
+```
 
-4. **❌ Nested Loops O(n²)**
+## 🧪 Practical Examples
 
-   ```typescript
-   // ❌ BAD: 1000 × 1000 = 1,000,000 iterations!
-   for (const user of users) {
-     // 1000 users
-     for (const order of orders) {
-       // 1000 orders
-       if (order.userId === user.id) {
-       }
-     }
-   }
+### ⚠️ Async `forEach` trap
 
-   // ✅ GOOD: O(n) với Map
-   const ordersByUser = new Map();
-   orders.forEach((order) => {
-     if (!ordersByUser.has(order.userId)) {
-       ordersByUser.set(order.userId, []);
-     }
-     ordersByUser.get(order.userId).push(order);
-   });
+```typescript
+async function fetchRiskScore(order: Order): Promise<number> {
+  const response = await fetch(`/api/risk/${order.id}`);
+  if (!response.ok) throw new Error(`Risk API failed: ${order.id}`);
+  return response.json() as Promise<number>;
+}
 
-   users.forEach((user) => {
-     const userOrders = ordersByUser.get(user.id); // O(1)
-   });
-   ```
+async function bad(orders: Order[]) {
+  orders.forEach(async (order) => {
+    await fetchRiskScore(order);
+  });
 
-5. **❌ Promise.all mà không handle errors**
+  console.log("done"); // ❌ chạy trước khi các request hoàn tất
+}
+```
 
-   ```typescript
-   // ❌ BAD: 1 promise fail → TẤT CẢ fail
-   await Promise.all(items.map((item) => fetchData(item)));
+### ✅ Sequential: đúng khi có dependency hoặc cần rate control
 
-   // ✅ GOOD: Dùng Promise.allSettled
-   const results = await Promise.allSettled(
-     items.map((item) => fetchData(item))
-   );
+```typescript
+async function validateOrdersSequential(orders: Order[]) {
+  const results: Array<{ orderId: string; score: number }> = [];
 
-   results.forEach((result, i) => {
-     if (result.status === 'rejected') {
-       console.error(`Item ${i} failed:`, result.reason);
-     }
-   });
-   ```
+  for (const order of orders) {
+    try {
+      const score = await fetchRiskScore(order);
+      results.push({ orderId: order.id, score });
+    } catch (error) {
+      console.error("Risk check failed", { orderId: order.id, error });
+      continue;
+    }
+  }
 
----
+  return results;
+}
+```
+
+Use khi:
+
+- Request sau phụ thuộc request trước.
+- API có rate limit thấp.
+- Cần stop/continue theo từng lỗi.
+- Cần giữ order xử lý rõ ràng.
+
+### 🚀 Parallel: `Promise.all`
+
+```typescript
+async function validateOrdersParallel(orders: Order[]) {
+  const scores = await Promise.all(
+    orders.map(async (order) => ({
+      orderId: order.id,
+      score: await fetchRiskScore(order),
+    }))
+  );
+
+  return scores;
+}
+```
+
+`Promise.all`:
+
+- ✅ Nhanh cho các tác vụ độc lập.
+- ✅ Kết quả trả về theo thứ tự input.
+- ⚠️ Fail-fast: chỉ cần một promise reject thì `Promise.all` reject.
+- ⚠️ Không phù hợp khi list rất lớn hoặc API có rate limit.
+
+### 🛡️ Partial failure: `Promise.allSettled`
+
+```typescript
+async function validateOrdersSafe(orders: Order[]) {
+  const settled = await Promise.allSettled(
+    orders.map((order) => fetchRiskScore(order))
+  );
+
+  return settled.map((result, index) => {
+    const order = orders[index];
+
+    if (result.status === "fulfilled") {
+      return { orderId: order.id, ok: true, score: result.value };
+    }
+
+    return { orderId: order.id, ok: false, reason: result.reason };
+  });
+}
+```
+
+Use khi UI cần hiển thị kết quả từng item: một order lỗi không làm mất toàn bộ danh sách.
+
+### 🚦 Batched / concurrency-limited
+
+Batch đơn giản:
+
+```typescript
+async function validateOrdersBatched(orders: Order[], batchSize = 5) {
+  const results: Awaited<ReturnType<typeof validateOrdersSafe>> = [];
+
+  for (let i = 0; i < orders.length; i += batchSize) {
+    const batch = orders.slice(i, i + batchSize);
+    const batchResults = await validateOrdersSafe(batch);
+    results.push(...batchResults);
+  }
+
+  return results;
+}
+```
+
+Concurrency limit tự viết gọn:
+
+```typescript
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  limit: number,
+  task: (item: T, index: number) => Promise<R>
+): Promise<R[]> {
+  const results = new Array<R>(items.length);
+  let nextIndex = 0;
+
+  async function worker() {
+    while (nextIndex < items.length) {
+      const currentIndex = nextIndex++;
+      results[currentIndex] = await task(items[currentIndex], currentIndex);
+    }
+  }
+
+  const workers = Array.from(
+    { length: Math.min(limit, items.length) },
+    () => worker()
+  );
+
+  await Promise.all(workers);
+  return results;
+}
+
+const scores = await mapWithConcurrency(orders, 5, fetchRiskScore);
+```
+
+💡 Production thường dùng thư viện như `p-limit`, queue nội bộ, hoặc API client có rate limiter để xử lý retry/backoff/backpressure tốt hơn.
+
+### 🧯 Cancellation với `AbortController`
+
+```typescript
+async function fetchRiskScoreWithSignal(
+  order: Order,
+  signal: AbortSignal
+): Promise<number> {
+  const response = await fetch(`/api/risk/${order.id}`, { signal });
+  if (!response.ok) throw new Error(`Risk API failed: ${order.id}`);
+  return response.json() as Promise<number>;
+}
+
+const controller = new AbortController();
+const cancel = () => controller.abort();
+
+try {
+  const scores = await Promise.all(
+    orders.map((order) => fetchRiskScoreWithSignal(order, controller.signal))
+  );
+  console.log(scores);
+} catch (error) {
+  if (error instanceof DOMException && error.name === "AbortError") {
+    console.log("Request cancelled");
+  } else {
+    throw error;
+  }
+}
+
+// UI event hoặc cleanup có thể gọi cancel().
+```
+
+Trong UI, cancellation giúp tránh update state sau khi component unmount hoặc query cũ về muộn hơn query mới.
+
+### 🌊 Async iterable vs array of promises
+
+```typescript
+async function* streamOrders() {
+  for (const id of ["1", "2", "3"]) {
+    const response = await fetch(`/api/orders/${id}`);
+    yield response.json() as Promise<Order>;
+  }
+}
+
+for await (const order of streamOrders()) {
+  console.log(order); // xử lý từng item khi stream yield
+}
+```
+
+- `for await...of` hợp với `AsyncIterable`: stream, cursor pagination, generator, readable stream.
+- `Promise.all(items.map(...))` hợp với array hữu hạn các tác vụ độc lập.
+- `for await...of` trên array promise sẽ await theo iteration order; nếu muốn aggregate parallel rõ ràng, dùng `Promise.all`.
+
+## ⚛️ Production / React Notes
+
+### 🖥️ UI jank và main thread
+
+Loop đồng bộ lớn có thể block main thread, làm UI lag, input delay, animation drop frame.
+
+Giải pháp theo mức độ:
+
+- ✅ Giảm complexity trước: `Map`, `Set`, index data, pagination, virtualization.
+- ✅ Chia nhỏ việc: chunk bằng `setTimeout`, `requestIdleCallback` khi task không gấp.
+- ✅ Dùng Web Worker cho CPU-heavy work: parsing lớn, risk calculation local, report generation.
+- ✅ Tránh DOM read/write xen kẽ trong loop để không gây layout thrashing.
+
+```typescript
+async function processInChunks<T>(
+  items: T[],
+  chunkSize: number,
+  process: (item: T) => void
+) {
+  for (let i = 0; i < items.length; i += chunkSize) {
+    const chunk = items.slice(i, i + chunkSize);
+    for (const item of chunk) process(item);
+
+    await new Promise<void>((resolve) => {
+      window.setTimeout(resolve, 0);
+    });
+  }
+}
+```
+
+### ⚛️ React implications
+
+- ❌ Tránh `setState` nhiều lần trong loop nếu có thể tính xong rồi set một lần.
+- ✅ Với list lớn: normalize data bằng `Map`/object, dùng pagination hoặc virtualization.
+- ✅ `useMemo` chỉ dùng khi computation thật sự đắt và dependency ổn định.
+- ✅ Trong `useEffect`, luôn xử lý race condition/cancellation cho async loop.
+- ⚠️ `map` trong JSX là bình thường; vấn đề thường là key không ổn định, item component render nặng, hoặc tạo handler/object mới quá nhiều.
+
+```typescript
+function PositionsView({ positions }: { positions: Position[] }) {
+  const positionsBySymbol = React.useMemo(() => {
+    const map = new Map<string, Position[]>();
+
+    for (const position of positions) {
+      const group = map.get(position.symbol) ?? [];
+      group.push(position);
+      map.set(position.symbol, group);
+    }
+
+    return map;
+  }, [positions]);
+
+  return <div>{positionsBySymbol.size} symbols</div>;
+}
+```
+
+Async effect với cancellation:
+
+```typescript
+React.useEffect(() => {
+  const controller = new AbortController();
+
+  async function run() {
+    try {
+      const results = await Promise.all(
+        orders.map((order) =>
+          fetchRiskScoreWithSignal(order, controller.signal)
+        )
+      );
+      setScores(results);
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
+        setError(error);
+      }
+    }
+  }
+
+  run();
+
+  return () => controller.abort();
+}, [orders]);
+```
+
+### 🧪 Testing strategy
+
+- Unit test pure transform: `map/filter/reduce`, `Map` grouping, edge cases empty/sparse/duplicate IDs.
+- Test async behavior: sequential order, parallel completion, batched limit.
+- Mock API reject để kiểm tra `Promise.all` fail-fast và `Promise.allSettled` partial failure.
+- Test cancellation với `AbortController` và assert không update state sau unmount.
+- Với performance-sensitive code: benchmark trong môi trường gần production, có warm-up, input đại diện, và đo bằng profiler.
+
+## ⚠️ Common Pitfalls
+
+- ❌ Tin rằng "`for` luôn là câu trả lời đúng". Nếu bottleneck là network hoặc `O(n²)`, đổi loop syntax không giúp nhiều.
+- ❌ Dùng `forEach` với `async/await` rồi tưởng outer function đã chờ xong.
+- ❌ Dùng `Promise.all` cho hàng nghìn request cùng lúc, gây rate limit, memory spike, hoặc backend overload.
+- ❌ Không handle partial failure: một item lỗi làm hỏng toàn bộ UI.
+- ❌ Dùng `for...in` cho array, nhận index dạng string và có rủi ro prototype keys.
+- ❌ Dùng `map` chỉ để side effect; nên dùng `for...of` hoặc `forEach`.
+- ❌ Nested loops không cần thiết: `users.map(...orders.filter(...))` trên data lớn.
+- ❌ Loop CPU-heavy trong render React, làm render chậm và UI jank.
+- ❌ Không cancellation async request khi user đổi filter/search hoặc component unmount.
+
+## ✅ Decision Guide / Checklist
+
+**Chọn sync loop:**
+
+- Cần fastest hot path, index, mutate in place có kiểm soát → `for`.
+- Cần readable, early exit, iterate iterable → `for...of`.
+- Cần transform immutable → `map/filter/reduce`.
+- Cần side effect đơn giản, không early exit → `forEach`.
+- Cần object keys → `Object.entries` hoặc `for...in` kèm own-property check.
+
+**Chọn async strategy:**
+
+- Task phụ thuộc nhau, cần order, cần stop/continue từng bước → `for...of` + `await`.
+- Task độc lập, số lượng nhỏ/vừa, muốn fail-fast → `Promise.all`.
+- Task độc lập nhưng cần partial result → `Promise.allSettled`.
+- Task nhiều, có rate limit/backpressure → batch hoặc concurrency limit.
+- Task có thể bị user hủy → `AbortController`.
+- Data đến theo stream/cursor → `for await...of`.
+
+**Trước khi tối ưu:**
+
+- Đã biết Big O chưa?
+- Có nested loop nào đổi được sang `Map`/`Set` không?
+- Bottleneck là CPU, DOM, React render, network, hay backend?
+- Có profile trên device/browser mục tiêu chưa?
+- Có test lỗi, cancellation, retry/rate-limit chưa?
+
+## 🗣️ Short Interview Answer
+
+Em nghĩ với loop performance thì không nên trả lời kiểu "`for` luôn nhanh nhất" rồi dừng ở đó. Theo em, `for` thường nhanh nhất trong hot path vì ít overhead, `for...of` readable và vẫn có `break/continue`, còn `forEach`, `map`, `filter`, `reduce` hợp khi semantic rõ ràng như side effect hoặc transform data. `for...in` thì em chỉ dùng cho object keys, không dùng cho array.
+
+Điểm quan trọng hơn là Big O và runtime behavior. Nếu đang có nested loop `O(n²)`, em sẽ ưu tiên đổi sang `Map` hoặc `Set` trước khi micro-optimize syntax. Với async loop, em tránh `forEach(async ...)` vì outer flow không await. Nếu cần chạy tuần tự thì dùng `for...of await`, nếu các task độc lập thì dùng `Promise.all`, nếu cần partial failure thì dùng `Promise.allSettled`, còn production thì thường cần batch hoặc concurrency limit để tránh rate limit và backpressure.
+
+Trong frontend, em cũng nhìn thêm React và browser: loop lớn có thể block main thread, gây jank; request async cần cancellation bằng `AbortController`; computation nặng có thể cần chunking, virtualization, `useMemo` đúng chỗ hoặc Web Worker. Em thường chọn cách dễ đọc trước, đo bằng profiler khi có dấu hiệu bottleneck, rồi tối ưu đúng nguyên nhân.
