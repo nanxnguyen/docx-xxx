@@ -1,1938 +1,1363 @@
-# 🏗️ Q49: System Design - Thiết Kế Hệ Thống Frontend Architecture
+# 🏗️ Topic42: System Design - Frontend Architecture
 
-## **⭐ TÓM TẮT CHO PHỎNG VẤN SENIOR/STAFF**
-
-### **🎯 Câu Trả Lời Ngắn Gọn (5-7 phút):**
-
-**"Frontend system design bao gồm: Architecture (Microfrontends/Monorepo), API layer (BFF, GraphQL), State management (global/local), Performance (CDN, lazy load), Resilience (error boundaries, fallbacks). Cần balance scalability vs complexity."**
-
-**🔑 5 Pillars của Frontend System Design:**
-
-**1. Architecture Patterns:**
-- **Microfrontends**: Independent deployable apps share same domain (Module Federation)
-  - Ưu: Teams tự chủ, tech diversity, independent deploy
-  - Nhược: Complexity, bundle duplication, runtime overhead
-- **Monorepo**: Single repo, multiple packages (Nx, Turborepo)
-  - Ưu: Code sharing, atomic commits, unified tooling
-  - Nhược: Build time, CI/CD complexity
-
-**2. API Layer Design:**
-- **BFF (Backend for Frontend)**: API gateway tailored cho frontend needs
-  - Aggregate multiple services, transform data format
-- **GraphQL**: Client-driven queries, avoid over/under-fetching
-- **REST**: Simple, cacheable, well-understood
-
-**3. State Management:**
-- **Global**: Redux/Zustand (auth, theme, user data)
-- **Server Cache**: React Query/SWR (API data, auto-refetch)
-- **Local**: useState/useReducer (form, UI state)
-- **URL**: React Router (filters, pagination)
-
-**4. Performance Optimization:**
-- **CDN**: Static assets + edge caching (CloudFlare, Vercel Edge)
-- **Code Splitting**: Route-based, component-based lazy loading
-- **Resource Hints**: preload, prefetch, preconnect
-- **Image Optimization**: WebP, AVIF, responsive images
-
-**5. Resilience & Monitoring:**
-- **Error Boundaries**: Catch React errors, show fallback UI
-- **Circuit Breaker**: Stop calling failing services
-- **Feature Flags**: Gradual rollouts, A/B testing
-- **Monitoring**: Sentry (errors), DataDog (performance), analytics
-
-**⚠️ Lỗi Thường Gặp:**
-- Over-engineering: Start monolith, migrate microfrontends when needed
-- Không cache API responses → redundant requests
-- Single global store (Redux) cho mọi state → complexity, dùng React Query cho server state
-- Không error boundaries → 1 component crash = toàn app crash
-
-**💡 Kiến Thức Senior:**
-- **CAP Theorem** (frontend context): Trade-off giữa Consistency (data freshness) vs Availability (offline support)
-- **Islands Architecture**: Static HTML + interactive components (Astro) - best performance
-- **Streaming SSR**: Progressive rendering (React 18 Suspense + Next.js)
-- **Observability**: Tracing (OpenTelemetry), RUM (Real User Monitoring), synthetic monitoring
-
-> **Câu hỏi phỏng vấn Senior/Lead Frontend Developer**  
-> **Độ khó:** ⭐⭐⭐⭐⭐ (Expert Level)  
-> **Thời gian trả lời:** 20-30 phút (với whiteboard)
+> Mục tiêu: biết cách thiết kế một hệ thống frontend production-ready: dễ scale team, scale traffic, debug được production, kiểm soát performance, bảo mật, deployment và tradeoff kiến trúc.
 
 ---
 
-## 📋 **Mục Lục**
+## ⭐ Senior/Staff Summary
 
-1. [Tổng Quan System Design](#1-tổng-quan-system-design)
-2. [Micro-frontend Architecture](#2-micro-frontend-architecture)
-3. [Monorepo Strategies](#3-monorepo-strategies)
-4. [API Design Patterns](#4-api-design-patterns)
-5. [State Management Architecture](#5-state-management-architecture)
-6. [Error Boundaries & Resilience](#6-error-boundaries--resilience)
-7. [Feature Flags System](#7-feature-flags-system)
-8. [CDN & Edge Computing](#8-cdn--edge-computing)
-9. [Real-World System Design Questions](#9-real-world-system-design-questions)
-10. [Production-Ready Frontend Project](#10-production-ready-frontend-project)
+Frontend system design không chỉ là chọn React, Next.js hay Vite. Đây là bài toán thiết kế toàn bộ frontend platform để đáp ứng:
+
+- ✅ **Scalability**: scale traffic, scale team, scale repo, scale deployment.
+- ✅ **Performance**: fast initial load, Core Web Vitals tốt, bundle hợp lý, cache tốt.
+- ✅ **Reliability**: error boundary, retry, fallback, graceful degradation.
+- ✅ **Maintainability**: feature ownership rõ, module boundary rõ, coding standards.
+- ✅ **Security**: auth, token handling, CSP, XSS, dependency risk, env var leak.
+- ✅ **Observability**: logs, metrics, tracing, RUM, alerting.
+- ✅ **Delivery**: CI/CD, preview deploy, rollback, feature flags.
+
+Một kiến trúc frontend production thường có các lớp:
+
+```txt
+Browser / Client
+→ CDN / Edge
+→ Frontend App: React / Next.js / Microfrontend / SPA
+→ API Layer: BFF / GraphQL / REST Gateway
+→ Server State Cache: React Query / SWR / Apollo
+→ Client State: Zustand / Redux / Context / URL state
+→ Observability: Sentry / Datadog / OpenTelemetry / Web Vitals
+```
+
+Key tradeoff:
+
+- **Modular monolith** trước, microfrontend sau khi team/deploy thật sự cần.
+- **Monorepo** tốt cho shared code và ownership, nhưng cần tooling/cache/CI tốt.
+- **BFF** tốt khi frontend cần API đúng shape, nhưng thêm một layer vận hành.
+- **GraphQL** tốt cho flexible querying, nhưng cần schema governance/cache/error handling.
+- **SSR/Streaming/ISR** tốt cho SEO/perceived performance, nhưng tăng complexity.
+- **Feature flags** giúp rollout an toàn, nhưng phải có lifecycle cleanup.
+
+> 💡 Senior key: **Architecture tốt là architecture tiến hóa theo pain point thật, không phải architecture nhiều công nghệ nhất.**
 
 ---
 
-## 1. Tổng Quan System Design
+## 🧠 Key Mental Model
 
-### **1.1. System Design là gì?**
+### 1. Frontend system design là thiết kế constraints
 
-> **System Design (Thiết kế hệ thống)** là quá trình thiết kế kiến trúc hệ thống để đáp ứng **yêu cầu phi chức năng** (scalability - khả năng mở rộng, availability - tính sẵn sàng, performance - hiệu suất, maintainability - khả năng bảo trì) trong khi vẫn đảm bảo **yêu cầu chức năng** (những gì hệ thống cần làm).
+Khi nhận đề bài system design frontend, đừng nhảy ngay vào folder structure. Hãy hỏi:
 
-**📌 Giải thích đơn giản:**
-- **Yêu cầu chức năng:** App cần làm gì? (Ví dụ: Đăng nhập, xem sản phẩm, thanh toán)
-- **Yêu cầu phi chức năng:** App cần hoạt động TỐT thế nào? (Ví dụ: Xử lý được 10 triệu user, load trang < 2 giây, hoạt động 99.9% thời gian)
+- Người dùng là ai, traffic bao nhiêu?
+- App cần SEO hay chỉ internal dashboard?
+- Critical flows là gì: login, checkout, editor, search, payment?
+- SLA/SLO cần đạt: uptime, latency, error rate?
+- Team size và ownership thế nào?
+- Deploy frequency có độc lập giữa teams không?
+- Data realtime hay eventual consistency?
+- Offline support có cần không?
+- Security/compliance có nhạy cảm không?
 
-### **📊 Frontend System Design Components**
+Ví dụ:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    FRONTEND SYSTEM DESIGN                       │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐     │
-│  │   Client     │───▶│     CDN      │───▶│  API Gateway │     │
-│  │   (Browser)  │    │  (CloudFlare)│    │  (BFF Layer) │     │
-│  └──────────────┘    └──────────────┘    └──────────────┘     │
-│         │                                         │            │
-│         │                                         ▼            │
-│         │                              ┌────────────────┐      │
-│         │                              │  Microservices │      │
-│         │                              │  (REST/GraphQL)│      │
-│         │                              └────────────────┘      │
-│         ▼                                                       │
-│  ┌──────────────────────────────────────────────────────┐      │
-│  │           MICRO-FRONTEND SHELL                      │      │
-│  ├──────────────────────────────────────────────────────┤      │
-│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌────────┐ │      │
-│  │  │ Header  │  │Dashboard│  │ Profile │  │ Footer │ │      │
-│  │  │ (Remote)│  │ (Remote)│  │ (Remote)│  │(Remote)│ │      │
-│  │  └─────────┘  └─────────┘  └─────────┘  └────────┘ │      │
-│  └──────────────────────────────────────────────────────┘      │
-│         │                                                       │
-│         ▼                                                       │
-│  ┌──────────────────────────────────────────────────────┐      │
-│  │  State Management Layer (Redux/Zustand/Jotai)       │      │
-│  └──────────────────────────────────────────────────────┘      │
-│         │                                                       │
-│         ▼                                                       │
-│  ┌──────────────────────────────────────────────────────┐      │
-│  │  Caching Layer (React Query/SWR/Apollo)             │      │
-│  └──────────────────────────────────────────────────────┘      │
-│         │                                                       │
-│         ▼                                                       │
-│  ┌──────────────────────────────────────────────────────┐      │
-│  │  Monitoring & Observability (Sentry/DataDog)        │      │
-│  └──────────────────────────────────────────────────────┘      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+- Landing page marketing:
+  - ưu tiên SEO, performance, CDN, SSG/ISR.
 
-### **1.2. Key Design Principles**
+- Admin dashboard:
+  - ưu tiên auth, RBAC, data table, caching, observability.
 
-```typescript
-// ===================================================
-// ✅ **SOLID PRINCIPLES CHO FRONTEND**
-// ===================================================
+- E-commerce homepage:
+  - ưu tiên CDN, personalization, image optimization, A/B testing, Core Web Vitals.
 
-// 1️⃣ **Single Responsibility Principle (SRP) - Nguyên tắc Đơn Trách Nhiệm**
-// Mỗi component/module chỉ nên làm MỘT việc duy nhất
-
-// ❌ SAI: Component làm QUÁ NHIỀU việc (God Component)
-const UserDashboard = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  
-  // ❌ Trách nhiệm 1: Fetch data từ API
-  useEffect(() => {
-    fetchUsers().then(setUsers);
-  }, []);
-  
-  // ❌ Trách nhiệm 2: Lọc dữ liệu
-  const filterUsers = (query: string) => { /* ... */ };
-  
-  // ❌ Trách nhiệm 3: Export file
-  const exportToCSV = () => { /* ... */ };
-  
-  // ❌ Trách nhiệm 4: Render UI (500 dòng JSX!)
-  return ( /* ... */ );
-};
-
-// ✅ ĐÚNG: Tách thành các trách nhiệm riêng biệt
-const UserDashboard = () => {
-  // ✅ Custom hook lo data fetching
-  const { users, loading } = useUsers();
-  
-  // ✅ Custom hook lo filter logic
-  const { filteredUsers, setFilter } = useUserFilter(users);
-  
-  // ✅ Custom hook lo export
-  const { exportCSV } = useExport(filteredUsers);
-  
-  // ✅ Component chỉ lo render
-  return <UserTable users={filteredUsers} onExport={exportCSV} />;
-};
-
-// 💡 LỢI ÍCH:
-// - Dễ test (test từng phần riêng)
-// - Dễ maintain (sửa filter không ảnh hưởng export)
-// - Dễ reuse (dùng useUsers ở component khác)
-```
+- Google Docs clone:
+  - ưu tiên realtime collaboration, conflict resolution, offline recovery, latency.
 
 ---
 
-## 2. Micro-frontend Architecture
+### 2. Scale frontend có 4 loại
 
-### **2.1. Micro-frontend là gì?**
+- **Scale traffic**
+  - CDN, edge caching, code splitting, SSR/SSG/ISR, image optimization.
 
-> **Micro-frontend** là kiến trúc chia nhỏ frontend thành các **autonomous modules** có thể phát triển, deploy, và scale **độc lập**.
+- **Scale team**
+  - module boundary, monorepo, design system, ownership, lint rules, ADR.
 
-### **🎯 Use Cases**
+- **Scale deployment**
+  - CI/CD, preview deploy, feature flags, canary, rollback, microfrontend khi cần.
 
+- **Scale debugging**
+  - source maps, release id, RUM, logs, traces, error boundaries, dashboards.
+
+> ⚠️ Nhiều người chỉ nói performance. Senior phải nói cả team ownership, release safety và production debugging.
+
+---
+
+## 📚 Main Concepts
+
+### 1. Architecture styles
+
+#### ✅ Modular Monolith
+
+Một app frontend lớn nhưng chia feature rõ trong cùng repo/build/deploy.
+
+Phù hợp khi:
+
+- team nhỏ/vừa
+- domain chưa quá phân mảnh
+- deploy cùng lúc vẫn ổn
+- muốn giảm operational complexity
+
+Ví dụ structure:
+
+```txt
+src/
+├─ app/
+├─ features/
+│  ├─ auth/
+│  ├─ checkout/
+│  ├─ catalog/
+│  └─ profile/
+├─ shared/
+│  ├─ ui/
+│  ├─ api/
+│  ├─ hooks/
+│  └─ utils/
+└─ routes/
 ```
-✅ Khi nào dùng Micro-frontend:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Team size > 20 developers
-2. Multiple independent features (Dashboard, Analytics, Settings)
-3. Different tech stacks cần coexist (React + Vue + Angular)
-4. Frequent independent deployments
-5. Large legacy app cần migrate từng phần
 
-❌ Khi KHÔNG nên dùng:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Small team (< 5 developers)
-2. Simple SPA
-3. Tight coupling giữa các features
-4. Performance critical (overhead của runtime loading)
+✅ Đây thường là starting point tốt nhất.
+
+---
+
+#### ✅ Monorepo
+
+Một repo chứa nhiều apps/libs/packages.
+
+Phù hợp khi:
+
+- nhiều apps share design system, utils, API clients
+- cần enforce dependency boundary
+- nhiều team cùng làm nhưng muốn shared tooling
+- cần task cache/incremental build
+
+Ví dụ:
+
+```txt
+apps/
+├─ web/              # React/Vite app
+├─ admin/            # Admin dashboard
+├─ mobile/           # React Native
+└─ landing/          # Next.js marketing
+
+packages/
+├─ ui/               # Design system
+├─ api-client/       # Typed API client
+├─ auth/             # Auth SDK
+├─ eslint-config/
+└─ tsconfig/
 ```
 
-### **2.2. Module Federation Implementation**
+Tooling:
 
-```typescript
-// ===================================================
-// 🏗️ **SHELL APPLICATION** (Container App)
-// ===================================================
+- Nx: mạnh về dependency graph, affected commands, enforce boundaries.
+- Turborepo: đơn giản, fast task cache, hợp Next.js/pnpm workspace.
+- pnpm workspace: package manager/workspace foundation tốt.
 
-// webpack.config.js (Shell)
-import { ModuleFederationPlugin } from '@module-federation/enhanced';
+⚠️ Monorepo không tự động giải quyết architecture. Nếu không có boundary, nó chỉ là một folder lớn.
 
-export default {
+---
+
+#### ✅ Microfrontend
+
+Microfrontend chia frontend thành các app/module có thể deploy độc lập.
+
+Phù hợp khi:
+
+- nhiều team sở hữu domain độc lập
+- release cadence khác nhau
+- app rất lớn, build/deploy chung gây bottleneck
+- cần migrate legacy từng phần
+- nhiều tech stack phải coexist
+
+Không phù hợp khi:
+
+- team nhỏ
+- app chưa đủ lớn
+- chỉ dùng vì “nghe hiện đại”
+- chưa có observability/versioning/dependency governance tốt
+
+Tradeoffs:
+
+- ✅ independent deploy
+- ✅ ownership rõ
+- ✅ migrate legacy dễ hơn
+- ⚠️ runtime integration phức tạp
+- ⚠️ bundle duplication
+- ⚠️ shared dependency version mismatch
+- ⚠️ routing/auth/state/monitoring khó hơn
+
+---
+
+### 2. Module Federation
+
+Webpack Module Federation cho phép app expose/consume module runtime.
+
+Remote app:
+
+```js
+const { ModuleFederationPlugin } = require('webpack').container;
+
+module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      name: 'shell',
-      remotes: {
-        dashboard: 'dashboard@http://localhost:3001/remoteEntry.js',
-        profile: 'profile@http://localhost:3002/remoteEntry.js',
-        analytics: 'analytics@http://localhost:3003/remoteEntry.js',
-      },
-      shared: {
-        react: { singleton: true, requiredVersion: '^18.3.0' },
-        'react-dom': { singleton: true, requiredVersion: '^18.3.0' },
-        'react-router-dom': { singleton: true },
-      },
-    }),
-  ],
-};
-
-// App.tsx (Shell)
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-// 🔥 Lazy load remote modules
-const Dashboard = lazy(() => import('dashboard/Dashboard'));
-const Profile = lazy(() => import('profile/Profile'));
-const Analytics = lazy(() => import('analytics/Analytics'));
-
-export const App = () => {
-  return (
-    <BrowserRouter>
-      <ErrorBoundary fallback={<ErrorFallback />}>
-        <Header />
-        <Suspense fallback={<LoadingSpinner />}>
-          <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/analytics" element={<Analytics />} />
-          </Routes>
-        </Suspense>
-        <Footer />
-      </ErrorBoundary>
-    </BrowserRouter>
-  );
-};
-```
-
-```typescript
-// ===================================================
-// 📦 **REMOTE MODULE** (Dashboard App)
-// ===================================================
-
-// webpack.config.js (Dashboard Remote)
-import { ModuleFederationPlugin } from '@module-federation/enhanced';
-
-export default {
-  plugins: [
-    new ModuleFederationPlugin({
-      name: 'dashboard',
+      name: 'checkout',
       filename: 'remoteEntry.js',
       exposes: {
-        './Dashboard': './src/Dashboard.tsx',
-        './Widget': './src/components/Widget.tsx', // Expose individual components
+        './CheckoutApp': './src/CheckoutApp',
       },
       shared: {
-        react: { singleton: true },
-        'react-dom': { singleton: true },
+        react: { singleton: true, requiredVersion: '^18.0.0' },
+        'react-dom': { singleton: true, requiredVersion: '^18.0.0' },
       },
     }),
   ],
 };
+```
 
-// Dashboard.tsx (Exposed Component)
-export default function Dashboard() {
+Host app:
+
+```js
+new ModuleFederationPlugin({
+  name: 'shell',
+  remotes: {
+    checkout: 'checkout@https://cdn.example.com/checkout/remoteEntry.js',
+  },
+});
+```
+
+Usage:
+
+```tsx
+import { lazy, Suspense } from 'react';
+
+const CheckoutApp = lazy(() => import('checkout/CheckoutApp'));
+
+export function CheckoutRoute() {
   return (
-    <div className="dashboard">
-      <h1>📊 Dashboard Module</h1>
-      <p>Loaded from http://localhost:3001</p>
-    </div>
+    <Suspense fallback={<div>Loading checkout...</div>}>
+      <CheckoutApp />
+    </Suspense>
   );
 }
 ```
 
-### **2.3. Communication giữa Micro-frontends**
+Production checklist:
 
-```typescript
-// ===================================================
-// 🔗 **SHARED EVENT BUS** (Cross-module Communication)
-// ===================================================
+- shared dependency version policy
+- fallback khi remote fail
+- Sentry release theo remote
+- CSP allowlist cho remote URL
+- rollback/canary theo remote
+- contract test giữa shell và remote
 
-// eventBus.ts (Shared Library)
-type EventCallback<T = any> = (data: T) => void;
+---
 
-class EventBus {
-  private events = new Map<string, Set<EventCallback>>();
+### 3. Microfrontend communication
 
-  // Subscribe to event
-  on<T = any>(event: string, callback: EventCallback<T>) {
-    if (!this.events.has(event)) {
-      this.events.set(event, new Set());
-    }
-    this.events.get(event)!.add(callback);
+Communication nên giữ loose coupling.
 
-    // Return unsubscribe function
-    return () => this.off(event, callback);
-  }
+Các cách phổ biến:
 
-  // Unsubscribe
-  off<T = any>(event: string, callback: EventCallback<T>) {
-    this.events.get(event)?.delete(callback);
-  }
+- **URL/route**
+  - Tốt cho navigation, filters, selected tab.
+  - Dễ bookmark/share.
 
-  // Emit event
-  emit<T = any>(event: string, data?: T) {
-    this.events.get(event)?.forEach(callback => callback(data));
-  }
+- **Custom events**
+  - Tốt cho event nhẹ giữa apps.
+  - Cần typed event contract.
 
-  // Clear all listeners
-  clear() {
-    this.events.clear();
-  }
+- **Shared store**
+  - Chỉ dùng cho state cross-cutting thật sự như auth/theme.
+  - Cẩn thận coupling.
+
+- **API/backend**
+  - Tốt nhất cho domain data.
+  - Tránh frontend remote phụ thuộc trực tiếp vào internal state của nhau.
+
+Typed event bus:
+
+```ts
+type AppEvents = {
+  'cart:item-added': { productId: string; quantity: number };
+  'auth:logout': undefined;
+};
+
+export function emitEvent<TName extends keyof AppEvents>(
+  name: TName,
+  payload: AppEvents[TName]
+) {
+  window.dispatchEvent(new CustomEvent(name, { detail: payload }));
 }
 
-export const eventBus = new EventBus();
-
-// ===================================================
-// 📡 **USAGE: Cross-module Communication**
-// ===================================================
-
-// Dashboard Module (Emitter)
-import { eventBus } from '@shared/eventBus';
-
-const Dashboard = () => {
-  const handleUserUpdate = (user: User) => {
-    // ✅ Emit event to notify other modules
-    eventBus.emit('user:updated', user);
+export function listenEvent<TName extends keyof AppEvents>(
+  name: TName,
+  handler: (payload: AppEvents[TName]) => void
+) {
+  const listener = (event: Event) => {
+    handler((event as CustomEvent<AppEvents[TName]>).detail);
   };
 
-  return <button onClick={() => handleUserUpdate(newUser)}>Update User</button>;
-};
+  window.addEventListener(name, listener);
 
-// Profile Module (Listener)
-import { eventBus } from '@shared/eventBus';
-
-const Profile = () => {
-  useEffect(() => {
-    // ✅ Listen to events from other modules
-    const unsubscribe = eventBus.on('user:updated', (user: User) => {
-      console.log('🔔 User updated from Dashboard:', user);
-      // Update local state
-      setCurrentUser(user);
-    });
-
-    return () => unsubscribe(); // Cleanup
-  }, []);
-
-  return <div>Profile for {currentUser.name}</div>;
-};
-```
-
-### **2.4. Shared State với Custom Store**
-
-```typescript
-// ===================================================
-// 🗄️ **SHARED ZUSTAND STORE** (Global State)
-// ===================================================
-
-// sharedStore.ts (Shared across all micro-frontends)
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'user';
+  return () => window.removeEventListener(name, listener);
 }
-
-interface SharedState {
-  user: User | null;
-  theme: 'light' | 'dark';
-  notifications: Notification[];
-  
-  // Actions
-  setUser: (user: User | null) => void;
-  toggleTheme: () => void;
-  addNotification: (notification: Notification) => void;
-}
-
-export const useSharedStore = create<SharedState>()(
-  persist(
-    (set, get) => ({
-      user: null,
-      theme: 'light',
-      notifications: [],
-
-      setUser: (user) => set({ user }),
-      
-      toggleTheme: () => set((state) => ({
-        theme: state.theme === 'light' ? 'dark' : 'light',
-      })),
-      
-      addNotification: (notification) => set((state) => ({
-        notifications: [...state.notifications, notification],
-      })),
-    }),
-    {
-      name: 'shared-storage', // localStorage key
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
-);
-
-// ===================================================
-// 🎯 **USAGE trong các Micro-frontends**
-// ===================================================
-
-// Dashboard Module
-import { useSharedStore } from '@shared/store';
-
-const Dashboard = () => {
-  const { user, addNotification } = useSharedStore();
-
-  const handleAction = () => {
-    addNotification({
-      id: crypto.randomUUID(),
-      message: 'Data updated from Dashboard!',
-      type: 'success',
-    });
-  };
-
-  return <div>Welcome, {user?.name}!</div>;
-};
-
-// Profile Module (cùng state)
-import { useSharedStore } from '@shared/store';
-
-const Profile = () => {
-  const { user, setUser, theme, toggleTheme } = useSharedStore();
-
-  return (
-    <div data-theme={theme}>
-      <h1>{user?.name}'s Profile</h1>
-      <button onClick={toggleTheme}>Toggle Theme</button>
-    </div>
-  );
-};
 ```
 
 ---
 
-## 3. Monorepo Strategies
+### 4. API layer: REST, BFF, GraphQL
 
-### **3.1. Monorepo là gì?**
+#### REST direct
 
-> **Monorepo** là chiến lược quản lý **multiple projects/packages trong một repository duy nhất** với shared dependencies và tooling.
+Frontend gọi services/API gateway trực tiếp.
 
-### **3.2. Nx Monorepo Architecture**
+Phù hợp:
 
-```bash
-# Cấu trúc Nx Monorepo
-my-workspace/
-├── apps/                    # 🎯 Deployable applications
-│   ├── web/                 # Main SPA (React + Vite)
-│   ├── mobile/              # React Native app
-│   ├── admin/               # Admin dashboard
-│   └── landing/             # Marketing site (Next.js)
-│
-├── libs/                    # 📦 Shared libraries
-│   ├── shared/
-│   │   ├── ui/              # Shared UI components
-│   │   │   ├── Button/
-│   │   │   ├── Modal/
-│   │   │   └── Table/
-│   │   ├── utils/           # Utility functions
-│   │   ├── types/           # TypeScript types
-│   │   └── constants/       # Constants
-│   │
-│   ├── data-access/         # API clients & data fetching
-│   │   ├── auth/
-│   │   ├── users/
-│   │   └── products/
-│   │
-│   └── feature/             # Feature modules
-│       ├── auth/
-│       ├── dashboard/
-│       └── profile/
-│
-├── tools/                   # 🛠️ Custom tooling
-│   ├── scripts/
-│   └── generators/
-│
-├── nx.json                  # Nx configuration
-├── package.json
-└── tsconfig.base.json       # Shared TypeScript config
-```
+- API đã đúng shape frontend cần
+- app nhỏ/vừa
+- backend contracts ổn định
 
-```typescript
-// ===================================================
-// 📦 **NX PROJECT CONFIGURATION**
-// ===================================================
+Rủi ro:
 
-// apps/web/project.json
-{
-  "name": "web",
-  "targets": {
-    "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/apps/web"
-      }
-    },
-    "serve": {
-      "executor": "@nx/vite:dev-server"
-    },
-    "test": {
-      "executor": "@nx/jest:jest"
-    }
-  },
-  "implicitDependencies": [], // No implicit deps
-  "tags": ["type:app", "scope:web"]
-}
-
-// libs/shared/ui/project.json
-{
-  "name": "shared-ui",
-  "targets": {
-    "build": {
-      "executor": "@nx/vite:build",
-      "options": {
-        "outputPath": "dist/libs/shared/ui"
-      }
-    }
-  },
-  "tags": ["type:ui", "scope:shared"]
-}
-```
-
-```typescript
-// ===================================================
-// 🏗️ **DEPENDENCY GRAPH & BUILD OPTIMIZATION**
-// ===================================================
-
-// nx.json - Task Pipeline Configuration
-{
-  "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"], // Build dependencies first
-      "cache": true // Cache build results
-    },
-    "test": {
-      "dependsOn": ["build"],
-      "cache": true
-    }
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "test", "lint"],
-        "parallel": 3 // Run 3 tasks in parallel
-      }
-    }
-  }
-}
-
-// ===================================================
-// 🚀 **NX AFFECTED COMMANDS** (Only build what changed)
-// ===================================================
-
-// Build only affected apps/libs since last commit
-// $ nx affected:build --base=main --head=HEAD
-
-// Test only affected projects
-// $ nx affected:test --base=origin/main
-
-// Visualize dependency graph
-// $ nx graph
-```
-
-```typescript
-// ===================================================
-// 🔒 **ENFORCE MODULE BOUNDARIES** (Prevent circular deps)
-// ===================================================
-
-// .eslintrc.json
-{
-  "overrides": [
-    {
-      "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nx/typescript"],
-      "rules": {
-        "@nx/enforce-module-boundaries": [
-          "error",
-          {
-            "allow": [],
-            "depConstraints": [
-              {
-                "sourceTag": "type:app",
-                "onlyDependOnLibsWithTags": ["type:feature", "type:ui", "type:util"]
-              },
-              {
-                "sourceTag": "type:feature",
-                "onlyDependOnLibsWithTags": ["type:ui", "type:util", "type:data-access"]
-              },
-              {
-                "sourceTag": "type:ui",
-                "onlyDependOnLibsWithTags": ["type:util"]
-              },
-              {
-                "sourceTag": "scope:shared",
-                "notDependOnLibsWithTags": ["scope:admin", "scope:mobile"]
-              }
-            ]
-          }
-        ]
-      }
-    }
-  ]
-}
-```
-
-### **3.3. Turborepo vs Nx Comparison**
-
-```typescript
-// ===================================================
-// 🔥 **TURBOREPO** (Vercel's Monorepo Tool)
-// ===================================================
-
-// turbo.json
-{
-  "pipeline": {
-    "build": {
-      "dependsOn": ["^build"], // Build dependencies first
-      "outputs": ["dist/**", ".next/**"],
-      "cache": true
-    },
-    "test": {
-      "dependsOn": ["build"],
-      "outputs": ["coverage/**"],
-      "cache": true
-    },
-    "lint": {
-      "cache": true
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true // Keep running
-    }
-  },
-  "globalDependencies": ["**/.env.*local"]
-}
-
-// Run all builds with cache
-// $ turbo run build
-
-// Run only affected (Git-based)
-// $ turbo run build --filter=...main
-
-// ===================================================
-// 📊 **NX vs TURBOREPO COMPARISON**
-// ===================================================
-```
-
-| Feature | **Nx** ⭐⭐⭐⭐⭐ | **Turborepo** ⭐⭐⭐⭐ |
-|---------|----------------|----------------------|
-| **Setup Complexity** | High (opinionated) | Low (minimal config) |
-| **Affected Detection** | ✅ Graph-based (accurate) | ⚠️ Git-based (less accurate) |
-| **Code Generators** | ✅ Built-in (nx g) | ❌ None |
-| **Dependency Graph** | ✅ Interactive UI (`nx graph`) | ⚠️ CLI only |
-| **Module Boundaries** | ✅ ESLint rules | ❌ Manual |
-| **Cache** | ✅ Local + Remote (Nx Cloud) | ✅ Local + Remote (Vercel) |
-| **Performance** | Fast (Smart caching) | Very Fast (Rust-based) |
-| **Best For** | Large teams, complex deps | Next.js apps, simplicity |
+- over-fetch/under-fetch
+- nhiều round trips
+- frontend biết quá nhiều service internals
 
 ---
 
-## 4. API Design Patterns
+#### BFF - Backend for Frontend
 
-### **4.1. Backend for Frontend (BFF) Pattern**
+BFF là backend layer thiết kế riêng cho nhu cầu frontend.
 
-```typescript
-// ===================================================
-// 🌐 **BFF LAYER** (API Gateway cho Frontend)
-// ===================================================
+Phù hợp khi:
 
-// bff-server/routes/dashboard.ts
+- frontend cần aggregate nhiều services
+- cần transform data đúng view model
+- cần security/session logic gần frontend
+- mobile/web cần response shape khác nhau
+
+Example:
+
+```ts
 import express from 'express';
-import { authMiddleware } from '../middleware/auth';
 
 const router = express.Router();
 
-// ✅ BFF endpoint aggregates data from multiple microservices
-router.get('/dashboard', authMiddleware, async (req, res) => {
+router.get('/dashboard', async (req, res) => {
   try {
-    // Parallel requests to multiple services
-    const [userProfile, analytics, notifications, recentOrders] = await Promise.all([
-      fetch('http://user-service/api/profile').then(r => r.json()),
-      fetch('http://analytics-service/api/stats').then(r => r.json()),
-      fetch('http://notification-service/api/recent').then(r => r.json()),
-      fetch('http://order-service/api/orders?limit=5').then(r => r.json()),
+    const [user, orders, recommendations] = await Promise.all([
+      userService.getCurrentUser(req),
+      orderService.getRecentOrders(req),
+      recommendationService.getForUser(req),
     ]);
 
-    // ✅ Transform data to match frontend requirements
-    const dashboardData = {
+    res.json({
       user: {
-        name: userProfile.firstName + ' ' + userProfile.lastName,
-        avatar: userProfile.avatarUrl,
+        id: user.id,
+        name: user.name,
       },
-      stats: {
-        totalViews: analytics.pageViews,
-        conversionRate: analytics.conversions / analytics.visitors,
-      },
-      notifications: notifications.items.map(n => ({
-        id: n.notificationId,
-        message: n.content,
-        time: new Date(n.timestamp).toLocaleDateString(),
-      })),
-      recentOrders: recentOrders.data,
-    };
-
-    res.json(dashboardData);
+      recentOrders: orders.slice(0, 5),
+      recommendations,
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch dashboard data' });
+    res.status(500).json({
+      code: 'DASHBOARD_LOAD_FAILED',
+      message: 'Cannot load dashboard',
+    });
   }
 });
-
-export default router;
 ```
 
-### **4.2. GraphQL Schema Stitching**
+✅ BFF giảm complexity trong client.
+
+⚠️ BFF thêm một service cần deploy, monitor, scale và own contract.
+
+---
+
+#### GraphQL
+
+GraphQL cho client query đúng data cần.
+
+Phù hợp khi:
+
+- nhiều client có nhu cầu data khác nhau
+- domain graph phức tạp
+- muốn typed schema
+- muốn giảm over-fetching
+
+Rủi ro:
+
+- caching phức tạp hơn REST/CDN
+- N+1 query nếu resolver yếu
+- schema governance cần chặt
+- error partial data cần xử lý rõ
+
+Query example:
 
 ```graphql
-# ===================================================
-# 🧩 **GRAPHQL SCHEMA** (Type-safe API)
-# ===================================================
-
-# schema.graphql
-type User {
-  id: ID!
-  name: String!
-  email: String!
-  profile: UserProfile
-  orders: [Order!]!
-  analytics: UserAnalytics
-}
-
-type UserProfile {
-  avatar: String
-  bio: String
-  location: String
-}
-
-type Order {
-  id: ID!
-  total: Float!
-  status: OrderStatus!
-  items: [OrderItem!]!
-}
-
-type UserAnalytics {
-  totalSpent: Float!
-  orderCount: Int!
-  averageOrderValue: Float!
-}
-
-enum OrderStatus {
-  PENDING
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELLED
-}
-
-type Query {
-  # ✅ Single query fetches all dashboard data
-  dashboard: DashboardData!
-  user(id: ID!): User
-}
-
-type DashboardData {
-  user: User!
-  stats: UserAnalytics!
-  recentOrders: [Order!]!
-  notifications: [Notification!]!
+query Dashboard($userId: ID!) {
+  user(id: $userId) {
+    id
+    name
+    permissions
+  }
+  orders(userId: $userId, limit: 5) {
+    id
+    total
+    status
+  }
 }
 ```
 
-```typescript
-// ===================================================
-// 🚀 **APOLLO CLIENT SETUP** (Frontend)
-// ===================================================
+React usage:
 
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
-
-const httpLink = createHttpLink({
-  uri: 'https://api.example.com/graphql',
-});
-
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('auth_token');
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
-    },
-  };
-});
-
-export const apolloClient = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          dashboard: {
-            // ✅ Cache dashboard data for 5 minutes
-            merge(existing, incoming) {
-              return incoming;
-            },
-          },
-        },
-      },
-    },
-  }),
-});
-
-// ===================================================
-// 📡 **FETCH DASHBOARD DATA** (React Component)
-// ===================================================
-
-import { gql, useQuery } from '@apollo/client';
-
-const GET_DASHBOARD = gql`
-  query GetDashboard {
-    dashboard {
-      user {
-        id
-        name
-        email
-        profile {
-          avatar
-        }
-      }
-      stats {
-        totalSpent
-        orderCount
-        averageOrderValue
-      }
-      recentOrders {
-        id
-        total
-        status
-      }
-      notifications {
-        id
-        message
-        createdAt
-      }
-    }
-  }
-`;
-
-const Dashboard = () => {
-  const { loading, error, data } = useQuery(GET_DASHBOARD, {
-    pollInterval: 30000, // Refetch every 30s
+```tsx
+function Dashboard({ userId }: { userId: string }) {
+  const { data, loading, error } = useQuery(GET_DASHBOARD, {
+    variables: { userId },
   });
 
-  if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage error={error} />;
+  if (loading) return <Skeleton />;
+  if (error) return <ErrorState error={error} />;
+
+  return <DashboardView data={data} />;
+}
+```
+
+---
+
+### 5. State management architecture
+
+State nên chia theo ownership:
+
+- **Server State**
+  - API data, cache, loading/error, stale/refetch.
+  - Tool: React Query, SWR, Apollo, RTK Query.
+
+- **Global Client State**
+  - Auth snapshot, theme, global UI, selected organization.
+  - Tool: Zustand, Redux Toolkit, Jotai.
+
+- **Local State**
+  - Form input, modal local, tab local.
+  - Tool: `useState`, `useReducer`.
+
+- **URL State**
+  - filter, sort, pagination, selected tab.
+  - Tool: router/search params.
+
+Layered example:
+
+```tsx
+function OrdersPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Number(searchParams.get('page') ?? 1);
+
+  const selectedOrgId = useAppStore((state) => state.selectedOrgId);
+
+  const ordersQuery = useQuery({
+    queryKey: ['orders', selectedOrgId, page],
+    queryFn: () => fetchOrders({ orgId: selectedOrgId, page }),
+    staleTime: 60_000,
+  });
+
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+
+  if (ordersQuery.isLoading) return <OrdersSkeleton />;
+  if (ordersQuery.isError) return <ErrorState />;
 
   return (
-    <div>
-      <h1>Welcome, {data.dashboard.user.name}!</h1>
-      <Stats stats={data.dashboard.stats} />
-      <Orders orders={data.dashboard.recentOrders} />
-      <Notifications items={data.dashboard.notifications} />
-    </div>
+    <OrdersTable
+      orders={ordersQuery.data.items}
+      selectedOrderId={selectedOrderId}
+      onSelectOrder={setSelectedOrderId}
+      onPageChange={(nextPage) => setSearchParams({ page: String(nextPage) })}
+    />
   );
-};
-```
-
----
-
-## 5. State Management Architecture
-
-### **5.1. State Management Decision Tree**
-
-```
-                     Cần share state?
-                            │
-            ┌───────────────┴────────────────┐
-            │                                │
-           NO                               YES
-            │                                │
-            ▼                                ▼
-     ┌──────────────┐              State scope bao nhiêu?
-     │ Local State  │                       │
-     │ (useState)   │       ┌───────────────┼───────────────┐
-     └──────────────┘       │               │               │
-                      Component Tree    Few Components  Global App
-                            │               │               │
-                            ▼               ▼               ▼
-                    ┌──────────────┐  ┌──────────┐  ┌──────────────┐
-                    │Context API   │  │ Zustand  │  │ Redux Toolkit│
-                    │(Light weight)│  │ (Medium) │  │ (Enterprise) │
-                    └──────────────┘  └──────────┘  └──────────────┘
-                                                            │
-                                            Need time-travel debugging?
-                                                            │
-                                                    ┌───────┴────────┐
-                                                   YES              NO
-                                                    │                │
-                                                    ▼                ▼
-                                            Redux DevTools      RTK Query
-                                                                (+ caching)
-```
-
-### **5.2. Layered State Architecture**
-
-```typescript
-// ===================================================
-// 🏗️ **3-LAYER STATE ARCHITECTURE**
-// ===================================================
-
-// Layer 1: Server State (React Query)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-
-const useUsers = () => {
-  return useQuery({
-    queryKey: ['users'],
-    queryFn: async () => {
-      const res = await fetch('/api/users');
-      return res.json();
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
-const useUpdateUser = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: async (user: User) => {
-      const res = await fetch(`/api/users/${user.id}`, {
-        method: 'PUT',
-        body: JSON.stringify(user),
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      // ✅ Invalidate & refetch
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-    },
-  });
-};
-
-// Layer 2: Global UI State (Zustand)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-import { create } from 'zustand';
-
-interface UIState {
-  sidebarOpen: boolean;
-  theme: 'light' | 'dark';
-  notifications: Notification[];
-  
-  toggleSidebar: () => void;
-  setTheme: (theme: 'light' | 'dark') => void;
-  addNotification: (notification: Notification) => void;
 }
-
-export const useUIStore = create<UIState>((set) => ({
-  sidebarOpen: true,
-  theme: 'light',
-  notifications: [],
-  
-  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-  setTheme: (theme) => set({ theme }),
-  addNotification: (notification) => set((state) => ({
-    notifications: [...state.notifications, notification],
-  })),
-}));
-
-// Layer 3: Local Component State (useState)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const UserForm = () => {
-  const [formData, setFormData] = useState({ name: '', email: '' });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  
-  const { mutate: updateUser } = useUpdateUser();
-  
-  const handleSubmit = () => {
-    if (validate(formData)) {
-      updateUser(formData);
-    }
-  };
-  
-  return <form onSubmit={handleSubmit}>{/* ... */}</form>;
-};
 ```
+
+✅ Key: không nhét mọi thứ vào Redux/Zustand.
 
 ---
 
-## 6. Error Boundaries & Resilience
+### 6. Rendering architecture: CSR, SSR, SSG, ISR, Streaming
 
-### **6.1. Error Boundary Implementation**
+Chọn rendering theo page type:
 
-```typescript
-// ===================================================
-// 🛡️ **ERROR BOUNDARY COMPONENT**
-// ===================================================
+- **CSR**
+  - Tốt cho dashboard/internal app.
+  - SEO không phải trọng tâm.
+  - Deploy đơn giản.
 
-import { Component, ReactNode, ErrorInfo } from 'react';
-import * as Sentry from '@sentry/react';
+- **SSR**
+  - Tốt cho SEO/dynamic content.
+  - TTFB có thể tăng nếu server/data chậm.
+  - Cần cache và error handling tốt.
 
-interface Props {
+- **SSG**
+  - Tốt cho static marketing/docs/blog.
+  - Performance tốt, CDN cache dễ.
+  - Không phù hợp data thay đổi từng user.
+
+- **ISR**
+  - Static + revalidate theo thời gian.
+  - Tốt cho e-commerce/catalog/news.
+
+- **Streaming SSR**
+  - Gửi HTML từng phần, cải thiện perceived performance.
+  - Cần thiết kế Suspense boundary tốt.
+
+- **Islands Architecture**
+  - Static HTML là chính, chỉ hydrate component cần tương tác.
+  - Tốt cho content-heavy site.
+
+---
+
+### 7. Performance architecture
+
+Các lớp performance:
+
+- **Network**
+  - CDN, compression, HTTP/2/3, preconnect, preload/prefetch.
+
+- **Bundle**
+  - code splitting, tree-shaking, vendor splitting, bundle budget.
+
+- **Rendering**
+  - memoization đúng chỗ, virtualization, avoid layout shift, avoid long tasks.
+
+- **Data**
+  - caching, pagination, infinite query, request dedupe, optimistic update.
+
+- **Media**
+  - responsive images, lazy load, AVIF/WebP, image CDN.
+
+Performance checklist:
+
+- LCP target rõ
+- CLS tránh layout shift
+- INP giảm main-thread blocking
+- bundle analyzer trong CI
+- Core Web Vitals RUM, không chỉ Lighthouse local
+
+---
+
+### 8. CDN & Edge
+
+CDN giúp cache static assets gần user.
+
+Static asset strategy:
+
+```txt
+index.html                 → no-cache
+assets/main.[hash].js      → public, max-age=31536000, immutable
+assets/vendor.[hash].js    → public, max-age=31536000, immutable
+images/products/[hash].webp → public, max-age=31536000, immutable
+```
+
+Edge functions phù hợp cho:
+
+- geo routing
+- A/B testing
+- redirects
+- auth/session lightweight checks
+- personalization nhẹ
+- cache key normalization
+
+Không nên dùng edge cho:
+
+- business transaction phức tạp
+- long-running job
+- logic cần database connection nặng
+- secrets/governance chưa rõ
+
+---
+
+### 9. Resilience: Error Boundary, retry, circuit breaker
+
+Error Boundary:
+
+```tsx
+import { Component, ErrorInfo, ReactNode } from 'react';
+
+type Props = {
   children: ReactNode;
   fallback?: ReactNode;
-  onError?: (error: Error, errorInfo: ErrorInfo) => void;
-}
+};
 
-interface State {
+type State = {
   hasError: boolean;
   error: Error | null;
-}
+};
 
 export class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
+  state: State = {
+    hasError: false,
+    error: null,
+  };
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // ✅ Log to error tracking service
     Sentry.captureException(error, {
-      contexts: {
-        react: {
-          componentStack: errorInfo.componentStack,
-        },
+      extra: {
+        componentStack: errorInfo.componentStack,
       },
     });
-
-    // ✅ Custom error handler
-    this.props.onError?.(error, errorInfo);
-
-    // ✅ Log to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Error Boundary caught:', error, errorInfo);
-    }
   }
-
-  handleReset = () => {
-    this.setState({ hasError: false, error: null });
-  };
 
   render() {
     if (this.state.hasError) {
-      // ✅ Custom fallback UI
-      if (this.props.fallback) {
-        return this.props.fallback;
-      }
-
-      // ✅ Default error UI
-      return (
-        <div className="error-boundary">
-          <h1>🚨 Something went wrong</h1>
-          <details>
-            <summary>Error details</summary>
-            <pre>{this.state.error?.message}</pre>
-            <pre>{this.state.error?.stack}</pre>
-          </details>
-          <button onClick={this.handleReset}>Try again</button>
-          <button onClick={() => window.location.reload()}>Reload page</button>
-        </div>
-      );
+      return this.props.fallback ?? <div>Something went wrong.</div>;
     }
 
     return this.props.children;
   }
 }
-
-// ===================================================
-// 🎯 **USAGE: Granular Error Boundaries**
-// ===================================================
-
-const App = () => {
-  return (
-    <ErrorBoundary fallback={<ErrorPage />}>
-      <Header />
-      
-      {/* ✅ Separate error boundary cho từng section */}
-      <ErrorBoundary fallback={<SidebarError />}>
-        <Sidebar />
-      </ErrorBoundary>
-      
-      <main>
-        <ErrorBoundary fallback={<DashboardError />}>
-          <Dashboard />
-        </ErrorBoundary>
-      </main>
-      
-      <Footer />
-    </ErrorBoundary>
-  );
-};
 ```
 
-### **6.2. Retry & Circuit Breaker Pattern**
+Retry với backoff:
 
-```typescript
-// ===================================================
-// 🔁 **RETRY MECHANISM với Exponential Backoff**
-// ===================================================
-
-interface RetryOptions {
-  maxRetries: number;
-  initialDelay: number;
-  maxDelay: number;
-  factor: number;
-}
-
-async function fetchWithRetry<T>(
+```ts
+async function retry<T>(
   fn: () => Promise<T>,
-  options: RetryOptions = {
-    maxRetries: 3,
-    initialDelay: 1000,
-    maxDelay: 10000,
-    factor: 2,
-  }
+  maxAttempts = 3,
+  delayMs = 300
 ): Promise<T> {
-  let lastError: Error;
-  
-  for (let attempt = 0; attempt <= options.maxRetries; attempt++) {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     try {
       return await fn();
     } catch (error) {
-      lastError = error as Error;
-      
-      if (attempt === options.maxRetries) {
-        throw lastError;
-      }
-      
-      // ✅ Exponential backoff: 1s, 2s, 4s, 8s...
-      const delay = Math.min(
-        options.initialDelay * Math.pow(options.factor, attempt),
-        options.maxDelay
+      lastError = error;
+
+      if (attempt === maxAttempts) break;
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, delayMs * 2 ** (attempt - 1))
       );
-      
-      console.log(`⏳ Retry attempt ${attempt + 1} after ${delay}ms`);
-      await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
-  
-  throw lastError!;
-}
 
-// ===================================================
-// ⚡ **CIRCUIT BREAKER PATTERN**
-// ===================================================
+  throw lastError;
+}
+```
+
+Circuit breaker dùng khi service liên tục fail:
+
+```ts
+type CircuitState = 'CLOSED' | 'OPEN' | 'HALF_OPEN';
 
 class CircuitBreaker {
-  private failureCount = 0;
-  private lastFailureTime?: number;
-  private state: 'CLOSED' | 'OPEN' | 'HALF_OPEN' = 'CLOSED';
-  
+  private state: CircuitState = 'CLOSED';
+  private failures = 0;
+  private lastFailureAt = 0;
+
   constructor(
-    private threshold: number = 5,
-    private timeout: number = 60000 // 1 minute
+    private readonly failureThreshold = 3,
+    private readonly resetTimeoutMs = 10_000
   ) {}
 
   async execute<T>(fn: () => Promise<T>): Promise<T> {
-    // ✅ OPEN state: Reject immediately
     if (this.state === 'OPEN') {
-      if (Date.now() - this.lastFailureTime! < this.timeout) {
-        throw new Error('Circuit breaker is OPEN');
+      const canRetry = Date.now() - this.lastFailureAt > this.resetTimeoutMs;
+
+      if (!canRetry) {
+        throw new Error('Circuit is open');
       }
-      // Try to recover
+
       this.state = 'HALF_OPEN';
     }
 
     try {
       const result = await fn();
-      this.onSuccess();
+      this.state = 'CLOSED';
+      this.failures = 0;
       return result;
     } catch (error) {
-      this.onFailure();
+      this.failures += 1;
+      this.lastFailureAt = Date.now();
+
+      if (this.failures >= this.failureThreshold) {
+        this.state = 'OPEN';
+      }
+
       throw error;
     }
   }
-
-  private onSuccess() {
-    this.failureCount = 0;
-    this.state = 'CLOSED';
-  }
-
-  private onFailure() {
-    this.failureCount++;
-    this.lastFailureTime = Date.now();
-    
-    if (this.failureCount >= this.threshold) {
-      this.state = 'OPEN';
-      console.warn('🔴 Circuit breaker opened!');
-    }
-  }
-
-  getState() {
-    return this.state;
-  }
-}
-
-// ===================================================
-// 🎯 **USAGE: API Client with Retry & Circuit Breaker**
-// ===================================================
-
-const circuitBreaker = new CircuitBreaker(5, 60000);
-
-export async function apiCall<T>(url: string): Promise<T> {
-  return circuitBreaker.execute(async () => {
-    return fetchWithRetry(async () => {
-      const response = await fetch(url);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      
-      return response.json();
-    });
-  });
 }
 ```
 
 ---
 
-## 7. Feature Flags System
+### 10. Feature flags
 
-### **7.1. Feature Flags Architecture**
+Feature flags giúp rollout an toàn:
 
-```typescript
-// ===================================================
-// 🚩 **FEATURE FLAGS PROVIDER**
-// ===================================================
+- gradual rollout
+- A/B testing
+- canary release
+- kill switch
+- permission-based feature
+- environment-based config
+- remote config với LaunchDarkly, ConfigCat, Unleash hoặc internal flag service
 
-import { createContext, useContext, ReactNode } from 'react';
+Simple provider:
 
-interface FeatureFlags {
-  newDashboard: boolean;
-  darkMode: boolean;
-  experimentalCharts: boolean;
-  aiAssistant: boolean;
-}
+```tsx
+import { createContext, ReactNode, useContext } from 'react';
 
-interface User {
-  id: string;
-  email: string;
-  role: 'admin' | 'user';
-  betaTester: boolean;
-}
-
-const FeatureFlagsContext = createContext<FeatureFlags>({} as FeatureFlags);
-
-export const FeatureFlagsProvider = ({ children }: { children: ReactNode }) => {
-  const user = useCurrentUser();
-  
-  // ✅ Evaluate flags based on user context
-  const flags: FeatureFlags = {
-    // Enable for all users
-    darkMode: true,
-    
-    // Enable only for admins
-    experimentalCharts: user?.role === 'admin',
-    
-    // Enable for beta testers
-    newDashboard: user?.betaTester || false,
-    
-    // A/B test: 50% of users
-    aiAssistant: hashUserId(user?.id) % 100 < 50,
-  };
-  
-  return (
-    <FeatureFlagsContext.Provider value={flags}>
-      {children}
-    </FeatureFlagsContext.Provider>
-  );
+type FeatureFlags = {
+  newCheckout: boolean;
+  realtimeEditor: boolean;
 };
 
-// ✅ Hook to access feature flags
-export const useFeatureFlags = () => useContext(FeatureFlagsContext);
+const FeatureFlagContext = createContext<FeatureFlags>({
+  newCheckout: false,
+  realtimeEditor: false,
+});
 
-// ✅ Hook to check specific flag
-export const useFeatureFlag = (flag: keyof FeatureFlags) => {
-  const flags = useFeatureFlags();
-  return flags[flag];
-};
-
-// ===================================================
-// 🎯 **USAGE: Conditional Rendering**
-// ===================================================
-
-const Dashboard = () => {
-  const { newDashboard, experimentalCharts } = useFeatureFlags();
-  
-  if (newDashboard) {
-    return <NewDashboardV2 />;
-  }
-  
-  return (
-    <div>
-      <OldDashboard />
-      {experimentalCharts && <ExperimentalCharts />}
-    </div>
-  );
-};
-
-// ===================================================
-// 🔧 **FEATURE FLAG COMPONENT**
-// ===================================================
-
-interface FeatureFlagProps {
-  flag: keyof FeatureFlags;
+export function FeatureFlagsProvider({
+  flags,
+  children,
+}: {
+  flags: FeatureFlags;
   children: ReactNode;
-  fallback?: ReactNode;
+}) {
+  return (
+    <FeatureFlagContext.Provider value={flags}>
+      {children}
+    </FeatureFlagContext.Provider>
+  );
 }
 
-export const FeatureFlag = ({ flag, children, fallback }: FeatureFlagProps) => {
-  const isEnabled = useFeatureFlag(flag);
-  
-  if (isEnabled) {
-    return <>{children}</>;
-  }
-  
-  return <>{fallback}</> || null;
-};
-
-// Usage
-<FeatureFlag flag="aiAssistant" fallback={<LegacyHelper />}>
-  <AIAssistant />
-</FeatureFlag>
+export function useFeatureFlag(name: keyof FeatureFlags) {
+  return useContext(FeatureFlagContext)[name];
+}
 ```
 
-### **7.2. Remote Config với LaunchDarkly**
+Usage:
 
-```typescript
-// ===================================================
-// ☁️ **LAUNCHDARKLY INTEGRATION**
-// ===================================================
+```tsx
+function CheckoutEntry() {
+  const enabled = useFeatureFlag('newCheckout');
 
-import { LDProvider, useLDClient, useFlags } from 'launchdarkly-react-client-sdk';
-
-const LAUNCHDARKLY_CLIENT_ID = 'your-client-id';
-
-export const App = () => {
-  return (
-    <LDProvider
-      clientSideID={LAUNCHDARKLY_CLIENT_ID}
-      user={{
-        key: currentUser.id,
-        email: currentUser.email,
-        custom: {
-          role: currentUser.role,
-          plan: currentUser.plan,
-        },
-      }}
-    >
-      <AppContent />
-    </LDProvider>
-  );
-};
-
-const AppContent = () => {
-  const flags = useFlags();
-  
-  return (
-    <div>
-      {flags.showNewFeature && <NewFeature />}
-      {flags.enablePaywall && <PaywallBanner />}
-    </div>
-  );
-};
-
-// ===================================================
-// 🎯 **DYNAMIC FLAG UPDATES** (Real-time)
-// ===================================================
-
-const FeatureComponent = () => {
-  const ldClient = useLDClient();
-  
-  useEffect(() => {
-    // ✅ Listen to flag changes in real-time
-    const listener = () => {
-      console.log('Feature flag updated!');
-      // Re-render component
-    };
-    
-    ldClient?.on('change:showNewFeature', listener);
-    
-    return () => {
-      ldClient?.off('change:showNewFeature', listener);
-    };
-  }, [ldClient]);
-  
-  return <div>...</div>;
-};
+  return enabled ? <NewCheckout /> : <LegacyCheckout />;
+}
 ```
+
+⚠️ Feature flag debt:
+
+- flag không cleanup
+- logic phân nhánh quá nhiều
+- test matrix phình
+- flag config không audit được
+
+Remote config production notes:
+
+- flag cần owner và expiry date
+- flag changes cần audit log
+- fallback default phải an toàn khi service lỗi
+- không đưa secret/business rule nhạy cảm vào client flag
+- cache flag ngắn hạn để tránh blocking app startup
+- critical kill switch nên có đường rollback rõ
 
 ---
 
-## 8. CDN & Edge Computing
+### 11. Observability
 
-### **8.1. CloudFlare Workers (Edge Functions)**
+Frontend observability gồm:
 
-```typescript
-// ===================================================
-// ⚡ **CLOUDFLARE WORKER** (Edge Compute)
-// ===================================================
+- **Error tracking**
+  - Sentry, Bugsnag.
+  - error rate, stack trace, release, user/session context.
 
-// worker.ts (Runs on CloudFlare edge)
-addEventListener('fetch', (event) => {
-  event.respondWith(handleRequest(event.request));
-});
+- **RUM - Real User Monitoring**
+  - Core Web Vitals, page load, route transition, INP.
 
-async function handleRequest(request: Request): Promise<Response> {
-  const url = new URL(request.url);
-  
-  // ✅ A/B Testing at Edge
-  if (url.pathname === '/dashboard') {
-    const variant = Math.random() < 0.5 ? 'A' : 'B';
-    
-    // Rewrite URL based on variant
-    const targetUrl = variant === 'A'
-      ? 'https://cdn.example.com/dashboard-v1.html'
-      : 'https://cdn.example.com/dashboard-v2.html';
-    
-    const response = await fetch(targetUrl);
-    
-    // Add custom headers
-    const newHeaders = new Headers(response.headers);
-    newHeaders.set('X-AB-Variant', variant);
-    
-    return new Response(response.body, {
+- **Logs**
+  - structured client logs cho critical flows.
+
+- **Tracing**
+  - frontend span nối với backend trace qua request id/trace id.
+
+- **Synthetic monitoring**
+  - scripted checks từ nhiều region.
+
+Example:
+
+```ts
+performance.mark('checkout:start');
+
+await submitOrder(order);
+
+performance.mark('checkout:submitted');
+performance.measure('checkout-submit', 'checkout:start', 'checkout:submitted');
+```
+
+Alert nên theo:
+
+- error rate tăng
+- API latency tăng
+- checkout conversion drop
+- LCP/INP vượt threshold
+- remote microfrontend load fail
+
+---
+
+### 12. Security architecture
+
+Frontend security cần thiết kế từ đầu:
+
+- XSS prevention: escape output, sanitize HTML, CSP.
+- Auth token: tránh lưu token nhạy cảm bừa bãi trong localStorage.
+- CSRF: nếu dùng cookie auth, cần SameSite/CSRF protection.
+- Env vars: chỉ expose biến public đúng prefix.
+- Dependency: lockfile, audit, SCA.
+- Source maps: private upload, không public nếu source nhạy cảm.
+- Third-party script: SRI, CSP allowlist.
+- RBAC: frontend chỉ hide UI; backend vẫn phải enforce permission.
+
+> ⚠️ Frontend authorization chỉ là UX guard, không phải security boundary cuối.
+
+---
+
+### 13. Production-ready project checklist
+
+Một frontend project từ zero đến production-ready nên có:
+
+- Foundation:
+  - TypeScript strict
+  - package manager ổn định
+  - env config rõ local/staging/prod
+  - path alias hợp lý
+
+- Architecture:
+  - feature-based structure
+  - shared UI/utils/API/types
+  - import boundary
+  - ADR cho quyết định lớn
+
+- Code quality:
+  - ESLint, Prettier
+  - Husky/lint-staged nếu phù hợp
+  - schema validation bằng Zod/Yup
+
+- Testing:
+  - unit tests cho logic
+  - component tests cho UI quan trọng
+  - E2E tests cho critical flows
+  - contract tests cho API/microfrontend
+
+- Performance:
+  - lazy loading/code splitting
+  - image optimization
+  - CDN caching
+  - performance budget
+  - Web Vitals RUM
+
+- CI/CD:
+  - lint, type-check, test, build
+  - preview deploy
+  - security/dependency check
+  - rollback strategy
+
+- Monitoring:
+  - Sentry/Datadog/New Relic
+  - release tracking
+  - source map upload
+  - dashboard/alert
+
+---
+
+### 14. Real-world system design questions
+
+#### Design Shopee-like homepage - 10M DAU
+
+Requirements thường gặp:
+
+- traffic lớn, spike theo campaign
+- SEO tốt cho landing/category
+- personalization theo user/region
+- A/B testing banner/layout
+- image-heavy, cần LCP tốt
+- 99.9% uptime hoặc cao hơn
+
+Architecture gợi ý:
+
+```txt
+User
+→ CDN / Edge cache
+→ Next.js / SSR + ISR for public content
+→ BFF / GraphQL gateway
+→ Product / Promotion / Recommendation services
+→ Observability: RUM, Sentry, tracing, business metrics
+```
+
+Key decisions:
+
+- **Rendering**
+  - SSG/ISR cho category/static campaign.
+  - SSR/edge personalization cho phần dynamic nhẹ.
+  - CSR cho widget cá nhân hóa không critical SEO.
+
+- **Performance**
+  - image CDN, responsive images, AVIF/WebP
+  - priority image cho hero
+  - code splitting theo widget
+  - skeleton cho recommendation/promotion
+  - cache static assets dài hạn bằng content hash
+
+- **Reliability**
+  - fallback banner/default layout khi recommendation fail
+  - circuit breaker cho service yếu
+  - feature flags để tắt widget lỗi
+
+- **Observability**
+  - Core Web Vitals theo region/device
+  - click/impression tracking
+  - API error rate theo widget
+
+---
+
+#### Design Google Docs-like realtime editor
+
+Requirements thường gặp:
+
+- nhiều user edit cùng document
+- low latency
+- offline/reconnect
+- conflict resolution
+- autosave
+- presence/cursor
+- permission model rõ
+
+Architecture gợi ý:
+
+```txt
+React Editor
+→ Local document state
+→ WebSocket/WebRTC channel
+→ Collaboration service
+→ CRDT/OT engine
+→ Persistence + version history
+→ Presence service
+```
+
+Key decisions:
+
+- **Realtime protocol**
+  - WebSocket phổ biến cho client-server realtime.
+  - WebRTC có thể dùng cho peer-to-peer nhưng phức tạp hơn.
+
+- **Conflict resolution**
+  - OT hoặc CRDT để merge concurrent edits.
+  - Không tự merge string thủ công trong production editor.
+
+- **Offline**
+  - local queue operations
+  - replay khi reconnect
+  - version check để tránh overwrite
+
+- **UX**
+  - show saving/saved/offline state
+  - presence cursor
+  - conflict/fallback messaging
+  - keyboard accessibility trong editor
+
+- **Observability**
+  - reconnect rate
+  - operation latency
+  - dropped messages
+  - save failure rate
+
+---
+
+## 🧪 Practical TypeScript/JavaScript Examples
+
+### Example 1: API client boundary
+
+```ts
+type ApiError = {
+  code: string;
+  message: string;
+  status: number;
+};
+
+async function request<T>(url: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(url, {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      ...init?.headers,
+    },
+  });
+
+  if (!response.ok) {
+    const error = (await response.json().catch(() => null)) as Partial<ApiError> | null;
+
+    throw {
+      code: error?.code ?? 'UNKNOWN_ERROR',
+      message: error?.message ?? 'Request failed',
       status: response.status,
-      headers: newHeaders,
-    });
+    } satisfies ApiError;
   }
-  
-  // ✅ Geo-based Routing
-  const country = request.headers.get('CF-IPCountry');
-  
-  if (country === 'CN') {
-    return fetch('https://cdn-china.example.com' + url.pathname);
-  }
-  
-  // ✅ Default: Origin server
-  return fetch(request);
+
+  return response.json() as Promise<T>;
 }
 ```
 
-### **8.2. Static Asset Optimization**
-
-```typescript
-// ===================================================
-// 📦 **VITE CONFIG** (Build Optimization)
-// ===================================================
-
-// vite.config.ts
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import { visualizer } from 'rollup-plugin-visualizer';
-
-export default defineConfig({
-  plugins: [
-    react(),
-    visualizer({ open: true }), // Bundle analyzer
-  ],
-  
-  build: {
-    // ✅ Code splitting
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Vendor chunks
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
-          'chart-vendor': ['recharts', 'd3'],
-          
-          // Feature-based chunks
-          dashboard: ['./src/features/dashboard'],
-          analytics: ['./src/features/analytics'],
-        },
-      },
-    },
-    
-    // ✅ Minification
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.log in production
-        drop_debugger: true,
-      },
-    },
-    
-    // ✅ Asset optimization
-    assetsInlineLimit: 4096, // Inline assets < 4KB as base64
-    chunkSizeWarningLimit: 500, // Warn if chunk > 500KB
-  },
-  
-  // ✅ CDN base URL
-  base: process.env.NODE_ENV === 'production'
-    ? 'https://cdn.example.com/'
-    : '/',
-});
-```
-
-```html
-<!-- ===================================================
-     🚀 **HTML WITH PRELOAD & PREFETCH**
-     =================================================== -->
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- ✅ Preconnect to CDN -->
-  <link rel="preconnect" href="https://cdn.example.com" crossorigin>
-  <link rel="dns-prefetch" href="https://api.example.com">
-  
-  <!-- ✅ Preload critical assets -->
-  <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/critical.css" as="style">
-  
-  <!-- ✅ Prefetch next page -->
-  <link rel="prefetch" href="/dashboard.js">
-  
-  <!-- ✅ Service Worker registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
-    }
-  </script>
-  
-  <title>My App</title>
-</head>
-<body>
-  <div id="root"></div>
-  
-  <!-- ✅ Defer non-critical scripts -->
-  <script src="/analytics.js" defer></script>
-  <script src="/main.js" type="module"></script>
-</body>
-</html>
-```
+✅ API boundary giúp normalize error, timeout, retry, auth, tracing.
 
 ---
 
-## 9. Real-World System Design Questions
+### Example 2: Route-level architecture
 
-### **🎯 Question 1: Design Shopee Homepage (10M DAU)**
+```tsx
+const ProductPage = lazy(() => import('./features/product/ProductPage'));
+const CheckoutPage = lazy(() => import('./features/checkout/CheckoutPage'));
+const AccountPage = lazy(() => import('./features/account/AccountPage'));
 
-```
-📋 Requirements:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- 10 million daily active users
-- Flash sales with 100K concurrent users
-- Real-time inventory updates
-- Personalized product recommendations
-- 99.9% uptime SLA
-- < 2s page load time (LCP)
-
-🏗️ Architecture Design:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-┌─────────────────────────────────────────────────────────┐
-│                    USER (Browser)                        │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│              CloudFlare CDN (Edge Caching)               │
-│  - Static assets (JS, CSS, Images)                      │
-│  - A/B testing at edge                                  │
-│  - DDoS protection                                      │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│            Load Balancer (Nginx/HAProxy)                │
-└────────────────────┬────────────────────────────────────┘
-                     │
-         ┌───────────┼───────────┐
-         │           │           │
-         ▼           ▼           ▼
-    ┌────────┐  ┌────────┐  ┌────────┐
-    │ Next.js│  │ Next.js│  │ Next.js│
-    │ Server │  │ Server │  │ Server │
-    │  (SSR) │  │  (SSR) │  │  (SSR) │
-    └────────┘  └────────┘  └────────┘
-         │           │           │
-         └───────────┼───────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│                  BFF Layer (GraphQL)                     │
-│  - Data aggregation                                     │
-│  - Authentication                                       │
-│  - Rate limiting                                        │
-└────────────────────┬────────────────────────────────────┘
-                     │
-         ┌───────────┼───────────────────┐
-         │           │                   │
-         ▼           ▼                   ▼
-    ┌────────┐  ┌──────────┐      ┌──────────┐
-    │Product │  │Inventory │      │  User    │
-    │Service │  │ Service  │      │ Service  │
-    │(REST)  │  │(gRPC)    │      │ (REST)   │
-    └────────┘  └──────────┘      └──────────┘
-         │           │                   │
-         ▼           ▼                   ▼
-    ┌────────┐  ┌──────────┐      ┌──────────┐
-    │MongoDB │  │ Redis    │      │PostgreSQL│
-    │        │  │(Inventory│      │          │
-    │        │  │ Cache)   │      │          │
-    └────────┘  └──────────┘      └──────────┘
-
-🔥 Flash Sale Architecture:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    Browser ──▶ WebSocket Server ──▶ Redis Pub/Sub
-                     │
-                     ▼
-              Queue (Kafka/RabbitMQ)
-                     │
-                     ▼
-              Order Processing Workers
-                     │
-                     ▼
-              Database (Write)
-
-📈 Performance Optimizations:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. ✅ SSR with ISR (Next.js)
-   - Static product pages regenerate every 60s
-   - Homepage ISR every 30s
-
-2. ✅ Redis Caching
-   - Product catalog: 5 min TTL
-   - Flash sale inventory: Real-time
-
-3. ✅ Image Optimization
-   - WebP format
-   - Lazy loading below fold
-   - Responsive images (srcset)
-
-4. ✅ Code Splitting
-   - Route-based splitting
-   - Component lazy loading
-
-5. ✅ API Rate Limiting
-   - 100 req/min per user
-   - Burst protection
-
-6. ✅ Database Optimization
-   - Read replicas (3x)
-   - Connection pooling
-   - Indexed queries
-```
-
----
-
-### **🎯 Question 2: Design Google Docs Clone (Real-time Collaboration)**
-
-```typescript
-// ===================================================
-// 📝 **COLLABORATIVE EDITOR ARCHITECTURE**
-// ===================================================
-
-// Real-time Collaboration với Operational Transformation (OT)
-
-import { WebSocket } from 'ws';
-import { v4 as uuidv4 } from 'uuid';
-
-interface Operation {
-  type: 'insert' | 'delete';
-  position: number;
-  content?: string;
-  userId: string;
-  timestamp: number;
-}
-
-class CollaborativeDocument {
-  private content: string = '';
-  private operations: Operation[] = [];
-  private clients = new Map<string, WebSocket>();
-
-  // ✅ Apply operation với Operational Transformation
-  applyOperation(op: Operation): void {
-    switch (op.type) {
-      case 'insert':
-        this.content =
-          this.content.slice(0, op.position) +
-          op.content +
-          this.content.slice(op.position);
-        break;
-      case 'delete':
-        this.content =
-          this.content.slice(0, op.position) +
-          this.content.slice(op.position + 1);
-        break;
-    }
-    
-    this.operations.push(op);
-    
-    // ✅ Broadcast to all clients except sender
-    this.broadcastOperation(op);
-  }
-
-  // ✅ Broadcast to all connected clients
-  private broadcastOperation(op: Operation): void {
-    const message = JSON.stringify({ type: 'operation', data: op });
-    
-    this.clients.forEach((client, clientId) => {
-      if (clientId !== op.userId && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
-    });
-  }
-
-  // ✅ Handle new client connection
-  addClient(userId: string, ws: WebSocket): void {
-    this.clients.set(userId, ws);
-    
-    // Send current document state
-    ws.send(JSON.stringify({
-      type: 'init',
-      data: {
-        content: this.content,
-        operations: this.operations,
-      },
-    }));
-  }
-
-  removeClient(userId: string): void {
-    this.clients.delete(userId);
-  }
-}
-
-// ===================================================
-// 🚀 **FRONTEND: React Editor Component**
-// ===================================================
-
-import { useEffect, useRef, useState } from 'react';
-
-const CollaborativeEditor = ({ documentId, userId }) => {
-  const [content, setContent] = useState('');
-  const ws = useRef<WebSocket>();
-  
-  useEffect(() => {
-    // ✅ Connect to WebSocket server
-    ws.current = new WebSocket(`wss://api.example.com/docs/${documentId}`);
-    
-    ws.current.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      
-      if (message.type === 'init') {
-        setContent(message.data.content);
-      } else if (message.type === 'operation') {
-        // ✅ Apply remote operation
-        applyRemoteOperation(message.data);
-      }
-    };
-    
-    return () => {
-      ws.current?.close();
-    };
-  }, [documentId]);
-  
-  const handleTextChange = (newContent: string) => {
-    const oldContent = content;
-    const operation = generateOperation(oldContent, newContent, userId);
-    
-    // ✅ Send operation to server
-    ws.current?.send(JSON.stringify(operation));
-    
-    // ✅ Optimistic update
-    setContent(newContent);
-  };
-  
+export function AppRoutes() {
   return (
-    <textarea
-      value={content}
-      onChange={(e) => handleTextChange(e.target.value)}
-      placeholder="Start typing..."
-    />
+    <ErrorBoundary>
+      <Suspense fallback={<PageSkeleton />}>
+        <Routes>
+          <Route path="/products/:id" element={<ProductPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/account" element={<AccountPage />} />
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   );
+}
+```
+
+✅ Route-level split giảm initial bundle.
+
+⚠️ Cần handle chunk load failure khi deploy.
+
+---
+
+### Example 3: Feature boundary trong monorepo
+
+```ts
+// packages/auth/src/index.ts
+export type Session = {
+  userId: string;
+  orgId: string;
+  permissions: string[];
 };
 
-// 🏗️ Architecture Diagram:
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-//     User A                    User B                    User C
-//        │                         │                         │
-//        │    WebSocket            │   WebSocket             │   WebSocket
-//        ▼                         ▼                         ▼
-//   ┌─────────────────────────────────────────────────────────────┐
-//   │              WebSocket Server (Node.js)                     │
-//   │  - Operational Transformation (OT)                          │
-//   │  - Conflict resolution                                      │
-//   │  - Presence detection                                       │
-//   └────────────────────┬────────────────────────────────────────┘
-//                        │
-//                        ▼
-//   ┌─────────────────────────────────────────────────────────────┐
-//   │              Redis Pub/Sub                                  │
-//   │  - Real-time operation broadcast                            │
-//   │  - User presence (who's online)                             │
-//   └────────────────────┬────────────────────────────────────────┘
-//                        │
-//                        ▼
-//   ┌─────────────────────────────────────────────────────────────┐
-//   │              MongoDB                                         │
-//   │  - Document storage                                         │
-//   │  - Operation history (CRDT log)                             │
-//   │  - Version snapshots (every 100 operations)                 │
-//   └─────────────────────────────────────────────────────────────┘
+export function can(session: Session, permission: string) {
+  return session.permissions.includes(permission);
+}
 ```
+
+Consumer:
+
+```ts
+import { can } from '@acme/auth';
+
+if (can(session, 'orders:read')) {
+  renderOrders();
+}
+```
+
+✅ Shared domain logic nằm ở package rõ owner, không copy giữa apps.
 
 ---
 
-## 10. Production-Ready Frontend Project
+## ⚛️ Production Notes / React Implications
 
-### **10.1. Câu Trả Lời Ngắn Gọn Khi Phỏng Vấn**
+### React rendering implications
 
-**"Để build một frontend project từ zero đến production-ready, em sẽ đi theo 8 bước: foundation, architecture, code quality, performance, testing, CI/CD, monitoring và scalability. Mục tiêu không chỉ là app chạy được, mà còn phải dễ maintain, dễ scale team, dễ deploy và dễ debug khi có lỗi production."**
+Architecture ảnh hưởng React rendering:
 
-**Cách em triển khai:**
+- Global store quá lớn → re-render rộng.
+- Context value đổi thường xuyên → consumer re-render.
+- Server state tự quản lý bằng Redux/Zustand → cache/refetch/error phức tạp.
+- Không memoize list/table lớn → INP xấu.
+- Không virtualize table lớn → main thread nghẽn.
+- Hydration mismatch trong SSR → bug khó debug.
 
-1. **Foundation:** Chọn stack phù hợp như React/Next.js/Vite, TypeScript strict mode, package manager ổn định như pnpm, setup env rõ ràng cho local/staging/production.
-2. **Architecture:** Thiết kế folder theo feature, tách shared UI/utils/API/types, dùng path alias, tránh import vòng, chuẩn bị monorepo nếu có nhiều app/lib hoặc nhiều team.
-3. **Code Quality:** Bắt buộc ESLint, Prettier, Husky, lint-staged, commit convention, TypeScript strict, schema validation bằng Zod/Yup cho API/form data.
-4. **State Management:** Tách rõ local state, global UI state, server state và URL state. Ví dụ React Query/SWR cho server cache, Zustand/Redux cho global state thật sự cần chia sẻ.
-5. **Performance:** Code splitting theo route/component, lazy loading, bundle analysis, image optimization, cache static assets bằng CDN, đặt performance budget và đo Lighthouse/Web Vitals.
-6. **Testing:** Unit test cho logic, component test cho UI behavior, integration test cho flow quan trọng, E2E test bằng Playwright/Cypress cho login, checkout, payment hoặc critical journey.
-7. **CI/CD:** Pipeline phải chạy lint, type-check, test, build, security/dependency check, preview deploy cho PR, auto deploy staging/production có approval hoặc rollback strategy.
-8. **Monitoring:** Tích hợp Sentry/DataDog/New Relic, log lỗi có context, đo Core Web Vitals, tracking API failure, alert khi error rate hoặc latency vượt ngưỡng.
+Guideline:
 
-### **10.2. Checklist Production-Ready**
-
-```markdown
-□ TypeScript strict mode, noImplicitAny, strictNullChecks
-□ ESLint + Prettier + Husky + lint-staged
-□ Feature-based folder structure, shared libraries rõ ràng
-□ API client có interceptors, retry, timeout, error normalization
-□ State được phân lớp: local/global/server/url
-□ Error Boundary + fallback UI + Sentry integration
-□ Lazy loading, code splitting, bundle analyzer
-□ Performance budget cho JS/CSS/image và Core Web Vitals
-□ Unit, integration, E2E tests cho critical flows
-□ CI/CD chạy lint, type-check, test, build trước deploy
-□ Env management an toàn, không hardcode secret/config
-□ Monitoring, analytics, logging, alerting sau khi release
-□ Documentation cho setup, architecture decisions, onboarding
-```
-
-### **10.3. Điểm Senior Cần Nhấn Mạnh**
-
-- **Trade-off:** Không chọn micro-frontend/monorepo chỉ vì hiện đại. Nếu team nhỏ và app đơn giản, modular monolith thường tốt hơn.
-- **Maintainability:** Folder structure, naming convention, shared libraries và rule import quan trọng hơn việc dùng tool mới.
-- **Scalability:** Scale frontend không chỉ là performance, mà còn là scale team, scale deployment, scale ownership và scale debugging.
-- **Reliability:** Production-ready nghĩa là khi lỗi xảy ra, team biết lỗi ở đâu, ảnh hưởng ai, rollback thế nào và fix theo hướng không tái diễn.
-- **Business impact:** Senior không chỉ nói "dùng tool gì", mà phải giải thích tool đó giảm bug, giảm lead time, tăng tốc deploy hoặc bảo vệ user experience như thế nào.
-
-**Câu chốt phỏng vấn:**  
-**"Em sẽ bắt đầu đơn giản nhưng có guardrails tốt: TypeScript strict, architecture rõ, CI/CD tự động, test critical flows, performance budget và monitoring từ đầu. Khi traffic hoặc team tăng, mình mới nâng cấp dần sang monorepo, micro-frontend hoặc edge architecture dựa trên pain point thật."**
-
-## 📚 **Tài Liệu Tham Khảo**
-
-### **Books**
-- **"System Design Interview"** by Alex Xu (Volume 1 & 2)
-- **"Designing Data-Intensive Applications"** by Martin Kleppmann
-- **"Web Scalability for Startup Engineers"** by Artur Ejsmont
-
-### **Online Resources**
-- **System Design Primer:** https://github.com/donnemartin/system-design-primer
-- **Frontend System Design:** https://www.frontendinterviewhandbook.com/system-design
-- **Micro-frontend.org:** https://micro-frontends.org/
-
-### **Tools & Frameworks**
-- **Nx Monorepo:** https://nx.dev/
-- **Turborepo:** https://turbo.build/
-- **Module Federation:** https://webpack.js.org/concepts/module-federation/
-- **LaunchDarkly:** https://launchdarkly.com/
+- co-locate state gần nơi dùng
+- dùng React Query/SWR cho server state
+- Zustand/Redux cho client state thật sự global
+- split context theo responsibility
+- dùng virtualization cho list lớn
+- đo bằng React Profiler/RUM thay vì đoán
 
 ---
 
-## ✅ **Checklist cho Senior Interview**
+### SSR/Hydration
 
-```markdown
-□ Có thể thiết kế kiến trúc cho 1M+ concurrent users
-□ Giải thích trade-offs giữa Micro-frontend vs Monolith
-□ Setup Monorepo với Nx/Turborepo cho team 20+ người
-□ Implement BFF layer với GraphQL/REST
-□ Thiết kế State Management architecture (3 layers)
-□ Implement Error Boundary với Sentry integration
-□ Setup Feature Flags system (local + remote)
-□ Configure CDN với CloudFlare Workers
-□ Design real-time collaboration system (WebSocket)
-□ Explain caching strategies (Browser, CDN, Server, Database)
-```
+SSR giúp SEO/perceived performance, nhưng thêm rủi ro:
+
+- server/client render khác nhau
+- browser-only API chạy trên server
+- auth/session data leak giữa request nếu dùng singleton store
+- cache key sai làm user thấy data người khác
+
+Checklist:
+
+- không dùng `window`/`document` trong server render
+- tạo store per request
+- cache theo user/session khi cần
+- serialize state an toàn
+- test hydration warning trong CI nếu có thể
 
 ---
 
-**🎯 Tip:** Trong phỏng vấn Senior, **không chỉ code mà còn phải explain trade-offs, scalability, maintainability**.
+### Accessibility
 
-**📌 Remember:** "The best architecture is the one that evolves with your team's needs."
+System design cũng ảnh hưởng accessibility:
+
+- route change cần focus management
+- modal/toast cần trap focus/announce
+- loading/error/empty state cần semantic rõ
+- realtime collaboration cần announce thay đổi quan trọng
+- performance lag ảnh hưởng keyboard/screen reader users
+
+---
+
+## ⚠️ Common Pitfalls
+
+### ❌ 1. Over-engineering microfrontend quá sớm
+
+Microfrontend giải quyết team/deploy scale, không phải default cho mọi app.
+
+✅ Bắt đầu bằng modular monolith nếu pain point chưa rõ.
+
+---
+
+### ❌ 2. Monorepo không có boundary
+
+Không enforce import boundary thì monorepo dễ thành spaghetti.
+
+✅ Dùng Nx tags, ESLint boundaries, package ownership.
+
+---
+
+### ❌ 3. Một global store chứa mọi thứ
+
+Server state, local form state, URL state, modal state đều nhét vào Redux/Zustand làm app khó maintain.
+
+✅ Chia state theo ownership.
+
+---
+
+### ❌ 4. Không có error boundary
+
+Một component crash có thể làm trắng cả app.
+
+✅ Đặt error boundary theo route/section critical.
+
+---
+
+### ❌ 5. Không có observability
+
+Không có Sentry/RUM/logs thì production incident chỉ dựa vào user report.
+
+✅ Gắn release id, source maps, Web Vitals, API error tracking.
+
+---
+
+### ❌ 6. Cache sai
+
+- cache HTML quá lâu
+- cache API personalized ở CDN không đúng key
+- không invalidate stale data
+
+✅ Thiết kế cache theo data sensitivity và freshness requirement.
+
+---
+
+### ❌ 7. Feature flags không cleanup
+
+Flag sống mãi làm code phân nhánh và test matrix phình.
+
+✅ Mỗi flag cần owner, expiry, cleanup task.
+
+---
+
+### ❌ 8. Frontend tự tin quá mức về security
+
+Ẩn button không phải permission enforcement.
+
+✅ Backend phải enforce authorization.
+
+---
+
+## ✅ Decision Guide / Checklist
+
+### Chọn architecture
+
+- Team nhỏ/vừa, một product chính:
+  - ✅ Modular monolith
+
+- Nhiều apps share code, cần consistent tooling:
+  - ✅ Monorepo
+
+- Nhiều team deploy độc lập, app rất lớn:
+  - ✅ Microfrontend
+
+- SEO/content-heavy:
+  - ✅ SSG/ISR/SSR/Islands
+
+- Dashboard internal:
+  - ✅ CSR + strong API caching + observability
+
+- Realtime collaboration:
+  - ✅ WebSocket/WebRTC/CRDT/OT + offline/reconnect strategy
+
+---
+
+### System design interview checklist
+
+- ✅ Clarify requirements: users, traffic, SEO, realtime, offline, SLA.
+- ✅ Pick rendering strategy: CSR/SSR/SSG/ISR/Streaming/Islands.
+- ✅ Define architecture style: modular monolith/monorepo/microfrontend.
+- ✅ Define API layer: REST/BFF/GraphQL.
+- ✅ Define state layers: server/global/local/URL.
+- ✅ Define performance plan: CDN, code splitting, image optimization, Web Vitals.
+- ✅ Define reliability: error boundary, retry, fallback, circuit breaker.
+- ✅ Define security: auth, XSS, CSRF, CSP, env vars.
+- ✅ Define observability: Sentry, RUM, logs, traces, alerts.
+- ✅ Define delivery: CI/CD, feature flags, preview, rollback.
+- ✅ Explain tradeoffs and evolution path.
+
+---
+
+## 🗣️ Short Interview Answer
+
+Em nghĩ frontend system design trước hết là bài toán tradeoff. Em sẽ bắt đầu bằng cách clarify yêu cầu: app cần SEO không, traffic bao nhiêu, team size thế nào, có realtime/offline không, SLA và critical flows là gì. Sau đó em mới chọn rendering strategy như CSR, SSR, SSG, ISR hoặc streaming.
+
+Về architecture, em thường bắt đầu bằng modular monolith có boundary rõ. Nếu có nhiều apps share code hoặc nhiều team thì em cân nhắc monorepo với Nx/Turborepo. Microfrontend chỉ nên dùng khi thật sự cần independent deployment và ownership theo domain, vì nó thêm complexity về shared dependency, routing, auth, observability và runtime failure.
+
+Em sẽ tách state theo ownership: server state dùng React Query/SWR/Apollo, global client state dùng Zustand/Redux khi cần, local state để gần component, URL state đưa lên router. API layer thì tùy bài toán: REST direct cho case đơn giản, BFF khi cần aggregate/transform data, GraphQL khi nhiều client cần query linh hoạt. Điểm em thấy quan trọng là phải có performance plan, CDN/cache, error boundaries, feature flags, CI/CD, monitoring và rollback. Architecture tốt không phải là nhiều công nghệ nhất, mà là dễ scale, dễ debug và tiến hóa được theo nhu cầu thật của team.
+
+---
+
+## 🧠 Ghi nhớ nhanh
+
+- ✅ Frontend system design là tradeoff giữa scalability, performance, reliability, maintainability.
+- ✅ Bắt đầu bằng requirements, không bắt đầu bằng tool.
+- ✅ Modular monolith là default tốt cho nhiều team.
+- ✅ Monorepo cần boundary và task cache.
+- ✅ Microfrontend chỉ nên dùng khi có nhu cầu independent deploy/ownership thật.
+- ✅ BFF giúp frontend nhận data đúng shape nhưng thêm vận hành.
+- ✅ GraphQL mạnh nhưng cần schema governance và caching strategy.
+- ✅ State phải chia server/global/local/URL.
+- ✅ SSR/Streaming/ISR tốt nhưng tăng complexity.
+- ✅ CDN/cache cần phân biệt HTML và hashed assets.
+- ✅ Error boundary, retry, circuit breaker giúp resilience.
+- ✅ Feature flags cần owner và cleanup.
+- ✅ Observability là yêu cầu kiến trúc, không phải việc thêm sau cùng.
+- ✅ Frontend security phải phối hợp backend, không chỉ hide UI.
+
+---
+
+## 📖 Giải thích các thuật ngữ trong topic
+
+- **Frontend System Design**
+  - Thiết kế kiến trúc frontend để đáp ứng performance, scale, reliability, maintainability và delivery.
+
+- **Modular Monolith**
+  - Một app deploy chung nhưng chia module/feature boundary rõ.
+
+- **Monorepo**
+  - Một repo chứa nhiều apps/packages dùng chung tooling và dependency graph.
+
+- **Microfrontend**
+  - Chia frontend thành nhiều app/module độc lập có thể deploy riêng.
+
+- **Module Federation**
+  - Webpack feature cho phép các build độc lập expose/consume module runtime.
+
+- **BFF**
+  - Backend for Frontend, API layer thiết kế riêng cho nhu cầu frontend.
+
+- **GraphQL**
+  - Query language/API runtime cho phép client lấy đúng data cần qua typed schema.
+
+- **Server State**
+  - Data đến từ server/API, cần cache/refetch/loading/error handling.
+
+- **Global Client State**
+  - State client cần share nhiều nơi, như theme/auth snapshot/global UI.
+
+- **URL State**
+  - State nằm trong URL như filter, sort, pagination, selected tab.
+
+- **CSR**
+  - Client-Side Rendering, browser render UI chủ yếu bằng JavaScript.
+
+- **SSR**
+  - Server-Side Rendering, server render HTML trước rồi client hydrate.
+
+- **SSG**
+  - Static Site Generation, build HTML tĩnh trước khi deploy.
+
+- **ISR**
+  - Incremental Static Regeneration, static page được revalidate theo thời gian.
+
+- **Streaming SSR**
+  - Server gửi HTML từng phần để cải thiện perceived performance.
+
+- **Islands Architecture**
+  - Static HTML là chính, chỉ hydrate các “island” cần tương tác.
+
+- **Hydration**
+  - Quá trình React gắn event/state vào HTML đã render từ server.
+
+- **CDN**
+  - Content Delivery Network, cache static assets gần user.
+
+- **Edge Function**
+  - Function chạy gần user ở edge location, phù hợp logic nhẹ như redirect, A/B test.
+
+- **Core Web Vitals**
+  - Bộ metrics UX/performance như LCP, CLS, INP.
+
+- **Error Boundary**
+  - React component bắt lỗi render ở subtree và hiển thị fallback UI.
+
+- **Retry**
+  - Thử lại request/action khi lỗi tạm thời.
+
+- **Circuit Breaker**
+  - Pattern ngắt gọi service khi service fail liên tục để tránh cascade failure.
+
+- **Feature Flag**
+  - Cờ bật/tắt feature runtime để rollout/canary/A-B test/kill switch.
+
+- **RUM**
+  - Real User Monitoring, đo performance/error từ user thật.
+
+- **Synthetic Monitoring**
+  - Kiểm tra tự động theo kịch bản từ môi trường giả lập/region cố định.
+
+- **OpenTelemetry**
+  - Chuẩn instrumentation cho metrics/logs/traces.
+
+- **ADR**
+  - Architecture Decision Record, tài liệu ghi lại quyết định kiến trúc và lý do.
+
+- **SLA/SLO**
+  - Cam kết/mục tiêu chất lượng dịch vụ như uptime, latency, error rate.
