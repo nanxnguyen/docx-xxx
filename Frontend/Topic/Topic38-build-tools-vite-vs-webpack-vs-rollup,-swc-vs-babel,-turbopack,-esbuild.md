@@ -1,593 +1,1436 @@
-# Topic 38: Build Tools - Vite vs Webpack vs Rollup, SWC vs Babel, Turbopack, esbuild
+# 🏗️ Topic38: Build Tools - Vite vs Webpack vs Rollup, SWC vs Babel, Turbopack, esbuild
 
-## 🚀 Câu trả lời ngắn gọn
+> Mục tiêu: hiểu đúng vai trò của build tools trong frontend hiện đại: dev server, bundler, compiler/transpiler, minifier, tree-shaking, code splitting, source maps, caching, performance budget và production debugging.
 
-Build tools trong frontend có thể chia thành 3 nhóm chính:
+---
+
+## ⭐ Senior/Staff Summary
+
+Build tool không chỉ để “chạy React app”. Nó quyết định:
+
+- ✅ Dev server nhanh hay chậm.
+- ✅ HMR/Fast Refresh có ổn định không.
+- ✅ Bundle production có nhỏ và cache tốt không.
+- ✅ Tree-shaking có loại được dead code không.
+- ✅ Code splitting có giảm initial load thật không.
+- ✅ Source map có debug được production mà không leak source không.
+- ✅ Monorepo/library/microfrontend có build được ổn định không.
+- ✅ CI build có predictable và có performance budget không.
+
+Mental model ngắn:
 
 ```txt
-📦 Bundler: gom module thành bundle chạy trên browser
-⚙️ Compiler/Transpiler: đổi TS/JSX/modern JS thành JS browser hiểu
-🧹 Minifier/Optimizer: nén, tree-shaking, code splitting, optimize asset
+Source code
+→ Parse dependency graph
+→ Transform/transpile: TS/JSX/modern JS/CSS
+→ Bundle/split chunks
+→ Tree-shake/dead-code eliminate
+→ Minify/compress
+→ Hash assets for cache
+→ Emit HTML/JS/CSS/assets/source maps
 ```
 
-Các tool quan trọng:
+Chọn tool theo mục tiêu:
 
-```txt
-🏗️ Webpack   -> bundler trưởng thành, rất linh hoạt, config phức tạp
-⚡ Vite      -> dev server rất nhanh, production dùng Rollup
-📦 Rollup    -> mạnh cho library build, ESM và tree-shaking tốt
-🚀 esbuild   -> Go-based, cực nhanh cho transform/bundle cơ bản
-🦀 SWC       -> Rust-based compiler, thay Babel trong nhiều case
-🐢 Babel     -> JS compiler/plugin ecosystem lớn nhất, chậm hơn SWC
-🌪️ Turbopack -> Rust incremental bundler, tập trung vào Next.js
-🧰 Rspack    -> Rust bundler tương thích Webpack ecosystem
+- **Vite**
+  - ✅ Default tốt cho app React/Vue/Svelte hiện đại.
+  - ✅ Dev nhanh nhờ native ESM + HMR; production build dùng Rollup/Rolldown ecosystem tùy version/config.
+  - ⚠️ Cần hiểu khác biệt dev pipeline và production pipeline.
+
+- **Webpack**
+  - ✅ Mạnh cho app enterprise, legacy, customization sâu, Module Federation.
+  - ✅ Ecosystem loader/plugin rất lớn.
+  - ⚠️ Config phức tạp, dev speed thường cần tuning.
+
+- **Rollup**
+  - ✅ Rất tốt cho library/package.
+  - ✅ Tree-shaking mạnh, output ESM/CJS/UMD rõ.
+  - ⚠️ Không phải lựa chọn ergonomic nhất cho app lớn nếu tự setup từ đầu.
+
+- **esbuild**
+  - ✅ Cực nhanh cho transform, bundling, minify.
+  - ✅ Dùng bên trong nhiều tool như Vite.
+  - ⚠️ Plugin ecosystem và một số tối ưu nâng cao không rộng như Webpack/Rollup.
+
+- **SWC**
+  - ✅ Rust-based compiler nhanh cho TS/JSX/modern JS, minify.
+  - ✅ Được dùng trong Next.js và nhiều stack build hiện đại.
+  - ⚠️ Babel vẫn mạnh hơn nếu cần plugin transform tùy biến rất sâu.
+
+- **Babel**
+  - ✅ JavaScript compiler rất mature, plugin ecosystem cực lớn.
+  - ✅ Tốt cho custom transforms, legacy browser, proposal plugins.
+  - ⚠️ Chậm hơn SWC/esbuild trong nhiều case.
+
+- **Turbopack**
+  - ✅ Bundler incremental viết bằng Rust, tích hợp sâu với Next.js.
+  - ✅ Hợp khi ở Next.js stack và muốn dev/build pipeline mới.
+  - ⚠️ Không phải generic replacement cho mọi Webpack config ngoài Next.js.
+
+> 💡 Key senior: **Tool nhanh nhất chưa chắc tốt nhất. Tool đúng là tool phù hợp constraint của app, team, ecosystem, deploy target và khả năng debug production.**
+
+---
+
+## 🧠 Key Mental Model
+
+### 1. Tách vai trò: build tool không phải một thứ
+
+Một frontend toolchain thường gồm nhiều vai trò:
+
+- **Dev Server**
+  - Serve source trong development.
+  - HMR/Fast Refresh.
+  - Proxy API.
+  - Source map nhanh.
+
+- **Bundler**
+  - Đọc dependency graph.
+  - Gộp module thành bundle/chunk.
+  - Code splitting.
+  - Tree-shaking.
+
+- **Compiler / Transpiler**
+  - TypeScript → JavaScript.
+  - JSX/TSX → JavaScript.
+  - Modern syntax → syntax tương thích target browser.
+
+- **Minifier**
+  - Xóa whitespace/comment.
+  - Rename variable.
+  - Dead-code elimination đơn giản.
+  - Compress expression.
+
+- **Optimizer**
+  - Tree-shaking.
+  - Chunk splitting.
+  - Asset hashing.
+  - CSS extraction/minification.
+  - Dependency pre-bundling.
+
+- **Quality Gates**
+  - Type check.
+  - ESLint/Prettier.
+  - Bundle analyzer.
+  - Performance budget.
+  - Security scan.
+
+---
+
+### 2. Dev build khác production build
+
+Development ưu tiên feedback loop:
+
+- Fast startup.
+- Fast rebuild.
+- HMR/Fast Refresh.
+- Source map dễ debug.
+- Ít hoặc không minify.
+- Ít optimization nặng.
+
+Production ưu tiên runtime performance:
+
+- Minification.
+- Tree-shaking.
+- Code splitting.
+- Content hash.
+- CSS extraction.
+- Compression.
+- Source maps có kiểm soát.
+- Bundle budget.
+
+> ⚠️ Không đánh giá tool chỉ bằng `npm run dev`. Phải đo cả `build`, bundle size, HMR stability, CI time và production runtime.
+
+---
+
+### 3. Dependency graph là nền tảng
+
+Bundler bắt đầu từ entry points rồi đi theo imports để tạo dependency graph.
+
+```ts
+// main.tsx
+import { createRoot } from 'react-dom/client';
+import { App } from './App';
+import './styles.css';
+
+createRoot(document.getElementById('root')!).render(<App />);
 ```
 
-**Highlight senior/staff:** Không chọn tool chỉ vì “nhanh”. Phải hỏi:
+Graph đơn giản:
 
 ```txt
-App hay library?
-Dev speed hay production optimization?
-Legacy hay greenfield?
-Framework nào?
-Cần plugin đặc biệt không?
-Monorepo lớn không?
-SSR/Next.js không?
-Cần Module Federation không?
+main.tsx
+├─ react-dom/client
+├─ ./App
+│  ├─ ./routes
+│  └─ ./components/Button
+└─ ./styles.css
+```
+
+Bundler dùng graph để:
+
+- tìm module cần emit
+- detect circular dependency
+- split chunks
+- remove unused exports
+- resolve assets/CSS
+- generate source map
+- optimize cache invalidation
+
+---
+
+## 📚 Main Concepts
+
+### 1. Bundling
+
+`Bundling` là quá trình gom nhiều module/assets thành ít file hơn để browser tải hiệu quả.
+
+Trước bundling:
+
+```txt
+100 modules
+→ nhiều HTTP requests
+→ khó minify/tree-shake đồng bộ
+→ khó cache theo content hash
+```
+
+Sau bundling:
+
+```txt
+main.[hash].js
+vendor.[hash].js
+dashboard.[hash].js
+styles.[hash].css
+```
+
+Senior note:
+
+- HTTP/2/HTTP/3 giảm chi phí nhiều request, nhưng production vẫn thường cần bundle/split hợp lý.
+- Bundle quá ít file có thể làm initial JS quá lớn.
+- Bundle quá nhiều chunk có thể tăng waterfall.
+- Cần đo bằng Performance panel, Lighthouse, WebPageTest, bundle analyzer.
+
+---
+
+### 2. Tree-shaking
+
+`Tree-shaking` là loại bỏ unused exports/dead code khỏi bundle.
+
+✅ Tốt cho tree-shaking:
+
+```ts
+// utils.ts
+export function add(a: number, b: number) {
+  return a + b;
+}
+
+export function subtract(a: number, b: number) {
+  return a - b;
+}
+
+// app.ts
+import { add } from './utils';
+
+console.log(add(1, 2));
+```
+
+Bundler có thể bỏ `subtract` nếu chắc chắn không dùng.
+
+⚠️ Kém hơn:
+
+```ts
+import * as utils from './utils';
+
+console.log(utils.add(1, 2));
+```
+
+Hoặc CommonJS:
+
+```ts
+const { add } = require('./utils');
+```
+
+Key để tree-shaking tốt:
+
+- dùng ESM imports/exports
+- tránh side effects không rõ
+- package khai báo `"sideEffects": false` đúng chỗ
+- import theo subpath khi library không tree-shake tốt
+- tránh barrel file export quá rộng nếu gây kéo module thừa
+
+---
+
+### 3. Side effects
+
+Side effect là code chạy có tác động ngoài export value:
+
+```ts
+import './global.css';
+import './polyfills';
+
+window.analytics = createAnalyticsClient();
+```
+
+Nếu package khai báo sai:
+
+```json
+{
+  "sideEffects": false
+}
+```
+
+Bundler có thể xóa nhầm CSS/polyfill/global setup.
+
+✅ Khai báo cẩn thận:
+
+```json
+{
+  "sideEffects": ["*.css", "./src/polyfills.ts"]
+}
 ```
 
 ---
 
-## 🧠 1. Mental model: Bundler vs Compiler
+### 4. Code splitting
 
-### 📦 Bundler làm gì?
+`Code splitting` tách code thành nhiều chunks để giảm initial load.
 
-Bundler đọc dependency graph từ entry file rồi đóng gói thành output cho browser.
-
-Ví dụ:
-
-```txt
-src/main.tsx
- -> App.tsx
- -> Button.tsx
- -> styles.css
- -> logo.svg
-```
-
-Bundler xử lý:
-
-- module resolution
-- code splitting
-- tree-shaking
-- asset handling
-- CSS bundling
-- dynamic import
-- production chunking
-
-### ⚙️ Compiler/transpiler làm gì?
-
-Compiler/transpiler đổi syntax mới thành syntax browser hiểu.
-
-Ví dụ:
+React route-based splitting:
 
 ```tsx
-const App = () => <h1>Hello</h1>;
+import { Suspense, lazy } from 'react';
+import { Route, Routes } from 'react-router-dom';
+
+const HomePage = lazy(() => import('./pages/HomePage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+
+export function AppRoutes() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+      </Routes>
+    </Suspense>
+  );
+}
 ```
 
-Có thể được transform thành JS thường.
+✅ Dùng code splitting cho:
 
-Tool:
+- routes ít vào
+- dashboard/admin
+- chart/editor/map libraries nặng
+- modal flow hiếm dùng
+- feature flags/experiments
 
-```txt
-Babel -> JS-based, plugin cực mạnh
-SWC   -> Rust-based, nhanh hơn nhiều trong đa số case
-esbuild -> Go-based, transform rất nhanh
-```
+⚠️ Không split quá nhỏ:
 
-### 🧩 Một tool có thể làm nhiều việc
-
-Ví dụ:
-
-- Vite là dev server/build tool, dev dùng native ESM + esbuild, prod dùng Rollup.
-- esbuild vừa transform vừa bundle cơ bản.
-- Turbopack vừa bundler vừa dev server hướng incremental.
-- Webpack bundling mạnh nhưng thường cần Babel/SWC loader để transform.
+- tăng request waterfall
+- UX loading nhiều nơi
+- cache overhead
+- dễ gặp `ChunkLoadError` khi deploy version mới
 
 ---
 
-## ⚖️ 2. Bảng so sánh nhanh
+### 5. Minification
 
-| Tool | Vai trò chính | Mạnh nhất ở đâu | Điểm yếu |
-|---|---|---|---|
-| 🏗️ Webpack | Bundler | Legacy/enterprise/custom pipeline | Chậm hơn, config phức tạp |
-| ⚡ Vite | Dev server + build tool | Dev experience, app mới | Prod khác dev vì dùng Rollup |
-| 📦 Rollup | Bundler | Library build, ESM, tree-shaking | App phức tạp cần config thêm |
-| 🚀 esbuild | Bundler/transformer | Tốc độ transform/build | Plugin/optimization chưa sâu như Webpack/Rollup |
-| 🦀 SWC | Compiler | Thay Babel, nhanh | Plugin ecosystem ít hơn Babel |
-| 🐢 Babel | Compiler | Plugin ecosystem, compatibility | Chậm |
-| 🌪️ Turbopack | Incremental bundler | Next.js dev, incremental rebuild | Ecosystem/maturity cần cân nhắc |
-| 🧰 Rspack | Webpack-compatible bundler | Webpack migration cần tốc độ | Mới hơn Webpack |
+Minification giảm size JS/CSS:
 
-> **Highlight:** Vite nhanh trong dev không có nghĩa production build “là Vite”. Production của Vite chủ yếu dùng **Rollup**.
+```ts
+function calculateTotal(price: number, quantity: number) {
+  const tax = 0.1;
+  return price * quantity * (1 + tax);
+}
+```
+
+Sau minify có thể thành:
+
+```js
+function calculateTotal(t,n){return 1.1*t*n}
+```
+
+Tools:
+
+- `Terser`: mature, output thường nhỏ, chậm hơn esbuild.
+- `esbuild`: rất nhanh, output có thể hơi lớn hơn Terser tùy case.
+- `SWC minify`: nhanh, dùng trong nhiều stack Rust-based.
+- `cssnano`/Lightning CSS: CSS minification/optimization.
 
 ---
 
-## 🏗️ 3. Webpack
+### 6. Transpiling và polyfills
 
-Webpack là bundler lâu đời, cực kỳ linh hoạt và có ecosystem plugin/loader rất lớn.
+Transpiling đổi syntax:
 
-### ✅ Điểm mạnh
-
-- Rất mature, dùng nhiều trong enterprise.
-- Config được gần như mọi pipeline phức tạp.
-- Plugin ecosystem lớn.
-- Code splitting/chunk optimization rất mạnh.
-- Module Federation phổ biến nhất trong Webpack ecosystem.
-- Phù hợp legacy app lớn đã dùng Webpack.
-
-### ⚠️ Điểm yếu
-
-- Cold start và rebuild thường chậm hơn Vite/Turbopack/Rspack.
-- Config phức tạp: loaders, plugins, optimization, cache.
-- Dev experience có thể kém nếu app lớn.
-- Migration/upgrade lớn có thể tốn chi phí.
-
-### 🎯 Khi dùng Webpack?
-
-```txt
-✅ App enterprise/legacy đang dùng Webpack ổn định
-✅ Cần custom build pipeline rất đặc biệt
-✅ Cần Module Federation mature
-✅ Cần plugin/loader chỉ Webpack có
+```ts
+const double = (value: number) => value * 2;
 ```
 
-Không nên migrate khỏi Webpack chỉ vì “tool mới nhanh hơn” nếu chi phí/rủi ro lớn hơn lợi ích.
+Target cũ có thể thành:
+
+```js
+var double = function double(value) {
+  return value * 2;
+};
+```
+
+Polyfill thêm API runtime thiếu:
+
+```ts
+Promise.any(promises);
+Array.prototype.at.call(items, -1);
+```
+
+Nếu browser target không hỗ trợ, cần polyfill như `core-js`.
+
+Khác biệt:
+
+- **Transpile**
+  - Đổi syntax.
+  - Ví dụ: arrow function, optional chaining, JSX.
+
+- **Polyfill**
+  - Thêm runtime API.
+  - Ví dụ: `Promise`, `Array.prototype.includes`, `URLPattern`.
+
+> ⚠️ Babel/SWC/esbuild không tự “thần kỳ” thêm mọi polyfill đúng cách nếu bạn không cấu hình target/polyfill strategy.
 
 ---
 
-## ⚡ 4. Vite
+### 7. Source maps
 
-Vite tối ưu mạnh cho dev experience.
+Source map map code minified/transpiled về source gốc.
 
-### 🔥 Vì sao Vite dev nhanh?
+Development:
 
-Webpack dev thường bundle nhiều thứ trước khi serve. Vite dev dùng browser native ESM:
+- cần nhanh
+- debug dễ
+- source map có thể inline/eval tùy tool
 
-```txt
-Browser request module nào -> Vite transform module đó -> trả về ngay
+Production:
+
+- cần debug error stack
+- không nên public source map nếu source chứa logic nhạy cảm
+- upload source maps lên Sentry/Datadog/private storage
+- dùng hidden source map khi cần
+
+Webpack example:
+
+```js
+module.exports = {
+  devtool: process.env.NODE_ENV === 'production'
+    ? 'hidden-source-map'
+    : 'eval-source-map',
+};
 ```
 
-Vite chia code thành:
+Vite example:
 
-```txt
-📦 Dependencies: pre-bundle bằng esbuild
-🧑‍💻 Source code: serve qua native ESM, transform on-demand
+```ts
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  build: {
+    sourcemap: true,
+  },
+});
 ```
 
-Khi sửa một file, HMR chỉ cần update module liên quan, không re-bundle toàn bộ app.
+---
 
-### ✅ Điểm mạnh
+### 8. Content hashing và caching
 
-- Dev server start rất nhanh.
-- HMR nhanh.
+Production asset nên dùng content hash:
+
+```txt
+assets/main.3f9a12c8.js
+assets/vendor.a8d91e2f.js
+assets/styles.80ad12aa.css
+```
+
+Header thường dùng:
+
+```nginx
+location = /index.html {
+  add_header Cache-Control "no-cache, no-store, must-revalidate";
+}
+
+location /assets/ {
+  add_header Cache-Control "public, max-age=31536000, immutable";
+}
+```
+
+Mental model:
+
+- `index.html` không cache lâu vì nó trỏ đến asset version mới.
+- JS/CSS/assets có content hash cache lâu vì nội dung đổi thì filename đổi.
+- Vendor chunk ổn định giúp browser reuse cache qua nhiều deploy.
+
+⚠️ Sai thường gặp:
+
+- cache `index.html` quá lâu → user kẹt version cũ
+- không dùng content hash → browser dùng JS cũ
+- mỗi build làm vendor hash đổi dù code vendor không đổi → cache miss
+
+---
+
+## 🧰 Tool Comparison
+
+### 1. Vite
+
+Vite là build tool/dev server cho frontend hiện đại.
+
+Điểm mạnh:
+
+- Dev server nhanh nhờ native ESM.
+- HMR/Fast Refresh tốt.
 - Config đơn giản.
-- Dùng tốt cho React, Vue, Svelte, vanilla.
-- Ecosystem hiện đại.
-- Production dùng Rollup nên output tốt.
+- Plugin ecosystem lớn vì tương thích nhiều pattern Rollup/Vite.
+- Tốt cho React/Vue/Svelte apps.
+- Production build có optimization/chunking tốt với Rollup/Rolldown ecosystem.
 
-### ⚠️ Điểm yếu
+Điểm cần hiểu:
 
-- Dev và prod không giống 100%: dev native ESM, prod Rollup bundle.
-- Một số dependency CJS/legacy có thể gây issue.
-- App cực lớn/monorepo phức tạp vẫn cần tối ưu cache/deps.
-- Module Federation không mature bằng Webpack trong nhiều setup.
+- Dev không bundle toàn bộ app theo kiểu Webpack truyền thống.
+- Production vẫn cần bundling vì shipping unbundled nested ESM thường không tối ưu.
+- TypeScript trong Vite chủ yếu transpile nhanh; type-check nên chạy `tsc --noEmit` riêng.
 
-### 🎯 Khi dùng Vite?
+Vite config thực tế:
 
-```txt
-✅ Greenfield React/Vue/Svelte app
-✅ SPA/dashboard/internal tool
-✅ Muốn dev speed tốt, config đơn giản
-✅ Không bị ràng buộc plugin Webpack đặc biệt
-```
+```ts
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
 
-> **Highlight:** Với app frontend mới không dùng Next.js, Vite thường là lựa chọn mặc định tốt.
-
----
-
-## 📦 5. Rollup
-
-Rollup tập trung vào ESM, tree-shaking và output sạch.
-
-### ✅ Điểm mạnh
-
-- Tree-shaking tốt.
-- Output nhỏ, sạch, phù hợp package npm.
-- Build library tốt: ESM, CJS, UMD.
-- Plugin ecosystem ổn.
-- Được Vite dùng cho production build.
-
-### ⚠️ Điểm yếu
-
-- Dev server/HMR không phải điểm mạnh chính.
-- App lớn nhiều asset/code splitting phức tạp cần setup thêm.
-- Không linh hoạt bằng Webpack trong một số enterprise pipeline.
-
-### 🎯 Khi dùng Rollup?
-
-```txt
-✅ Build thư viện npm/component library
-✅ Package cần ESM/CJS output
-✅ Muốn tree-shaking tốt
-✅ Muốn output nhỏ và sạch
-```
-
-Ví dụ:
-
-```txt
-Design system package -> Rollup
-Shared utility library -> Rollup
-React component library -> Rollup / tsup
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    react(),
+    mode === 'analyze' &&
+      visualizer({
+        filename: 'bundle-analysis.html',
+        gzipSize: true,
+        brotliSize: true,
+      }),
+  ].filter(Boolean),
+  build: {
+    sourcemap: true,
+    minify: 'esbuild',
+    chunkSizeWarningLimit: 700,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          charts: ['recharts'],
+        },
+      },
+    },
+  },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3000',
+    },
+  },
+}));
 ```
 
 ---
 
-## 🚀 6. esbuild
+### 2. Webpack
 
-esbuild viết bằng Go, nổi tiếng vì tốc độ rất cao.
+Webpack là bundler cực kỳ linh hoạt và mature.
 
-### ✅ Điểm mạnh
+Điểm mạnh:
 
-- Transform TS/JS/JSX cực nhanh.
-- Bundle cơ bản nhanh.
+- Loader/plugin ecosystem lớn.
+- Custom pipeline sâu.
+- Module Federation cho microfrontends runtime.
+- Hỗ trợ nhiều legacy app và enterprise constraints.
+- Split chunks, runtime chunk, persistent cache, asset modules.
+
+Điểm yếu:
+
+- Config phức tạp hơn.
+- Dev startup/rebuild có thể chậm nếu không tuning.
+- Dễ tạo config khó maintain.
+
+Webpack production example:
+
+```js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  mode: 'production',
+  entry: './src/main.tsx',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'assets/[name].[contenthash:8].js',
+    chunkFilename: 'assets/[name].[contenthash:8].chunk.js',
+    clean: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.[jt]sx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+          },
+        },
+      },
+    ],
+  },
+  optimization: {
+    runtimeChunk: 'single',
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          name: 'react',
+          priority: 20,
+        },
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          priority: 10,
+        },
+      },
+    },
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './index.html',
+      minify: true,
+    }),
+  ],
+};
+```
+
+---
+
+### 3. Rollup
+
+Rollup rất mạnh cho library vì output sạch và tree-shaking tốt.
+
+Phù hợp:
+
+- Design system package.
+- Component library.
+- Utility library.
+- SDK.
+- Package cần emit ESM/CJS/types.
+
+Rollup config library:
+
+```ts
+import typescript from '@rollup/plugin-typescript';
+import { defineConfig } from 'rollup';
+
+export default defineConfig({
+  input: 'src/index.ts',
+  output: [
+    {
+      file: 'dist/index.mjs',
+      format: 'esm',
+      sourcemap: true,
+    },
+    {
+      file: 'dist/index.cjs',
+      format: 'cjs',
+      sourcemap: true,
+      exports: 'named',
+    },
+  ],
+  external: ['react', 'react-dom'],
+  plugins: [typescript()],
+});
+```
+
+Package config:
+
+```json
+{
+  "name": "@acme/ui",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": ["*.css"],
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  }
+}
+```
+
+---
+
+### 4. esbuild
+
+esbuild là bundler/minifier/transpiler rất nhanh, viết bằng Go.
+
+Phù hợp:
+
+- Fast transform.
+- Bundling scripts/tools nhỏ.
 - Minify nhanh.
-- Dùng tốt trong toolchain khác như Vite pre-bundling.
-- Phù hợp scripts, CLIs, simple build.
+- Dev pipeline.
+- Pre-bundling dependencies.
+- Internal tooling.
 
-### ⚠️ Điểm yếu
+esbuild script:
 
-- Plugin ecosystem ít hơn Webpack/Rollup.
-- Một số transform nâng cao không linh hoạt bằng Babel.
-- Code splitting/optimization không sâu bằng bundler chuyên dụng trong app phức tạp.
-- Không type-check TypeScript, chỉ transpile.
+```ts
+import * as esbuild from 'esbuild';
 
-### 🎯 Khi dùng esbuild?
-
-```txt
-✅ Build script/CLI/tool nội bộ
-✅ Transform TS/JS nhanh
-✅ Pre-bundle dependencies
-✅ Project nhỏ cần build nhanh
+await esbuild.build({
+  entryPoints: ['src/main.tsx'],
+  bundle: true,
+  minify: true,
+  sourcemap: true,
+  splitting: true,
+  format: 'esm',
+  outdir: 'dist',
+  target: ['es2020'],
+  define: {
+    'process.env.NODE_ENV': '"production"',
+  },
+});
 ```
 
-> **Highlight:** esbuild rất nhanh, nhưng “nhanh” không đồng nghĩa “đủ mọi optimization production phức tạp”.
+Cẩn thận:
+
+- TypeScript type-check không phải nhiệm vụ chính của esbuild.
+- Plugin ecosystem nhỏ hơn Webpack/Rollup.
+- Một số transform/polyfill nâng cao vẫn cần Babel/SWC/tool khác.
 
 ---
 
-## 🦀 7. SWC vs 🐢 Babel
+### 5. SWC vs Babel
 
-### 🐢 Babel
+SWC và Babel đều transform JavaScript/TypeScript/JSX, nhưng tradeoff khác nhau.
 
-Babel là JS compiler rất mature.
+- **SWC**
+  - Rust-based, nhanh.
+  - Tốt cho transpile/minify ở Next.js hoặc toolchain hiện đại.
+  - Phù hợp khi cần performance và transform phổ biến.
 
-Điểm mạnh:
+- **Babel**
+  - Mature nhất về plugin ecosystem.
+  - Tốt cho custom transforms/codemods/proposals/legacy.
+  - Phù hợp khi project phụ thuộc plugin Babel cụ thể.
 
-- Plugin ecosystem lớn nhất.
-- Hỗ trợ nhiều syntax/proposal.
-- Dễ custom transform.
-- Tương thích nhiều tool cũ.
+Babel config:
 
-Điểm yếu:
-
-- Chậm hơn SWC/esbuild.
-- Config/plugin nhiều dễ phức tạp.
-
-### 🦀 SWC
-
-SWC viết bằng Rust, thường dùng để thay Babel trong Next.js hoặc app cần build nhanh.
-
-Điểm mạnh:
-
-- Nhanh hơn Babel nhiều trong đa số case.
-- Hỗ trợ TS/JSX tốt.
-- Dùng trong Next.js compiler.
-- Phù hợp monorepo/app lớn muốn giảm build time.
-
-Điểm yếu:
-
-- Plugin ecosystem không rộng bằng Babel.
-- Một số Babel plugin custom chưa migrate được.
-- Nếu project phụ thuộc plugin Babel đặc biệt, migration cần kiểm tra kỹ.
-
-### 🎯 Chọn SWC hay Babel?
-
-```txt
-✅ Dùng SWC khi:
-- cần build nhanh
-- không phụ thuộc Babel plugin đặc biệt
-- dùng Next.js hoặc framework đã tích hợp SWC
-
-✅ Dùng Babel khi:
-- cần plugin custom
-- cần compatibility đặc biệt
-- codebase cũ đã phụ thuộc Babel ecosystem
+```json
+{
+  "presets": [
+    ["@babel/preset-env", { "targets": ">0.5%, not dead" }],
+    ["@babel/preset-react", { "runtime": "automatic" }],
+    "@babel/preset-typescript"
+  ]
+}
 ```
 
-> **Highlight:** SWC thay Babel tốt cho performance, nhưng Babel vẫn thắng ở plugin ecosystem.
+SWC config:
+
+```json
+{
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "tsx": true
+    },
+    "transform": {
+      "react": {
+        "runtime": "automatic"
+      }
+    },
+    "target": "es2020"
+  },
+  "minify": true,
+  "sourceMaps": true
+}
+```
+
+Decision:
+
+- Cần plugin Babel đặc thù → Babel.
+- Cần speed và transform phổ biến → SWC/esbuild.
+- Dùng Next.js → ưu tiên SWC/Turbopack defaults trừ khi có lý do rõ.
 
 ---
 
-## 🌪️ 8. Turbopack
+### 6. Turbopack
 
-Turbopack là bundler viết bằng Rust, được thiết kế như successor của Webpack trong hệ sinh thái Next.js.
+Turbopack là bundler incremental viết bằng Rust, tích hợp sâu với Next.js.
 
-### 🔥 Điểm mạnh
+Phù hợp:
 
-- Incremental bundling.
-- Cache dependency graph.
-- Rebuild/HMR nhanh trong app lớn.
-- Tích hợp sâu với Next.js.
-- Hướng tới scale tốt hơn khi project lớn.
+- Next.js app.
+- Dev server/HMR với project lớn.
+- Team muốn theo toolchain mặc định mới của Next.js.
+- App không phụ thuộc quá nhiều Webpack-specific plugin/loader khó migrate.
 
-### ⚠️ Điểm cần cân nhắc
+Cẩn thận:
 
-- Maturity và plugin ecosystem cần kiểm tra theo version framework.
-- Chủ yếu phù hợp Next.js.
-- Không phải lựa chọn mặc định cho mọi non-Next app.
-- Production behavior/support cần đánh giá theo framework/version đang dùng.
+- Không assume mọi Webpack plugin đều tương thích.
+- Với app enterprise, cần test build/dev parity, CSS pipeline, MDX, aliases, monorepo packages.
+- Đo thực tế trên repo của mình thay vì tin benchmark chung.
 
-### 🎯 Khi dùng Turbopack?
+Next.js scripts:
 
-```txt
-✅ Next.js app
-✅ Muốn dev server/HMR nhanh hơn
-✅ App lớn, nhiều module
-✅ Framework đã support ổn trong version hiện tại
-```
-
----
-
-## 🧰 9. Rspack
-
-Rspack là bundler viết bằng Rust, hướng tới tương thích Webpack API/ecosystem.
-
-### ✅ Điểm mạnh
-
-- Nhanh hơn Webpack trong nhiều case.
-- Tương thích nhiều config/plugin Webpack.
-- Hữu ích khi muốn tăng tốc nhưng không rewrite toàn bộ build pipeline.
-- Có thể phù hợp migration enterprise từ Webpack.
-
-### ⚠️ Điểm cần cân nhắc
-
-- Không phải mọi plugin Webpack đều tương thích 100%.
-- Cần test kỹ production build, CSS/assets, Module Federation, sourcemap.
-- Ecosystem vẫn mới hơn Webpack.
-
-### 🎯 Khi dùng Rspack?
-
-```txt
-✅ Đang có Webpack app lớn
-✅ Muốn cải thiện build/dev speed
-✅ Không muốn migrate sang Vite hoàn toàn
-✅ Cần giữ nhiều Webpack concepts/config
+```json
+{
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start"
+  }
+}
 ```
 
 ---
 
-## 🧩 10. Dev build vs Production build
+### 7. Rspack, Rolldown, Bun, Parcel
 
-Senior cần phân biệt rõ dev và production.
+Senior frontend không cần thuộc mọi tool, nhưng nên biết landscape:
 
-### Dev build cần gì?
+- **Rspack**
+  - Rust-based bundler, Webpack-compatible direction.
+  - Hợp khi muốn tăng speed nhưng vẫn cần Webpack-like ecosystem.
 
-```txt
-⚡ Fast cold start
-⚡ Fast HMR
-🧭 Good source maps
-🔁 Stable watch mode
-🧠 Ít config để dev tập trung code
-```
+- **Rolldown**
+  - Rust-based bundler lấy cảm hứng/tương thích Rollup ecosystem.
+  - Đang ảnh hưởng mạnh đến hướng đi của Vite ecosystem.
 
-### Production build cần gì?
+- **Bun bundler**
+  - Nhanh, nằm trong Bun runtime/toolchain.
+  - Hợp nếu stack đã chọn Bun và constraints phù hợp.
 
-```txt
-📦 Bundle size nhỏ
-🧹 Tree-shaking tốt
-✂️ Code splitting tốt
-🗜️ Minification tốt
-🧊 Long-term caching/content hash
-📊 Bundle analysis
-🧯 Source map strategy an toàn
-```
-
-> **Highlight:** Một tool dev nhanh chưa chắc production tối ưu nhất. Staff engineer phải đo cả dev speed, build speed, bundle size, cache hit và runtime performance.
+- **Parcel**
+  - Zero-config bundler, phù hợp project cần setup nhanh.
 
 ---
 
-## 🌳 11. Tree-shaking, code splitting, minification
+## 🧪 Practical TypeScript/JavaScript Examples
 
-### 🌳 Tree-shaking
+### Example 1: Package scripts production-friendly
 
-Loại bỏ code không dùng.
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint .",
+    "format:check": "prettier . --check",
+    "build": "npm run type-check && npm run lint && vite build",
+    "build:analyze": "vite build --mode analyze",
+    "preview": "vite preview"
+  }
+}
+```
 
-Điều kiện để tree-shaking tốt:
+Ý nghĩa:
 
-- dùng ESM `import/export`
-- package khai báo `sideEffects` đúng
-- tránh import toàn bộ thư viện lớn
+- `vite` transpile nhanh trong dev.
+- `tsc --noEmit` bắt type error thật.
+- `eslint` bắt bug pattern.
+- `build:analyze` kiểm tra bundle size.
+- `preview` test production build local.
 
-Không tốt:
+---
+
+### Example 2: Dynamic import cho chart nặng
+
+```tsx
+import { Suspense, lazy, useState } from 'react';
+
+const RevenueChart = lazy(() => import('./RevenueChart'));
+
+export function Dashboard() {
+  const [showChart, setShowChart] = useState(false);
+
+  return (
+    <section>
+      <button type="button" onClick={() => setShowChart(true)}>
+        Show chart
+      </button>
+
+      {showChart && (
+        <Suspense fallback={<div>Loading chart...</div>}>
+          <RevenueChart />
+        </Suspense>
+      )}
+    </section>
+  );
+}
+```
+
+✅ Chart library không nằm trong initial bundle.
+
+⚠️ Cần UX fallback tốt; đừng để người dùng click rồi màn hình đứng im.
+
+---
+
+### Example 3: Handle `ChunkLoadError`
+
+Khi deploy version mới, user đang mở tab cũ có thể request chunk cũ đã bị xóa khỏi CDN.
+
+```ts
+window.addEventListener('error', (event) => {
+  const message = event.message || '';
+
+  if (message.includes('Loading chunk') || message.includes('ChunkLoadError')) {
+    window.location.reload();
+  }
+});
+```
+
+Production tốt hơn:
+
+- giữ old assets trên CDN một thời gian
+- deploy immutable assets trước, HTML sau
+- có error boundary cho lazy routes
+- track `ChunkLoadError` bằng Sentry/Datadog
+
+---
+
+### Example 4: Import để tree-shaking tốt hơn
+
+❌ Dễ kéo nhiều code:
 
 ```ts
 import _ from 'lodash';
+
+const ids = _.uniq(items.map((item) => item.id));
 ```
 
-Tốt hơn:
+✅ Tốt hơn:
 
 ```ts
-import debounce from 'lodash/debounce';
+import uniq from 'lodash/uniq';
+
+const ids = uniq(items.map((item) => item.id));
 ```
 
-### ✂️ Code splitting
-
-Chia bundle theo route hoặc feature.
+Hoặc dùng native API nếu đủ:
 
 ```ts
-const SettingsPage = lazy(() => import('./SettingsPage'));
-```
-
-Mục tiêu:
-
-```txt
-Initial JS nhỏ hơn
-Route sau load khi cần
-Vendor chunk cache tốt hơn
-```
-
-### 🗜️ Minification
-
-Nén JS/CSS để giảm size.
-
-Tool thường gặp:
-
-```txt
-Terser
-esbuild minify
-SWC minify
-Lightning CSS
+const ids = [...new Set(items.map((item) => item.id))];
 ```
 
 ---
 
-## 🧭 12. Decision framework
+### Example 5: Bundle analyzer
 
-### Chọn theo use case
+Vite:
 
-```txt
-🆕 App React/Vue mới        -> Vite
-📦 Library npm              -> Rollup / tsup
-🏢 Legacy enterprise app    -> Webpack hoặc Rspack
-⚛️ Next.js app              -> Next compiler + Turbopack/SWC theo framework
-⚡ Script/CLI build nhanh    -> esbuild / tsup
-🔌 Cần Babel plugin đặc biệt -> Babel
-🦀 Muốn thay Babel cho nhanh -> SWC
-🧩 Microfrontend mature      -> Webpack Module Federation / Rspack nếu phù hợp
+```ts
+import { visualizer } from 'rollup-plugin-visualizer';
+
+export default defineConfig({
+  plugins: [
+    visualizer({
+      filename: 'bundle-analysis.html',
+      gzipSize: true,
+      brotliSize: true,
+    }),
+  ],
+});
 ```
 
-### Câu hỏi cần hỏi trước khi đổi tool
+Webpack:
 
-```txt
-1. Bottleneck thật là gì: cold start, HMR, prod build, bundle size hay runtime?
-2. Tool mới có support framework/plugin hiện tại không?
-3. Có SSR, Module Federation, CSS modules, asset pipeline đặc biệt không?
-4. Source map, test, CI/CD, deploy có bị ảnh hưởng không?
-5. Có thể migrate từng phần không?
-6. Có đo baseline trước/sau không?
+```js
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
+module.exports = {
+  plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: 'bundle-report.html',
+    }),
+  ],
+};
+```
+
+Đọc report để tìm:
+
+- library quá lớn
+- duplicate dependency
+- moment/lodash import sai
+- chart/editor/map nằm trong initial bundle
+- vendor chunk đổi hash quá thường xuyên
+
+---
+
+### Example 6: Performance budget bằng `size-limit`
+
+```json
+{
+  "size-limit": [
+    {
+      "path": "dist/assets/*.js",
+      "limit": "220 KB"
+    }
+  ],
+  "scripts": {
+    "size": "size-limit",
+    "build": "vite build && npm run size"
+  }
+}
+```
+
+✅ Fail build khi JS vượt budget giúp team không “vô tình” ship thêm 500KB.
+
+---
+
+### Example 7: Module Federation với Webpack
+
+```js
+const { ModuleFederationPlugin } = require('webpack').container;
+
+module.exports = {
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'checkout',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './CheckoutApp': './src/CheckoutApp',
+      },
+      shared: {
+        react: { singleton: true, requiredVersion: '^18.0.0' },
+        'react-dom': { singleton: true, requiredVersion: '^18.0.0' },
+      },
+    }),
+  ],
+};
+```
+
+Use case:
+
+- microfrontend runtime integration
+- independent deploy
+- shared dependency
+
+⚠️ Tradeoffs:
+
+- runtime failure mode phức tạp
+- version mismatch
+- observability/debug khó hơn
+- security boundary cần rõ
+
+---
+
+## ⚛️ Production Notes / React Implications
+
+### React build không chỉ là compile JSX
+
+React production cần:
+
+- JSX transform đúng.
+- Fast Refresh trong dev.
+- Production mode loại dev warnings.
+- Code splitting theo route/component.
+- Lazy chunk có fallback UX tốt.
+- Error boundary cho lazy-loaded UI.
+- Source maps đủ để debug stack trace.
+
+---
+
+### TypeScript với build tools
+
+Nhiều tool transpile TypeScript nhưng không type-check đầy đủ trong dev/build nhanh.
+
+✅ Setup nên có:
+
+```json
+{
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "build": "npm run type-check && vite build"
+  }
+}
+```
+
+⚠️ Nếu chỉ dựa vào esbuild/SWC transpile, type error có thể lọt CI nếu không chạy `tsc`.
+
+---
+
+### CSS pipeline
+
+Build tool còn xử lý CSS:
+
+- CSS Modules.
+- PostCSS.
+- Autoprefixer.
+- Tailwind.
+- CSS extraction.
+- CSS minification.
+- Critical CSS/SSR style order.
+
+Production pitfalls:
+
+- CSS import bị tree-shake sai do `sideEffects: false`.
+- CSS order khác dev/prod.
+- Tailwind content config sai làm purge nhầm class.
+- CSS source map public leak source path.
+
+---
+
+### SSR / Next.js
+
+SSR framework như Next.js có build pipeline riêng:
+
+- client bundle
+- server bundle
+- React Server Components payload
+- route chunks
+- image/font optimization
+- edge/server runtime targets
+
+Guideline:
+
+- Ưu tiên framework default trước.
+- Chỉ override Webpack/Turbopack config khi có lý do rõ.
+- Kiểm tra server/client boundary khi import package browser-only.
+- Bundle analyze cả client và server.
+
+---
+
+### Monorepo
+
+Monorepo thêm constraints:
+
+- package transpilation
+- symlink resolution
+- duplicate React
+- shared TS config
+- incremental build/cache
+- dependency graph workspace-level
+
+Checklist:
+
+- đảm bảo chỉ có một React instance
+- externalize peer dependencies cho libraries
+- build packages theo dependency order
+- dùng Nx/Turborepo/pnpm workspace nếu cần task cache
+- tránh import source vượt boundary không kiểm soát
+
+---
+
+### Security
+
+Build pipeline có rủi ro security:
+
+- Public source maps leak source.
+- Inject env vars nhầm vào client bundle.
+- Dependency supply-chain attack.
+- CDN asset bị thay đổi nếu không dùng SRI ở script ngoài.
+- HTML minify/injection sai có thể ảnh hưởng CSP.
+
+Checklist:
+
+- chỉ expose env prefix public như `VITE_`/`NEXT_PUBLIC_`
+- upload hidden source maps lên monitoring, không public nếu source nhạy cảm
+- lockfile và dependency audit
+- CSP cho script/style
+- SRI cho third-party scripts
+
+---
+
+### Observability & debugging
+
+Production build nên hỗ trợ debug:
+
+- source maps riêng tư
+- release id/commit SHA trong build
+- bundle analyzer artifact trong CI
+- Web Vitals reporting
+- error tracking source map upload
+- performance marks cho critical flow
+
+```ts
+performance.mark('app:start');
+
+// bootstrap app
+
+performance.mark('app:mounted');
+performance.measure('app-bootstrap', 'app:start', 'app:mounted');
 ```
 
 ---
 
-## 📊 13. Metrics cần đo
+## ⚠️ Common Pitfalls
 
-Không nên nói “tool A nhanh hơn tool B” nếu không đo.
+### ❌ 1. Nghĩ Vite dev nhanh nghĩa là production tự tối ưu hoàn hảo
 
-Nên đo:
+Dev speed và production bundle quality là hai thứ khác nhau.
 
-```txt
-⏱️ cold start time
-🔥 HMR update time
-🏗️ production build time
-📦 initial JS size
-✂️ chunk count/chunk size
-🧊 cache hit rate
-🧭 source map quality
-🚦 Lighthouse/Web Vitals
-🧪 CI time
-```
+✅ Luôn kiểm tra:
 
-Với monorepo:
-
-```txt
-affected build/test time
-remote cache hit
-incremental build performance
-dependency graph size
-```
+- bundle analyzer
+- chunk size
+- source map
+- cache headers
+- route loading waterfall
 
 ---
 
-## 🚨 14. Common mistakes
+### ❌ 2. Không chạy type-check
 
-### ⚠️ Chỉ chọn tool vì benchmark
-
-Benchmark nhỏ không phản ánh app thật. App thật có CSS, assets, legacy deps, plugins, SSR, tests, CI.
-
-### ⚠️ Nghĩ Vite prod cũng giống Vite dev
-
-Vite dev dùng native ESM/on-demand transform. Vite production dùng Rollup bundle.
-
-### ⚠️ Nghĩ SWC/esbuild type-check TypeScript
-
-SWC/esbuild chủ yếu transpile. Type-check vẫn cần:
-
-```txt
-tsc --noEmit
-```
-
-Hoặc framework/plugin type-check riêng.
-
-### ⚠️ Migration không đo baseline
-
-Trước khi migrate phải đo:
-
-```txt
-dev start
-HMR
-build time
-bundle size
-CI time
-runtime metrics
-```
-
-### ⚠️ Source map public không kiểm soát
-
-Production source maps có thể lộ source code. Cần policy rõ:
-
-```txt
-hidden source map upload Sentry
-không public source map nếu không cần
-```
-
-### ⚠️ Bundle nhỏ nhưng runtime vẫn chậm
-
-Build tool chỉ là một phần. Runtime còn phụ thuộc React render, hydration, data fetching, third-party scripts.
+esbuild/SWC thường transpile rất nhanh nhưng không thay thế `tsc --noEmit`.
 
 ---
 
-## 🎤 15. Câu trả lời senior nên nói
+### ❌ 3. Import sai làm bundle phình
 
-**"Em chia build tools thành bundler và compiler/transpiler. Webpack mạnh ở enterprise, legacy, plugin ecosystem và Module Federation nhưng config phức tạp và dev chậm hơn. Vite nhanh trong dev vì dùng native ESM và esbuild pre-bundling; production build của Vite dùng Rollup nên cần nhớ dev/prod khác nhau. Rollup phù hợp library vì output sạch và tree-shaking tốt. esbuild rất nhanh cho transform/bundle cơ bản nhưng plugin/optimization không sâu bằng Webpack/Rollup. SWC là Rust compiler thay Babel tốt cho performance, còn Babel vẫn mạnh nhất về plugin ecosystem. Turbopack/Rspack đại diện xu hướng Rust incremental bundling, phù hợp Next.js hoặc migration từ Webpack tùy maturity. Khi chọn tool, em sẽ đo bottleneck thật: cold start, HMR, production build, bundle size, CI time và runtime metrics, rồi chọn theo use case thay vì chạy theo hype."**
+```ts
+import moment from 'moment';
+import _ from 'lodash';
+```
+
+✅ Cân nhắc:
+
+- native API
+- `date-fns`
+- subpath import
+- lighter alternatives
+- bundle analyzer trước khi quyết định
 
 ---
 
-## ✅ 16. Checklist phỏng vấn
+### ❌ 4. Public production source maps không kiểm soát
 
-```txt
-□ Phân biệt bundler, compiler/transpiler, minifier
-□ Biết Webpack mạnh/yếu ở đâu
-□ Biết Vite dev nhanh nhờ native ESM + esbuild pre-bundling
-□ Biết Vite production dùng Rollup
-□ Biết Rollup phù hợp library build
-□ Biết esbuild nhanh nhưng không thay mọi bundler production phức tạp
-□ Biết SWC vs Babel trade-off
-□ Biết Turbopack phù hợp nhất với Next.js ecosystem
-□ Biết Rspack là hướng migration Webpack bằng Rust
-□ Biết dev build khác production build
-□ Biết tree-shaking cần ESM và sideEffects đúng
-□ Biết code splitting bằng dynamic import
-□ Biết SWC/esbuild không type-check TypeScript
-□ Biết cần đo cold start, HMR, build time, bundle size, CI time
-□ Biết source map production cần policy bảo mật
-□ Biết chọn tool theo use case, không theo hype
-```
+Source maps giúp debug nhưng có thể leak source.
+
+✅ Upload lên monitoring/private storage nếu cần.
+
+---
+
+### ❌ 5. Cache sai `index.html`
+
+Nếu `index.html` cache lâu, user có thể bị kẹt version cũ.
+
+✅ HTML fresh, assets hashed cache long-term.
+
+---
+
+### ❌ 6. Code splitting quá mức
+
+Split mọi component thành chunk riêng có thể làm UX tệ vì waterfall.
+
+✅ Split theo route/feature nặng, không split vô tội vạ.
+
+---
+
+### ❌ 7. Quên xử lý deploy race với chunks
+
+User mở app cũ, deploy mới xóa old chunks → lazy import fail.
+
+✅ Giữ old assets hoặc handle reload/error boundary.
+
+---
+
+### ❌ 8. Dùng Babel plugin cũ khi đã chuyển SWC/esbuild
+
+Không phải mọi Babel plugin đều chạy trong SWC/esbuild.
+
+✅ Audit plugin compatibility trước khi migrate.
+
+---
+
+### ❌ 9. Override framework config quá nhiều
+
+Next/Vite đã có default tốt. Override sâu dễ phá optimization.
+
+✅ Override ít, đo rõ, document lý do.
+
+---
+
+## ✅ Decision Guide / Checklist
+
+### Chọn tool theo tình huống
+
+- React/Vue/Svelte app mới:
+  - ✅ Vite
+
+- Next.js app:
+  - ✅ Next.js default pipeline
+  - ✅ Turbopack nếu phù hợp version/config và đã test thực tế
+
+- Enterprise legacy app/custom loader/plugin sâu:
+  - ✅ Webpack
+  - ✅ cân nhắc Rspack nếu muốn compatibility + speed
+
+- Library/package/design system:
+  - ✅ Rollup
+  - ✅ tsup/unbuild/esbuild nếu package đơn giản
+
+- Microfrontend runtime sharing:
+  - ✅ Webpack Module Federation
+  - ✅ cân nhắc framework-specific federation nếu stack hỗ trợ
+
+- Transform nhanh TS/JSX:
+  - ✅ SWC hoặc esbuild
+
+- Custom syntax transform/codemod/plugin ecosystem:
+  - ✅ Babel
+
+---
+
+### Build review checklist
+
+- ✅ Có type-check riêng không?
+- ✅ Có lint/format trong CI không?
+- ✅ Bundle analyzer có chạy định kỳ không?
+- ✅ Initial JS có budget không?
+- ✅ Route chunks có hợp lý không?
+- ✅ Vendor chunk có cache ổn định không?
+- ✅ `index.html` có cache đúng không?
+- ✅ Assets có content hash không?
+- ✅ Source maps có strategy bảo mật không?
+- ✅ Env vars client có bị leak không?
+- ✅ CSS side effects có được giữ không?
+- ✅ Legacy browser target/polyfill strategy rõ không?
+- ✅ Dynamic import có fallback/error boundary không?
+- ✅ Monorepo có tránh duplicate React không?
+
+---
+
+## 🗣️ Short Interview Answer
+
+Em nghĩ build tools nên được nhìn theo vai trò chứ không chỉ theo tên tool. Một toolchain thường có dev server, bundler, transpiler/compiler, minifier, source map, cache hashing và quality gates như type-check, lint, bundle budget. Vite mạnh ở dev experience vì dùng native ESM và HMR nhanh, production thì vẫn cần bundling và chunk optimization. Webpack mạnh ở ecosystem, legacy app, customization sâu và Module Federation. Rollup thì em thường chọn cho library vì output sạch và tree-shaking tốt.
+
+Về compiler, em chọn SWC hoặc esbuild khi cần tốc độ cho transform phổ biến, còn Babel khi project cần plugin ecosystem hoặc custom transform đặc thù. Với Next.js thì em ưu tiên default pipeline, Turbopack nếu stack phù hợp và đo thực tế trên repo, chứ không chỉ tin benchmark.
+
+Điểm em thấy quan trọng ở senior level là phải đo production chứ không chỉ nhìn dev server nhanh. Em sẽ kiểm tra bundle analyzer, code splitting, content hash/cache headers, source map strategy, type-check riêng, env var leak, và performance budget trong CI. Build tool tốt là tool giúp team ship nhanh nhưng vẫn kiểm soát được runtime performance, caching, debugging và maintainability.
+
+---
+
+## 🧠 Ghi nhớ nhanh
+
+- ✅ Vite mạnh cho app hiện đại và DX nhanh.
+- ✅ Webpack mạnh cho customization sâu, enterprise, Module Federation.
+- ✅ Rollup mạnh cho library và tree-shaking.
+- ✅ esbuild rất nhanh cho transform/bundle/minify.
+- ✅ SWC nhanh, hợp stack hiện đại/Next.js.
+- ✅ Babel mature nhất về plugin ecosystem.
+- ✅ Turbopack phù hợp nhất trong Next.js context.
+- ✅ Dev build khác production build.
+- ✅ TypeScript transpile không thay thế `tsc --noEmit`.
+- ✅ Tree-shaking cần ESM và side effects rõ.
+- ✅ Code splitting phải theo UX, không split quá nhỏ.
+- ✅ Source maps production cần strategy bảo mật.
+- ✅ `index.html` không cache lâu; hashed assets cache lâu.
+- ✅ Bundle analyzer và performance budget nên nằm trong CI.
+
+---
+
+## 📖 Giải thích các thuật ngữ trong topic
+
+- **Build Tool**
+  - Công cụ xử lý source code thành output chạy được trong browser/production.
+
+- **Dev Server**
+  - Server development hỗ trợ HMR, proxy, source maps và rebuild nhanh.
+
+- **Bundler**
+  - Công cụ đọc dependency graph và xuất bundle/chunks.
+
+- **Dependency Graph**
+  - Sơ đồ quan hệ import/export giữa modules.
+
+- **Bundle**
+  - File JS/CSS output chứa nhiều modules đã được xử lý.
+
+- **Chunk**
+  - Một phần bundle được tách riêng để load theo nhu cầu hoặc cache tốt hơn.
+
+- **Code Splitting**
+  - Tách code thành chunks, thường qua dynamic `import()`.
+
+- **Tree-shaking**
+  - Loại bỏ unused exports/dead code khỏi bundle.
+
+- **Side Effect**
+  - Code có tác động ngoài export value, ví dụ import CSS, polyfill, mutate global.
+
+- **Minification**
+  - Nén code để giảm size bằng cách xóa whitespace, đổi tên biến, rút gọn expression.
+
+- **Transpiling**
+  - Chuyển syntax hiện đại/TS/JSX sang JavaScript target.
+
+- **Polyfill**
+  - Code thêm runtime API thiếu trong browser cũ.
+
+- **Source Map**
+  - File map code output về source gốc để debug.
+
+- **HMR**
+  - Hot Module Replacement: cập nhật module khi dev mà không reload toàn trang.
+
+- **Fast Refresh**
+  - Cơ chế React giữ state khi update component trong dev.
+
+- **Content Hash**
+  - Hash dựa trên nội dung file, dùng cho cache busting.
+
+- **Cache Busting**
+  - Kỹ thuật đổi filename khi nội dung đổi để browser tải bản mới.
+
+- **Vendor Chunk**
+  - Chunk chứa thư viện bên thứ ba như React, lodash, chart library.
+
+- **Performance Budget**
+  - Giới hạn size/time để build fail hoặc warning khi vượt.
+
+- **Vite**
+  - Dev server/build tool hiện đại, nổi bật với native ESM dev và HMR nhanh.
+
+- **Webpack**
+  - Bundler mature, linh hoạt, ecosystem loader/plugin lớn.
+
+- **Rollup**
+  - JavaScript module bundler mạnh cho library và tree-shaking.
+
+- **esbuild**
+  - Bundler/minifier/transpiler rất nhanh viết bằng Go.
+
+- **SWC**
+  - Rust-based compiler/toolchain cho JavaScript/TypeScript.
+
+- **Babel**
+  - JavaScript compiler mature với plugin ecosystem lớn.
+
+- **Turbopack**
+  - Incremental bundler viết bằng Rust, tích hợp với Next.js.
+
+- **Module Federation**
+  - Webpack feature cho phép nhiều build độc lập chia sẻ/expose module runtime.
+
+- **Differential Serving**
+  - Phục vụ bundle khác nhau cho browser hiện đại và legacy.
+
+- **SRI**
+  - Subresource Integrity, đảm bảo third-party script không bị thay đổi ngoài ý muốn.
+
+---
+
+## 🔗 Nguồn tham khảo chính thức
+
+- Vite docs: https://vite.dev/guide/why.html
+- Webpack tree-shaking: https://webpack.js.org/guides/tree-shaking/
+- Webpack code splitting: https://webpack.js.org/guides/code-splitting/
+- Webpack Module Federation: https://webpack.js.org/concepts/module-federation/
+- Rollup docs: https://rollupjs.org/
+- Babel docs: https://babel.dev/docs/
+- SWC repository/docs entry: https://github.com/swc-project/swc
+- Next.js Turbopack docs: https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack
