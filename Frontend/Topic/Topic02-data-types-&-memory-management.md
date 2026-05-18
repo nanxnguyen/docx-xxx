@@ -14,6 +14,8 @@
 - ♻️ Memory được GC tự động bằng reachability/mark-and-sweep, nhưng leak vẫn xảy ra nếu còn reference.
 - ⚛️ Trong React, reference equality quyết định render/memo; mutate state trực tiếp là nguồn bug lớn.
 
+---
+
 ## 🧠 Key Mental Model
 
 ### 1. Primitive là value, object là reference
@@ -61,6 +63,8 @@ setUser({
 ```
 
 💡 **Senior rule**: update immutable theo đúng depth cần thay đổi, đừng deep clone toàn bộ state lớn nếu chỉ đổi một field nhỏ.
+
+---
 
 ## 📚 Main Concepts
 
@@ -477,6 +481,8 @@ Use cases:
 - Private data cho instance.
 - Tránh leak khi object lifecycle nằm ngoài quyền kiểm soát của mình.
 
+---
+
 ## 🧪 Practical TypeScript/JavaScript Examples
 
 ### ✅ 1. React state update đúng reference
@@ -584,6 +590,8 @@ function getFullName(user: { firstName: string; lastName: string }) {
 }
 ```
 
+---
+
 ## ⚛️ Production Notes / React Implications
 
 ### 🔁 Reference equality & rendering
@@ -646,6 +654,8 @@ const frozenUser = Object.freeze({
 });
 ```
 
+---
+
 ## ⚠️ Common Pitfalls
 
 - ❌ Nghĩ spread là deep copy.
@@ -658,6 +668,8 @@ const frozenUser = Object.freeze({
 - ❌ Quên cleanup event listener, timer, subscription.
 - ❌ Closure giữ data lớn không cần thiết.
 - ❌ Cache/global map tăng không giới hạn.
+
+---
 
 ## ✅ Decision Guide / Checklist
 
@@ -685,6 +697,8 @@ const frozenUser = Object.freeze({
 - Có closure giữ data lớn? -> chỉ giữ value cần thiết.
 - Component unmount? -> abort request/cleanup effect.
 
+---
+
 ## 🗣️ Short Interview Answer
 
 Em nghĩ phần quan trọng nhất của data types trong JavaScript là phân biệt primitive và reference. Primitive như `number`, `string`, `boolean`, `null`, `undefined`, `symbol`, `bigint` là immutable và copy theo value. Còn object, array, function là reference type, copy biến chỉ copy địa chỉ nên mutate qua một biến có thể ảnh hưởng biến khác.
@@ -692,6 +706,8 @@ Em nghĩ phần quan trọng nhất của data types trong JavaScript là phân 
 Theo em, trong frontend production, lỗi hay gặp nhất là mutation và equality. Em thường dùng `===`, chỉ dùng `value == null` khi muốn check cả `null` và `undefined`. Với object/array state trong React, em update immutable bằng spread/map/filter và structural sharing để React nhận ra reference mới, thay vì mutate trực tiếp.
 
 Về memory, JavaScript có garbage collector nhưng không có nghĩa là không leak. Nếu còn reference từ event listener, timer, closure, global cache hoặc detached DOM node thì object vẫn không được thu hồi. Em thường cleanup trong effect, dùng `AbortController`, clear timer, giới hạn cache và dùng `WeakMap` khi cần metadata/cache theo object key.
+
+---
 
 ## 🧠 Ghi nhớ nhanh
 
@@ -706,6 +722,8 @@ Về memory, JavaScript có garbage collector nhưng không có nghĩa là khôn
 - **React cần reference mới** để update/memo đúng.
 - **GC dựa trên reachability**, còn reference là còn sống.
 - **WeakMap/WeakSet** không ngăn object key bị GC.
+
+---
 
 ## 📖 Giải thích các thuật ngữ trong topic
 

@@ -1,10 +1,128 @@
-# 🔄 Topic03: Event Loop, Async Runtime & Deferring Execution
+<div align="center" style="padding: 28px 24px; border: 1px solid #d0d7de; border-radius: 16px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 52%, #0f766e 100%); color: #ffffff; margin-bottom: 24px;">
 
-> Mục tiêu: hiểu chính xác JavaScript chạy code đồng bộ, async callback, Promise, render UI và các kỹ thuật trì hoãn execution trong frontend production.
+<h1 style="margin: 0 0 10px; font-size: 34px; line-height: 1.2;">🔄 Topic03: Event Loop, Async Runtime & Deferring Execution</h1>
+
+<p style="margin: 0 0 16px; font-size: 16px; color: #dbeafe;"><strong>JavaScript Runtime · Microtask · Macrotask · Browser Rendering · Deferring Execution</strong></p>
+
+<p style="margin: 0;">
+  <code style="background: rgba(255,255,255,0.14); color: #ffffff; padding: 4px 8px; border-radius: 999px;">Call Stack</code>
+  <code style="background: rgba(255,255,255,0.14); color: #ffffff; padding: 4px 8px; border-radius: 999px;">Promise</code>
+  <code style="background: rgba(255,255,255,0.14); color: #ffffff; padding: 4px 8px; border-radius: 999px;">setTimeout</code>
+  <code style="background: rgba(255,255,255,0.14); color: #ffffff; padding: 4px 8px; border-radius: 999px;">requestAnimationFrame</code>
+  <code style="background: rgba(255,255,255,0.14); color: #ffffff; padding: 4px 8px; border-radius: 999px;">Web Worker</code>
+</p>
+
+</div>
+
+<div style="padding: 14px 16px; border-left: 5px solid #0f766e; background: #ecfdf5; color: #064e3b; border-radius: 10px; margin: 18px 0;">
+  <strong style="color: #065f46;">🎯 Mục tiêu:</strong> hiểu chính xác JavaScript chạy code đồng bộ, async callback, Promise, render UI và các kỹ thuật trì hoãn execution trong frontend production.
+</div>
 
 ---
 
-## ⭐ Senior/Staff Summary
+<h2 id="-quick-navigation" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">🧭 Quick Navigation</h2>
+
+<div style="padding: 16px; border: 1px solid #cbd5e1; border-radius: 12px; background: #f8fafc; color: #0f172a; margin: 12px 0 18px;">
+  <table style="width: 100%; border-collapse: collapse; color: #0f172a;">
+    <thead>
+      <tr>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #cbd5e1; color: #334155;">Khu vực</th>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #cbd5e1; color: #334155;">Dùng khi bạn muốn</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;"><a href="#-seniorstaff-summary" style="color: #0369a1; text-decoration: none;">⭐ Senior/Staff Summary</a></td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;">Ôn nhanh trước phỏng vấn</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;"><a href="#-key-mental-model" style="color: #0369a1; text-decoration: none;">🧠 Key Mental Model</a></td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;">Hiểu runtime hoạt động như hệ thống</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;"><a href="#-main-concepts" style="color: #0369a1; text-decoration: none;">📚 Main Concepts</a></td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;">Đi từ call stack đến rendering, rAF, idle, Node.js</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;"><a href="#-practical-typescriptjavascript-examples" style="color: #0369a1; text-decoration: none;">🧪 Practical Examples</a></td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;">Luyện đoán output và pattern production</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;"><a href="#-production-notes--react-implications" style="color: #0369a1; text-decoration: none;">⚛️ React Implications</a></td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;">Liên hệ batching, cleanup, hydration, performance</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;"><a href="#-common-pitfalls" style="color: #0369a1; text-decoration: none;">⚠️ Common Pitfalls</a></td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;">Tránh lỗi phỏng vấn và lỗi production</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px;"><a href="#-decision-guide--checklist" style="color: #0369a1; text-decoration: none;">✅ Decision Guide</a></td>
+        <td style="padding: 10px 12px; color: #334155;">Chọn đúng kỹ thuật defer/cancel/schedule</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+---
+
+<h2 id="-runtime-flow-at-a-glance" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">🧩 Runtime Flow At A Glance</h2>
+
+<div style="padding: 18px; border: 1px solid #cbd5e1; border-radius: 12px; background: #ffffff; color: #0f172a; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); margin: 12px 0 18px;">
+  <table style="width: 100%; border-collapse: collapse; color: #0f172a;">
+    <thead>
+      <tr>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #cbd5e1; color: #334155;">Phase</th>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #cbd5e1; color: #334155;">Chạy gì?</th>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #cbd5e1; color: #334155;">Ghi nhớ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;"><strong>Sync</strong></td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;">Code đang nằm trên Call Stack</td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;">Luôn chạy trước</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;"><strong>Microtask</strong></td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;"><code>Promise.then</code>, <code>queueMicrotask</code>, <code>await</code> continuation</td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;">Chạy hết trước task tiếp theo</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0;"><strong>Render chance</strong></td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;"><code>requestAnimationFrame</code>, style, layout, paint</td>
+        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #334155;">Browser chỉ render khi main thread rảnh</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 12px;"><strong>Task/Macrotask</strong></td>
+        <td style="padding: 10px 12px; color: #334155;"><code>setTimeout</code>, DOM event, I/O, MessageChannel</td>
+        <td style="padding: 10px 12px; color: #334155;">Thường lấy một task mỗi vòng</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+```txt
+┌───────────────┐
+│ Sync JS Stack │
+└───────┬───────┘
+        ↓
+┌───────────────┐
+│ Microtasks    │  Promise.then / queueMicrotask / await
+└───────┬───────┘
+        ↓
+┌───────────────┐
+│ Render Chance │  rAF → style → layout → paint
+└───────┬───────┘
+        ↓
+┌───────────────┐
+│ One Task      │  timer / event / I/O
+└───────┬───────┘
+        ↺
+```
+
+---
+
+<h2 id="-seniorstaff-summary" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">⭐ Senior/Staff Summary</h2>
 
 `Event Loop` là cơ chế giúp JavaScript xử lý async trong môi trường **single-threaded**:
 
@@ -27,11 +145,13 @@ Sync Call Stack
 → Repeat
 ```
 
-> 💡 Câu nhớ nhanh: **Sync chạy trước, microtask chạy hết, browser có cơ hội render, rồi mới tới một macrotask.**
+<div style="padding: 14px 16px; border-left: 5px solid #f59e0b; background: #fffbeb; color: #78350f; border-radius: 10px; margin: 16px 0;">
+  💡 <strong>Câu nhớ nhanh:</strong> Sync chạy trước, microtask chạy hết, browser có cơ hội render, rồi mới tới một macrotask.
+</div>
 
 ---
 
-## 🧠 Key Mental Model
+<h2 id="-key-mental-model" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">🧠 Key Mental Model</h2>
 
 Hãy nhìn JavaScript runtime như một hệ thống có nhiều phần:
 
@@ -65,9 +185,9 @@ Hãy nhìn JavaScript runtime như một hệ thống có nhiều phần:
 
 ---
 
-## 📚 Main Concepts
+<h2 id="-main-concepts" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">📚 Main Concepts</h2>
 
-### 1. Call Stack: nơi code đồng bộ chạy
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">1. Call Stack: nơi code đồng bộ chạy</h3>
 
 `Call Stack` chỉ xử lý một việc tại một thời điểm.
 
@@ -115,11 +235,13 @@ function loop(): void {
 // loop(); // ❌ RangeError: Maximum call stack size exceeded
 ```
 
-> ✅ Senior key: Event Loop không cứu được code sync đang kẹt trong Call Stack. Muốn UI phản hồi, phải chia nhỏ work hoặc đưa ra thread khác.
+<div style="padding: 14px 16px; border-left: 5px solid #10b981; background: #ecfdf5; color: #064e3b; border-radius: 10px; margin: 16px 0;">
+  ✅ <strong>Senior key:</strong> Event Loop không cứu được code sync đang kẹt trong Call Stack. Muốn UI phản hồi, phải chia nhỏ work hoặc đưa ra thread khác.
+</div>
 
 ---
 
-### 2. Web APIs / Node APIs: async không nằm trong JS engine thuần
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">2. Web APIs / Node APIs: async không nằm trong JS engine thuần</h3>
 
 Ví dụ `setTimeout`:
 
@@ -159,7 +281,7 @@ Các API runtime thường gặp:
 
 ---
 
-### 3. Microtask Queue: ưu tiên cao
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">3. Microtask Queue: ưu tiên cao</h3>
 
 Microtask chạy sau sync code và trước task/timer thông thường.
 
@@ -203,7 +325,7 @@ console.log('4 sync');
 
 ---
 
-### 4. Promise chain cũng là nhiều microtasks
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">4. Promise chain cũng là nhiều microtasks</h3>
 
 ```ts
 Promise.resolve()
@@ -233,11 +355,13 @@ Vì sao `C` trước `B`?
 - `.then(B)` chỉ được queue sau khi `A` chạy xong.
 - `.then(C)` đã có trong queue trước khi `B` được tạo.
 
-> 💡 Key phỏng vấn: Promise chain không chạy nguyên một mạch như sync code. Mỗi `.then` là một microtask mới.
+<div style="padding: 14px 16px; border-left: 5px solid #f59e0b; background: #fffbeb; color: #78350f; border-radius: 10px; margin: 16px 0;">
+  💡 <strong>Key phỏng vấn:</strong> Promise chain không chạy nguyên một mạch như sync code. Mỗi <code>.then</code> là một microtask mới.
+</div>
 
 ---
 
-### 5. `queueMicrotask` vs `Promise.resolve().then`
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">5. `queueMicrotask` vs `Promise.resolve().then`</h3>
 
 Hai cách này đều đưa callback vào microtask queue:
 
@@ -270,7 +394,7 @@ Senior guideline:
 
 ---
 
-### 6. Macrotask / Task Queue: timer, event, I/O
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">6. Macrotask / Task Queue: timer, event, I/O</h3>
 
 Macrotask có priority thấp hơn microtask.
 
@@ -308,7 +432,7 @@ Nguồn task phổ biến:
 
 ---
 
-### 7. Browser rendering pipeline
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">7. Browser rendering pipeline</h3>
 
 Browser không paint khi JS đang chiếm Call Stack.
 
@@ -355,7 +479,7 @@ items.forEach((el, index) => {
 
 ---
 
-### 8. `requestAnimationFrame`: chạy trước paint
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">8. `requestAnimationFrame`: chạy trước paint</h3>
 
 `requestAnimationFrame` phù hợp cho animation/DOM visual updates vì browser gọi callback trước frame paint.
 
@@ -389,7 +513,7 @@ requestAnimationFrame(animate);
 
 ---
 
-### 9. `requestIdleCallback`: chạy khi browser rảnh
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">9. `requestIdleCallback`: chạy khi browser rảnh</h3>
 
 `requestIdleCallback` dùng cho việc không critical:
 
@@ -432,7 +556,7 @@ scheduleIdle((deadline) => {
 
 ---
 
-### 10. Node.js Event Loop khác Browser
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">10. Node.js Event Loop khác Browser</h3>
 
 Browser có render pipeline. Node.js không có UI render nhưng có event loop phases.
 
@@ -476,7 +600,7 @@ process.nextTick(() => console.log('nextTick'));
 
 ---
 
-### 11. `async/await` hoạt động với microtask
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">11. `async/await` hoạt động với microtask</h3>
 
 Code trước `await` chạy sync. Code sau `await` được resume qua microtask.
 
@@ -507,11 +631,13 @@ Giải thích:
 - Phần sau `await` được queue như microtask.
 - Microtask nào được queue trước thì chạy trước.
 
-> ⚠️ Thứ tự giữa `await` continuation và Promise callback phụ thuộc thời điểm queue. Đừng viết logic production dựa trên thứ tự tinh vi nếu có thể tránh.
+<div style="padding: 14px 16px; border-left: 5px solid #f97316; background: #fff7ed; color: #7c2d12; border-radius: 10px; margin: 16px 0;">
+  ⚠️ Thứ tự giữa <code>await</code> continuation và Promise callback phụ thuộc thời điểm queue. Đừng viết logic production dựa trên thứ tự tinh vi nếu có thể tránh.
+</div>
 
 ---
 
-### 12. Microtask starvation
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">12. Microtask starvation</h3>
 
 Microtask queue phải trống trước khi browser có thể qua task/render tiếp theo.
 
@@ -559,7 +685,7 @@ function processInChunks<T>(
 
 ---
 
-### 13. Deferring execution: chọn đúng kỹ thuật
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">13. Deferring execution: chọn đúng kỹ thuật</h3>
 
 Các kỹ thuật trì hoãn execution nên hiểu theo mục tiêu:
 
@@ -601,9 +727,9 @@ Các kỹ thuật trì hoãn execution nên hiểu theo mục tiêu:
 
 ---
 
-## 🧪 Practical TypeScript/JavaScript Examples
+<h2 id="-practical-typescriptjavascript-examples" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">🧪 Practical TypeScript/JavaScript Examples</h2>
 
-### Example 1: Thứ tự kinh điển
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 1: Thứ tự kinh điển</h3>
 
 ```ts
 console.log('1');
@@ -632,7 +758,7 @@ Key:
 
 ---
 
-### Example 2: Nested microtask
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 2: Nested microtask</h3>
 
 ```ts
 Promise.resolve().then(() => {
@@ -662,7 +788,7 @@ Vì `B` được queue trong lúc `A` đang chạy, còn `C` đã nằm trong qu
 
 ---
 
-### Example 3: Batching bằng microtask
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 3: Batching bằng microtask</h3>
 
 Frontend scenario: dashboard nhận nhiều update trong cùng một tick, chỉ muốn render một lần.
 
@@ -713,7 +839,7 @@ class PriceBoard {
 
 ---
 
-### Example 4: Heavy work phải chia nhỏ
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 4: Heavy work phải chia nhỏ</h3>
 
 ```ts
 type Row = {
@@ -758,7 +884,7 @@ function normalizeRows(rows: Row[]): Promise<Map<string, Row>> {
 
 ---
 
-### Example 5: Debounce search + AbortController
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 5: Debounce search + AbortController</h3>
 
 Search input thường cần `debounce` và cancel request cũ để tránh race condition.
 
@@ -810,7 +936,7 @@ Key production:
 
 ---
 
-### Example 6: Throttle scroll + passive listener
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 6: Throttle scroll + passive listener</h3>
 
 ```ts
 function throttle<TArgs extends unknown[]>(
@@ -855,7 +981,7 @@ window.addEventListener('scroll', onScroll, { passive: true });
 
 ---
 
-### Example 7: IntersectionObserver cho lazy loading
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 7: IntersectionObserver cho lazy loading</h3>
 
 ```ts
 const observer = new IntersectionObserver(
@@ -888,7 +1014,7 @@ document.querySelectorAll<HTMLImageElement>('img[data-src]').forEach((image) => 
 
 ---
 
-### Example 8: React animation bằng `requestAnimationFrame`
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 8: React animation bằng `requestAnimationFrame`</h3>
 
 ```tsx
 import { useEffect, useRef, useState } from 'react';
@@ -933,7 +1059,7 @@ Production notes:
 
 ---
 
-### Example 9: `MessageChannel`
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 9: `MessageChannel`</h3>
 
 ```ts
 const channel = new MessageChannel();
@@ -965,7 +1091,7 @@ channel.port2.postMessage(null);
 
 ---
 
-### Example 10: Web Worker cho CPU-heavy work
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 10: Web Worker cho CPU-heavy work</h3>
 
 Main thread:
 
@@ -1003,7 +1129,7 @@ self.onmessage = (event: MessageEvent<{ rows: Array<{ id: string }> }>) => {
 
 ---
 
-### Example 11: `scheduler.postTask` với feature detection
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Example 11: `scheduler.postTask` với feature detection</h3>
 
 ```ts
 type TaskPriority = 'user-blocking' | 'user-visible' | 'background';
@@ -1030,9 +1156,9 @@ postTask(() => {
 
 ---
 
-## ⚛️ Production Notes / React Implications
+<h2 id="-production-notes--react-implications" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">⚛️ Production Notes / React Implications</h2>
 
-### React batching và Event Loop
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">React batching và Event Loop</h3>
 
 React có cơ chế batching state updates. Tùy version, root mode và context, update trong event handler, Promise, timeout có thể được batch khác nhau.
 
@@ -1060,7 +1186,7 @@ setCount(count + 1);
 
 ---
 
-### Cleanup timer, rAF, request, observer
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Cleanup timer, rAF, request, observer</h3>
 
 Trong React component, mọi side effect async nên có cleanup:
 
@@ -1098,7 +1224,7 @@ Checklist cleanup:
 
 ---
 
-### SSR/Hydration
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">SSR/Hydration</h3>
 
 Event Loop là runtime behavior của client, nhưng SSR vẫn liên quan:
 
@@ -1120,7 +1246,7 @@ useEffect(() => {
 
 ---
 
-### Performance debugging
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Performance debugging</h3>
 
 Dấu hiệu Event Loop bị block:
 
@@ -1149,7 +1275,7 @@ performance.measure('normalize', 'normalize:start', 'normalize:end');
 
 ---
 
-### Accessibility impact
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Accessibility impact</h3>
 
 Event Loop không chỉ là performance; nó ảnh hưởng accessibility:
 
@@ -1168,9 +1294,33 @@ Event Loop không chỉ là performance; nó ảnh hưởng accessibility:
 
 ---
 
-## ⚠️ Common Pitfalls
+<h2 id="-common-pitfalls" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">⚠️ Common Pitfalls</h2>
 
-### ❌ 1. Nghĩ `setTimeout(fn, 0)` chạy ngay
+<div style="padding: 18px; border: 1px solid #fecaca; border-radius: 12px; background: #fef2f2; color: #450a0a; margin: 14px 0 20px;">
+  <table style="width: 100%; border-collapse: collapse; color: #450a0a;">
+    <thead>
+      <tr>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #fecaca; color: #7f1d1d;">Pitfall</th>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #fecaca; color: #7f1d1d;">Dấu hiệu</th>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #fecaca; color: #7f1d1d;">Cách nghĩ đúng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;"><code>setTimeout(fn, 0)</code> chạy ngay</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Output timer không như dự đoán</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Timer là task, phải chờ sync + microtask</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Quên Promise là microtask</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Promise log trước timer</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Microtask có priority cao hơn task</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Microtask làm work dài</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">UI không paint, input lag</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Microtask không phải background thread</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Recursive microtask</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Timer/render bị starve</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Microtask queue phải được drain hết</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Debounce không cancel request</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Response cũ ghi đè UI mới</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Debounce giảm request, không tự chống race</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Scroll listener quá nặng</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Scroll jank</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Throttle/passive hoặc IntersectionObserver</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Quên cleanup React side effects</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Leak, update after unmount</td><td style="padding: 10px 12px; border-bottom: 1px solid #fee2e2;">Cleanup timer/rAF/observer/request</td></tr>
+      <tr><td style="padding: 10px 12px;">Dựa vào exact ordering quá sâu</td><td style="padding: 10px 12px;">Khác browser/runtime có thể lệch</td><td style="padding: 10px 12px;">Chỉ dựa vào mental model tổng quát</td></tr>
+    </tbody>
+  </table>
+</div>
+
+---
+
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">❌ 1. Nghĩ `setTimeout(fn, 0)` chạy ngay</h3>
 
 Sai. Nó chỉ chạy sau:
 
@@ -1180,7 +1330,7 @@ Sai. Nó chỉ chạy sau:
 
 ---
 
-### ❌ 2. Quên Promise là microtask
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">❌ 2. Quên Promise là microtask</h3>
 
 ```ts
 setTimeout(() => console.log('timeout'), 0);
@@ -1191,7 +1341,7 @@ Promise.resolve().then(() => console.log('promise'));
 
 ---
 
-### ❌ 3. Dùng microtask cho work dài
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">❌ 3. Dùng microtask cho work dài</h3>
 
 ```ts
 queueMicrotask(() => {
@@ -1203,7 +1353,7 @@ Microtask không phải background thread.
 
 ---
 
-### ❌ 4. Tạo microtask recursive vô hạn
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">❌ 4. Tạo microtask recursive vô hạn</h3>
 
 ```ts
 function loop() {
@@ -1215,7 +1365,7 @@ Kết quả: timer, input, render đều có thể bị starve.
 
 ---
 
-### ❌ 5. Dùng debounce nhưng không cancel request cũ
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">❌ 5. Dùng debounce nhưng không cancel request cũ</h3>
 
 Debounce chỉ giảm tần suất gọi. Nó không tự giải quyết race condition.
 
@@ -1227,7 +1377,7 @@ Debounce chỉ giảm tần suất gọi. Nó không tự giải quyết race co
 
 ---
 
-### ❌ 6. Dùng throttle scroll cho lazy loading khi có IntersectionObserver
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">❌ 6. Dùng throttle scroll cho lazy loading khi có IntersectionObserver</h3>
 
 Scroll listener vẫn chạy nhiều và dễ làm main thread bận.
 
@@ -1235,7 +1385,7 @@ Scroll listener vẫn chạy nhiều và dễ làm main thread bận.
 
 ---
 
-### ❌ 7. Quên cleanup trong React
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">❌ 7. Quên cleanup trong React</h3>
 
 Timer, rAF, observer, worker, fetch không cleanup có thể gây:
 
@@ -1247,7 +1397,7 @@ Timer, rAF, observer, worker, fetch không cleanup có thể gây:
 
 ---
 
-### ❌ 8. Dựa vào exact ordering giữa mọi task source
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">❌ 8. Dựa vào exact ordering giữa mọi task source</h3>
 
 Order tổng quát cần nhớ:
 
@@ -1259,9 +1409,33 @@ Nhưng order chi tiết giữa `setTimeout`, `MessageChannel`, event, rAF, I/O c
 
 ---
 
-## ✅ Decision Guide / Checklist
+<h2 id="-decision-guide--checklist" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">✅ Decision Guide / Checklist</h2>
 
-### Chọn công cụ theo tình huống
+<div style="padding: 18px; border: 1px solid #bfdbfe; border-radius: 12px; background: #eff6ff; color: #172554; margin: 14px 0 20px;">
+  <table style="width: 100%; border-collapse: collapse; color: #172554;">
+    <thead>
+      <tr>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #bfdbfe; color: #1e3a8a;">Tình huống</th>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #bfdbfe; color: #1e3a8a;">Ưu tiên dùng</th>
+        <th align="left" style="padding: 10px 12px; border-bottom: 1px solid #bfdbfe; color: #1e3a8a;">Tránh dùng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Chạy sau sync code hiện tại</td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;"><code>queueMicrotask</code>, Promise microtask</td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Work CPU nặng</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Cho UI có cơ hội render</td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;"><code>setTimeout(0)</code>, chunking, <code>scheduler.postTask</code></td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Microtask loop dài</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Animation theo frame</td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;"><code>requestAnimationFrame</code>, CSS transition</td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;"><code>setTimeout</code> để animate frame</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Background non-critical work</td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;"><code>requestIdleCallback</code></td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Logic quan trọng cần chạy ngay</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Search input</td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Debounce + <code>AbortController</code></td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Chỉ debounce mà không chống race</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Scroll/resize liên tục</td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Throttle + passive listener</td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Handler nặng chạy mỗi event</td></tr>
+      <tr><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Lazy load/visibility</td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;"><code>IntersectionObserver</code></td><td style="padding: 10px 12px; border-bottom: 1px solid #dbeafe;">Tự tính viewport bằng scroll liên tục</td></tr>
+      <tr><td style="padding: 10px 12px;">CPU-heavy work</td><td style="padding: 10px 12px;">Web Worker hoặc chunking</td><td style="padding: 10px 12px;">Chạy sync trên main thread</td></tr>
+    </tbody>
+  </table>
+</div>
+
+---
+
+<h3 style="margin: 28px 0 12px; padding: 10px 14px; border-left: 5px solid #0f766e; border-radius: 10px; background: #ecfdf5; color: #064e3b; font-size: 20px; line-height: 1.35;">Chọn công cụ theo tình huống</h3>
 
 - Cần chạy sau sync code hiện tại, trước timer:
   - ✅ `queueMicrotask`
@@ -1296,21 +1470,7 @@ Nhưng order chi tiết giữa `setTimeout`, `MessageChannel`, event, rAF, I/O c
 
 ---
 
-### Checklist review code async frontend
-
-- ✅ Có long sync task nào trên main thread không?
-- ✅ Promise chain có thể tạo microtask quá dài không?
-- ✅ Timer/rAF/observer/request có cleanup không?
-- ✅ Search/autocomplete có chống race condition không?
-- ✅ Scroll handler có throttle/passive hoặc thay bằng IntersectionObserver không?
-- ✅ Animation có dùng rAF/CSS thay vì setTimeout không?
-- ✅ Heavy computation có chunking hoặc worker không?
-- ✅ SSR có guard browser APIs không?
-- ✅ Có đo bằng Performance panel/React Profiler thay vì đoán không?
-
----
-
-## 🗣️ Short Interview Answer
+<h2 id="-short-interview-answer" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">🗣️ Short Interview Answer</h2>
 
 Em nghĩ Event Loop là cơ chế giúp JavaScript chạy async trong khi bản thân JS vẫn chỉ có một Call Stack chính. Code đồng bộ sẽ chạy trước. Những việc như timer, DOM event, network request được Browser hoặc Node runtime xử lý bên ngoài; khi xong thì callback được đưa vào queue.
 
@@ -1320,7 +1480,7 @@ Trong frontend production, em quan tâm nhất đến việc không block main t
 
 ---
 
-## 🧠 Ghi nhớ nhanh
+<h2 id="-ghi-nhớ-nhanh" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">🧠 Ghi nhớ nhanh</h2>
 
 - ✅ JavaScript chạy sync code trên một Call Stack chính.
 - ✅ Async API được runtime xử lý, callback quay lại qua queue.
@@ -1338,7 +1498,7 @@ Trong frontend production, em quan tâm nhất đến việc không block main t
 
 ---
 
-## 📖 Giải thích các thuật ngữ trong topic
+<h2 id="-giải-thích-các-thuật-ngữ-trong-topic" style="margin: 34px 0 14px; padding: 14px 18px; border-radius: 14px; background: #0f172a; color: #f8fafc; font-size: 26px; line-height: 1.25;">📖 Giải thích các thuật ngữ trong topic</h2>
 
 - **Event Loop**
   - Vòng lặp của runtime dùng để lấy callback từ queue đưa vào Call Stack khi stack trống.
